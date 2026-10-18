@@ -1,6 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Skrót BM</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Skrót BM</title><meta name="description" content="Skróty, fiszki, quizy i wersje prostym językiem dla 1. roku Business Management na Uniwersytecie Szczecińskim."><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -317,6 +315,7 @@ details.src pre { margin-top: 6px; }
 .paywall h2 { margin: 0; font-family: var(--f-display); }
 .paywall .muted { margin: 0; max-width: 62ch; }
 .lock { font-size: .8rem; color: var(--muted); white-space: nowrap; }
+.empty.locked { border-style: solid; border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); background: linear-gradient(135deg, var(--accent-soft), var(--surface) 75%); }
 .navbtn.buy { background: var(--accent); color: var(--accent-ink); }
 .navbtn.buy:hover { filter: brightness(1.07); background: var(--accent); color: var(--accent-ink); }
 .sitefoot { margin: 40px 0 24px; font-size: .84rem; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
@@ -515,7 +514,18 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
 .tv-conf { position: absolute; width: 7px; height: 11px; border-radius: 2px; top: -12px; animation: tv-fall 2.8s linear infinite; }
 @keyframes tv-fall { to { transform: translateY(140px) rotate(400deg); } }
 @media (max-width: 600px) { .tour-card { left: 16px !important; right: 16px; width: auto; top: auto !important; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); } .tour-card.up { top: calc(16px + env(safe-area-inset-top, 0px)) !important; bottom: auto; } }
-@media (max-width: 760px) { .bar .helpbtn { order: 1; margin-left: auto; } .bar .nav { order: 2; margin-left: 0; } }
+/* Telefon: logo i „?” w pierwszym rzędzie, menu w jednym przewijanym rzędzie pod spodem. */
+@media (max-width: 760px) {
+  .bar .wrap { gap: 6px 10px; padding-block: 8px 6px; }
+  .brand b { font-size: 1.08rem; }
+  .logo { width: 30px; height: 30px; font-size: .95rem; }
+  .bar .helpbtn { order: 1; margin-left: auto; width: 30px; height: 30px; }
+  .bar .nav { order: 2; margin-left: 0; flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px));
+    mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 24px), transparent); }
+  .bar .nav::-webkit-scrollbar { display: none; }
+  .navbtn { padding: 6px 12px; white-space: nowrap; flex: none; font-size: .92rem; }
+}
 @media (prefers-reduced-motion: reduce) {
   .tour *, .tour *::before, .tour *::after, .helpbtn.nudge { animation: none !important; transition: none !important; }
   .tv-file, .tv-hub span, .tv-grade .chip { opacity: 1; } .tv-out span, .tv-bar::before { transform: none; }
@@ -538,9 +548,9 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   // ================= Plan zajęć (snapshot z plan-bm) =================
   const PLAN = {"source":"https://planyzajec-efz.usz.edu.pl/","kierunek":"Business Management","rokAkademicki":"2026/2027","semestr":"zimowy","updated":"15.10.2026 10:24","changedAt":"2026-10-13T12:32:34.952Z","checkedAt":"2026-10-17T09:06:54.762Z","groups":{"C111":{"odd":[{"d":1,"s":0,"pl":"Prawo","en":"Law","k":"W","p":"dr Małgorzata Szymszon","r":"s. 002"},{"d":2,"s":0,"pl":"Logistyka","en":"Logistics","k":"W","p":"dr Jakub Dowejko","r":"s. SIL 325"},{"d":1,"s":1,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"B","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"},{"d":2,"s":1,"pl":"Podstawy zarządzania","en":"Fundamentals of Management","k":"W","p":"dr hab. prof. US Dariusz Milewski","r":"s. 002"},{"d":4,"s":1,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"A","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"},{"d":1,"s":2,"pl":"Logistyka","en":"Logistics","k":"CW","p":"dr Jakub Dowejko","r":"s. 307"},{"d":2,"s":2,"pl":"Podstawy finansów","en":"Fundamentals of Finances","k":"CW","p":"dr hab. prof. US Beata Świecka","r":"s. 002"},{"d":3,"s":2,"pl":"Szkolenie z obrony cywilnej","k":"X","r":"Aula WNS ul. Krakowska 71-79, Szczecin","dates":["2026-12-17"],"n":"Jednorazowo: 17.12.2026"},{"d":4,"s":2,"pl":"Analiza matematyczna","en":"Mathematical Analysis","k":"W","p":"dr Barbara Batóg","r":"s. 002"},{"d":4,"s":3,"pl":"Zarządzanie zasobami ludzkimi","en":"Human Resources Management","k":"W","p":"dr inż. Alicja Nerć-Pełka","r":"s. 002"}],"even":[{"d":1,"s":0,"pl":"Prawo","en":"Law","k":"W","p":"dr Małgorzata Szymszon","r":"s. 002"},{"d":2,"s":0,"pl":"Zarządzanie zasobami ludzkimi","en":"Human Resources Management","k":"CW","p":"mgr Malwina Jankowska","r":"s. 307"},{"d":4,"s":0,"pl":"Analiza matematyczna","en":"Mathematical Analysis","k":"CW","p":"dr Barbara Batóg","r":"s. 112"},{"d":0,"s":1,"pl":"Ekonomia biznesu","en":"Business Economics","k":"CW","p":"dr Aleksandra Gąsior","r":"s. 003"},{"d":1,"s":1,"pl":"Ekonomia biznesu","en":"Business Economics","k":"W","p":"dr Aleksandra Gąsior","r":"s. 044 (aula)"},{"d":2,"s":1,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"W","p":"dr inż. Anna Borawska","r":"s. SIL 325"},{"d":4,"s":1,"pl":"Makroekonomia","en":"Macroeconomics","k":"CW","p":"dr Agnieszka Bretyn","r":"s. SIL 325"},{"d":0,"s":2,"pl":"Podstawy zarządzania","en":"Fundamentals of Management","k":"CW","p":"dr hab. prof. US Dariusz Milewski","r":"s. 044 (aula)"},{"d":1,"s":2,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"B","p":"dr inż. Piotr Niemcewicz","r":"s. 423 (lab)"},{"d":2,"s":2,"pl":"Podstawy finansów","en":"Fundamentals of Finances","k":"W","p":"dr hab. prof. US Beata Świecka","r":"s. 002"},{"d":4,"s":2,"pl":"Makroekonomia","en":"Macroeconomics","k":"W","p":"dr Agnieszka Bretyn","r":"s. SIL 325"},{"d":0,"s":3,"pl":"Ochrona własności intelektualnej","en":"Intelectual Property Protection","k":"W","p":"dr Jarosław Poteralski","r":"s. 044 (aula)","dates":["2026-10-12","2026-10-26","2026-11-09","2026-11-23"],"n":"Tylko: 12.10, 26.10, 9.11, 23.11"},{"d":4,"s":3,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"A","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"}]},"C112":{"odd":[{"d":1,"s":0,"pl":"Prawo","en":"Law","k":"W","p":"dr Małgorzata Szymszon","r":"s. 002"},{"d":2,"s":0,"pl":"Logistyka","en":"Logistics","k":"W","p":"dr Jakub Dowejko","r":"s. SIL 325"},{"d":3,"s":0,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"A","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 124/125 (lab)"},{"d":4,"s":0,"pl":"Makroekonomia","en":"Macroeconomics","k":"CW","p":"dr Agnieszka Bretyn","r":"s. SIL 323"},{"d":1,"s":1,"pl":"Logistyka","en":"Logistics","k":"CW","p":"dr Jakub Dowejko","r":"s. 307"},{"d":2,"s":1,"pl":"Podstawy zarządzania","en":"Fundamentals of Management","k":"W","p":"dr hab. prof. US Dariusz Milewski","r":"s. 002"},{"d":4,"s":1,"pl":"Analiza matematyczna","en":"Mathematical Analysis","k":"CW","p":"dr Barbara Batóg","r":"s. 112"},{"d":1,"s":2,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"B","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"},{"d":2,"s":2,"pl":"Podstawy zarządzania","en":"Fundamentals of Management","k":"CW","p":"dr hab. prof. US Dariusz Milewski","r":"s. 507"},{"d":3,"s":2,"pl":"Szkolenie z obrony cywilnej","k":"X","r":"Aula WNS ul. Krakowska 71-79, Szczecin","dates":["2026-12-17"],"n":"Jednorazowo: 17.12.2026"},{"d":4,"s":2,"pl":"Analiza matematyczna","en":"Mathematical Analysis","k":"W","p":"dr Barbara Batóg","r":"s. 002"},{"d":2,"s":3,"pl":"Podstawy finansów","en":"Fundamentals of Finances","k":"CW","p":"dr hab. prof. US Beata Świecka","r":"s. 002"},{"d":4,"s":3,"pl":"Zarządzanie zasobami ludzkimi","en":"Human Resources Management","k":"W","p":"dr inż. Alicja Nerć-Pełka","r":"s. 002"}],"even":[{"d":1,"s":0,"pl":"Prawo","en":"Law","k":"W","p":"dr Małgorzata Szymszon","r":"s. 002"},{"d":3,"s":0,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"A","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 124/125 (lab)"},{"d":0,"s":1,"pl":"Zarządzanie zasobami ludzkimi","en":"Human Resources Management","k":"CW","p":"mgr Malwina Jankowska","r":"s. 707"},{"d":1,"s":1,"pl":"Ekonomia biznesu","en":"Business Economics","k":"W","p":"dr Aleksandra Gąsior","r":"s. 044 (aula)"},{"d":2,"s":1,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"W","p":"dr inż. Anna Borawska","r":"s. SIL 325"},{"d":3,"s":1,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"B","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 124/125 (lab)"},{"d":0,"s":2,"pl":"Ekonomia biznesu","en":"Business Economics","k":"CW","p":"dr Aleksandra Gąsior","r":"s. 003"},{"d":2,"s":2,"pl":"Podstawy finansów","en":"Fundamentals of Finances","k":"W","p":"dr hab. prof. US Beata Świecka","r":"s. 002"},{"d":4,"s":2,"pl":"Makroekonomia","en":"Macroeconomics","k":"W","p":"dr Agnieszka Bretyn","r":"s. SIL 325"},{"d":0,"s":3,"pl":"Ochrona własności intelektualnej","en":"Intelectual Property Protection","k":"W","p":"dr Jarosław Poteralski","r":"s. 044 (aula)","dates":["2026-10-12","2026-10-26","2026-11-09","2026-11-23"],"n":"Tylko: 12.10, 26.10, 9.11, 23.11"}]},"C113":{"odd":[{"d":1,"s":0,"pl":"Prawo","en":"Law","k":"W","p":"dr Małgorzata Szymszon","r":"s. 002"},{"d":2,"s":0,"pl":"Logistyka","en":"Logistics","k":"W","p":"dr Jakub Dowejko","r":"s. SIL 325"},{"d":2,"s":1,"pl":"Podstawy zarządzania","en":"Fundamentals of Management","k":"W","p":"dr hab. prof. US Dariusz Milewski","r":"s. 002"},{"d":4,"s":1,"pl":"Makroekonomia","en":"Macroeconomics","k":"CW","p":"dr Agnieszka Bretyn","r":"s. SIL 323"},{"d":2,"s":2,"pl":"Zarządzanie zasobami ludzkimi","en":"Human Resources Management","k":"CW","p":"mgr Malwina Jankowska","r":"s. 307"},{"d":3,"s":2,"pl":"Szkolenie z obrony cywilnej","k":"X","r":"Aula WNS ul. Krakowska 71-79, Szczecin","dates":["2026-12-17"],"n":"Jednorazowo: 17.12.2026"},{"d":4,"s":2,"pl":"Analiza matematyczna","en":"Mathematical Analysis","k":"W","p":"dr Barbara Batóg","r":"s. 002"},{"d":2,"s":3,"pl":"Podstawy zarządzania","en":"Fundamentals of Management","k":"CW","p":"dr hab. prof. US Dariusz Milewski","r":"s. 507"},{"d":3,"s":3,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"A","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"},{"d":4,"s":3,"pl":"Zarządzanie zasobami ludzkimi","en":"Human Resources Management","k":"W","p":"dr inż. Alicja Nerć-Pełka","r":"s. 002"},{"d":3,"s":4,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"B","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"}],"even":[{"d":1,"s":0,"pl":"Prawo","en":"Law","k":"W","p":"dr Małgorzata Szymszon","r":"s. 002"},{"d":2,"s":0,"pl":"Logistyka","en":"Logistics","k":"CW","p":"dr Jakub Dowejko","r":"s. SIL 324"},{"d":1,"s":1,"pl":"Ekonomia biznesu","en":"Business Economics","k":"W","p":"dr Aleksandra Gąsior","r":"s. 044 (aula)"},{"d":2,"s":1,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"W","p":"dr inż. Anna Borawska","r":"s. SIL 325"},{"d":4,"s":1,"pl":"Analiza matematyczna","en":"Mathematical Analysis","k":"CW","p":"dr Barbara Batóg","r":"s. 112"},{"d":2,"s":2,"pl":"Podstawy finansów","en":"Fundamentals of Finances","k":"W","p":"dr hab. prof. US Beata Świecka","r":"s. 002"},{"d":4,"s":2,"pl":"Makroekonomia","en":"Macroeconomics","k":"W","p":"dr Agnieszka Bretyn","r":"s. SIL 325"},{"d":0,"s":3,"pl":"Ochrona własności intelektualnej","en":"Intelectual Property Protection","k":"W","p":"dr Jarosław Poteralski","r":"s. 044 (aula)","dates":["2026-10-12","2026-10-26","2026-11-09","2026-11-23"],"n":"Tylko: 12.10, 26.10, 9.11, 23.11"},{"d":2,"s":3,"pl":"Podstawy finansów","en":"Fundamentals of Finances","k":"CW","p":"dr hab. prof. US Beata Świecka","r":"s. 002"},{"d":3,"s":3,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"A","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"},{"d":0,"s":4,"pl":"Ekonomia biznesu","en":"Business Economics","k":"CW","p":"dr Aleksandra Gąsior","r":"s. 003"},{"d":3,"s":4,"pl":"Narzędzia IT w zarządzaniu","en":"IT Tools in Management","k":"LAB","g":"B","p":"dr inż. Piotr Niemcewicz","r":"s. SIL 116 (lab)"}]}}};
   const SLOTS = [["8:15","9:45"],["10:00","11:30"],["12:00","13:30"],["13:45","15:15"],["15:30","17:00"],["17:15","18:45"],["19:00","20:30"]];
-  const RANGES = [["2026-10-02","2026-10-02","even"],["2026-10-05","2026-10-09","odd"],["2026-10-12","2026-10-16","even"],["2026-10-19","2026-10-23","odd"],["2026-10-26","2026-10-30","even"],["2026-11-03","2026-11-06","odd"],["2026-11-09","2026-11-13","even"],["2026-11-16","2026-11-20","odd"],["2026-11-23","2026-11-27","even"],["2026-11-30","2026-12-04","odd"],["2026-12-07","2026-12-11","even"],["2026-12-14","2026-12-18","odd"],["2026-12-21","2026-12-23","even"],["2027-01-07","2027-01-08","even"],["2027-01-11","2027-01-15","odd"],["2027-01-18","2027-01-22","even"],["2027-01-25","2027-01-29","odd"],["2027-02-01","2027-02-01","even"]];
-  const OFF = { "2026-10-01": "Dzień rektorski", "2026-11-02": "Dzień rektorski", "2026-11-11": "Narodowe Święto Niepodległości" };
-  const SWAP = { "2027-01-29": { p: "even", asDay: 2, n: "Dzień zamienny: zajęcia jak w środę (tydzień parzysty)" } };
+  // Kalendarz roku (tygodnie parzyste/nieparzyste, dni wolne, zamiany, przerwy). Źródło: plan.json → „kalendarz”
+  // (plik kalendarz.json w repozytorium plan-bm). Poniżej kopia zapasowa na wypadek braku internetu.
+  const CAL_DEFAULT = {"start":"2026-09-28","tygodnie":[["2026-10-02","2026-10-02","even"],["2026-10-05","2026-10-09","odd"],["2026-10-12","2026-10-16","even"],["2026-10-19","2026-10-23","odd"],["2026-10-26","2026-10-30","even"],["2026-11-03","2026-11-06","odd"],["2026-11-09","2026-11-13","even"],["2026-11-16","2026-11-20","odd"],["2026-11-23","2026-11-27","even"],["2026-11-30","2026-12-04","odd"],["2026-12-07","2026-12-11","even"],["2026-12-14","2026-12-18","odd"],["2026-12-21","2026-12-23","even"],["2027-01-07","2027-01-08","even"],["2027-01-11","2027-01-15","odd"],["2027-01-18","2027-01-22","even"],["2027-01-25","2027-01-29","odd"],["2027-02-01","2027-02-01","even"]],"wolne":{"2026-10-01":"Dzień rektorski","2026-11-02":"Dzień rektorski","2026-11-11":"Narodowe Święto Niepodległości"},"zamiany":{"2027-01-29":{"p":"even","asDay":2,"n":"Dzień zamienny: zajęcia jak w środę (tydzień parzysty)"}},"okresy":[{"od":"0000-01-01","do":"2026-10-01","opis":"Przed semestrem"},{"od":"2026-12-24","do":"2027-01-06","opis":"Przerwa świąteczna"},{"od":"2027-02-02","do":"2027-02-15","opis":"Sesja egzaminacyjna"},{"od":"2027-02-16","do":"2027-02-21","opis":"Przerwa po sesji zimowej"},{"od":"2027-02-22","do":"2027-02-28","opis":"Sesja poprawkowa"},{"od":"2027-03-01","do":"9999-12-31","opis":"Semestr letni: plan tygodni pojawi się, gdy wydział go opublikuje"}]};
   const PLAN_URL = "https://plan.skrotbm.pl/";
   const KIND = { W: "Wykład", CW: "Ćwiczenia", LAB: "Laboratorium", X: "Inne" };
   const KIND_SHORT = { W: "W", CW: "ĆW", LAB: "LAB", X: "•" };
@@ -549,19 +559,23 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   const dkey = (dt) => `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
   const dparse = (k) => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
   const addDays = (dt, n) => { const x = new Date(dt); x.setDate(x.getDate() + n); return x; };
-  const PAR = {};
-  for (const [a, b, p] of RANGES) for (let d = dparse(a); dkey(d) <= b; d = addDays(d, 1)) if (d.getDay() % 6) PAR[dkey(d)] = p;
-  for (const k of Object.keys(OFF)) delete PAR[k];
-  for (const [k, v] of Object.entries(SWAP)) PAR[k] = v.p;
+  let CAL = { PAR: {}, OFF: {}, SWAP: {}, PERIODS: [] };
+  function buildCalendar() {
+    const k = PLAN.kalendarz && Array.isArray(PLAN.kalendarz.tygodnie) ? PLAN.kalendarz : CAL_DEFAULT;
+    const PAR = {}, OFF = k.wolne || {}, SWAP = k.zamiany || {};
+    for (const [a, b, p] of k.tygodnie || []) for (let d = dparse(a); dkey(d) <= b; d = addDays(d, 1)) if (d.getDay() % 6) PAR[dkey(d)] = p;
+    for (const d of Object.keys(OFF)) delete PAR[d];
+    for (const [d, v] of Object.entries(SWAP)) PAR[d] = v.p;
+    CAL = { PAR, OFF, SWAP, PERIODS: k.okresy || [] };
+  }
+  buildCalendar();
   function dayInfo(k) {
+    const { PAR, OFF, SWAP, PERIODS } = CAL;
     if (SWAP[k]) return { p: SWAP[k].p, asDay: SWAP[k].asDay, n: SWAP[k].n };
     if (PAR[k]) return { p: PAR[k] };
     if (OFF[k]) return { off: OFF[k] };
-    if (k < "2026-10-01") return { off: "Przed semestrem" };
-    if (k >= "2026-12-24" && k <= "2027-01-06") return { off: "Przerwa świąteczna" };
-    if (k >= "2027-02-02" && k <= "2027-02-15") return { off: "Sesja egzaminacyjna" };
-    if (k > "2027-02-15") return { off: "Po sesji zimowej" };
-    return { off: "" };
+    const per = PERIODS.find((o) => k >= o.od && k <= o.do);
+    return { off: per ? per.opis : "" };
   }
 
   const PALETTE = ["#c8553d", "#d99a22", "#4f9a63", "#3a78b5", "#9a4c95", "#7d8a2f", "#c0702c", "#5a68b8", "#c4567d", "#2e8579", "#8a6a4f", "#6f5aa8"];
@@ -699,11 +713,34 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   }
   async function getContent(id) { if (S.content[id]) return S.content[id]; const snap = await S.db.doc("materialContent/" + id).get(); return (S.content[id] = snap.exists ? snap.data() : null); }
   async function getSource(id) { if (S.sources[id]) return S.sources[id]; const snap = await S.db.doc("materialSources/" + id).get(); return (S.sources[id] = snap.exists ? snap.data() : null); }
+  // Postęp nauki: najpierw kopia w przeglądarce, potem zapis w bazie. Gdy zapis się nie uda,
+  // kopia zostaje oznaczona jako niezapisana i strona ponawia zapis (także po odświeżeniu strony).
+  const progKey = () => "bm-progress-" + (S.uid || "anon");
+  const progLocal = {
+    get() { try { return JSON.parse(localStorage.getItem(progKey()) || "null"); } catch { return null; } },
+    set(v) { try { localStorage.setItem(progKey(), JSON.stringify(v)); } catch {} },
+  };
+  let progTimer = null, progWarned = false;
+  async function flushProgress() {
+    clearTimeout(progTimer);
+    if (!S.db || !S.uid) return;
+    const snapshot = S.progress;
+    try {
+      await S.db.collection("data/users/" + S.uid).doc("progress").set(snapshot);
+      if (S.progress === snapshot) progLocal.set({ data: snapshot, dirty: false });
+      progWarned = false;
+    } catch {
+      progLocal.set({ data: S.progress, dirty: true });
+      if (!progWarned) { progWarned = true; toast("Nie zapisałem postępu na serwerze. Mam go w przeglądarce i spróbuję ponownie."); }
+      progTimer = setTimeout(flushProgress, 20000);
+    }
+  }
   async function saveProgress(patch) {
     S.progress = { ...S.progress, ...patch };
-    if (!S.db || !S.uid) return;
-    try { await S.db.collection("data/users/" + S.uid).doc("progress").set(S.progress); } catch {}
+    progLocal.set({ data: S.progress, dirty: !!S.uid });
+    await flushProgress();
   }
+  addEventListener("online", () => { if (progLocal.get()?.dirty) flushProgress(); });
   async function saveScore(key, score, total) {
     const prev = best(key);
     const quiz = { ...(S.progress.quiz || {}) };
@@ -729,24 +766,32 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     const active = v === "home" ? "home" : ["materials", "subject", "material", "subjectQuiz", "upload"].includes(v) ? "materials" : v;
     const openN = myTasks().filter((t) => t.kind !== "info" && !isDone(t)).length;
     const items = [["home", "Start"], ["materials", "Materiały"], ["tasks", "Zadania", openN], ["grading", "Zaliczenia"], ["calendar", "Kalendarz"]];
-    if (S.canEdit) items.push(["reports", "Zgłoszenia", S.reports.length]);
-    $("nav").replaceChildren(...items.map(([key, label, badge]) => h("button", {
+    if (S.canEdit) items.push(["reports", "Zgłoszenia", S.reports.length], ["ai", "Panel AI", S.aiMissing || 0]);
+    $("nav").replaceChildren(...[...items.map(([key, label, badge]) => h("button", {
       type: "button", class: "navbtn", "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
     }, label, badge ? h("span", { class: "badge num", text: badge }) : null)),
       h("a", { class: "navbtn", href: PLAN_URL }, "Plan zajęć"),
       ["out", "in"].includes(window.skrot?.state) && !PAID() ? h("button", { type: "button", class: "navbtn buy", onclick: () => window.skrot.buy() }, "Kup dostęp") : null,
       window.skrot?.state === "in" ? h("button", { type: "button", class: "navbtn", title: window.skrot.email, onclick: () => window.skrot.logout() }, "Wyloguj")
-        : window.skrot?.state === "out" ? h("button", { type: "button", class: "navbtn", onclick: () => window.skrot.openLogin() }, "Zaloguj") : null);
+        : window.skrot?.state === "out" ? h("button", { type: "button", class: "navbtn", onclick: () => window.skrot.openLogin() }, "Zaloguj") : null].filter(Boolean));
+    const cur = $("nav").querySelector('[aria-current="page"]');
+    if (cur && $("nav").scrollWidth > $("nav").clientWidth) $("nav").scrollLeft = Math.max(0, cur.offsetLeft - 24);
   }
   $("brand").addEventListener("click", () => go({ view: "home" }));
 
+  let lastRenderSig = "";
   function render() {
     renderNav();
     const v = S.route.view;
-    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading }[v] || viewHome;
+    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading }[v] || viewHome;
     const keepIds = ["ann-text"];
     const kept = keepIds.map((id) => { const el = document.getElementById(id); return el ? { id, v: el.value, f: document.activeElement === el } : null; }).filter(Boolean);
+    // Ten sam widok rysowany ponownie (np. po odświeżeniu danych): otwarte rozwijane elementy zostają otwarte.
+    const sig = JSON.stringify([v, S.route.id, S.route.tab]);
+    const openDetails = sig === lastRenderSig ? [...$("main").querySelectorAll("details")].map((d) => d.open) : null;
+    lastRenderSig = sig;
     $("main").replaceChildren(...[fn()].flat(Infinity).filter((x) => x != null && x !== false), siteFoot());
+    if (openDetails) $("main").querySelectorAll("details").forEach((d, i) => { if (openDetails[i]) d.open = true; });
     for (const k of kept) { const el = document.getElementById(k.id); if (el) { el.value = k.v; if (k.f) el.focus(); } }
     typeset($("main"));
   }
@@ -817,7 +862,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     return h("p", { class: "syncline" }, h("i", { class: "pulse" + (stale ? " stale" : ""), "aria-hidden": "true" }),
       `Automat sprawdził Teams ${ago(sy.lastRun)}`, sy.teams ? ` · ${sy.teams} ${plural(sy.teams, "zespół", "zespoły", "zespołów")}` : "",
       sy.note ? h("span", { text: " · " + sy.note }) : null,
-      stale ? h("span", { text: " · dawno nie było sprawdzenia, Mac starosty mógł być wyłączony" }) : null);
+      stale ? h("span", { text: " · ostatnie sprawdzenie było dawno, nowe zadania mogą pojawić się z opóźnieniem" }) : null);
   }
   function viewTasks() {
     const all = myTasks();
@@ -827,16 +872,16 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     const shown = f === "open" ? work.filter((t) => !isDone(t)) : f === "done" ? work.filter(isDone) : work;
     const openN = work.filter((t) => !isDone(t)).length;
     return [
-      lockedNote("Zadania od prowadzących"),
       h("section", { class: "greet" },
         h("h1", {}, "Zadania ", h("span", { class: "mark", text: "od prowadzących" })),
         h("p", { class: "sub", text: "Automat zbiera je z postów w Teams. Odhaczaj, co masz zrobione: Twoje odhaczenia widzisz tylko Ty." }),
         syncLine()),
       !S.group ? h("div", { class: "announce" }, h("p", { text: "Wybierz grupę, a pokażę tylko zadania, które Cię dotyczą." }), groupPicker(true)) : null,
       h("div", { class: "row", style: "justify-content:space-between" },
-        h("div", { class: "seg", role: "group", "aria-label": "Filtr zadań" }, [["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"], ["all", "Wszystkie"]].map(([k, l]) => h("button", { type: "button", "aria-pressed": String(f === k), onclick: () => { S.taskFilter = k; render(); } }, l))),
+        h("div", { class: "seg", role: "group", "aria-label": "Filtr zadań", hidden: PAID() ? null : true }, [["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"], ["all", "Wszystkie"]].map(([k, l]) => h("button", { type: "button", "aria-pressed": String(f === k), onclick: () => { S.taskFilter = k; render(); } }, l))),
         S.group ? h("span", { class: "fm", text: `Pokazuję zadania dla ${S.group} i ogólne` }) : null),
-      !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
+      !PAID() ? lockBox("Zadania od prowadzących z terminami widzą osoby z pełnym dostępem.")
+        : !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
         : shown.length ? h("div", { class: "tasks" }, shown.map(taskCard))
         : h("div", { class: "empty small", text: f === "open" ? (work.length ? "Wszystko odhaczone. Dobra robota." : "Prowadzący nie dali jeszcze żadnych zadań. Gdy pojawią się w Teams, automat doda je tutaj.") : "Nic tu jeszcze nie ma." }),
       info.length ? h("section", { class: "stack" },
@@ -859,7 +904,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
         return h("button", { type: "button", class: "mini-task", onclick: () => go({ view: "tasks" }) },
           h("i", { class: "dot", style: `--c:${s ? s.color : taskKind(t.kind).c}` }),
           h("span", { class: "t", text: t.title }), dueChip(t));
-      })) : h("div", { class: "empty small", text: S.tasks.length ? "Wszystko odhaczone." : "Brak zadań od prowadzących." }));
+      })) : !PAID() ? lockBox("Zadania od prowadzących są w pełnej wersji.") : h("div", { class: "empty small", text: S.tasks.length ? "Wszystko odhaczone." : "Brak zadań od prowadzących." }));
   }
   function subjectTasks(s) {
     const list = myTasks().filter((t) => t.subjectId === s.id).sort(taskSort);
@@ -983,7 +1028,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       return h("button", { type: "button", class: "feed-item", onclick: () => go({ view: "material", id: m.id, tab: "skrot" }) },
         h("span", { class: "ficon", style: `--c:${colorOf(m.subjectId)}`, "aria-hidden": "true", text: (s?.pl || "?").slice(0, 2) }),
         h("span", {}, h("span", { class: "ft", text: m.title || m.fileName }), h("br"),
-          h("span", { class: "fm", text: `${m.source === "sylabus" ? "Z sylabusa" : "Nowy materiał"} · ${s?.pl || "przedmiot"} · ${m.quizCount || 0} pytań w quizie · ${ago(m.createdAt)}${who(m.createdBy) ? " · od " + who(m.createdBy) : ""}` })));
+          h("span", { class: "fm", text: `${m.source === "sylabus" ? "Z sylabusa" : "Nowy materiał"} · ${s?.pl || "przedmiot"} · ${m.quizCount || 0} ${plural(m.quizCount || 0, "pytanie", "pytania", "pytań")} w quizie · ${ago(m.createdAt)}${who(m.createdBy) ? " · od " + who(m.createdBy) : ""}` })));
     }
     const d = it.d, t = dlType(d.type);
     return h("button", { type: "button", class: "feed-item", onclick: () => openDeadline(d) },
@@ -1002,7 +1047,19 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       h("a", { href: "prywatnosc.html" }, "Polityka prywatności"),
       h("a", { href: "mailto:skrotbm@outlook.com" }, "Kontakt"));
   }
-  const locked = (m) => !PAID() && !m?.free;
+  // Darmowa próbka: materiał oznaczony „free”, a gdy w przedmiocie żadnego takiego nie ma, najstarszy materiał przedmiotu.
+  // Tę samą regułę stosuje baza (supabase/skrot-darmowe.sql), więc nowy przedmiot od razu ma próbkę.
+  function isFree(m) {
+    if (!m) return false;
+    if (m.free) return true;
+    const ms = materialsOf(m.subjectId);
+    if (ms.some((x) => x.free)) return false;
+    const first = ms.reduce((a, b) => (!a || (b.createdAt || 0) < (a.createdAt || 0) || ((b.createdAt || 0) === (a.createdAt || 0) && b.id < a.id) ? b : a), null);
+    return first?.id === m.id;
+  }
+  const locked = (m) => !PAID() && !isFree(m);
+  // Czy treść materiału da się teraz otworzyć (próbki wymagają zalogowania).
+  const readable = (m) => PAID() || (isFree(m) && window.skrot?.state === "in");
   function accessNotice() {
     const sk = window.skrot || {};
     return h("div", { class: "notice err" }, sk.noticeText?.() || "Nie mogę połączyć się z bazą.");
@@ -1013,13 +1070,32 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     return h("section", { class: "paywall" },
       h("span", { class: "eyebrow", text: title ? "Ten materiał jest w pełnej wersji" : "Skrót BM · pełny dostęp" }),
       h("h2", { text: title || "Cały rok nauki w jednym miejscu" }),
-      h("p", { class: "muted", text: "Skróty, notatki, pojęcia, fiszki, quizy i wersje prostym językiem do wszystkich przedmiotów, a do tego zadania od prowadzących, terminy kolokwiów i kalendarz roku. Pierwszy materiał z każdego przedmiotu przejrzysz za darmo." }),
+      h("p", { class: "muted", text: "Skróty, notatki, pojęcia, fiszki, quizy i wersje prostym językiem do wszystkich przedmiotów, a do tego zadania od prowadzących, terminy kolokwiów i kalendarz roku. Dostęp obejmuje oba semestry roku 2026/27. Pierwszy materiał z każdego przedmiotu przejrzysz za darmo." }),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn primary", onclick: () => sk.buy?.() }, `Kup dostęp na rok · ${sk.price || "199 zł"}`),
         sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => sk.openLogin?.() }, "Mam już dostęp: zaloguj") : null),
       sk.state === "in" ? h("p", { class: "foot-note", style: "margin:0", text: `Zalogowano jako ${sk.email}. Dostęp zostanie przypisany do tego adresu.` }) : null,
       h("p", { class: "foot-note", style: "margin:0" }, "Płatność jednorazowa przez Stripe (BLIK, karta, Przelewy24). ", h("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", h("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")));
   }
+  // Okno z kłódką zamiast błędu zapisu albo mylącego komunikatu.
+  function lockModal(what) {
+    const sk = window.skrot || {};
+    modal((close) => [
+      h("span", { class: "eyebrow", text: "🔒 Pełna wersja" }),
+      h("h2", { text: what }),
+      h("p", { class: "muted", text: `To jest w pełnej wersji. Dostęp kupujesz raz, na cały rok (oba semestry), za ${sk.price || "199 zł"}.` }),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", onclick: () => { close(); sk.buy?.(); } }, `Kup dostęp · ${sk.price || "199 zł"}`),
+        sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Mam już dostęp: zaloguj") : null,
+        h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
+  }
+  const needPaid = (what) => { if (PAID()) return false; lockModal(what); return true; };
+  function lockBox(text) {
+    return h("div", { class: "empty small locked" },
+      h("p", { style: "margin:0;color:var(--ink)" }, h("span", { "aria-hidden": "true" }, "🔒 "), text),
+      h("div", {}, h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")));
+  }
+  const lockLabel = (label) => (PAID() ? label : "🔒 " + label.replace(/^\+\s*/, ""));
   function lockedNote(what) {
     return PAID() ? null : h("div", { class: "notice", style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap" },
       h("span", { text: `${what} widzą osoby z pełnym dostępem.` }),
@@ -1044,14 +1120,15 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
         h("div", { class: "panel-head" }, h("h2", { text: "Nowości" }), S.canEdit ? h("button", { type: "button", class: "btn small sun", onclick: () => go({ view: "upload" }) }, "Wgraj materiał") : null),
         !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
           : feedItems().length ? h("div", { class: "feed" }, feedItems().map(feedRow))
-          : h("div", { class: "empty small", text: "Jeszcze cisza. Wgraj pierwszą prezentację z Teams albo dodaj termin kolokwium, a pojawi się tutaj dla całego roku." })),
+          : h("div", { class: "empty small", text: S.canEdit ? "Jeszcze cisza. Wgraj pierwszą prezentację z Teams albo dodaj termin kolokwium, a pojawi się tutaj dla całego roku." : "Jeszcze cisza. Nowe materiały i terminy pojawią się tutaj." })),
     );
     const up = upcomingDeadlines(6);
     const right = h("div", { class: "stack", style: "gap:20px;min-width:0" },
       tasksPanel(),
       h("section", { class: "panel" },
-        h("div", { class: "panel-head" }, h("h2", { text: "Terminy" }), h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj")),
-        up.length ? h("div", {}, up.map(deadlineRow)) : h("div", { class: "empty small", text: "Brak terminów. Dodaj kolokwium, projekt albo zadanie, żeby cały rok o nim pamiętał." }),
+        h("div", { class: "panel-head" }, h("h2", { text: "Terminy" }), h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj"))),
+        !PAID() ? lockBox("Terminy kolokwiów, egzaminów i projektów całego roku są w pełnej wersji.")
+          : up.length ? h("div", {}, up.map(deadlineRow)) : h("div", { class: "empty small", text: "Brak terminów. Dodaj kolokwium, projekt albo zadanie, żeby cały rok o nim pamiętał." }),
         h("button", { type: "button", class: "link", style: "justify-self:start", onclick: () => go({ view: "calendar" }) }, "Otwórz kalendarz →")),
       weekStrip(),
     );
@@ -1087,6 +1164,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
 
   // ================= deadlines =================
   function openDeadline(d) {
+    if (!d && needPaid("Dodawanie terminów")) return;
     const edit = !!d;
     const readonly = edit && !canManage(d);
     modal((close) => {
@@ -1166,7 +1244,6 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     const sel = S.calSel, selInfo = dayInfo(sel), selCls = S.group ? classesOn(sel, S.group, S.sub) : [];
     const selDl = visDeadlines().filter((x) => x.date === sel).sort((a, b) => (a.time || "").localeCompare(b.time || ""));
     return [
-      lockedNote("Terminy kolokwiów, egzaminów i zadań w kalendarzu"),
       h("section", { class: "stack" },
         h("span", { class: "eyebrow", text: "Kalendarz roku" }),
         h("div", { class: "cal-head" },
@@ -1175,7 +1252,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
           h("button", { type: "button", class: "btn small", "aria-label": "Następny miesiąc", onclick: () => shift(1) }, "›"),
           h("button", { type: "button", class: "btn small ghost", onclick: () => { S.calMonth = tk.slice(0, 7); S.calSel = tk; render(); } }, "Dziś"),
           h("span", { style: "flex:1" }),
-          h("button", { type: "button", class: "btn small primary", onclick: () => openDeadline(null) }, "+ Dodaj termin")),
+          h("button", { type: "button", class: "btn small primary", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj termin"))),
         S.group ? null : h("div", { class: "notice" }, groupPicker()),
         h("div", { class: "cal-scroll" }, h("div", { class: "cal" }, DOW.map((d) => h("span", { class: "dow", text: d })), cells)),
         h("div", { class: "legend" }, h("span", { text: "N / P: tydzień nieparzysty / parzysty" }), DL_TYPES.map((t) => h("span", {}, h("i", { class: "dot", style: `--c:${t.c}` }), t.label))),
@@ -1188,8 +1265,8 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
             : selCls.length ? classRows(selCls, sel) : h("p", { class: "muted", text: selInfo.off || "Brak zajęć tego dnia." }),
         ),
         h("div", { class: "panel" },
-          h("div", { class: "panel-head" }, h("h2", { text: "Terminy tego dnia" }), h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj")),
-          selDl.length ? h("div", {}, selDl.map(deadlineRow)) : h("p", { class: "muted", text: "Nic nie wpisano." }),
+          h("div", { class: "panel-head" }, h("h2", { text: "Terminy tego dnia" }), h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj"))),
+          !PAID() ? lockBox("Terminy są w pełnej wersji.") : selDl.length ? h("div", {}, selDl.map(deadlineRow)) : h("p", { class: "muted", text: "Nic nie wpisano." }),
         ),
       ),
       h("p", { class: "foot-note" }, `Plan zajęć: stan z ${PLAN.updated || "—"}. Zmiany wprowadzone później sprawdź na `, h("a", { class: "link", href: PLAN_URL, target: "_blank", rel: "noopener" }, "stronie z planem"), "."),
@@ -1395,7 +1472,13 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     const s = subjectById(S.route.id);
     if (!s) return [backLink({ view: "materials" }), h("p", { class: "muted", text: "Nie ma takiego przedmiotu." })];
     const ms = materialsOf(s.id);
-    const qCount = ms.reduce((a, m) => a + (m.quizCount || 0), 0);
+    const qCount = ms.filter(readable).reduce((a, m) => a + (m.quizCount || 0), 0);
+    const qAll = ms.reduce((a, m) => a + (m.quizCount || 0), 0);
+    const qN = Math.min(15, qCount);
+    const quizBtn = PAID() || qCount
+      ? h("button", { type: "button", class: "btn", disabled: qCount ? null : true, onclick: () => go({ view: "subjectQuiz", id: s.id }) },
+          PAID() ? `Quiz z całości${qCount ? ` · ${qN} ${plural(qN, "pytanie", "pytania", "pytań")}` : ""}` : `Quiz z darmowego materiału · ${qN} ${plural(qN, "pytanie", "pytania", "pytań")}`)
+      : qAll ? h("button", { type: "button", class: "btn", onclick: () => (window.skrot?.state === "out" && ms.some(isFree) ? window.skrot.openLogin("Zaloguj się e-mailem (bez hasła), żeby zrobić quiz z darmowego materiału.") : lockModal("Quiz z całego przedmiotu")) }, "🔒 Quiz z całości") : null;
     const dls = upcomingDeadlines(5, s.id);
     const people = Object.entries(s.people).map(([k, set]) => h("span", {}, KIND[k] + ": ", h("b", { text: [...set].join(", ") })));
     let nextClass = null;
@@ -1410,9 +1493,10 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
         nextClass ? h("p", { style: "font-size:.92rem" }, "Najbliższe zajęcia: ", h("b", { text: `${fmtKey(nextClass.k)}, ${SLOTS[nextClass.c.s][0]}` }), ` · ${KIND[nextClass.c.k].toLowerCase()} · ${nextClass.c.r || ""}`) : null,
         h("div", { class: "row" },
           S.canEdit ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj materiał") : null,
-          h("button", { type: "button", class: "btn", disabled: qCount ? null : true, onclick: () => go({ view: "subjectQuiz", id: s.id }) }, `Quiz z całości${qCount ? " · " + Math.min(15, qCount) + " pytań" : ""}`),
+          quizBtn,
+          !PAID() && qCount && qAll > qCount ? h("button", { type: "button", class: "link", style: "font-size:.86rem", onclick: () => lockModal("Quiz z całego przedmiotu") }, "🔒 pełny quiz z całości") : null,
           best("subject:" + s.id) ? scoreChip("subject:" + s.id) : null,
-          h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, "+ Termin")),
+          h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, lockLabel("+ Termin"))),
       ),
       zalPanel(s),
       dls.length ? h("section", { class: "panel" }, h("h2", { text: "Nadchodzące terminy" }), h("div", {}, dls.map(deadlineRow))) : null,
@@ -1423,7 +1507,10 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
         !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
           : filesOf(s.id).length ? materialList(filesOf(s.id))
           : lessonsOf(s.id).length ? h("div", { class: "empty small", text: "Prowadząca nie wrzuciła jeszcze nic do Teams. Gdy się pojawi, trafi tutaj automatycznie." })
-          : h("div", { class: "empty" }, h("h3", { text: "Ten zeszyt jest jeszcze pusty" }), h("p", { class: "muted", text: "Pobierz prezentację z kanału tego przedmiotu w Teams i wgraj ją tutaj. Po około minucie pojawi się skrót, fiszki i quiz dla całego roku." }), h("div", {}, h("button", { type: "button", class: "btn sun", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj pierwszą prezentację")))),
+          : S.canEdit ? h("div", { class: "empty" }, h("h3", { text: "Ten zeszyt jest jeszcze pusty" }), h("p", { class: "muted", text: "Pobierz prezentację z kanału tego przedmiotu w Teams i wgraj ją tutaj. Po około minucie pojawi się skrót, fiszki i quiz dla całego roku." }), h("div", {}, h("button", { type: "button", class: "btn sun", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj pierwszą prezentację")))
+          : h("div", { class: "empty" }, h("h3", { text: "Materiały w przygotowaniu" }),
+              h("p", { class: "muted", text: "Do tego przedmiotu nie ma jeszcze materiałów. Pojawią się tutaj, gdy prowadzący udostępnią pierwsze zajęcia w Teams. Pierwszy materiał będzie do przejrzenia za darmo." }),
+              PAID() ? null : h("div", { class: "row" }, h("span", { class: "lock", text: "🔒 Pełny dostęp obejmuje wszystkie przyszłe materiały" }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")))),
     ];
   }
 
@@ -1446,7 +1533,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
         h("h3", {}, h("span", { class: "u", text: u.unit }), h("span", { text: u.title })),
         h("div", { class: "list" }, u.items.map((l) => h("button", { type: "button", class: "item lesson-row", onclick: () => go({ view: "material", id: l.id, tab: "lekcja" }) },
           h("span", { class: "t" }, h("span", { class: "lnum", text: l.order }), h("span", { text: l.title })),
-          h("span", { class: "m num", text: `rozdz. ${l.bookRef} · ok. ${l.minutes} min · ${l.quizCount} pytań w quizie` }),
+          h("span", { class: "m num", text: `rozdz. ${l.bookRef} · ok. ${l.minutes} min · ${l.quizCount || 0} ${plural(l.quizCount || 0, "pytanie", "pytania", "pytań")} w quizie` }),
           h("span", { class: "r row", style: "gap:6px" }, locked(l) ? h("span", { class: "lock", text: "🔒" }) : !PAID() ? h("span", { class: "chip good", text: "za darmo" }) : null, done[l.id] ? h("span", { class: "check", title: "Przerobione", text: "✓" }) : null, best(l.id) ? scoreChip(l.id) : null))))))),
     );
   }
@@ -1502,7 +1589,8 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     const tabs = h("div", { class: "tabs", role: "tablist" }, tabList.map(([k, label]) => h("button", { type: "button", class: "tab" + (k === "prosto" ? " simple-tab" : ""), role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k }; render(); } }, label, counts[k] ? h("span", { class: "c", text: counts[k] }) : null)));
     let panel;
     if (c === undefined) panel = h("p", { class: "muted", text: "Ładuję materiał…" });
-    else if (c === null) panel = h("div", { class: "notice err", text: "Nie znalazłem treści tego materiału. Spróbuj wgrać plik jeszcze raz." });
+    else if (c === null && !PAID()) return [backLink({ view: "subject", id: m.subjectId }), paywallCard(m.title || m.fileName)];
+    else if (c === null) panel = h("div", { class: "notice err", text: S.canEdit ? "Nie znalazłem treści tego materiału. Spróbuj wgrać plik jeszcze raz." : "Nie udało się wczytać treści tego materiału. Odśwież stronę, a jeśli to nie pomoże, napisz do starosty." });
     else if (tab === "lekcja" && c.lesson) panel = lessonPanel(m, c.lesson);
     else if (tab === "prosto") panel = simplePanel(m, c);
     else if (tab === "skrot") panel = h("div", { class: "stack" }, h("p", { class: "tldr", text: c.tldr }), h("p", { class: "foot-note", text: m.source === "sylabus" ? "Mapa przedmiotu przygotowana z sylabusa, zanim prowadzący wrzucili materiały. Numery sekcji prowadzą do zakładki Źródło." : "Skrót przygotowany przez AI z prezentacji. Szczegóły z numerami slajdów są w zakładce Notatka." }));
@@ -1540,7 +1628,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
             h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inline(ex.answer))))))) : null,
       h("div", { class: "box" },
         h("h3", { text: "Sprawdź, czy rozumiesz" }),
-        h("p", { class: "muted", text: "Quiz ma 8 pytań. Fiszki pomogą zapamiętać definicje i wzory." }),
+        h("p", { class: "muted", text: `Quiz ma ${(S.content[m.id]?.quiz || []).length || m.quizCount || 0} ${plural((S.content[m.id]?.quiz || []).length || m.quizCount || 0, "pytanie", "pytania", "pytań")}. Fiszki pomogą zapamiętać definicje i wzory.` }),
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn primary", onclick: () => { S.route = { ...S.route, tab: "quiz", qz: null }; render(); window.scrollTo({ top: 0 }); } }, "Zrób quiz"),
           h("button", { type: "button", class: "btn", onclick: () => { S.route = { ...S.route, tab: "fiszki", fc: null }; render(); window.scrollTo({ top: 0 }); } }, "Fiszki"),
@@ -1624,7 +1712,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   }
 
   function reportButton(materialId, kind, index, text) {
-    return h("button", { type: "button", class: "btn small ghost", onclick: () => modal((close) => {
+    return h("button", { type: "button", class: "btn small ghost", onclick: () => needPaid("Zgłaszanie błędów") || modal((close) => {
       const ta = h("textarea", { class: "input", id: "report-note", placeholder: "Co jest nie tak? np. zła odpowiedź, nie ma tego na slajdzie", maxlength: "500" });
       return [h("h3", { text: `Zgłoś błąd: ${kind}` }), h("p", { class: "muted", text }), ta,
         h("div", { class: "row" },
@@ -1640,11 +1728,11 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   function viewSubjectQuiz() {
     const s = subjectById(S.route.id);
     if (!s) return [backLink({ view: "materials" }), h("p", { class: "muted", text: "Ładuję…" })];
-    const head = h("section", { class: "stack" }, backLink({ view: "subject", id: s.id }), h("span", { class: "eyebrow", text: "Quiz z całego przedmiotu" }), h("h1", { text: s.pl }));
+    const head = h("section", { class: "stack" }, backLink({ view: "subject", id: s.id }), h("span", { class: "eyebrow", text: PAID() ? "Quiz z całego przedmiotu" : "Quiz z darmowego materiału" }), h("h1", { text: s.pl }));
     if (!S.route.qs) {
       if (!S.route.loading) {
         S.route.loading = true;
-        Promise.all(materialsOf(s.id).map((m) => getContent(m.id).then((c) => (c?.quiz || []).map((q, i) => ({ ...q, materialId: m.id, index: i }))).catch(() => [])))
+        Promise.all(materialsOf(s.id).filter(readable).map((m) => getContent(m.id).then((c) => (c?.quiz || []).map((q, i) => ({ ...q, materialId: m.id, index: i }))).catch(() => [])))
           .then((all) => { S.route.qs = shuffle(all.flat()).slice(0, 15); render(); });
       }
       return [head, h("p", { class: "muted", text: "Zbieram pytania ze wszystkich materiałów…" })];
@@ -1723,7 +1811,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       else throw new Error("format");
       let hash = null;
       try { const d = await crypto.subtle.digest("SHA-256", buf); hash = [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join(""); } catch {}
-      if (!slides.some((s) => s.text)) { U.error = "W tym pliku nie ma tekstu do odczytania (np. skan albo same obrazy). Ta wersja aplikacji czyta tylko tekst."; render(); return; }
+      if (!slides.some((s) => s.text)) { U.error = "W tym pliku nie ma tekstu do odczytania (np. skan albo same obrazy). Skrót BM czyta tylko tekst z pliku."; render(); return; }
       if (U.file === file) { U.parsed = { slides, hash, emptyCount: slides.filter((s) => !s.text).length, ext }; render(); }
     } catch (err) {
       U.error = err?.message === "format" ? "Obsługuję pliki PPTX, PDF i DOCX. Stary format PPT zapisz najpierw jako PPTX lub PDF." : "Nie udało się odczytać pliku. Sprawdź, czy nie jest uszkodzony lub zabezpieczony hasłem.";
@@ -1810,6 +1898,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       { label: "Fiszki i quiz", state: "run" },
       { label: "Sprawdzam numery slajdów i odpowiedzi" },
       { label: "Zapisuję dla całego roku" },
+      { label: "Prosty język i „Dlaczego?” do quizu" },
     ];
     render();
     const slides = U.parsed.slides, N = slides.length;
@@ -1862,62 +1951,113 @@ Give 10-15 flashcards and 10 quiz questions. Quiz questions have 4 options (or e
       await ref.set({ subjectId: subject.id, title: str(A.title, 90) || U.file.name.replace(/\.[^.]+$/, ""), fileName: U.file.name, fileType: U.parsed.ext, slideCount: N, hash: U.parsed.hash, createdAt: Date.now(), createdBy: S.uid || null, noteCount: notes.length, conceptCount: concepts.length, flashcardCount: flashcards.length, quizCount: quiz.length, lang: U.lang });
       S.content[id] = content; S.sources[id] = { slides: srcSlides };
       setStep(4, "ok");
+      setStep(5, "run");
+      const mat = { id, title: str(A.title, 90) || U.file.name, fileName: U.file.name };
+      const [rs, rw] = await Promise.allSettled([buildSimple(mat, content), buildWhy(mat, content)]);
+      const fails = [rs, rw].filter((r) => r.status === "rejected").length;
+      setStep(5, fails ? "err" : "ok", fails ? "nie wszystko się udało, uzupełnisz to w Panelu AI" : null);
+      if (AI.status) { if (rs.status === "fulfilled") AI.status.simple.add(id); if (rw.status === "fulfilled" && rw.value) AI.status.why.add(id); }
       S.upload = null;
-      toast("Gotowe. Materiały widzi cały rok.");
+      toast(fails ? "Materiał zapisany. Prostą wersję uzupełnij w Panelu AI." : "Gotowe. Materiały widzi cały rok.");
       go({ view: "material", id, tab: "skrot" });
     } catch (err) {
       setStep(4, "err"); U.busy = false;
-      U.error = err?.code === "not_granted" ? "Nie masz uprawnień do zapisu w bazie roku. Poproś starostę o dostęp." : "Nie udało się zapisać materiałów. Spróbuj ponownie.";
+      U.error = err?.code === "not_granted" ? "Zapis materiałów jest dostępny tylko dla starosty." : "Nie udało się zapisać materiałów. Spróbuj ponownie.";
       render();
     }
   }
   function sampleError(e) {
     switch (e?.code) {
-      case "not_granted": return "Bez zgody na użycie Claude nie przetworzę pliku. Zezwól na to w uprawnieniach strony i spróbuj ponownie.";
+      case "not_granted": return "AI jest dostępne tylko dla starosty.";
       case "rate_limited": case "queue_overflow": return "Za dużo zapytań naraz. Odczekaj minutę i spróbuj ponownie.";
       case "prompt_too_large": return "Plik jest za długi na jedno przetworzenie. Podziel prezentację na mniejsze części.";
       case "invalid_json": case "empty_completion": return "Odpowiedź AI była niekompletna. Spróbuj jeszcze raz.";
       case "refused": return "AI odmówiło przetworzenia tego pliku.";
-      case "not_deployed": return "AI na stronie nie jest jeszcze włączone (brak funkcji na serwerze).";
+      case "not_deployed": case "no_function": return "Funkcja AI na serwerze nie odpowiada. Wdróż ją (README → „Funkcja AI”) albo użyj paczki do wygenerowania w Panelu AI.";
       case "no_key": return "Brakuje klucza API Anthropic w ustawieniach Supabase.";
       default: return "Przetwarzanie nie powiodło się. Spróbuj ponownie za chwilę.";
     }
   }
 
-  // ================= prosty język (wyjaśnienia jak dla 12-latka) =================
-  S.simple = {}; S.simpleBusy = {};
+  // ================= prosty język i „Dlaczego?” =================
+  // Obie wersje powstają z góry (przy wgrywaniu materiału albo w Panelu AI starosty) i są zapisane w bazie.
+  // Studenci tylko je czytają: nie ma przycisków, które wołają AI.
+  S.simple = {}; S.why = {};
   async function getSimple(id) {
     if (S.simple[id] !== undefined) return S.simple[id];
     const snap = await S.db.doc("materialSimple/" + id).get();
     return (S.simple[id] = snap.exists ? snap.data() : null);
   }
-  async function makeSimple(m, c) {
-    if (!S.sample) { toast("Wyjaśnienia AI są na razie dostępne tylko dla starosty."); return; }
-    S.simpleBusy[m.id] = true; render();
-    const L = c.lesson;
-    const src = JSON.stringify({ title: m.title || m.fileName, tldr: c.tldr, notes: (c.notes || []).map((n) => n.point), concepts: (c.concepts || []).map((x) => ({ term: x.term, def: x.def || x.definition || x.text })), lesson: L ? { intro: L.intro, sections: (L.sections || []).map((s) => ({ h: s.h, body: s.body, example: s.example })) } : undefined }).slice(0, 60000);
-    const prompt = `Jesteś nauczycielem, który tłumaczy trudne rzeczy ze studiów (Business Management) tak, żeby zrozumiał je 12–13-latek. Na podstawie materiału poniżej napisz wersję w prostym języku: po polsku, krótkie zdania, każde trudne pojęcie wyjaśnione na przykładzie z codziennego życia nastolatka (sklepik szkolny, kieszonkowe, gra, boisko, pizza, telefon, wycieczka klasowa, lemoniada). Angielski termin podaj w nawiasie przy pierwszym użyciu, bo egzamin jest po angielsku. Nie upraszczaj do nieprawdy i nie dodawaj faktów spoza materiału. W polach intro, text i remember nie używaj żadnych wzorów ani symboli, tylko słów i obrazów z życia; zdania do ok. 15 słów. Wzory (LaTeX w \\( ... \\)) wolno tylko w example, najwyżej 1-2, po historyjce i z policzonymi liczbami. Pisz w drugiej osobie.
-Odpowiedz wyłącznie jednym obiektem JSON:
-{"intro": "2-3 zdania, o czym to i po co", "parts": [{"h": "tytuł (ang. termin)", "emoji": "jedno emoji", "text": "2-4 zdania wyjaśnienia", "example": "przykład z życia, 2-4 zdania, z liczbami gdy pasuje", "remember": "jedno zdanie do zapamiętania"}], "words": [{"term": "pojęcie (english)", "simple": "max 1 zdanie"}], "check": [{"q": "pytanie sprawdzające", "a": "krótka odpowiedź z uzasadnieniem"}]}
-parts: 4-7, words: 5-10, check: 2-3.
-MATERIAŁ:
-${src}`;
-    try {
-      const r = await S.sample.json(prompt, { modelTier: "default" });
-      if (!r?.parts?.length) throw { code: "invalid_json" };
-      const doc = { intro: String(r.intro || ""), parts: r.parts, words: r.words || [], check: r.check || [], by: "auto", at: Date.now() };
-      S.simple[m.id] = doc;
-      try { await S.db.doc("materialSimple/" + m.id).set(doc); } catch {}
-    } catch (e) { toast(sampleError(e)); }
-    S.simpleBusy[m.id] = false; render();
+  async function getWhy(mid) {
+    if (S.why[mid] !== undefined) return S.why[mid];
+    let d = null;
+    try { const snap = await S.db.doc("quizWhy/" + mid).get(); d = snap.exists ? snap.data() : null; } catch {}
+    return (S.why[mid] = d);
   }
+
+  function simpleSourceObj(m, c) {
+    const L = c.lesson;
+    return { title: m.title || m.fileName, tldr: c.tldr, notes: (c.notes || []).map((n) => n.point), concepts: (c.concepts || []).map((x) => ({ term: x.term, def: x.def || x.definition || x.text })), lesson: L ? { intro: L.intro, sections: (L.sections || []).map((s) => ({ h: s.h, body: s.body, example: s.example })) } : undefined };
+  }
+  const simpleSource = (m, c) => JSON.stringify(simpleSourceObj(m, c)).slice(0, 60000);
+  const SIMPLE_RULES = `Jesteś nauczycielem, który tłumaczy trudne rzeczy ze studiów (Business Management) tak, żeby zrozumiał je 12–13-latek. Na podstawie materiału napisz wersję w prostym języku: po polsku, krótkie zdania, każde trudne pojęcie wyjaśnione na przykładzie z codziennego życia nastolatka (sklepik szkolny, kieszonkowe, gra, boisko, pizza, telefon, wycieczka klasowa, lemoniada). Angielski termin podaj w nawiasie przy pierwszym użyciu, bo egzamin jest po angielsku. Nie upraszczaj do nieprawdy i nie dodawaj faktów spoza materiału. W polach intro, text i remember nie używaj żadnych wzorów ani symboli, tylko słów i obrazów z życia; zdania do ok. 15 słów. Wzory (LaTeX w \\( ... \\)) wolno tylko w example, najwyżej 1-2, po historyjce i z policzonymi liczbami. Pisz w drugiej osobie.
+Format JSON: {"intro": "2-3 zdania, o czym to i po co", "parts": [{"h": "tytuł (ang. termin)", "emoji": "jedno emoji", "text": "2-4 zdania wyjaśnienia", "example": "przykład z życia, 2-4 zdania, z liczbami gdy pasuje", "remember": "jedno zdanie do zapamiętania"}], "words": [{"term": "pojęcie (english)", "simple": "max 1 zdanie"}], "check": [{"q": "pytanie sprawdzające", "a": "krótka odpowiedź z uzasadnieniem"}]}
+parts: 4-7, words: 5-10, check: 2-3.`;
+  const WHY_RULES = `Jesteś cierpliwym korepetytorem studentów 1. roku Business Management. Do każdego pytania z quizu napisz PROSTE wyjaśnienie po polsku, tak żeby zrozumiał je 13-latek: krótkie zdania (do ok. 15 słów), bez żargonu, najlepiej z małym przykładem z życia (sklepik, kieszonkowe, pizza, telefon). Angielski termin daj w nawiasie, bo egzamin jest po angielsku. Nie wymyślaj faktów spoza materiału i nie upraszczaj do nieprawdy.
+Format JSON: {"items": [{"i": 0, "why": "2-3 krótkie zdania: czemu poprawna odpowiedź jest dobra", "example": "1-2 zdania, przykład z życia (może być pusty)", "not": ["dla KAŻDEJ opcji po kolei: jedno krótkie zdanie, czemu ta opcja jest zła; dla poprawnej opcji pusty tekst"]}]}
+Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego pytania.`;
+  const whyQuestions = (c) => (c?.quiz || []).map((q, i) => ({ i, q: q.q, options: q.options, correct: q.correct, note: q.explanation || "" }));
+
+  // Sprawdzenie i oczyszczenie gotowych wersji (z AI na serwerze albo z wgranej paczki).
+  const txt = (v, n) => (typeof v === "string" ? v.trim().slice(0, n) : "");
+  function cleanSimple(r) {
+    const parts = (Array.isArray(r?.parts) ? r.parts : []).map((p) => ({ h: txt(p?.h, 160), emoji: txt(p?.emoji, 8), text: txt(p?.text, 1200), example: txt(p?.example, 1200), remember: txt(p?.remember, 400) })).filter((p) => p.h && p.text);
+    if (!parts.length) return null;
+    return {
+      intro: txt(r.intro, 800), parts,
+      words: (Array.isArray(r.words) ? r.words : []).map((w) => ({ term: txt(w?.term, 160), simple: txt(w?.simple, 400) })).filter((w) => w.term && w.simple),
+      check: (Array.isArray(r.check) ? r.check : []).map((q) => ({ q: txt(q?.q, 400), a: txt(q?.a, 800) })).filter((q) => q.q && q.a),
+      by: "auto", at: Date.now(),
+    };
+  }
+  function cleanWhy(r, nQuestions) {
+    const items = {};
+    const list = Array.isArray(r?.items) ? r.items : r?.items && typeof r.items === "object" ? Object.entries(r.items).map(([i, x]) => ({ ...x, i })) : [];
+    for (const x of list) {
+      const i = Number(x?.i); if (!Number.isInteger(i) || i < 0 || (nQuestions != null && i >= nQuestions)) continue;
+      const why = txt(x?.why, 600); if (!why) continue;
+      items[i] = { why, example: txt(x?.example, 400), not: Array.isArray(x?.not) ? x.not.map((t) => txt(t, 300)) : [] };
+    }
+    return Object.keys(items).length ? { items, at: Date.now() } : null;
+  }
+
+  async function buildSimple(m, c) {
+    const r = await S.sample.json(`${SIMPLE_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nMATERIAŁ:\n${simpleSource(m, c)}`, { modelTier: "default" });
+    const doc = cleanSimple(r);
+    if (!doc) throw { code: "invalid_json" };
+    await S.db.doc("materialSimple/" + m.id).set(doc);
+    S.simple[m.id] = doc;
+    return doc;
+  }
+  async function buildWhy(m, c) {
+    const qs = whyQuestions(c);
+    if (!qs.length) return null;
+    const notes = (c.notes || []).map((n) => n.point).join("\n").slice(0, 12000);
+    const r = await S.sample.json(`${WHY_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nNOTATKI Z MATERIAŁU:\n${notes}\nPYTANIA:\n${JSON.stringify(qs)}`, { modelTier: "default" });
+    const doc = cleanWhy(r, qs.length);
+    if (!doc) throw { code: "invalid_json" };
+    await S.db.doc("quizWhy/" + m.id).set(doc);
+    S.why[m.id] = doc;
+    return doc;
+  }
+
   function simplePanel(m, c) {
     const d = S.simple[m.id];
     if (d === undefined) { getSimple(m.id).then(render).catch(() => { S.simple[m.id] = null; render(); }); return h("p", { class: "muted", text: "Ładuję prostą wersję…" }); }
     if (!d) return h("div", { class: "simple" },
       h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język" }),
-        h("p", { text: "Tego materiału nikt jeszcze nie przetłumaczył na prosty język. Kliknij, a Claude wytłumaczy go jak dla 12-latka, na przykładach z życia. Wersja zapisze się dla całego roku." }),
-        h("div", {}, h("button", { type: "button", class: "btn primary", disabled: S.simpleBusy[m.id] ? true : null, onclick: () => makeSimple(m, c) }, S.simpleBusy[m.id] ? "Tłumaczę… (ok. pół minuty)" : "Wytłumacz mi prosto"))));
+        h("p", { text: "Prosta wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu ucz się ze Skrótu, Pojęć i Fiszek." }),
+        S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "ai" }) }, "Panel AI: uzupełnij brakujące")) : null));
     return h("div", { class: "simple" },
       h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język · jak dla 12-latka" }), h("p", {}, inline(d.intro))),
       (d.parts || []).map((p) => h("section", { class: "spart" },
@@ -1931,60 +2071,17 @@ ${src}`;
       h("p", { class: "foot-note", text: "Prosta wersja pomaga zrozumieć temat. Do egzaminu ucz się też ze Skrótu, Pojęć i Quizu, bo tam są dokładne definicje po angielsku." }));
   }
 
-  // ================= quiz: proste "dlaczego" przy każdej odpowiedzi =================
-  S.why = {}; S.whyBusy = {}; S.whyTried = {};
-  async function getWhy(mid) {
-    if (S.why[mid] !== undefined) return S.why[mid];
-    let d = null;
-    try { const snap = await S.db.doc("quizWhy/" + mid).get(); d = snap.exists ? snap.data() : null; } catch {}
-    return (S.why[mid] = d);
-  }
-  async function makeWhy(mid) {
-    if (S.whyBusy[mid] || S.whyTried[mid]) return;
-    S.whyTried[mid] = true;
-    if (!S.sample) { render(); return; }
-    S.whyBusy[mid] = true; render();
-    try {
-      const c = await getContent(mid);
-      const qs = (c?.quiz || []).map((q, i) => ({ i, q: q.q, options: q.options, correct: q.correct, note: q.explanation || "" }));
-      if (!qs.length) throw { code: "empty_completion" };
-      const notes = (c.notes || []).map((n) => n.point).join("\n").slice(0, 12000);
-      const prompt = `Jesteś cierpliwym korepetytorem studentów 1. roku Business Management. Do każdego pytania z quizu napisz PROSTE wyjaśnienie po polsku, tak żeby zrozumiał je 13-latek: krótkie zdania (do ok. 15 słów), bez żargonu, najlepiej z małym przykładem z życia (sklepik, kieszonkowe, pizza, telefon). Angielski termin daj w nawiasie, bo egzamin jest po angielsku. Nie wymyślaj faktów spoza materiału i nie upraszczaj do nieprawdy.
-Odpowiedz wyłącznie jednym obiektem JSON:
-{"items": [{"i": 0, "why": "2-3 krótkie zdania: czemu poprawna odpowiedź jest dobra", "example": "1-2 zdania, przykład z życia (może być pusty)", "not": ["dla KAŻDEJ opcji po kolei: jedno krótkie zdanie, czemu ta opcja jest zła; dla poprawnej opcji pusty tekst"]}]}
-Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego pytania.
-NOTATKI Z MATERIAŁU:
-${notes}
-PYTANIA:
-${JSON.stringify(qs)}`;
-      const r = await S.sample.json(prompt, { modelTier: "default" });
-      const items = {};
-      (Array.isArray(r?.items) ? r.items : []).forEach((x) => {
-        const i = Number(x?.i); if (!Number.isInteger(i) || !qs[i]) return;
-        const why = typeof x.why === "string" ? x.why.trim().slice(0, 600) : "";
-        if (!why) return;
-        items[i] = { why, example: typeof x.example === "string" ? x.example.trim().slice(0, 400) : "", not: Array.isArray(x.not) ? x.not.map((t) => (typeof t === "string" ? t.trim().slice(0, 300) : "")) : [] };
-      });
-      if (!Object.keys(items).length) throw { code: "invalid_json" };
-      const doc = { items, at: Date.now() };
-      S.why[mid] = doc;
-      try { await S.db.doc("quizWhy/" + mid).set(doc); } catch {}
-    } catch (e) { /* zostaje krótkie wyjaśnienie z materiału */ }
-    S.whyBusy[mid] = false; render();
-  }
   function whyBlock(q, picked) {
     const ok = picked === q.correct, mid = q.materialId, letter = (i) => "ABCD"[i];
     const head = h("span", { class: "verdict " + (ok ? "ok" : "no"), text: ok ? "Dobrze!" : `Niestety nie. Poprawna jest ${letter(q.correct)}.` });
     let w = null, loading = false;
     if (mid != null) {
       const d = S.why[mid];
-      if (d === undefined) { loading = true; getWhy(mid).then((x) => { if (!x) makeWhy(mid); else render(); }); }
-      else if (d && d.items) w = d.items[q.index] || null;
-      else if (!d && !S.whyTried[mid]) { loading = true; setTimeout(() => makeWhy(mid)); }
-      if (!w && S.whyBusy[mid]) loading = true;
+      if (d === undefined) { loading = true; getWhy(mid).then(render); }
+      else if (d?.items) w = d.items[q.index] || null;
     }
     if (!w) return h("div", { class: "why" }, head,
-      loading ? h("p", { class: "wait", text: "Tłumaczę prościej, czemu tak… (kilka sekund)" }) : null,
+      loading ? h("p", { class: "wait", text: "Ładuję wyjaśnienie…" }) : null,
       q.explanation ? h("p", {}, inline(q.explanation)) : (loading ? null : h("p", { class: "wait", text: "Brak wyjaśnienia do tego pytania." })));
     const notTxt = !ok && w.not?.[picked];
     return h("div", { class: "why" }, head,
@@ -1992,6 +2089,122 @@ ${JSON.stringify(qs)}`;
       w.example ? h("p", { class: "ex" }, inline(w.example)) : null,
       notTxt ? h("div", { class: "not" }, h("span", { class: "lbl", text: `Czemu nie ${letter(picked)}?` }), h("p", {}, inline(notTxt))) : null,
       q.explanation ? h("details", {}, h("summary", { text: "Wersja z materiału" }), h("p", {}, inline(q.explanation))) : null);
+  }
+
+  // ================= Panel AI (tylko starosta) =================
+  // Pokazuje, którym materiałom brakuje prostej wersji albo „Dlaczego?”, i uzupełnia je hurtem:
+  // przez funkcję AI na serwerze albo przez paczkę JSON (pobierasz, generujesz np. w czacie z Claude, wgrywasz).
+  const AI = { status: null, busy: false, stop: false, log: [], loading: false };
+  async function aiRefresh() {
+    if (!S.canEdit || AI.loading) return;
+    AI.loading = true;
+    try {
+      const [simple, why] = await Promise.all([window.skrot.ids("materialSimple"), window.skrot.ids("quizWhy")]);
+      AI.status = { simple: new Set(simple), why: new Set(why) };
+      S.aiMissing = aiTodo().length;
+    } catch { AI.status = null; }
+    AI.loading = false;
+    render();
+  }
+  const aiNeedsWhy = (m) => (m.quizCount ?? 1) > 0;
+  function aiTodo() {
+    if (!AI.status) return [];
+    return S.materials.filter((m) => !AI.status.simple.has(m.id) || (aiNeedsWhy(m) && !AI.status.why.has(m.id)));
+  }
+  async function aiGenerateAll() {
+    if (AI.busy) return;
+    if (!S.sample) { toast("Funkcja AI jest dostępna tylko po zalogowaniu jako starosta."); return; }
+    AI.busy = true; AI.stop = false; AI.log = [];
+    const todo = aiTodo();
+    for (const m of todo) {
+      if (AI.stop) break;
+      const line = { title: m.title || m.fileName, state: "run", detail: "" }; AI.log.push(line); render();
+      try {
+        const c = await getContent(m.id);
+        if (!c) throw { code: "empty_completion" };
+        if (!AI.status.simple.has(m.id)) { await buildSimple(m, c); AI.status.simple.add(m.id); }
+        if (aiNeedsWhy(m) && !AI.status.why.has(m.id) && whyQuestions(c).length) { await buildWhy(m, c); AI.status.why.add(m.id); }
+        line.state = "ok";
+      } catch (e) {
+        line.state = "err"; line.detail = sampleError(e);
+        if (["not_deployed", "no_function", "no_key", "not_granted"].includes(e?.code)) { AI.stop = true; toast(line.detail); }
+      }
+      S.aiMissing = aiTodo().length; render();
+    }
+    AI.busy = false; render();
+  }
+  async function aiExport() {
+    const todo = aiTodo();
+    if (!todo.length) { toast("Wszystkie materiały mają już obie wersje."); return; }
+    const items = [];
+    for (const m of todo) {
+      const c = await getContent(m.id).catch(() => null);
+      if (!c) continue;
+      const it = { id: m.id, title: m.title || m.fileName };
+      if (!AI.status.simple.has(m.id)) it.simple = simpleSourceObj(m, c);
+      if (aiNeedsWhy(m) && !AI.status.why.has(m.id) && whyQuestions(c).length) it.why = { notes: (c.notes || []).map((n) => n.point), questions: whyQuestions(c) };
+      items.push(it);
+    }
+    const pack = {
+      instrukcja: "Dla każdego elementu z listy „materialy”: jeśli ma pole „simple”, przygotuj prostą wersję według zasad „zasady_simple”; jeśli ma pole „why”, przygotuj wyjaśnienia do pytań według zasad „zasady_why”. Odpowiedz jednym plikiem JSON: {\"materialSimple\": {\"<id>\": {...format simple...}}, \"quizWhy\": {\"<id>\": {...format why...}}}. Użyj dokładnie tych samych id.",
+      zasady_simple: SIMPLE_RULES, zasady_why: WHY_RULES, materialy: items,
+    };
+    const blob = new Blob([JSON.stringify(pack, null, 1)], { type: "application/json" });
+    const a = h("a", { href: URL.createObjectURL(blob), download: `skrot-bm-do-wygenerowania-${todayKey()}.json` });
+    document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  async function aiImport(file) {
+    let data;
+    try { data = JSON.parse(await file.text()); } catch { toast("To nie jest poprawny plik JSON."); return; }
+    const rows = [], bad = [];
+    for (const [id, r] of Object.entries(data?.materialSimple || {})) {
+      const m = materialById(id); const doc = m && cleanSimple(r);
+      if (doc) rows.push({ collection: "materialSimple", id, data: doc }); else bad.push(id);
+    }
+    for (const [id, r] of Object.entries(data?.quizWhy || {})) {
+      const m = materialById(id); const doc = m && cleanWhy(r, m.quizCount ?? null);
+      if (doc) rows.push({ collection: "quizWhy", id, data: doc }); else bad.push(id);
+    }
+    if (!rows.length) { toast("W pliku nie ma niczego do wgrania (sprawdź format i id materiałów)."); return; }
+    try {
+      await window.skrot.putMany(rows);
+      for (const r of rows) (r.collection === "materialSimple" ? S.simple : S.why)[r.id] = r.data;
+      toast(`Wgrano ${rows.length} ${plural(rows.length, "wersję", "wersje", "wersji")}${bad.length ? `, pominięto ${bad.length} z błędami` : ""}.`);
+    } catch { toast("Nie udało się zapisać w bazie."); }
+    aiRefresh();
+  }
+  function viewAi() {
+    const head = h("section", { class: "stack" }, backLink(), h("span", { class: "eyebrow", text: "Panel starosty" }), h("h1", { text: "Panel AI" }),
+      h("p", { class: "muted", style: "max-width:64ch", text: "Prosty język i „Dlaczego?” przy quizach powstają z góry dla każdego materiału. Studenci tylko je czytają. Tu widzisz, czego brakuje, i uzupełniasz to jednym kliknięciem." }));
+    if (!S.canEdit) return [head, h("p", { class: "muted", text: "Ten widok jest dostępny dla starosty." })];
+    if (!AI.status) { if (S.ready) aiRefresh(); return [head, h("p", { class: "muted", text: "Sprawdzam materiały…" })]; }
+    const todo = aiTodo();
+    const noSimple = S.materials.filter((m) => !AI.status.simple.has(m.id)).length;
+    const noWhy = S.materials.filter((m) => aiNeedsWhy(m) && !AI.status.why.has(m.id)).length;
+    const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: (e) => { const f = e.target.files[0]; if (f) aiImport(f); e.target.value = ""; } });
+    return [head,
+      h("section", { class: "panel" },
+        h("div", { class: "row" },
+          h("span", { class: "chip " + (noSimple ? "sun" : "good"), text: `prosty język: brak ${noSimple}` }),
+          h("span", { class: "chip " + (noWhy ? "sun" : "good"), text: `„Dlaczego?”: brak ${noWhy}` }),
+          h("span", { class: "muted", style: "font-size:.86rem", text: `${S.materials.length} ${plural(S.materials.length, "materiał", "materiały", "materiałów")} w bazie` })),
+        todo.length ? h("div", { class: "stack", style: "gap:10px" },
+          h("h3", { text: "Sposób 1: funkcja AI na serwerze" }),
+          h("p", { class: "muted", style: "font-size:.92rem", text: "Wymaga wdrożonej funkcji „claude” w Supabase z kluczem ANTHROPIC_API_KEY (instrukcja w README). Trwa ok. pół minuty na materiał; możesz zamknąć kartę i wrócić, gotowe zostaje zapisane." }),
+          h("div", { class: "row" },
+            h("button", { type: "button", class: "btn primary", disabled: AI.busy ? true : null, onclick: aiGenerateAll }, AI.busy ? "Generuję…" : `Uzupełnij brakujące (${todo.length})`),
+            AI.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { AI.stop = true; } }, "Zatrzymaj po bieżącym") : null),
+          h("h3", { text: "Sposób 2: paczka do wygenerowania" }),
+          h("p", { class: "muted", style: "font-size:.92rem", text: "Bez funkcji na serwerze: pobierz paczkę, wrzuć ją do czatu z Claude z prośbą o plik wynikowy według instrukcji w paczce, a gotowy plik wgraj tutaj." }),
+          h("div", { class: "row" },
+            h("button", { type: "button", class: "btn", onclick: aiExport }, "Pobierz paczkę (JSON)"),
+            h("button", { type: "button", class: "btn", onclick: () => file.click() }, "Wgraj gotowe wyjaśnienia"), file))
+          : h("p", { text: "Wszystkie materiały mają prostą wersję i „Dlaczego?”. Nowe materiały dostają je od razu przy wgrywaniu." }),
+        AI.log.length ? h("ul", { class: "pipeline" }, AI.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null),
+      todo.length ? h("section", { class: "stack" }, h("h2", { text: "Czego brakuje" }),
+        h("div", { class: "list" }, todo.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: "prosto" }) },
+          h("span", { class: "t", text: m.title || m.fileName }),
+          h("span", { class: "m", text: [subjectById(m.subjectId)?.pl, !AI.status.simple.has(m.id) ? "brak prostej wersji" : null, aiNeedsWhy(m) && !AI.status.why.has(m.id) ? "brak „Dlaczego?”" : null].filter(Boolean).join(" · ") }))))) : null];
   }
 
   // ================= instrukcja: animowany przewodnik po stronie =================
@@ -2010,12 +2223,12 @@ ${JSON.stringify(qs)}`;
     { view: "home", title: "Cześć! To jest Skrót BM", text: "Wszystko z Teams dla naszego roku w jednym miejscu: <b>skróty wykładów, fiszki i quizy</b>, Twój plan, zadania i terminy. Pokażę Ci w minutę, gdzie co jest.", art: "intro" },
     { view: "home", nav: "home", title: "Start — Twój dzień", text: "Strona główna: <b>dzisiejsze zajęcia</b>, ogłoszenia od starosty, <b>nowe materiały</b> i najbliższe terminy. Zaglądaj tu rano przed zajęciami.", art: "hub" },
     { view: "home", sel: "section.today", title: "Ustaw swoją grupę", text: "Wybierz <b>grupę (C111–C113)</b> i <b>podgrupę lab A/B</b>. Wtedy plan, zadania i kalendarz pokazują tylko to, co dotyczy Ciebie.", art: "group" },
-    { view: "materials", nav: "materials", title: "Materiały — każdy przedmiot osobno", text: "Kliknij okładkę przedmiotu. W środku: <b>lekcje po kolei</b>, „Jak zaliczyć”, terminy i <b>quiz z całości</b>. Masz coś z Teams? Użyj „Wgraj materiał”.", art: "books" },
+    { view: "materials", nav: "materials", title: "Materiały — każdy przedmiot osobno", text: "Kliknij okładkę przedmiotu. W środku: <b>lekcje po kolei</b>, „Jak zaliczyć”, terminy i <b>quiz z całości</b>.", art: "books" },
     { view: "materials", title: "Jak uczyć się z materiału", text: "Każdy materiał ma zakładki: <b>✨ Prosty język</b> (wytłumaczone jak dla 12-latka, na przykładach), <b>Skrót</b> (najważniejsze), <b>Notatka</b> (pełniej), <b>Pojęcia</b>, <b>Fiszki</b> — kliknij, żeby odwrócić — i <b>Quiz</b> z wynikiem. „Źródło” pokazuje, skąd to jest.", art: "tabs" },
     { view: "tasks", nav: "tasks", title: "Zadania od prowadzących", text: "Wszystko, co prowadzący zadali w Teams, z <b>terminem</b>. Odhaczaj zrobione — liczba przy zakładce mówi, ile Ci zostało.", art: "tasks" },
     { view: "grading", nav: "grading", title: "Zaliczenia — jak zdać", text: "Dla każdego przedmiotu: <b>forma zaliczenia, progi i kiedy</b>. Pomarańczowy znaczek <b>„z sylabusa”</b> znaczy, że informacja jest z sylabusa, a nie od prowadzącego.", art: "grade" },
-    { view: "calendar", nav: "calendar", title: "Kalendarz", text: "Miesiąc z <b>kolokwiami, egzaminami, projektami</b> i sesją. Kropka w kolorze typu terminu. Możesz dodać własny termin — zobaczy go cały rok.", art: "cal" },
-    { view: "home", sel: "#helpbtn", title: "Gotowe!", text: "Tę instrukcję otworzysz zawsze przyciskiem <b>?</b> u góry strony. Coś się nie zgadza w materiale? Zgłoś to przyciskiem przy materiale.", art: "done", last: true },
+    { view: "calendar", nav: "calendar", title: "Kalendarz", text: "Miesiąc z <b>kolokwiami, egzaminami, projektami</b> i sesją. Kropka w kolorze typu terminu. Z pełnym dostępem dodasz też własny termin, a zobaczy go cały rok.", art: "cal" },
+    { view: "home", sel: "#helpbtn", title: "Gotowe!", text: "Tę instrukcję otworzysz zawsze przyciskiem <b>?</b> u góry strony. Coś się nie zgadza w pytaniu albo fiszce? Zgłoś to przyciskiem „Zgłoś błąd”.", art: "done", last: true },
   ];
   let tourState = null;
   function tourTarget(st) {
@@ -2087,7 +2300,7 @@ ${JSON.stringify(qs)}`;
   // ================= boot =================
   // Najnowszy plan z darmowej strony (plan.skrotbm.pl); jak się nie uda, zostaje kopia wbudowana w stronę.
   fetch("https://plan.skrotbm.pl/plan.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : null).then((d) => {
-    if (d?.groups) { Object.assign(PLAN, d); render(); }
+    if (d?.groups) { Object.assign(PLAN, d); buildCalendar(); render(); }
   }).catch(() => {});
   render();
   (async () => {
@@ -2105,6 +2318,7 @@ ${JSON.stringify(qs)}`;
     db.collection("materials").orderBy("createdAt", "desc").limit(1000).onSnapshot((snap) => {
       S.materials = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       loadNames(S.materials.map((m) => m.createdBy)); markReady();
+      if (S.canEdit && !AI.busy) aiRefresh();
     }, () => { S.ready = true; render(); });
     db.collection("deadlines").orderBy("date").limit(1000).onSnapshot((snap) => {
       S.deadlines = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -2113,8 +2327,13 @@ ${JSON.stringify(qs)}`;
     db.collection("tasks").orderBy("createdAt", "desc").limit(300).onSnapshot((snap) => { S.tasks = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
     db.doc("meta/sync").onSnapshot((snap) => { S.sync = snap.exists ? snap.data() : null; render(); }, () => {});
     db.collection("announcements").orderBy("createdAt", "desc").limit(5).onSnapshot((snap) => { S.announcements = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
+    if (!S.uid) S.progress = progLocal.get()?.data || {};
     if (S.uid) db.collection("data/users/" + S.uid).doc("progress").onSnapshot((snap) => {
-      S.progress = snap.exists ? (snap.data() || {}) : {};
+      const server = snap.exists ? (snap.data() || {}) : {};
+      const local = progLocal.get();
+      // Niezapisane zmiany z tej przeglądarki mają pierwszeństwo, dopóki nie trafią do bazy.
+      if (local?.dirty && local.data) { S.progress = { ...server, ...local.data }; flushProgress(); }
+      else { S.progress = server; progLocal.set({ data: server, dirty: false }); }
       if (S.progress.group && !ls.get("bm-group")) { S.group = S.progress.group; S.sub = S.progress.sub ?? S.sub; }
       render();
     }, () => {});

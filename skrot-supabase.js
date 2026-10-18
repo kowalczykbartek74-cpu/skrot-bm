@@ -1,5 +1,5 @@
 // Skrót BM poza claude.ai: baza, logowanie i AI przez Supabase.
-// Strona (index.html) woła window.claude.use("db" | "user" | "sample") tak jak w claude.ai,
+// Strona (index.html) woła window.claude.use("db" | "user" | "sample"),
 // a ten plik odpowiada na te wywołania własną bazą (tabela nauka_docs, reguły w supabase/skrot.sql).
 // Klucz publishable jest publiczny z założenia; dostępu do danych pilnują reguły w bazie.
 (() => {
@@ -78,7 +78,15 @@
       }
       return all;
     }
-    const watch = (run) => { const sub = { run }; subs.add(sub); run(); return () => subs.delete(sub); };
+    // Obserwator: co jakiś czas pobiera dane ponownie, ale stronę powiadamia tylko wtedy, gdy coś się zmieniło.
+    // Dzięki temu strona nie przebudowuje się bez potrzeby (np. nie zamyka otwartej „Odpowiedzi”).
+    const sig = (x) => JSON.stringify(x?.docs ? x.docs.map((d) => [d.id, d.data()]) : [x?.exists, x?.data?.()]);
+    const watch = (load, fn, err) => {
+      const sub = { last: null };
+      sub.run = () => load().then((snap) => { const s = sig(snap); if (s === sub.last) return; sub.last = s; fn(snap); }, (e) => err?.(e));
+      subs.add(sub); sub.run();
+      return () => subs.delete(sub);
+    };
     function ref(col, id) {
       return {
         id, path: col + "/" + id,
@@ -103,7 +111,7 @@
           const { error } = await sb.from(TABLE).delete().eq("kolekcja", col).eq("id", id);
           if (error) throw error; refresh();
         },
-        onSnapshot(fn, err) { return watch(() => this.get().then(fn, (e) => err?.(e))); },
+        onSnapshot(fn, err) { return watch(() => this.get(), fn, err); },
       };
     }
     function query(col, opts = {}) {
@@ -121,7 +129,7 @@
           if (opts.lim) docs = docs.slice(0, opts.lim);
           return snap(docs);
         },
-        onSnapshot(fn, err) { return watch(() => this.get().then(fn, (e) => err?.(e))); },
+        onSnapshot(fn, err) { return watch(() => this.get(), fn, err); },
       };
     }
     function collection(path) {
@@ -149,6 +157,17 @@
     if (error) throw error;
     return clean.length;
   };
+  skrot.ids = async (col) => {
+    await ready;
+    let all = [];
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await sb.from(TABLE).select("id").eq("kolekcja", col).range(from, from + 999);
+      if (error) throw error;
+      all = all.concat((data || []).map((r) => r.id));
+      if (!data || data.length < 1000) break;
+    }
+    return all;
+  };
   skrot.list = async (col) => { await ready; const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col); if (error) throw error; return data; };
 
   // ---------- AI przez funkcję serwerową (supabase/functions/claude) ----------
@@ -166,9 +185,10 @@
             headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + token },
             body: JSON.stringify({ prompt }),
           });
-        } catch { throw fail("network", "Brak połączenia z serwerem AI."); }
+        } catch { throw fail("no_function", "Funkcja AI na serwerze nie odpowiada."); }
         const body = await res.json().catch(() => ({}));
-        if (!res.ok) throw fail(body.code || (res.status === 429 ? "rate_limited" : res.status === 404 ? "not_deployed" : "error"), body.message || "AI nie odpowiedziało.");
+        if (res.status === 404 && !["not_granted", "no_key"].includes(body.code)) throw fail("not_deployed", "Funkcja AI nie jest wdrożona.");
+        if (!res.ok) throw fail(body.code || (res.status === 429 ? "rate_limited" : "error"), body.message || "AI nie odpowiedziało.");
         if (body.json === undefined) throw fail("invalid_json", "AI nie zwróciło danych.");
         return body.json;
       },
@@ -214,7 +234,7 @@
     const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
     const err = el("p", { class: "notice err", hidden: "" });
-    const input = el("input", { class: "input", id: "skrot-login-email", type: "email", autocomplete: "email", inputmode: "email", required: "", placeholder: "np. 251782@stud.usz.edu.pl" });
+    const input = el("input", { class: "input", id: "skrot-login-email", type: "email", autocomplete: "email", inputmode: "email", required: "", placeholder: "np. 123456@stud.usz.edu.pl" });
     const btn = el("button", { type: "submit", class: "btn primary" }, "Wyślij link do logowania");
     const body = el("div", { style: "display:grid;gap:12px" });
     const form = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
@@ -243,7 +263,7 @@
     setTimeout(() => input.focus(), 30);
   };
 
-  // Komunikat zamiast „otwórz w claude.ai”: co widzi osoba bez dostępu.
+  // Komunikat, gdy baza nie odpowiada.
   skrot.noticeText = () => ({
     loading: "Łączę z bazą…",
     error: "Nie mogę połączyć się z bazą. Sprawdź internet i odśwież stronę.",
