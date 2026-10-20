@@ -250,6 +250,7 @@ label.field { display: grid; gap: 4px; font-size: .86rem; font-weight: 700; min-
 .seg { display: inline-flex; background: var(--sunk); border-radius: 999px; padding: 3px; gap: 2px; flex-wrap: wrap; }
 .seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: .86rem; color: var(--muted); }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--accent-text); box-shadow: var(--shadow); }
+.seg.pick button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 
 /* subject page header */
 .cover { position: relative; border-radius: var(--r); padding: 108px 22px 22px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 10px; overflow: hidden; }
@@ -740,7 +741,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   if (S.sub !== "A" && S.sub !== "B" && S.sub !== "") S.sub = "A";
   const go = (route) => { S.route = route; render(); window.scrollTo({ top: 0 }); };
 
-  function toast(msg) { const t = h("div", { class: "toast", role: "status", text: msg }); document.body.append(t); setTimeout(() => t.remove(), 3200); }
+  function toast(msg) { document.querySelectorAll(".toast").forEach((x) => x.remove()); const t = h("div", { class: "toast", role: "status", text: msg }); document.body.append(t); setTimeout(() => t.remove(), 3200); }
   function modal(build) {
     const close = () => { $("layer").replaceChildren(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
@@ -840,6 +841,10 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     ls.set("bm-group", group); ls.set("bm-sub", sub);
     saveProgress({ group, sub });
     render();
+    // Okno „Twoja grupa” nie jest częścią strony, więc jego przyciski odświeżamy osobno.
+    document.querySelectorAll("[data-g]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.g === S.group)));
+    document.querySelectorAll("[data-sub]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sub === S.sub)));
+    toast(`Twoja grupa: ${S.group}${S.sub ? " · lab " + S.sub : " · oba laby"}`);
   }
   function scoreChip(key) {
     const b = best(key);
@@ -1077,8 +1082,8 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     return h("div", { class: "stack", style: "gap:8px" },
       compact ? null : h("p", { class: "muted", text: "Wybierz swoją grupę, a pokażę Twoje zajęcia na dziś i w kalendarzu." }),
       h("div", { class: "row" },
-        h("div", { class: "seg", role: "group", "aria-label": "Grupa" }, groups.map((g) => h("button", { type: "button", "aria-pressed": String(S.group === g), onclick: () => setGroup(g, S.sub) }, g))),
-        h("div", { class: "seg", role: "group", "aria-label": "Podgrupa laboratoryjna" }, [["A", "lab A"], ["B", "lab B"], ["", "obie"]].map(([v, l]) => h("button", { type: "button", "aria-pressed": String(S.sub === v), onclick: () => setGroup(S.group || groups[0], v) }, l))),
+        h("div", { class: "seg pick", role: "group", "aria-label": "Grupa" }, groups.map((g) => h("button", { type: "button", "data-g": g, "aria-pressed": String(S.group === g), onclick: () => setGroup(g, S.sub) }, g))),
+        h("div", { class: "seg pick", role: "group", "aria-label": "Podgrupa laboratoryjna" }, [["A", "lab A"], ["B", "lab B"], ["", "obie"]].map(([v, l]) => h("button", { type: "button", "data-sub": v, "aria-pressed": String(S.sub === v), onclick: () => setGroup(S.group || groups[0], v) }, l))),
       ));
   }
 
