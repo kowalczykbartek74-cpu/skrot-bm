@@ -177,6 +177,9 @@ main { padding-block: 24px calc(56px + var(--tabbar-h)); display: flex; flex-dir
 .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--c, var(--accent)); }
 .kind-tag { font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: var(--surface); color: var(--accent-text); }
 .panel .kind-tag { background: var(--sunk); color: var(--muted); }
+/* typy zajęć: te same kolory co na plan.skrotbm.pl (wykład zielony, ćwiczenia niebieskie, lab fioletowy) */
+.kind-tag.k-W, .kind-tag.k-CW, .kind-tag.k-LAB { color: #fff; }
+.kind-tag.k-W { background: #1A7F45; } .kind-tag.k-CW { background: #1D5FA6; } .kind-tag.k-LAB { background: #6D3FB0; }
 @media (max-width: 480px) { .cls { grid-template-columns: 92px 1fr; gap: 10px; } .cls .time { font-size: .82rem; } .cls .kind { display: none; } }
 
 /* feed + deadlines */
@@ -1088,7 +1091,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
         h("span", { class: "name" }, h("i", { class: "dot", style: `--c:${colorOf(sid)}` }),
           subjectById(sid) ? h("button", { type: "button", class: "link", style: "color:inherit;text-align:left", onclick: () => go({ view: "subject", id: sid }) }, e.pl) : h("span", { text: e.pl })),
         h("span", { class: "where" }, [e.r, e.p].filter(Boolean).join(" · "), e.n ? " · " + e.n : "", fresh ? h("span", { class: "chip sun", style: "margin-left:6px", text: "nowy materiał" }) : null),
-        h("span", { class: "kind" }, h("span", { class: "kind-tag", title: KIND[e.k], text: KIND_SHORT[e.k] + (e.g ? " " + e.g : "") })),
+        h("span", { class: "kind" }, h("span", { class: "kind-tag k-" + e.k, title: KIND[e.k], text: KIND_SHORT[e.k] + (e.g ? " " + e.g : "") })),
       );
     }));
   }
