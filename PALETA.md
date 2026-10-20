@@ -14,6 +14,23 @@ Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane ra
 | `--green-700` | `#15703C` | linki, najechanie na przycisk |
 | `--green-900` | `#0E5A30` | tekst na jasnozielonym tle |
 
+## Odcienie pomocnicze (delikatna wariacja)
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--lime-100` | `#F3F9DD` | ciepła końcówka gradientu karty „dziś” |
+| `--lime-400` | `#B7DB4A` | falka pod tytułem, róg logo, paski na „Kup dostęp”, koniec paska postępu |
+| `--teal-100` | `#E3F3F1` | miękkie tło (zapas) |
+| `--teal-600` | `#0F6E6E` | pasek marki u góry |
+| `--mint-100` | `#E6F7EE` | początek gradientu karty „dziś” |
+
+## Motyw „zeszyt w kratkę”
+
+- tło strony: drobna zielona kratka (24 px) z mocniejszą linią co 5 kratek
+- pasek marki u góry: zielony → morski → jasnozielony → limonka
+- każdy przedmiot ma okładkę z własnym wzorem (10 wzorów: kropki, skośne pasy, kratka, fale, szachownica, słoje, zygzak, linie z marginesem, groszki, prążki) w swoim odcieniu i skrót literowy (np. AM)
+- karta „dziś”: miętowo-limonkowy gradient i słoje w rogu; fiszki na papierze w kratkę; „Kup dostęp” w delikatne paski
+
 ## Neutralne
 
 | Zmienna | Kolor | Do czego |
