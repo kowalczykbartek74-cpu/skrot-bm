@@ -11,7 +11,7 @@
     price: "199 zł",
   };
   const TABLE = "nauka_docs";
-  const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress"]);
+  const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress", "exams", "examBank", "glossary"]);
   const UNI = /@(stud\.)?usz\.edu\.pl$/i;
 
   let sb = null;

@@ -631,6 +631,134 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
 .calopt b { display: block; }
 .calopt small { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; margin-top: 2px; }
 .calico { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-weight: 800; }
+/* ===== v3: powtórki, słowniczek, mapa postępów, zadania, tryb przed kolokwium, ściągawki ===== */
+.fchip { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: .86rem; font-weight: 700; cursor: pointer; color: var(--muted); }
+.fchip:hover { border-color: var(--green-200); color: var(--ink); }
+.fchip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent-text); }
+.gl-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.rv-today { display: flex; align-items: baseline; gap: 10px; }
+.rv-today b { font-size: 2.2rem; line-height: 1; color: var(--accent); font-weight: 800; }
+.rv-today small { font-size: .86rem; }
+.rv-grades { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 560px; }
+.rv-grades .btn { justify-content: center; padding: 10px 8px; border-radius: 14px; flex-direction: column; gap: 2px; font-size: .9rem; }
+.rv-grades .kbd { font-size: .7rem; color: var(--muted); font-weight: 700; }
+.rv-again { border-color: var(--bad-soft); } .rv-again:hover { background: var(--bad-soft); border-color: var(--bad); }
+.rv-hard:hover { background: var(--warn-soft); border-color: var(--warn); }
+.rv-good { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent-text); }
+.rv-easy:hover { background: var(--good-soft); border-color: var(--good); }
+@media (max-width: 480px) { .rv-grades { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hint { background: linear-gradient(135deg, var(--accent-soft), var(--lime-100)); border: 1px solid var(--green-200); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 10px; }
+.hint p { line-height: 1.55; }
+.gl-search { position: sticky; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 5; background: var(--paper); padding: 6px 0; display: grid; gap: 8px; }
+.gl-q { font-size: 1.05rem; padding: 12px 16px; }
+.gl-list { display: grid; gap: 8px; }
+.gl-row { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; display: grid; gap: 4px; min-width: 0; }
+.gl-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.gl-en { font-weight: 800; background: linear-gradient(transparent 60%, var(--mark) 60%); padding: 0 2px; }
+.gl-pl { color: var(--accent-text); font-weight: 600; }
+.gl-row p { color: var(--ink); font-size: .94rem; }
+.gl-foot { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: .8rem; color: var(--muted); }
+.gl-subj { display: inline-flex; align-items: center; gap: 5px; }
+.gl-foot .link { font-size: .84rem; margin-left: auto; }
+.pm { gap: 4px; }
+.pm-row { display: grid; grid-template-columns: minmax(150px, 220px) 1fr auto; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+.pm-row:first-child { border-top: 0; }
+.pm-row.compact { grid-template-columns: 1fr auto; border: 0; padding: 0; }
+.pm-name { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 0; cursor: pointer; font-weight: 700; text-align: left; min-width: 0; }
+.pm-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-name:hover span { text-decoration: underline; }
+.pm-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.pm-sq { display: inline-block; width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; padding: 0; flex: none; }
+i.pm-sq { width: 14px; height: 14px; border-radius: 4px; cursor: default; vertical-align: -2px; }
+.pm-sq.st-good { background: var(--good); border-color: var(--good); }
+.pm-sq.st-mid { background: #E8B04A; border-color: #E8B04A; }
+.pm-sq.st-weak { background: var(--bad); border-color: var(--bad); }
+.pm-sq.lk { opacity: .45; background-image: repeating-linear-gradient(45deg, transparent 0 3px, var(--line) 3px 5px); }
+button.pm-sq:hover { transform: scale(1.12); }
+.pm-count { font-size: .82rem; color: var(--muted); white-space: nowrap; }
+.pm-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .84rem; color: var(--muted); }
+.pm-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.pm-legend.small { font-size: .78rem; }
+@media (max-width: 600px) { .pm-row { grid-template-columns: 1fr auto; } .pm-row .pm-grid { grid-column: 1 / -1; grid-row: 2; } }
+.pm-src { display: grid; gap: 6px; }
+.pm-src > div { display: grid; grid-template-columns: 100px 1fr 46px; gap: 10px; align-items: center; font-size: .9rem; }
+.pm-bar { display: block; height: 8px; background: var(--sunk); border-radius: 8px; overflow: hidden; min-width: 60px; }
+.pm-bar i { display: block; height: 100%; background: var(--accent); border-radius: 8px; }
+.worked { gap: 18px; }
+.wk-task { font-weight: 700; line-height: 1.5; }
+.wk-steps { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+.wk-steps.small { gap: 4px; font-size: .94rem; }
+.wk-steps li::marker { color: var(--accent); font-weight: 800; }
+.wk-res { margin-top: 2px; font-weight: 700; color: var(--accent-text); }
+.wk-why summary { cursor: pointer; color: var(--muted); font-size: .86rem; font-weight: 700; }
+.wk-in { max-width: 180px; }
+.wk-sim.solved { border-color: var(--green-200); background: linear-gradient(var(--good-soft), var(--surface) 60%); }
+.exam-hero { min-width: 0; overflow-wrap: anywhere; background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--c, var(--accent)); border-radius: var(--r); padding: 18px 20px; display: grid; gap: 12px; }
+.exam-count { display: flex; gap: 12px 20px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.exam-count b { font-size: 1.5rem; color: var(--accent); }
+.exam-hero.result.pass { border-top-color: var(--good); }
+.exam-hero.result.fail { border-top-color: var(--bad); }
+.exam-hero.result.fail .score { color: var(--bad); }
+.plan-days { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.plan-days li { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 8px 10px; border-radius: 10px; align-items: start; }
+.plan-days li.today { background: var(--accent-soft); }
+.pd-date { font-weight: 700; font-size: .9rem; }
+.pd-what { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; min-width: 0; font-size: .92rem; }
+.pd-topic { display: inline-flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px 3px 6px; cursor: pointer; font-size: .86rem; text-align: left; max-width: 100%; }
+.pd-topic:hover { border-color: var(--green-400); }
+@media (max-width: 480px) { .plan-days li { grid-template-columns: 1fr; gap: 4px; } }
+.att-list { display: grid; gap: 8px; }
+.att { display: grid; grid-template-columns: 70px 1fr auto; gap: 12px; align-items: center; font-size: .9rem; }
+.att.topic-res { grid-template-columns: minmax(0, 1.4fr) minmax(60px, 1fr) auto; }
+.scope { display: grid; gap: 2px; }
+.scope-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 6px 4px; border-radius: 8px; cursor: pointer; font-size: .92rem; }
+.scope-row:hover { background: var(--green-50); }
+.scope-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+.scope-row .t { min-width: 0; overflow-wrap: anywhere; }
+.exam-run { display: grid; gap: 14px; }
+.exam-bar { position: sticky; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 6; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; display: flex; gap: 12px; align-items: center; box-shadow: var(--shadow); }
+.exam-bar > div { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ex-timer { font-size: 1.3rem; font-weight: 800; color: var(--accent-text); background: var(--accent-soft); border-radius: 10px; padding: 2px 10px; }
+.ex-timer.low { color: var(--bad); background: var(--bad-soft); }
+.ex-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 12px; min-width: 0; }
+.ex-item.ok { border-left: 4px solid var(--good); }
+.ex-item.bad { border-left: 4px solid var(--bad); }
+.ex-head { display: flex; gap: 10px; align-items: center; }
+.ex-n { background: var(--accent-soft); color: var(--accent-text); font-weight: 800; border-radius: 999px; min-width: 28px; height: 28px; display: inline-grid; place-items: center; }
+.ex-item .q { font-size: 1.02rem; }
+.ex-opts .opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.case-text { background: var(--green-50); border-radius: 12px; padding: 12px 16px; }
+.your { white-space: pre-wrap; background: var(--sunk); border-radius: 10px; padding: 10px 12px; font-size: .94rem; }
+.your.empty-ans { color: var(--muted); font-style: italic; }
+.model { background: var(--good-soft); border-radius: 10px; padding: 10px 12px; font-size: .94rem; display: grid; gap: 6px; }
+.rubric { display: grid; gap: 4px; border: 1.5px dashed var(--green-200); border-radius: 12px; padding: 10px 12px; }
+.rub-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; cursor: pointer; font-size: .92rem; padding: 3px 0; }
+.rub-row input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); }
+.tmpl summary { cursor: pointer; font-weight: 700; color: var(--accent-hover); }
+.tmpl[open] { display: grid; gap: 10px; }
+.cheat-page { background: #fff; color: #111; border: 1px solid var(--line); border-radius: 6px; padding: 14mm 12mm; max-width: 210mm; margin: 0 auto; box-shadow: var(--shadow); font-size: 10pt; line-height: 1.38; }
+.ch-top { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin-bottom: 10px; }
+.ch-top b { flex: 1 1 100%; font-size: 13pt; }
+.ch-brand { font-weight: 800; color: var(--accent); }
+.ch-cols { columns: 2; column-gap: 8mm; }
+.ch-cols > * { break-inside: avoid; margin: 0 0 8px; }
+.ch-mat { break-inside: avoid; }
+.ch-mat h3, .ch-sec h3 { font-size: 10.5pt; margin: 0 0 3px; color: var(--accent-text); }
+.ch-sec ul, .ch-sec ol { margin: 0; padding-left: 16px; display: grid; gap: 2px; }
+.ch-sec dl { margin: 0; display: grid; gap: 1px; }
+.ch-sec dd { margin: 0 0 3px; color: #333; }
+.ch-lead { font-style: italic; }
+.ch-formulas { display: grid; gap: 3px; }
+.ch-foot { margin-top: 8px; padding-top: 5px; border-top: 1px solid #ddd; font-size: 8pt; color: #666; }
+@media print {
+  @page { size: A4; margin: 10mm; }
+  body { background: #fff !important; }
+  body * { visibility: hidden !important; }
+  .cheat-page, .cheat-page * { visibility: visible !important; }
+  .cheat-page { position: absolute; left: 0; top: 0; width: 100%; max-width: none; border: 0; box-shadow: none; padding: 0; font-size: 9pt; }
+  .cheat-page.subj .ch-cols { column-gap: 6mm; }
+}
+
 </style>
 
 <header class="bar"><div class="wrap">
@@ -894,6 +1022,9 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
     out: '<path d="M15 4h3.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H15M10 8l-4 4 4 4M6 12h10"/>',
     in: '<path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H9M14 8l4 4-4 4M18 12H8"/>',
+    review: '<rect x="6.5" y="3.5" width="13" height="16" rx="2.5"/><path d="M4.5 7v11.5A2.5 2.5 0 0 0 7 21h9"/><path d="M10 10.5h6M10 14h4"/>',
+    map: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="m14 17 2 2 4-4"/>',
+    glossary: '<path d="M4 5h7M7.5 5V4M5 9c1.5 2.5 3.5 4 6 5M10 5c-.8 4-3 7-6 9"/><path d="m12.5 20 4-10 4 10M14 16.5h5"/>',
   };
   function icon(k) {
     const sp = document.createElement("span"); sp.className = "ico"; sp.setAttribute("aria-hidden", "true");
@@ -903,7 +1034,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   const NAV_ITEMS = [["home", "Start"], ["materials", "Materiały"], ["tasks", "Zadania"], ["grading", "Zaliczenia"], ["calendar", "Kalendarz"]];
   function renderNav() {
     const v = S.route.view;
-    const active = ["materials", "subject", "material", "subjectQuiz", "upload"].includes(v) ? "materials" : v;
+    const active = ["materials", "subject", "material", "subjectQuiz", "upload", "glossary", "exam", "cheat"].includes(v) ? "materials" : ["review", "progress"].includes(v) ? "home" : v;
     const openN = PAID() ? myTasks().filter((t) => t.kind !== "info" && !isDone(t)).length : 0;
     $("nav").replaceChildren(...NAV_ITEMS.map(([key, label]) => h("button", {
       type: "button", class: "navbtn", "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
@@ -930,6 +1061,9 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       sk.state === "out" ? item("in", "Zaloguj się", () => sk.openLogin(), { strong: true }) : null,
       item("group", `Moja grupa: ${groupLabel}`, openGroupPicker),
       h("a", { class: "mi", role: "menuitem", href: PLAN_URL }, icon("plan"), h("span", { text: "Pełny plan zajęć" })),
+      item("review", "Powtórki", () => go({ view: "review" })),
+      item("map", "Mapa postępów", () => go({ view: "progress" })),
+      item("glossary", "Słowniczek EN–PL", () => go({ view: "glossary" })),
       item("help", "Jak korzystać (instrukcja)", () => startTour(0)),
       S.canEdit ? [h("hr"),
         item("upload", "Wgraj materiał", () => go({ view: "upload" })),
@@ -951,8 +1085,10 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   function render() {
     renderNav();
     const v = S.route.view;
-    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading }[v] || viewHome;
-    const keepIds = ["ann-text"];
+    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading, review: viewReview, glossary: viewGlossary, progress: viewProgress, exam: viewExam, cheat: viewCheat }[v] || viewHome;
+    // W trakcie próbnego testu strona nie przebudowuje się sama (np. po odświeżeniu danych), żeby nie gubić wpisywanego tekstu.
+    if (!EXR.force && examRunning() && $("main").querySelector(".exam-run")) return;
+    const keepIds = ["ann-text", "gl-q"];
     const kept = keepIds.map((id) => { const el = document.getElementById(id); return el ? { id, v: el.value, f: document.activeElement === el } : null; }).filter(Boolean);
     // Ten sam widok rysowany ponownie (np. po odświeżeniu danych): otwarte rozwijane elementy zostają otwarte.
     const sig = JSON.stringify([v, S.route.id, S.route.tab]);
@@ -1162,7 +1298,8 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       h("div", { style: "min-width:0" },
         h("div", { class: "row", style: "gap:6px" }, h("span", { class: "typechip", style: `--t:${t.c}`, text: t.label }), h("span", { class: "fm", text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` }), d.time ? h("span", { class: "fm num", text: "· " + d.time }) : null, approxChip(d)),
         h("button", { type: "button", class: "link", style: "color:var(--ink);text-align:left", onclick: () => openDeadline(d) }, d.title),
-        h("div", { class: "fm" }, s ? h("span", {}, h("i", { class: "dot", style: `--c:${s.color};display:inline-block;margin-right:6px` }), s.pl) : "ogólne"),
+        h("div", { class: "fm" }, s ? h("span", {}, h("i", { class: "dot", style: `--c:${s.color};display:inline-block;margin-right:6px` }), s.pl) : "ogólne",
+          s && ["kolokwium", "egzamin"].includes(d.type) ? h("button", { type: "button", class: "link", style: "margin-left:10px;font-size:.84rem", onclick: () => go({ view: "exam", sid: s.id, part: partsOf(s.id).find((k) => zalPartOf(s.id, k)?.f === (d.type === "egzamin" ? "E" : "ZO")) || partsOf(s.id)[0] }) }, "Przygotuj się →") : null),
       ));
   }
 
@@ -1312,6 +1449,8 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     const right = h("div", { class: "stack h-side", style: "gap:20px;min-width:0" },
       ann ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
+      hintPanel(),
+      reviewPanel(),
       upcomingPanel(),
       S.canEdit ? h("section", { class: "panel" }, announceForm()) : null,
     );
@@ -1615,13 +1754,14 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       : h("span", { text: src.label })));
   }
 
-  function zalPart(p) {
+  function zalPart(p, sid) {
     const known = p.date && p.date >= todayKey();
     return h("div", { class: "zal-part" },
       h("h3", {}, h("span", { text: ZAL_KIND[p.k] }), formChip(p.f)),
       h("p", { text: p.how }),
       p.rules.length ? h("ul", { class: "zal-list" }, p.rules.map((r) => h("li", { text: r }))) : null,
-      h("div", { class: "zal-when" + (known ? " known" : "") }, h("b", { text: "Kiedy" }), h("span", { text: p.when + (known ? ` · za ${daysUntil(p.date)} dni` : "") })));
+      h("div", { class: "zal-when" + (known ? " known" : "") }, h("b", { text: "Kiedy" }), h("span", { text: p.when + (known ? ` · za ${daysUntil(p.date)} dni` : "") })),
+      sid ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "exam", sid, part: p.k }) }, "Przygotuj się: plan i próbny test →")) : null);
   }
 
   function zalPanel(s) {
@@ -1631,7 +1771,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       h("div", { class: "row", style: "justify-content:space-between" },
         h("h2", { text: "Jak zaliczyć" }),
         h("button", { type: "button", class: "link", onclick: () => go({ view: "grading" }) }, "Wszystkie przedmioty →")),
-      h("div", { class: "zal-parts" }, z.parts.map(zalPart)),
+      h("div", { class: "zal-parts" }, z.parts.map((p) => zalPart(p, s.id))),
       h("div", { class: "zal-final" }, h("span", { class: "eyebrow", text: "Ocena z przedmiotu" }), h("p", { text: z.final })),
       z.notes.length ? h("div", { class: "zal-note" }, h("b", { text: "Na co uważać" }), h("ul", { class: "zal-list" }, z.notes.map((n) => h("li", { text: n })))) : null,
       zalSources(z));
@@ -1697,7 +1837,11 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
       h("section", { class: "stack" },
         h("span", { class: "eyebrow", text: `${SUBJECTS.length} przedmiotów z planu · semestr ${PLAN.semestr || ""} ${PLAN.rokAkademicki || ""}` }),
         h("div", { class: "row", style: "justify-content:space-between" }, h("h1", { text: "Materiały" }), S.canEdit ? h("button", { type: "button", class: "btn sun", onclick: () => go({ view: "upload" }) }, "Wgraj prezentację") : null),
-        h("p", { class: "muted", style: "max-width:60ch", text: "Wybierz przedmiot. W środku są skróty, fiszki, quizy i wersje prostym językiem." })),
+        h("p", { class: "muted", style: "max-width:60ch", text: "Wybierz przedmiot. W środku są skróty, fiszki, quizy i wersje prostym językiem." }),
+        h("div", { class: "row" },
+          h("button", { type: "button", class: "btn small", onclick: () => go({ view: "glossary" }) }, "Słowniczek EN–PL"),
+          h("button", { type: "button", class: "btn small", onclick: () => go({ view: "progress" }) }, "Mapa postępów"),
+          h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "review" }) }, "Powtórki"))),
       buyBanner(),
       h("div", { class: "grid" }, cards),
     ];
@@ -1734,7 +1878,13 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
           !PAID() && qCount && qAll > qCount ? h("button", { type: "button", class: "link", style: "font-size:.86rem", onclick: () => lockModal("Quiz z całego przedmiotu") }, "🔒 pełny quiz z całości") : null,
           best("subject:" + s.id) ? scoreChip("subject:" + s.id) : null,
           h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, lockLabel("+ Termin"))),
+        ms.length ? h("div", { class: "row" },
+          h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "exam", sid: s.id }) }, "Tryb przed kolokwium"),
+          h("button", { type: "button", class: "btn", onclick: () => (PAID() ? go({ view: "cheat", sid: s.id }) : lockModal("Ściągawka z przedmiotu")) }, lockLabel("Ściągawka z przedmiotu")),
+          h("button", { type: "button", class: "btn ghost", onclick: () => addSubjectToReview(s.id) }, "Dodaj fiszki do powtórek")) : null,
       ),
+      ms.length ? h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Twoje postępy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "progress" }) }, "Cała mapa →")), progressRow(s, true),
+        h("div", { class: "pm-legend small" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label)))) : null,
       zalPanel(s),
       dls.length ? h("section", { class: "panel" }, h("h2", { text: "Nadchodzące terminy" }), h("div", {}, dls.map(deadlineRow))) : null,
       subjectTasks(s),
@@ -1810,9 +1960,10 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     const lessonMode = isLesson(m);
     const tabList = lessonMode ? [["lekcja", "Lekcja"], ["prosto", "Prosty język"], ["skrot", "Skrót"], ["notatka", "Najważniejsze"], ["pojecia", "Pojęcia"], ["fiszki", "Fiszki"], ["quiz", "Quiz"]]
       : fromSlides(m) ? TABS.filter(([k]) => k !== "zrodlo").map(([k, l]) => [k, k === "notatka" && isV2(m, c) ? "Co zapamiętać" : l]) : TABS;
+    if (c?.worked?.length) tabList.splice(tabList.findIndex(([k]) => k === "quiz"), 0, ["zadania", "Zadania"]);
     const tab = S.route.tab || (lessonMode ? "lekcja" : "skrot");
     const s = subjectById(m.subjectId);
-    const counts = c ? { notatka: c.notes?.length, pojecia: c.concepts?.length, fiszki: c.flashcards?.length, quiz: c.quiz?.length, lekcja: c.lesson?.exercises?.length ? c.lesson.exercises.length + " zad." : null } : {};
+    const counts = c ? { notatka: c.notes?.length, pojecia: c.concepts?.length, fiszki: c.flashcards?.length, quiz: c.quiz?.length, lekcja: c.lesson?.exercises?.length ? c.lesson.exercises.length + " zad." : null, zadania: c.worked?.length } : {};
     const head = h("section", { class: "stack" },
       backLink({ view: "subject", id: m.subjectId }),
       h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: s?.pl || "Materiał" }), m.source === "sylabus" ? h("span", { class: "chip sun", title: "Opracowane z sylabusa WEFiZ 2026/27, nie ze slajdów prowadzącego", text: "z sylabusa" }) : null),
@@ -1823,8 +1974,12 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
           await Promise.all(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})));
           go({ view: "subject", id: m.subjectId });
         }) }, "Usuń") : null),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn small", onclick: () => go({ view: "cheat", id: m.id }) }, "Ściągawka do druku"),
+        h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "exam", sid: m.subjectId }) }, "Tryb przed kolokwium"),
+        S.canEdit ? h("button", { type: "button", class: "btn small ghost", "aria-pressed": String(!!m.core), title: "Kluczowe tematy idą na górę planu przed kolokwium", onclick: () => S.db.doc("materials/" + m.id).update({ core: !m.core }).then(() => { m.core = !m.core; render(); }).catch(() => toast("Nie udało się zapisać.")) }, m.core ? "★ Kluczowy temat" : "☆ Oznacz jako kluczowy") : null),
       m.basis ? h("p", { class: "foot-note", text: m.basis }) : null);
-    const tabs = h("div", { class: "tabs", role: "tablist" }, tabList.map(([k, label]) => h("button", { type: "button", class: "tab" + (k === "prosto" ? " simple-tab" : ""), role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k }; render(); } }, label, counts[k] ? h("span", { class: "c", text: counts[k] }) : null)));
+    const tabs = h("div", { class: "tabs", role: "tablist" }, tabList.map(([k, label]) => h("button", { type: "button", class: "tab" + (k === "prosto" ? " simple-tab" : ""), role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k, wk: null }; render(); } }, label, counts[k] ? h("span", { class: "c", text: counts[k] }) : null)));
     let panel;
     if (c === undefined) panel = h("p", { class: "muted", text: "Ładuję materiał…" });
     else if (c === null && !PAID()) return [backLink({ view: "subject", id: m.subjectId }), paywallCard(m.title || m.fileName)];
@@ -1836,6 +1991,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
     else if (tab === "notatka") panel = h("ol", { class: "notes" }, (c.notes || []).map((n) => h("li", {}, h("p", { text: n.point }), slideRef(m.id, n))));
     else if (tab === "pojecia") panel = h("div", { class: "concepts" }, (c.concepts || []).map((x) => h("div", { class: "concept" }, h("div", { class: "head" }, h("span", { class: "term", text: x.term }), x.pl ? h("span", { class: "pl", text: x.pl }) : null, slideRef(m.id, x)), h("p", { text: x.definition }))));
     else if (tab === "fiszki") panel = flashcards(c.flashcards || [], m);
+    else if (tab === "zadania") panel = workedPanel(m, c);
     else if (tab === "quiz") panel = quizRunner((c.quiz || []).map((q, i) => ({ ...q, materialId: m.id, index: i })), m.id);
     else if (!fromSlides(m)) panel = sourcePanel(m);
     else panel = studyPanel(m, c);
@@ -1935,7 +2091,13 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
           h("button", { type: "button", class: "btn", onclick: () => { S.route.fc = { order: shuffle(cards.map((_, i) => i)), pos: 0, flipped: false, known: [], again: [] }; render(); } }, "Od nowa, losowo")));
     }
     const idx = st.order[st.pos], card = cards[idx];
-    const mark = (ok) => { (ok ? st.known : st.again).push(idx); st.pos++; st.flipped = false; render(); };
+    const mark = (ok) => {
+      (ok ? st.known : st.again).push(idx); st.pos++; st.flipped = false;
+      // Każda przejrzana fiszka trafia do powtórek; „Wiem” nie przyspiesza karty, która ma już termin w przyszłości.
+      const k = cardKey(m.id, card), cur = srsAll()[k];
+      if (!ok || !cur || cur[0] === 0 || cur[1] <= dayN()) srsGrade(k, ok ? 2 : 0);
+      render();
+    };
     return h("div", { class: "fc-wrap" },
       h("div", { class: "row muted num", style: "font-size:.86rem" }, `Fiszka ${st.pos + 1} z ${st.order.length} · wiem ${st.known.length} · do powtórki ${st.again.length}`),
       h("button", { type: "button", class: "fc" + (st.flipped ? " flipped" : ""), "aria-label": st.flipped ? "Odpowiedź, kliknij aby wrócić do pytania" : "Pytanie, kliknij aby zobaczyć odpowiedź", onclick: () => { st.flipped = !st.flipped; render(); } },
@@ -2331,7 +2493,7 @@ ${written}`;
     U.busy = true; U.flagged = null;
     setStep(5, "run");
     let mat;
-    try { mat = await saveNewStudy(r); setStep(5, "ok"); }
+    try { mat = await saveNewStudy(r); setStep(5, "ok"); glossaryRebuild(U.subjectId).catch(() => {}); }
     catch (err) {
       setStep(5, "err"); U.busy = false;
       U.error = err?.code === "not_granted" ? "Zapis materiałów jest dostępny tylko dla starosty." : "Nie udało się zapisać materiałów. Spróbuj ponownie.";
@@ -2569,9 +2731,10 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     if (r.flagged) throw { code: "flagged", pct: r.check.pct };
     const c = r.content;
     await S.db.doc("materialContent/" + m.id).set(c);
-    await S.db.doc("materials/" + m.id).update({ v: 2, title: r.title || m.title, topicCount: c.topics.length, noteCount: c.notes.length, conceptCount: c.concepts.length, flashcardCount: c.flashcards.length, quizCount: c.quiz.length, overlap: r.check.pct, migratedAt: Date.now() });
+    await S.db.doc("materials/" + m.id).update({ v: 2, workedCount: null, workedTaskCount: null, title: r.title || m.title, topicCount: c.topics.length, noteCount: c.notes.length, conceptCount: c.concepts.length, flashcardCount: c.flashcards.length, quizCount: c.quiz.length, overlap: r.check.pct, migratedAt: Date.now() });
     m.v = 2; if (r.title) m.title = r.title;
     S.content[m.id] = c;
+    glossaryRebuild(m.subjectId).catch(() => {});
     await Promise.all(["materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})));
     delete S.sources[m.id]; delete S.simple[m.id]; delete S.why[m.id];
     if (AI.status) { AI.status.simple.delete(m.id); AI.status.why.delete(m.id); }
@@ -2623,7 +2786,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const noSimple = S.materials.filter((m) => !AI.status.simple.has(m.id)).length;
     const noWhy = S.materials.filter((m) => aiNeedsWhy(m) && !AI.status.why.has(m.id)).length;
     const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: (e) => { const f = e.target.files[0]; if (f) aiImport(f); e.target.value = ""; } });
-    return [head, migrateSection(),
+    return [head, migrateSection(), genSection(), glossarySection(),
       h("section", { class: "panel" },
         h("div", { class: "row" },
           h("span", { class: "chip " + (noSimple ? "sun" : "good"), text: `prosty język: brak ${noSimple}` }),
@@ -2735,6 +2898,1133 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     tourShow(from);
   }
   if (!ls.get("bm-tour")) setTimeout(() => { if (!tourState && !$("layer").childElementCount) startTour(0); }, 900);
+
+
+  // ================= NAUKA+ (v3): powtórki, słowniczek, mapa postępów, zadania krok po kroku, tryb przed kolokwium, ściągawki =================
+  // Wszystko działa w przeglądarce. Postęp każdej osoby jest w jej dokumencie progress:
+  //   srs     { "<materialId>:<hash pytania>": [pudełko 0–6, dzień następnej powtórki] }, karty ze słowniczka: "g:<przedmiot>:<hash>"
+  //   srsNew  { d: dzień, n: ile nowych kart weszło tego dnia }, streak { d, n }
+  //   ex      { "<materialId>:<id przykładu>:<nr zadania>": [rozwiązane 0/1, z podpowiedzią 0/1] }
+  //   exams   { "<przedmiot>-<W|CW|LAB>": { date, out: [materiały poza zakresem], att: [5 ostatnich podejść] } }
+  // „Dzień” to numer dnia od 1 stycznia 2026 (czas lokalny), żeby zapis był krótki.
+  const D0 = new Date(2026, 0, 1);
+  const dayN = (k = todayKey()) => Math.round((dparse(k) - D0) / 864e5);
+  const dayKeyOf = (n) => dkey(addDays(D0, n));
+  const hashStr = (s) => { let x = 2166136261; for (const ch of String(s)) { x ^= ch.codePointAt(0); x = Math.imul(x, 16777619) >>> 0; } return x.toString(36); };
+  const norm = (s) => String(s || "").toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim();
+  const firstSentence = (s, n = 180) => { const t = String(s || "").trim(); const m = t.match(/^.+?[.!?](\s|$)/); const x = (m ? m[0] : t).trim(); return x.length > n ? x.slice(0, n - 1).trimEnd() + "…" : x; };
+  const cap1 = (s) => String(s || "").charAt(0).toUpperCase() + String(s || "").slice(1);
+
+  // Zapis postępu z opóźnieniem: przy fiszkach i zadaniach nie wysyłamy bazy po każdym kliknięciu.
+  let progSoonTimer = null;
+  function progSoon(patch) {
+    S.progress = { ...S.progress, ...patch };
+    progLocal.set({ data: S.progress, dirty: !!S.uid });
+    clearTimeout(progSoonTimer);
+    progSoonTimer = setTimeout(() => { progSoonTimer = null; flushProgress(); }, 2500);
+  }
+  addEventListener("pagehide", () => { if (progSoonTimer) { clearTimeout(progSoonTimer); progSoonTimer = null; flushProgress(); } });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && progSoonTimer) { clearTimeout(progSoonTimer); progSoonTimer = null; flushProgress(); } });
+
+  const loadContents = (ms) => Promise.all(ms.map((m) => getContent(m.id).then((c) => [m, c]).catch(() => [m, null])));
+  const studyMats = (sid) => [...lessonsOf(sid), ...filesOf(sid)];
+
+  // ---------- zaliczenia: części, daty, zakres ----------
+  const CALC_SUBJECTS = new Set(["analiza-matematyczna", "ekonomia-biznesu", "makroekonomia", "podstawy-finansow"]);
+  const zalPartOf = (sid, part) => zalOf(sid)?.parts.find((p) => p.k === part) || null;
+  const partsOf = (sid) => (zalOf(sid)?.parts.map((p) => p.k)) || ["CW"];
+  const exKey = (sid, part) => sid + "-" + part;
+  const examSet = (sid, part) => S.progress?.exams?.[exKey(sid, part)] || {};
+  function partLabel(sid, part) {
+    const p = zalPartOf(sid, part);
+    if (p?.f === "E") return "egzamin";
+    return part === "W" ? "zaliczenie wykładu" : part === "LAB" ? "zaliczenie laboratorium" : "kolokwium";
+  }
+  function examDate(sid, part) {
+    const own = examSet(sid, part).date;
+    if (own && own >= todayKey()) return { date: own, own: true };
+    const k = todayKey();
+    const ds = visDeadlines().filter((d) => d.subjectId === sid && ["kolokwium", "egzamin"].includes(d.type) && d.date >= k).sort((a, b) => a.date.localeCompare(b.date));
+    const want = zalPartOf(sid, part)?.f === "E" ? "egzamin" : "kolokwium";
+    const d = ds.find((x) => x.type === want) || (partsOf(sid).length === 1 ? ds[0] : null);
+    return d ? { date: d.date, approx: !!d.approx, dl: d } : null;
+  }
+  function nextExam(sid) {
+    return partsOf(sid).map((p) => ({ part: p, ...(examDate(sid, p) || {}) })).filter((x) => x.date).sort((a, b) => a.date.localeCompare(b.date))[0] || null;
+  }
+  function saveExamSet(sid, part, patch) {
+    const exams = { ...(S.progress?.exams || {}) };
+    exams[exKey(sid, part)] = { ...(exams[exKey(sid, part)] || {}), ...patch };
+    progSoon({ exams });
+  }
+  const scopeOf = (sid, part) => { const out = new Set(examSet(sid, part).out || []); return studyMats(sid).filter((m) => !out.has(m.id)); };
+
+  // ================= powtórki rozłożone w czasie (pudełka Leitnera) =================
+  const SRS_DAYS = [0, 1, 3, 7, 14, 30, 60];
+  const NEW_PER_DAY = 20;
+  const cardKey = (mid, card) => mid + ":" + hashStr(card.q);
+  const glKey = (sid, en) => "g:" + sid + ":" + hashStr(norm(en));
+  const srsAll = () => S.progress?.srs || {};
+  const keySubject = (k) => { const p = k.split(":"); return p[0] === "g" ? p[1] : materialById(p[0])?.subjectId || null; };
+  function srsGrade(key, g) { // g: 0 nie pamiętam, 1 trudne, 2 pamiętam, 3 łatwe
+    const all = srsAll(), t = dayN();
+    const cur = all[key];
+    let box = cur?.[0] || 0;
+    box = g === 0 ? 1 : g === 1 ? Math.max(1, box) : Math.min(6, box + (g === 3 ? 2 : 1));
+    let due = g === 0 ? t + 1 : t + (g === 1 ? Math.max(1, Math.round(SRS_DAYS[box] / 2)) : SRS_DAYS[box]);
+    // Przed zaliczeniem z tego przedmiotu każda karta wraca przynajmniej raz.
+    const sid = keySubject(key), nx = sid && nextExam(sid);
+    if (nx) { const ed = dayN(nx.date); if (ed - 1 > t && due >= ed) due = ed - 1; }
+    const patch = { srs: { ...all, [key]: [box, due] } };
+    if (!cur || cur[0] === 0) { const sn = S.progress?.srsNew; patch.srsNew = { d: t, n: (sn?.d === t ? sn.n : 0) + 1 }; }
+    const st = S.progress?.streak;
+    if (st?.d !== t) patch.streak = { d: t, n: st?.d === t - 1 ? (st.n || 0) + 1 : 1 };
+    progSoon(patch);
+  }
+  function srsAdd(keys) {
+    const all = srsAll(), t = dayN(), add = {};
+    for (const k of keys) if (!all[k]) add[k] = [0, t];
+    const n = Object.keys(add).length;
+    if (n) progSoon({ srs: { ...all, ...add } });
+    return n;
+  }
+  function srsDrop(keys) {
+    if (!keys.length) return;
+    const all = { ...srsAll() };
+    keys.forEach((k) => delete all[k]);
+    progSoon({ srs: all });
+  }
+  function srsDue(sid) {
+    const all = srsAll(), t = dayN();
+    const due = [], fresh = [];
+    for (const [k, v] of Object.entries(all)) {
+      if (!Array.isArray(v) || (sid && keySubject(k) !== sid)) continue;
+      if (v[0] === 0) fresh.push(k); else if (v[1] <= t) due.push(k);
+    }
+    const sn = S.progress?.srsNew;
+    const left = Math.max(0, NEW_PER_DAY - (sn?.d === t ? sn.n : 0));
+    due.sort((a, b) => all[a][1] - all[b][1]);
+    return { due, fresh: fresh.slice(0, left), freshAll: fresh.length };
+  }
+  const streakN = () => { const st = S.progress?.streak, t = dayN(); return st && (st.d === t || st.d === t - 1) ? st.n || 0 : 0; };
+  const reviewedToday = () => S.progress?.streak?.d === dayN();
+
+  // Wszystkie fiszki z przedmiotu do powtórek (tylko te, które ta osoba może otworzyć).
+  async function addSubjectToReview(sid) {
+    const ms = studyMats(sid).filter(readable);
+    if (!ms.length) { lockModal("Powtórki z całego przedmiotu"); return; }
+    const pairs = await loadContents(ms);
+    const keys = pairs.flatMap(([m, c]) => (c?.flashcards || []).map((f) => cardKey(m.id, f)));
+    const n = srsAdd(keys);
+    toast(n ? `Dodano ${n} ${plural(n, "kartę", "karty", "kart")}. Codziennie wchodzi do ${NEW_PER_DAY} nowych.` : "Wszystkie fiszki z tego przedmiotu już są w powtórkach.");
+    render();
+  }
+
+  function reviewPanel() {
+    const { due, fresh } = srsDue();
+    const n = due.length + fresh.length, has = Object.keys(srsAll()).length, sk = streakN();
+    const tomorrow = Object.values(srsAll()).filter((v) => v[0] > 0 && v[1] === dayN() + 1).length;
+    return h("section", { class: "panel rv-panel" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Powtórki" }),
+        sk ? h("span", { class: "chip good num", title: "Dni z rzędu z powtórkami", text: `seria ${sk} ${plural(sk, "dzień", "dni", "dni")}` } ) : null),
+      n ? h("div", { class: "rv-today" }, h("b", { class: "num", text: n }), h("span", {}, `${plural(n, "karta", "karty", "kart")} na dziś`, h("small", { class: "muted", text: ` · ok. ${Math.max(1, Math.round(n / 4))} min` })))
+        : h("p", { class: "muted", style: "font-size:.92rem", text: has ? (reviewedToday() ? `Na dziś zrobione. Jutro ${tomorrow} ${plural(tomorrow, "karta", "karty", "kart")}.` : "Na dziś nic nie czeka. Wróć jutro.") : "Fiszki, które przejrzysz w materiałach, wrócą tutaj w dobrym momencie: po 1, 3, 7, 14, 30 i 60 dniach." }),
+      h("div", { class: "row" },
+        n ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "review" }) }, "Zacznij powtórkę") : null,
+        h("button", { type: "button", class: "link", onclick: () => go({ view: "progress" }) }, "Mapa postępów →")));
+  }
+
+  function resolveCards(keys, pairs) {
+    const byMat = new Map(pairs.map(([m, c]) => [m.id, new Map((c?.flashcards || []).map((f) => [hashStr(f.q), f]))]));
+    const loaded = new Set(pairs.filter(([, c]) => c).map(([m]) => m.id));
+    const gl = new Map((GL.terms || []).flatMap((t) => t.s.map((sid) => [glKey(sid, t.en), t])));
+    const cards = [], stale = [];
+    for (const k of keys) {
+      const p = k.split(":");
+      if (p[0] === "g") {
+        const t = gl.get(k);
+        if (t) cards.push({ key: k, q: t.en, a: [t.pl, t.def ? firstSentence(t.def, 220) : ""].filter(Boolean).join(" — "), label: "Słowniczek EN → PL", sid: p[1] });
+        else if (GL.terms?.length) stale.push(k);
+        continue;
+      }
+      const m = materialById(p[0]);
+      if (!m) { if (S.ready) stale.push(k); continue; }
+      const f = byMat.get(m.id)?.get(p[1]);
+      if (f) cards.push({ key: k, q: f.q, a: f.a, label: m.title || m.fileName, mid: m.id, sid: m.subjectId, card: f });
+      else if (loaded.has(m.id)) stale.push(k);
+    }
+    return { cards, stale };
+  }
+
+  function viewReview() {
+    const sid = S.route.sid || "";
+    const s = sid ? subjectById(sid) : null;
+    const head = h("section", { class: "stack" }, backLink(), h("span", { class: "eyebrow", text: s ? "Powtórka · " + s.pl : "Powtórka" }), h("h1", { text: "Dziś do powtórki" }));
+    const R = S.route.rv;
+    if (!R) {
+      const { due, fresh } = srsDue(sid);
+      const keys = [...due, ...fresh];
+      if (!keys.length) return [head, h("div", { class: "empty" }, h("p", { text: "Na teraz nic nie czeka. Fiszki, które przejrzysz w materiałach, same tu wrócą." }), h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => go({ view: "materials" }) }, "Materiały"), h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "progress" }) }, "Mapa postępów")))];
+      S.route.rv = { loading: true };
+      const mats = [...new Set(keys.filter((k) => !k.startsWith("g:")).map((k) => k.split(":")[0]))].map(materialById).filter((m) => m && readable(m));
+      const needGl = keys.some((k) => k.startsWith("g:"));
+      Promise.all([loadContents(mats), needGl ? loadGlossary() : null]).then(([pairs]) => {
+        const { cards, stale } = resolveCards(keys, pairs);
+        srsDrop(stale);
+        S.route.rv = { cards, pos: 0, flipped: false, done: 0, again: 0, seen: new Set() };
+        render();
+      });
+      return [head, h("p", { class: "muted", text: "Zbieram karty…" })];
+    }
+    if (R.loading) return [head, h("p", { class: "muted", text: "Zbieram karty…" })];
+    if (!R.cards.length) return [head, h("div", { class: "empty small", text: "Nie udało się wczytać kart na dziś. Spróbuj odświeżyć stronę." })];
+    if (R.pos >= R.cards.length) {
+      const t = dayN();
+      const tomorrow = Object.values(srsAll()).filter((v) => v[0] > 0 && v[1] === t + 1).length;
+      return [head, h("div", { class: "box rv-done" },
+        h("h2", { text: "Zrobione." }),
+        h("p", { class: "num", text: `Powtórzone: ${R.done} ${plural(R.done, "karta", "karty", "kart")}${R.again ? ` · do poprawki było ${R.again}` : ""}. Jutro ${tomorrow} ${plural(tomorrow, "karta", "karty", "kart")}.` }),
+        streakN() ? h("p", { class: "muted", text: `Seria: ${streakN()} ${plural(streakN(), "dzień", "dni", "dni")} z rzędu.` }) : null,
+        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "home" }) }, "Na start"), h("button", { type: "button", class: "btn", onclick: () => go({ view: "progress" }) }, "Mapa postępów")))];
+    }
+    const card = R.cards[R.pos];
+    return [head, h("div", { class: "fc-wrap rv" },
+      h("div", { class: "progress", "aria-hidden": "true", style: "width:100%;max-width:560px" }, h("i", { style: `width:${(100 * R.pos) / R.cards.length}%` })),
+      h("div", { class: "row muted num", style: "font-size:.86rem" }, `Karta ${R.pos + 1} z ${R.cards.length} · ${card.label || ""}`),
+      h("button", { type: "button", class: "fc" + (R.flipped ? " flipped" : ""), "aria-label": R.flipped ? "Odpowiedź" : "Pytanie, kliknij aby zobaczyć odpowiedź", onclick: rvFlip },
+        h("div", { class: "fc-inner" }, h("div", { class: "fc-face" }, h("span", { class: "eyebrow", text: "Pytanie" }), h("span", { text: card.q })), h("div", { class: "fc-face back" }, h("span", { class: "eyebrow", text: "Odpowiedź" }), h("span", { text: card.a })))),
+      R.flipped
+        ? h("div", { class: "rv-grades" }, [["Nie pamiętam", 0, "again"], ["Trudne", 1, "hard"], ["Pamiętam", 2, "good"], ["Łatwe", 3, "easy"]].map(([l, g, c]) =>
+            h("button", { type: "button", class: "btn rv-" + c, onclick: () => rvGrade(g) }, h("span", { class: "kbd num", "aria-hidden": "true", text: g + 1 }), l)))
+        : h("p", { class: "muted", style: "font-size:.86rem", text: "Kliknij kartę albo naciśnij spację, żeby zobaczyć odpowiedź." }),
+      card.mid ? h("div", { class: "row" }, slideRef(card.mid, card.card), reportButton(card.mid, "fiszka", null, card.q)) : null)];
+  }
+  function rvFlip() { const R = S.route.rv; if (!R?.cards) return; R.flipped = !R.flipped; render(); }
+  function rvGrade(g) {
+    const R = S.route.rv; if (!R?.cards || !R.flipped) return;
+    const card = R.cards[R.pos];
+    srsGrade(card.key, g);
+    if (g === 0 && !R.seen.has(card.key)) { R.cards.push(card); R.again++; }
+    R.seen.add(card.key);
+    if (g > 0) R.done++;
+    R.pos++; R.flipped = false; render();
+  }
+
+  // ================= słowniczek EN–PL =================
+  const GL = { terms: null, loading: null, partial: false };
+  function glossaryFrom(pairs) {
+    const map = new Map();
+    for (const [m, c] of pairs) for (const x of c?.concepts || []) {
+      const en = String(x.term || "").trim(); if (!en) continue;
+      const k = norm(en);
+      const e = map.get(k) || { en, pl: "", def: "", s: [], m: [] };
+      if (!e.pl && x.pl) e.pl = String(x.pl).trim();
+      if (x.definition && String(x.definition).trim().length > e.def.length) e.def = String(x.definition).trim();
+      if (!e.s.includes(m.subjectId)) e.s.push(m.subjectId);
+      if (!e.m.includes(m.id)) e.m.push(m.id);
+      map.set(k, e);
+    }
+    return [...map.values()].sort((a, b) => a.en.localeCompare(b.en, "en", { sensitivity: "base" }));
+  }
+  function mergeTerms(lists) {
+    const map = new Map();
+    for (const t of lists) {
+      const k = norm(t.en); const e = map.get(k);
+      if (!e) { map.set(k, { en: t.en, pl: t.pl || "", def: t.def || "", s: [...(t.s || [])], m: [...(t.m || [])] }); continue; }
+      if (!e.pl && t.pl) e.pl = t.pl; if (t.def && t.def.length > e.def.length) e.def = t.def;
+      for (const x of t.s || []) if (!e.s.includes(x)) e.s.push(x);
+      for (const x of t.m || []) if (!e.m.includes(x)) e.m.push(x);
+    }
+    return [...map.values()].sort((a, b) => a.en.localeCompare(b.en, "en", { sensitivity: "base" }));
+  }
+  function loadGlossary(force) {
+    if (GL.terms && !force) return Promise.resolve(GL.terms);
+    if (GL.loading) return GL.loading;
+    GL.loading = (async () => {
+      let terms = [];
+      if (PAID() && S.db) {
+        try {
+          const snap = await S.db.collection("glossary").get();
+          terms = mergeTerms(snap.docs.flatMap((d) => (d.data().terms || []).map((t) => ({ ...t, s: [d.id] }))));
+        } catch {}
+      }
+      GL.partial = false;
+      if (!terms.length) {
+        // Słowniczek nie jest jeszcze zbudowany albo osoba nie ma pełnego dostępu: składamy go z materiałów, które może otworzyć.
+        const ms = S.materials.filter(readable);
+        terms = glossaryFrom(await loadContents(ms));
+        GL.partial = !PAID();
+      }
+      GL.terms = terms; GL.loading = null;
+      return terms;
+    })();
+    return GL.loading;
+  }
+  async function glossaryRebuild(sid) {
+    if (!S.canEdit || !S.db) return 0;
+    const sids = sid ? [sid] : SUBJECTS.map((s) => s.id);
+    let total = 0;
+    for (const id of sids) {
+      const terms = glossaryFrom(await loadContents(materialsOf(id))).map(({ s, ...t }) => t);
+      if (terms.length) await S.db.doc("glossary/" + id).set({ at: Date.now(), terms });
+      else await S.db.doc("glossary/" + id).delete().catch(() => {});
+      total += terms.length;
+    }
+    GL.terms = null;
+    return total;
+  }
+  function glSearch(q, sid) {
+    const list = (GL.terms || []).filter((t) => !sid || t.s.includes(sid));
+    const nq = norm(q);
+    if (!nq) return list;
+    const toks = nq.split(" ");
+    const out = [];
+    for (const t of list) {
+      const a = norm(t.en), b = norm(t.pl), words = (a + " " + b).split(" ");
+      let sc = -1;
+      if (a.startsWith(nq) || b.startsWith(nq)) sc = 0;
+      else if (words.some((w) => w.startsWith(nq)) || (toks.length > 1 && toks.every((tk) => words.some((w) => w.startsWith(tk))))) sc = 1;
+      else if (a.includes(nq) || b.includes(nq)) sc = 2;
+      else if (norm(t.def).includes(nq)) sc = 3;
+      if (sc >= 0) out.push([sc, t]);
+    }
+    return out.sort((x, y) => x[0] - y[0] || x[1].en.localeCompare(y[1].en, "en", { sensitivity: "base" })).map((x) => x[1]);
+  }
+  function glRow(t) {
+    const m = t.m.map(materialById).find((x) => x && readable(x));
+    return h("div", { class: "gl-row" },
+      h("div", { class: "gl-head" }, h("b", { class: "gl-en", text: t.en }), t.pl ? h("span", { class: "gl-pl", text: t.pl }) : null),
+      t.def ? h("p", { text: firstSentence(t.def, 260) }) : null,
+      h("div", { class: "gl-foot" },
+        t.s.map((sid) => { const s = subjectById(sid); return s ? h("span", { class: "gl-subj" }, h("i", { class: "dot", style: `--c:${s.color}` }), s.pl) : null; }),
+        m ? h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: m.id, tab: "pojecia" }) }, "w materiale →") : null));
+  }
+  function viewGlossary() {
+    if (!GL.terms && !GL.loading && S.ready) loadGlossary().then(render);
+    const sid = S.route.sid || "";
+    const head = h("section", { class: "stack" }, backLink({ view: "materials" }),
+      h("span", { class: "eyebrow", text: "Angielski ↔ polski" }), h("h1", { text: "Słowniczek" }),
+      h("p", { class: "muted", style: "max-width:62ch", text: "Pojęcia ze wszystkich materiałów: termin po angielsku, polskie tłumaczenie i jedno zdanie wyjaśnienia. Szukaj w obu językach, ogonki nie są potrzebne." }));
+    if (!GL.terms) return [head, h("p", { class: "muted", text: "Ładuję pojęcia…" })];
+    const box = h("div", { class: "gl-list" });
+    const countEl = h("span", { class: "muted num", style: "font-size:.86rem" });
+    const LIMIT = 150;
+    const fill = (more) => {
+      const res = glSearch(S.route.q || "", sid);
+      countEl.textContent = `${res.length} ${plural(res.length, "pojęcie", "pojęcia", "pojęć")}`;
+      const shown = more ? res : res.slice(0, LIMIT);
+      box.replaceChildren(...(res.length ? shown.map(glRow) : [h("div", { class: "empty small", text: S.route.q ? "Nic nie znalazłem. Spróbuj krótszego słowa albo drugiego języka." : "Tu jeszcze nic nie ma." })]),
+        res.length > shown.length ? h("button", { type: "button", class: "btn", onclick: () => fill(true) }, `Pokaż wszystkie (${res.length})`) : null);
+    };
+    const input = h("input", { class: "input gl-q", id: "gl-q", type: "search", value: S.route.q || "", autocomplete: "off", spellcheck: "false", placeholder: "np. opportunity cost, koszt krańcowy, elastyczność", "aria-label": "Szukaj pojęcia", oninput: (e) => { S.route.q = e.target.value; fill(); } });
+    const present = SUBJECTS.filter((s) => GL.terms.some((t) => t.s.includes(s.id)));
+    const chips = h("div", { class: "gl-chips" },
+      h("button", { type: "button", class: "fchip", "aria-pressed": String(!sid), onclick: () => { S.route.sid = ""; render(); } }, "Wszystkie"),
+      present.map((s) => h("button", { type: "button", class: "fchip", "aria-pressed": String(sid === s.id), onclick: () => { S.route.sid = s.id; render(); } }, h("i", { class: "dot", style: `--c:${s.color}` }), s.pl)));
+    fill();
+    const sidTerms = sid ? GL.terms.filter((t) => t.s.includes(sid)) : [];
+    return [head,
+      GL.partial ? h("div", { class: "notice", style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap" }, h("span", { text: "Widzisz pojęcia z darmowych próbek. Pełny słowniczek ze wszystkich materiałów jest w pełnej wersji." }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null,
+      h("div", { class: "gl-search" }, input, h("div", { class: "row", style: "justify-content:space-between" }, countEl,
+        sid && sidTerms.length ? h("button", { type: "button", class: "btn small", onclick: () => { if (needPaid("Fiszki ze słowniczka")) return; const n = srsAdd(sidTerms.map((t) => glKey(sid, t.en))); toast(n ? `Dodano ${n} ${plural(n, "kartę", "karty", "kart")} EN → PL do powtórek.` : "Te pojęcia już są w powtórkach."); render(); } }, lockLabel("Fiszki EN → PL z tego przedmiotu")) : null)),
+      chips, box];
+  }
+
+  // ================= mapa postępów =================
+  const W_SRC = { quiz: 0.4, srs: 0.3, ex: 0.15, exam: 0.15 };
+  const SRC_LABEL = { quiz: "Quiz", srs: "Fiszki", ex: "Zadania", exam: "Próbny test" };
+  const STATE = { none: { label: "nieruszone", cls: "plain" }, weak: { label: "słabo", cls: "bad" }, mid: { label: "w trakcie", cls: "sun" }, good: { label: "umiesz", cls: "good" } };
+  function topicScore(m) {
+    const src = {}, pre = m.id + ":", t = dayN();
+    const b = best(m.id); if (b?.total) src.quiz = b.best / b.total;
+    let n = 0, good = 0, stale = false;
+    for (const [k, v] of Object.entries(srsAll())) if (k.startsWith(pre) && v[0] > 0) { n++; if (v[0] >= 3) good++; if (v[1] < t - 7) stale = true; }
+    if (n) src.srs = good / Math.max(n, m.flashcardCount || 0);
+    let en = 0, eg = 0;
+    for (const [k, v] of Object.entries(S.progress?.ex || {})) if (k.startsWith(pre)) { en++; if (v[0]) eg += v[1] ? 0.6 : 1; }
+    if (en) src.ex = eg / Math.max(en, m.workedTaskCount || 0);
+    let lastAt = 0;
+    for (const e of Object.values(S.progress?.exams || {})) for (const a of e.att || []) { const tp = a.tp?.[m.id]; if (tp?.[1] && a.at > lastAt) { lastAt = a.at; src.exam = tp[0] / tp[1]; } }
+    const keys = Object.keys(src);
+    if (!keys.length) return { score: null, state: "none", src };
+    const w = keys.reduce((a, k) => a + W_SRC[k], 0);
+    let score = Math.round((100 * keys.reduce((a, k) => a + W_SRC[k] * src[k], 0)) / w);
+    if (stale) score = Math.round(score * 0.85);
+    return { score, state: score >= 80 ? "good" : score >= 50 ? "mid" : "weak", src, stale };
+  }
+  // Najsłabsze źródło tematu: tam prowadzi przycisk „Powtórz”.
+  function weakestTab(m, ts) {
+    const c = ["quiz", "srs", "ex"].filter((k) => k !== "ex" || m.workedCount);
+    const missing = c.find((k) => ts.src[k] == null && (k !== "srs" || m.flashcardCount));
+    const k = missing || c.sort((a, b) => (ts.src[a] ?? 0) - (ts.src[b] ?? 0))[0] || "quiz";
+    return k === "srs" ? "fiszki" : k === "ex" ? "zadania" : "quiz";
+  }
+  function stateChip(ts) { const st = STATE[ts.state]; return h("span", { class: "chip " + st.cls, text: ts.score == null ? st.label : `${st.label} · ${ts.score}` }); }
+  function openTopic(m) {
+    const ts = topicScore(m), s = subjectById(m.subjectId);
+    modal((close) => [
+      h("span", { class: "eyebrow", text: s?.pl || "" }),
+      h("h3", { text: m.title || m.fileName }),
+      h("div", { class: "row" }, stateChip(ts), ts.stale ? h("span", { class: "chip plain", text: "fiszki czekają ponad tydzień" }) : null),
+      h("div", { class: "pm-src" }, Object.keys(W_SRC).map((k) => h("div", {},
+        h("span", { text: SRC_LABEL[k] }),
+        h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${Math.round(100 * (ts.src[k] || 0))}%` })),
+        h("span", { class: "num muted", text: ts.src[k] == null ? "—" : Math.round(100 * ts.src[k]) + "%" })))),
+      h("p", { class: "foot-note", text: "Wynik łączy quiz (40%), fiszki w powtórkach (30%), zadania (15%) i próbny test (15%). Brakujące źródła nie zaniżają wyniku." }),
+      locked(m) ? h("div", { class: "row" }, h("span", { class: "lock", text: "🔒 pełna wersja" }), h("button", { type: "button", class: "btn primary small", onclick: () => { close(); window.skrot?.buy(); } }, "Kup dostęp"))
+        : h("div", { class: "row" },
+          h("button", { type: "button", class: "btn primary", onclick: () => { close(); go({ view: "material", id: m.id, tab: weakestTab(m, ts) }); } }, "Powtórz"),
+          h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "material", id: m.id, tab: "quiz" }); } }, "Quiz"),
+          h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "material", id: m.id, tab: "fiszki" }); } }, "Fiszki"),
+          m.workedCount ? h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "material", id: m.id, tab: "zadania" }); } }, "Zadania") : null,
+          h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
+  }
+  function progressRow(s, compact) {
+    const ms = studyMats(s.id);
+    if (!ms.length) return null;
+    const scored = ms.map((m) => ({ m, ts: topicScore(m) }));
+    const good = scored.filter((x) => x.ts.state === "good").length;
+    return h("div", { class: "pm-row" + (compact ? " compact" : "") },
+      compact ? null : h("button", { type: "button", class: "pm-name", onclick: () => go({ view: "subject", id: s.id }) }, h("i", { class: "dot", style: `--c:${s.color}` }), h("span", { text: s.pl })),
+      h("div", { class: "pm-grid" }, scored.map(({ m, ts }) => h("button", {
+        type: "button", class: "pm-sq st-" + ts.state + (locked(m) ? " lk" : ""), title: `${m.title || m.fileName} · ${STATE[ts.state].label}${ts.score != null ? " " + ts.score : ""}`,
+        "aria-label": `${m.title || m.fileName}: ${STATE[ts.state].label}`, onclick: () => openTopic(m) }))),
+      h("span", { class: "pm-count num", text: `umiesz ${good} z ${ms.length}` }));
+  }
+  function viewProgress() {
+    const rows = SUBJECTS.map((s) => progressRow(s)).filter(Boolean);
+    const hint = hintPanel();
+    return [
+      h("section", { class: "stack" }, backLink(), h("span", { class: "eyebrow", text: "Twoja nauka" }), h("h1", { text: "Mapa postępów" }),
+        h("p", { class: "muted", style: "max-width:62ch", text: "Każdy kwadrat to jeden materiał. Kolor mówi, jak dobrze go umiesz, na podstawie quizów, fiszek, zadań i próbnych testów. Kliknij kwadrat, żeby zobaczyć szczegóły." })),
+      h("div", { class: "pm-legend" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label))),
+      hint,
+      !S.ready ? h("p", { class: "muted", text: "Ładuję…" }) : rows.length ? h("section", { class: "panel pm" }, rows) : h("div", { class: "empty small", text: "Jeszcze nie ma materiałów." }),
+      !S.uid ? h("p", { class: "foot-note", text: "Bez logowania postęp zapisuje się tylko w tej przeglądarce." }) : null];
+  }
+
+  // ---------- podpowiedź „powtórz to przed piątkiem” ----------
+  const INSTR = ["poniedziałkiem", "wtorkiem", "środą", "czwartkiem", "piątkiem", "sobotą", "niedzielą"];
+  function whenPhrase(k) {
+    const n = daysUntil(k), d = dparse(k);
+    if (n <= 0) return "dziś";
+    if (n === 1) return "do jutra";
+    if (n <= 6) return "przed " + INSTR[(d.getDay() + 6) % 7];
+    return `do ${d.getDate()}.${pad(d.getMonth() + 1)}`;
+  }
+  function studyHint() {
+    let pickEx = null;
+    for (const s of SUBJECTS) { const nx = nextExam(s.id); if (nx && daysUntil(nx.date) <= 14 && (!pickEx || nx.date < pickEx.date)) pickEx = { ...nx, sid: s.id }; }
+    if (pickEx) {
+      const rank = { weak: 0, none: 1, mid: 2, good: 3 };
+      const cand = scopeOf(pickEx.sid, pickEx.part).filter((m) => !locked(m)).map((m) => ({ m, ts: topicScore(m) })).filter((x) => x.ts.state !== "good");
+      cand.sort((a, b) => rank[a.ts.state] - rank[b.ts.state] || (a.ts.score ?? 0) - (b.ts.score ?? 0));
+      return { kind: "exam", ...pickEx, pick: cand.slice(0, 2) };
+    }
+    // Bez zaliczeń w ciągu 14 dni: tematy z najdłużej odkładanymi powtórkami.
+    const t = dayN(), late = new Map();
+    for (const [k, v] of Object.entries(srsAll())) { if (v[0] > 0 && v[1] < t && !k.startsWith("g:")) { const mid = k.split(":")[0]; late.set(mid, Math.max(late.get(mid) || 0, t - v[1])); } }
+    const top = [...late.entries()].sort((a, b) => b[1] - a[1]).map(([mid]) => materialById(mid)).filter(Boolean).slice(0, 2);
+    return top.length ? { kind: "late", pick: top.map((m) => ({ m, ts: topicScore(m) })) } : null;
+  }
+  function hintPanel() {
+    const H = studyHint();
+    if (!H) return null;
+    const names = (xs) => xs.flatMap((x, i) => [i ? (i === xs.length - 1 ? " i " : ", ") : null, h("b", { text: x.m.title || x.m.fileName })]);
+    if (H.kind === "late") {
+      return h("section", { class: "hint" }, h("span", { class: "eyebrow", text: "Na dziś" }),
+        h("p", {}, "Najdłużej czekają powtórki z ", names(H.pick), "."),
+        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary small", onclick: () => go({ view: "review" }) }, "Powtórz teraz")));
+    }
+    const s = subjectById(H.sid), lbl = partLabel(H.sid, H.part);
+    const tail = `${cap1(lbl)}: ${s.pl}, ${fmtKey(H.date)}${H.approx ? " (data orientacyjna)" : ""}.`;
+    return h("section", { class: "hint" }, h("span", { class: "eyebrow", text: daysUntil(H.date) <= 0 ? "Dziś zaliczenie" : `Za ${daysUntil(H.date)} ${plural(daysUntil(H.date), "dzień", "dni", "dni")}` }),
+      H.pick.length ? h("p", {}, "Powtórz ", names(H.pick), ` ${whenPhrase(H.date)}. `, h("span", { class: "muted", text: tail }))
+        : h("p", {}, "Cały zakres wygląda dobrze. Sprawdź się próbnym testem. ", h("span", { class: "muted", text: tail })),
+      h("div", { class: "row" },
+        H.pick.length ? h("button", { type: "button", class: "btn primary small", onclick: () => { const x = H.pick[0]; go(locked(x.m) ? { view: "subject", id: x.m.subjectId } : { view: "material", id: x.m.id, tab: weakestTab(x.m, x.ts) }); } }, "Powtórz") : null,
+        h("button", { type: "button", class: "btn small", onclick: () => go({ view: "exam", sid: H.sid, part: H.part }) }, "Tryb przed kolokwium")));
+  }
+
+  // ================= zadania z rozwiązaniem krok po kroku =================
+  // materialContent.worked = [{ id, task, steps: [{ do, why, result }], answer, similar: [{ task, result, tol, unit, hint, steps: [], answer }], slides }]
+  // Kalkulator do sprawdzania kluczy odpowiedzi (tylko liczby, + − × ÷ ^, nawiasy, sqrt, ln, log, exp, abs, pi, e).
+  function calc(expr) {
+    const s = String(expr ?? "").replace(/\s+/g, "").replace(/−/g, "-").replace(/[×·]/g, "*").replace(/÷/g, "/").replace(/\*\*/g, "^").replace(/,/g, ".");
+    let i = 0;
+    const fail = () => { throw new Error("calc"); };
+    const FN = { sqrt: Math.sqrt, ln: Math.log, log: Math.log10, exp: Math.exp, abs: Math.abs };
+    const sum = () => { let v = prod(); while (s[i] === "+" || s[i] === "-") { const op = s[i++]; const r = prod(); v = op === "+" ? v + r : v - r; } return v; };
+    const prod = () => { let v = unary(); while (s[i] === "*" || s[i] === "/") { const op = s[i++]; const r = unary(); v = op === "*" ? v * r : v / r; } return v; };
+    const unary = () => { if (s[i] === "-") { i++; return -unary(); } if (s[i] === "+") { i++; return unary(); } return power(); };
+    const power = () => { const b = atom(); if (s[i] === "^") { i++; return Math.pow(b, unary()); } return b; };
+    const atom = () => {
+      if (s[i] === "(") { i++; const v = sum(); if (s[i++] !== ")") fail(); return v; }
+      const w = /^[a-z]+/i.exec(s.slice(i));
+      if (w) {
+        const name = w[0].toLowerCase(); i += w[0].length;
+        if (name === "pi") return Math.PI;
+        if (name === "e") return Math.E;
+        const f = FN[name]; if (!f || s[i] !== "(") fail(); i++;
+        const v = sum(); if (s[i++] !== ")") fail(); return f(v);
+      }
+      const m = /^(\d+(\.\d*)?|\.\d+)/.exec(s.slice(i));
+      if (!m) fail(); i += m[0].length; return Number(m[0]);
+    };
+    const v = sum();
+    if (i !== s.length || !Number.isFinite(v)) fail();
+    return v;
+  }
+  const calcOk = (expr, result) => { try { const v = calc(expr); return Math.abs(v - result) <= Math.max(1e-6, Math.abs(result) * 1e-4); } catch { return false; } };
+  // Wynik wpisany przez studenta: przecinek albo kropka, spacje, %, ułamek 1/3.
+  function parseNum(v) {
+    let s = String(v ?? "").trim().replace(/\s+/g, "").replace(/−/g, "-").replace(/%$/, "").replace(/zł$/i, "");
+    if (!s) return NaN;
+    const fr = /^(-?\d+(?:[.,]\d+)?)\/(\d+(?:[.,]\d+)?)$/.exec(s);
+    if (fr) return Number(fr[1].replace(",", ".")) / Number(fr[2].replace(",", "."));
+    s = s.replace(",", ".");
+    return /^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(s) ? Number(s) : NaN;
+  }
+  const numMatch = (val, s) => { const x = parseNum(val); if (!Number.isFinite(x)) return null; const tol = s.tol ?? Math.max(0.01, Math.abs(s.result) * 0.005); return Math.abs(x - s.result) <= tol; };
+  const fmtNum = (x) => (Number.isInteger(x) ? String(x) : String(Math.round(x * 10000) / 10000)).replace(".", ",");
+
+  function exRecord(key, solved, hinted) {
+    const ex = { ...(S.progress?.ex || {}) };
+    const cur = ex[key];
+    if (cur?.[0] && !cur[1]) return; // już rozwiązane bez podpowiedzi
+    if (cur?.[0] && !solved) return;
+    ex[key] = [solved ? 1 : 0, hinted ? 1 : 0];
+    progSoon({ ex });
+  }
+  function workedPanel(m, c) {
+    const W = c.worked || [];
+    if (!W.length) return h("p", { class: "muted", text: "Do tego materiału nie ma jeszcze zadań." });
+    const st = S.route.wk || (S.route.wk = { i: 0, shown: 0, sim: {} });
+    if (st.i >= W.length) st.i = 0;
+    const w = W[st.i];
+    const steps = w.steps || [];
+    const all = st.shown >= steps.length;
+    const doneCount = (j) => S.progress?.ex?.[`${m.id}:${w.id}:${j}`]?.[0];
+    return h("div", { class: "stack worked" },
+      W.length > 1 ? h("div", { class: "gl-chips" }, W.map((x, i) => h("button", { type: "button", class: "fchip", "aria-pressed": String(i === st.i), onclick: () => { S.route.wk = { i, shown: 0, sim: {} }; render(); } },
+        `Przykład ${i + 1}`, (x.similar || []).every((_, j) => S.progress?.ex?.[`${m.id}:${x.id}:${j}`]?.[0]) && x.similar?.length ? " ✓" : ""))) : null,
+      h("section", { class: "example wk-ex" },
+        h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start" }, h("span", { class: "eyebrow", text: "Przerobiony przykład" }), slideRef(m.id, w)),
+        h("div", { class: "wk-task" }, inline(w.task)),
+        steps.length ? h("ol", { class: "wk-steps" }, steps.slice(0, st.shown).map((x) => h("li", {},
+          h("div", { class: "wk-do" }, inline(x.do || "")),
+          x.result ? h("div", { class: "wk-res" }, inline(x.result)) : null,
+          x.why ? h("details", { class: "wk-why" }, h("summary", { text: "Dlaczego?" }), h("div", {}, inline(x.why))) : null))) : null,
+        all ? h("div", { class: "ans" }, h("b", { text: "Odpowiedź: " }), inline(w.answer || "")) : null,
+        h("div", { class: "row" },
+          !all ? h("button", { type: "button", class: "btn primary small", onclick: () => { st.shown++; render(); } }, st.shown ? "Następny krok" : "Pokaż pierwszy krok") : null,
+          !all && steps.length > 1 ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = steps.length; render(); } }, "Pokaż całe rozwiązanie") : null,
+          all && st.shown ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = 0; render(); } }, "Jeszcze raz od początku") : null)),
+      w.similar?.length ? h("section", { class: "stack" },
+        h("h3", { text: "Teraz ty" }),
+        h("p", { class: "muted", style: "font-size:.92rem", text: "Te same kroki, inne liczby. Wpisz wynik; podpowiedź i kolejne kroki odsłaniasz tylko wtedy, gdy utkniesz." }),
+        w.similar.map((s, j) => simBox(m, w, s, j, st, doneCount(j)))) : null,
+      h("div", { class: "row" }, reportButton(m.id, "zadanie", st.i, w.task)));
+  }
+  function simBox(m, w, s, j, st, done) {
+    const z = st.sim[j] || (st.sim[j] = { val: "", ok: null, hints: 0, open: false });
+    const key = `${m.id}:${w.id}:${j}`;
+    const numeric = typeof s.result === "number";
+    const steps = s.steps || [];
+    const maxHints = (s.hint ? 1 : 0) + steps.length;
+    const shownSteps = Math.max(0, z.hints - (s.hint ? 1 : 0));
+    const check = () => {
+      const r = numMatch(z.val, s);
+      if (r == null) { z.ok = "bad-input"; render(); return; }
+      z.ok = r; if (r) exRecord(key, true, z.hints > 0 || z.open);
+      render();
+    };
+    const input = numeric ? h("input", { class: "input wk-in num", id: "sim-" + key, inputmode: "decimal", autocomplete: "off", value: z.val, placeholder: "wynik" + (s.unit ? ` (${s.unit})` : ""), "aria-label": `Wynik zadania ${j + 1}`,
+      oninput: (e) => { z.val = e.target.value; }, onkeydown: (e) => { if (e.key === "Enter") { e.preventDefault(); check(); } } }) : null;
+    return h("div", { class: "exercise wk-sim" + (z.ok === true || done ? " solved" : "") },
+      h("div", {}, h("b", { text: `Zadanie ${j + 1}. ` }), inline(s.task), done && z.ok !== true ? h("span", { class: "chip good", style: "margin-left:8px", text: "rozwiązane" }) : null),
+      numeric ? h("div", { class: "row" }, input, h("button", { type: "button", class: "btn primary small", onclick: check }, "Sprawdź"),
+        z.ok === true ? h("span", { class: "chip good", text: "Dobrze!" }) : z.ok === false ? h("span", { class: "chip bad", text: "Jeszcze nie. Sprawdź obliczenia." }) : z.ok === "bad-input" ? h("span", { class: "chip sun", text: "Wpisz liczbę, np. 12,5" }) : null) : null,
+      z.hints > 0 && s.hint ? h("div", { class: "tip" }, h("b", { text: "Podpowiedź: " }), inline(s.hint)) : null,
+      shownSteps || z.open ? h("ol", { class: "wk-steps small" }, (z.open ? steps : steps.slice(0, shownSteps)).map((x) => h("li", {}, inline(x)))) : null,
+      z.open ? h("div", { class: "ans" }, h("b", { text: "Odpowiedź: " }), inline(s.answer || (numeric ? fmtNum(s.result) + (s.unit ? " " + s.unit : "") : ""))) : null,
+      h("div", { class: "row" },
+        !z.open && z.ok !== true && z.hints < maxHints ? h("button", { type: "button", class: "btn ghost small", onclick: () => { z.hints++; render(); } }, z.hints === 0 && s.hint ? "Podpowiedź" : "Pokaż następny krok") : null,
+        !z.open && z.ok !== true ? h("button", { type: "button", class: "btn ghost small", onclick: () => { z.open = true; if (!numeric) z.self = true; render(); } }, numeric ? "Pokaż rozwiązanie" : "Pokaż odpowiedź") : null,
+        !numeric && z.open && z.self !== "done" ? [h("span", { class: "muted", style: "font-size:.86rem", text: "Miałeś dobrze?" }),
+          h("button", { type: "button", class: "btn small", onclick: () => { exRecord(key, true, z.hints > 0); z.self = "done"; render(); } }, "Tak"),
+          h("button", { type: "button", class: "btn small ghost", onclick: () => { exRecord(key, false, true); z.self = "done"; render(); } }, "Nie")] : null));
+  }
+
+  // ================= tryb „przed kolokwium” =================
+  const EXR = { run: null, loaded: false, force: false, timer: null };
+  const RUN_KEY = "bm-exam-run";
+  function saveRun() { try { if (EXR.run) localStorage.setItem(RUN_KEY, JSON.stringify(EXR.run)); else localStorage.removeItem(RUN_KEY); } catch {} }
+  function loadRun() { if (EXR.loaded) return; EXR.loaded = true; try { EXR.run = JSON.parse(localStorage.getItem(RUN_KEY) || "null"); } catch { EXR.run = null; } }
+  const examRunning = () => S.route.view === "exam" && EXR.run?.phase === "test" && EXR.run.key === exKey(S.route.sid, S.route.part || partsOf(S.route.sid)[0]);
+  const exRender = () => { EXR.force = true; try { render(); } finally { EXR.force = false; } };
+
+  function defaultTemplate(sid, part) {
+    const p = zalPartOf(sid, part), how = norm((p?.how || "") + " " + (p?.rules || []).join(" "));
+    const pm = (p?.rules || []).join(" ").match(/(\d+)\s*%/);
+    const pass = pm ? Number(pm[1]) : 50;
+    if (/test wyboru/.test(how) && !/otwart|zadani|studium/.test(how)) return { min: 30, pass, sections: [{ type: "abcd", n: 20 }] };
+    if (/studium przypadku/.test(how)) return { min: 60, pass, sections: [{ type: "case", n: 1 }, { type: "open", n: 2 }, { type: "abcd", n: 5 }] };
+    if (CALC_SUBJECTS.has(sid)) return { min: 60, pass, sections: [{ type: "task", n: 4 }, { type: "open", n: 2 }, { type: "abcd", n: 5 }] };
+    return { min: 45, pass, sections: [{ type: "open", n: 4 }, { type: "abcd", n: 10 }] };
+  }
+  async function examTemplate(sid, part) {
+    try { const d = await S.db.doc("exams/" + exKey(sid, part)).get(); if (d.exists && Array.isArray(d.data().sections)) return { ...defaultTemplate(sid, part), ...d.data() }; } catch {}
+    return defaultTemplate(sid, part);
+  }
+  const TYPE_LABEL = { abcd: "Test wyboru", open: "Pytanie otwarte", task: "Zadanie", case: "Studium przypadku" };
+  const rubricMax = (r) => (r || []).reduce((a, x) => a + (Number(x.p) || 0), 0);
+  const fcRubric = (a) => [{ t: "Odpowiedź oddaje sedno: " + a, p: 2 }];
+  const taskRubric = [{ t: "Poprawna metoda (właściwy wzór albo kolejność kroków)", p: 2 }, { t: "Poprawny wynik z jednostką", p: 2 }];
+
+  async function buildExam(sid, part) {
+    const tmpl = await examTemplate(sid, part);
+    const scope = scopeOf(sid, part).filter(readable);
+    const inScope = new Set(scope.map((m) => m.id));
+    const pairs = await loadContents(scope);
+    let bank = null;
+    try { const d = await S.db.doc("examBank/" + sid).get(); bank = d.exists ? d.data() : null; } catch {}
+    const pool = { abcd: [], open: [], task: [], case: [] }, spare = { open: [], task: [] };
+    for (const it of bank?.items || []) if (pool[it.type] && (!it.mid || inScope.has(it.mid))) pool[it.type].push(it);
+    for (const [m, c] of pairs) {
+      (c?.quiz || []).forEach((q, i) => pool.abcd.push({ id: `q:${m.id}:${i}`, type: "abcd", mid: m.id, q: q.q, options: q.options, correct: q.correct, explanation: q.explanation }));
+      (c?.flashcards || []).forEach((f) => spare.open.push({ id: `f:${m.id}:${hashStr(f.q)}`, type: "open", mid: m.id, q: f.q, answer: f.a, rubric: fcRubric(f.a) }));
+      for (const w of c?.worked || []) (w.similar || []).forEach((s, j) => { if (typeof s.result === "number") spare.task.push({ id: `w:${m.id}:${w.id}:${j}`, type: "task", mid: m.id, q: s.task, result: s.result, tol: s.tol, unit: s.unit, answer: s.answer, steps: s.steps, rubric: taskRubric }); });
+      (c?.lesson?.exercises || []).forEach((e, j) => spare.task.push({ id: `l:${m.id}:${j}`, type: "task", mid: m.id, q: e.task, answer: e.answer, rubric: taskRubric }));
+    }
+    const recent = new Set((examSet(sid, part).att || []).slice(-2).flatMap((a) => a.ids || []));
+    const scoreOf = new Map(scope.map((m) => [m.id, topicScore(m).score ?? 30]));
+    const order = (list) => list.map((x) => ({ x, k: (recent.has(x.id) ? 1000 : 0) + (scoreOf.get(x.mid) ?? 50) + Math.random() * 40 })).sort((a, b) => a.k - b.k).map((a) => a.x);
+    // Rozkład po tematach: najpierw po jednym z każdego tematu (od najsłabszych), potem reszta.
+    const spread = (list, n) => {
+      const out = [], used = new Set(), byMid = new Map();
+      for (const x of order(list)) { if (!byMid.has(x.mid)) byMid.set(x.mid, []); byMid.get(x.mid).push(x); }
+      while (out.length < n && byMid.size) for (const [mid, arr] of [...byMid]) { if (out.length >= n) break; const x = arr.shift(); if (x && !used.has(x.id)) { out.push(x); used.add(x.id); } if (!arr.length) byMid.delete(mid); }
+      return out;
+    };
+    const items = [];
+    let extraOpen = 0;
+    for (const sec of tmpl.sections || []) {
+      const n = Math.max(0, Number(sec.n) || 0);
+      let list = pool[sec.type] || [];
+      if (sec.type === "case" && list.length < n) { extraOpen += (n - list.length) * 2; }
+      if (sec.type === "open" || sec.type === "task") list = list.length >= n + (sec.type === "open" ? extraOpen : 0) ? list : [...list, ...order(spare[sec.type])];
+      const take = spread(list, n + (sec.type === "open" ? extraOpen : 0));
+      if (sec.type === "open") extraOpen = 0;
+      take.forEach((x) => items.push({ ...x, p: sec.type === "abcd" ? Number(sec.p) || 1 : null }));
+    }
+    if (extraOpen) spread([...pool.open, ...spare.open], extraOpen).forEach((x) => items.push({ ...x, p: null }));
+    return { tmpl, items: items.map((x, i) => ({ ...x, n: i + 1 })) };
+  }
+  const itemMax = (it) => it.type === "abcd" ? it.p || 1 : it.type === "case" ? (it.sub || []).reduce((a, s) => a + rubricMax(s.rubric), 0) : rubricMax(it.rubric);
+
+  async function startExam(sid, part) {
+    if (needPaid("Próbny test przed kolokwium")) return;
+    S.route.building = true; exRender();
+    try {
+      const { tmpl, items } = await buildExam(sid, part);
+      if (!items.length) { S.route.building = false; toast("Za mało materiałów w zakresie, żeby złożyć test."); exRender(); return; }
+      const now = Date.now();
+      EXR.run = { key: exKey(sid, part), sid, part, phase: "test", tmpl: { min: tmpl.min, pass: tmpl.pass }, items, ans: {}, marks: {}, start: now, end: now + (Number(tmpl.min) || 45) * 60000 };
+      saveRun();
+    } catch { toast("Nie udało się złożyć testu. Spróbuj ponownie."); }
+    S.route.building = false; exRender(); window.scrollTo({ top: 0 });
+  }
+  function submitExam(auto) {
+    const run = EXR.run; if (!run || run.phase !== "test") return;
+    run.phase = "grade"; run.submitted = Date.now(); run.auto = !!auto;
+    // Zadania liczbowe: zgodny wynik zaznacza od razu punkt za wynik.
+    for (const it of run.items) if (it.type === "task" && typeof it.result === "number") {
+      const ok = numMatch(run.ans[it.id + ":res"], it);
+      if (ok && it.rubric?.length) { const m = (run.marks[it.id] ||= []); m[it.rubric.length - 1] = true; }
+    }
+    saveRun(); exRender(); window.scrollTo({ top: 0 });
+    if (auto) toast("Czas minął. Test oddany automatycznie.");
+  }
+  function scoreRun(run) {
+    let got = 0, max = 0; const tp = {};
+    const add = (mid, g, m) => { got += g; max += m; if (mid) { const t = (tp[mid] ||= [0, 0]); t[0] += g; t[1] += m; } };
+    for (const it of run.items) {
+      if (it.type === "abcd") add(it.mid, run.ans[it.id] === it.correct ? it.p || 1 : 0, it.p || 1);
+      else if (it.type === "case") (it.sub || []).forEach((s, k) => { const mk = run.marks[it.id + ":" + k] || []; add(it.mid, (s.rubric || []).reduce((a, r, i) => a + (mk[i] ? Number(r.p) || 0 : 0), 0), rubricMax(s.rubric)); });
+      else { const mk = run.marks[it.id] || []; add(it.mid, (it.rubric || []).reduce((a, r, i) => a + (mk[i] ? Number(r.p) || 0 : 0), 0), rubricMax(it.rubric)); }
+    }
+    return { got, max, pct: max ? Math.round((100 * got) / max) : 0, tp };
+  }
+  function finishGrading() {
+    const run = EXR.run; if (!run) return;
+    const r = scoreRun(run);
+    run.phase = "result"; run.result = r;
+    const set = examSet(run.sid, run.part);
+    const att = [...(set.att || []), { at: Date.now(), pct: r.pct, pts: r.got, max: r.max, tp: r.tp, ids: run.items.map((x) => x.id) }].slice(-5);
+    saveExamSet(run.sid, run.part, { att });
+    saveRun(); exRender(); window.scrollTo({ top: 0 });
+  }
+  function leaveRun() { EXR.run = null; saveRun(); }
+
+  // Jeden zegar dla testu: odświeża licznik bez przebudowy strony i oddaje test po czasie.
+  setInterval(() => {
+    const run = EXR.run;
+    if (!run || run.phase !== "test") return;
+    const left = run.end - Date.now();
+    const el = document.getElementById("ex-timer");
+    if (el) { const s = Math.max(0, Math.round(left / 1000)); el.textContent = `${Math.floor(s / 60)}:${pad(s % 60)}`; el.classList.toggle("low", s <= 300); }
+    if (left <= 0 && examRunning()) submitExam(true);
+  }, 1000);
+  setInterval(() => { if (EXR.run?.phase === "test") saveRun(); }, 10000);
+
+  function dayPlan(sid, part, dateKey) {
+    const n = daysUntil(dateKey);
+    if (n < 1) return [];
+    const rank = { none: 0, weak: 1, mid: 2, good: 3 };
+    const mats = scopeOf(sid, part).map((m) => ({ m, ts: topicScore(m) })).sort((a, b) => rank[a.ts.state] - rank[b.ts.state] || (a.ts.score ?? 0) - (b.ts.score ?? 0)).map((x) => x.m);
+    const studyDays = Math.max(1, n - 1);
+    const per = Math.max(1, Math.ceil(mats.length / studyDays));
+    const days = [];
+    for (let d = 0; d < Math.min(n, 21); d++) {
+      const k = dkey(addDays(dparse(todayKey()), d));
+      if (n > 1 && d === n - 1) { days.push({ k, test: true }); continue; }
+      const chunk = mats.slice(d * per, (d + 1) * per);
+      days.push({ k, mats: chunk, test: n === 1 });
+    }
+    return days;
+  }
+
+  function viewExam() {
+    loadRun();
+    const sid = S.route.sid, s = subjectById(sid);
+    if (!s) return [backLink({ view: "materials" }), h("p", { class: "muted", text: "Nie ma takiego przedmiotu." })];
+    const parts = partsOf(sid);
+    const part = parts.includes(S.route.part) ? S.route.part : (nextExam(sid)?.part || parts.find((k) => k !== "W") || parts[0]);
+    S.route.part = part;
+    const run = EXR.run && EXR.run.key === exKey(sid, part) ? EXR.run : null;
+    if (run?.phase === "test") return examTest(s, run);
+    if (run?.phase === "grade") return examGrade(s, run);
+    if (run?.phase === "result" && S.route.showResult !== false) return examResult(s, run);
+    return examPlan(s, part, parts);
+  }
+
+  function examPlan(s, part, parts) {
+    const sid = s.id, p = zalPartOf(sid, part), set = examSet(sid, part);
+    const ed = examDate(sid, part);
+    const n = ed ? daysUntil(ed.date) : null;
+    const lbl = partLabel(sid, part);
+    const tmpl = defaultTemplate(sid, part);
+    const out = new Set(set.out || []);
+    const mats = studyMats(sid);
+    const scored = mats.map((m) => ({ m, ts: topicScore(m) }));
+    const key = scored.filter((x) => !out.has(x.m.id)).map((x) => ({ ...x, why: x.m.core ? "kluczowy" : x.ts.state === "weak" ? "słabo" : x.ts.state === "none" ? "nieruszony" : null }))
+      .filter((x) => x.why).sort((a, b) => Number(!!b.m.core) - Number(!!a.m.core) || (a.ts.score ?? -1) - (b.ts.score ?? -1)).slice(0, 5);
+    const dateIn = h("input", { type: "date", class: "input", style: "max-width:180px", value: set.date || ed?.date || "", min: todayKey(), "aria-label": "Data zaliczenia",
+      onchange: (e) => { saveExamSet(sid, part, { date: e.target.value || null }); render(); } });
+    const plan = ed ? dayPlan(sid, part, ed.date) : [];
+    const pendingRun = EXR.run && EXR.run.key !== exKey(sid, part) && EXR.run.phase === "test" ? EXR.run : null;
+    return [
+      backLink({ view: "subject", id: sid }),
+      h("section", { class: "exam-hero", style: `--c:${s.color}` },
+        h("span", { class: "eyebrow", text: "Tryb przed kolokwium" }),
+        h("h1", { text: s.pl }),
+        parts.length > 1 ? h("div", { class: "gl-chips" }, parts.map((k) => h("button", { type: "button", class: "fchip", "aria-pressed": String(k === part), onclick: () => { S.route.part = k; render(); } }, `${ZAL_KIND[k] || k}: ${partLabel(sid, k)}`))) : null,
+        h("div", { class: "exam-count" },
+          n == null ? h("span", { class: "muted", text: "Termin nieznany. Wpisz datę, a plan ułoży się sam." })
+            : h("span", {}, h("b", { class: "num", text: n <= 0 ? "Dziś" : `Za ${n} ${plural(n, "dzień", "dni", "dni")}` }), ` · ${lbl} · ${fmtKey(ed.date)}`, ed.approx ? h("span", { class: "chip sun", style: "margin-left:6px", text: "data orientacyjna" }) : null),
+          h("label", { class: "row", style: "gap:8px;font-size:.88rem" }, h("span", { class: "muted", text: "Twoja data:" }), dateIn)),
+        p ? h("div", { class: "stack", style: "gap:4px" }, h("div", { class: "row", style: "gap:8px" }, formChip(p.f), h("span", { text: p.how })), ...(p.rules || []).map((r) => h("span", { class: "muted", style: "font-size:.88rem", text: "• " + r }))) : null,
+        h("p", { class: "muted", style: "font-size:.88rem", text: `Próbny test: ${tmpl.min} min · ${tmpl.sections.map((x) => `${TYPE_LABEL[x.type].toLowerCase()} × ${x.n}`).join(", ")} · próg ${tmpl.pass}%` })),
+      pendingRun ? h("div", { class: "notice" }, "Masz niedokończony test z innego przedmiotu. ", h("button", { type: "button", class: "link", onclick: () => go({ view: "exam", sid: pendingRun.sid, part: pendingRun.part }) }, "Wróć do niego")) : null,
+      h("div", { class: "hub" },
+        h("div", { class: "stack", style: "min-width:0;gap:20px" },
+          h("section", { class: "panel" },
+            h("div", { class: "panel-head" }, h("h2", { text: "Plan dzień po dniu" }), ed ? h("span", { class: "muted num", style: "font-size:.86rem", text: `${scopeOf(sid, part).length} ${plural(scopeOf(sid, part).length, "temat", "tematy", "tematów")} w zakresie` }) : null),
+            !PAID() ? lockBox("Plan nauki na każdy dzień do kolokwium i próbny test z timerem są w pełnej wersji.")
+              : !ed ? h("div", { class: "empty small", text: "Wpisz datę zaliczenia powyżej." })
+              : !plan.length ? h("div", { class: "empty small", text: "Zaliczenie jest dziś. Zrób próbny test na rozgrzewkę albo przejrzyj ściągawkę." })
+              : h("ol", { class: "plan-days" }, plan.map((d) => h("li", { class: d.k === todayKey() ? "today" : "" },
+                  h("span", { class: "pd-date", text: d.k === todayKey() ? "Dziś" : fmtKey(d.k) }),
+                  h("div", { class: "pd-what" },
+                    d.test ? h("span", {}, h("b", { text: "Próbny test" }), " i ściągawka z przedmiotu") : null,
+                    d.mats?.length ? d.mats.map((m) => h("button", { type: "button", class: "pd-topic", onclick: () => go({ view: "material", id: m.id, tab: isLesson(m) ? "lekcja" : "skrot" }) }, h("i", { class: "pm-sq st-" + topicScore(m).state, "aria-hidden": "true" }), m.title || m.fileName))
+                      : !d.test ? h("span", { class: "muted", text: "Powtórki fiszek i quiz z całości" }) : null)))),
+            PAID() ? h("div", { class: "row" },
+              h("button", { type: "button", class: "btn primary", disabled: S.route.building ? true : null, onclick: () => startExam(sid, part) }, S.route.building ? "Składam test…" : `Rozpocznij próbny test · ${tmpl.min} min`),
+              h("button", { type: "button", class: "btn", onclick: () => go({ view: "cheat", sid }) }, "Ściągawka z przedmiotu"),
+              h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "review", sid }) }, "Powtórki z przedmiotu")) : null),
+          (set.att || []).length ? h("section", { class: "panel" }, h("h2", { text: "Twoje podejścia" }),
+            h("div", { class: "att-list" }, [...set.att].reverse().map((a) => h("div", { class: "att" }, h("span", { class: "num", text: fmtDate(a.at) }), h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${a.pct}%` })), h("span", { class: "chip " + (a.pct >= (tmpl.pass || 50) ? "good" : "bad"), text: `${a.pct}% · ${a.pts}/${a.max} pkt` }))))) : null),
+        h("div", { class: "stack", style: "min-width:0;gap:20px" },
+          key.length ? h("section", { class: "panel" }, h("h2", { text: "Najważniejsze tematy" }),
+            h("div", { class: "list" }, key.map(({ m, ts, why }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: isLesson(m) ? "lekcja" : "skrot" }) },
+              h("span", { class: "t", text: m.title || m.fileName }), h("span", { class: "m", text: why === "kluczowy" ? "starosta oznaczył jako kluczowy" : why === "słabo" ? "słabo wychodzi w quizach i fiszkach" : "jeszcze nieruszony" }),
+              h("span", { class: "r" }, stateChip(ts)))))) : null,
+          h("section", { class: "panel" },
+            h("div", { class: "panel-head" }, h("h2", { text: "Zakres" }), h("span", { class: "muted", style: "font-size:.84rem", text: "odznacz, czego nie ma na zaliczeniu" })),
+            mats.length ? h("div", { class: "scope" }, scored.map(({ m, ts }) => h("label", { class: "scope-row" },
+              h("input", { type: "checkbox", checked: !out.has(m.id), onchange: (e) => { const o = new Set(examSet(sid, part).out || []); if (e.target.checked) o.delete(m.id); else o.add(m.id); saveExamSet(sid, part, { out: [...o] }); render(); } }),
+              h("span", { class: "t", text: m.title || m.fileName }), stateChip(ts))))
+              : h("div", { class: "empty small", text: "Do tego przedmiotu nie ma jeszcze materiałów." }))))];
+  }
+
+  function examTest(s, run) {
+    const answered = run.items.filter((it) => it.type === "case" ? (it.sub || []).some((_, k) => (run.ans[it.id + ":" + k] || "").trim()) : it.type === "task" ? (run.ans[it.id] || run.ans[it.id + ":res"] || "").trim() : it.type === "abcd" ? run.ans[it.id] != null : (run.ans[it.id] || "").trim()).length;
+    const left = Math.max(0, Math.round((run.end - Date.now()) / 1000));
+    const ta = (id, rows, ph) => h("textarea", { class: "input", rows: String(rows), placeholder: ph, "aria-label": "Twoja odpowiedź", oninput: (e) => { run.ans[id] = e.target.value; saveRun(); } }, run.ans[id] || "");
+    const ask = () => modal((close) => [h("h3", { text: "Oddać test?" }),
+      h("p", { class: "muted", text: answered < run.items.length ? `Bez odpowiedzi: ${run.items.length - answered} ${plural(run.items.length - answered, "pytanie", "pytania", "pytań")}. Po oddaniu nie da się już nic zmienić.` : "Po oddaniu nie da się już nic zmienić." }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { close(); submitExam(false); } }, "Oddaj"), h("button", { type: "button", class: "btn ghost", onclick: close }, "Jeszcze sprawdzę"))]);
+    return [h("div", { class: "exam-run" },
+      h("div", { class: "exam-bar" },
+        h("div", { style: "min-width:0" }, h("b", { text: s.pl }), h("span", { class: "muted", text: ` · próbny test · ${run.items.length} ${plural(run.items.length, "pytanie", "pytania", "pytań")}` })),
+        h("span", { class: "ex-timer num" + (left <= 300 ? " low" : ""), id: "ex-timer", "aria-label": "Pozostały czas", text: `${Math.floor(left / 60)}:${pad(left % 60)}` }),
+        h("button", { type: "button", class: "btn primary small", onclick: ask }, "Oddaj test")),
+      h("p", { class: "muted", style: "font-size:.88rem", text: "Odpowiedzi zapisują się same, więc odświeżenie strony nic nie skasuje. Pytania otwarte ocenisz po oddaniu według klucza." }),
+      run.items.map((it) => h("section", { class: "ex-item" },
+        h("div", { class: "ex-head" }, h("span", { class: "ex-n num", text: it.n }), h("span", { class: "eyebrow", text: TYPE_LABEL[it.type] }), h("span", { class: "muted num", style: "margin-left:auto;font-size:.84rem", text: `${itemMax(it)} pkt` })),
+        it.type === "case" ? h("div", { class: "case-text" }, rich(it.text)) : h("div", { class: "q" }, inline(it.q)),
+        it.type === "abcd" ? h("div", { class: "opts ex-opts", role: "radiogroup" }, it.options.map((o, i) => h("button", { type: "button", class: "opt", "data-i": i, "aria-pressed": String(run.ans[it.id] === i),
+          onclick: (e) => { run.ans[it.id] = i; saveRun(); e.currentTarget.parentElement.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.i) === i))); } }, h("span", { class: "k", text: "ABCD"[i] }), h("span", { text: o }))))
+          : it.type === "open" ? ta(it.id, 5, "Napisz odpowiedź własnymi słowami…")
+          : it.type === "task" ? h("div", { class: "stack", style: "gap:8px" }, ta(it.id, 4, "Rozwiązanie: wzór, obliczenia…"),
+              typeof it.result === "number" ? h("label", { class: "row", style: "gap:8px" }, h("span", { text: "Wynik:" }), h("input", { class: "input num", style: "max-width:180px", inputmode: "decimal", value: run.ans[it.id + ":res"] || "", placeholder: it.unit || "", oninput: (e) => { run.ans[it.id + ":res"] = e.target.value; saveRun(); } })) : null)
+          : (it.sub || []).map((sq, k) => h("div", { class: "stack", style: "gap:6px" }, h("div", { class: "q" }, h("b", { text: `${it.n}.${k + 1} ` }), inline(sq.q)), ta(it.id + ":" + k, 4, "Twoja odpowiedź…"))))),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: ask }, "Oddaj test"), h("span", { class: "muted", style: "font-size:.86rem", text: `Odpowiedzi: ${answered} z ${run.items.length}` })))];
+  }
+
+  function rubricBox(run, markKey, rubric, totalEl) {
+    const mk = (run.marks[markKey] ||= []);
+    return h("div", { class: "rubric" }, h("span", { class: "eyebrow", text: "Klucz: zaznacz, co masz w odpowiedzi" }),
+      (rubric || []).map((r, i) => h("label", { class: "rub-row" },
+        h("input", { type: "checkbox", checked: !!mk[i], onchange: (e) => { mk[i] = e.target.checked; saveRun(); const sc = scoreRun(run); if (totalEl) totalEl.textContent = `${sc.got}/${sc.max} pkt`; } }),
+        h("span", { text: r.t }), h("span", { class: "num muted", text: `${r.p} pkt` }))));
+  }
+  function examGrade(s, run) {
+    const sc = scoreRun(run);
+    const totalEl = h("b", { class: "num", text: `${sc.got}/${sc.max} pkt` });
+    const shown = (v) => (String(v || "").trim() ? h("div", { class: "your" }, String(v)) : h("div", { class: "your empty-ans", text: "bez odpowiedzi" }));
+    return [h("div", { class: "exam-run" },
+      h("div", { class: "exam-bar" }, h("div", { style: "min-width:0" }, h("b", { text: "Sprawdzanie" }), h("span", { class: "muted", text: " · " + s.pl })), totalEl, h("button", { type: "button", class: "btn primary small", onclick: finishGrading }, "Pokaż wynik")),
+      h("p", { class: "muted", style: "font-size:.9rem;max-width:64ch", text: "Test wyboru sprawdziłem sam. Przy pytaniach otwartych i zadaniach porównaj swoją odpowiedź z kluczem i zaznacz elementy, które w niej są. Bądź uczciwy: prowadzący też będzie." }),
+      run.items.map((it) => {
+        if (it.type === "abcd") {
+          const a = run.ans[it.id], ok = a === it.correct;
+          return h("section", { class: "ex-item " + (ok ? "ok" : "bad") },
+            h("div", { class: "ex-head" }, h("span", { class: "ex-n num", text: it.n }), h("span", { class: "eyebrow", text: TYPE_LABEL.abcd }), h("span", { class: "chip " + (ok ? "good" : "bad"), style: "margin-left:auto", text: ok ? `${it.p || 1} pkt` : "0 pkt" })),
+            h("div", { class: "q" }, inline(it.q)),
+            !ok ? h("p", {}, a != null ? h("span", { class: "muted", text: `Twoja: ${"ABCD"[a]}. ${it.options[a]} · ` }) : h("span", { class: "muted", text: "Bez odpowiedzi · " }), h("b", { text: `Poprawna: ${"ABCD"[it.correct]}. ${it.options[it.correct]}` })) : null,
+            !ok && it.explanation ? h("p", { class: "muted", style: "font-size:.9rem", text: it.explanation }) : null);
+        }
+        if (it.type === "case") return h("section", { class: "ex-item" },
+          h("div", { class: "ex-head" }, h("span", { class: "ex-n num", text: it.n }), h("span", { class: "eyebrow", text: TYPE_LABEL.case })),
+          h("details", {}, h("summary", { text: "Treść studium przypadku" }), rich(it.text)),
+          (it.sub || []).map((sq, k) => h("div", { class: "stack", style: "gap:8px" }, h("div", { class: "q" }, h("b", { text: `${it.n}.${k + 1} ` }), inline(sq.q)), shown(run.ans[it.id + ":" + k]),
+            h("div", { class: "model" }, h("b", { text: "Odpowiedź wzorcowa: " }), inline(sq.answer || "")), rubricBox(run, it.id + ":" + k, sq.rubric, totalEl))));
+        const res = it.type === "task" && typeof it.result === "number" ? numMatch(run.ans[it.id + ":res"], it) : null;
+        return h("section", { class: "ex-item" },
+          h("div", { class: "ex-head" }, h("span", { class: "ex-n num", text: it.n }), h("span", { class: "eyebrow", text: TYPE_LABEL[it.type] })),
+          h("div", { class: "q" }, inline(it.q)),
+          shown(run.ans[it.id]),
+          res != null ? h("p", {}, h("span", { class: "chip " + (res ? "good" : "bad"), text: res ? `Wynik ${run.ans[it.id + ":res"]} zgadza się z kluczem` : `Twój wynik: ${run.ans[it.id + ":res"]}, w kluczu: ${fmtNum(it.result)}${it.unit ? " " + it.unit : ""}` })) : it.type === "task" && typeof it.result === "number" ? h("p", {}, h("span", { class: "chip bad", text: `Bez wyniku. W kluczu: ${fmtNum(it.result)}${it.unit ? " " + it.unit : ""}` })) : null,
+          h("div", { class: "model" }, h("b", { text: "Odpowiedź wzorcowa: " }), inline(it.answer || ""), it.steps?.length ? h("ol", { class: "wk-steps small" }, it.steps.map((x) => h("li", {}, inline(x)))) : null),
+          rubricBox(run, it.id, it.rubric, totalEl));
+      }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: finishGrading }, "Pokaż wynik")))];
+  }
+
+  function examResult(s, run) {
+    const r = run.result || scoreRun(run);
+    const pass = run.tmpl?.pass || 50;
+    const rows = Object.entries(r.tp).map(([mid, [g, m]]) => ({ m: materialById(mid), g, mx: m, pct: m ? Math.round((100 * g) / m) : 0 })).filter((x) => x.m).sort((a, b) => a.pct - b.pct);
+    const again = () => { leaveRun(); startExam(run.sid, run.part); };
+    return [backLink({ view: "subject", id: s.id }),
+      h("section", { class: "exam-hero result " + (r.pct >= pass ? "pass" : "fail"), style: `--c:${s.color}` },
+        h("span", { class: "eyebrow", text: "Wynik próbnego testu · " + s.pl }),
+        h("div", { class: "row", style: "align-items:baseline" }, h("span", { class: "score num", text: r.pct + "%" }), h("span", { class: "num", text: `${r.got}/${r.max} pkt` }), h("span", { class: "chip " + (r.pct >= pass ? "good" : "bad"), text: r.pct >= pass ? `zaliczone (próg ${pass}%)` : `poniżej progu ${pass}%` })),
+        h("p", { class: "muted", text: r.pct >= pass ? "Dobrze. Przed zaliczeniem powtórz najsłabsze tematy z listy poniżej." : "Jeszcze trochę pracy. Zacznij od tematów na górze listy, potem zrób nowy test (pytania się nie powtórzą)." })),
+      rows.length ? h("section", { class: "panel" }, h("h2", { text: "Wynik per temat" }),
+        h("div", { class: "att-list" }, rows.map((x) => h("div", { class: "att topic-res" },
+          h("button", { type: "button", class: "link", style: "text-align:left;color:var(--ink)", onclick: () => go({ view: "material", id: x.m.id, tab: weakestTab(x.m, topicScore(x.m)) }) }, x.m.title || x.m.fileName),
+          h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${x.pct}%` })),
+          h("span", { class: "chip " + (x.pct >= 80 ? "good" : x.pct >= 50 ? "sun" : "bad"), text: `${x.g}/${x.mx}` }))))) : null,
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", onclick: again }, "Nowy test"),
+        h("button", { type: "button", class: "btn", onclick: () => { leaveRun(); render(); } }, "Wróć do planu"),
+        h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "progress" }) }, "Mapa postępów"))];
+  }
+
+  // ================= ściągawki: jedna strona A4 do druku albo PDF =================
+  function cheatBlocks(m, c, compact) {
+    if (!c) return [];
+    if (c.cheatsheet && !compact) return [h("div", { class: "ch-sec" }, rich(c.cheatsheet))];
+    const L = c.lesson;
+    let notes = (c.notes || []).map((n) => n.point).filter(Boolean);
+    if (!notes.length && c.topics?.length) notes = c.topics.flatMap((t) => t.remember || []);
+    if (!notes.length && L) notes = (L.sections || []).map((s) => s.tip).filter(Boolean);
+    let concepts = c.concepts || [];
+    const formulas = L?.formulas || [];
+    const w = c.worked?.[0], lex = (L?.sections || []).find((s) => s.example)?.example;
+    if (compact) { notes = notes.slice(0, 3); concepts = []; }
+    else {
+      const size = () => notes.join(" ").length + concepts.reduce((a, x) => a + x.term.length + firstSentence(x.definition, 140).length, 0) + formulas.join(" ").length;
+      notes = notes.slice(0, 10); concepts = concepts.slice(0, 8);
+      while (size() > 3600 && (notes.length > 5 || concepts.length > 4)) { if (notes.length > 5) notes.pop(); if (concepts.length > 4) concepts.pop(); }
+    }
+    const out = [];
+    if (!compact && (c.tldr || L?.intro)) out.push(h("p", { class: "ch-lead", text: firstSentence(c.tldr || L.intro, 320) }));
+    if (notes.length) out.push(h("div", { class: "ch-sec" }, compact ? null : h("h3", { text: "Co zapamiętać" }), h("ul", {}, notes.map((n) => h("li", {}, inline(n))))));
+    if (formulas.length) out.push(h("div", { class: "ch-sec" }, h("h3", { text: "Wzory" }), h("div", { class: "ch-formulas" }, formulas.map((f) => h("div", {}, inline(f))))));
+    if (concepts.length) out.push(h("div", { class: "ch-sec" }, h("h3", { text: "Pojęcia EN – PL" }), h("dl", {}, concepts.flatMap((x) => [h("dt", {}, h("b", { text: x.term }), x.pl ? h("span", { text: " · " + x.pl }) : null), h("dd", { text: firstSentence(x.definition, 140) })]))));
+    if (!compact && (w || lex)) {
+      const ex = w ? { task: w.task, steps: (w.steps || []).map((s) => [s.do, s.result].filter(Boolean).join(": ")), answer: w.answer } : { task: lex.task, steps: lex.steps || [], answer: lex.answer };
+      out.push(h("div", { class: "ch-sec" }, h("h3", { text: "Przykład" }), h("p", {}, inline(ex.task)), ex.steps.length ? h("ol", {}, ex.steps.slice(0, 5).map((s) => h("li", {}, inline(s)))) : null, ex.answer ? h("p", {}, h("b", { text: "Wynik: " }), inline(ex.answer)) : null));
+    }
+    return out;
+  }
+  function viewCheat() {
+    const sid = S.route.sid || materialById(S.route.id)?.subjectId;
+    const s = subjectById(sid);
+    const one = S.route.id ? materialById(S.route.id) : null;
+    const back = backLink(one ? { view: "material", id: one.id } : { view: "subject", id: sid });
+    if (!s) return [back, h("p", { class: "muted", text: "Ładuję…" })];
+    if (!PAID()) return [back, paywallCard(null)];
+    const mats = one ? [one] : studyMats(sid);
+    if (!S.route.ch) { S.route.ch = "loading"; loadContents(mats).then((pairs) => { S.route.ch = pairs; render(); }); }
+    if (S.route.ch === "loading") return [back, h("p", { class: "muted", text: "Składam ściągawkę…" })];
+    const pairs = S.route.ch.filter(([, c]) => c);
+    const email = window.skrot?.email || "";
+    let body;
+    if (one) body = cheatBlocks(one, pairs[0]?.[1], false);
+    else {
+      const concepts = glossaryFrom(pairs).slice(0, 14);
+      body = [...pairs.map(([m, c]) => h("div", { class: "ch-mat" }, h("h3", { text: m.title || m.fileName }), cheatBlocks(m, c, true))),
+        concepts.length ? h("div", { class: "ch-sec" }, h("h3", { text: "Pojęcia EN – PL" }), h("dl", {}, concepts.flatMap((x) => [h("dt", {}, h("b", { text: x.en }), x.pl ? h("span", { text: " · " + x.pl }) : null), h("dd", { text: firstSentence(x.def, 120) })]))) : null];
+    }
+    return [h("div", { class: "noprint stack", style: "gap:10px" }, back,
+        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => window.print() }, "Drukuj albo zapisz PDF"),
+          h("span", { class: "muted", style: "font-size:.88rem", text: "W oknie drukowania wybierz „Zapisz jako PDF”, żeby mieć plik." }))),
+      h("article", { class: "cheat-page" + (one ? "" : " subj") },
+        h("header", { class: "ch-top" }, h("span", { class: "ch-brand", text: "Skrót BM" }), h("span", { text: s.pl }), h("b", { text: one ? one.title || one.fileName : "Cały przedmiot: jedna strona przed kolokwium" })),
+        h("div", { class: "ch-cols" }, body),
+        h("footer", { class: "ch-foot" }, `${email ? email + " · " : ""}${fmtKey(todayKey())} · skrotbm.pl · do nauki, nie do korzystania na zaliczeniu`))];
+  }
+
+  // ================= Panel AI: zadania krok po kroku, pytania do testów, słowniczek, szablony =================
+  const GEN = { busy: false, stop: false, log: [], sid: "", kind: "worked", bank: {}, tmpl: {}, glBusy: false };
+  const caseSubject = (sid) => (zalOf(sid)?.parts || []).some((p) => /studium przypadku/i.test(p.how));
+  function genTopics(c) {
+    if (c?.topics?.length) return c.topics.map((t, i) => ({ i, topic: t.t, summary: t.summary, remember: t.remember }));
+    if (c?.lesson?.sections?.length) return c.lesson.sections.map((s, i) => ({ i, topic: String(s.h).replace(/^\s*\d+[.)]\s*/, ""), summary: String(s.body || "").slice(0, 700) }));
+    return (c?.concepts || []).slice(0, 12).map((x, i) => ({ i, topic: x.term, summary: x.definition }));
+  }
+  const genSubj = (m) => { const s = subjectById(m.subjectId) || { pl: "", en: "" }; return `"${s.en || s.pl}" (${s.pl})`; };
+  const genLang = (m, c) => langLineFor(c?.lang || m.lang || "en").replace(" For each concept also give the Polish equivalent of the term in \"pl\".", "");
+  const MATH_LINE = "Write maths as LaTeX inside \\\\( ... \\\\) (inline only). \"result\" is a plain JSON number (no units, no % sign); say in the task in what form and unit to give the answer. \"calc\" is an arithmetic expression that computes \"result\" from the task's numbers, using only numbers, + - * / ^ ( ) sqrt ln exp; it is checked automatically and items whose calc does not match are dropped.";
+  function workedPrompt(m, c) {
+    return `You write worked examples for first-year Business Management students at the University of Szczecin. Subject: ${genSubj(m)}.
+Below are the topics of one study material (our own notes). Pick up to 3 topics that are examined with a calculation or a step-by-step method (formulas, elasticity, costs, interest, present value, derivatives, break-even, GDP, etc.). If no topic involves a calculation or a method, reply {"worked": []}.
+For each picked topic write one worked example and 3 similar exercises with different numbers. Use realistic, simple numbers. Do not copy textbook exercises.
+${genLang(m, c)}
+${MATH_LINE}
+TOPICS: ${JSON.stringify(genTopics(c)).slice(0, 40000)}
+Reply with only one JSON object:
+{"worked": [{"i": 0, "task": "the worked example task", "steps": [{"do": "what we do in this step", "why": "why, 1 sentence", "result": "intermediate result"}], "answer": "final answer with unit, 1 sentence", "similar": [{"task": "new exercise", "result": 12.5, "unit": "zł", "calc": "(80-100)/100", "hint": "one-sentence hint", "steps": ["short step with intermediate result"], "answer": "final answer with unit"}]}]}
+Give 3-5 steps per worked example.`;
+  }
+  function cleanWorked(r, c) {
+    const topics = c?.topics || [];
+    return (Array.isArray(r?.worked) ? r.worked : []).map((w, k) => {
+      const steps = (Array.isArray(w?.steps) ? w.steps : []).map((x) => ({ do: sText(x?.do, 400), why: sText(x?.why, 400), result: sText(x?.result, 300) })).filter((x) => x.do).slice(0, 8);
+      const similar = (Array.isArray(w?.similar) ? w.similar : []).map((x) => {
+        const result = Number(x?.result);
+        if (!sText(x?.task) || !Number.isFinite(result) || !calcOk(x?.calc, result)) return null;
+        return { task: sText(x.task, 800), result, unit: sText(x?.unit, 20), hint: sText(x?.hint, 300), steps: (Array.isArray(x?.steps) ? x.steps : []).map((y) => sText(y, 300)).filter(Boolean).slice(0, 6), answer: sText(x?.answer, 300) };
+      }).filter(Boolean).slice(0, 4);
+      const sl = topics[Math.round(Number(w?.i))]?.slides || null;
+      return { id: "w" + (k + 1), task: sText(w?.task, 1000), steps, answer: sText(w?.answer, 400), similar, slide: sl?.[0] || null, slides: sl };
+    }).filter((w) => w.task && w.steps.length >= 2);
+  }
+  function bankPrompt(m, c) {
+    const s = subjectById(m.subjectId);
+    const z = zalOf(m.subjectId);
+    const form = z ? z.parts.map((p) => `${ZAL_KIND[p.k]}: ${p.how}`).join(" ") : "written test";
+    const calcS = CALC_SUBJECTS.has(m.subjectId), caseS = caseSubject(m.subjectId);
+    return `You write practice exam questions for first-year Business Management students at the University of Szczecin. Subject: ${genSubj(m)}. Exam format from the syllabus: ${form}
+Base the questions ONLY on the study notes below (our own material). Never ask what a lecturer or a slide said. Do not reproduce real past exam questions.
+Create: 3 open questions that need explaining, comparing or applying a concept to a short new situation${calcS ? "; 2 calculation tasks with new numbers" : ""}${caseS ? "; 1 short case study (6-9 sentences about a fictional company) with 3 open questions about it" : ""}.
+Every open question, task and case question has a model answer and a marking rubric of 2-5 checkable elements with points (1-3 each). An open question is worth 3-6 points, a task 4-6, a case question 3-5.${calcS ? " For tasks the LAST rubric element is the correct numerical result." : ""}
+${genLang(m, c)}
+${calcS ? MATH_LINE : ""}
+NOTES: ${JSON.stringify(genTopics(c)).slice(0, 40000)}
+Reply with only one JSON object:
+{"open": [{"i": 0, "q": "question", "answer": "model answer, 2-5 sentences", "rubric": [{"t": "element", "p": 2}]}]${calcS ? `, "tasks": [{"i": 0, "q": "task", "result": 12.5, "unit": "zł", "calc": "...", "answer": "final answer", "steps": ["step"], "rubric": [{"t": "correct method", "p": 2}, {"t": "correct result", "p": 2}]}]` : ""}${caseS ? `, "case": {"text": "case study", "questions": [{"q": "question", "answer": "model answer", "rubric": [{"t": "element", "p": 2}]}]}` : ""}}`;
+  }
+  const cleanRubric = (r) => (Array.isArray(r) ? r : []).map((x) => ({ t: sText(x?.t, 300), p: Math.max(1, Math.min(5, Math.round(Number(x?.p) || 1))) })).filter((x) => x.t).slice(0, 6);
+  function cleanBank(r, m) {
+    const items = [];
+    for (const x of Array.isArray(r?.open) ? r.open : []) { const q = sText(x?.q, 800), rubric = cleanRubric(x?.rubric); if (q && rubric.length) items.push({ id: "o" + hashStr(m.id + q), type: "open", mid: m.id, q, answer: sText(x?.answer, 1500), rubric }); }
+    for (const x of Array.isArray(r?.tasks) ? r.tasks : []) {
+      const q = sText(x?.q, 1000), rubric = cleanRubric(x?.rubric), result = Number(x?.result);
+      if (!q || !rubric.length || !Number.isFinite(result) || !calcOk(x?.calc, result)) continue;
+      items.push({ id: "t" + hashStr(m.id + q), type: "task", mid: m.id, q, result, unit: sText(x?.unit, 20), answer: sText(x?.answer, 600), steps: (Array.isArray(x?.steps) ? x.steps : []).map((y) => sText(y, 300)).filter(Boolean).slice(0, 6), rubric });
+    }
+    const cs = r?.case;
+    if (cs && sText(cs.text)) {
+      const sub = (Array.isArray(cs.questions) ? cs.questions : []).map((x) => ({ q: sText(x?.q, 600), answer: sText(x?.answer, 1200), rubric: cleanRubric(x?.rubric) })).filter((x) => x.q && x.rubric.length).slice(0, 4);
+      if (sub.length) items.push({ id: "c" + hashStr(m.id + cs.text), type: "case", mid: m.id, text: sText(cs.text, 3000), sub });
+    }
+    return items;
+  }
+  async function genBankDoc(sid) {
+    if (GEN.bank[sid]) return GEN.bank[sid];
+    try { const d = await S.db.doc("examBank/" + sid).get(); GEN.bank[sid] = d.exists ? d.data() : { items: [], done: [] }; } catch { GEN.bank[sid] = { items: [], done: [] }; }
+    return GEN.bank[sid];
+  }
+  async function genTodo(sid, kind) {
+    const ms = studyMats(sid);
+    if (kind === "worked") return ms.filter((m) => m.workedCount == null);
+    const bank = await genBankDoc(sid);
+    const done = new Set(bank.done || []);
+    return ms.filter((m) => !done.has(m.id));
+  }
+  async function genSave(kind, m, raw) {
+    const c = await getContent(m.id);
+    if (!c) throw { code: "empty_completion" };
+    if (kind === "worked") {
+      const worked = cleanWorked(raw, c);
+      const nc = { ...c, worked };
+      await S.db.doc("materialContent/" + m.id).set(nc);
+      S.content[m.id] = nc;
+      const tasks = worked.reduce((a, w) => a + w.similar.length, 0);
+      await S.db.doc("materials/" + m.id).update({ workedCount: worked.length, workedTaskCount: tasks });
+      m.workedCount = worked.length; m.workedTaskCount = tasks;
+      return worked.length ? `${worked.length} ${plural(worked.length, "przykład", "przykłady", "przykładów")}, ${tasks} ${plural(tasks, "zadanie", "zadania", "zadań")}` : "bez obliczeń, pominięty";
+    }
+    const items = cleanBank(raw, m);
+    const bank = await genBankDoc(m.subjectId);
+    bank.items = [...(bank.items || []).filter((x) => x.mid !== m.id), ...items];
+    bank.done = [...new Set([...(bank.done || []), m.id])];
+    bank.at = Date.now();
+    await S.db.doc("examBank/" + m.subjectId).set(bank);
+    return `${items.length} ${plural(items.length, "pytanie", "pytania", "pytań")}`;
+  }
+  async function genRun() {
+    if (GEN.busy || !GEN.sid) return;
+    if (!S.sample) { toast("Funkcja AI jest dostępna tylko po zalogowaniu jako starosta."); return; }
+    GEN.busy = true; GEN.stop = false; GEN.log = [];
+    const kind = GEN.kind;
+    for (const m of await genTodo(GEN.sid, kind)) {
+      if (GEN.stop) break;
+      const line = { title: m.title || m.fileName, state: "run", detail: "" }; GEN.log.push(line); render();
+      try {
+        const c = await getContent(m.id);
+        if (!c) throw { code: "empty_completion" };
+        const raw = await S.sample.json(kind === "worked" ? workedPrompt(m, c) : bankPrompt(m, c), { modelTier: "default" });
+        line.detail = await genSave(kind, m, raw); line.state = "ok";
+      } catch (e) {
+        line.state = "err"; line.detail = sampleError(e);
+        if (["not_deployed", "no_function", "no_key", "not_granted"].includes(e?.code)) { GEN.stop = true; toast(line.detail); }
+      }
+      render();
+    }
+    GEN.busy = false; render();
+  }
+  async function genExport() {
+    const kind = GEN.kind, todo = await genTodo(GEN.sid, kind);
+    if (!todo.length) { toast("W tym przedmiocie nie ma nic do wygenerowania."); return; }
+    const zadania = [];
+    for (const m of todo) { const c = await getContent(m.id).catch(() => null); if (c) zadania.push({ klucz: `${kind}:${m.id}`, material: m.title || m.fileName, polecenie: kind === "worked" ? workedPrompt(m, c) : bankPrompt(m, c) }); }
+    const pack = { instrukcja: "Dla każdego elementu z listy „zadania” wykonaj polecenie z pola „polecenie” (każde osobno). Odpowiedz jednym plikiem JSON: {\"wyniki\": {\"<klucz>\": <obiekt JSON, którego wymaga polecenie>}}. Użyj dokładnie tych samych kluczy.", zadania };
+    const blob = new Blob([JSON.stringify(pack, null, 1)], { type: "application/json" });
+    const a = h("a", { href: URL.createObjectURL(blob), download: `skrot-bm-${kind === "worked" ? "zadania" : "pytania"}-${GEN.sid}-${todayKey()}.json` });
+    document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  async function genImport(file) {
+    let data;
+    try { data = JSON.parse(await file.text()); } catch { toast("To nie jest poprawny plik JSON."); return; }
+    const entries = Object.entries(data?.wyniki || {});
+    if (!entries.length) { toast("W pliku nie ma pola „wyniki”."); return; }
+    GEN.log = []; let ok = 0;
+    for (const [key, raw] of entries) {
+      const [kind, mid] = key.split(":"); const m = materialById(mid);
+      const line = { title: m?.title || mid, state: "run", detail: "" }; GEN.log.push(line);
+      try { if (!m || !["worked", "bank"].includes(kind)) throw { code: "x" }; line.detail = await genSave(kind, m, raw); line.state = "ok"; ok++; }
+      catch { line.state = "err"; line.detail = "nie udało się zapisać"; }
+      render();
+    }
+    toast(`Wgrano ${ok} z ${entries.length}.`);
+  }
+  function genSection() {
+    const withMats = SUBJECTS.filter((s) => studyMats(s.id).length);
+    if (!GEN.sid) GEN.sid = (withMats.find((s) => CALC_SUBJECTS.has(s.id)) || withMats[0])?.id || "";
+    const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: (e) => { const f = e.target.files[0]; if (f) genImport(f); e.target.value = ""; } });
+    const ms = studyMats(GEN.sid);
+    const wDone = ms.filter((m) => m.workedCount != null).length;
+    const bank = GEN.bank[GEN.sid];
+    if (!bank && GEN.sid) genBankDoc(GEN.sid).then(render);
+    const bDone = bank ? new Set(bank.done || []).size : null;
+    return h("section", { class: "panel" },
+      h("h2", { text: "Zadania krok po kroku i pytania do próbnych testów" }),
+      h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "AI pisze je z naszego opracowania, nie ze slajdów. Wyniki liczbowe są sprawdzane automatycznie wzorem obliczeniowym; zadania ze złym kluczem odpadają. Pytania wyboru do testów biorą się z istniejących quizów." }),
+      h("div", { class: "row" },
+        h("select", { class: "input", style: "max-width:360px", "aria-label": "Przedmiot", onchange: (e) => { GEN.sid = e.target.value; GEN.log = []; render(); } }, withMats.map((s) => h("option", { value: s.id, selected: s.id === GEN.sid ? true : null }, s.pl + (CALC_SUBJECTS.has(s.id) ? " · z liczeniem" : "")))),
+        h("div", { class: "gl-chips" },
+          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "worked"), onclick: () => { GEN.kind = "worked"; render(); } }, `Zadania krok po kroku · ${wDone}/${ms.length}`),
+          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "bank"), onclick: () => { GEN.kind = "bank"; render(); } }, `Pytania do testów · ${bDone == null ? "…" : bDone}/${ms.length}${bank?.items ? ` (${bank.items.length})` : ""}`))),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", disabled: GEN.busy || AI.busy ? true : null, onclick: genRun }, GEN.busy ? "Generuję…" : "Uzupełnij przez funkcję AI"),
+        GEN.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { GEN.stop = true; } }, "Zatrzymaj po bieżącym") : null,
+        h("button", { type: "button", class: "btn", onclick: genExport }, "Pobierz paczkę (JSON)"),
+        h("button", { type: "button", class: "btn", onclick: () => file.click() }, "Wgraj wyniki"), file),
+      GEN.log.length ? h("ul", { class: "pipeline" }, GEN.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null,
+      tmplSection(GEN.sid));
+  }
+  function tmplSection(sid) {
+    if (!sid) return null;
+    return h("details", { class: "tmpl" }, h("summary", { text: "Szablony próbnych testów dla tego przedmiotu" }),
+      h("p", { class: "muted", style: "font-size:.88rem", text: "min = czas w minutach, pass = próg w %, sections = rodzaje pytań (abcd, open, task, case) i ich liczba n. Bez zapisanego szablonu działa domyślny, dobrany do formy zaliczenia z sylabusa." }),
+      partsOf(sid).map((part) => {
+        const key = exKey(sid, part);
+        if (GEN.tmpl[key] === undefined) { GEN.tmpl[key] = null; S.db.doc("exams/" + key).get().then((d) => { GEN.tmpl[key] = d.exists ? d.data() : false; render(); }).catch(() => { GEN.tmpl[key] = false; }); }
+        const cur = GEN.tmpl[key] || defaultTemplate(sid, part);
+        const ta = h("textarea", { class: "input num", rows: "4", style: "font-family:ui-monospace,monospace;font-size:.84rem" }, JSON.stringify({ min: cur.min, pass: cur.pass, sections: cur.sections }));
+        return h("div", { class: "stack", style: "gap:6px" }, h("b", { text: `${ZAL_KIND[part] || part}: ${partLabel(sid, part)}${GEN.tmpl[key] ? "" : " · domyślny"}` }), ta,
+          h("div", { class: "row" }, h("button", { type: "button", class: "btn small", onclick: async () => {
+            let v; try { v = JSON.parse(ta.value); } catch { toast("To nie jest poprawny JSON."); return; }
+            const sections = (Array.isArray(v?.sections) ? v.sections : []).filter((x) => TYPE_LABEL[x?.type] && Number(x?.n) > 0).map((x) => ({ type: x.type, n: Math.min(40, Math.round(Number(x.n))), ...(x.p ? { p: Number(x.p) } : {}) }));
+            if (!sections.length) { toast("Szablon musi mieć co najmniej jedną sekcję."); return; }
+            const doc = { min: Math.max(5, Math.min(240, Number(v.min) || 45)), pass: Math.max(1, Math.min(100, Number(v.pass) || 50)), sections };
+            try { await S.db.doc("exams/" + key).set(doc); GEN.tmpl[key] = doc; toast("Szablon zapisany."); render(); } catch { toast("Nie udało się zapisać (czy uruchomiono skrot-v3.sql?)."); }
+          } }, "Zapisz szablon")));
+      }));
+  }
+  function glossarySection() {
+    return h("section", { class: "panel" }, h("h2", { text: "Słowniczek EN–PL" }),
+      h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "Zbiera pojęcia ze wszystkich materiałów w jeden słowniczek. Odświeża się sam po wgraniu albo przerobieniu materiału; ręcznie tylko po większych zmianach." }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn", disabled: GEN.glBusy ? true : null, onclick: async () => {
+        GEN.glBusy = true; render();
+        try { const n = await glossaryRebuild(); toast(`Słowniczek: ${n} ${plural(n, "pojęcie", "pojęcia", "pojęć")}.`); } catch { toast("Nie udało się zapisać słowniczka (czy uruchomiono skrot-v3.sql?)."); }
+        GEN.glBusy = false; render();
+      } }, GEN.glBusy ? "Odświeżam…" : "Odśwież słowniczek")));
+  }
+
+  // ---------- skróty klawiszowe: „/” słowniczek, w powtórce spacja i 1–4 ----------
+  document.addEventListener("keydown", (e) => {
+    const t = e.target, typing = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable);
+    if (typing || e.ctrlKey || e.metaKey || e.altKey || $("layer").childElementCount || $("menu") || document.querySelector(".tour-card")) return;
+    if (e.key === "/" && !examRunning()) {
+      e.preventDefault();
+      if (S.route.view !== "glossary") go({ view: "glossary" });
+      requestAnimationFrame(() => $("gl-q")?.focus());
+      return;
+    }
+    if (S.route.view === "review" && S.route.rv?.cards) {
+      if ((e.key === " " || e.key === "Enter") && document.activeElement?.tagName !== "BUTTON") { e.preventDefault(); rvFlip(); }
+      else if (/^[1-4]$/.test(e.key) && S.route.rv.flipped) { e.preventDefault(); rvGrade(Number(e.key) - 1); }
+    }
+  });
 
   // ================= boot =================
   // Najnowszy plan z darmowej strony (plan.skrotbm.pl); jak się nie uda, zostaje kopia wbudowana w stronę.
