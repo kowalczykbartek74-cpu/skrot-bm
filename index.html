@@ -2604,7 +2604,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("p", { text: "Prosta wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu ucz się ze Skrótu, Pojęć i Fiszek." }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "ai" }) }, "Panel AI: uzupełnij brakujące")) : null));
     return h("div", { class: "simple" },
-      h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język · jak dla 12-latka" }), h("p", {}, inline(d.intro))),
+      h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język" }), h("p", {}, inline(d.intro))),
       (d.parts || []).map((p) => h("section", { class: "spart" },
         h("h2", {}, h("span", { class: "emo", "aria-hidden": "true", text: p.emoji || "💡" }), h("span", { text: p.h })),
         h("p", { class: "txt" }, inline(p.text)),
@@ -2828,7 +2828,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     { view: "home", nav: "home", title: "Start — Twój dzień", text: "Strona główna: <b>dzisiejsze zajęcia</b>, ogłoszenia od starosty, <b>nowe materiały</b> i najbliższe terminy. Zaglądaj tu rano przed zajęciami.", art: "hub" },
     { view: "home", sel: "section.today", title: "Ustaw swoją grupę", text: "Wybierz <b>grupę (C111–C113)</b> i <b>podgrupę lab A/B</b>. Wtedy plan, zadania i kalendarz pokazują tylko to, co dotyczy Ciebie.", art: "group" },
     { view: "materials", nav: "materials", title: "Materiały — każdy przedmiot osobno", text: "Kliknij okładkę przedmiotu. W środku: <b>lekcje po kolei</b>, „Jak zaliczyć”, terminy i <b>quiz z całości</b>.", art: "books" },
-    { view: "materials", title: "Jak uczyć się z materiału", text: "Każdy materiał ma zakładki: <b>Prosty język</b> (wytłumaczone jak dla 12-latka, na przykładach), <b>Skrót</b> (najważniejsze), <b>Notatka</b> (pełniej), <b>Pojęcia</b>, <b>Fiszki</b> — kliknij, żeby odwrócić — i <b>Quiz</b> z wynikiem. „Źródło” pokazuje, skąd to jest.", art: "tabs" },
+    { view: "materials", title: "Jak uczyć się z materiału", text: "Każdy materiał ma zakładki: <b>Prosty język</b> (wytłumaczone prosto, na przykładach), <b>Skrót</b> (najważniejsze), <b>Notatka</b> (pełniej), <b>Pojęcia</b>, <b>Fiszki</b> — kliknij, żeby odwrócić — i <b>Quiz</b> z wynikiem. „Źródło” pokazuje, skąd to jest.", art: "tabs" },
     { view: "tasks", nav: "tasks", title: "Zadania od prowadzących", text: "Wszystko, co prowadzący zadali w Teams, z <b>terminem</b>. Odhaczaj zrobione — liczba przy zakładce mówi, ile Ci zostało.", art: "tasks" },
     { view: "grading", nav: "grading", title: "Zaliczenia — jak zdać", text: "Dla każdego przedmiotu: <b>forma zaliczenia, progi i kiedy</b>. Znaczek <b>„z sylabusa”</b> znaczy, że informacja jest z sylabusa, a nie od prowadzącego.", art: "grade" },
     { view: "calendar", nav: "calendar", title: "Kalendarz", text: "Miesiąc z <b>kolokwiami, egzaminami, projektami</b> i sesją. Kropka w kolorze typu terminu. Z pełnym dostępem dodasz też własny termin, a zobaczy go cały rok.", art: "cal" },
