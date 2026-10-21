@@ -1654,6 +1654,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   const ZAL_PRZED = "Przed sesją (zajęcia trwają do 1 lutego), data jeszcze nieogłoszona";
   const ZAL_SYL = { label: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://dsm.usz.edu.pl/wp-content/uploads/wefiz-26-27-sylab.pdf" };
   const ZAL_CHECKED = "21 października 2026";
+  const ZAL_NOTE = { label: "Terminy podane na zajęciach, zapisane 21.10" };
   const ZAL = {
     "analiza-matematyczna": {
       parts: [
@@ -1667,29 +1668,29 @@ button.pm-sq:hover { transform: scale(1.12); }
     "ekonomia-biznesu": {
       parts: [
         { k: "W", f: "E", how: "Egzamin pisemny: dostajesz studium przypadku firmy i rozwiązujesz je, korzystając z mikroekonomii.", rules: ["Sylabus dopuszcza też egzamin jako test w e-studiach albo na papierze."], when: ZAL_SESJA },
-        { k: "CW", f: "ZO", how: "Pisemne kolokwium: studium przypadku firmy i pytania otwarte do niego.", rules: ["Przydaje się mikroekonomia z zajęć: koszty, decyzje, struktury rynku."], when: ZAL_PRZED },
+        { k: "CW", f: "ZO", how: "Pisemne kolokwium: studium przypadku firmy i pytania otwarte do niego.", rules: ["Przydaje się mikroekonomia z zajęć: koszty, decyzje, struktury rynku."], when: "8 lutego 2027", date: "2027-02-08" },
       ],
       final: "Średnia arytmetyczna oceny z ćwiczeń i z egzaminu.",
-      notes: ["Sylabus nie podaje progów punktowych.", "W sylabusie jako prowadzący figuruje dr hab. Tomasz Bernat, a zajęcia prowadzi dr Aleksandra Gąsior. Formę egzaminu warto potwierdzić u prowadzącej."],
-      sources: [ZAL_SYL, { label: "Wykład 1 „Economics thinking”, slajdy 4–6 z sylabusem (zespół BE C 112)" }],
+      notes: ["Sylabus nie podaje progów punktowych.", "W sylabusie jako prowadzący figuruje dr hab. Tomasz Bernat, a zajęcia prowadzi dr Aleksandra Gąsior. Formę egzaminu warto potwierdzić u prowadzącej.", "Kolokwium z ćwiczeń jest 8 lutego, czyli już w sesji, a nie przed nią. Termin egzaminu z wykładu nie jest jeszcze podany."],
+      sources: [ZAL_SYL, ZAL_NOTE, { label: "Wykład 1 „Economics thinking”, slajdy 4–6 z sylabusem (zespół BE C 112)" }],
     },
     "logistyka": {
       parts: [
-        { k: "W", f: "ZO", how: "Test wyboru.", rules: [], when: ZAL_PRZED },
-        { k: "CW", f: "ZO", how: "Testy wyboru i ocena zaangażowania na zajęciach.", rules: ["W C112 dochodzi projekt semestralny: analiza logistyki w wybranej firmie, raport albo prezentacja z rekomendacjami. Harmonogram ustalacie w komentarzach pod postem prowadzącego."], when: ZAL_PRZED },
+        { k: "W", f: "ZO", how: "Test wyboru.", rules: ["Na zajęciach potwierdzono: zaliczenie wykładu to test."], when: ZAL_PRZED },
+        { k: "CW", f: "ZO", how: "Prezentacja, testy wyboru i ocena zaangażowania na zajęciach.", rules: ["Na zajęciach potwierdzono: na ćwiczeniach jest prezentacja.", "W C112 dochodzi projekt semestralny: analiza logistyki w wybranej firmie, raport albo prezentacja z rekomendacjami. Harmonogram ustalacie w komentarzach pod postem prowadzącego."], when: ZAL_PRZED },
       ],
       final: "Średnia arytmetyczna oceny z wykładu i z ćwiczeń.",
       notes: ["Sylabus nie podaje progów punktowych ani tego, ile projekt waży w ocenie z ćwiczeń."],
-      sources: [ZAL_SYL, { label: "Post dr. Jakuba Dowejki „Semester task”, 6.10 (zespół Logistics Pract. C112)" }],
+      sources: [ZAL_SYL, ZAL_NOTE, { label: "Post dr. Jakuba Dowejki „Semester task”, 6.10 (zespół Logistics Pract. C112)" }],
     },
     "makroekonomia": {
       parts: [
-        { k: "W", f: "ZO", how: "Kolokwium pisemne z pytaniami testowymi.", rules: ["Trzeba zdobyć ponad połowę punktów."], when: ZAL_PRZED },
-        { k: "CW", f: "ZO", how: "Kolokwium pisemne: pytania testowe i zadania otwarte.", rules: ["Trzeba zdobyć ponad połowę punktów."], when: ZAL_PRZED },
+        { k: "W", f: "ZO", how: "Kolokwium pisemne z pytaniami testowymi.", rules: ["Trzeba zdobyć ponad połowę punktów.", "Na zajęciach potwierdzono: zaliczenie wykładu to test."], when: ZAL_PRZED },
+        { k: "CW", f: "ZO", how: "Kolokwium pisemne: pytania testowe i zadania otwarte.", rules: ["Trzeba zdobyć ponad połowę punktów."], when: "15 stycznia 2027", date: "2027-01-15" },
       ],
       final: "Średnia arytmetyczna oceny z ćwiczeń i z wykładu. Gdy średnia wypada między ocenami, decyduje ocena z wykładu.",
       notes: ["W sylabusie jako prowadzący figuruje dr hab. Rafał Nagaj, a zajęcia prowadzi dr Agnieszka Bretyn.", "Sylabus w jednym miejscu mówi o egzaminie, ale formą zaliczenia wykładu jest zaliczenie z oceną."],
-      sources: [ZAL_SYL],
+      sources: [ZAL_SYL, ZAL_NOTE],
     },
     "narzedzia-it-w-zarzadzaniu": {
       parts: [
@@ -1710,12 +1711,12 @@ button.pm-sq:hover { transform: scale(1.12); }
     },
     "podstawy-finansow": {
       parts: [
-        { k: "W", f: "ZO", how: "Test online w Forms na kampusie, w sali 002: 20–30 pytań zamkniętych po 1 punkcie, 15–20 minut. Materiał: wykłady.", rules: ["Ocena 3,0 od 70% poprawnych odpowiedzi.", "Weź laptop, tablet albo telefon.", "Przykładowe pytania są w pliku „How pass a course” w zespole przedmiotu."], when: "20 stycznia 2027, 12:00", date: "2027-01-20" },
+        { k: "W", f: "ZO", how: "Test online w Forms na kampusie, w sali 002: 20–30 pytań zamkniętych po 1 punkcie, 15–20 minut. Materiał: wykłady.", rules: ["Ocena 3,0 od 70% poprawnych odpowiedzi.", "Weź laptop, tablet albo telefon.", "Przykładowe pytania są w pliku „How pass a course” w zespole przedmiotu."], when: "27 stycznia 2027", date: "2027-01-27" },
         { k: "CW", f: "ZO", how: "Prezentacja PPT w parze na wybrany temat i dyskusja na zajęciach (90%) oraz aktywność (10%).", rules: ["Plik .ppt albo .pptx w Zadaniach w Teams najpóźniej dzień przed wystąpieniem. PDF nie jest przyjmowany.", "Co najmniej 10 źródeł, w tym 3 artykuły naukowe z lat 2020–2026. Wykresy i tabele zrób sam z danych.", "Skala z sylabusa: 60–69% to 3,0, 70–79% to 3,5, 80–89% to 4,0, 90–99% to 4,5, 100% to 5,0."], when: "Według listy tematów. C111 i C112, tematy 1–6: wysyłka do 20.10, wystąpienie 21.10" },
       ],
       final: "Średnia arytmetyczna oceny z wykładu i z ćwiczeń, po 50%.",
-      notes: ["Próg testu się różni: prowadząca w Teams podaje 70% na 3,0, a sylabus 60%. Licz na 70%.", "Kontakt z prowadzącą tylko przez Teams, nie mailem."],
-      sources: [ZAL_SYL, { label: "„How pass a course” i slajdy z ćwiczeń 1 (zespół FUNDAMENTALS OF FINANCE 2026_2027)" }],
+      notes: ["Data testu się różni: w Teams był 20 stycznia o 12:00, a na zajęciach podano 27 stycznia. Licz na 27.01 i sprawdź godzinę w Teams.", "Próg testu się różni: prowadząca w Teams podaje 70% na 3,0, a sylabus 60%. Licz na 70%.", "Kontakt z prowadzącą tylko przez Teams, nie mailem."],
+      sources: [ZAL_SYL, ZAL_NOTE, { label: "„How pass a course” i slajdy z ćwiczeń 1 (zespół FUNDAMENTALS OF FINANCE 2026_2027)" }],
     },
     "podstawy-zarzadzania": {
       parts: [
@@ -1728,20 +1729,20 @@ button.pm-sq:hover { transform: scale(1.12); }
     },
     "prawo": {
       parts: [
-        { k: "W", f: "ZO", how: "Testy pisemne w trakcie wykładów.", rules: ["Ocena pozytywna tylko wtedy, gdy zaliczysz wszystkie testy."], when: "W trakcie semestru, daty jeszcze nieogłoszone" },
+        { k: "W", f: "ZO", how: "Testy pisemne w trakcie wykładów.", rules: ["Ocena pozytywna tylko wtedy, gdy zaliczysz wszystkie testy.", "Na zajęciach potwierdzono: zaliczenie wykładu to test."], when: "W trakcie semestru, daty jeszcze nieogłoszone" },
       ],
       final: "Ocena z wykładu jest oceną z przedmiotu.",
       notes: ["To sylabus tego samego przedmiotu dr Małgorzaty Szymszon dla innego kierunku wydziału. Progów punktowych nie podaje."],
-      sources: [{ label: "Sylabus „Law (prawo)”, WEFiZ 2026/27 (PDF)", url: ZAL_SYL.url }],
+      sources: [{ label: "Sylabus „Law (prawo)”, WEFiZ 2026/27 (PDF)", url: ZAL_SYL.url }, ZAL_NOTE],
     },
     "zarzadzanie-zasobami-ludzkimi": {
       parts: [
-        { k: "W", f: "E", how: "Egzamin pisemny.", rules: [], when: ZAL_SESJA },
+        { k: "W", f: "E", how: "Egzamin pisemny w formie testu.", rules: ["To termin zerowy, przed sesją. Czy w sesji będzie jeszcze zwykły termin, warto potwierdzić u prowadzącej."], when: "22 stycznia 2027, termin zerowy", date: "2027-01-22" },
         { k: "CW", f: "ZO", how: "Testy jednokrotnego wyboru (50% punktów) i pisemne raporty z ćwiczeń (50%), z oceną pracy na zajęciach.", rules: ["Ocena 3,0 od 60% punktów.", "AI wolno używać tylko wtedy, gdy prowadząca wyraźnie pozwoli. Na teście i w raportach jest zakazane."], when: ZAL_PRZED },
       ],
       final: "Ocena z egzaminu jest oceną z przedmiotu.",
       notes: [],
-      sources: [ZAL_SYL, { label: "Post mgr Malwiny Jankowskiej „Organizational Information”, 6.10 (zespół HRM practical classes)" }],
+      sources: [ZAL_SYL, ZAL_NOTE, { label: "Post mgr Malwiny Jankowskiej „Organizational Information”, 6.10 (zespół HRM practical classes)" }],
     },
   };
   const zalOf = (sid) => ZAL[sid] || null;
