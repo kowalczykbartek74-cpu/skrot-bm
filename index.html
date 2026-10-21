@@ -623,6 +623,14 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   .tour *, .tour *::before, .tour *::after { animation: none !important; transition: none !important; }
   .tv-file, .tv-hub span, .tv-grade .chip { opacity: 1; } .tv-out span, .tv-bar::before { transform: none; }
 }
+/* Kalendarz w telefonie: opcje subskrypcji w okienku */
+.calopts { display: grid; gap: 8px; }
+.calopt { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--surface); }
+.calopt:hover { border-color: var(--accent); }
+.calopt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.calopt b { display: block; }
+.calopt small { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; margin-top: 2px; }
+.calico { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-weight: 800; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -1390,6 +1398,56 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   }
 
   // ================= KALENDARZ =================
+  // ================= kalendarz w telefonie (osobisty link .ics, funkcja „kalendarz” w Supabase) =================
+  const CAL_FN = "https://zkyxujkdrovfzpasocmv.supabase.co/functions/v1/kalendarz";
+  function openPhoneCal() {
+    if (needPaid("Kalendarz w telefonie")) return;
+    let token = null, err = "";
+    modal((close) => {
+      const body = h("div", { class: "stack" }, h("p", { class: "muted", text: "Przygotowuję Twój link…" }));
+      const draw = () => {
+        if (err) { body.replaceChildren(h("p", { class: "notice err", text: err })); return; }
+        if (!token) return;
+        const https = `${CAL_FN}?t=${token}`, webcal = https.replace(/^https:/, "webcal:");
+        const name = `Skrót BM${S.group ? " · " + S.group : ""}`;
+        const opt = (href, ico, color, title, small, blank) => h("a", { class: "calopt", href, target: blank ? "_blank" : null, rel: blank ? "noopener" : null },
+          h("span", { class: "calico", style: `background:${color}`, text: ico }), h("span", {}, h("b", { text: title }), h("small", { text: small })));
+        const inp = h("input", { class: "input", readonly: true, value: https, "aria-label": "Twój link do kalendarza", style: "font-size:.78rem" });
+        body.replaceChildren(
+          h("p", { text: S.group ? `Zajęcia grupy ${S.group}${S.sub ? ", lab " + S.sub : ", oba laby"} oraz zaliczenia i zadania z przypomnieniem dzień wcześniej.` : "Zaliczenia i zadania z przypomnieniem dzień wcześniej. Wybierz grupę w Menu, a dojdą też Twoje zajęcia." }),
+          h("p", { class: "muted", text: "To subskrypcja: nowe terminy i zmiany w planie same pojawią się w telefonie. Po zmianie grupy w Menu kalendarz też się dostosuje." }),
+          h("div", { class: "calopts" },
+            opt(`https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`, "G", "#1A73E8", "Google Calendar", "Android i komputer. Otwórz na koncie Google z telefonu.", true),
+            opt(webcal, "A", "#16231B", "iPhone, iPad, Mac", "Kalendarz Apple. Potwierdź „Subskrybuj”.", false),
+            opt(`https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(https)}&name=${encodeURIComponent(name)}`, "O", "#0F6CBD", "Outlook", "Konto Outlook / Hotmail. Dla konta uczelnianego skopiuj link i wybierz „Dodaj kalendarz → Z internetu”.", true)),
+          h("div", { class: "row" }, inp, h("button", { type: "button", class: "btn small", onclick: async (e) => {
+            try { await navigator.clipboard.writeText(https); } catch { inp.select(); try { document.execCommand("copy"); } catch {} }
+            e.currentTarget.textContent = "Skopiowano ✓";
+          } }, "Kopiuj link")),
+          h("p", { class: "foot-note", text: "Link jest tylko Twój: nie udostępniaj go, bo pokazuje terminy z płatnej części. Google odświeża kalendarze co kilka godzin, więc nowości mogą dojść z opóźnieniem. Na Androidzie, jeśli nic się nie pokazuje, włącz w aplikacji Kalendarz synchronizację „" + name + "”." }),
+          h("div", { class: "row" },
+            h("button", { type: "button", class: "btn small ghost", onclick: async () => {
+              if (!confirm("Stary link przestanie działać. Trzeba będzie dodać kalendarz od nowa. Zrobić nowy link?")) return;
+              try { const { data, error } = await window.skrot.sb.rpc("nauka_kalendarz_token", { nowy: true }); if (error) throw error; token = data; draw(); toast("Nowy link gotowy. Stary już nie działa."); } catch { toast("Nie udało się zrobić nowego linku."); }
+            } }, "Nowy link (unieważnij stary)"),
+            h("button", { type: "button", class: "btn small", style: "margin-left:auto", onclick: close }, "Zamknij")));
+      };
+      (async () => {
+        try {
+          const { data, error } = await window.skrot.sb.rpc("nauka_kalendarz_token", { nowy: false });
+          if (error) throw error;
+          token = data;
+        } catch (x) {
+          err = /brak_dostepu/.test(x?.message || "") ? "Kalendarz w telefonie jest dla osób z pełnym dostępem."
+            : /nie_zalogowany/.test(x?.message || "") ? "Zaloguj się, żeby dostać swój link."
+            : "Kalendarz w telefonie jeszcze nie jest włączony po stronie serwera. Spróbuj później.";
+        }
+        draw();
+      })();
+      return [h("h2", { text: "Kalendarz w telefonie" }), body];
+    });
+  }
+
   function viewCalendar() {
     const tk = todayKey();
     if (!S.calMonth) S.calMonth = tk.slice(0, 7);
@@ -1427,6 +1485,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
           h("button", { type: "button", class: "btn small", "aria-label": "Następny miesiąc", onclick: () => shift(1) }, "›"),
           h("button", { type: "button", class: "btn small ghost", onclick: () => { S.calMonth = tk.slice(0, 7); S.calSel = tk; render(); } }, "Dziś"),
           h("span", { style: "flex:1" }),
+          h("button", { type: "button", class: "btn small", onclick: openPhoneCal }, lockLabel("📅 Do kalendarza w telefonie")),
           h("button", { type: "button", class: "btn small primary", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj termin"))),
         S.group ? null : h("div", { class: "notice" }, groupPicker()),
         h("div", { class: "cal-scroll" }, h("div", { class: "cal" }, DOW.map((d) => h("span", { class: "dow", text: d })), cells)),
