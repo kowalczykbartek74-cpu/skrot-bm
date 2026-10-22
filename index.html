@@ -162,6 +162,14 @@ main { padding-block: 24px calc(56px + var(--tabbar-h)); display: flex; flex-dir
 .hub.home > .h-today { grid-area: today; } .hub.home > .h-side { grid-area: side; } .hub.home > .h-feed { grid-area: feed; }
 @media (max-width: 820px) { .hub { grid-template-columns: 1fr; } .hub.home { grid-template-areas: "today" "side" "feed"; } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.folder { display: grid; grid-template-columns: auto 1fr; grid-template-areas: "ic name" "ic meta"; gap: 0 10px; align-items: center; text-align: left; border: 1px solid var(--line); background: var(--sunk); border-radius: 14px; padding: 11px 14px; cursor: pointer; min-width: 0; color: var(--ink); font: inherit; }
+.folder:hover { border-color: var(--green-200); background: var(--surface); }
+.folder .fic { grid-area: ic; font-size: 1.4rem; }
+.folder .fname { grid-area: name; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.folder .fmeta { grid-area: meta; font-size: .82rem; color: var(--muted); }
+.small-sel { width: auto; padding: 6px 10px; font-size: .86rem; min-height: 0; }
+@media (max-width: 600px) { .folders { grid-template-columns: 1fr 1fr; } }
 .panel-head { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
 .today { position: relative; overflow: hidden; color: var(--today-ink); border: 1px solid var(--green-200);
   background: repeating-radial-gradient(circle at 100% 0, transparent 0 14px, rgba(26,127,69,.10) 14px 15.5px) right top / 220px 220px no-repeat, linear-gradient(160deg, var(--mint-100), var(--green-100) 60%, var(--lime-100)); }
@@ -879,7 +887,8 @@ button.pm-sq:hover { transform: scale(1.12); }
 
   // ================= state =================
   const S = {
-    ready: false, noDb: false, db: null, user: null, sample: null, uid: null, canEdit: false, myName: "",
+    ready: false, noDb: false, db: null, user: null, sample: null, ai: null, uid: null, canEdit: false, myName: "",
+    mine: [], mineLoaded: false,
     materials: [], deadlines: [], announcements: [], reports: [], progress: {}, names: {}, tasks: [], sync: null, taskFilter: "open",
     group: ls.get("bm-group") || "", sub: ls.get("bm-sub") ?? "A",
     route: { view: "home" }, content: {}, sources: {}, upload: null,
@@ -900,7 +909,8 @@ button.pm-sq:hover { transform: scale(1.12); }
     typeset(box);
   }
 
-  const materialById = (id) => S.materials.find((m) => m.id === id);
+  const materialById = (id) => S.materials.find((m) => m.id === id) || S.mine.find((m) => m.id === id);
+  const isMine = (m) => !!m?.mine;
   const materialsOf = (sid) => S.materials.filter((m) => m.subjectId === sid);
   const isLesson = (m) => m?.kind === "lesson";
   const lessonsOf = (sid) => materialsOf(sid).filter(isLesson).sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -951,7 +961,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     want.forEach((i) => { S.names[i] = ""; });
     try { const ps = await S.user.profiles(want); for (const id of want) S.names[id] = (ps?.[id]?.name || "").split(" ")[0]; render(); } catch {}
   }
-  async function getContent(id) { if (S.content[id]) return S.content[id]; const snap = await S.db.doc("materialContent/" + id).get(); return (S.content[id] = snap.exists ? snap.data() : null); }
+  async function getContent(id) { if (S.content[id]) return S.content[id]; const snap = await S.db.doc((isMine(materialById(id)) ? "myContent/" : "materialContent/") + id).get(); return (S.content[id] = snap.exists ? snap.data() : null); }
   async function getSource(id) { if (S.sources[id]) return S.sources[id]; const snap = await S.db.doc("materialSources/" + id).get(); return (S.sources[id] = snap.exists ? snap.data() : null); }
   // Postęp nauki: najpierw kopia w przeglądarce, potem zapis w bazie. Gdy zapis się nie uda,
   // kopia zostaje oznaczona jako niezapisana i strona ponawia zapis (także po odświeżeniu strony).
@@ -1034,7 +1044,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   const NAV_ITEMS = [["home", "Start"], ["materials", "Materiały"], ["tasks", "Zadania"], ["grading", "Zaliczenia"], ["calendar", "Kalendarz"]];
   function renderNav() {
     const v = S.route.view;
-    const active = ["materials", "subject", "material", "subjectQuiz", "upload", "glossary", "exam", "cheat"].includes(v) ? "materials" : ["review", "progress"].includes(v) ? "home" : v;
+    const active = ["materials", "subject", "material", "subjectQuiz", "upload", "glossary", "exam", "cheat", "myFolder", "myUpload"].includes(v) ? "materials" : ["review", "progress"].includes(v) ? "home" : v;
     const openN = PAID() ? myTasks().filter((t) => t.kind !== "info" && !isDone(t)).length : 0;
     $("nav").replaceChildren(...NAV_ITEMS.map(([key, label]) => h("button", {
       type: "button", class: "navbtn", "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
@@ -1064,6 +1074,7 @@ button.pm-sq:hover { transform: scale(1.12); }
       item("review", "Powtórki", () => go({ view: "review" })),
       item("map", "Mapa postępów", () => go({ view: "progress" })),
       item("glossary", "Słowniczek EN–PL", () => go({ view: "glossary" })),
+      PAID() ? item("upload", "Wgraj swój materiał", () => go({ view: "myUpload" })) : null,
       item("help", "Jak korzystać (instrukcja)", () => startTour(0)),
       S.canEdit ? [h("hr"),
         item("upload", "Wgraj materiał", () => go({ view: "upload" })),
@@ -1085,7 +1096,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   function render() {
     renderNav();
     const v = S.route.view;
-    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading, review: viewReview, glossary: viewGlossary, progress: viewProgress, exam: viewExam, cheat: viewCheat }[v] || viewHome;
+    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading, review: viewReview, glossary: viewGlossary, progress: viewProgress, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload }[v] || viewHome;
     // W trakcie próbnego testu strona nie przebudowuje się sama (np. po odświeżeniu danych), żeby nie gubić wpisywanego tekstu.
     if (!EXR.force && examRunning() && $("main").querySelector(".exam-run")) return;
     const keepIds = ["ann-text", "gl-q"];
@@ -1362,9 +1373,9 @@ button.pm-sq:hover { transform: scale(1.12); }
     const first = ms.reduce((a, b) => (!a || (b.createdAt || 0) < (a.createdAt || 0) || ((b.createdAt || 0) === (a.createdAt || 0) && b.id < a.id) ? b : a), null);
     return first?.id === m.id;
   }
-  const locked = (m) => !PAID() && !isFree(m);
+  const locked = (m) => !isMine(m) && !PAID() && !isFree(m);
   // Czy treść materiału da się teraz otworzyć (próbki wymagają zalogowania).
-  const readable = (m) => PAID() || (isFree(m) && window.skrot?.state === "in");
+  const readable = (m) => isMine(m) || PAID() || (isFree(m) && window.skrot?.state === "in");
   function accessNotice() {
     const sk = window.skrot || {};
     return h("div", { class: "notice err" }, sk.noticeText?.() || "Nie mogę połączyć się z bazą.");
@@ -1844,6 +1855,7 @@ button.pm-sq:hover { transform: scale(1.12); }
           h("button", { type: "button", class: "btn small", onclick: () => go({ view: "progress" }) }, "Mapa postępów"),
           h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "review" }) }, "Powtórki"))),
       buyBanner(),
+      myPanel(),
       h("div", { class: "grid" }, cards),
     ];
   }
@@ -1934,7 +1946,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   }
 
   function backLink(to) {
-    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "materials" ? "Wszystkie przedmioty" : "Start";
+    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : to?.view === "materials" ? "Materiały" : "Start";
     return h("div", {}, h("button", { type: "button", class: "back", onclick: () => go(to || { view: "home" }) }, h("span", { "aria-hidden": "true", text: "←" }), label));
   }
   function confirmBox(question, action) {
@@ -1965,26 +1977,32 @@ button.pm-sq:hover { transform: scale(1.12); }
     const tab = S.route.tab || (lessonMode ? "lekcja" : "skrot");
     const s = subjectById(m.subjectId);
     const counts = c ? { notatka: c.notes?.length, pojecia: c.concepts?.length, fiszki: c.flashcards?.length, quiz: c.quiz?.length, lekcja: c.lesson?.exercises?.length ? c.lesson.exercises.length + " zad." : null, zadania: c.worked?.length } : {};
+    const mine = isMine(m);
     const head = h("section", { class: "stack" },
-      backLink({ view: "subject", id: m.subjectId }),
-      h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: s?.pl || "Materiał" }), m.source === "sylabus" ? h("span", { class: "chip sun", title: "Opracowane z sylabusa WEFiZ 2026/27, nie ze slajdów prowadzącego", text: "z sylabusa" }) : null),
+      backLink(mine ? { view: "myFolder", id: folderOf(m).id } : { view: "subject", id: m.subjectId }),
+      h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: mine ? ["Moje materiały", folderOf(m).name, s?.pl].filter(Boolean).join(" · ") : s?.pl || "Materiał" }), m.source === "sylabus" ? h("span", { class: "chip sun", title: "Opracowane z sylabusa WEFiZ 2026/27, nie ze slajdów prowadzącego", text: "z sylabusa" }) : null),
       h("h1", { text: m.title || m.fileName }),
       h("div", { class: "row muted num", style: "font-size:.88rem" },
-        h("span", { text: lessonMode ? `Lekcja ${m.order} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ok. ${m.minutes} min` : `${m.fileName} · ${m.source === "sylabus" ? `${m.slideCount} ${plural(m.slideCount, "sekcja", "sekcje", "sekcji")}` : `${m.slideCount} ${plural(m.slideCount, "slajd", "slajdy", "slajdów")}`} · dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
-        canManage(m) ? h("button", { type: "button", class: "btn small ghost danger", onclick: () => confirmBox("Usunąć ten materiał dla całego roku?", async () => {
+        h("span", { text: mine ? `${m.fileName} · ${partsTxt(m)} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? `Lekcja ${m.order} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ok. ${m.minutes} min` : `${m.fileName} · ${m.source === "sylabus" ? `${m.slideCount} ${plural(m.slideCount, "sekcja", "sekcje", "sekcji")}` : `${m.slideCount} ${plural(m.slideCount, "slajd", "slajdy", "slajdów")}`} · dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
+        mine ? h("button", { type: "button", class: "btn small ghost danger", onclick: () => confirmBox("Usunąć ten materiał?", async () => {
+          const fid = folderOf(m).id; await deleteMine(m); go({ view: "myFolder", id: fid });
+        }) }, "Usuń")
+        : canManage(m) ? h("button", { type: "button", class: "btn small ghost danger", onclick: () => confirmBox("Usunąć ten materiał dla całego roku?", async () => {
           await Promise.all(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})));
           go({ view: "subject", id: m.subjectId });
         }) }, "Usuń") : null),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn small", onclick: () => go({ view: "cheat", id: m.id }) }, "Ściągawka do druku"),
-        h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "exam", sid: m.subjectId }) }, "Tryb przed kolokwium"),
-        S.canEdit ? h("button", { type: "button", class: "btn small ghost", "aria-pressed": String(!!m.core), title: "Kluczowe tematy idą na górę planu przed kolokwium", onclick: () => S.db.doc("materials/" + m.id).update({ core: !m.core }).then(() => { m.core = !m.core; render(); }).catch(() => toast("Nie udało się zapisać.")) }, m.core ? "★ Kluczowy temat" : "☆ Oznacz jako kluczowy") : null),
+        !mine || subjectById(m.subjectId) ? h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "exam", sid: m.subjectId }) }, "Tryb przed kolokwium") : null,
+        mine && myFolders().length > 1 ? h("select", { class: "input small-sel", "aria-label": "Przenieś do sekcji", onchange: (e) => moveMine(m, e.target.value) },
+          myFolders().map((f) => h("option", { value: f.id, selected: f.id === folderOf(m).id ? true : null, text: f.id === folderOf(m).id ? `Sekcja: ${f.name}` : `Przenieś do: ${f.name}` }))) : null,
+        S.canEdit && !mine ? h("button", { type: "button", class: "btn small ghost", "aria-pressed": String(!!m.core), title: "Kluczowe tematy idą na górę planu przed kolokwium", onclick: () => S.db.doc("materials/" + m.id).update({ core: !m.core }).then(() => { m.core = !m.core; render(); }).catch(() => toast("Nie udało się zapisać.")) }, m.core ? "★ Kluczowy temat" : "☆ Oznacz jako kluczowy") : null),
       m.basis ? h("p", { class: "foot-note", text: m.basis }) : null);
     const tabs = h("div", { class: "tabs", role: "tablist" }, tabList.map(([k, label]) => h("button", { type: "button", class: "tab" + (k === "prosto" ? " simple-tab" : ""), role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k, wk: null }; render(); } }, label, counts[k] ? h("span", { class: "c", text: counts[k] }) : null)));
     let panel;
     if (c === undefined) panel = h("p", { class: "muted", text: "Ładuję materiał…" });
     else if (c === null && !PAID()) return [backLink({ view: "subject", id: m.subjectId }), paywallCard(m.title || m.fileName)];
-    else if (c === null) panel = h("div", { class: "notice err", text: S.canEdit ? "Nie znalazłem treści tego materiału. Spróbuj wgrać plik jeszcze raz." : "Nie udało się wczytać treści tego materiału. Odśwież stronę, a jeśli to nie pomoże, napisz do starosty." });
+    else if (c === null) panel = h("div", { class: "notice err", text: mine ? "Nie udało się wczytać treści tego materiału. Odśwież stronę." : S.canEdit ? "Nie znalazłem treści tego materiału. Spróbuj wgrać plik jeszcze raz." : "Nie udało się wczytać treści tego materiału. Odśwież stronę, a jeśli to nie pomoże, napisz do starosty." });
     else if (tab === "lekcja" && c.lesson) panel = lessonPanel(m, c.lesson);
     else if (tab === "prosto") panel = simplePanel(m, c);
     else if (tab === "skrot" && c.topics?.length) panel = studyPanel(m, c);
@@ -2014,7 +2032,7 @@ button.pm-sq:hover { transform: scale(1.12); }
         t.why ? h("p", { class: "why-line" }, h("b", { text: "Po co: " }), t.why) : null,
         t.remember?.length ? h("div", { class: "rem-box" }, h("b", { text: "Zapamiętaj" }), h("ul", {}, t.remember.map((r) => h("li", { text: r })))) : null,
         t.example ? h("div", { class: "ex-box" }, h("b", { text: "Przykład" }), h("p", { text: t.example })) : null))),
-      h("p", { class: "foot-note", text: `Opracowanie własne Skrótu BM. Prezentacja z Teams (${m.fileName}) posłużyła tylko jako lista tematów, więc układ i przykłady są nasze. Odsyłacz przy temacie mówi, na których slajdach prowadzący o nim mówi: tam zajrzyj po szczegóły z wykładu.` }));
+      h("p", { class: "foot-note", text: isMine(m) ? `Opracowanie Skrótu BM z Twojego pliku (${m.fileName}). Plik posłużył tylko jako lista tematów, więc układ i przykłady są nowe. Odsyłacz przy temacie mówi, w którym miejscu pliku ten temat jest.` : `Opracowanie własne Skrótu BM. Prezentacja z Teams (${m.fileName}) posłużyła tylko jako lista tematów, więc układ i przykłady są nasze. Odsyłacz przy temacie mówi, na których slajdach prowadzący o nim mówi: tam zajrzyj po szczegóły z wykładu.` }));
   }
   function lessonPanel(m, L) {
     const ls = lessonsOf(m.subjectId);
@@ -2061,7 +2079,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     const r = typeof x === "object" && x?.slides ? x.slides : n ? [Number(n), Number(n)] : null;
     if (!r) return h("span");
     const mat = materialById(materialId);
-    if (fromSlides(mat)) return h("span", { class: "slide-ref pointer", title: `Zajrzyj do prezentacji ${mat.fileName || ""} w Teams` }, "📍 ", rangeTxt(r));
+    if (fromSlides(mat)) return h("span", { class: "slide-ref pointer", title: isMine(mat) ? `Zajrzyj do swojego pliku ${mat.fileName || ""}` : `Zajrzyj do prezentacji ${mat.fileName || ""} w Teams` }, "📍 ", isMine(mat) && mat.fileType !== "pptx" ? rangeTxt(r).replace(/^slajdy?/, (w) => (w === "slajd" ? (mat.fileType === "pdf" ? "str." : "część") : (mat.fileType === "pdf" ? "str." : "części"))) : rangeTxt(r));
     const syl = mat?.source === "sylabus";
     return h("button", { type: "button", class: "slide-ref", title: syl ? "Pokaż sekcję sylabusa" : "Pokaż tekst slajdu", onclick: (e) => { e.stopPropagation(); showSlide(materialId, n); } }, `${syl ? "sekcja" : "slajd"} ${n}`);
   }
@@ -2139,6 +2157,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   }
 
   function reportButton(materialId, kind, index, text) {
+    if (isMine(materialById(materialId))) return null;
     return h("button", { type: "button", class: "btn small ghost", onclick: () => needPaid("Zgłaszanie błędów") || modal((close) => {
       const ta = h("textarea", { class: "input", id: "report-note", placeholder: "Co jest nie tak? np. zła odpowiedź, nie ma tego na slajdzie", maxlength: "500" });
       return [h("h3", { text: `Zgłoś błąd: ${kind}` }), h("p", { class: "muted", text }), ta,
@@ -2242,13 +2261,14 @@ button.pm-sq:hover { transform: scale(1.12); }
       if (ext === "pptx") slides = await parsePptx(buf);
       else if (ext === "pdf") slides = await parsePdf(buf);
       else if (ext === "docx") slides = await parseDocx(buf);
+      else if (ext === "txt" || ext === "md") slides = chunkText(new TextDecoder().decode(buf));
       else throw new Error("format");
       let hash = null;
       try { const d = await crypto.subtle.digest("SHA-256", buf); hash = [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join(""); } catch {}
       if (!slides.some((s) => s.text)) { U.error = "W tym pliku nie ma tekstu do odczytania (np. skan albo same obrazy). Skrót BM czyta tylko tekst z pliku."; render(); return; }
       if (U.file === file) { U.parsed = { slides, hash, emptyCount: slides.filter((s) => !s.text).length, ext }; render(); }
     } catch (err) {
-      U.error = err?.message === "format" ? "Obsługuję pliki PPTX, PDF i DOCX. Stary format PPT zapisz najpierw jako PPTX lub PDF." : "Nie udało się odczytać pliku. Sprawdź, czy nie jest uszkodzony lub zabezpieczony hasłem.";
+      U.error = err?.message === "format" ? (U.mine ? "Obsługuję pliki PPTX, PDF, DOCX i TXT." : "Obsługuję pliki PPTX, PDF i DOCX.") + " Stary format PPT zapisz najpierw jako PPTX lub PDF." : "Nie udało się odczytać pliku. Sprawdź, czy nie jest uszkodzony lub zabezpieczony hasłem.";
       render();
     }
   }
@@ -2303,7 +2323,10 @@ button.pm-sq:hover { transform: scale(1.12); }
   async function parseDocx(buf) {
     await loadScript(JSZIP);
     const zip = await window.JSZip.loadAsync(buf);
-    const text = xmlText(await zip.file("word/document.xml").async("string"), "w:p", "w:t");
+    return chunkText(xmlText(await zip.file("word/document.xml").async("string"), "w:p", "w:t"));
+  }
+  // Długi tekst bez slajdów (DOCX, TXT) dzielimy na „strony” po ok. 2500 znaków.
+  function chunkText(text) {
     const out = []; let cur = "";
     for (const line of text.split("\n")) { if ((cur + line).length > 2500 && cur) { out.push(cur.trim()); cur = ""; } cur += line + "\n"; }
     if (cur.trim()) out.push(cur.trim());
@@ -2318,7 +2341,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     while (cap > 150) { txt = fmt(slides.map((s) => ({ n: s.n, text: s.text.length > cap ? s.text.slice(0, cap) + " […]" : s.text }))); if (bytes(txt) <= budget) return txt; cap = Math.floor(cap * 0.75); }
     return txt.slice(0, Math.floor(budget / 2));
   }
-  function setStep(i, state, detail) { const U = S.upload; if (!U?.steps) return; U.steps[i].state = state; if (detail != null) U.steps[i].detail = detail; if (S.route.view === "upload") render(); }
+  function setStep(i, state, detail) { const U = S.upload; if (!U?.steps) return; U.steps[i].state = state; if (detail != null) U.steps[i].detail = detail; if (S.route.view === "upload" || S.route.view === "myUpload") render(); }
 
   // ================= nowy system (v2): slajdy są tylko mapą tematów =================
   // 1) AI czyta slajdy i robi WYŁĄCZNIE listę tematów z numerami slajdów (bez streszczania).
@@ -2359,11 +2382,11 @@ button.pm-sq:hover { transform: scale(1.12); }
     : "Write all study content in English, the language of the course. For each concept also give the Polish equivalent of the term in \"pl\".";
 
   // Wspólny rdzeń: nowe pliki i przerabianie starych materiałów. step(i, state, detail) raportuje postęp (i = 1..4).
-  async function makeStudy({ subject, slides, fileName, lang, step = () => {} }) {
+  async function makeStudy({ subject, slides, fileName, lang, step = () => {}, ai = S.sample, ticket = null }) {
     const N = slides.length;
     let max = 120000;
-    try { const l = await S.sample.limits(); if (l?.maxPromptBytes) max = l.maxPromptBytes; } catch {}
-    const call = (p) => S.sample.json(p, { modelTier: "default" });
+    try { const l = await ai.limits(); if (l?.maxPromptBytes) max = l.maxPromptBytes; } catch {}
+    const call = (p) => ai.json(p, { modelTier: "default", ticket });
     const slideOk = (n) => { const x = Math.round(Number(n)); return x >= 1 && x <= N ? x : null; };
     const subj = `"${subject.en || subject.pl}" (${subject.pl})`;
 
@@ -2469,6 +2492,7 @@ ${written}`;
   async function runPipeline() {
     const U = S.upload;
     if (!U?.parsed || U.busy) return;
+    if (U.mine) return runMine();
     const subject = subjectById(U.subjectId);
     if (!subject) { U.error = "Wybierz przedmiot."; render(); return; }
     U.busy = true; U.error = null; U.flagged = null;
@@ -2491,6 +2515,7 @@ ${written}`;
 
   async function finishUpload(r) {
     const U = S.upload;
+    if (U?.mine) return finishMine(r);
     U.busy = true; U.flagged = null;
     setStep(5, "run");
     let mat;
@@ -2525,17 +2550,255 @@ ${written}`;
     }
   }
 
+  // ================= Moje materiały: własne pliki, opracowane tak samo jak materiały roku =================
+  // Każda osoba z pełnym dostępem wgrywa swój plik, a ten sam proces (mapa tematów → opracowanie → fiszki i quiz →
+  // kontrola → prosty język i „Dlaczego?”) zapisuje wynik w wybranej przez nią sekcji. Materiały są prywatne
+  // (kolekcje myMaterials i myContent, reguły w supabase/skrot-v4-moje.sql). Sekcje to lista w postępie nauki tej osoby.
+  // AI działa na bilecie: jeden bilet = jeden plik, limit plików pilnuje baza.
+  const DEF_FOLDER = { id: "materialy", name: "Materiały" };
+  const myFolders = () => { const f = Array.isArray(S.progress?.myFolders) ? S.progress.myFolders.filter((x) => x?.id && x?.name) : []; return f.length ? f : [DEF_FOLDER]; };
+  const folderById = (id) => myFolders().find((f) => f.id === id);
+  const folderOf = (m) => folderById(m?.sectionId) || myFolders()[0];
+  const mineIn = (fid) => S.mine.filter((m) => folderOf(m).id === fid);
+  const GENERIC_SUBJECT = { pl: "studia Business Management, 1. rok", en: "Business Management (first year)" };
+  const cleanName = (v) => String(v || "").replace(/\s+/g, " ").trim().slice(0, 40);
+  const partsTxt = (m, n = m?.slideCount || 0) => m?.fileType === "pptx" ? `${n} ${plural(n, "slajd", "slajdy", "slajdów")}` : m?.fileType === "pdf" ? `${n} ${plural(n, "strona", "strony", "stron")}` : `${n} ${plural(n, "część", "części", "części")}`;
+  async function saveFolders(list) { await saveProgress({ myFolders: list }); render(); }
+  function folderForm(title, value, onSave) {
+    modal((close) => {
+      const inp = h("input", { class: "input", id: "fold-name", maxlength: "40", value: value || "", autocomplete: "off", placeholder: "np. Notatki z ćwiczeń, Makro przed kolokwium" });
+      const save = async () => { const n = cleanName(inp.value); if (!n) { inp.focus(); return; } close(); await onSave(n); };
+      inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); save(); } });
+      return [h("h3", { text: title }), h("label", { class: "field", for: "fold-name" }, "Nazwa sekcji", inp),
+        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: save }, "Zapisz"), h("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"))];
+    });
+  }
+  function newFolder(then) {
+    folderForm("Nowa sekcja", "", async (name) => {
+      const list = myFolders();
+      const same = list.find((f) => f.name.toLowerCase() === name.toLowerCase());
+      if (same) { toast("Masz już sekcję o tej nazwie."); then?.(same); return; }
+      const f = { id: "s" + Date.now().toString(36), name };
+      await saveFolders([...list, f]);
+      toast(`Dodano sekcję „${name}”.`);
+      then?.(f);
+    });
+  }
+  function renameFolder(f) {
+    folderForm("Zmień nazwę sekcji", f.name, (name) => saveFolders(myFolders().map((x) => (x.id === f.id ? { ...x, name } : x))));
+  }
+  async function deleteMine(m) {
+    await Promise.all(["myMaterials", "myContent"].map((col) => S.db.doc(col + "/" + m.id).delete()));
+    S.mine = S.mine.filter((x) => x.id !== m.id); delete S.content[m.id]; delete S.simple[m.id]; delete S.why[m.id];
+  }
+  function deleteFolder(f) {
+    const items = mineIn(f.id);
+    confirmBox(`Usunąć sekcję „${f.name}”${items.length ? ` razem z ${items.length} ${plural(items.length, "materiałem", "materiałami", "materiałami")}` : ""}?`, async () => {
+      for (const m of items) await deleteMine(m);
+      await saveFolders(myFolders().filter((x) => x.id !== f.id));
+      go({ view: "materials" });
+    });
+  }
+  async function moveMine(m, fid) {
+    try { await S.db.doc("myMaterials/" + m.id).update({ sectionId: fid }); m.sectionId = fid; toast(`Przeniesiono do sekcji „${folderById(fid)?.name || ""}”.`); render(); }
+    catch { toast("Nie udało się przenieść."); }
+  }
+
+  // Panel w zakładce Materiały
+  function myPanel() {
+    const sk = window.skrot || {};
+    if (sk.state === "loading" || S.noDb) return null;
+    if (!PAID()) return h("section", { class: "panel" }, h("h2", { text: "Moje materiały" }),
+      lockBox("Wgraj własny plik (prezentację, notatki, PDF), a Skrót BM opracuje go tak samo jak materiały roku: skrót, prosty język, pojęcia, fiszki i quiz, w Twojej sekcji. To jest w pełnej wersji."));
+    return h("section", { class: "panel" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Moje materiały" }),
+        h("div", { class: "row", style: "gap:8px" },
+          h("button", { type: "button", class: "btn small ghost", onclick: () => newFolder((f) => go({ view: "myFolder", id: f.id })) }, "+ Nowa sekcja"),
+          h("button", { type: "button", class: "btn small sun", onclick: () => go({ view: "myUpload" }) }, "Wgraj swój materiał"))),
+      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Twoje pliki opracowane tak samo jak materiały roku. Widzisz je tylko Ty." }),
+      h("div", { class: "folders" }, myFolders().map((f) => {
+        const n = mineIn(f.id).length;
+        return h("button", { type: "button", class: "folder", onclick: () => go({ view: "myFolder", id: f.id }) },
+          h("span", { class: "fic", "aria-hidden": "true", text: "📁" }),
+          h("span", { class: "fname", text: f.name }),
+          h("span", { class: "fmeta num", text: !S.mineLoaded ? "…" : n ? `${n} ${plural(n, "materiał", "materiały", "materiałów")}` : "pusta" }));
+      })));
+  }
+
+  function viewMyFolder() {
+    const back = backLink({ view: "materials" });
+    if (S.noDb || !S.ready) return [back, h("p", { class: "muted", text: S.noDb ? "Zaloguj się, żeby zobaczyć tę część strony." : "Ładuję…" })];
+    const f = folderById(S.route.id);
+    if (!f) return [back, h("p", { class: "muted", text: "Nie ma takiej sekcji." })];
+    if (!PAID() && !S.mine.length) return [back, paywallCard(null)];
+    const ms = mineIn(f.id);
+    const upload = () => go({ view: "myUpload", sectionId: f.id });
+    return [back,
+      h("section", { class: "stack" },
+        h("span", { class: "eyebrow", text: "Moje materiały · sekcja" }),
+        h("h1", { text: f.name }),
+        h("div", { class: "row" },
+          PAID() ? h("button", { type: "button", class: "btn primary", onclick: upload }, "Wgraj materiał do tej sekcji") : null,
+          h("button", { type: "button", class: "btn ghost", onclick: () => renameFolder(f) }, "Zmień nazwę"),
+          myFolders().length > 1 ? h("button", { type: "button", class: "btn ghost danger", onclick: () => deleteFolder(f) }, "Usuń sekcję") : null)),
+      !S.mineLoaded ? h("p", { class: "muted", text: "Ładuję…" })
+        : ms.length ? h("div", { class: "list" }, ms.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: "skrot" }) },
+            h("span", { class: "t", text: m.title || m.fileName }),
+            h("span", { class: "m num", text: [fmtDate(m.createdAt), subjectById(m.subjectId)?.pl, partsTxt(m)].filter(Boolean).join(" · ") }),
+            h("span", { class: "r" }, scoreChip(m.id)))))
+        : h("div", { class: "empty" }, h("h3", { text: "Ta sekcja jest jeszcze pusta" }),
+            h("p", { class: "muted", text: "Wgraj prezentację, notatki albo PDF. Po około minucie będzie tu skrót, prosty język, pojęcia, fiszki i quiz." }),
+            PAID() ? h("div", {}, h("button", { type: "button", class: "btn sun", onclick: upload }, "Wgraj pierwszy plik")) : null)];
+  }
+
+  function quotaLine() {
+    const q = S.myQuota;
+    if (q === undefined) {
+      S.myQuota = null;
+      window.skrot?.mojeStan?.().then((d) => { S.myQuota = d || { err: "error" }; render(); }, (e) => { S.myQuota = { err: e?.code || "error" }; render(); });
+      return null;
+    }
+    if (!q) return null;
+    if (q.err === "no_sql") return h("div", { class: "notice err", text: "Wgrywanie własnych materiałów nie jest jeszcze włączone na serwerze. Daj znać staroście." });
+    if (q.err || q.admin) return null;
+    const leftD = Math.max(0, q.limit_dzien - q.dzien), leftM = Math.max(0, q.limit_miesiac - q.miesiac);
+    return h("p", { class: "muted num", style: "margin:0;font-size:.88rem", text: `Limit: dziś zostało ${Math.min(leftD, leftM)} z ${q.limit_dzien} plików, w tym miesiącu ${leftM} z ${q.limit_miesiac}. Każde przetworzenie (także ponowna próba) liczy się jako jeden plik.` });
+  }
+  function mineError(e) {
+    const q = S.myQuota || {};
+    switch (e?.code) {
+      case "limit_dzien": return `Dziś przetworzono już ${q.limit_dzien || 5} plików, to dzienny limit. Spróbuj jutro.`;
+      case "limit_miesiac": return `W tym miesiącu przetworzono już ${q.limit_miesiac || 40} plików, to miesięczny limit.`;
+      case "brak_dostepu": return "Własne materiały są dostępne z pełnym dostępem.";
+      case "nie_zalogowany": return "Zaloguj się, żeby wgrać plik.";
+      case "no_sql": return "Wgrywanie własnych materiałów nie jest jeszcze włączone na serwerze. Daj znać staroście.";
+      case "not_granted": return "Funkcja AI na serwerze nie obsługuje jeszcze własnych materiałów. Daj znać staroście.";
+      case "no_ticket": case "ticket_used": return "Skończył się limit zapytań dla tego pliku. Wgraj go jeszcze raz.";
+      default: return sampleError(e);
+    }
+  }
+
+  function viewMyUpload() {
+    const back = backLink(S.route.sectionId ? { view: "myFolder", id: S.route.sectionId } : { view: "materials" });
+    const head = h("section", { class: "stack" }, back,
+      h("span", { class: "eyebrow", text: "Moje materiały" }), h("h1", { text: "Wgraj swój materiał" }),
+      h("p", { class: "muted", style: "max-width:62ch", text: "Prezentacja, notatki albo PDF. Skrót BM opracuje plik tak samo jak materiały roku: plik służy tylko jako mapa tematów, a skrót, prosty język, pojęcia, fiszki i quiz są pisane od nowa, z odsyłaczami do stron pliku. Sam tekst pliku nie jest nigdzie zapisywany. Wynik widzisz tylko Ty." }));
+    if (S.noDb || !S.ready) return [head, h("p", { class: "muted", text: S.noDb ? "Zaloguj się, żeby zobaczyć tę część strony." : "Ładuję…" })];
+    if (!PAID()) return [head, paywallCard(null)];
+    if (S.upload && !S.upload.mine && S.upload.busy) return [head, h("div", { class: "notice", text: "Trwa przetwarzanie innego pliku. Poczekaj, aż się skończy." })];
+    if (!S.upload?.mine) S.upload = { mine: true, sectionId: S.route.sectionId || myFolders()[0].id, subjectId: "", lang: "en", file: null, parsed: null, steps: null, error: null, busy: false };
+    const U = S.upload;
+    if (!folderById(U.sectionId)) U.sectionId = myFolders()[0].id;
+    const dis = U.busy ? true : null;
+    const secSel = h("select", { class: "input", id: "my-section", disabled: dis, onchange: (e) => {
+      if (e.target.value === "__new") { e.target.value = U.sectionId; newFolder((f) => { U.sectionId = f.id; render(); }); return; }
+      U.sectionId = e.target.value; render();
+    } }, myFolders().map((f) => h("option", { value: f.id, selected: f.id === U.sectionId ? true : null, text: f.name })), h("option", { value: "__new", text: "+ Nowa sekcja…" }));
+    const subjSel = h("select", { class: "input", id: "my-subject", disabled: dis, onchange: (e) => { U.subjectId = e.target.value; } },
+      h("option", { value: "", text: "Inny / ogólny" }), SUBJECTS.map((s) => h("option", { value: s.id, selected: s.id === U.subjectId ? true : null, text: s.pl })));
+    const langSel = h("select", { class: "input", id: "my-lang", disabled: dis, onchange: (e) => { U.lang = e.target.value; } },
+      h("option", { value: "en", selected: U.lang === "en" ? true : null, text: "Angielski, pojęcia także po polsku" }),
+      h("option", { value: "pl", selected: U.lang === "pl" ? true : null, text: "Polski" }));
+    const fileInput = h("input", { type: "file", id: "my-file", accept: ".pptx,.pdf,.docx,.txt,.md", disabled: dis, onchange: (e) => e.target.files[0] && pickFile(e.target.files[0]) });
+    const drop = h("label", { class: "drop", for: "my-file" }, fileInput,
+      h("b", { text: U.file ? U.file.name : "Upuść plik tutaj" }),
+      h("span", { class: "muted", style: "font-size:.88rem", text: U.parsed ? `${partsTxt({ fileType: U.parsed.ext }, U.parsed.slides.length)}${U.parsed.emptyCount ? " · " + U.parsed.emptyCount + " bez tekstu" : ""} · kliknij, żeby zmienić plik` : "albo kliknij, żeby wybrać · PPTX, PDF, DOCX, TXT do 50 MB" }));
+    if (!U.busy) {
+      drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+      drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+      drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("over"); const f = e.dataTransfer.files[0]; if (f) pickFile(f); });
+    }
+    const dup = U.parsed?.hash && S.mine.find((m) => m.hash === U.parsed.hash);
+    const canRun = U.parsed && !U.busy && S.ai && !dup;
+    const sec = folderById(U.sectionId);
+    return [head, h("div", { class: "box" },
+      h("div", { class: "split" }, h("label", { class: "field", for: "my-section" }, "Sekcja", secSel), h("label", { class: "field", for: "my-subject" }, "Przedmiot", subjSel)),
+      h("label", { class: "field", for: "my-lang" }, "Język opracowania", langSel),
+      drop,
+      dup ? h("div", { class: "notice" }, "Ten plik już masz: ", h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: dup.id, tab: "skrot" }) }, dup.title || dup.fileName), ` (sekcja „${folderOf(dup).name}”).`) : null,
+      !S.ai ? h("div", { class: "notice err", text: "Nie mogę połączyć się z AI. Odśwież stronę." }) : null,
+      quotaLine(),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", disabled: canRun ? null : true, onclick: runPipeline }, U.busy ? "Przygotowuję…" : `Opracuj i zapisz w „${sec?.name || ""}”`),
+        U.file && !U.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { S.upload = null; render(); } }, "Wyczyść") : null),
+      U.error ? h("div", { class: "notice err", text: U.error }) : null,
+      U.flagged ? h("div", { class: "notice err stack", style: "gap:8px" },
+        h("b", { text: `Opracowanie ma ${U.flagged.check.pct}% wspólnych fragmentów z plikiem, także po drugiej próbie.` }),
+        h("span", { text: "Najdłuższe wspólne fragmenty (często to po prostu standardowe definicje):" }),
+        h("ul", {}, U.flagged.check.fragments.map((f) => h("li", { text: "„" + f + "”" }))),
+        h("div", { class: "row" },
+          h("button", { type: "button", class: "btn primary", onclick: () => finishUpload(U.flagged) }, "Zapisz mimo to (to Twój prywatny materiał)"),
+          h("button", { type: "button", class: "btn ghost", onclick: runPipeline }, "Spróbuj jeszcze raz (kolejny plik z limitu)"))) : null,
+      U.steps ? h("ul", { class: "pipeline" }, U.steps.map((s) => h("li", {}, h("span", { class: "sdot " + (s.state || "") }), h("span", {}, h("span", { text: s.label }), s.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + s.detail }) : null)))) : null)];
+  }
+
+  async function runMine() {
+    const U = S.upload;
+    if (!S.ai) { U.error = "Nie mogę połączyć się z AI. Odśwież stronę."; render(); return; }
+    U.busy = true; U.error = null; U.flagged = null; U.steps = null; render();
+    try { const t = await window.skrot.mojeStart(); U.ticket = t?.bilet || null; S.myQuota = { ...(S.myQuota || {}), ...t }; }
+    catch (e) { U.busy = false; U.error = mineError(e); render(); return; }
+    const sec = folderOf({ sectionId: U.sectionId });
+    U.steps = [
+      { label: "Odczytano tekst z pliku", state: "ok", detail: partsTxt({ fileType: U.parsed.ext }, U.parsed.slides.length) },
+      { label: "Mapa tematów z pliku" },
+      { label: "Opracowanie: o co chodzi, po co to jest, co zapamiętać" },
+      { label: "Fiszki i quiz z opracowania" },
+      { label: "Kontrola: nic nie jest przepisane z pliku" },
+      { label: `Zapisuję w sekcji „${sec.name}”` },
+      { label: "Prosty język i „Dlaczego?” do quizu" },
+    ];
+    render();
+    let r;
+    try { r = await makeStudy({ subject: subjectById(U.subjectId) || GENERIC_SUBJECT, slides: U.parsed.slides, fileName: U.file.name, lang: U.lang, step: setStep, ai: S.ai, ticket: U.ticket }); }
+    catch (e) { U.busy = false; U.error = mineError(e); render(); return; }
+    if (r.flagged) { U.busy = false; U.flagged = r; render(); return; }
+    await finishMine(r);
+  }
+
+  async function finishMine(r) {
+    const U = S.upload;
+    U.busy = true; U.flagged = null; render();
+    setStep(5, "run");
+    let mat;
+    try {
+      const id = S.db.collection("myMaterials").doc().id, c = r.content;
+      await S.db.doc("myContent/" + id).set(c);
+      const meta = { v: 2, sectionId: U.sectionId, subjectId: U.subjectId || null, title: r.title || U.file.name.replace(/\.[^.]+$/, ""), fileName: U.file.name, fileType: U.parsed.ext, slideCount: U.parsed.slides.length, hash: U.parsed.hash, createdAt: Date.now(), createdBy: S.uid || null, topicCount: c.topics.length, noteCount: c.notes.length, conceptCount: c.concepts.length, flashcardCount: c.flashcards.length, quizCount: c.quiz.length, lang: U.lang, overlap: r.check.pct };
+      await S.db.doc("myMaterials/" + id).set(meta);
+      S.content[id] = c;
+      mat = { id, ...meta, mine: true };
+      S.mine = [mat, ...S.mine.filter((x) => x.id !== id)];
+      setStep(5, "ok");
+    } catch (err) {
+      setStep(5, "err"); U.busy = false;
+      U.error = /godzin/i.test(err?.message || "") ? "Za dużo nowych materiałów w ciągu godziny. Spróbuj później." : "Nie udało się zapisać materiału. Spróbuj ponownie.";
+      render(); return;
+    }
+    // Po kolei, bo obie wersje dopisują się do tej samej treści materiału.
+    setStep(6, "run");
+    let fails = 0;
+    try { await buildSimple(mat, r.content, S.ai, U.ticket); } catch { fails++; }
+    try { await buildWhy(mat, r.content, S.ai, U.ticket); } catch { fails++; }
+    setStep(6, fails ? "err" : "ok", fails ? "nie wszystko się udało, reszta materiału jest gotowa" : null);
+    S.upload = null;
+    toast(fails ? "Materiał zapisany, bez części prostych wyjaśnień." : `Gotowe. Materiał jest w sekcji „${folderOf(mat).name}”.`);
+    go({ view: "material", id: mat.id, tab: "skrot" });
+  }
+
   // ================= prosty język i „Dlaczego?” =================
   // Obie wersje powstają z góry (przy wgrywaniu materiału albo w Panelu AI starosty) i są zapisane w bazie.
   // Studenci tylko je czytają: nie ma przycisków, które wołają AI.
   S.simple = {}; S.why = {};
   async function getSimple(id) {
     if (S.simple[id] !== undefined) return S.simple[id];
+    if (isMine(materialById(id))) { const c = await getContent(id); return (S.simple[id] = c?.simple || null); }
     const snap = await S.db.doc("materialSimple/" + id).get();
     return (S.simple[id] = snap.exists ? snap.data() : null);
   }
   async function getWhy(mid) {
     if (S.why[mid] !== undefined) return S.why[mid];
+    if (isMine(materialById(mid))) { const c = await getContent(mid).catch(() => null); return (S.why[mid] = c?.why || null); }
     let d = null;
     try { const snap = await S.db.doc("quizWhy/" + mid).get(); d = snap.exists ? snap.data() : null; } catch {}
     return (S.why[mid] = d);
@@ -2577,22 +2840,24 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return Object.keys(items).length ? { items, at: Date.now() } : null;
   }
 
-  async function buildSimple(m, c) {
-    const r = await S.sample.json(`${SIMPLE_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nMATERIAŁ:\n${simpleSource(m, c)}`, { modelTier: "default" });
+  async function buildSimple(m, c, ai = S.sample, ticket = null) {
+    const r = await ai.json(`${SIMPLE_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nMATERIAŁ:\n${simpleSource(m, c)}`, { modelTier: "default", ticket });
     const doc = cleanSimple(r);
     if (!doc) throw { code: "invalid_json" };
-    await S.db.doc("materialSimple/" + m.id).set(doc);
+    if (isMine(m)) { await S.db.doc("myContent/" + m.id).update({ simple: doc }); if (S.content[m.id]) S.content[m.id].simple = doc; }
+    else await S.db.doc("materialSimple/" + m.id).set(doc);
     S.simple[m.id] = doc;
     return doc;
   }
-  async function buildWhy(m, c) {
+  async function buildWhy(m, c, ai = S.sample, ticket = null) {
     const qs = whyQuestions(c);
     if (!qs.length) return null;
     const notes = (c.notes || []).map((n) => n.point).join("\n").slice(0, 12000);
-    const r = await S.sample.json(`${WHY_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nNOTATKI Z MATERIAŁU:\n${notes}\nPYTANIA:\n${JSON.stringify(qs)}`, { modelTier: "default" });
+    const r = await ai.json(`${WHY_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nNOTATKI Z MATERIAŁU:\n${notes}\nPYTANIA:\n${JSON.stringify(qs)}`, { modelTier: "default", ticket });
     const doc = cleanWhy(r, qs.length);
     if (!doc) throw { code: "invalid_json" };
-    await S.db.doc("quizWhy/" + m.id).set(doc);
+    if (isMine(m)) { await S.db.doc("myContent/" + m.id).update({ why: doc }); if (S.content[m.id]) S.content[m.id].why = doc; }
+    else await S.db.doc("quizWhy/" + m.id).set(doc);
     S.why[m.id] = doc;
     return doc;
   }
@@ -3789,8 +4054,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const s = subjectById(sid);
     const one = S.route.id ? materialById(S.route.id) : null;
     const back = backLink(one ? { view: "material", id: one.id } : { view: "subject", id: sid });
-    if (!s) return [back, h("p", { class: "muted", text: "Ładuję…" })];
-    if (!PAID()) return [back, paywallCard(null)];
+    if (!s && !isMine(one)) return [back, h("p", { class: "muted", text: "Ładuję…" })];
+    if (!PAID() && !isMine(one)) return [back, paywallCard(null)];
     const mats = one ? [one] : studyMats(sid);
     if (!S.route.ch) { S.route.ch = "loading"; loadContents(mats).then((pairs) => { S.route.ch = pairs; render(); }); }
     if (S.route.ch === "loading") return [back, h("p", { class: "muted", text: "Składam ściągawkę…" })];
@@ -3807,7 +4072,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => window.print() }, "Drukuj albo zapisz PDF"),
           h("span", { class: "muted", style: "font-size:.88rem", text: "W oknie drukowania wybierz „Zapisz jako PDF”, żeby mieć plik." }))),
       h("article", { class: "cheat-page" + (one ? "" : " subj") },
-        h("header", { class: "ch-top" }, h("span", { class: "ch-brand", text: "Skrót BM" }), h("span", { text: s.pl }), h("b", { text: one ? one.title || one.fileName : "Cały przedmiot: jedna strona przed kolokwium" })),
+        h("header", { class: "ch-top" }, h("span", { class: "ch-brand", text: "Skrót BM" }), h("span", { text: s?.pl || "Moje materiały" }), h("b", { text: one ? one.title || one.fileName : "Cały przedmiot: jedna strona przed kolokwium" })),
         h("div", { class: "ch-cols" }, body),
         h("footer", { class: "ch-foot" }, `${email ? email + " · " : ""}${fmtKey(todayKey())} · skrotbm.pl · do nauki, nie do korzystania na zaliczeniu`))];
   }
@@ -4042,6 +4307,8 @@ Reply with only one JSON object:
     if (!db) { S.noDb = true; S.ready = true; render(); return; }
     try { S.uid = await user?.id?.(); } catch {}
     try { S.canEdit = !!(await user?.canEdit?.()); } catch {}
+    // AI: starosta ma pełny panel (S.sample); osoby z pełnym dostępem tylko „Moje materiały” (S.ai, z biletem).
+    S.ai = sample; if (!S.canEdit) S.sample = null;
     render();
     let got = 0;
     const markReady = () => { if (++got >= 2) S.ready = true; render(); };
@@ -4067,6 +4334,10 @@ Reply with only one JSON object:
       if (S.progress.group && !ls.get("bm-group")) { S.group = S.progress.group; S.sub = S.progress.sub ?? S.sub; }
       render();
     }, () => {});
+    if (S.uid) db.collection("myMaterials").orderBy("createdAt", "desc").onSnapshot((snap) => {
+      S.mine = snap.docs.map((d) => ({ id: d.id, ...d.data(), mine: true })); S.mineLoaded = true; render();
+    }, () => { S.mineLoaded = true; render(); });
+    else S.mineLoaded = true;
     if (S.canEdit) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
 })();

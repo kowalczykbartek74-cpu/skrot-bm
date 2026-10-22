@@ -1,4 +1,5 @@
-// Funkcja serwerowa „claude” dla Skrót BM: przyjmuje prompt od zalogowanego administratora,
+// Funkcja serwerowa „claude” dla Skrót BM: przyjmuje prompt od zalogowanego administratora
+// albo od osoby z pełnym dostępem, która ma ważny bilet na „Moje materiały” (limit w supabase/skrot-v4-moje.sql),
 // pyta Claude przez API Anthropic i zwraca odpowiedź jako JSON ({ json: ... }).
 // Wymaga sekretu ANTHROPIC_API_KEY (Supabase → Edge Functions → Secrets).
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -32,11 +33,19 @@ Deno.serve(async (req) => {
     global: { headers: { Authorization: req.headers.get("Authorization") || "" } },
   });
   const { data: me, error } = await sb.rpc("nauka_ja");
-  if (error || !me?.admin) return out(403, { code: "not_granted", message: "AI jest dostępne tylko dla starosty." });
+  if (error || !me) return out(403, { code: "not_granted", message: "Zaloguj się, żeby korzystać z AI." });
 
-  let prompt = "";
-  try { prompt = String((await req.json())?.prompt || ""); } catch { /* pusty */ }
+  let prompt = "", ticket = "";
+  try { const b = await req.json(); prompt = String(b?.prompt || ""); ticket = String(b?.ticket || ""); } catch { /* pusty */ }
   if (!prompt) return out(400, { code: "empty", message: "Brak treści zapytania." });
+
+  // Starosta bez limitu. Pozostali: tylko z biletem na własny plik (jeden bilet = jeden plik, kilka zapytań).
+  if (!me.admin) {
+    if (!me.platny) return out(403, { code: "not_granted", message: "AI jest dostępne z pełnym dostępem." });
+    if (!/^[0-9a-f-]{36}$/i.test(ticket)) return out(403, { code: "no_ticket", message: "Brak biletu na przetworzenie pliku." });
+    const { data: ok, error: e2 } = await sb.rpc("nauka_ai_bilet", { b: ticket });
+    if (e2 || !ok) return out(429, { code: "ticket_used", message: "Limit zapytań dla tego pliku się skończył. Wgraj plik jeszcze raz." });
+  }
   if (new TextEncoder().encode(prompt).length > 160000) return out(413, { code: "prompt_too_large", message: "Za długie zapytanie." });
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {

@@ -11,7 +11,7 @@
     price: "199 zł",
   };
   const TABLE = "nauka_docs";
-  const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress", "exams", "examBank", "glossary"]);
+  const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress", "exams", "examBank", "glossary", "myMaterials", "myContent"]);
   const UNI = /@(stud\.)?usz\.edu\.pl$/i;
 
   let sb = null;
@@ -168,6 +168,14 @@
     }
     return all;
   };
+  // „Moje materiały”: limit plików i bilet na przetworzenie jednego pliku (supabase/skrot-v4-moje.sql).
+  const rpcErr = (error) => {
+    const m = String(error?.message || "");
+    const code = ["limit_dzien", "limit_miesiac", "brak_dostepu", "nie_zalogowany"].find((c) => m.includes(c)) || (/function|does not exist|schema cache/i.test(m) ? "no_sql" : "error");
+    return Object.assign(new Error(m), { code });
+  };
+  skrot.mojeStan = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_stan"); if (error) throw rpcErr(error); return data; };
+  skrot.mojeStart = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_start"); if (error) throw rpcErr(error); return data; };
   skrot.list = async (col) => { await ready; const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col); if (error) throw error; return data; };
 
   // ---------- AI przez funkcję serwerową (supabase/functions/claude) ----------
@@ -175,7 +183,8 @@
     const fail = (code, message) => Object.assign(new Error(message), { code });
     return {
       async limits() { return { maxPromptBytes: 150000 }; },
-      async json(prompt) {
+      // opts.ticket: bilet na „Moje materiały” (studenci); starosta go nie potrzebuje.
+      async json(prompt, opts = {}) {
         const { data } = await sb.auth.getSession();
         const token = data?.session?.access_token;
         let res;
@@ -183,7 +192,7 @@
           res = await fetch(CONFIG.url + "/functions/v1/claude", {
             method: "POST",
             headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + token },
-            body: JSON.stringify({ prompt }),
+            body: JSON.stringify(opts.ticket ? { prompt, ticket: opts.ticket } : { prompt }),
           });
         } catch { throw fail("no_function", "Funkcja AI na serwerze nie odpowiada."); }
         const body = await res.json().catch(() => ({}));
@@ -218,7 +227,8 @@
       me: async () => ({ name: firstName(), email: skrot.email }),
       profiles: async () => ({}),
     };
-    if (name === "sample") { if (!skrot.admin) throw Object.assign(new Error("AI tylko dla starosty"), { code: "not_granted" }); return makeSample(); }
+    // Starosta: pełne AI. Osoby z pełnym dostępem: AI tylko do „Moich materiałów”, z biletem (limit w bazie).
+    if (name === "sample") { if (!skrot.admin && !skrot.paid) throw Object.assign(new Error("AI z pełnym dostępem"), { code: "not_granted" }); return makeSample(); }
     throw new Error("Nieznana usługa: " + name);
   };
 
