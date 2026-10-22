@@ -2016,7 +2016,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     else panel = studyPanel(m, c);
     const oldNote = fromSlides(m) && !isV2(m, c) && S.canEdit
       ? h("div", { class: "notice", style: "margin-bottom:12px" }, "Ten materiał powstał w starym systemie, bezpośrednio ze slajdów. ", h("button", { type: "button", class: "link", onclick: () => go({ view: "ai" }) }, "Przerób go w Panelu AI"), ".") : null;
-    return [head, oldNote, h("div", {}, tabs, h("div", { class: "tabpanel", role: "tabpanel" }, panel))].filter(Boolean);
+    return [head, oldNote, fillNote(m, c), h("div", {}, tabs, h("div", { class: "tabpanel", role: "tabpanel" }, panel))].filter(Boolean);
   }
   // Skrót w nowym systemie: o co chodzi, po co, a potem tematy z odsyłaczem do slajdów.
   function studyPanel(m, c) {
@@ -2756,6 +2756,34 @@ ${written}`;
     await finishMine(r);
   }
 
+  // Chwilowy błąd AI nie powinien zostawić materiału bez prostego języka: jedna ponowna próba.
+  const twice = async (fn) => { try { return await fn(); } catch { await new Promise((res) => setTimeout(res, 1500)); return fn(); } };
+  // Uzupełnienie brakującego prostego języka / „Dlaczego?” we własnym materiale (nowy bilet = jeden plik z limitu).
+  const FILL = { busy: null };
+  async function fillMine(m) {
+    if (FILL.busy) return;
+    const c = await getContent(m.id).catch(() => null);
+    if (!c || !S.ai) return;
+    FILL.busy = m.id; render();
+    let ticket = null;
+    try { ticket = (await window.skrot.mojeStart())?.bilet || null; }
+    catch (e) { FILL.busy = null; render(); toast(mineError(e)); return; }
+    let fails = 0;
+    if (!c.simple) { try { await twice(() => buildSimple(m, c, S.ai, ticket)); } catch { fails++; } }
+    if (!c.why && c.quiz?.length) { try { await twice(() => buildWhy(m, c, S.ai, ticket)); } catch { fails++; } }
+    delete S.simple[m.id]; delete S.why[m.id];
+    S.myQuota = undefined; FILL.busy = null; render();
+    toast(fails ? "Nie wszystko się udało. Spróbuj za chwilę." : "Gotowe: prosty język i wyjaśnienia do quizu są uzupełnione.");
+  }
+  function fillNote(m, c) {
+    if (!isMine(m) || !c || (c.simple && (c.why || !c.quiz?.length))) return null;
+    const what = [!c.simple ? "prostego języka" : null, !c.why && c.quiz?.length ? "wyjaśnień „Dlaczego?” do quizu" : null].filter(Boolean).join(" i ");
+    return h("div", { class: "notice", style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px" },
+      h("span", { text: `Przy wgrywaniu nie udało się przygotować ${what}.` }),
+      h("button", { type: "button", class: "btn small primary", disabled: FILL.busy ? true : null, onclick: () => fillMine(m) }, FILL.busy === m.id ? "Uzupełniam…" : "Uzupełnij teraz"),
+      h("span", { class: "muted", style: "font-size:.84rem", text: "liczy się jako 1 plik z limitu" }));
+  }
+
   async function finishMine(r) {
     const U = S.upload;
     U.busy = true; U.flagged = null; render();
@@ -2778,11 +2806,11 @@ ${written}`;
     // Po kolei, bo obie wersje dopisują się do tej samej treści materiału.
     setStep(6, "run");
     let fails = 0;
-    try { await buildSimple(mat, r.content, S.ai, U.ticket); } catch { fails++; }
-    try { await buildWhy(mat, r.content, S.ai, U.ticket); } catch { fails++; }
+    try { await twice(() => buildSimple(mat, r.content, S.ai, U.ticket)); } catch { fails++; }
+    try { await twice(() => buildWhy(mat, r.content, S.ai, U.ticket)); } catch { fails++; }
     setStep(6, fails ? "err" : "ok", fails ? "nie wszystko się udało, reszta materiału jest gotowa" : null);
     S.upload = null;
-    toast(fails ? "Materiał zapisany, bez części prostych wyjaśnień." : `Gotowe. Materiał jest w sekcji „${folderOf(mat).name}”.`);
+    toast(fails ? "Materiał zapisany. Brakujące wyjaśnienia uzupełnisz przyciskiem przy materiale." : `Gotowe. Materiał jest w sekcji „${folderOf(mat).name}”.`);
     go({ view: "material", id: mat.id, tab: "skrot" });
   }
 
@@ -2867,7 +2895,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     if (d === undefined) { getSimple(m.id).then(render).catch(() => { S.simple[m.id] = null; render(); }); return h("p", { class: "muted", text: "Ładuję prostą wersję…" }); }
     if (!d) return h("div", { class: "simple" },
       h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język" }),
-        h("p", { text: "Prosta wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu ucz się ze Skrótu, Pojęć i Fiszek." }),
+        h("p", { text: isMine(m) ? "Prosta wersja nie powstała przy wgrywaniu. Uzupełnisz ją przyciskiem nad zakładkami." : "Prosta wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu ucz się ze Skrótu, Pojęć i Fiszek." }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "ai" }) }, "Panel AI: uzupełnij brakujące")) : null));
     return h("div", { class: "simple" },
       h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język" }), h("p", {}, inline(d.intro))),
