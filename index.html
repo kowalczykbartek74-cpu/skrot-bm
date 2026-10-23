@@ -282,6 +282,34 @@ label.field { display: grid; gap: 4px; font-size: .86rem; font-weight: 700; min-
 .zal-note { background: var(--warn-soft); border-radius: 12px; padding: 12px 16px; display: grid; gap: 6px; font-size: .92rem; }
 .zal-src { font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
 .zal-src a { color: var(--accent-hover); }
+
+/* sylabus */
+.syl-panel { scroll-margin-top: 80px; }
+.syl-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.syl-facts > div { background: var(--sunk); border-radius: 12px; padding: 10px 14px; display: grid; gap: 2px; align-content: start; min-width: 0; }
+.syl-facts .wide { grid-column: span 2; }
+.syl-facts small { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+.syl-facts b { font-size: 1.02rem; overflow-wrap: anywhere; }
+.syl-facts span { font-size: .82rem; }
+@media (max-width: 520px) { .syl-facts .wide { grid-column: 1 / -1; } }
+.syl-topics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px 24px; }
+.syl-tcol { min-width: 0; }
+.syl-tcol h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin: 0 0 6px; }
+.syl-tcol ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; font-size: .92rem; }
+.syl-tcol li { overflow-wrap: anywhere; }
+.syl-tcol .hrs { margin-left: 8px; font-size: .78rem; white-space: nowrap; }
+.syl-more { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 6px; }
+.syl-more summary { cursor: pointer; font-weight: 700; color: var(--accent-hover); }
+.syl-more[open] summary { margin-bottom: 4px; }
+.syl-more ul { margin: 2px 0 8px; padding-left: 20px; display: grid; gap: 4px; font-size: .92rem; }
+.syl-more p { font-size: .92rem; overflow-wrap: anywhere; margin: 0; }
+.syl-load { display: grid; gap: 6px; }
+.syl-load > div { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(50px, 1fr) 3.2em; gap: 10px; align-items: center; font-size: .9rem; }
+.syl-load .bar { height: 8px; background: var(--sunk); border-radius: 999px; overflow: hidden; }
+.syl-load .bar i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+.syl-load b { text-align: right; }
+.prog-row .t { display: grid; gap: 1px; }
+.prog-row .t .en { font-weight: 400; color: var(--muted); font-size: .84rem; }
 .zal-rows { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
 .zal-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 6px 16px; align-items: center; padding: 13px 18px; border: 0; border-top: 1px solid var(--line); background: none; width: 100%; text-align: left; cursor: pointer; }
 .zal-row:first-child { border-top: 0; }
@@ -1034,6 +1062,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     in: '<path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H9M14 8l4 4-4 4M18 12H8"/>',
     review: '<rect x="6.5" y="3.5" width="13" height="16" rx="2.5"/><path d="M4.5 7v11.5A2.5 2.5 0 0 0 7 21h9"/><path d="M10 10.5h6M10 14h4"/>',
     map: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="m14 17 2 2 4-4"/>',
+    program: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6M9 11h4"/>',
     glossary: '<path d="M4 5h7M7.5 5V4M5 9c1.5 2.5 3.5 4 6 5M10 5c-.8 4-3 7-6 9"/><path d="m12.5 20 4-10 4 10M14 16.5h5"/>',
   };
   function icon(k) {
@@ -1044,7 +1073,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   const NAV_ITEMS = [["home", "Start"], ["materials", "Materiały"], ["tasks", "Zadania"], ["grading", "Zaliczenia"], ["calendar", "Kalendarz"]];
   function renderNav() {
     const v = S.route.view;
-    const active = ["materials", "subject", "material", "subjectQuiz", "upload", "glossary", "exam", "cheat", "myFolder", "myUpload"].includes(v) ? "materials" : ["review", "progress"].includes(v) ? "home" : v;
+    const active = ["materials", "subject", "material", "subjectQuiz", "upload", "glossary", "exam", "cheat", "myFolder", "myUpload", "program"].includes(v) ? "materials" : v === "syllabus" ? (S.route.from?.view === "grading" ? "grading" : "materials") : ["review", "progress"].includes(v) ? "home" : v;
     const openN = PAID() ? myTasks().filter((t) => t.kind !== "info" && !isDone(t)).length : 0;
     $("nav").replaceChildren(...NAV_ITEMS.map(([key, label]) => h("button", {
       type: "button", class: "navbtn", "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
@@ -1074,6 +1103,7 @@ button.pm-sq:hover { transform: scale(1.12); }
       item("review", "Powtórki", () => go({ view: "review" })),
       item("map", "Mapa postępów", () => go({ view: "progress" })),
       item("glossary", "Słowniczek EN–PL", () => go({ view: "glossary" })),
+      item("program", "Program studiów i sylabusy", () => go({ view: "program" })),
       PAID() ? item("upload", "Wgraj swój materiał", () => go({ view: "myUpload" })) : null,
       item("help", "Jak korzystać (instrukcja)", () => startTour(0)),
       S.canEdit ? [h("hr"),
@@ -1096,7 +1126,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   function render() {
     renderNav();
     const v = S.route.view;
-    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading, review: viewReview, glossary: viewGlossary, progress: viewProgress, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload }[v] || viewHome;
+    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading, review: viewReview, glossary: viewGlossary, progress: viewProgress, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus }[v] || viewHome;
     // W trakcie próbnego testu strona nie przebudowuje się sama (np. po odświeżeniu danych), żeby nie gubić wpisywanego tekstu.
     if (!EXR.force && examRunning() && $("main").querySelector(".exam-run")) return;
     const keepIds = ["ann-text", "gl-q"];
@@ -1664,8 +1694,9 @@ button.pm-sq:hover { transform: scale(1.12); }
   const ZAL_SESJA = "Sesja 2–15 lutego 2027, dokładny dzień jeszcze nieogłoszony";
   const ZAL_PRZED = "Przed sesją (zajęcia trwają do 1 lutego), data jeszcze nieogłoszona";
   const ZAL_SYL = { label: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://dsm.usz.edu.pl/wp-content/uploads/wefiz-26-27-sylab.pdf" };
-  const ZAL_CHECKED = "21 października 2026";
+  const ZAL_CHECKED = "23 października 2026";
   const ZAL_NOTE = { label: "Terminy podane na zajęciach, zapisane 21.10" };
+  const ZAL_BM = { label: "Sylabus Business Management 2026/27, studia stacjonarne I stopnia" };
   const ZAL = {
     "analiza-matematyczna": {
       parts: [
@@ -1708,17 +1739,17 @@ button.pm-sq:hover { transform: scale(1.12); }
         { k: "W", f: "ZO", how: "Pisemne kolokwium z pytaniami otwartymi na koniec cyklu wykładów.", rules: ["Według sylabusa są 3 pytania: 1 dobra odpowiedź to 3,0, 2 to 4,0, 3 to 5,0.", "Na pierwszym wykładzie prowadząca mówiła o 5 pytaniach teoretycznych."], when: "Na koniec wykładów; prowadząca poda datę z wyprzedzeniem" },
         { k: "LAB", f: "ZO", how: "Zadania robione na zajęciach (60%) i projekt grupowy z analizy prawdziwych danych (40%).", rules: ["Skala: 60% to 3,0, 70% to 3,5, 80% to 4,0, 90% to 4,5, 95% to 5,0.", "Ocena z lab = 0,6 × zadania + 0,4 × projekt."], when: "Zadania na bieżąco; projekt w ostatnim bloku laboratoriów (10 godzin)" },
       ],
-      final: "Średnia ważona oceny z wykładu i z laboratorium. Liczą się obie oceny; wag sylabus nie podaje.",
-      notes: ["Liczbę pytań na kolokwium z wykładu (3 czy 5) warto potwierdzić u prowadzącej."],
+      final: "Średnia z oceny z wykładu i z laboratorium. Liczą się obie oceny.",
+      notes: ["Liczbę pytań na kolokwium z wykładu (3 czy 5) warto potwierdzić u prowadzącej.", "Sylabus sam sobie przeczy: opis mówi o średniej ważonej (bez podanych wag), a tabela ocen o średniej arytmetycznej."],
       sources: [ZAL_SYL, { label: "Wykład 1, slajd 8 „How your grade is calculated” (zespół 202627 IT Tools BM)" }],
     },
     "ochrona-wlasnosci-intelektualnej": {
       parts: [
-        { k: "W", f: "ZO", how: "Zaliczenie z oceną z wykładu.", rules: ["Na innym kierunku wydziału ten przedmiot kończy się testem wielokrotnego wyboru z punktami ujemnymi.", "W planie są tylko cztery wykłady: 12.10, 26.10, 9.11 i 23.11. Zaliczenie najpewniej będzie na ostatnim, a nie przed sesją."], when: "Najpewniej 23 listopada 2026, na ostatnim wykładzie (data nieogłoszona)" },
+        { k: "W", f: "ZO", how: "Pisemne kolokwium: wiedza z wykładu, z ustaw (prawo autorskie i prawo własności przemysłowej) i z literatury z sylabusa.", rules: ["Przedmiot ma tylko 8 godzin wykładu i 1 ECTS.", "W planie są cztery wykłady: 12.10, 26.10, 9.11 i 23.11. Zaliczenie najpewniej będzie na ostatnim, a nie przed sesją."], when: "Najpewniej 23 listopada 2026, na ostatnim wykładzie (data nieogłoszona)" },
       ],
       final: "Ocena z wykładu jest oceną z przedmiotu.",
-      notes: ["Nie ma jeszcze sylabusa tego przedmiotu dla Business Management ani informacji w Teams. Formę testu potwierdzi dr Jarosław Poteralski."],
-      sources: [{ label: "Sylabus tego przedmiotu na innym kierunku WEFiZ (PDF)", url: ZAL_SYL.url }],
+      notes: ["Sylabus nie podaje formy pytań ani progów punktowych. Na innym kierunku wydziału ten przedmiot kończy się testem wielokrotnego wyboru z punktami ujemnymi, więc formę warto potwierdzić u dr. Jarosława Poteralskiego."],
+      sources: [ZAL_BM],
     },
     "podstawy-finansow": {
       parts: [
@@ -1740,11 +1771,11 @@ button.pm-sq:hover { transform: scale(1.12); }
     },
     "prawo": {
       parts: [
-        { k: "W", f: "ZO", how: "Testy pisemne w trakcie wykładów.", rules: ["Ocena pozytywna tylko wtedy, gdy zaliczysz wszystkie testy.", "Na zajęciach potwierdzono: zaliczenie wykładu to test."], when: "W trakcie semestru, daty jeszcze nieogłoszone" },
+        { k: "W", f: "ZO", how: "Pisemne sprawdziany w trakcie wykładów i aktywny udział w dyskusjach.", rules: ["Ocena pozytywna tylko wtedy, gdy zaliczysz wszystkie sprawdziany.", "Na zajęciach potwierdzono: zaliczenie wykładu to test."], when: "W trakcie semestru, daty jeszcze nieogłoszone" },
       ],
       final: "Ocena z wykładu jest oceną z przedmiotu.",
-      notes: ["To sylabus tego samego przedmiotu dr Małgorzaty Szymszon dla innego kierunku wydziału. Progów punktowych nie podaje."],
-      sources: [{ label: "Sylabus „Law (prawo)”, WEFiZ 2026/27 (PDF)", url: ZAL_SYL.url }, ZAL_NOTE],
+      notes: ["W sylabusie Business Management jako koordynator figuruje dr hab. Pasquale Policastro, a wykłady prowadzi dr Małgorzata Szymszon. Zasady mogą się różnić, więc warto je potwierdzić na wykładzie.", "Sylabus nie podaje progów punktowych."],
+      sources: [ZAL_BM, ZAL_NOTE],
     },
     "zarzadzanie-zasobami-ludzkimi": {
       parts: [
@@ -1760,10 +1791,11 @@ button.pm-sq:hover { transform: scale(1.12); }
   const hasExam = (sid) => !!zalOf(sid)?.parts.some((p) => p.f === "E");
   const formChip = (f) => h("span", { class: "typechip", style: `--t:${ZAL_FORM[f].c}`, text: ZAL_FORM[f].label });
 
-  function zalSources(z) {
+  function zalSources(z, sid) {
     return h("p", { class: "zal-src" }, h("span", { text: "Źródła:" }), z.sources.map((src) => src.url
       ? h("a", { href: src.url, target: "_blank", rel: "noopener", text: src.label })
-      : h("span", { text: src.label })));
+      : h("span", { text: src.label })),
+      sid && sylOf(sid) ? h("a", { href: "#sylabus", onclick: (e) => { e.preventDefault(); go({ view: "syllabus", id: sid, from: { view: "subject", id: sid } }); }, text: "Karta przedmiotu z sylabusa →" }) : null);
   }
 
   function zalPart(p, sid) {
@@ -1786,7 +1818,7 @@ button.pm-sq:hover { transform: scale(1.12); }
       h("div", { class: "zal-parts" }, z.parts.map((p) => zalPart(p, s.id))),
       h("div", { class: "zal-final" }, h("span", { class: "eyebrow", text: "Ocena z przedmiotu" }), h("p", { text: z.final })),
       z.notes.length ? h("div", { class: "zal-note" }, h("b", { text: "Na co uważać" }), h("ul", { class: "zal-list" }, z.notes.map((n) => h("li", { text: n })))) : null,
-      zalSources(z));
+      zalSources(z, s.id));
   }
 
   function zalWhen(z) {
@@ -1823,7 +1855,166 @@ button.pm-sq:hover { transform: scale(1.12); }
           h("div", { class: "rule" }, h("b", { text: "Terminy" }), h("p", { text: "Ćwiczenia i laboratoria zaliczasz przed sesją. O dacie kolokwium prowadzący musi dać znać co najmniej 14 dni wcześniej." })),
           h("div", { class: "rule" }, h("b", { text: "Sesja" }), h("p", { text: "Egzaminy 2–15 lutego 2027. Sesja poprawkowa 22–28 lutego. Semestr musi być rozliczony do 28 lutego." })),
           h("div", { class: "rule" }, h("b", { text: "Poprawki" }), h("p", { text: "Każdą formę zajęć i egzamin poprawiasz raz. W przedmiocie z egzaminem poprawka ćwiczeń jest przed sesją, a w pozostałych w sesji poprawkowej." })))),
-      h("p", { class: "zal-src" }, h("span", { text: "Źródła:" }), h("a", { href: ZAL_SYL.url, target: "_blank", rel: "noopener", text: ZAL_SYL.label }), h("span", { text: "Regulamin studiów US i kalendarz roku akademickiego (zespół Business Management 2026-2029)" }), h("span", { text: "posty i pliki prowadzących w Teams" })),
+      sylTrainings(),
+      h("div", {}, h("button", { type: "button", class: "btn", onclick: () => go({ view: "program" }) }, "Program studiów i sylabusy wszystkich przedmiotów →")),
+      h("p", { class: "zal-src" }, h("span", { text: "Źródła:" }), h("a", { href: ZAL_SYL.url, target: "_blank", rel: "noopener", text: ZAL_SYL.label }), h("span", { text: ZAL_BM.label }), h("span", { text: "Regulamin studiów US i kalendarz roku akademickiego (zespół Business Management 2026-2029)" }), h("span", { text: "posty i pliki prowadzących w Teams" })),
+    ];
+  }
+
+  // ================= sylabus kierunku =================
+  // sylabus.json powstaje z PDF-u „Business Management, studia stacjonarne I stopnia 2026/27” (scripts/sylabus-*.py).
+  // id przedmiotu = slug polskiej nazwy, tak jak w SUBJECTS, więc przedmioty z planu łączą się same.
+  let SYL = null;
+  const sylOf = (id) => SYL?.courses.find((c) => c.id === id) || null;
+  const SYL_FORM = { W: "Wykład", CW: "Ćwiczenia", LAB: "Laboratorium", KON: "Konwersatorium", SEM: "Seminarium", WF: "Zajęcia WF" };
+  const SYL_CREDIT = { e: "egzamin", pg: "zaliczenie z oceną", p: "zaliczenie bez oceny" };
+  const SYL_GROUP = { PODSTAWOWE: "przedmiot podstawowy", KIERUNKOWE: "przedmiot kierunkowy", "OGÓLNOUCZELNIANE": "przedmiot ogólnouczelniany", "ANOTHER TO PASS": "szkolenie" };
+  const SYL_CAT = { knowledge: "Wiedza", skills: "Umiejętności", "social competences": "Postawy" };
+  const SYL_CALC = { "Arytmetyczna": "średnia arytmetyczna", "Ważona": "średnia ważona", "Nieobliczana": "ocena nie jest liczona ze składowych" };
+  const SYL_UNIT = { "Physical Education (wychowanie fizyczne) [moduł]": "Wychowanie fizyczne", "Lecture in the humanities [moduł]": "Wykład humanistyczny" };
+  const SYL_LOAD = [["Contact hours", "Zajęcia"], ["Participation in test / exam", "Kolokwia i egzamin"], ["Preparation for contact hours", "Przygotowanie do zajęć"], ["Private reading and studying", "Samodzielna nauka"], ["Participation in tutorials", "Konsultacje"], ["Preparation of project / essay / etc.", "Projekt, esej itp."], ["Preparation for test / exam", "Nauka do kolokwium i egzaminu"]];
+  const SYL_SEM = ["", "rok 1 · zima", "rok 1 · lato", "rok 2 · zima", "rok 2 · lato", "rok 3 · zima", "rok 3 · lato"];
+  const SZKOLENIA = {
+    "szkolenie-bhp": "Kurs e-learningowy BHP (przepisy, zagrożenia, pierwsza pomoc, ochrona przeciwpożarowa) z testem na końcu. Zaliczasz od 60% poprawnych odpowiedzi.",
+    "szkolenie-e-learningowe": "Kurs na platformie Moodle (e-studia): obsługa platformy i komunikacja na uczelni. Test, zaliczasz od 60% poprawnych odpowiedzi.",
+    "szkolenie-biblioteczne": "Kurs e-learningowy o korzystaniu z biblioteki US, jej zbiorów i zasobów elektronicznych, zakończony sprawdzianem.",
+    "szkolenie-z-zasad-korzystania-ze-sztucznej-inteligencji": "Kurs e-learningowy o AI i ryzykach generatorów treści. Test online: 30 pytań jednokrotnego wyboru, zaliczasz od 60%.",
+  };
+  const sylName = (c) => c.pl || c.en;
+  const sylHasExam = (c, sem) => c.forms.some((f) => f.c === "e" && (!sem || f.s === sem));
+
+  function sylFacts(c, s) {
+    const planPeople = s ? [...new Set(Object.values(s.people).flatMap((set) => [...set]))] : [];
+    const surname = c.coord.split(" ").pop();
+    const elsewhere = planPeople.length && !planPeople.some((p) => p.endsWith(surname));
+    const multi = c.sem.length > 1;
+    return h("div", { class: "syl-facts" },
+      h("div", {}, h("small", { text: "ECTS" }), h("b", { class: "num", text: String(c.ects) })),
+      c.forms.map((f) => h("div", {}, h("small", { text: (SYL_FORM[f.f] || f.f) + (multi ? `, sem. ${f.s}` : "") }), h("b", { class: "num", text: `${f.h} h` }), h("span", { class: "muted", text: SYL_CREDIT[f.c] || f.c }))),
+      c.coord ? h("div", { class: "wide" }, h("small", { text: "Koordynator w sylabusie" }), h("b", { text: c.coord }), elsewhere ? h("span", { class: "muted", text: `Zajęcia według planu: ${planPeople.join(", ")}` }) : null) : null);
+  }
+
+  function sylTopics(c, only) {
+    const keys = Object.keys(c.topics).filter((k) => c.topics[k].length && (!only || k === only));
+    return h("div", { class: "syl-topics" }, keys.map((k) => h("div", { class: "syl-tcol" },
+      h("h3", {}, h("span", { text: SYL_FORM[k] || k }), h("span", { class: "muted num", text: `${c.topics[k].reduce((a, t) => a + (t.h || 0), 0)} h` })),
+      h("ol", { lang: "en" }, c.topics[k].map((t) => h("li", {}, h("span", { text: t.t }), t.h ? h("span", { class: "num muted hrs", text: `${t.h} h` }) : null))))));
+  }
+
+  function sylMore(c, open) {
+    const det = (title, ...kids) => h("details", { class: "syl-more", open: open ? true : null }, h("summary", { text: title }), ...kids);
+    const cats = [...new Set(c.out.map((o) => o.c))];
+    const total = c.load["TOTAL workload"];
+    const load = SYL_LOAD.filter(([k]) => c.load[k]).map(([k, l]) => [l, c.load[k]]);
+    const list = (xs) => h("ul", {}, xs.map((x) => h("li", { text: x })));
+    const fin = c.final.parts.length ? `${SYL_CALC[c.final.m] || c.final.m || "ocena"}: ${c.final.parts.map((p) => `${p.n} (${p.c}${p.w ? `, waga ${p.w}` : ""})`).join(", ")}` : "";
+    return [
+      c.out.length ? det("Czego masz się nauczyć", h("p", { class: "muted", text: "Efekty uczenia się z sylabusa. Na nich opiera się kolokwium i egzamin." }),
+        cats.map((cat) => h("div", {}, h("b", { text: SYL_CAT[cat] || cat }), h("ul", { lang: "en" }, c.out.filter((o) => o.c === cat).map((o) => h("li", { text: o.t })))))) : null,
+      c.lit.length || c.sup.length ? det("Literatura",
+        c.lit.length ? [h("b", { text: "Podstawowa" }), list(c.lit)] : null,
+        c.sup.length ? [h("b", { text: "Uzupełniająca" }), list(c.sup)] : null) : null,
+      total ? det(`Ile pracy: około ${total} godzin w semestrze`,
+        h("div", { class: "syl-load" }, load.map(([l, n]) => h("div", {}, h("span", { text: l }), h("span", { class: "bar", "aria-hidden": "true" }, h("i", { style: `width:${Math.round(100 * n / total)}%` })), h("b", { class: "num", text: `${n} h` })))),
+        h("p", { class: "foot-note", text: "Godziny poza zajęciami to szacunek prowadzącego z sylabusa. 1 ECTS to około 25 godzin pracy." })) : null,
+      c.grading.length || c.calc.length || fin ? det("Zasady oceniania: oryginalny tekst sylabusa",
+        h("div", { lang: "en", class: "stack", style: "gap:6px" }, c.grading.map((t) => h("p", { text: t })), c.calc.length ? [h("b", { text: "Grade calculation" }), c.calc.map((t) => h("p", { text: t }))] : null),
+        c.assess.length ? h("p", { class: "muted", text: "Metody sprawdzania: " + c.assess.join(", ").toLowerCase() + "." }) : null,
+        fin ? h("p", { class: "muted", text: "Tabela ocen: " + fin + "." }) : null) : null,
+      c.goals.length || c.pre.length || c.how.length ? det("Cele przedmiotu, wymagania i metody",
+        c.goals.length ? [h("b", { text: "Cele" }), h("div", { lang: "en" }, c.goals.map((t) => h("p", { text: t })))] : null,
+        c.pre.length ? [h("b", { text: "Wymagania wstępne" }), h("div", { lang: "en" }, c.pre.map((t) => h("p", { text: t })))] : null,
+        c.how.length ? [h("b", { text: "Jak wyglądają zajęcia" }), h("div", { lang: "en" }, c.how.map((t) => h("p", { text: t })))] : null) : null,
+    ];
+  }
+
+  function sylPanel(s) {
+    const c = sylOf(s.id);
+    if (!c) return null;
+    return h("section", { class: "panel syl-panel", id: "sylabus" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Sylabus: tematy i wymagania" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "syllabus", id: c.id, from: { view: "subject", id: s.id } }) }, "Pełna karta przedmiotu →")),
+      sylFacts(c, s),
+      Object.keys(c.topics).length ? sylTopics(c) : null,
+      sylMore(c, false));
+  }
+
+  function sylExamPanel(sid, part) {
+    const c = sylOf(sid);
+    if (!c?.topics[part]?.length) return null;
+    return h("section", { class: "panel" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Tematy z sylabusa" }), h("span", { class: "muted", style: "font-size:.84rem", text: (SYL_FORM[part] || part).toLowerCase() })),
+      h("p", { class: "muted", style: "font-size:.88rem", text: "Pełna lista tematów tej części według sylabusa. Sprawdź, czy z każdego masz materiał." }),
+      sylTopics(c, part));
+  }
+
+  function sylTrainings() {
+    const list = (SYL?.courses || []).filter((c) => c.sem.includes(1) && SZKOLENIA[c.id]);
+    if (!list.length) return null;
+    return h("section", { class: "panel" },
+      h("h2", { text: "Szkolenia obowiązkowe" }),
+      h("p", { class: "muted", text: "Bez ECTS i bez oceny, ale trzeba je zaliczyć w 1. semestrze. Wszystkie są online." }),
+      h("div", { class: "list" }, list.map((c) => h("button", { type: "button", class: "item", onclick: () => go({ view: "syllabus", id: c.id, from: { view: "grading" } }) },
+        h("span", { class: "t", text: sylName(c) }),
+        h("span", { class: "m", text: SZKOLENIA[c.id] }),
+        h("span", { class: "r" }, h("span", { class: "chip plain num", text: `${c.hours} h` }))))));
+  }
+
+  function viewSyllabus() {
+    const c = sylOf(S.route.id);
+    const back = backLink(S.route.from || { view: "program" });
+    if (!c) return [back, h("p", { class: "muted", text: SYL ? "Nie ma takiego przedmiotu w sylabusie." : "Ładuję sylabus…" })];
+    const s = subjectById(c.id);
+    return [back,
+      h("section", { class: "stack" },
+        h("span", { class: "eyebrow", text: [`semestr ${c.sem.join(" i ")}`, SYL_GROUP[c.group] || c.group, c.elective ? "do wyboru" : "obowiązkowy"].join(" · ") }),
+        h("h1", { text: sylName(c) }),
+        c.pl && c.en !== c.pl ? h("p", { class: "muted", lang: "en", text: c.en }) : null,
+        s && S.route.from?.view !== "subject" ? h("div", {}, h("button", { type: "button", class: "btn primary small", onclick: () => go({ view: "subject", id: s.id }) }, "Materiały z tego przedmiotu →")) : null),
+      h("section", { class: "panel" }, sylFacts(c, s), SZKOLENIA[c.id] ? h("p", { text: SZKOLENIA[c.id] }) : null),
+      Object.keys(c.topics).length ? h("section", { class: "panel" }, h("h2", { text: "Tematy zajęć" }), sylTopics(c)) : null,
+      h("section", { class: "panel" }, sylMore(c, true)),
+      h("p", { class: "zal-src" }, h("span", { text: "Źródło:" }), h("span", { text: `${SYL.source}, kod ${c.code}` })),
+    ];
+  }
+
+  function viewProgram() {
+    const head = (sem) => h("section", { class: "stack" },
+      h("span", { class: "eyebrow", text: "Business Management · studia stacjonarne I stopnia · nabór 2026/27" }),
+      h("h1", { text: "Program studiów" }),
+      h("p", { class: "muted", style: "max-width:62ch", text: "Wszystkie przedmioty z sylabusa kierunku, semestr po semestrze. Kliknij przedmiot, żeby zobaczyć tematy, literaturę i zasady zaliczenia." }),
+      h("div", { class: "seg pick", role: "group", "aria-label": "Semestr" }, [1, 2, 3, 4, 5, 6].map((n) => h("button", { type: "button", "aria-pressed": String(sem === n), onclick: () => go({ view: "program", sem: n }) }, `Sem. ${n}`))));
+    const sem = S.route.sem || 1;
+    if (!SYL) return [backLink({ view: "materials" }), head(sem), h("p", { class: "muted", text: "Ładuję sylabus…" })];
+    const all = SYL.courses.filter((c) => c.sem.includes(sem));
+    const ob = all.filter((c) => !c.elective), el = all.filter((c) => c.elective);
+    const ectsOb = ob.reduce((a, c) => a + c.ects, 0);
+    const row = (c) => {
+      const fs = c.forms.filter((f) => f.s === sem);
+      return h("button", { type: "button", class: "item prog-row", onclick: () => go({ view: "syllabus", id: c.id, from: { view: "program", sem } }) },
+        h("span", { class: "t" }, h("span", { text: sylName(c) }), c.pl && c.en !== c.pl ? h("span", { class: "en", lang: "en", text: c.en }) : null),
+        h("span", { class: "m", text: [fs.map((f) => `${SYL_FORM[f.f] || f.f} ${f.h} h`).join(" · "), c.coord].filter(Boolean).join(" · ") }),
+        h("span", { class: "r row", style: "gap:6px;justify-content:flex-end" },
+          sylHasExam(c, sem) ? h("span", { class: "chip bad", text: "egzamin" }) : null,
+          h("span", { class: "chip plain num", text: c.sem.length > 1 ? `${c.ects} ECTS łącznie` : `${c.ects} ECTS` })));
+    };
+    const groups = [];
+    for (const c of el) {
+      const name = c.unit ? SYL_UNIT[c.unit] || c.unit : "Przedmioty do wyboru";
+      let g = groups.find((x) => x.name === name);
+      if (!g) groups.push(g = { name, items: [] });
+      g.items.push(c);
+    }
+    return [
+      backLink({ view: "materials" }),
+      head(sem),
+      h("section", { class: "stack" },
+        h("div", { class: "panel-head" }, h("h2", { text: `Semestr ${sem}: obowiązkowe` }), h("span", { class: "muted num", text: `${SYL_SEM[sem]} · ${ob.length} ${plural(ob.length, "przedmiot", "przedmioty", "przedmiotów")} · ${ectsOb} ECTS` })),
+        ob.length ? h("div", { class: "list" }, ob.map(row)) : h("div", { class: "empty small", text: "W tym semestrze nie ma przedmiotów obowiązkowych." })),
+      groups.map((g) => h("section", { class: "stack" },
+        h("div", { class: "panel-head" }, h("h2", { text: g.name }), h("span", { class: "muted", text: "do wyboru" })),
+        h("div", { class: "list" }, g.items.map(row)))),
+      el.length ? h("p", { class: "foot-note", text: "Przedmioty do wyboru wybierasz w zapisach na wydziale. Ile ich trzeba, podaje dziekanat przy zapisach." }) : null,
+      h("p", { class: "zal-src" }, h("span", { text: "Źródło:" }), h("span", { text: SYL.source })),
     ];
   }
 
@@ -1853,6 +2044,7 @@ button.pm-sq:hover { transform: scale(1.12); }
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn small", onclick: () => go({ view: "glossary" }) }, "Słowniczek EN–PL"),
           h("button", { type: "button", class: "btn small", onclick: () => go({ view: "progress" }) }, "Mapa postępów"),
+          h("button", { type: "button", class: "btn small", onclick: () => go({ view: "program" }) }, "Program studiów"),
           h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "review" }) }, "Powtórki"))),
       buyBanner(),
       myPanel(),
@@ -1911,6 +2103,7 @@ button.pm-sq:hover { transform: scale(1.12); }
           : h("div", { class: "empty" }, h("h3", { text: "Materiały w przygotowaniu" }),
               h("p", { class: "muted", text: "Do tego przedmiotu nie ma jeszcze materiałów. Pojawią się tutaj, gdy prowadzący udostępnią pierwsze zajęcia w Teams. Pierwszy materiał będzie do przejrzenia za darmo." }),
               PAID() ? null : h("div", { class: "row" }, h("span", { class: "lock", text: "🔒 Pełny dostęp obejmuje wszystkie przyszłe materiały" }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")))),
+      sylPanel(s),
     ];
   }
 
@@ -1946,7 +2139,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   }
 
   function backLink(to) {
-    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : to?.view === "materials" ? "Materiały" : "Start";
+    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : to?.view === "materials" ? "Materiały" : to?.view === "program" ? "Program studiów" : to?.view === "grading" ? "Zaliczenia" : "Start";
     return h("div", {}, h("button", { type: "button", class: "back", onclick: () => go(to || { view: "home" }) }, h("span", { "aria-hidden": "true", text: "←" }), label));
   }
   function confirmBox(question, action) {
@@ -3960,7 +4153,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
             mats.length ? h("div", { class: "scope" }, scored.map(({ m, ts }) => h("label", { class: "scope-row" },
               h("input", { type: "checkbox", checked: !out.has(m.id), onchange: (e) => { const o = new Set(examSet(sid, part).out || []); if (e.target.checked) o.delete(m.id); else o.add(m.id); saveExamSet(sid, part, { out: [...o] }); render(); } }),
               h("span", { class: "t", text: m.title || m.fileName }), stateChip(ts))))
-              : h("div", { class: "empty small", text: "Do tego przedmiotu nie ma jeszcze materiałów." }))))];
+              : h("div", { class: "empty small", text: "Do tego przedmiotu nie ma jeszcze materiałów." })),
+          sylExamPanel(sid, part)))];
   }
 
   function examTest(s, run) {
@@ -4325,6 +4519,7 @@ Reply with only one JSON object:
   fetch("https://plan.skrotbm.pl/plan.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : null).then((d) => {
     if (d?.groups) { Object.assign(PLAN, d); buildCalendar(); render(); }
   }).catch(() => {});
+  fetch("sylabus.json").then((r) => r.ok ? r.json() : null).then((d) => { if (d?.courses) { SYL = d; render(); } }).catch(() => {});
   render();
   (async () => {
     const use = window.claude?.use;

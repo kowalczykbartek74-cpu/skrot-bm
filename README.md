@@ -14,6 +14,20 @@ Darmowy plan zajęć i skrzynka do opiekunki roku są w osobnym repozytorium [pl
 - Maile logowania: Resend (SMTP) z domeny skrotbm.pl.
 - Kalendarz roku (tygodnie parzyste/nieparzyste, dni wolne, przerwy) strona bierze z `https://plan.skrotbm.pl/plan.json` (pole `kalendarz`, edytowane w `kalendarz.json` w repozytorium plan-bm). W `index.html` jest tylko kopia zapasowa.
 
+## Sylabus kierunku (`sylabus.json`)
+Wszystkie 84 przedmioty z sylabusa „Business Management, studia stacjonarne I stopnia 2026/27” (program USEFZ-BM-O-I-S-26/27Z): ECTS, godziny, forma zaliczenia, koordynator, tematy zajęć z godzinami, efekty uczenia się, literatura, nakład pracy i oryginalne zasady oceniania. Strona pokazuje to w:
+- **przedmiocie** – panel „Sylabus: tematy i wymagania” i „Pełna karta przedmiotu”,
+- **Program studiów** (Materiały albo Menu) – semestry 1–6, obowiązkowe i do wyboru,
+- **Zaliczeniach** – szkolenia obowiązkowe (BHP, e-learning, biblioteka, AI),
+- **trybie przed kolokwium** – lista tematów danej części z sylabusa.
+
+Przedmioty z planu łączą się po polskiej nazwie (slug). Nowy sylabus (np. na kolejny rok):
+```
+python3 scripts/sylabus-parse.py SYLABUS.pdf      # tworzy syl.json
+python3 scripts/sylabus-build.py sylabus.json
+```
+Wymaga `pip install pdfplumber`.
+
 ## Jak powstają materiały z prezentacji (system v2)
 Slajdy prowadzących służą tylko jako mapa tematów. Po wgraniu pliku:
 1. **Mapa tematów** – AI czyta slajdy i zwraca wyłącznie listę tematów z numerami slajdów (bez streszczania).
