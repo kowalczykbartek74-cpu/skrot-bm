@@ -19,7 +19,15 @@ Wszystkie 84 przedmioty z sylabusa „Business Management, studia stacjonarne I 
 - **przedmiocie** – panel „Sylabus: tematy i wymagania” i „Pełna karta przedmiotu”,
 - **Program studiów** (Materiały albo Menu) – semestry 1–6, obowiązkowe i do wyboru,
 - **Zaliczeniach** – szkolenia obowiązkowe (BHP, e-learning, biblioteka, AI),
-- **trybie przed kolokwium** – lista tematów danej części z sylabusa.
+- **trybie przed kolokwium** – lista tematów danej części, efekty uczenia się sprawdzane na tym zaliczeniu (z wynikiem z ostatniego próbnego testu) i nakład nauki z sylabusa przeliczony na dzień,
+- **Kalkulator ocen** (Zaliczenia) – ocena z przedmiotu według reguły z sylabusa (`CALC_RULES` w `index.html`), średnia semestru zwykła i ważona ECTS; oceny zapisują się w postępie osoby,
+- **zajęciach na Starcie i w przedmiocie** – „Zajęcia 3/8, pewnie: …”: szacunek, który temat sylabusa wypada na które zajęcia Twojej grupy (tematy rozłożone według godzin),
+- **Lektury** (Materiały) – literatura z semestru z wyszukiwaniem w katalogu Biblioteki Głównej US,
+- **Porównanie** przedmiotów do wyboru (Program studiów → „porównaj” przy 2–3 przedmiotach),
+- **Słowniczku** – pojęcia z tematów sylabusa z `sylabus-pojecia.json` (definicje własne), także dla przedmiotów bez materiałów,
+- **Panelu AI → Mapy przedmiotów z sylabusa BM** – materiał startowy (opracowanie, fiszki, quiz, prosty język) z oficjalnych tematów i efektów; zastępuje starą mapę z sylabusa.
+
+Próbne testy: pytania z „Pytania do testów” dostają kody efektów (`ep`). Materiały, których pytania nie mają jeszcze kodów, Panel AI → „Pytania do testów” zrobi ponownie.
 
 Przedmioty z planu łączą się po polskiej nazwie (slug). Nowy sylabus (np. na kolejny rok):
 ```

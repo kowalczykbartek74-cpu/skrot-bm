@@ -83,12 +83,12 @@ for d in D:
         "out": [{"c": o["cat"], "k": o["code"], "t": o["text"]} for o in d["outcomes"]],
         "topics": topics,
         "how": [x for x in d.get("delivery", []) if not x.startswith(AI_BOILER)],
-        "assess": [cap(a["method"].lower()) for a in d["assessment"]],
+        "assess": [{"m": cap(a["method"].lower()), "ep": re.findall(r"EP\d+", a["outcomes"].replace("\n", ""))} for a in d["assessment"]],
         "grading": grading,
         "calc": calc,
         "final": final,
-        "lit": merge_lines(d["basic"]),
-        "sup": merge_lines(d["supplementary"]),
+        "lit": [re.sub(r"\s+", " ", x).strip() for x in d["basic"]],
+        "sup": [re.sub(r"\s+", " ", x).strip() for x in d["supplementary"]],
         "load": d["workload"],
     }
     courses.append(c)

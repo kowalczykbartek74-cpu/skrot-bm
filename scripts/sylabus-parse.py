@@ -3,6 +3,33 @@ import pdfplumber, json, re, sys
 PDF = sys.argv[1]
 pdf = pdfplumber.open(PDF)
 
+class Row(list):
+    pass
+
+def entries(row, i):
+    """Pozycje literatury: nowa pozycja tam, gdzie w PDF-ie jest większy odstęp między wierszami."""
+    try:
+        lines = row.page.crop(row.boxes[i]).extract_text_lines()
+    except Exception:
+        lines = []
+    if not lines:
+        return [clean(x) for x in row[i].split("\n") if clean(x)]
+    texts = [x for x in row[i].split("\n") if x.strip()]
+    if len(texts) == len(lines):
+        # Tekst bierzemy z komórki tabeli (crop łapie czasem obce znaki), a z cropa tylko odstępy między wierszami.
+        lines = [{**l, "text": t} for l, t in zip(lines, texts)]
+    else:
+        lines = [l for l in lines]
+    gaps = [b["top"] - a["top"] for a, b in zip(lines, lines[1:])]
+    base = min(gaps) if gaps else 0
+    out = []
+    for j, l in enumerate(lines):
+        if j == 0 or gaps[j - 1] > base * 1.35:
+            out.append(l["text"].strip())
+        else:
+            out[-1] += " " + l["text"].strip()
+    return [clean(x) for x in out if clean(x)]
+
 # group pages into documents
 docs, cur = [], None
 for p in pdf.pages:
@@ -11,11 +38,14 @@ for p in pdf.pages:
         cur = []
         docs.append(cur)
     rows = []
-    for t in p.extract_tables():
-        for r in t:
-            cells = [c for c in r if c not in (None, "")]
-            if cells:
-                rows.append(cells)
+    for tb in p.find_tables():
+        data = tb.extract()
+        for r, rr in zip(data, tb.rows):
+            pairs = [(c, b) for c, b in zip(r, rr.cells) if c not in (None, "")]
+            if pairs:
+                row = Row(c for c, _ in pairs)
+                row.page, row.boxes = p, [b for _, b in pairs]
+                rows.append(row)
     cur.extend(rows)
 
 def clean(s):
@@ -107,7 +137,7 @@ for rows in docs:
             if key in ("objectives", "prerequisites", "delivery", "grading"):
                 d[key] = d.get(key, []) + para(r[1])
             elif key in ("basic", "supplementary"):
-                d[key] += [clean(x) for x in r[1].split("\n\n") if clean(x)] if "\n\n" in r[1] else [clean(x) for x in r[1].split("\n") if clean(x)]
+                d[key] += entries(r, 1)
             elif key == "assessment" and not r[1].startswith("No. of"):
                 d["assessment"].append({"method": clean(r[1]), "outcomes": r[2] if len(r) > 2 else ""})
             continue
@@ -154,7 +184,7 @@ for rows in docs:
                 d["workload"][clean(a)] = int(r[1])
             continue
         if mode in ("basic", "supplementary") and len(r) == 1:
-            d[mode] += [clean(x) for x in a.split("\n") if clean(x)]
+            d[mode] += entries(r, 0)
             continue
         if mode in ("grading", "delivery", "objectives") and len(r) == 1:
             d[mode] = d.get(mode, []) + para(a)
