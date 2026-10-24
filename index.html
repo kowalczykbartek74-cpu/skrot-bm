@@ -26,7 +26,7 @@
   --surface: #FFFFFF;
   --sunk: #EEF3F0;
   --ink: #16231B;
-  --muted: #5A6B61;
+  --muted: #4B5C52;
   --line: #E1E9E4;
   --accent: var(--green-600);
   --accent-hover: var(--green-700);
@@ -984,6 +984,41 @@ main, .staroband { position: relative; z-index: 1; }
 
 /* kafelki przedmiotów: lekkie uniesienie przy najechaniu (bez ruchu dla osób, które go wyłączyły) */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) { .now .btn.primary { transition: transform .15s; } .now .btn.primary:hover { transform: translateX(2px); } }
+
+
+/* ===== czytelność: ważne napisy większe i ciemniejsze ===== */
+.eyebrow { font-size: .78rem; font-weight: 800; color: #3E5046; }
+.navbtn { color: #3E5046; font-weight: 700; }
+.chip { font-size: .82rem; }
+.typechip { font-size: .76rem; padding: 2px 9px; }
+.fm, .item .m, .cls .where, .term-meta, .nb .meta, .nb-prog { font-size: .88rem; }
+.foot-note { font-size: .86rem; }
+/* nazwy rzeczy, w które się klika */
+.term-title { font-size: 1.05rem; }
+.feed-item .ft, .item .t { font-size: 1rem; }
+.nb h3 { font-size: 1.1rem; font-weight: 800; }
+.panel h2, .more-group > h2 { font-size: 1.22rem; font-weight: 800; }
+/* daty i terminy: zawsze wyraźne */
+.term-meta .when { color: var(--ink); font-weight: 700; }
+.term-meta .when.soon { color: var(--warn); font-weight: 800; }
+.term-meta .when.late { color: var(--bad); font-weight: 800; }
+.cls { grid-template-columns: 108px 1fr auto; }
+.cls .time { font-size: .94rem; white-space: nowrap; }
+@media (max-width: 480px) { .cls { grid-template-columns: 96px 1fr; } .cls .time { font-size: .86rem; } }
+.cls .name { font-size: 1.02rem; }
+/* karta „Teraz zrób to”: tytuł i opis */
+.now h2 { font-size: clamp(1.4rem, 3.8vw, 1.85rem); }
+.now p.muted { color: var(--ink); opacity: .85; font-size: 1rem; }
+/* kroki materiału i zakładki */
+.step { color: #3E5046; font-size: .98rem; }
+.tab { color: #3E5046; font-weight: 700; }
+.more-txt > span { font-weight: 700; font-size: 1.02rem; }
+.more-txt small { font-size: .84rem; color: var(--muted); }
+.rv-big { font-size: 1.25rem; }
+@media (max-width: 760px) {
+  .navbtn { font-size: .74rem; font-weight: 700; }
+  .navbtn[aria-current="page"] { font-weight: 800; }
+}
 
 </style>
 

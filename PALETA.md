@@ -42,7 +42,7 @@ Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane ra
 | `--surface` | `#FFFFFF` | karty, pasek u góry i na dole |
 | `--sunk` | `#EEF3F0` | wciśnięte tła, dni wolne w kalendarzu |
 | `--line` | `#E1E9E4` | linie i obramowania |
-| `--muted` | `#5A6B61` | tekst pomocniczy |
+| `--muted` | `#4B5C52` | tekst pomocniczy |
 | `--ink` | `#16231B` | tekst główny |
 
 ## Kolory, które coś znaczą (używane oszczędnie)
