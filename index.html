@@ -20,14 +20,14 @@
   --teal-100: #E3F3F1;
   --teal-600: #0F6E6E;
   --mint-100: #E6F7EE;
-  --grid: rgba(26, 127, 69, 0.04);
+  --grid: rgba(26, 127, 69, 0.03);
   /* role */
-  --paper: var(--green-50);
+  --paper: #FAFCFB;
   --surface: #FFFFFF;
   --sunk: #EEF3F0;
-  --ink: #0B150F;
-  --muted: #344439;
-  --line: #D5E0D9;
+  --ink: #050A07;
+  --muted: #1F2D25;
+  --line: #BFCEC5;
   --accent: var(--green-600);
   --accent-hover: var(--green-700);
   --accent-ink: #FFFFFF;
@@ -39,8 +39,8 @@
   --today-ink: var(--ink);
   --mark: rgba(76, 175, 114, 0.28);
   --good: var(--green-600); --good-soft: var(--green-100);
-  --warn: #7E4700; --warn-soft: #FFF4DE;
-  --bad: #A01B12; --bad-soft: #FDECEA;
+  --warn: #6A3B00; --warn-soft: #FFF4DE;
+  --bad: #8C140C; --bad-soft: #FDECEA;
   --shadow: 0 1px 2px rgba(22, 35, 27, 0.05), 0 6px 18px -10px rgba(22, 35, 27, 0.16);
   --f-display: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   --f-body: var(--f-display);
@@ -1041,6 +1041,20 @@ main, .staroband { position: relative; z-index: 1; }
 .chip.plain { color: #24342A; border-color: var(--line); }
 /* tekst bezpośrednio na tle strony: kratka i słoje słabsze pod nim */
 .greet .sub, main > section > p.muted, .stack > p.muted { color: #24342A; }
+
+
+/* ===== jeszcze mocniejszy kontrast ===== */
+body { font-weight: 500; }
+.eyebrow, .navbtn, .step, .tab, .chip.plain, .greet .sub, main > section > p.muted, .stack > p.muted, .now p.muted { color: #142019; }
+.link, .feed-item:hover .ft { color: var(--green-900); }
+.navbtn[aria-current="page"], .tab[aria-selected="true"], .step[aria-current="step"], .chip, .chip.good { color: #0A3F21; }
+.typechip { color: color-mix(in srgb, var(--t, var(--accent)) 62%, #000000); background: color-mix(in srgb, var(--t, var(--accent)) 10%, #FFFFFF); border: 1px solid color-mix(in srgb, var(--t, var(--accent)) 30%, #FFFFFF); }
+.panel, .list, .term, .nb, .announce, .empty, .searchbox, .concept, .topic { border-color: var(--line); }
+.term { border-left-color: var(--c, var(--line)); }
+.announce { border-left-color: var(--accent); }
+.input::placeholder, .search::placeholder { color: #3A4A40; opacity: 1; }
+.today .cls .time, .cls .time { color: #0A3F21; }
+body::before { opacity: .8; }
 
 </style>
 
