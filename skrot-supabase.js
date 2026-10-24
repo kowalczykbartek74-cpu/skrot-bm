@@ -327,7 +327,10 @@
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
         el("p", { class: "muted", style: "margin:0", text: reason || "Bez hasła: wpisz swój e-mail, a my wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który został kupiony." }),
         form,
-        p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null);
+        ...[
+          p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
+          el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"),
+        ].filter(Boolean));
       setTimeout(() => input.focus(), 30);
     };
 
@@ -429,7 +432,8 @@
     const box = info("Dziękujemy za zakup!", "Odblokowuję dostęp… to zwykle trwa kilka sekund.");
     for (let i = 0; i < 30 && !skrot.paid; i++) { await new Promise((r) => setTimeout(r, 2000)); try { await refreshMe(); } catch {} }
     box.remove();
-    if (skrot.paid) location.reload();
+    // Po przeładowaniu index.html pokaże ekran powitalny („Dostęp aktywny”) z trzema pierwszymi krokami.
+    if (skrot.paid) { ls.set("skrot-welcome", "1"); location.reload(); }
     else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz na skrotbm@outlook.com.");
   }
   async function afterReady() {

@@ -1377,6 +1377,18 @@ body { font-weight: 500; }
 .today .cls .time, .cls .time { color: #0A3F21; }
 body::before { opacity: .8; }
 
+/* poprawki przed startem: krok wyboru grupy, powitanie po zakupie, konto, minione terminy */
+.now.setup { border-width: 2px; border-color: var(--accent, #1A7F45); }
+.now.setup .seg.pick button { min-height: 44px; }
+.welcome-steps { display: grid; gap: 10px; }
+.welcome-step { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.welcome-step .wn { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--accent-soft, #EAF5EE); color: var(--accent-text, #0E5A30); }
+.welcome-step.done .wn { background: var(--accent, #1A7F45); color: #fff; }
+.acc-dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; font-size: .92rem; }
+.acc-dl dt { font-weight: 700; }
+.acc-dl dd { margin: 0; color: var(--muted); }
+@media (max-width: 480px) { .acc-dl { grid-template-columns: 1fr; } .acc-dl dd { margin-bottom: 6px; } .welcome-step { grid-template-columns: 30px 1fr; } .welcome-step .btn { grid-column: 2; justify-self: start; } }
+.panel.overview { border-style: dashed; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -1459,17 +1471,22 @@ body::before { opacity: .8; }
   }
 
   // ================= DOM helpers =================
+  // Telefon i tablet: bez myszki „klikanie” i „dwuklik” mylą (dwuklik przybliża stronę), więc teksty mówią „dotknij”.
+  const TOUCH = (() => { try { return matchMedia("(hover: none) and (pointer: coarse)").matches; } catch { return false; } })();
+  const TAP = [[/\bKliknij\b/g, "Dotknij"], [/\bkliknij\b/g, "dotknij"], [/\bKliknięcie\b/g, "Dotknięcie"], [/\bkliknięciem\b/g, "dotknięciem"], [/\bKlikasz\b/g, "Dotykasz"], [/\bklikasz\b/g, "dotykasz"], [/\bKlik\b/g, "Dotknięcie"], [/\(kliknij, żeby/g, "(dotknij, żeby"], [/ \(skrót \/\)/g, ""], [/; skrót \//g, ""]];
+  const tapTxt = (t) => { if (!TOUCH || typeof t !== "string" || !/[Kk]lik|skrót \//.test(t)) return t; for (const [a, b] of TAP) t = t.replace(a, b); return t; };
   const h = (tag, props, ...kids) => {
     const el = document.createElement(tag);
     for (const [k, v] of Object.entries(props || {})) {
       if (v == null || v === false) continue;
       if (k === "class") el.className = v;
-      else if (k === "text") el.textContent = v;
+      else if (k === "text") el.textContent = tapTxt(String(v));
+      else if (k === "title" || k === "aria-label") el.setAttribute(k, tapTxt(String(v)));
       else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
       else if (k === "style") el.style.cssText = v;
       else el.setAttribute(k, v === true ? "" : v);
     }
-    for (const c of kids.flat(Infinity)) if (c != null && c !== false) el.append(c instanceof Node ? c : String(c));
+    for (const c of kids.flat(Infinity)) if (c != null && c !== false) el.append(c instanceof Node ? c : tapTxt(String(c)));
     return el;
   };
   const $ = (id) => document.getElementById(id);
@@ -1482,6 +1499,17 @@ body::before { opacity: .8; }
   const ago = (t) => { const s = (Date.now() - t) / 1000; if (s < 90) return "przed chwilą"; if (s < 3600) return `${Math.round(s / 60)} min temu`; if (s < 86400) return `${Math.round(s / 3600)} godz. temu`; const d = Math.round(s / 86400); return d === 1 ? "wczoraj" : d < 7 ? `${d} dni temu` : fmtDate(t); };
   const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; if (n === 1) return one; if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few; return many; };
   const shuffle = (a) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+  // Tasowanie odpowiedzi w pytaniu ABCD (w bazie poprawna najczęściej była B). perm[nowy] = indeks w bazie,
+  // żeby „Czemu nie X?” i zgłoszenia nadal trafiały we właściwą odpowiedź. Odpowiedzi typu „wszystkie powyższe”
+  // albo „A i B” zależą od kolejności, więc takie pytania zostają bez tasowania.
+  const ORDER_DEP = /\b(all|none|both) of the (above|options)\b|\b[a-d] (and|i|oraz|or|lub) [a-d]\b|powyzsz|zadna z |wszystkie (odpowiedzi|wymienione)/i;
+  const shuffleOpts = (q) => {
+    if (!q || q.perm || !Array.isArray(q.options) || q.options.length < 2 || !Number.isInteger(q.correct)) return q;
+    if (q.options.some((o) => ORDER_DEP.test(String(o).toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/[̀-ͯ]/g, "")))) return q;
+    const perm = shuffle(q.options.map((_, i) => i));
+    return { ...q, options: perm.map((i) => q.options[i]), correct: perm.indexOf(q.correct), perm };
+  };
+  const origOpt = (q, i) => (q?.perm && i != null ? q.perm[i] : i);
   const todayKey = () => dkey(new Date());
   const daysUntil = (k) => Math.round((dparse(k) - dparse(todayKey())) / 864e5);
   const ls = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
@@ -1503,11 +1531,13 @@ body::before { opacity: .8; }
     ready: false, noDb: false, db: null, user: null, sample: null, ai: null, uid: null, canEdit: false, isStarosta: false, myName: "",
     mine: [], mineLoaded: false,
     materials: [], deadlines: [], announcements: [], reports: [], progress: {}, names: {}, tasks: [], sync: null, taskFilter: "open",
-    group: ls.get("bm-group") || "", sub: ls.get("bm-sub") ?? "A",
+    group: ls.get("bm-group") || "", sub: ls.get("bm-sub"), // sub: null = podgrupa jeszcze niewybrana (nie zakładamy labu A)
     route: { view: "home" }, content: {}, sources: {}, upload: null,
     calMonth: null, calSel: null,
   };
-  if (S.sub !== "A" && S.sub !== "B" && S.sub !== "") S.sub = "A";
+  if (S.sub !== "A" && S.sub !== "B" && S.sub !== "") S.sub = null;
+  // Grupa i lab to pierwszy krok: bez nich nie wiemy, czyje są zajęcia i terminy.
+  const needGroup = () => !S.group || S.sub == null;
   // Stare adresy (zapisane linki, przyciski w kodzie) prowadzą do nowych ekranów.
   const LEGACY = { subjects: { view: "materials" }, przedmioty: { view: "materials" }, dzis: { view: "home" }, terminy: { view: "terms" }, powtorki: { view: "review" }, wiecej: { view: "more" }, start: { view: "home" }, tasks: { view: "terms" }, progress: { view: "review" }, przewodnik: { view: "guide" } };
   const normRoute = (r) => (LEGACY[r?.view] ? { ...r, ...LEGACY[r.view] } : r || { view: "home" });
@@ -1627,13 +1657,14 @@ body::before { opacity: .8; }
   }
   function setGroup(group, sub) {
     S.group = group; S.sub = sub;
-    ls.set("bm-group", group); ls.set("bm-sub", sub);
+    ls.set("bm-group", group || "");
+    try { sub == null ? localStorage.removeItem("bm-sub") : ls.set("bm-sub", sub); } catch {}
     saveProgress({ group, sub });
     render();
     // Okno „Twoja grupa” nie jest częścią strony, więc jego przyciski odświeżamy osobno.
     document.querySelectorAll("[data-g]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.g === S.group)));
     document.querySelectorAll("[data-sub]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sub === S.sub)));
-    toast(`Twoja grupa: ${S.group}${S.sub ? " · lab " + S.sub : " · oba laby"}`);
+    toast(!S.group ? "Teraz wybierz grupę." : S.sub == null ? `Grupa ${S.group}. Teraz wybierz lab.` : `Twoja grupa: ${S.group}${S.sub ? " · lab " + S.sub : " · oba laby"}`);
   }
   function scoreChip(key) {
     const b = best(key);
@@ -1876,30 +1907,51 @@ body::before { opacity: .8; }
     const G = [["Po terminie", (x) => x.n != null && x.n < 0 && x.n >= -14], ["Ten tydzień", (x) => x.n != null && x.n >= 0 && x.n <= endThis], ["Następny tydzień", (x) => x.n != null && x.n > endThis && x.n <= endThis + 7], ["Później", (x) => x.n != null && x.n > endThis + 7], ["Bez daty", (x) => x.n == null]];
     return G.map(([label, f]) => [label, list.filter(f)]);
   }
+  // Dzień, od którego ta osoba korzysta ze strony. Terminy sprzed tego dnia nie są „po terminie” na czerwono,
+  // tylko w zwiniętej sekcji „Minione”, żeby nowa osoba mogła je spokojnie odhaczyć.
+  const joinedKey = () => S.progress?.joined || ls.get("bm-joined") || todayKey();
+  function markJoined() {
+    if (!ls.get("bm-joined")) ls.set("bm-joined", todayKey());
+    if (S.uid && S.ready && S.progress && !S.progress.joined) progSoon({ joined: ls.get("bm-joined") || todayKey() });
+  }
+  const pastBefore = (x) => !x.done && x.n != null && x.n < 0 && x.date < joinedKey();
+  function pastBox(list) {
+    if (!list.length) return null;
+    const first = !ls.get("bm-past-seen");
+    return h("details", { class: "panel undated past", open: first ? true : null, ontoggle: (e) => { if (!e.currentTarget.open) ls.set("bm-past-seen", "1"); } },
+      h("summary", {}, h("b", { text: `Minione · ${list.length}` }), h("span", { class: "muted", text: " · terminy sprzed Twojego dołączenia" })),
+      first ? h("div", { class: "notice", style: "margin:8px 0" }, "Te terminy minęły, zanim tu dołączyłeś(-aś). Oznacz kółkiem to, co masz zrobione. Reszty możesz nie ruszać: nie liczy się do „po terminie”. ",
+        h("button", { type: "button", class: "link", onclick: () => { ls.set("bm-past-seen", "1"); render(); } }, "Rozumiem, zwiń")) : null,
+      h("div", { class: "terms" }, list.map((x) => termRow(x, { noPrep: true }))));
+  }
   function viewTerms() {
     if (S.route.mode === "cal") { S.route = { view: "calendar" }; return viewCalendar(); }
+    markJoined();
     const f = S.taskFilter === "done" ? "done" : "open";
     if (S.termCat == null) S.termCat = ls.get("skrot-termcat") || "all";
     const cat = TERM_CATS.some((c) => c.id === S.termCat) ? S.termCat : "all";
     const setCat = (id) => { S.termCat = id; ls.set("skrot-termcat", id); render(); };
     const all = termItems();
-    const live = (x) => !(x.n != null && x.n < -14);
+    const live = (x) => !(x.n != null && x.n < -14) && !pastBefore(x);
     const inF = (x) => (f === "done" ? x.done : !x.done && live(x));
+    const past = f === "open" ? all.filter(pastBefore).filter((x) => cat === "all" || catOf(x.kind).id === cat) : [];
     const base = all.filter(inF);
     const shown = cat === "all" ? base : base.filter((x) => catOf(x.kind).id === cat);
     const openN = all.filter((x) => !x.done && !(x.n != null && x.n < 0)).length;
+    const doneN = all.filter((x) => x.done).length;
     const undated = f === "open" && (cat === "all" || cat === "zal") ? zalUndated() : [];
     const seg = (items, cur, set, label) => h("div", { class: "seg", role: "group", "aria-label": label }, items.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(cur === k), onclick: () => set(k) }, l)));
     const head = h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
-        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy, podzielone na zaliczenia, zadania, projekty i resztę." })),
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Lista do odhaczania: co i na kiedy. Odhaczasz kółkiem po lewej." })),
         h("div", { class: "row", style: "gap:8px" },
           h("button", { type: "button", class: "link", "data-tour": "phonecal", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
           S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj termin") : null)),
       h("div", { class: "row", style: "justify-content:space-between" },
         h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "calendar" }) }, "Pokaż w kalendarzu"),
-        PAID() ? seg([["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"]], f, (k) => { S.taskFilter = k; render(); }, "Filtr") : null),
-      !S.group ? h("div", { class: "notice" }, h("p", { style: "margin:0 0 8px", text: "Wybierz grupę, a pokażę tylko to, co Cię dotyczy." }), groupPicker(true)) : null);
+        PAID() ? seg([["open", `Do zrobienia · ${openN}`], ["done", `Zrobione · ${doneN}`]], f, (k) => { S.taskFilter = k; render(); }, "Filtr") : null),
+      PAID() ? h("p", { class: "foot-note", style: "margin:0", text: "Do zrobienia: nieodhaczone, z datą od dziś albo bez daty. Liczba na kafelku: ile takich terminów czeka w danej kategorii. Minione sprzed Twojego dołączenia są osobno na dole." }) : null,
+      needGroup() ? h("div", { class: "notice" }, "Terminy konkretnych grup pokażę, gdy wybierzesz grupę i lab. ", h("button", { type: "button", class: "link", onclick: openGroupPicker }, "Wybierz grupę")) : null);
     if (!PAID()) return [head, lockBox("Terminy kolokwiów, egzaminów i zadania od prowadzących widzą osoby z pełnym dostępem."), syncLine()];
     if (!S.ready) return [head, h("p", { class: "muted", text: "Ładuję…" })];
 
@@ -1915,7 +1967,7 @@ body::before { opacity: .8; }
       return h("button", { type: "button", class: "tcat" + (xs.length ? "" : " empty0"), style: `--cc:${c ? c.c : "var(--green-700, #1A7F45)"}`, "aria-pressed": String(cat === id),
         title: c ? c.hint : "Wszystkie kategorie", onclick: () => setCat(cat === id && id !== "all" ? "all" : id) },
         h("span", { class: "tc-top" }, icon(c ? "t_" + c.id : "t_all"), h("b", { class: "tc-n num", text: xs.length })),
-        h("span", { class: "tc-name", text: c ? c.label : "Wszystko" }),
+        h("span", { class: "tc-name", text: c ? c.label : "Wszystkie kategorie" }),
         line);
     };
     const tiles = h("nav", { class: "tcats", "aria-label": "Kategorie terminów" }, tile(null), TERM_CATS.map(tile));
@@ -1947,7 +1999,7 @@ body::before { opacity: .8; }
           h("div", { class: "terms" }, xs.map((x) => termRow(x)))))
         : emptyBox()];
     }
-    return [head, tiles, body,
+    return [head, tiles, body, pastBox(past),
       undated.length ? h("details", { class: "panel undated" },
         h("summary", {}, h("b", { text: `Zaliczenia bez ogłoszonej daty · ${undated.length}` }), h("span", { class: "muted", text: " · z zasad przedmiotów" })),
         h("div", { class: "list" }, undated.map(({ sb, p }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "subject", id: sb.id, tab: "zal" }) },
@@ -1969,7 +2021,8 @@ body::before { opacity: .8; }
     if (info.p) return `Dziś ${DOW_LONG[(new Date().getDay() + 6) % 7]}, tydzień ${info.p === "odd" ? "nieparzysty" : "parzysty"}.`;
     if (info.off) return `Dziś: ${info.off.toLowerCase()}.`;
     const next = nextTeachingDay(k);
-    return next ? `Weekend. Następne zajęcia: ${fmtKey(next)}.` : "Wolne od zajęć.";
+    if (!S.group) return "Weekend.";
+    return next ? `Weekend. Twoje następne zajęcia: ${fmtKey(next)}.` : "Wolne od zajęć.";
   }
   function nextTeachingDay(fromKey, inclusive) {
     let d = dparse(fromKey); if (!inclusive) d = addDays(d, 1);
@@ -1980,10 +2033,10 @@ body::before { opacity: .8; }
   function groupPicker(compact) {
     const groups = Object.keys(PLAN.groups || {});
     return h("div", { class: "stack", style: "gap:8px" },
-      compact ? null : h("p", { class: "muted", text: "Wybierz swoją grupę, a pokażę Twoje zajęcia na dziś i w kalendarzu." }),
+      compact ? null : h("p", { class: "muted", text: "Grupę (C111–C113) i podgrupę lab znajdziesz w USOS albo w planie zajęć. Bez tego nie wiem, które zajęcia i terminy są Twoje." }),
       h("div", { class: "row" },
         h("div", { class: "seg pick", role: "group", "aria-label": "Grupa" }, groups.map((g) => h("button", { type: "button", "data-g": g, "aria-pressed": String(S.group === g), onclick: () => setGroup(g, S.sub) }, g))),
-        h("div", { class: "seg pick", role: "group", "aria-label": "Podgrupa laboratoryjna" }, [["A", "lab A"], ["B", "lab B"], ["", "obie"]].map(([v, l]) => h("button", { type: "button", "data-sub": v, "aria-pressed": String(S.sub === v), onclick: () => setGroup(S.group || groups[0], v) }, l))),
+        h("div", { class: "seg pick", role: "group", "aria-label": "Podgrupa laboratoryjna" }, [["A", "lab A"], ["B", "lab B"], ["", "nie wiem / obie"]].map(([v, l]) => h("button", { type: "button", "data-sub": v, "aria-pressed": String(S.sub === v), onclick: () => setGroup(S.group, v) }, l))),
       ));
   }
 
@@ -2005,7 +2058,7 @@ body::before { opacity: .8; }
   function todayPanel() {
     const k = todayKey();
     const box = h("section", { class: "panel today", "aria-label": "Twoje zajęcia" });
-    if (!S.group) { box.append(h("span", { class: "eyebrow", text: "Twoje zajęcia" }), h("h2", { text: "Która to Twoja grupa?" }), groupPicker()); return box; }
+    if (needGroup()) { box.append(h("span", { class: "eyebrow", text: "Twoje zajęcia" }), h("h2", { text: !S.group ? "Która to Twoja grupa?" : "Który lab?" }), groupPicker()); return box; }
     let showKey = k, label = "Dziś";
     let list = classesOn(k, S.group, S.sub);
     const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
@@ -2026,7 +2079,7 @@ body::before { opacity: .8; }
     return box;
   }
 
-  const forMyDl = (d) => (!d.groups?.length || !S.group || d.groups.includes(S.group)) && (!d.subs?.length || !S.sub || d.subs.includes(S.sub));
+  const forMyDl = (d) => (!d.groups?.length || (!!S.group && d.groups.includes(S.group))) && (!d.subs?.length || S.sub === "" || (!!S.sub && d.subs.includes(S.sub)));
   const visDeadlines = () => (S.canEdit ? S.deadlines : S.deadlines.filter(forMyDl));
   const groupsLabel = (d) => d?.groups?.length ? d.groups.join(", ") + (d.subs?.length ? " · lab " + d.subs.join("/") : "") : "";
   const groupChip = (d) => groupsLabel(d) ? h("span", { class: "chip", title: "Termin tylko dla tych grup", text: groupsLabel(d) }) : null;
@@ -2039,7 +2092,7 @@ body::before { opacity: .8; }
         h("div", { class: "row", style: "gap:6px" }, h("span", { class: "typechip", style: `--t:${t.c}`, text: t.label }), h("span", { class: "fm", text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` }), d.time ? h("span", { class: "fm num", text: "· " + d.time }) : null, approxChip(d), groupChip(d)),
         h("button", { type: "button", class: "link", style: "color:var(--ink);text-align:left", onclick: () => openDeadline(d) }, d.title),
         h("div", { class: "fm" }, s ? h("span", {}, h("i", { class: "dot", style: `--c:${s.color};display:inline-block;margin-right:6px` }), s.pl) : "ogólne",
-          s && ["kolokwium", "egzamin"].includes(d.type) ? h("button", { type: "button", class: "link", style: "margin-left:10px;font-size:.84rem", onclick: () => go({ view: "exam", sid: s.id, part: partsOf(s.id).find((k) => zalPartOf(s.id, k)?.f === (d.type === "egzamin" ? "E" : "ZO")) || partsOf(s.id)[0] }) }, "Przygotuj się →") : null),
+          s && ["kolokwium", "egzamin"].includes(d.type) ? h("button", { type: "button", class: "link", style: "margin-left:10px;font-size:.84rem", onclick: () => go({ view: "exam", sid: s.id, part: (partsOf(s.id).includes(dlPart(d)) && dlPart(d)) || partsOf(s.id).find((k) => zalPartOf(s.id, k)?.f === (d.type === "egzamin" ? "E" : "ZO")) || partsOf(s.id)[0] }) }, "Przygotuj się →") : null),
       ));
   }
 
@@ -2064,16 +2117,16 @@ body::before { opacity: .8; }
     if (it.kind === "c") {
       const s = subjectById(it.sid);
       return h("button", { type: "button", class: "feed-item", onclick: () => go({ view: "subject", id: it.sid }) },
-        h("span", { class: "ficon", style: `--c:${colorOf(it.sid)}`, "aria-hidden": "true", text: (s?.pl || "?").slice(0, 2) }),
+        h("span", { class: "ficon", style: `--c:${colorOf(it.sid)}`, "aria-hidden": "true", text: "📘" }),
         h("span", {}, h("span", { class: "ft", text: `Kurs: ${it.n} ${plural(it.n, "lekcja", "lekcje", "lekcji")} z ${s?.pl || "przedmiotu"}` }), h("br"),
           h("span", { class: "fm", text: `Wyjaśnienia, przykłady krok po kroku, zadania, fiszki i quizy · ${ago(it.at)}` })));
     }
     if (it.kind === "m") {
       const m = it.m, s = subjectById(m.subjectId);
       return h("button", { type: "button", class: "feed-item", onclick: () => go({ view: "material", id: m.id, tab: "skrot" }) },
-        h("span", { class: "ficon", style: `--c:${colorOf(m.subjectId)}`, "aria-hidden": "true", text: (s?.pl || "?").slice(0, 2) }),
+        h("span", { class: "ficon", style: `--c:${colorOf(m.subjectId)}`, "aria-hidden": "true", text: "📘" }),
         h("span", {}, h("span", { class: "ft", text: m.title || m.fileName }), h("br"),
-          h("span", { class: "fm", text: `${m.source === "sylabus" ? "Z sylabusa" : "Nowy materiał"} · ${s?.pl || "przedmiot"} · ${m.quizCount || 0} ${plural(m.quizCount || 0, "pytanie", "pytania", "pytań")} w quizie · ${ago(m.createdAt)}${who(m.createdBy) ? " · od " + who(m.createdBy) : ""}` })));
+          h("span", { class: "fm", text: `${m.source === "sylabus" ? "Przegląd z sylabusa (nie z wykładu)" : "Nowy materiał"} · ${s?.pl || "przedmiot"} · ${m.quizCount || 0} ${plural(m.quizCount || 0, "pytanie", "pytania", "pytań")} w quizie · ${ago(m.createdAt)}${who(m.createdBy) ? " · od " + who(m.createdBy) : ""}` })));
     }
     const d = it.d, t = dlType(d.type);
     return h("button", { type: "button", class: "feed-item", onclick: () => openDeadline(d) },
@@ -2172,13 +2225,11 @@ body::before { opacity: .8; }
     }
     const { due, fresh } = srsDue(); const n = due.length + fresh.length;
     if (n) return { eyebrow: "Powtórki na dziś", title: `Powtórz ${n} ${plural(n, "fiszkę", "fiszki", "fiszek")}`, sub: `Około ${Math.max(1, Math.round(n / 3))} min. Fiszki wracają wtedy, gdy zaczynasz je zapominać.`, btn: "Zacznij powtórkę", fn: () => go({ view: "review", start: true }) };
-    const seen = seenSet();
-    const fresh7 = S.materials.filter((m) => Date.now() - m.createdAt < 7 * 864e5 && readable(m) && !seen.has(m.id) && !best(m.id)).sort((x, y) => y.createdAt - x.createdAt)[0];
-    if (fresh7) return { eyebrow: "Nowy materiał", title: `Przeczytaj: ${fresh7.title || fresh7.fileName}`, sub: `${subjectById(fresh7.subjectId)?.pl || ""} · dodano ${ago(fresh7.createdAt)}`, btn: "Przeczytaj", fn: () => go({ view: "material", id: fresh7.id }) };
-    const last = materialById(ls.get("bm-last"));
-    if (last && readable(last)) return { eyebrow: "Nic pilnego", title: `Kontynuuj: ${last.title || last.fileName}`, sub: "Ostatnio otwarty materiał.", btn: "Kontynuuj", fn: () => go({ view: "material", id: last.id }) };
+    // Ta sama podpowiedź co „Następny / Kontynuuj” w przedmiocie (nextToLearn), żeby oba miejsca mówiły to samo.
+    const nx = nextToLearn(null);
+    if (nx) return { eyebrow: nx.started ? "Nic pilnego" : "Następny materiał", title: nx.label, sub: [subjectById(nx.m.subjectId)?.pl, nx.started ? "już otwierany, jeszcze nieopanowany" : "jeszcze nieotwierany"].filter(Boolean).join(" · "), btn: nx.started ? "Kontynuuj" : "Otwórz", fn: () => go({ view: "material", id: nx.m.id }) };
     const first = S.materials.filter(readable).sort((x, y) => y.createdAt - x.createdAt)[0];
-    if (first) return { eyebrow: "Na początek", title: `Zacznij: ${first.title || first.fileName}`, sub: subjectById(first.subjectId)?.pl || "", btn: "Zacznij", fn: () => go({ view: "material", id: first.id }) };
+    if (first) return { eyebrow: "Na początek", title: `Przegląd: ${first.title || first.fileName}`, sub: subjectById(first.subjectId)?.pl || "", btn: "Otwórz", fn: () => go({ view: "material", id: first.id }) };
     return { eyebrow: "Na początek", title: "Wybierz przedmiot", sub: "W każdym przedmiocie: czytanie, fiszki i quiz.", btn: "Przedmioty", fn: () => go({ view: "materials" }) };
   }
   function nowCard() {
@@ -2208,6 +2259,14 @@ body::before { opacity: .8; }
         : list.length ? h("div", { class: "feed" }, list.map(feedRow))
         : h("div", { class: "empty small", text: "Jeszcze cisza. Nowe materiały i ogłoszenia pojawią się tutaj." }));
   }
+  // Krok 1 po wejściu: grupa i lab. Dopóki ich nie ma, Dziś nie pokazuje cudzych zajęć ani terminów.
+  function groupStep() {
+    return h("section", { class: "now setup", "aria-label": "Twoja grupa" },
+      h("span", { class: "eyebrow", text: "Krok 1 · zanim zaczniesz" }),
+      h("h2", { text: !S.group ? "Wybierz swoją grupę i lab" : `Grupa ${S.group}. Teraz wybierz lab` }),
+      h("p", { class: "muted", text: "Na tej podstawie pokażę Twoje zajęcia z salą, Twoje terminy i kalendarz. Zmienisz to zawsze w Więcej → Moja grupa." }),
+      groupPicker(true));
+  }
   function viewHome() {
     const ann = S.announcements[0];
     const annFresh = ann && Date.now() - (ann.createdAt || 0) < 7 * 864e5;
@@ -2216,9 +2275,10 @@ body::before { opacity: .8; }
       S.noDb ? accessNotice() : buyBanner(),
       annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
-      nowCard(),
-      guideStrip(),
-      h("div", { class: "hub" }, todayPanel(), h("div", { class: "stack", style: "gap:20px;min-width:0" }, upcomingPanel(), newPanel())),
+      needGroup() ? groupStep() : nowCard(),
+      needGroup() ? null : guideStrip(),
+      needGroup() ? h("div", { class: "hub" }, h("div", { class: "stack", style: "gap:20px;min-width:0" }, newPanel()))
+        : h("div", { class: "hub" }, todayPanel(), h("div", { class: "stack", style: "gap:20px;min-width:0" }, upcomingPanel(), newPanel())),
     ];
   }
 
@@ -2257,7 +2317,11 @@ body::before { opacity: .8; }
       const type = h("div", { class: "seg", role: "group", "aria-label": "Rodzaj" });
       let typeVal = d?.type || "kolokwium";
       const drawType = () => type.replaceChildren(...DL_TYPES.map((t) => h("button", { type: "button", "aria-pressed": String(typeVal === t.id), onclick: () => { typeVal = t.id; drawType(); } }, t.label)));
-      drawType();
+      // Część przedmiotu (W / CW / LAB): dzięki temu „Przygotuj się” nie myli kolokwium z ćwiczeń z wykładem.
+      let partVal = d?.part || "";
+      const partSeg = h("div", { class: "seg", role: "group", "aria-label": "Część przedmiotu" });
+      const drawPart = () => partSeg.replaceChildren(...[["", "Nie dotyczy"], ["W", "Wykład"], ["CW", "Ćwiczenia"], ["LAB", "Lab"]].map(([k, l]) => h("button", { type: "button", "aria-pressed": String(partVal === k), onclick: () => { partVal = k; drawPart(); } }, l)));
+      drawPart();
       const note = h("textarea", { class: "input", id: "dl-note", maxlength: "400", placeholder: "Szczegóły: zakres materiału, forma, sala…" }, d?.note || "");
       // Dla kogo: żadna grupa zaznaczona = cały rok.
       const allGroups = Object.keys(PLAN.groups || {});
@@ -2276,13 +2340,14 @@ body::before { opacity: .8; }
         type,
         h("label", { class: "field", for: "dl-title" }, "Co", title),
         h("div", { class: "split3" }, h("label", { class: "field", for: "dl-subject" }, "Przedmiot", subj), h("label", { class: "field", for: "dl-date" }, "Data", date), h("label", { class: "field", for: "dl-time" }, "Godzina (opcjonalnie)", time)),
+        h("div", { class: "field" }, h("span", { text: "Część przedmiotu (przy kolokwiach i egzaminach)" }), partSeg),
         h("div", { class: "field" }, h("span", { text: "Dla kogo" }), grp),
         h("label", { class: "row", for: "dl-approx", style: "gap:8px;align-items:center;flex-wrap:nowrap;font-size:.92rem" }, approx, h("span", {}, "Data orientacyjna ", h("span", { class: "muted", text: "(odznacz, gdy prowadzący potwierdził termin)" }))),
         h("label", { class: "field", for: "dl-note" }, "Notatka", note),
         err,
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn primary", onclick: async (e) => {
-            const data = { title: title.value.trim(), date: date.value, time: time.value || "", subjectId: subj.value, type: typeVal, note: note.value.trim(), groups: grpVal, approx: approx.checked };
+            const data = { title: title.value.trim(), date: date.value, time: time.value || "", subjectId: subj.value, type: typeVal, part: partVal, note: note.value.trim(), groups: grpVal, approx: approx.checked };
             if (!data.title || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) { err.textContent = "Wpisz, czego dotyczy termin, i wybierz datę."; err.hidden = false; return; }
             e.currentTarget.disabled = true;
             try {
@@ -2417,12 +2482,11 @@ body::before { opacity: .8; }
     const all = PAID() ? termItems() : [];
     const head = h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
-        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), h("p", { class: "muted", text: "Zajęcia, zaliczenia, terminy roku i Twoje własne wpisy w jednym miejscu." })),
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), h("p", { class: "muted", text: "Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy. Listę do odhaczania i link do telefonu znajdziesz w Terminach." })),
         h("div", { class: "row", style: "gap:8px" },
-          h("button", { type: "button", class: "link", "data-tour": "phonecal", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
           h("button", { type: "button", class: "btn small primary", "data-tour": "myev", onclick: () => openMyEvent(null, S.calSel) }, "+ Mój wpis"))),
-      !S.group ? h("div", { class: "notice" }, h("p", { style: "margin:0 0 8px", text: "Wybierz grupę, a pokażę Twoje zajęcia w kalendarzu." }), groupPicker(true)) : null);
-    return [head, examStrip(all, tk), calendarBlock(all)];
+      needGroup() ? h("div", { class: "notice" }, "Zajęcia pokażę, gdy wybierzesz grupę i lab. ", h("button", { type: "button", class: "link", onclick: openGroupPicker }, "Wybierz grupę")) : null);
+    return [head, calendarBlock(all)];
   }
   // Pasek „Najbliższe zaliczenia”: odliczanie do kolokwiów i egzaminów. Klik przenosi kalendarz na ten dzień.
   function examStrip(all, tk) {
@@ -2473,7 +2537,7 @@ body::before { opacity: .8; }
         style: exams.length ? `--t:${dlType(exams.some((x) => x.kind === "egzamin") ? "egzamin" : "kolokwium").c}` : null,
         "aria-label": fmtKey(k) + (exams.length ? `, ${exams.length} ${plural(exams.length, "zaliczenie", "zaliczenia", "zaliczeń")}` : "") + (mine.length ? `, ${mine.length} ${plural(mine.length, "Twój wpis", "Twoje wpisy", "Twoich wpisów")}` : ""),
         onclick: () => { S.calSel = k; render(); },
-        ondblclick: () => openMyEvent(null, k),
+        ondblclick: TOUCH ? null : () => openMyEvent(null, k),
       },
         h("span", { class: "dn" }, h("span", { class: "num", text: d.getDate() }), exams.length ? h("span", { class: "bang", "aria-hidden": "true", text: "!" }) : info.p && !weekend ? h("span", { class: "par", title: info.p === "odd" ? "tydzień nieparzysty" : "tydzień parzysty", text: info.p === "odd" ? "N" : "P" }) : null),
         info.off && !weekend && d.getMonth() === m - 1 && !chips.length ? h("span", { class: "cnt", text: info.off }) : null,
@@ -2518,7 +2582,7 @@ body::before { opacity: .8; }
           !PAID() ? lockBox("Terminy i zaliczenia roku są w pełnej wersji.") : null,
         ),
       ),
-      h("p", { class: "foot-note" }, `Plan zajęć: stan z ${PLAN.updated || "—"}. Zmiany wprowadzone później sprawdź na `, h("a", { class: "link", href: PLAN_URL, target: "_blank", rel: "noopener" }, "stronie z planem"), ". Dwuklik na dniu dodaje Twój wpis."),
+      h("p", { class: "foot-note" }, `Plan zajęć: stan z ${PLAN.updated || "—"}. Zmiany wprowadzone później sprawdź na `, h("a", { class: "link", href: PLAN_URL, target: "_blank", rel: "noopener" }, "stronie z planem"), TOUCH ? ". Własny wpis dodasz przyciskiem „+ Mój wpis”." : ". Dwuklik na dniu też dodaje Twój wpis."),
     ];
   }
 
@@ -2968,7 +3032,7 @@ body::before { opacity: .8; }
   }
   const topicLine = (sid, k, d, slot) => {
     const t = topicAt(sid, k, d, slot);
-    return t ? h("span", { class: "cls-topic", title: `Szacunek: zajęcia ${t.n} z ${t.of}, tematy z sylabusa rozłożone według godzin.` }, h("span", { class: "muted", text: `Zajęcia ${t.n}/${t.of}, pewnie: ` }), h("span", { lang: "en", text: t.topics.join(" · ") })) : null;
+    return t ? h("span", { class: "cls-topic", title: `Szacunek: zajęcia ${t.n} z ${t.of}, tematy z sylabusa rozłożone według godzin.` }, h("span", { class: "muted", text: `Zajęcia ${t.n} z ${t.of} · prawdopodobny temat: ` }), h("span", { lang: "en", text: t.topics.join(" · ") })) : null;
   };
 
   // ---------- 3. efekty uczenia się na zaliczeniu ----------
@@ -3128,10 +3192,10 @@ body::before { opacity: .8; }
     const pct = ms.length ? Math.round((100 * good) / ms.length) : 0;
     return h("button", { type: "button", class: "nb", style: `--c:${s.color}`, onclick: () => go({ view: "subject", id: s.id }),
       "aria-label": `${s.pl}${ms.length ? `, umiesz ${good} z ${ms.length} materiałów` : ", jeszcze bez materiałów"}${lb ? ", " + lb.text : ""}` },
-      h("span", { class: `nb-top pat pat-${s.pat}`, "aria-hidden": "true" }, h("span", { class: "nb-badge", text: s.abbr })),
+      h("span", { class: `nb-top pat pat-${s.pat}`, "aria-hidden": "true" }),
       h("h3", { text: s.pl }),
       s.en ? h("span", { class: "en", text: s.en }) : null,
-      ms.length ? h("span", { class: "nb-prog", title: `Umiesz ${good} z ${ms.length} materiałów` }, h("span", { class: "nb-bar", "aria-hidden": "true" }, h("i", { style: `width:${pct}%` })), h("span", { class: "num", text: `${good}/${ms.length}` }))
+      ms.length ? h("span", { class: "nb-prog", title: `Umiesz ${good} z ${ms.length} materiałów` }, h("span", { class: "nb-bar", "aria-hidden": "true" }, h("i", { style: `width:${pct}%` })), h("span", { class: "num", text: `${good} z ${ms.length} opanowanych` }))
         : h("span", { class: "meta", text: "Jeszcze bez materiałów" }),
       h("span", { class: "foot" }, lb ? h("span", { class: "chip " + lb.cls, text: lb.text }) : null));
   }
@@ -3207,7 +3271,7 @@ body::before { opacity: .8; }
     return [
       h("section", { class: "stack" },
         h("div", { class: "row", style: "justify-content:space-between" }, h("h1", { class: "ptitle", text: "Przedmioty" }), S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload" }) }, "Wgraj prezentację") : null),
-        h("label", { class: "searchbox" }, icon("search"), input, h("kbd", { class: "kbd", title: "Skrót klawiszowy", text: "/" }))),
+        h("label", { class: "searchbox" }, icon("search"), input, TOUCH ? null : h("kbd", { class: "kbd", title: "Skrót klawiszowy", text: "/" }))),
       buyBanner(),
       res,
       grid,
@@ -3217,14 +3281,21 @@ body::before { opacity: .8; }
   // ================= STRONA PRZEDMIOTU: zawsze te same 3 zakładki =================
   const SUBJ_TABS = [["ucz", "Ucz się"], ["cwicz", "Ćwicz"], ["zal", "Zaliczenie"]];
   // Następny materiał do nauki: pierwsza nieprzerobiona lekcja albo najstarszy materiał bez dobrego wyniku.
+  // Jedna podpowiedź „co dalej” dla ekranu Dziś (sid = null: wszystkie przedmioty) i dla przedmiotu.
+  // Kolejność: ostatnio otwarty i jeszcze nieopanowany → najstarszy nieotwierany → najstarszy nieopanowany.
+  // „Kontynuuj” tylko przy materiale, który już był otwarty; nowy to „Następny”.
   function nextToLearn(sid) {
-    const ls = lessonsOf(sid), done = S.progress?.done || {};
-    if (ls.length) { const l = ls.find((x) => !done[x.id] && readable(x)); return l ? { m: l, label: `${Object.keys(done).some((k) => ls.some((x) => x.id === k)) ? "Kontynuuj" : "Zacznij"}: ${l.order}. ${l.title}` } : null; }
-    const fs = filesOf(sid).filter(readable).sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
-    const m = fs.find((x) => topicScore(x).state !== "good");
+    const done = S.progress?.done || {};
+    if (sid) { const ls = lessonsOf(sid); if (ls.length) { const l = ls.find((x) => !done[x.id] && readable(x)); return l ? { m: l, started: !!done[l.id] || seenSet().has(l.id), label: `${seenSet().has(l.id) ? "Kontynuuj" : "Następna lekcja"}: ${l.order}. ${l.title}` } : null; } }
+    const pool = sid ? filesOf(sid) : SUBJECTS.flatMap((x) => filesOf(x.id));
+    const fs = dedupMats(noMaps(pool)).filter(readable).sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
+    if (!fs.length) return null;
+    const seen = seenSet(), opened = (x) => seen.has(x.id) || !!best(x.id);
+    const last = fs.find((x) => x.id === ls.get("bm-last") && topicScore(x).state !== "good");
+    const m = last || fs.find((x) => !opened(x) && topicScore(x).state !== "good") || fs.find((x) => topicScore(x).state !== "good");
     if (!m) return null;
-    const started = fs.some((x) => best(x.id) || seenSet().has(x.id));
-    return { m, label: `${started ? "Kontynuuj" : "Zacznij"}: ${m.title || m.fileName}` };
+    const started = opened(m);
+    return { m, started, label: `${started ? "Kontynuuj" : "Następny"}: ${m.title || m.fileName}` };
   }
   function viewSubject() {
     const s = subjectById(S.route.id);
@@ -3236,19 +3307,22 @@ body::before { opacity: .8; }
     const topic = nextClass ? topicAt(s.id, nextClass.c.k, nextClass.k, nextClass.c.s) : null;
     const head = h("section", { class: "cover", style: `--c:${s.color}` },
       h("span", { class: `pat pat-${s.pat}`, "aria-hidden": "true" }),
-      h("span", { class: "nb-badge", "aria-hidden": "true", text: s.abbr }),
       h("h1", { text: s.pl }),
       s.en ? h("p", { class: "en", text: s.en }) : null,
       h("div", { class: "people" }, people),
       nextClass ? h("p", { style: "font-size:.92rem" }, "Najbliższe zajęcia: ", h("b", { text: `${fmtKey(nextClass.k)}, ${SLOTS[nextClass.c.s][0]}` }), ` · ${KIND[nextClass.c.k].toLowerCase()} · ${nextClass.c.r || ""}`) : null,
-      topic ? h("p", { style: "font-size:.88rem" }, h("span", { class: "muted", text: `Temat (plan tematów, zajęcia ${topic.n}/${topic.of}): ` }), h("span", { lang: "en", text: topic.topics.join(" · ") })) : null);
+      topic ? h("p", { style: "font-size:.88rem" }, h("span", { class: "muted", text: `Prawdopodobny temat (szacunek z sylabusa, zajęcia ${topic.n} z ${topic.of}): ` }), h("span", { lang: "en", text: topic.topics.join(" · ") })) : null);
     const tabs = h("div", { class: "tabs subj-tabs", role: "tablist", "aria-label": "Części przedmiotu" }, SUBJ_TABS.map(([k, l]) => h("button", { type: "button", class: "tab", role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k }; render(); } }, l)));
     const body = tab === "cwicz" ? subjectPractice(s) : tab === "zal" ? subjectGrading(s) : subjectLearn(s);
     return [backLink({ view: "materials" }), head, h("div", {}, tabs, h("div", { class: "tabpanel", role: "tabpanel" }, body))];
   }
   function subjectLearn(s) {
     const ms = materialsOf(s.id), nx = nextToLearn(s.id);
-    const files = filesOf(s.id);
+    const all = filesOf(s.id), maps = all.filter(isMap), files = all.filter((m) => !isMap(m));
+    const overview = maps.length ? h("section", { class: "panel overview" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Przegląd przedmiotu" }), h("span", { class: "chip sun", text: "z sylabusa" })),
+      h("p", { class: "muted", style: "font-size:.9rem", text: files.length ? "Opracowane z tematów sylabusa, nie z wykładu. Pokazuje, co jest w całym przedmiocie. Nie musisz go przerabiać osobno: materiały z zajęć poniżej omawiają te same tematy." : "Opracowane z tematów sylabusa, nie z wykładu. Na start, dopóki prowadzący nie wrzuci prezentacji." }),
+      materialList(maps)) : null;
     return h("div", { class: "stack" },
       nx ? h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "material", id: nx.m.id }) }, nx.label, " →"),
         S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj materiał") : null)
@@ -3258,7 +3332,8 @@ body::before { opacity: .8; }
       courseSection(s),
       !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
         : S.noDb ? accessNotice()
-        : files.length ? h("section", { class: "stack" }, h("h2", { text: lessonsOf(s.id).length ? "Materiały z zajęć" : "Materiały, od najnowszych" }), materialList(files))
+        : files.length ? [overview, h("section", { class: "stack" }, h("h2", { text: lessonsOf(s.id).length ? "Materiały z zajęć" : "Materiały z zajęć, od najnowszych" }), materialList(files))]
+        : maps.length ? overview
         : lessonsOf(s.id).length ? null
         : h("div", { class: "empty" }, h("h3", { text: "Materiały w przygotowaniu" }),
             h("p", { class: "muted", text: "Pierwszy materiał pojawi się tutaj po pierwszych zajęciach, gdy prowadzący wrzuci prezentację do Teams. Do tego czasu zajrzyj do zakładki Zaliczenie: jest tam plan tematów i zasady." }),
@@ -3341,9 +3416,10 @@ body::before { opacity: .8; }
   }
 
   function materialList(ms) {
+    ms = ms || [];
     return h("div", { class: "list" }, ms.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: "skrot" }) },
-      h("span", { class: "t" }, m.title || m.fileName, m.source === "sylabus" ? h("span", { style: "margin-left:8px" }, h("span", { class: "chip sun", title: "Opracowane z sylabusa WEFiZ 2026/27, nie ze slajdów prowadzącego", text: "z sylabusa" })) : null),
-      h("span", { class: "m num", text: [fmtDate(m.createdAt), m.source === "sylabus" ? "mapa przedmiotu" : m.slideCount ? partsTxt(m) : null].filter(Boolean).join(" · ") }),
+      h("span", { class: "t" }, m.title || m.fileName, isMap(m) ? h("span", { style: "margin-left:8px" }, h("span", { class: "chip sun", title: "Opracowane z tematów sylabusa WEFiZ 2026/27, nie ze slajdów prowadzącego", text: "z sylabusa" })) : null),
+      h("span", { class: "m num", text: [fmtDate(m.createdAt), isMap(m) ? "opracowane z tematów sylabusa, nie z wykładu" : m.slideCount ? `prezentacja prowadzącego: ${partsTxt(m)}` : null, twinOf(m, ms) ? `ten sam temat co „${twinOf(m, ms).title || twinOf(m, ms).fileName}”: wystarczy przerobić jeden` : null].filter(Boolean).join(" · ") }),
       h("span", { class: "r" }, locked(m) ? h("span", { class: "lock", text: "🔒 pełna wersja" }) : !PAID() ? h("span", { class: "chip good", text: "za darmo" }) : scoreChip(m.id)))));
   }
 
@@ -3409,7 +3485,7 @@ body::before { opacity: .8; }
     const setStep = (k) => { S.route = { ...S.route, tab: k, fc: null, qz: null, wk: null }; render(); window.scrollTo({ top: 0 }); };
     const head = h("section", { class: "stack" },
       backLink(backTo),
-      h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: mine ? ["Moje materiały", folderOf(m).name, s?.pl].filter(Boolean).join(" · ") : s?.pl || "Materiał" }), m.source === "sylabus" ? h("span", { class: "chip sun", title: "Opracowane z planu tematów przedmiotu, zanim prowadzący wrzucili slajdy", text: "plan tematów" }) : null),
+      h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: mine ? ["Moje materiały", folderOf(m).name, s?.pl].filter(Boolean).join(" · ") : s?.pl || "Materiał" }), m.source === "sylabus" ? h("span", { class: "chip sun", title: "Opracowane z tematów sylabusa, zanim prowadzący wrzucili slajdy", text: "z sylabusa, nie z wykładu" }) : null),
       h("h1", { text: m.title || m.fileName }),
       h("div", { class: "row muted num", style: "font-size:.86rem" },
         h("span", { text: mine ? `${m.fileName} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? `Lekcja ${m.order} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ok. ${m.minutes} min` : `dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
@@ -3457,7 +3533,7 @@ body::before { opacity: .8; }
       const concepts = (c.concepts || []).filter((x) => x.term);
       panel = h("div", { class: "stack read" },
         h("div", { class: "row", style: "justify-content:space-between" },
-          h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [[false, "Normalnie"], [true, "Prościej"]].map(([v, l]) => h("button", { type: "button", "aria-pressed": String(simple === v), onclick: () => { S.route = { ...S.route, simple: v }; render(); } }, l))),
+          h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [[false, "Normalnie · EN", "Pełna wersja po angielsku, jak na zajęciach i zaliczeniu"], [true, "Prościej · PL", "Prosty język po polsku, z przykładami"]].map(([v, l, t]) => h("button", { type: "button", title: t, "aria-pressed": String(simple === v), onclick: () => { S.route = { ...S.route, simple: v }; render(); } }, l))),
           !simple && !lessonMode && concepts.length ? h("span", { class: "muted", style: "font-size:.84rem", text: "Podkreślone pojęcia: kliknij, żeby zobaczyć definicję" }) : null),
         simple ? simplePanel(m, c)
           : lessonMode && c.lesson ? lessonPanel(m, c.lesson)
@@ -3523,19 +3599,20 @@ body::before { opacity: .8; }
   // x: numer slajdu albo obiekt z polami slides: [od, do] / slide.
   // Przy prezentacjach to tylko odsyłacz („zajrzyj na slajdy 12–15 w Teams”), bez pokazywania tekstu slajdu.
   function slideRef(materialId, x) {
-    const n = typeof x === "object" && x ? x.slide : x;
+    let n = typeof x === "object" && x ? x.slide : x;
     const r = typeof x === "object" && x?.slides ? x.slides : n ? [Number(n), Number(n)] : null;
     if (!r) return h("span");
+    if (n == null) n = r[0]; // temat ma tylko zakres slides: [od, do] – bez tego wychodziło „sekcja undefined”
     const mat = materialById(materialId);
     if (fromSlides(mat)) return h("span", { class: "slide-ref pointer", title: isMine(mat) ? `Zajrzyj do swojego pliku ${mat.fileName || ""}` : `Zajrzyj do prezentacji ${mat.fileName || ""} w Teams` }, "📍 ", isMine(mat) && mat.fileType !== "pptx" ? rangeTxt(r).replace(/^slajdy?/, (w) => (w === "slajd" ? (mat.fileType === "pdf" ? "str." : "część") : (mat.fileType === "pdf" ? "str." : "części"))) : rangeTxt(r));
     const syl = mat?.source === "sylabus";
-    return h("button", { type: "button", class: "slide-ref", title: syl ? "Pokaż sekcję sylabusa" : "Pokaż tekst slajdu", onclick: (e) => { e.stopPropagation(); showSlide(materialId, n); } }, `${syl ? "sekcja" : "slajd"} ${n}`);
+    return h("button", { type: "button", class: "slide-ref", title: syl ? "Pokaż sekcję sylabusa" : "Pokaż tekst slajdu", onclick: (e) => { e.stopPropagation(); showSlide(materialId, n); } }, syl ? `📍 sylabus, temat ${n}` : `slajd ${n}`);
   }
   async function showSlide(materialId, n) {
     const src = await getSource(materialId).catch(() => null);
     const s = src?.slides?.find((x) => x.n === Number(n));
     modal((close) => [
-      h("div", { class: "row" }, h("span", { class: "eyebrow", text: `${materialById(materialId)?.fileName || ""} · ${materialById(materialId)?.source === "sylabus" ? "sekcja" : "slajd"} ${n}` }), h("button", { type: "button", class: "btn small ghost", style: "margin-left:auto", onclick: close }, "Zamknij")),
+      h("div", { class: "row" }, h("span", { class: "eyebrow", text: `${materialById(materialId)?.fileName || ""} · ${materialById(materialId)?.source === "sylabus" ? "temat z sylabusa nr" : "slajd"} ${n}` }), h("button", { type: "button", class: "btn small ghost", style: "margin-left:auto", onclick: close }, "Zamknij")),
       h("pre", { class: "slide", text: s?.text || "Ten slajd nie ma tekstu (np. sam obraz lub wykres). Zajrzyj do oryginału w Teams." }),
     ]);
   }
@@ -3568,7 +3645,7 @@ body::before { opacity: .8; }
 
   function quizRunner(questions, key, restart) {
     if (!questions.length) return h("p", { class: "muted", text: "Brak pytań." });
-    const st = S.route.qz || (S.route.qz = { qs: questions, pos: 0, picked: null, score: 0, missed: [], saved: false });
+    const st = S.route.qz || (S.route.qz = { qs: questions.map(shuffleOpts), pos: 0, picked: null, score: 0, missed: [], saved: false });
     const total = st.qs.length;
     if (st.pos >= total) {
       if (!st.saved) { st.saved = true; saveScore(key, st.score, total); }
@@ -3577,7 +3654,7 @@ body::before { opacity: .8; }
         h("span", { class: "eyebrow", text: "Wynik" }),
         h("div", { class: "row" }, h("span", { class: "score num", text: `${st.score}/${total}` }), h("span", { class: "chip " + (pct >= 80 ? "good" : pct < 50 ? "bad" : "sun"), text: pct + "%" }), h("span", { class: "muted", text: pct >= 80 ? "Świetnie, to siedzi w głowie." : pct >= 50 ? "Dobrze idzie. Powtórz poniższe i spróbuj jeszcze raz." : "Warto wrócić do notatki i fiszek." })),
         st.missed.length ? h("div", { class: "stack" }, h("h3", { text: "Do powtórki" }), h("ol", { class: "notes" }, st.missed.map((q) => h("li", {}, h("p", { text: q.q }), slideRef(q.materialId, q))))) : null,
-        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { S.route.qz = { qs: shuffle(questions), pos: 0, picked: null, score: 0, missed: [], saved: false }; restart?.(); render(); } }, "Jeszcze raz")));
+        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { S.route.qz = { qs: shuffle(questions).map((x) => shuffleOpts({ ...x, perm: undefined })), pos: 0, picked: null, score: 0, missed: [], saved: false }; restart?.(); render(); } }, "Jeszcze raz")));
     }
     const q = st.qs[st.pos], answered = st.picked != null;
     return h("div", { class: "quiz" },
@@ -4080,7 +4157,12 @@ ${written}`;
     modal((close) => [
       h("span", { class: "eyebrow", text: "Konto i dostęp" }),
       h("h3", { text: sk.state === "in" ? sk.email : "Nie zalogowano" }),
-      h("p", { class: "muted", text: PAID() ? (sk.plan === "miesiac" ? (sk.until ? `Subskrypcja miesięczna, opłacona do ${sk.untilText?.() || sk.until}.` : "Subskrypcja miesięczna jest aktywna.") : sk.until ? `Pełny dostęp do ${sk.untilText?.() || sk.until}.` : "Pełny dostęp jest aktywny.") : sk.state === "in" ? "Konto bez pełnego dostępu. Masz darmowe próbki materiałów." : "Zaloguj się e-mailem (bez hasła). Jeśli masz pełny dostęp, wróci po zalogowaniu." }),
+      PAID() ? h("dl", { class: "acc-dl" },
+        h("dt", { text: "Plan" }), h("dd", { text: sk.plan === "miesiac" ? `Co miesiąc · ${sk.prices?.miesiac || ""}`.replace(/ · $/, "") : sk.admin && !sk.plan ? "Starosta" : `Cały rok 2026/27 · ${sk.prices?.rok || ""} jednorazowo`.replace(/ ·  jednorazowo$/, " · jednorazowo") }),
+        h("dt", { text: sk.plan === "miesiac" ? "Opłacone do" : "Dostęp do" }), h("dd", { text: sk.until ? sk.untilText?.() || sk.until : "bez daty końca" }),
+        h("dt", { text: "Po końcu dostępu" }), h("dd", { text: sk.plan === "miesiac" ? "Subskrypcja odnawia się sama, dopóki jej nie anulujesz. Po anulowaniu dostęp działa do końca opłaconego miesiąca." : "Nic się samo nie odnawia. Materiały się zablokują, a Twoje postępy i wpisy zostaną." }),
+        h("dt", { text: "Potwierdzenie płatności" }), h("dd", { text: sk.plan === "miesiac" ? "Mail ze Stripe; faktury w „Zarządzaj subskrypcją”." : "Mail ze Stripe wysłany po zakupie. Nie masz go? Napisz do nas." }))
+        : h("p", { class: "muted", text: sk.state === "in" ? "Konto bez pełnego dostępu. Masz darmowe próbki materiałów." : "Zaloguj się e-mailem (bez hasła). Jeśli masz pełny dostęp, wróci po zalogowaniu." }),
       sk.state === "in" && S.uid ? (() => {
         const inp = h("input", { class: "input", id: "acc-name", maxlength: "20", value: S.progress?.name || S.myName || "", autocomplete: "given-name", placeholder: "np. Kasia" });
         const save = async () => { const n = inp.value.replace(/\s+/g, " ").trim().slice(0, 20); await saveProgress({ name: n }); toast(n ? `Zapisane. Cześć, ${n}!` : "Zapisane. Powitanie bez imienia."); render(); };
@@ -4092,9 +4174,25 @@ ${written}`;
         PAID() && sk.plan === "miesiac" && sk.manage ? h("button", { type: "button", class: "btn", onclick: () => sk.manage() }, "Zarządzaj subskrypcją") : null,
         sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Zaloguj się") : null,
         sk.state === "in" ? h("button", { type: "button", class: "btn ghost", onclick: () => sk.logout?.() }, "Wyloguj") : null,
+        h("button", { type: "button", class: "btn ghost", onclick: () => { close(); openHelp(); } }, "Pomoc"),
         h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")),
       h("p", { class: "foot-note" }, h("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", h("a", { class: "link", href: "prywatnosc.html" }, "Prywatność"), " · ", h("a", { class: "link", href: "mailto:skrotbm@outlook.com" }, "Kontakt")),
       sk.state === "in" ? h("p", { class: "foot-note", text: "Usunięcie konta i danych: napisz z tego adresu na skrotbm@outlook.com." }) : null]);
+  }
+  function openHelp() {
+    const Q = [
+      ["Zapłaciłem(-am), a nie mam dostępu", "Zaloguj się adresem e-mail użytym przy płatności. Jeśli po kilku minutach dalej nie działa, napisz na skrotbm@outlook.com i dołącz potwierdzenie ze Stripe."],
+      ["Gdzie jest potwierdzenie płatności albo faktura?", "Stripe wysyła je mailem zaraz po płatności. Przy subskrypcji miesięcznej wszystkie faktury są w „Zarządzaj subskrypcją” (Więcej → Konto i dostęp)."],
+      ["Co się stanie po końcu dostępu?", "Pełne materiały, quizy i terminy się zablokują, ale Twoje postępy i wpisy zostają. Dostęp roczny nie odnawia się sam. Kalendarz w telefonie pokaże wtedy same zajęcia."],
+      ["Logowanie nie działa", "Logujesz się bez hasła: wpisz e-mail, a my wyślemy 6-cyfrowy kod. Mail może wpaść do spamu. Kod jest ważny godzinę."],
+      ["Zła grupa, złe zajęcia", "Więcej → Moja grupa. Zmiana działa od razu, także w kalendarzu w telefonie."],
+      ["Błąd w materiale", "Przycisk „Zgłoś błąd” przy fiszce albo pytaniu. Trafia prosto do starosty."],
+    ];
+    modal((close) => [
+      h("span", { class: "eyebrow", text: "Pomoc" }), h("h3", { style: "margin:0", text: "Najczęstsze pytania" }),
+      h("div", { class: "stack", style: "gap:6px" }, Q.map(([q, a]) => h("details", {}, h("summary", { text: q }), h("p", { class: "muted", style: "margin:6px 0 0", text: a })))),
+      h("p", {}, "Nie ma tu odpowiedzi? Napisz: ", h("a", { class: "link", href: "mailto:skrotbm@outlook.com" }, "skrotbm@outlook.com"), ". Odpisujemy zwykle tego samego dnia."),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
   }
   function openAnnounce() {
     modal((close) => [h("h3", { text: "Ogłoszenie dla roku" }), h("p", { class: "muted", text: "Pokaże się na ekranie Dziś przez 7 dni." }), announceForm(close), h("div", { class: "row" }, h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
@@ -4121,7 +4219,8 @@ ${written}`;
         ], "studia"),
         group("Ty", [
           row("group", "Moja grupa", groupLabel, openGroupPicker),
-          row("user", "Konto i dostęp", sk.state === "in" ? sk.email : "nie zalogowano", openAccount),
+          row("user", "Konto i dostęp", sk.state === "in" ? (PAID() ? `${sk.email} · ${sk.plan === "miesiac" ? "co miesiąc" : "cały rok"}` : sk.email) : "nie zalogowano", openAccount),
+          row("help", "Pomoc i kontakt", "płatność, logowanie, błędy · skrotbm@outlook.com", openHelp),
           row("help", "Przewodnik po stronie", `${GUIDE.length} rozdziałów z ćwiczeniami · ukończone ${guideDoneN()}/${GUIDE.length}`, () => go({ view: "guide" })),
           row("map", "Szybki tour po ekranach", "1 minuta, podświetla zakładki", () => startTour(QUICK, QUICK_OPTS())),
           sk.state === "in" ? row("out", "Wyloguj", null, () => sk.logout?.()) : sk.state === "out" ? row("in", "Zaloguj się", "e-mailem, bez hasła", () => sk.openLogin?.()) : null,
@@ -4435,7 +4534,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     if (!w) return h("div", { class: "why" }, head,
       loading ? h("p", { class: "wait", text: "Ładuję wyjaśnienie…" }) : null,
       q.explanation ? h("p", {}, inline(q.explanation)) : (loading ? null : h("p", { class: "wait", text: "Brak wyjaśnienia do tego pytania." })));
-    const notTxt = !ok && w.not?.[picked];
+    const notTxt = !ok && w.not?.[origOpt(q, picked)];
     return h("div", { class: "why" }, head,
       h("div", {}, h("span", { class: "lbl", text: `Czemu ${letter(q.correct)}?` }), h("p", {}, inline(w.why))),
       w.example ? h("p", { class: "ex" }, inline(w.example)) : null,
@@ -4807,7 +4906,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
           def);
       }
     };
-    const seg = h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [["Normalnie", false], ["Prościej", true]].map(([l, v]) => h("button", { type: "button", onclick: () => { simple = v; draw(); } }, l)));
+    const seg = h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [["Normalnie · EN", false], ["Prościej · PL", true]].map(([l, v]) => h("button", { type: "button", onclick: () => { simple = v; draw(); } }, l)));
     draw();
     return h("div", { class: "g-demo" }, h("div", { class: "row", style: "justify-content:space-between" }, seg, h("span", { class: "g-small", text: "Kliknij podkreślone pojęcie" })), box);
   }
@@ -5341,7 +5440,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     { title: "Cześć! Skrót BM w minutę", text: "Pokażę Ci sześć zakładek. Każda odpowiada na jedno pytanie: co dziś, czego się uczyć, co powtórzyć, co na kiedy.", art: "intro" },
     { go: { view: "home" }, sel: "section.today", title: "Najpierw Twoja grupa", text: () => S.group ? `Masz ustawioną grupę ${S.group}. Zmienisz ją w Więcej → Moja grupa.` : "Wybierz grupę i podgrupę lab, a zajęcia i terminy pokażą tylko to, co Cię dotyczy.", art: "group" },
     { go: { view: "home" }, sel: "section.now", title: "Dziś: od tego zaczynasz", text: "Karta „Teraz zrób to” sama wybiera najważniejszą rzecz na teraz. Jeden przycisk i działasz.", art: "hub" },
-    { go: { view: "materials" }, nav: "materials", title: "Przedmioty", text: "Wszystkie materiały: skrót, wersja prostym językiem, fiszki i quiz. Plus wyszukiwarka (skrót /).", art: "books" },
+    { go: { view: "materials" }, nav: "materials", title: "Przedmioty", text: () => "Wszystkie materiały: skrót, wersja prostym językiem, fiszki i quiz. Plus wyszukiwarka" + (TOUCH ? "." : " (skrót /)."), art: "books" },
     { go: { view: "review" }, nav: "review", title: "Powtórki", text: "Fiszki wracają same, zanim je zapomnisz. Pod spodem mapa, co już umiesz.", art: "tabs" },
     { go: { view: "terms" }, nav: "terms", title: "Terminy", text: "Kolokwia, zadania, projekty i formalności, ułożone według pilności.", art: "tasks" },
     { go: { view: "calendar" }, nav: "calendar", title: "Kalendarz", text: "Zajęcia, zaliczenia i Twoje własne wpisy. Można go też mieć w telefonie.", art: "cal" },
@@ -5390,7 +5489,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const text = typeof st.text === "function" ? st.text() : st.text;
     card.innerHTML = `<div class="tour-foot" style="margin:0"><div class="tour-dots" aria-hidden="true">${steps.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")}</div><span class="step">${i + 1} / ${steps.length}</span></div>${art}<h2 id="tour-h"></h2><p></p>
       <div class="tour-foot"><button type="button" class="btn ghost small" data-a="skip"></button><div class="row">${i && !(last && opts.lastSkip) ? `<button type="button" class="btn small" data-a="prev">← Wstecz</button>` : ""}<button type="button" class="btn primary small" data-a="next"></button></div></div>`;
-    card.querySelector("h2").textContent = st.title; card.querySelector("p").textContent = text;
+    card.querySelector("h2").textContent = st.title; card.querySelector("p").textContent = tapTxt(text);
     const skip = card.querySelector('[data-a="skip"]');
     skip.textContent = last ? opts.lastSkip || "" : "Pomiń";
     if (last && !opts.lastSkip) skip.style.visibility = "hidden";
@@ -5425,11 +5524,32 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     addEventListener("resize", tourPlace); addEventListener("scroll", tourPlace, true); document.addEventListener("keydown", onKey);
     tourShow(0);
   }
-  // Pierwsza wizyta: szybki tour po zakładkach (po wpisaniu kodu dostępu, jeśli bramka jest jeszcze włączona).
-  if (!ls.get("bm-tour")) {
-    const tryStart = () => {
-      if (document.documentElement.classList.contains("gate")) return setTimeout(tryStart, 1200);
-      if (!tourState && !$("layer").childElementCount && !ls.get("bm-tour")) startTour(QUICK, QUICK_OPTS());
+  // Po zapłacie (skrot-supabase.js zostawia znacznik skrot-welcome i przeładowuje stronę): jeden ekran powitalny
+  // z trzema pierwszymi krokami. Szybki tour startuje dopiero osobom z dostępem, po powitaniu.
+  function showWelcome() {
+    const sk = window.skrot || {};
+    try { localStorage.removeItem("skrot-welcome"); } catch {}
+    const step = (n, t, sub, done, fn, btn) => h("div", { class: "welcome-step" + (done ? " done" : "") },
+      h("span", { class: "wn num", "aria-hidden": "true", text: done ? "✓" : n }),
+      h("span", {}, h("b", { text: t }), h("small", { class: "muted", style: "display:block", text: sub })),
+      h("button", { type: "button", class: "btn small" + (done ? " ghost" : " primary"), onclick: fn }, btn));
+    modal((close) => [
+      h("span", { class: "eyebrow", text: "Płatność przyjęta" }),
+      h("h2", { style: "margin:0", text: "Dostęp aktywny" }),
+      h("p", { text: sk.plan === "miesiac" ? `Subskrypcja miesięczna${sk.until ? ", opłacona do " + (sk.untilText?.() || sk.until) : ""}. Potwierdzenie płatności przyszło mailem ze Stripe.` : `Pełny dostęp do ${sk.untilText?.() || sk.until || "końca roku akademickiego"} (oba semestry 2026/27). Potwierdzenie płatności przyszło mailem ze Stripe.` }),
+      h("div", { class: "welcome-steps" },
+        step(1, "Wybierz grupę i lab", S.group && S.sub != null ? `Masz: ${S.group}${S.sub ? " · lab " + S.sub : ""}` : "Bez tego nie wiem, które zajęcia i terminy są Twoje.", !needGroup(), () => { close(); openGroupPicker(); }, needGroup() ? "Wybierz" : "Zmień"),
+        step(2, "Otwórz pierwszy materiał", "Przeczytaj, potem fiszki i quiz.", false, () => { close(); const nx = nextToLearn(null); go(nx ? { view: "material", id: nx.m.id } : { view: "materials" }); }, "Otwórz"),
+        step(3, "Dodaj kalendarz do telefonu", "Zajęcia i zaliczenia same pojawią się w telefonie.", false, () => { close(); openPhoneCal(); }, "Dodaj")),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn ghost", onclick: () => { close(); if (!ls.get("bm-tour")) startTour(QUICK, QUICK_OPTS()); } }, ls.get("bm-tour") ? "Zamknij" : "Pokaż stronę w minutę"))]);
+  }
+  {
+    const tryStart = (tries = 0) => {
+      if (document.documentElement.classList.contains("gate") || !S.ready) { if (tries < 40) setTimeout(() => tryStart(tries + 1), 1200); return; }
+      if (tourState || $("layer").childElementCount) return;
+      if (PAID() && ls.get("skrot-welcome")) return showWelcome();
+      if (PAID() && !ls.get("bm-tour")) startTour(QUICK, QUICK_OPTS());
     };
     setTimeout(tryStart, 900);
   }
@@ -5461,7 +5581,15 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && progSoonTimer) { clearTimeout(progSoonTimer); progSoonTimer = null; flushProgress(); } });
 
   const loadContents = (ms) => Promise.all(ms.map((m) => getContent(m.id).then((c) => [m, c]).catch(() => [m, null])));
-  const studyMats = (sid) => [...lessonsOf(sid), ...filesOf(sid)];
+  // Mapa z sylabusa to przegląd przedmiotu: nie liczymy jej jako materiału do przerobienia, gdy są już materiały z zajęć.
+  const isMap = (m) => m?.source === "sylabus";
+  const noMaps = (list) => (list.some((m) => !isMap(m)) ? list.filter((m) => !isMap(m)) : list);
+  // Dwa materiały o prawie tym samym tytule (np. dla różnych grup) przerabiasz raz: drugi jest „podobny”.
+  const titleKey = (m) => new Set(norm(m.title || m.fileName || "").replace(/[^a-z0-9 ]/g, " ").split(" ").filter((w) => w.length > 2 && !["and", "the", "for", "with", "from", "into", "students"].includes(w)).map((w) => w.replace(/(ic|ics|s)$/, "")));
+  const sameTopic = (a, b) => { const x = titleKey(a), y = titleKey(b); if (x.size < 2 || y.size < 2) return false; let n = 0; for (const w of x) if (y.has(w)) n++; return n / Math.min(x.size, y.size) >= 0.8; };
+  const twinOf = (m, list) => (isMap(m) ? null : list.find((o) => o !== m && !isMap(o) && (o.createdAt || 0) < (m.createdAt || 0) && sameTopic(o, m)) || null);
+  const dedupMats = (list) => list.filter((m) => !twinOf(m, list));
+  const studyMats = (sid) => [...lessonsOf(sid), ...dedupMats(noMaps(filesOf(sid)))];
 
   // ---------- zaliczenia: części, daty, zakres ----------
   const CALC_SUBJECTS = new Set(["analiza-matematyczna", "ekonomia-biznesu", "makroekonomia", "podstawy-finansow"]);
@@ -5474,13 +5602,26 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     if (p?.f === "E") return "egzamin";
     return part === "W" ? "zaliczenie wykładu" : part === "LAB" ? "zaliczenie laboratorium" : "kolokwium";
   }
+  // Której części przedmiotu dotyczy termin: pole part (W / CW / LAB) albo, w starych wpisach, słowo w tytule lub notatce.
+  const PART_RX = { W: /wyklad/, CW: /cwicz/, LAB: /\blab/ };
+  const dlPart = (d) => d.part || Object.keys(PART_RX).find((k) => PART_RX[k].test(norm((d.title || "") + " " + (d.note || "")))) || null;
   function examDate(sid, part) {
     const own = examSet(sid, part).date;
     if (own && own >= todayKey()) return { date: own, own: true };
     const k = todayKey();
     const ds = S.deadlines.filter(forMyDl).filter((d) => d.subjectId === sid && ["kolokwium", "egzamin"].includes(d.type) && d.date >= k).sort((a, b) => a.date.localeCompare(b.date));
-    const want = zalPartOf(sid, part)?.f === "E" ? "egzamin" : "kolokwium";
-    const d = ds.find((x) => x.type === want) || (partsOf(sid).length === 1 ? ds[0] : null);
+    const zpart = zalPartOf(sid, part);
+    const want = zpart?.f === "E" ? "egzamin" : "kolokwium";
+    // 1) termin starosty oznaczony dokładnie tą częścią, 2) data z opisu zaliczenia tej części,
+    // 3) termin bez oznaczonej części – tylko gdy przedmiot ma jedną część (inaczej łapało kolokwium z ćwiczeń jako wykład).
+    const exact = ds.find((x) => dlPart(x) === part);
+    if (exact) return { date: exact.date, approx: !!exact.approx, dl: exact };
+    if (zpart?.date && zpart.date >= k) return { date: zpart.date };
+    const single = partsOf(sid).length === 1;
+    // Przy kilku częściach rodzaj rozstrzyga tylko wtedy, gdy jest jedyny (np. egzamin z wykładu i kolokwium z ćwiczeń).
+    const uniqueKind = partsOf(sid).filter((p) => (zalPartOf(sid, p)?.f === "E" ? "egzamin" : "kolokwium") === want).length === 1;
+    const d = single ? (ds.find((x) => !dlPart(x) && x.type === want) || ds.find((x) => !dlPart(x)))
+      : uniqueKind ? ds.find((x) => !dlPart(x) && x.type === want) : null;
     return d ? { date: d.date, approx: !!d.approx, dl: d } : null;
   }
   function nextExam(sid) {
@@ -5685,6 +5826,24 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     }
     return [...map.values()].sort((a, b) => a.en.localeCompare(b.en, "en", { sensitivity: "base" }));
   }
+  // „5S” i „5S method” z tym samym opisem to jedno pojęcie: zostaje dłuższa nazwa, krótsza trafia do „także”.
+  function dedupeTerms(list) {
+    const byDef = new Map(), out = [];
+    for (const t of list) {
+      const dk = norm(t.def || "").replace(/[^a-z0-9 ]/g, "");
+      const twin = dk.length > 20 ? byDef.get(dk) : null;
+      if (!twin) { const c = { ...t, also: [...(t.also || [])] }; out.push(c); if (dk.length > 20) byDef.set(dk, c); continue; }
+      const [keep, drop] = twin.en.length >= t.en.length ? [twin, t] : [t, twin];
+      if (keep !== twin) { Object.assign(twin, { en: keep.en, pl: keep.pl || twin.pl }); }
+      if (!twin.also.includes(drop.en) && norm(drop.en) !== norm(twin.en)) twin.also.push(drop.en);
+      if (!twin.pl && t.pl) twin.pl = t.pl;
+      for (const x of t.s || []) if (!twin.s.includes(x)) twin.s.push(x);
+      for (const x of t.m || []) if (!twin.m.includes(x)) twin.m.push(x);
+    }
+    return out;
+  }
+  const PL_HINT = /[ąćęłńóśźż]|\b(jest|się|oraz|które|który|która|czyli|albo|gdy|lub|przez|dla|na przykład)\b/i;
+  const defLang = (d) => (PL_HINT.test(d || "") ? "PL" : "EN");
   function loadGlossary(force) {
     if (GL.terms && !force) return Promise.resolve(GL.terms);
     if (GL.loading) return GL.loading;
@@ -5708,6 +5867,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         const extra = Object.entries(sp?.subjects || {}).filter(([sid]) => subjectById(sid)).flatMap(([sid, list]) => list.map((t) => ({ en: t.en, pl: t.pl, def: t.def, s: [sid], m: [], syl: true })));
         if (extra.length) { const known = new Set(terms.map((t) => norm(t.en))); terms = mergeTerms([...terms, ...extra]); terms.forEach((t) => { if (!known.has(norm(t.en))) t.syl = true; }); }
       } catch {}
+      terms = dedupeTerms(terms);
       GL.terms = terms; GL.loading = null;
       return terms;
     })();
@@ -5746,18 +5906,18 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   function glRow(t) {
     const m = t.m.map(materialById).find((x) => x && readable(x));
     return h("div", { class: "gl-row" },
-      h("div", { class: "gl-head" }, h("b", { class: "gl-en", text: t.en }), t.pl ? h("span", { class: "gl-pl", text: t.pl }) : null),
-      t.def ? h("p", { text: firstSentence(t.def, 260) }) : null,
+      h("div", { class: "gl-head" }, h("b", { class: "gl-en", text: t.en }), t.pl ? h("span", { class: "gl-pl", text: t.pl }) : null, t.also?.length ? h("span", { class: "muted", style: "font-size:.84rem", text: "także: " + t.also.join(", ") }) : null),
+      t.def ? h("p", {}, h("span", { class: "chip plain", style: "margin-right:6px;font-size:.72rem", title: defLang(t.def) === "PL" ? "Opis po polsku" : "Opis po angielsku", text: defLang(t.def) }), firstSentence(t.def, 260)) : null,
       h("div", { class: "gl-foot" },
         t.s.map((sid) => { const s = subjectById(sid); return s ? h("span", { class: "gl-subj" }, h("i", { class: "dot", style: `--c:${s.color}` }), s.pl) : null; }),
-        m ? h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: m.id, tab: "pojecia" }) }, "w materiale →") : t.syl ? h("span", { class: "chip sun", title: "Pojęcie z planu tematów przedmiotu; definicja Skrót BM", text: "plan tematów" }) : null));
+        m ? h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: m.id, tab: "pojecia" }) }, "w materiale →") : t.syl ? h("span", { class: "chip sun", title: "Pojęcie z tematów sylabusa; definicja Skrót BM", text: "z sylabusa" }) : null));
   }
   function viewGlossary() {
     if (!GL.terms && !GL.loading && S.ready) loadGlossary().then(render);
     const sid = S.route.sid || "";
     const head = h("section", { class: "stack" }, backLink({ view: "more" }),
       h("span", { class: "eyebrow", text: "Angielski ↔ polski" }), h("h1", { text: "Słowniczek" }),
-      h("p", { class: "muted", style: "max-width:62ch", text: "Pojęcia ze wszystkich materiałów i z tematów sylabusa: termin po angielsku, polskie tłumaczenie i jedno zdanie wyjaśnienia. Szukaj w obu językach, ogonki nie są potrzebne." }));
+      h("p", { class: "muted", style: "max-width:62ch", text: "Pojęcia ze wszystkich materiałów i z tematów sylabusa: termin po angielsku, polskie tłumaczenie i jedno zdanie wyjaśnienia. Znaczek EN albo PL mówi, w jakim języku jest opis (materiały z zajęć są po angielsku, tematy z sylabusa często po polsku). Szukaj w obu językach, ogonki nie są potrzebne." }));
     if (!GL.terms) return [head, h("p", { class: "muted", text: "Ładuję pojęcia…" })];
     const box = h("div", { class: "gl-list" });
     const countEl = h("span", { class: "muted num", style: "font-size:.86rem" });
@@ -6010,7 +6170,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const p = zalPartOf(sid, part), how = norm((p?.how || "") + " " + (p?.rules || []).join(" "));
     const pm = (p?.rules || []).join(" ").match(/(\d+)\s*%/);
     const pass = pm ? Number(pm[1]) : 50;
-    if (/test wyboru/.test(how) && !/otwart|zadani|studium/.test(how)) return { min: 30, pass, sections: [{ type: "abcd", n: 20 }] };
+    // „how” jest po norm(), więc bez polskich znaków: łapie „test jednokrotnego/wielokrotnego wyboru” i „test wyboru”.
+    if (/test (jedno|wielo)krotnego wyboru|test wyboru|testy? zamkniet|pytan zamknietych/.test(how) && !/otwart|zadani|studium/.test(how)) return { min: 30, pass, sections: [{ type: "abcd", n: 20 }] };
     if (/studium przypadku/.test(how)) return { min: 60, pass, sections: [{ type: "case", n: 1 }, { type: "open", n: 2 }, { type: "abcd", n: 5 }] };
     if (CALC_SUBJECTS.has(sid)) return { min: 60, pass, sections: [{ type: "task", n: 4 }, { type: "open", n: 2 }, { type: "abcd", n: 5 }] };
     return { min: 45, pass, sections: [{ type: "open", n: 4 }, { type: "abcd", n: 10 }] };
@@ -6032,9 +6193,9 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     let bank = null;
     try { const d = await S.db.doc("examBank/" + sid).get(); bank = d.exists ? d.data() : null; } catch {}
     const pool = { abcd: [], open: [], task: [], case: [] }, spare = { open: [], task: [] };
-    for (const it of bank?.items || []) if (pool[it.type] && (!it.mid || inScope.has(it.mid))) pool[it.type].push(it);
+    for (const it of bank?.items || []) if (pool[it.type] && (!it.mid || inScope.has(it.mid))) pool[it.type].push(it.type === "abcd" ? shuffleOpts(it) : it);
     for (const [m, c] of pairs) {
-      (c?.quiz || []).forEach((q, i) => pool.abcd.push({ id: `q:${m.id}:${i}`, type: "abcd", mid: m.id, q: q.q, options: q.options, correct: q.correct, explanation: q.explanation }));
+      (c?.quiz || []).forEach((q, i) => pool.abcd.push(shuffleOpts({ id: `q:${m.id}:${i}`, type: "abcd", mid: m.id, q: q.q, options: q.options, correct: q.correct, explanation: q.explanation })));
       (c?.flashcards || []).forEach((f) => spare.open.push({ id: `f:${m.id}:${hashStr(f.q)}`, type: "open", mid: m.id, q: f.q, answer: f.a, rubric: fcRubric(f.a) }));
       for (const w of c?.worked || []) (w.similar || []).forEach((s, j) => { if (typeof s.result === "number") spare.task.push({ id: `w:${m.id}:${w.id}:${j}`, type: "task", mid: m.id, q: s.task, result: s.result, tol: s.tol, unit: s.unit, answer: s.answer, steps: s.steps, rubric: taskRubric }); });
       (c?.lesson?.exercises || []).forEach((e, j) => spare.task.push({ id: `l:${m.id}:${j}`, type: "task", mid: m.id, q: e.task, answer: e.answer, rubric: taskRubric }));
@@ -6177,7 +6338,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("div", { class: "exam-count" },
           n == null ? h("span", { class: "muted", text: "Termin nieznany. Wpisz datę, a plan ułoży się sam." })
             : h("span", {}, h("b", { class: "num", text: n <= 0 ? "Dziś" : `Za ${n} ${plural(n, "dzień", "dni", "dni")}` }), ` · ${lbl} · ${fmtKey(ed.date)}`, ed.approx ? h("span", { class: "chip sun", style: "margin-left:6px", text: "data orientacyjna" }) : null),
-          h("label", { class: "row", style: "gap:8px;font-size:.88rem" }, h("span", { class: "muted", text: "Twoja data:" }), dateIn)),
+          h("label", { class: "row", style: "gap:8px;font-size:.88rem", title: "Jeśli prowadzący podał Ci inną datę, wpisz ją. Plan ułoży się pod nią. Widzisz ją tylko Ty." }, h("span", { class: "muted", text: n == null ? "Znasz datę? Wpisz:" : "Inna data u Ciebie? Wpisz swoją:" }), dateIn)),
         p ? h("div", { class: "stack", style: "gap:4px" }, h("div", { class: "row", style: "gap:8px" }, formChip(p.f), h("span", { text: p.how })), ...(p.rules || []).map((r) => h("span", { class: "muted", style: "font-size:.88rem", text: "• " + r }))) : null,
         h("p", { class: "muted", style: "font-size:.88rem", text: `Próbny test: ${tmpl.min} min · ${tmpl.sections.map((x) => `${TYPE_LABEL[x.type].toLowerCase()} × ${x.n}`).join(", ")} · próg ${tmpl.pass}%` })),
       pendingRun ? h("div", { class: "notice" }, "Masz niedokończony test z innego przedmiotu. ", h("button", { type: "button", class: "link", onclick: () => go({ view: "exam", sid: pendingRun.sid, part: pendingRun.part }) }, "Wróć do niego")) : null,
@@ -6202,7 +6363,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
           (set.att || []).length ? h("section", { class: "panel" }, h("h2", { text: "Twoje podejścia" }),
             h("div", { class: "att-list" }, [...set.att].reverse().map((a) => h("div", { class: "att" }, h("span", { class: "num", text: fmtDate(a.at) }), h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${a.pct}%` })), h("span", { class: "chip " + (a.pct >= (tmpl.pass || 50) ? "good" : "bad"), text: `${a.pct}% · ${a.pts}/${a.max} pkt` }))))) : null),
         h("div", { class: "stack", style: "min-width:0;gap:20px" },
-          key.length ? h("section", { class: "panel" }, h("h2", { text: "Najważniejsze tematy" }),
+          key.some((x) => x.m.core) ? h("section", { class: "panel" }, h("h2", { text: "Najważniejsze tematy" }), h("p", { class: "muted", style: "font-size:.86rem;margin:0", text: "★ oznaczone przez starostę jako kluczowe, potem Twoje najsłabsze." }),
             h("div", { class: "list" }, key.map(({ m, ts, why }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: isLesson(m) ? "lekcja" : "skrot" }) },
               h("span", { class: "t", text: m.title || m.fileName }), h("span", { class: "m", text: why === "kluczowy" ? "starosta oznaczył jako kluczowy" : why === "słabo" ? "słabo wychodzi w quizach i fiszkach" : "jeszcze nieruszony" }),
               h("span", { class: "r" }, stateChip(ts)))))) : null,
@@ -6652,6 +6813,7 @@ Spread the questions so that together they check as many of these outcomes as th
       if (local?.dirty && local.data) { S.progress = { ...server, ...local.data }; flushProgress(); }
       else { S.progress = server; progLocal.set({ data: server, dirty: false }); }
       if (S.progress.group && !ls.get("bm-group")) { S.group = S.progress.group; S.sub = S.progress.sub ?? S.sub; }
+      else if (S.group && S.group === S.progress.group && S.sub == null && S.progress.sub != null) S.sub = S.progress.sub;
       render();
     }, () => {});
     if (S.uid) db.collection("myMaterials").orderBy("createdAt", "desc").onSnapshot((snap) => {
