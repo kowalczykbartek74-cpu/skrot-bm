@@ -1884,7 +1884,7 @@ body::before { opacity: .8; }
         ...allGroups.map((g) => h("button", { type: "button", "aria-pressed": String(grpVal.includes(g)), onclick: () => { grpVal = grpVal.includes(g) ? grpVal.filter((x) => x !== g) : [...grpVal, g].sort(); if (grpVal.length === allGroups.length) grpVal = []; drawGrp(); } }, g)));
       drawGrp();
       // Data orientacyjna: zdejmij, gdy prowadzący poda termin. Zmiana daty zdejmuje ją sama.
-      const approx = h("input", { type: "checkbox", id: "dl-approx", checked: d?.approx ? true : null });
+      const approx = h("input", { type: "checkbox", id: "dl-approx", "aria-label": "Data orientacyjna", style: "flex:none", checked: d?.approx ? true : null });
       date.addEventListener("change", () => { approx.checked = false; });
       const err = h("p", { class: "notice err", hidden: true });
       return [
@@ -1893,7 +1893,7 @@ body::before { opacity: .8; }
         h("label", { class: "field", for: "dl-title" }, "Co", title),
         h("div", { class: "split3" }, h("label", { class: "field", for: "dl-subject" }, "Przedmiot", subj), h("label", { class: "field", for: "dl-date" }, "Data", date), h("label", { class: "field", for: "dl-time" }, "Godzina (opcjonalnie)", time)),
         h("div", { class: "field" }, h("span", { text: "Dla kogo" }), grp),
-        h("label", { class: "row", for: "dl-approx", style: "gap:8px;align-items:center;font-size:.92rem" }, approx, h("span", {}, "Data orientacyjna ", h("span", { class: "muted", text: "(odznacz, gdy prowadzący potwierdził termin)" }))),
+        h("label", { class: "row", for: "dl-approx", style: "gap:8px;align-items:center;flex-wrap:nowrap;font-size:.92rem" }, approx, h("span", {}, "Data orientacyjna ", h("span", { class: "muted", text: "(odznacz, gdy prowadzący potwierdził termin)" }))),
         h("label", { class: "field", for: "dl-note" }, "Notatka", note),
         err,
         h("div", { class: "row" },
