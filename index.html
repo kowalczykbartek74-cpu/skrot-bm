@@ -1444,7 +1444,7 @@ body::before { opacity: .8; }
 
 <header class="bar"><div class="wrap">
   <button class="brand" id="brand" type="button" aria-label="Skrót BM, start"><img class="logo" src="icons/logo-mark.png" alt="" width="41" height="32" decoding="async"><b>Skrót BM</b></button>
-  <nav class="nav" id="nav" aria-label="Główne"></nav>
+  <nav class="nav" id="nav" aria-label="Menu główne"></nav>
   <div class="bar-right" id="barRight"></div>
 </div></header>
 <main class="wrap" id="main"></main>
@@ -1692,7 +1692,7 @@ body::before { opacity: .8; }
       progWarned = false;
     } catch {
       progLocal.set({ data: S.progress, dirty: true });
-      if (!progWarned) { progWarned = true; toast("Nie zapisałem postępu na serwerze. Mam go w przeglądarce i spróbuję ponownie."); }
+      if (!progWarned) { progWarned = true; toast("Nie udało się zapisać postępu na serwerze, ale jest zapisany w tej przeglądarce. Spróbujemy ponownie."); }
       progTimer = setTimeout(flushProgress, 20000);
     }
   }
@@ -2092,10 +2092,10 @@ body::before { opacity: .8; }
       t.details?.length ? h("ul", { class: "zal-list" }, t.details.map((d) => h("li", { text: d }))) : null,
       h("p", { class: "foot-note", text: `Post w Teams${src.team ? ": " + src.team : ""}${src.author ? " · " + src.author : ""}${src.postedAt ? " · " + fmtDate(src.postedAt) : ""}` }),
       h("div", { class: "row" },
-        h("button", { type: "button", class: "btn primary", onclick: () => { toggleDone(t); close(); } }, isDone(t) ? "Cofnij odhaczenie" : "Odhacz jako zrobione"),
+        h("button", { type: "button", class: "btn primary", onclick: () => { toggleDone(t); close(); } }, isDone(t) ? "Cofnij odhaczenie" : "Odhacz"),
         S.canEdit ? h("button", { type: "button", class: "btn ghost danger", onclick: async () => {
           try { await S.db.doc("tasks/" + t.id).delete(); await S.db.doc("deadlines/task-" + t.id).delete().catch(() => {}); toast("Usunięto zadanie dla całego roku."); close(); } catch { toast("Nie udało się usunąć."); }
-        } }, "Usuń dla roku") : null,
+        } }, "Usuń dla całego roku") : null,
         h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
   }
   function termRow(x, opts = {}) {
@@ -2108,7 +2108,7 @@ body::before { opacity: .8; }
         h("div", { class: "term-meta" },
           h("span", { class: "typechip", style: `--t:${dlType(x.kind).c}`, text: TERM_KIND[x.kind] || "Inne" }),
           h("span", { class: "when" + (late ? " late" : x.n != null && x.n <= 2 && !x.done ? " soon" : ""), text: whenText(x) }),
-          x.approx ? h("span", { class: "chip sun", title: "Data nie jest ogłoszona: to ostatnie zajęcia z planu albo okno sesji.", text: "data orientacyjna" }) : null,
+          x.approx ? h("span", { class: "chip sun", title: "Data jeszcze nieogłoszona, więc pokazujemy ostatnie zajęcia z planu albo okres sesji.", text: "data orientacyjna" }) : null,
           x.src === "dl" ? groupChip(x) : null,
           !opts.noSubject ? (s ? h("button", { type: "button", class: "link subj", onclick: () => go({ view: "subject", id: s.id }) }, s.pl) : h("span", { class: "subj", text: "ogólne" })) : null)),
       isPrep(x) && !x.done && !opts.noPrep ? h("button", { type: "button", class: "btn small", onclick: () => go(prepRoute(x)) }, "Przygotuj się") : null);
@@ -2131,7 +2131,7 @@ body::before { opacity: .8; }
     const first = !ls.get("bm-past-seen");
     return h("details", { class: "panel undated past", open: first ? true : null, ontoggle: (e) => { if (!e.currentTarget.open) ls.set("bm-past-seen", "1"); } },
       h("summary", {}, h("b", { text: `Minione · ${list.length}` }), h("span", { class: "muted", text: " · terminy sprzed Twojego dołączenia" })),
-      first ? h("div", { class: "notice", style: "margin:8px 0" }, "Te terminy minęły, zanim tu dołączyłeś(-aś). Oznacz kółkiem to, co masz zrobione. Reszty możesz nie ruszać: nie liczy się do „po terminie”. ",
+      first ? h("div", { class: "notice", style: "margin:8px 0" }, "Te terminy minęły przed Twoim dołączeniem. Odhacz w kółku to, co masz zrobione. Resztę możesz zostawić, nie liczy się do „po terminie”. ",
         h("button", { type: "button", class: "link", onclick: () => { ls.set("bm-past-seen", "1"); render(); } }, "Rozumiem, zwiń")) : null,
       h("div", { class: "terms" }, list.map((x) => termRow(x, { noPrep: true }))));
   }
@@ -2161,7 +2161,7 @@ body::before { opacity: .8; }
       h("div", { class: "row", style: "justify-content:space-between" },
         h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "calendar" }) }, "Pokaż w kalendarzu"),
         PAID() ? seg([["open", `Do zrobienia · ${openN}`], ["done", `Zrobione · ${doneN}`]], f, (k) => { S.taskFilter = k; render(); }, "Filtr") : null),
-      PAID() ? h("p", { class: "foot-note", style: "margin:0", text: "Do zrobienia: nieodhaczone, z datą od dziś albo bez daty. Liczba na kafelku: ile takich terminów czeka w danej kategorii. Minione sprzed Twojego dołączenia są osobno na dole." }) : null,
+      PAID() ? h("p", { class: "foot-note", style: "margin:0", text: "„Do zrobienia” to nieodhaczone terminy od dziś i bez daty. Liczba na kafelku mówi, ile ich czeka w danej kategorii. Terminy sprzed Twojego dołączenia są osobno na dole." }) : null,
       needGroup() ? h("div", { class: "notice" }, "Terminy konkretnych grup pokażę, gdy wybierzesz grupę i lab. ", h("button", { type: "button", class: "link", onclick: openGroupPicker }, "Wybierz grupę")) : null);
     if (!PAID()) return [head, lockBox("Terminy kolokwiów, egzaminów i zadania od prowadzących widzą osoby z pełnym dostępem."), syncLine()];
     if (!S.ready) return [head, h("p", { class: "muted", text: "Ładuję…" })];
@@ -2172,7 +2172,7 @@ body::before { opacity: .8; }
       const xs = openOf(c), late = xs.filter((x) => x.n != null && x.n < 0).length;
       const next = xs.find((x) => x.n != null && x.n >= 0);
       const line = late ? h("span", { class: "tc-line bad", text: `${late} po terminie` })
-        : next ? h("span", { class: "tc-line" + (next.n <= 2 ? " soon" : ""), text: `najbliżej ${whenN(next.n)}` })
+        : next ? h("span", { class: "tc-line" + (next.n <= 2 ? " soon" : ""), text: `najbliższy: ${whenN(next.n)}` })
         : h("span", { class: "tc-line muted", text: xs.length ? "bez daty" : "nic nie czeka" });
       const id = c ? c.id : "all";
       return h("button", { type: "button", class: "tcat" + (xs.length ? "" : " empty0"), style: `--cc:${c ? c.c : "var(--green-700, #1A7F45)"}`, "aria-pressed": String(cat === id),
@@ -2212,7 +2212,7 @@ body::before { opacity: .8; }
     }
     return [head, tiles, body, pastBox(past),
       undated.length ? h("details", { class: "panel undated" },
-        h("summary", {}, h("b", { text: `Zaliczenia bez ogłoszonej daty · ${undated.length}` }), h("span", { class: "muted", text: " · z zasad przedmiotów" })),
+        h("summary", {}, h("b", { text: `Zaliczenia bez ogłoszonej daty · ${undated.length}` }), h("span", { class: "muted", text: " · z sylabusów" })),
         h("div", { class: "list" }, undated.map(({ sb, p }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "subject", id: sb.id, tab: "zal" }) },
           h("span", { class: "t" }, h("i", { class: "dot", style: `--c:${sb.color};display:inline-block;margin-right:8px` }), `${sb.pl}: ${partLabel(sb.id, p.k)}`),
           h("span", { class: "m", text: p.when }))))) : null,
@@ -2294,7 +2294,7 @@ body::before { opacity: .8; }
   const visDeadlines = () => (S.canEdit ? S.deadlines : S.deadlines.filter(forMyDl));
   const groupsLabel = (d) => d?.groups?.length ? d.groups.join(", ") + (d.subs?.length ? " · lab " + d.subs.join("/") : "") : "";
   const groupChip = (d) => groupsLabel(d) ? h("span", { class: "chip", title: "Termin tylko dla tych grup", text: groupsLabel(d) }) : null;
-  const approxChip = (d) => d.approx ? h("span", { class: "chip sun", title: "Forma zaliczenia z sylabusa. Data nie jest ogłoszona: to ostatnie zajęcia z planu albo okno sesji; zmień ją, gdy prowadzący poda termin.", text: "data orientacyjna" }) : null;
+  const approxChip = (d) => d.approx ? h("span", { class: "chip sun", title: "Forma zaliczenia z sylabusa. Data jeszcze nieogłoszona, więc pokazujemy ostatnie zajęcia z planu albo okres sesji. Zmień ją, gdy prowadzący poda termin.", text: "data orientacyjna" }) : null;
   function deadlineRow(d) {
     const dd = dparse(d.date), n = daysUntil(d.date), t = dlType(d.type), s = subjectById(d.subjectId);
     return h("div", { class: "dl" },
@@ -2329,7 +2329,7 @@ body::before { opacity: .8; }
       const s = subjectById(it.sid);
       return h("button", { type: "button", class: "feed-item", onclick: () => go({ view: "subject", id: it.sid }) },
         h("span", { class: "ficon", style: `--c:${colorOf(it.sid)}`, "aria-hidden": "true", text: "📘" }),
-        h("span", {}, h("span", { class: "ft", text: `Kurs: ${it.n} ${plural(it.n, "lekcja", "lekcje", "lekcji")} z ${s?.pl || "przedmiotu"}` }), h("br"),
+        h("span", {}, h("span", { class: "ft", text: `Kurs · ${s?.pl || "przedmiot"} · ${it.n} ${plural(it.n, "lekcja", "lekcje", "lekcji")}` }), h("br"),
           h("span", { class: "fm", text: `Wyjaśnienia, przykłady krok po kroku, zadania, fiszki i quizy · ${ago(it.at)}` })));
     }
     if (it.kind === "m") {
@@ -2351,7 +2351,7 @@ body::before { opacity: .8; }
     return h("footer", { class: "sitefoot" },
       h("span", { text: "© Skrót BM" }),
       h("a", { href: "https://plan.skrotbm.pl/" }, "Plan zajęć (za darmo)"),
-      h("a", { href: "https://plan.skrotbm.pl/skrzynka.html" }, "Skrzynka do opiekunki"),
+      h("a", { href: "https://plan.skrotbm.pl/skrzynka.html" }, "Skrzynka do opiekunki roku"),
       h("a", { href: "regulamin.html" }, "Regulamin"),
       h("a", { href: "prywatnosc.html" }, "Polityka prywatności"),
       h("a", { href: "mailto:skrotbm@outlook.com" }, "Kontakt"));
@@ -2371,7 +2371,7 @@ body::before { opacity: .8; }
   const readable = (m) => isMine(m) || PAID() || (isFree(m) && window.skrot?.state === "in");
   function accessNotice() {
     const sk = window.skrot || {};
-    return h("div", { class: "notice err" }, sk.noticeText?.() || "Nie mogę połączyć się z bazą.");
+    return h("div", { class: "notice err" }, sk.noticeText?.() || "Brak połączenia z serwerem. Spróbuj za chwilę.");
   }
   function paywallCard(title) {
     const sk = window.skrot || {};
@@ -2379,11 +2379,11 @@ body::before { opacity: .8; }
     return h("section", { class: "paywall" },
       h("span", { class: "eyebrow", text: title ? "Ten materiał jest w pełnej wersji" : "Skrót BM · pełny dostęp" }),
       h("h2", { text: title || "Cały rok nauki w jednym miejscu" }),
-      h("p", { class: "muted", text: "Skróty, notatki, pojęcia, fiszki, quizy i wersje prostym językiem do wszystkich przedmiotów, a do tego zadania od prowadzących, terminy kolokwiów i kalendarz roku. Dostęp obejmuje oba semestry roku 2026/27. Pierwszy materiał z każdego przedmiotu przejrzysz za darmo." }),
+      h("p", { class: "muted", text: "Skróty, notatki, pojęcia, fiszki, quizy i wyjaśnienia prostym językiem do wszystkich przedmiotów, a do tego zadania od prowadzących, terminy kolokwiów i kalendarz roku. Dostęp obejmuje oba semestry roku 2026/27. Pierwszy materiał z każdego przedmiotu przejrzysz za darmo." }),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn primary", onclick: () => sk.buy?.() }, `Kup dostęp · od ${sk.prices?.miesiac || "35 zł / mies."}`),
-        sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => sk.openLogin?.() }, "Mam już dostęp: zaloguj") : null),
-      sk.state === "in" ? h("p", { class: "foot-note", style: "margin:0", text: `Zalogowano jako ${sk.email}. Dostęp zostanie przypisany do tego adresu.` }) : null,
+        sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => sk.openLogin?.() }, "Mam już dostęp, zaloguj się") : null),
+      sk.state === "in" ? h("p", { class: "foot-note", style: "margin:0", text: `Zalogowano jako ${sk.email}. Dostęp przypiszemy do tego adresu.` }) : null,
       h("p", { class: "foot-note", style: "margin:0" }, `Cały rok: ${sk.prices?.rok || "199 zł"} jednorazowo (BLIK, karta, Przelewy24). Co miesiąc: ${sk.prices?.miesiac || "35 zł / mies."}, kartą, anulujesz w każdej chwili. `, h("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", h("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")));
   }
   // Okno z kłódką zamiast błędu zapisu albo mylącego komunikatu.
@@ -2395,7 +2395,7 @@ body::before { opacity: .8; }
       h("p", { class: "muted", text: `To jest w pełnej wersji. Dostęp kupujesz na cały rok (oba semestry) za ${sk.prices?.rok || "199 zł"} albo co miesiąc za ${sk.prices?.miesiac || "35 zł / mies."}.` }),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn primary", onclick: () => { close(); sk.buy?.(); } }, "Kup dostęp"),
-        sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Mam już dostęp: zaloguj") : null,
+        sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Mam już dostęp, zaloguj się") : null,
         h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
   }
   const needPaid = (what) => { if (PAID()) return false; lockModal(what); return true; };
@@ -2438,7 +2438,7 @@ body::before { opacity: .8; }
     if (n) return { eyebrow: "Powtórki na dziś", title: `Powtórz ${n} ${plural(n, "fiszkę", "fiszki", "fiszek")}`, sub: `Około ${Math.max(1, Math.round(n / 3))} min. Fiszki wracają wtedy, gdy zaczynasz je zapominać.`, btn: "Zacznij powtórkę", fn: () => go({ view: "review", start: true }) };
     // Ta sama podpowiedź co „Następny / Kontynuuj” w przedmiocie (nextToLearn), żeby oba miejsca mówiły to samo.
     const nx = nextToLearn(null);
-    if (nx) return { eyebrow: nx.started ? "Nic pilnego" : "Następny materiał", title: nx.label, sub: [subjectById(nx.m.subjectId)?.pl, nx.started ? "już otwierany, jeszcze nieopanowany" : "jeszcze nieotwierany"].filter(Boolean).join(" · "), btn: nx.started ? "Kontynuuj" : "Otwórz", fn: () => go({ view: "material", id: nx.m.id }) };
+    if (nx) return { eyebrow: nx.started ? "Nic pilnego" : "Następny materiał", title: nx.label, sub: [subjectById(nx.m.subjectId)?.pl, nx.started ? "zaczęty, jeszcze nieopanowany" : "jeszcze nieotwarty"].filter(Boolean).join(" · "), btn: nx.started ? "Kontynuuj" : "Otwórz", fn: () => go({ view: "material", id: nx.m.id }) };
     const first = S.materials.filter(readable).sort((x, y) => y.createdAt - x.createdAt)[0];
     if (first) return { eyebrow: "Na początek", title: `Przegląd: ${first.title || first.fileName}`, sub: subjectById(first.subjectId)?.pl || "", btn: "Otwórz", fn: () => go({ view: "material", id: first.id }) };
     return { eyebrow: "Na początek", title: "Wybierz przedmiot", sub: "W każdym przedmiocie: czytanie, fiszki i quiz.", btn: "Przedmioty", fn: () => go({ view: "materials" }) };
@@ -2475,7 +2475,7 @@ body::before { opacity: .8; }
     return h("section", { class: "now setup", "aria-label": "Twoja grupa" },
       h("span", { class: "eyebrow", text: "Krok 1 · zanim zaczniesz" }),
       h("h2", { text: !S.group ? "Wybierz swoją grupę i lab" : `Grupa ${S.group}. Teraz wybierz lab` }),
-      h("p", { class: "muted", text: "Na tej podstawie pokażę Twoje zajęcia z salą, Twoje terminy i kalendarz. Zmienisz to zawsze w Więcej → Moja grupa." }),
+      h("p", { class: "muted", text: "Na tej podstawie pokażę Twoje zajęcia z salami, terminy i kalendarz. Zmienisz to w każdej chwili w Więcej → Moja grupa." }),
       groupPicker(true));
   }
   function viewHome() {
@@ -2594,7 +2594,7 @@ body::before { opacity: .8; }
           h("p", { text: S.group ? `Zajęcia grupy ${S.group}${S.sub ? ", lab " + S.sub : ", oba laby"} oraz zaliczenia i zadania z przypomnieniem dzień wcześniej.` : "Zaliczenia i zadania z przypomnieniem dzień wcześniej. Wybierz grupę w „Więcej”, a dojdą też Twoje zajęcia." }),
           h("p", { class: "muted", text: "To subskrypcja: nowe terminy i zmiany w planie same pojawią się w telefonie. Po zmianie grupy w „Więcej” kalendarz też się dostosuje." }),
           h("div", { class: "calopts" },
-            opt(`https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`, "G", "#1A73E8", "Google Calendar", "Android i komputer. Otwórz na koncie Google z telefonu.", true),
+            opt(`https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`, "G", "#1A73E8", "Google Calendar", "Android i komputer. Otwórz na koncie Google, którego używasz w telefonie.", true),
             opt(webcal, "A", "#16231B", "iPhone, iPad, Mac", "Kalendarz Apple. Potwierdź „Subskrybuj”.", false),
             opt(`https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(https)}&name=${encodeURIComponent(name)}`, "O", "#0F6CBD", "Outlook", "Konto Outlook / Hotmail. Dla konta uczelnianego skopiuj link i wybierz „Dodaj kalendarz → Z internetu”.", true)),
           h("div", { class: "row" }, inp, h("button", { type: "button", class: "btn small", onclick: async (e) => {
@@ -2606,7 +2606,7 @@ body::before { opacity: .8; }
             h("button", { type: "button", class: "btn small ghost", onclick: async () => {
               if (!confirm("Stary link przestanie działać. Trzeba będzie dodać kalendarz od nowa. Zrobić nowy link?")) return;
               try { const { data, error } = await window.skrot.sb.rpc("nauka_kalendarz_token", { nowy: true }); if (error) throw error; token = data; draw(); toast("Nowy link gotowy. Stary już nie działa."); } catch { toast("Nie udało się zrobić nowego linku."); }
-            } }, "Nowy link (unieważnij stary)"),
+            } }, "Nowy link (stary przestanie działać)"),
             h("button", { type: "button", class: "btn small", style: "margin-left:auto", onclick: close }, "Zamknij")));
       };
       (async () => {
@@ -2617,7 +2617,7 @@ body::before { opacity: .8; }
         } catch (x) {
           err = /brak_dostepu/.test(x?.message || "") ? "Kalendarz w telefonie jest dla osób z pełnym dostępem."
             : /nie_zalogowany/.test(x?.message || "") ? "Zaloguj się, żeby dostać swój link."
-            : "Kalendarz w telefonie jeszcze nie jest włączony po stronie serwera. Spróbuj później.";
+            : "Kalendarz w telefonie jeszcze nie działa. Spróbuj później.";
         }
         draw();
       })();
@@ -2784,7 +2784,7 @@ body::before { opacity: .8; }
           PAID() ? (selItems.length ? h("div", { class: "terms" }, selItems.map((x) => termRow(x))) : null) : null,
           h("div", { class: "stack", style: "gap:8px" },
             h("div", { class: "row", style: "justify-content:space-between" }, h("h3", { style: "margin:0", text: "Twoje wpisy" }), h("button", { type: "button", class: "btn small", onclick: () => openMyEvent(null, sel) }, "+ Dodaj")),
-            selMine.length ? h("div", { class: "myevs" }, selMine.map(myEventRow)) : h("p", { class: "muted", style: "margin:0", text: "Nic. Dopisz naukę, spotkanie albo przypomnienie." })),
+            selMine.length ? h("div", { class: "myevs" }, selMine.map(myEventRow)) : h("p", { class: "muted", style: "margin:0", text: "Nic tego dnia. Dopisz naukę, spotkanie albo przypomnienie." })),
         ),
         h("div", { class: "panel" },
           h("div", { class: "panel-head" }, h("h2", { text: "Zajęcia" })),
@@ -2866,7 +2866,7 @@ body::before { opacity: .8; }
     "podstawy-finansow": {
       parts: [
         { k: "W", f: "ZO", how: "Test online w Forms na kampusie, w sali 002: 20–30 pytań zamkniętych po 1 punkcie, 15–20 minut. Materiał: wykłady.", rules: ["Ocena 3,0 od 70% poprawnych odpowiedzi.", "Weź laptop, tablet albo telefon.", "Przykładowe pytania są w pliku „How pass a course” w zespole przedmiotu."], when: "27 stycznia 2027", date: "2027-01-27" },
-        { k: "CW", f: "ZO", how: "Prezentacja PPT w parze na wybrany temat i dyskusja na zajęciach (90%) oraz aktywność (10%).", rules: ["Plik .ppt albo .pptx w Zadaniach w Teams najpóźniej dzień przed wystąpieniem. PDF nie jest przyjmowany.", "Co najmniej 10 źródeł, w tym 3 artykuły naukowe z lat 2020–2026. Wykresy i tabele zrób sam z danych.", "Skala z sylabusa: 60–69% to 3,0, 70–79% to 3,5, 80–89% to 4,0, 90–99% to 4,5, 100% to 5,0."], when: "Według listy tematów. C111 i C112, tematy 1–6: wysyłka do 20.10, wystąpienie 21.10" },
+        { k: "CW", f: "ZO", how: "Prezentacja PPT w parze na wybrany temat i dyskusja na zajęciach (90%) oraz aktywność (10%).", rules: ["Plik .ppt albo .pptx w Zadaniach w Teams najpóźniej dzień przed wystąpieniem. PDF nie jest przyjmowany.", "Co najmniej 10 źródeł, w tym 3 artykuły naukowe z lat 2020–2026. Wykresy i tabele trzeba zrobić samodzielnie z danych.", "Skala z sylabusa: 60–69% to 3,0, 70–79% to 3,5, 80–89% to 4,0, 90–99% to 4,5, 100% to 5,0."], when: "Według listy tematów. C111 i C112, tematy 1–6: wysyłka do 20.10, wystąpienie 21.10" },
       ],
       final: "Średnia arytmetyczna oceny z wykładu i z ćwiczeń, po 50%.",
       notes: ["Data testu się różni: zadanie w Teams nadal nazywa się „Lecture TEST_20 January 2027” (stan na 24.10), a na zajęciach podano 27 stycznia. Licz na 27.01, ale potwierdź u prowadzącej.", "Próg testu się różni: prowadząca w Teams podaje 70% na 3,0, a sylabus 60%. Licz na 70%.", "Kontakt z prowadzącą tylko przez Teams, nie mailem."],
@@ -2874,11 +2874,11 @@ body::before { opacity: .8; }
     },
     "podstawy-zarzadzania": {
       parts: [
-        { k: "W", f: "E", how: "Egzamin z pytaniami otwartymi i zamkniętymi.", rules: ["Podejść możesz tylko z zaliczonymi ćwiczeniami.", "Ocena 3,0 od 60% punktów."], when: ZAL_SESJA },
+        { k: "W", f: "E", how: "Egzamin z pytaniami otwartymi i zamkniętymi.", rules: ["Do egzaminu podejdziesz tylko z zaliczonymi ćwiczeniami.", "Ocena 3,0 od 60% punktów."], when: ZAL_SESJA },
         { k: "CW", f: "ZO", how: "Dwa kolokwia (pytania otwarte i zamknięte), raporty z zadań w małych grupach i aktywność przy studiach przypadków.", rules: ["Ocena 3,0 od 60% punktów.", "Przykładowe pytania są na slajdzie 6 z ćwiczeń 1."], when: ZAL_PRZED },
       ],
       final: "Średnia ważona oceny z ćwiczeń i z egzaminu. Każda część musi być zaliczona.",
-      notes: ["Wagi się różnią: opis w sylabusie podaje ćwiczenia 60% i egzamin 40%, a tabela w tym samym sylabusie odwrotnie.", "Forma egzaminu też: sylabus mówi o egzaminie pisemnym, slajd z wykładu 1 o ustnym. Warto dopytać prof. Milewskiego.", "W tygodniu od 19 października zajęcia są odwołane. Jeśli nie uda się przerobić materiału do końca semestru, prowadzący wyznaczy dodatkowy termin i pyta grupę, kiedy wam pasuje."],
+      notes: ["Wagi się różnią: opis w sylabusie podaje ćwiczenia 60% i egzamin 40%, a tabela w tym samym sylabusie odwrotnie.", "Forma egzaminu też się różni: sylabus mówi o egzaminie pisemnym, a slajd z wykładu 1 o ustnym. Warto dopytać prof. Milewskiego.", "W tygodniu od 19 października zajęcia są odwołane. Jeśli nie uda się przerobić materiału do końca semestru, prowadzący wyznaczy dodatkowy termin i zapyta, kiedy wam pasuje."],
       sources: [ZAL_SYL, { label: "Wykład 1 (slajd 6) i ćwiczenia 1 (slajdy 4 i 6), zespół Fundamentals of Management" }, { label: "Post prof. Milewskiego, 19.10 (zespół Fundamentals of Management)" }],
     },
     "prawo": {
@@ -2886,13 +2886,13 @@ body::before { opacity: .8; }
         { k: "W", f: "ZO", how: "Test jednokrotnego wyboru na ostatnim wykładzie.", rules: ["Do nauki wystarczą prezentacje z wykładów, które prowadząca wrzuca do zespołu Law (prawo) BM."], when: "26 stycznia 2027, na ostatnim wykładzie", date: "2027-01-26" },
       ],
       final: "Ocena z wykładu jest oceną z przedmiotu.",
-      notes: ["W sylabusie Business Management jako koordynator figuruje dr hab. Pasquale Policastro, a wykłady prowadzi dr Małgorzata Szymszon. Zasady mogą się różnić, więc warto je potwierdzić na wykładzie.", "Sylabus nie podaje progów punktowych.", "Prowadząca najpierw podała 19 stycznia, a potem poprawiła na 26 stycznia, bo to ostatni wykład."],
+      notes: ["W sylabusie Business Management jako koordynator figuruje dr hab. Pasquale Policastro, a wykłady prowadzi dr Małgorzata Szymszon. Zasady podane na wykładzie mogą się różnić od sylabusa, więc warto je potwierdzić u prowadzącej.", "Sylabus nie podaje progów punktowych.", "Prowadząca najpierw podała 19 stycznia, a potem poprawiła na 26 stycznia, bo to ostatni wykład."],
       sources: [ZAL_BM, ZAL_NOTE, { label: "Dr Małgorzata Szymszon na czacie Teams, 19–20.10" }],
     },
     "zarzadzanie-zasobami-ludzkimi": {
       parts: [
         { k: "W", f: "E", how: "Egzamin pisemny w formie testu.", rules: ["To termin zerowy, przed sesją. Czy w sesji będzie jeszcze zwykły termin, warto potwierdzić u prowadzącej."], when: "22 stycznia 2027, termin zerowy", date: "2027-01-22" },
-        { k: "CW", f: "ZO", how: "Test jednokrotnego wyboru (50% punktów) i zadania: jedne zajęcia, jedno zadanie, wrzucane do folderu grupy w Teams (50%).", rules: ["Ocena 3,0 od 60% punktów.", "AI wolno używać tylko wtedy, gdy prowadząca wyraźnie pozwoli. Na teście i w raportach jest zakazane."], when: "Test na ostatnich ćwiczeniach; zadania na bieżąco po każdych zajęciach" },
+        { k: "CW", f: "ZO", how: "Test jednokrotnego wyboru (50% punktów) i zadania (50%): po każdych zajęciach jedno, wrzucane do folderu grupy w Teams.", rules: ["Ocena 3,0 od 60% punktów.", "AI wolno używać tylko wtedy, gdy prowadząca wyraźnie pozwoli. Na teście i w raportach nie wolno."], when: "Test na ostatnich ćwiczeniach; zadania na bieżąco po każdych zajęciach" },
       ],
       final: "Ocena z egzaminu jest oceną z przedmiotu.",
       notes: [],
@@ -2960,7 +2960,7 @@ body::before { opacity: .8; }
       h("section", { class: "stack" },
         h("span", { class: "eyebrow", text: `semestr zimowy 2026/27 · stan na ${ZAL_CHECKED}` }),
         h("h1", { text: "Zasady zaliczeń" }),
-        h("p", { class: "muted", style: "max-width:62ch" }, `${exams.length} ${plural(exams.length, "przedmiot kończy", "przedmioty kończą", "przedmiotów kończy")} się egzaminem (${exams.map((s) => s.pl).join(", ")}). Pozostałe zaliczasz na ocenę przed sesją. Wszystko z sylabusów kierunku i z tego, co prowadzący napisali w Teams. Gdzie te źródła się różnią, piszemy o tym przy przedmiocie.`)),
+        h("p", { class: "muted", style: "max-width:62ch" }, `${exams.length} ${plural(exams.length, "przedmiot kończy", "przedmioty kończą", "przedmiotów kończy")} się egzaminem (${exams.map((s) => s.pl).join(", ")}). Pozostałe zaliczasz na ocenę przed sesją. Informacje pochodzą z sylabusów kierunku i z tego, co prowadzący napisali w Teams. Gdy te źródła się różnią, piszemy o tym przy przedmiocie.`)),
       h("div", { class: "zal-rows" },
         h("div", { class: "zal-row head", role: "presentation" }, h("span", { text: "Przedmiot" }), h("span", { text: "Wykład" }), h("span", { text: "Ćwiczenia / lab" }), h("span", { text: "Kiedy" })),
         rows),
@@ -2993,9 +2993,9 @@ body::before { opacity: .8; }
   const SYL_SEM = ["", "rok 1 · zima", "rok 1 · lato", "rok 2 · zima", "rok 2 · lato", "rok 3 · zima", "rok 3 · lato"];
   const SZKOLENIA = {
     "szkolenie-bhp": "Kurs e-learningowy BHP (przepisy, zagrożenia, pierwsza pomoc, ochrona przeciwpożarowa) z testem na końcu. Zaliczasz od 60% poprawnych odpowiedzi.",
-    "szkolenie-e-learningowe": "Kurs na platformie Moodle (e-studia): obsługa platformy i komunikacja na uczelni. Test, zaliczasz od 60% poprawnych odpowiedzi.",
-    "szkolenie-biblioteczne": "Kurs e-learningowy o korzystaniu z biblioteki US, jej zbiorów i zasobów elektronicznych, zakończony sprawdzianem.",
-    "szkolenie-z-zasad-korzystania-ze-sztucznej-inteligencji": "Kurs e-learningowy o AI i ryzykach generatorów treści. Test online: 30 pytań jednokrotnego wyboru, zaliczasz od 60%.",
+    "szkolenie-e-learningowe": "Kurs na platformie Moodle (e-studia): obsługa platformy i komunikacja na uczelni. Na końcu test, zaliczasz od 60% poprawnych odpowiedzi.",
+    "szkolenie-biblioteczne": "Kurs e-learningowy o korzystaniu z biblioteki US, jej zbiorów i zasobów elektronicznych, zakończony testem.",
+    "szkolenie-z-zasad-korzystania-ze-sztucznej-inteligencji": "Kurs e-learningowy o AI i zagrożeniach związanych z generatorami treści. Test online: 30 pytań jednokrotnego wyboru, zaliczasz od 60%.",
   };
   const sylName = (c) => c.pl || c.en;
   const sylHasExam = (c, sem) => c.forms.some((f) => f.c === "e" && (!sem || f.s === sem));
@@ -3031,7 +3031,7 @@ body::before { opacity: .8; }
       c.lit.length || c.sup.length ? det("Literatura",
         c.lit.length ? [h("b", { text: "Podstawowa" }), list(c.lit)] : null,
         c.sup.length ? [h("b", { text: "Uzupełniająca" }), list(c.sup)] : null) : null,
-      total ? det(`Ile pracy: około ${total} godzin w semestrze`,
+      total ? det(`Ile pracy: około ${total} h w semestrze`,
         h("div", { class: "syl-load" }, load.map(([l, n]) => h("div", {}, h("span", { text: l }), h("span", { class: "bar", "aria-hidden": "true" }, h("i", { style: `width:${Math.round(100 * n / total)}%` })), h("b", { class: "num", text: `${n} h` })))),
         h("p", { class: "foot-note", text: "Godziny poza zajęciami to szacunek prowadzącego z sylabusa. 1 ECTS to około 25 godzin pracy." })) : null,
       c.grading.length || c.calc.length || fin ? det("Zasady oceniania: oryginalny tekst sylabusa",
@@ -3363,7 +3363,7 @@ body::before { opacity: .8; }
         const mat = { id, subjectId: sid, title: r.title };
         await Promise.allSettled([buildSimple(mat, ct), buildWhy(mat, ct)]);
         glossaryRebuild(sid).catch(() => {});
-        line.state = "ok"; line.detail = `${ct.topics.length} ${plural(ct.topics.length, "temat", "tematy", "tematów")}, ${ct.quiz.length} pytań${old.length ? ", zastąpiono starą mapę" : ""}`;
+        line.state = "ok"; line.detail = `${ct.topics.length} ${plural(ct.topics.length, "temat", "tematy", "tematów")}, pytania: ${ct.quiz.length}${old.length ? ", zastąpiono starą mapę" : ""}`;
       } catch (e) {
         line.state = "err"; line.detail = sampleError(e);
         if (["not_deployed", "no_function", "no_key", "not_granted"].includes(e?.code)) SYLMAT.stop = true;
@@ -3378,7 +3378,7 @@ body::before { opacity: .8; }
     const empty = subs.filter((s) => !materialsOf(s.id).some((m) => m.source !== "sylabus"));
     return h("section", { class: "panel" },
       h("h2", { text: "Mapy przedmiotów z sylabusa BM" }),
-      h("p", { class: "muted", style: "font-size:.92rem", text: "Materiał startowy z oficjalnych tematów i efektów uczenia się: opracowanie, fiszki, quiz, prosty język. Przydaje się tam, gdzie w Teams jeszcze nic nie ma. Nowa mapa zastępuje starą mapę z sylabusa tego przedmiotu." }),
+      h("p", { class: "muted", style: "font-size:.92rem", text: "Materiał na start z oficjalnych tematów i efektów uczenia się: opracowanie, fiszki, quiz i wersja w prostym języku. Przydaje się tam, gdzie w Teams jeszcze nic nie ma. Nowa mapa zastępuje poprzednią mapę z sylabusa tego przedmiotu." }),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn primary", disabled: SYLMAT.busy || !empty.length ? true : null, onclick: () => sylMatRun(empty.map((s) => s.id)) }, SYLMAT.busy ? "Tworzę…" : `Przedmioty bez materiałów z Teams (${empty.length})`),
         h("button", { type: "button", class: "btn", disabled: SYLMAT.busy ? true : null, onclick: () => confirmBox(`Zrobić mapy od nowa dla wszystkich ${subs.length} przedmiotów? Każdy to kilka zapytań do AI.`, () => sylMatRun(subs.map((s) => s.id))) }, `Wszystkie (${subs.length})`),
@@ -3402,11 +3402,11 @@ body::before { opacity: .8; }
     const good = ms.filter((m) => topicScore(m).state === "good").length;
     const pct = ms.length ? Math.round((100 * good) / ms.length) : 0;
     return h("button", { type: "button", class: "nb", style: `--c:${s.color}`, onclick: () => go({ view: "subject", id: s.id }),
-      "aria-label": `${s.pl}${ms.length ? `, umiesz ${good} z ${ms.length} materiałów` : ", jeszcze bez materiałów"}${lb ? ", " + lb.text : ""}` },
+      "aria-label": `${s.pl}${ms.length ? `, opanowane materiały: ${good} z ${ms.length}` : ", jeszcze bez materiałów"}${lb ? ", " + lb.text : ""}` },
       h("span", { class: `nb-top pat pat-${s.pat}`, "aria-hidden": "true" }),
       h("h3", { text: s.pl }),
       s.en && !EN ? h("span", { class: "en", text: s.en }) : null,
-      ms.length ? h("span", { class: "nb-prog", title: `Umiesz ${good} z ${ms.length} materiałów` }, h("span", { class: "nb-bar", "aria-hidden": "true" }, h("i", { style: `width:${pct}%` })), h("span", { class: "num", text: `${good} z ${ms.length} opanowanych` }))
+      ms.length ? h("span", { class: "nb-prog", title: `Opanowane materiały: ${good} z ${ms.length}` }, h("span", { class: "nb-bar", "aria-hidden": "true" }, h("i", { style: `width:${pct}%` })), h("span", { class: "num", text: `${good} z ${ms.length} opanowanych` }))
         : h("span", { class: "meta", text: "Jeszcze bez materiałów" }),
       h("span", { class: "foot" }, lb ? h("span", { class: "chip " + lb.cls, text: lb.text }) : null));
   }
@@ -3457,7 +3457,7 @@ body::before { opacity: .8; }
       sec("Pojęcia", terms.map((t) => h("button", { type: "button", class: "item", onclick: () => go({ view: "glossary", q: t.en }) }, h("span", { class: "t" }, h("b", { text: t.en }), t.pl ? h("span", { class: "muted", text: " · " + t.pl }) : null), t.def ? h("span", { class: "m", text: firstSentence(t.def, 140) }) : null))),
       sec("Terminy", dls.map((x) => h("button", { type: "button", class: "item", onclick: () => go({ view: "terms" }) }, h("span", { class: "t", text: x.title }), h("span", { class: "m", text: [TERM_KIND[x.kind], whenText(x), subjectById(x.sid)?.pl].filter(Boolean).join(" · ") })))),
     ].filter(Boolean);
-    return out.length ? out : [h("div", { class: "empty small", text: GL.loading ? "Szukam…" : "Nic nie znalazłem. Spróbuj krótszego słowa albo po angielsku." })];
+    return out.length ? out : [h("div", { class: "empty small", text: GL.loading ? "Szukam…" : "Brak wyników. Spróbuj krótszego słowa albo wpisz je po angielsku." })];
   }
   function viewMaterials() {
     const wd = (k) => k ? k : "9999";
@@ -3562,7 +3562,7 @@ body::before { opacity: .8; }
       h("div", { class: "practice" },
         h("section", { class: "panel" },
           h("h2", { text: "Quiz z całego przedmiotu" }),
-          h("p", { class: "muted", text: qCount ? `${qN} ${plural(qN, "losowe pytanie", "losowe pytania", "losowych pytań")} ze wszystkich materiałów.` : PAID() ? "Quizy pojawią się z pierwszym materiałem." : "Pełny quiz z całości jest w pełnej wersji." }),
+          h("p", { class: "muted", text: qCount ? `${qN} ${plural(qN, "losowe pytanie", "losowe pytania", "losowych pytań")} ze wszystkich materiałów.` : PAID() ? "Quizy pojawią się z pierwszym materiałem." : "Quiz z całego przedmiotu masz w pełnym dostępie." }),
           h("div", { class: "row" },
             qCount ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "subjectQuiz", id: s.id }) }, "Zrób quiz") : !PAID() ? h("button", { type: "button", class: "btn", onclick: () => lockModal("Quiz z całego przedmiotu") }, "🔒 Quiz z całości") : null,
             best("subject:" + s.id) ? scoreChip("subject:" + s.id) : null)),
@@ -3633,7 +3633,7 @@ body::before { opacity: .8; }
     return h("div", { class: "list" }, ms.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: "skrot" }) },
       h("span", { class: "t" }, m.title || m.fileName, isMap(m) ? h("span", { style: "margin-left:8px" }, h("span", { class: "chip sun", title: "Opracowane z tematów sylabusa WEFiZ 2026/27, nie ze slajdów prowadzącego", text: "z sylabusa" })) : null),
       h("span", { class: "m num", text: [fmtDate(m.createdAt), isMap(m) ? "opracowane z tematów sylabusa, nie z wykładu" : m.slideCount ? `prezentacja prowadzącego: ${partsTxt(m)}` : null, twinOf(m, ms) ? `ten sam temat co „${twinOf(m, ms).title || twinOf(m, ms).fileName}”: wystarczy przerobić jeden` : null].filter(Boolean).join(" · ") }),
-      h("span", { class: "r" }, locked(m) ? h("span", { class: "lock", text: "🔒 pełna wersja" }) : !PAID() ? h("span", { class: "chip good", text: "za darmo" }) : scoreChip(m.id)))));
+      h("span", { class: "r" }, locked(m) ? h("span", { class: "lock", text: "🔒 pełny dostęp" }) : !PAID() ? h("span", { class: "chip good", text: "za darmo" }) : scoreChip(m.id)))));
   }
 
   function backLink(to) {
@@ -3642,7 +3642,7 @@ body::before { opacity: .8; }
   }
   function confirmBox(question, action) {
     modal((close) => [
-      h("h3", { text: question }), h("p", { class: "muted", text: "Tej operacji nie da się cofnąć." }),
+      h("h3", { text: question }), h("p", { class: "muted", text: "Tego nie da się cofnąć." }),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn danger", onclick: async (e) => { e.currentTarget.disabled = true; try { await action(); toast("Usunięto."); } catch { toast("Nie udało się usunąć."); } close(); } }, "Usuń"),
         h("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj")),
@@ -3705,7 +3705,7 @@ body::before { opacity: .8; }
         h("button", { type: "button", class: "link", style: "font-size:.86rem", onclick: () => go({ view: "cheat", id: m.id }) }, "Ściągawka do druku"),
         mine && myFolders().length > 1 ? h("select", { class: "input small-sel", "aria-label": "Przenieś do sekcji", onchange: (e) => moveMine(m, e.target.value) },
           myFolders().map((f) => h("option", { value: f.id, selected: f.id === folderOf(m).id ? true : null, text: f.id === folderOf(m).id ? `Sekcja: ${f.name}` : `Przenieś do: ${f.name}` }))) : null,
-        S.canEdit && !mine ? h("button", { type: "button", class: "btn small ghost", "aria-pressed": String(!!m.core), title: "Kluczowe tematy idą na górę planu przed kolokwium", onclick: () => S.db.doc("materials/" + m.id).update({ core: !m.core }).then(() => { m.core = !m.core; render(); }).catch(() => toast("Nie udało się zapisać.")) }, m.core ? "★ Kluczowy temat" : "☆ Oznacz jako kluczowy") : null,
+        S.canEdit && !mine ? h("button", { type: "button", class: "btn small ghost", "aria-pressed": String(!!m.core), title: "Ważne tematy trafiają na górę planu przed kolokwium", onclick: () => S.db.doc("materials/" + m.id).update({ core: !m.core }).then(() => { m.core = !m.core; render(); }).catch(() => toast("Nie udało się zapisać.")) }, m.core ? "★ Ważny temat" : "☆ Oznacz jako ważny") : null,
         mine ? h("button", { type: "button", class: "btn small ghost danger", onclick: () => confirmBox("Usunąć ten materiał?", async () => {
           const fid = folderOf(m).id; await deleteMine(m); go({ view: "myFolder", id: fid });
         }) }, "Usuń")
@@ -3726,7 +3726,7 @@ body::before { opacity: .8; }
     let panel;
     if (c === undefined) panel = h("p", { class: "muted", text: "Ładuję materiał…" });
     else if (c === null && !PAID()) return [backLink(backTo), paywallCard(m.title || m.fileName)];
-    else if (c === null) panel = h("div", { class: "notice err", text: mine ? "Nie udało się wczytać treści tego materiału. Odśwież stronę." : S.canEdit ? "Nie znalazłem treści tego materiału. Spróbuj wgrać plik jeszcze raz." : "Nie udało się wczytać treści tego materiału. Odśwież stronę, a jeśli to nie pomoże, napisz na skrotbm@outlook.com." });
+    else if (c === null) panel = h("div", { class: "notice err", text: mine ? "Nie udało się wczytać treści tego materiału. Odśwież stronę." : S.canEdit ? "Nie udało się znaleźć treści tego materiału. Spróbuj wgrać plik jeszcze raz." : "Nie udało się wczytać treści tego materiału. Odśwież stronę, a jeśli to nie pomoże, napisz na skrotbm@outlook.com." });
     else if (step === "fiszki") panel = h("div", { class: "stack" },
       (c.flashcards || []).length ? flashcards(c.flashcards, m) : h("div", { class: "empty small", text: "Ten materiał nie ma fiszek. Przejdź do quizu." }),
       h("div", { class: "step-next" }, h("button", { type: "button", class: "btn", onclick: () => setStep("quiz") }, "Dalej: Quiz →")));
@@ -3758,7 +3758,7 @@ body::before { opacity: .8; }
         h("div", { class: "step-next" }, h("button", { type: "button", class: "btn primary", onclick: () => setStep((c.flashcards || []).length ? "fiszki" : "quiz") }, (c.flashcards || []).length ? "Dalej: Fiszki →" : "Dalej: Quiz →")));
     }
     const oldNote = fromSlides(m) && !isV2(m, c) && S.canEdit
-      ? h("div", { class: "notice", style: "margin-bottom:12px" }, "Ten materiał powstał w starym systemie, bezpośrednio ze slajdów. ", h("button", { type: "button", class: "link", onclick: () => go({ view: "ai" }) }, "Przerób go w Panelu AI"), ".") : null;
+      ? h("div", { class: "notice", style: "margin-bottom:12px" }, "Ten materiał powstał w starym systemie, bezpośrednio ze slajdów. ", h("button", { type: "button", class: "link", onclick: () => go({ view: "ai" }) }, "Opracuj go od nowa w Panelu AI"), ".") : null;
     return [head, oldNote, fillNote(m, c), stepsBar, h("div", { class: "steppanel" }, panel)].filter(Boolean);
   }
   // Skrót w nowym systemie: o co chodzi, po co, a potem tematy z odsyłaczem do slajdów.
@@ -3777,7 +3777,7 @@ body::before { opacity: .8; }
         t.why ? h("p", { class: "why-line" }, h("b", { text: "Po co: " }), inline(t.why)) : null,
         t.remember?.length ? h("div", { class: "rem-box" }, h("b", { text: "Zapamiętaj" }), h("ul", {}, t.remember.map((r) => h("li", {}, inline(r))))) : null,
         t.example ? h("div", { class: "ex-box" }, h("b", { text: "Przykład" }), h("p", {}, inline(t.example))) : null))),
-      h("p", { class: "foot-note", text: isMine(m) ? `Opracowanie Skrótu BM z Twojego pliku (${m.fileName}). Plik posłużył tylko jako lista tematów, więc układ i przykłady są nowe. Odsyłacz przy temacie mówi, w którym miejscu pliku ten temat jest.` : `Opracowanie własne Skrótu BM. Prezentacja z Teams (${m.fileName}) posłużyła tylko jako lista tematów, więc układ i przykłady są nasze. Odsyłacz przy temacie mówi, na których slajdach prowadzący o nim mówi: tam zajrzyj po szczegóły z wykładu.` }));
+      h("p", { class: "foot-note", text: isMine(m) ? `Opracowanie Skrótu BM z Twojego pliku (${m.fileName}). Plik posłużył tylko jako lista tematów, więc układ i przykłady są nowe. Odsyłacz przy temacie pokazuje, gdzie w pliku jest ten temat.` : `Opracowanie własne Skrótu BM. Prezentacja z Teams (${m.fileName}) posłużyła tylko jako lista tematów, więc układ i przykłady są nasze. Odsyłacz przy temacie pokazuje, na których slajdach prowadzący o nim mówi: tam znajdziesz szczegóły z wykładu.` }));
   }
   function lessonPanel(m, L) {
     const ls = lessonsOf(m.subjectId);
@@ -3796,9 +3796,9 @@ body::before { opacity: .8; }
     return h("div", { class: "lesson" },
       h("p", { class: "lesson-intro" }, inline(L.intro)),
       sections,
-      L.formulas?.length ? h("section", { class: "lsec" }, h("h2", { text: L.cheatTitle || "Ściąga: najważniejsze wzory" }), h("div", { class: "formulas" }, L.formulas.map((f) => h("div", {}, inline(f))))) : null,
+      L.formulas?.length ? h("section", { class: "lsec" }, h("h2", { text: L.cheatTitle || "Ściągawka: najważniejsze wzory" }), h("div", { class: "formulas" }, L.formulas.map((f) => h("div", {}, inline(f))))) : null,
       L.exercises?.length ? h("section", { class: "lsec" }, h("h2", { text: "Zadania do przećwiczenia" }),
-        h("p", { class: "muted", text: "Najpierw spróbuj sam. Podpowiedź i odpowiedź odsłaniasz kliknięciem." }),
+        h("p", { class: "muted", text: "Najpierw spróbuj samodzielnie. Podpowiedź i odpowiedź odsłaniasz kliknięciem." }),
         L.exercises.map((ex, k) => h("div", { class: "exercise" },
           h("div", {}, h("b", { text: `Zadanie ${k + 1}. ` }), inline(ex.task)),
           h("div", { class: "row", style: "align-items:flex-start;gap:18px" },
@@ -3849,7 +3849,7 @@ body::before { opacity: .8; }
     };
     return h("div", { class: "fc-wrap" },
       h("div", { class: "row muted num", style: "font-size:.86rem" }, `Fiszka ${st.pos + 1} z ${st.order.length} · wiem ${st.known.length} · do powtórki ${st.again.length}`),
-      h("button", { type: "button", class: "fc" + (st.flipped ? " flipped" : ""), "aria-label": st.flipped ? "Odpowiedź, kliknij aby wrócić do pytania" : "Pytanie, kliknij aby zobaczyć odpowiedź", onclick: () => { st.flipped = !st.flipped; render(); } },
+      h("button", { type: "button", class: "fc" + (st.flipped ? " flipped" : ""), "aria-label": st.flipped ? "Odpowiedź. Kliknij, żeby wrócić do pytania" : "Pytanie. Kliknij, żeby zobaczyć odpowiedź", onclick: () => { st.flipped = !st.flipped; render(); } },
         h("div", { class: "fc-inner" }, h("div", { class: "fc-face" }, h("span", { class: "eyebrow", text: "Pytanie" }), h("span", { text: card.q })), h("div", { class: "fc-face back" }, h("span", { class: "eyebrow", text: "Odpowiedź" }), h("span", { text: card.a })))),
       st.flipped
         ? h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => mark(false) }, "Jeszcze nie"), h("button", { type: "button", class: "btn primary", onclick: () => mark(true) }, "Wiem"), slideRef(m.id, card), reportButton(m.id, "fiszka", idx, card.q))
@@ -3865,7 +3865,7 @@ body::before { opacity: .8; }
       const pct = Math.round(100 * st.score / total);
       return h("div", { class: "quiz qres", "data-pct": pct },
         h("span", { class: "eyebrow", text: "Wynik" }),
-        h("div", { class: "row" }, h("span", { class: "score num", text: `${st.score}/${total}` }), h("span", { class: "chip " + (pct >= 80 ? "good" : pct < 50 ? "bad" : "sun"), text: pct + "%" }), h("span", { class: "muted", text: pct >= 80 ? "Świetnie, to siedzi w głowie." : pct >= 50 ? "Dobrze idzie. Powtórz poniższe i spróbuj jeszcze raz." : "Warto wrócić do notatki i fiszek." })),
+        h("div", { class: "row" }, h("span", { class: "score num", text: `${st.score}/${total}` }), h("span", { class: "chip " + (pct >= 80 ? "good" : pct < 50 ? "bad" : "sun"), text: pct + "%" }), h("span", { class: "muted", text: pct >= 80 ? "Świetnie, to siedzi w głowie." : pct >= 50 ? "Dobrze idzie. Powtórz pytania poniżej i spróbuj jeszcze raz." : "Warto wrócić do opracowania i fiszek." })),
         st.missed.length ? h("div", { class: "stack" }, h("h3", { text: "Do powtórki" }), h("ol", { class: "notes" }, st.missed.map((q) => h("li", {}, h("p", { text: q.q }), slideRef(q.materialId, q))))) : null,
         h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { S.route.qz = { qs: shuffle(questions).map((x) => shuffleOpts({ ...x, perm: undefined })), pos: 0, picked: null, score: 0, missed: [], saved: false }; restart?.(); render(); } }, "Jeszcze raz")));
     }
@@ -3889,7 +3889,7 @@ body::before { opacity: .8; }
   function reportButton(materialId, kind, index, text) {
     if (isMine(materialById(materialId))) return null;
     return h("button", { type: "button", class: "btn small ghost", onclick: () => needPaid("Zgłaszanie błędów") || modal((close) => {
-      const ta = h("textarea", { class: "input", id: "report-note", placeholder: "Co jest nie tak? np. zła odpowiedź, nie ma tego na slajdzie", maxlength: "500" });
+      const ta = h("textarea", { class: "input", id: "report-note", placeholder: "Co jest nie tak? Np. zła odpowiedź albo nie ma tego na slajdzie", maxlength: "500" });
       return [h("h3", { text: `Zgłoś błąd: ${kind}` }), h("p", { class: "muted", text }), ta,
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn primary", onclick: async (e) => {
@@ -3920,14 +3920,14 @@ body::before { opacity: .8; }
 
   function viewReports() {
     const head = h("section", { class: "stack" }, backLink(), h("span", { class: "eyebrow", text: "Panel starosty" }), h("h1", { text: "Zgłoszenia błędów" }));
-    if (!S.canEdit) return [head, h("p", { class: "muted", text: "Ten widok jest dostępny dla właściciela strony." })];
+    if (!S.canEdit) return [head, h("p", { class: "muted", text: "Ten widok jest dostępny dla starosty." })];
     if (!S.reports.length) return [head, h("div", { class: "empty" }, h("p", { text: "Brak otwartych zgłoszeń. Studenci zgłaszają błędy przyciskiem przy pytaniach i fiszkach." }))];
     return [head, h("div", { class: "list" }, S.reports.map((r) => h("div", { class: "item", style: "cursor:default" },
       h("span", { class: "t", text: `${r.kind} ${Number(r.index) + 1}: ${r.text}` }),
       h("span", { class: "m", text: [materialById(r.materialId)?.title || "usunięty materiał", fmtDate(r.at), r.note ? "„" + r.note + "”" : "bez opisu"].join(" · ") }),
       h("span", { class: "r row" },
         materialById(r.materialId) ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "material", id: r.materialId, tab: r.kind === "fiszka" ? "fiszki" : "quiz" }) }, "Otwórz") : null,
-        h("button", { type: "button", class: "btn small ghost", onclick: async () => { try { await S.db.doc("reports/" + r.id).delete(); toast("Oznaczono jako załatwione."); } catch { toast("Nie udało się."); } } }, "Załatwione")))))];
+        h("button", { type: "button", class: "btn small ghost", onclick: async () => { try { await S.db.doc("reports/" + r.id).delete(); toast("Oznaczono jako załatwione."); } catch { toast("Nie udało się. Spróbuj ponownie."); } } }, "Załatwione")))))];
   }
 
   // ================= upload + processing =================
@@ -3935,14 +3935,14 @@ body::before { opacity: .8; }
     if (!S.canEdit) return [backLink({ view: "materials" }), h("p", { class: "muted", text: S.isStarosta ? "Włącz tryb starosty w „Więcej”, żeby wgrać materiał dla roku." : "Ten widok jest dostępny dla starosty. Swoje pliki wgrasz w Więcej → Moje materiały." })];
     const head = h("section", { class: "stack" }, backLink(S.route.subjectId ? { view: "subject", id: S.route.subjectId } : { view: "materials" }),
       h("span", { class: "eyebrow", text: "Nowy materiał" }), h("h1", { text: "Wgraj prezentację z Teams" }),
-      h("p", { class: "muted", style: "max-width:62ch", text: "Pobierz plik z zakładki Pliki w kanale przedmiotu (PPTX, PDF lub DOCX) i upuść go poniżej. Prezentacja służy tylko jako mapa tematów: opracowanie, fiszki i quiz pisze AI, które nie widzi tekstu slajdów. Przy każdym temacie zostaje odsyłacz do slajdów, a sam tekst slajdów nie jest nigdzie zapisywany." }));
+      h("p", { class: "muted", style: "max-width:62ch", text: "Pobierz plik z zakładki Pliki w kanale przedmiotu (PPTX, PDF lub DOCX) i upuść go poniżej. Prezentacja służy tylko jako mapa tematów: AI pisze opracowanie, fiszki i quiz od nowa, bez przepisywania slajdów. Przy każdym temacie zostaje odsyłacz do slajdów, a sam tekst slajdów nie jest nigdzie zapisywany." }));
     if (S.noDb || !S.ready) return [head, h("p", { class: "muted", text: S.noDb ? "Zaloguj się, żeby zobaczyć tę część strony." : "Ładuję…" })];
     const U = S.upload || (S.upload = { subjectId: S.route.subjectId || "", lang: "en", file: null, parsed: null, steps: null, error: null, busy: false });
     if (S.route.subjectId && !U.busy && !U.file) U.subjectId = S.route.subjectId;
     const subjSel = h("select", { class: "input", id: "up-subject", onchange: (e) => { U.subjectId = e.target.value; render(); }, disabled: U.busy ? true : null },
       h("option", { value: "", text: "Wybierz przedmiot…" }), SUBJECTS.map((s) => h("option", { value: s.id, selected: s.id === U.subjectId ? true : null, text: s.pl })));
     const langSel = h("select", { class: "input", id: "up-lang", onchange: (e) => { U.lang = e.target.value; }, disabled: U.busy ? true : null },
-      h("option", { value: "en", selected: U.lang === "en" ? true : null, text: "Angielski (jak zajęcia), pojęcia także po polsku" }),
+      h("option", { value: "en", selected: U.lang === "en" ? true : null, text: "Angielski (jak na zajęciach), pojęcia także po polsku" }),
       h("option", { value: "pl", selected: U.lang === "pl" ? true : null, text: "Polski" }));
     const fileInput = h("input", { type: "file", id: "up-file", accept: ".pptx,.pdf,.docx", onchange: (e) => e.target.files[0] && pickFile(e.target.files[0]) });
     const drop = h("label", { class: "drop", for: "up-file" }, fileInput,
@@ -3967,7 +3967,7 @@ body::before { opacity: .8; }
         U.file && !U.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { S.upload = null; render(); } }, "Wyczyść") : null),
       U.error ? h("div", { class: "notice err", text: U.error }) : null,
       U.flagged ? h("div", { class: "notice err stack", style: "gap:8px" },
-        h("b", { text: `Opracowanie ma ${U.flagged.check.pct}% wspólnych fragmentów ze slajdami, także po drugiej próbie.` }),
+        h("b", { text: `Opracowanie nadal pokrywa się ze slajdami w ${U.flagged.check.pct}%, także po drugiej próbie.` }),
         h("span", { text: "Najdłuższe wspólne fragmenty (często to po prostu standardowe definicje, ale sprawdź):" }),
         h("ul", {}, U.flagged.check.fragments.map((f) => h("li", { text: "„" + f + "”" }))),
         h("div", { class: "row" },
@@ -4154,7 +4154,7 @@ ${slidesForPrompt(slides, Math.floor(max * 0.75) - 3000)}`;
     let last = null;
     for (let attempt = 0; attempt < 2; attempt++) {
       // 2) opracowanie: AI widzi tylko listę tematów
-      step(2, "run", attempt ? "druga próba, innymi słowami" : "bez tekstu slajdów");
+      step(2, "run", attempt ? "druga próba, inaczej sformułowana" : "bez tekstu slajdów");
       const writePrompt = `You write ORIGINAL study materials for first-year Business Management students at the University of Szczecin. Subject: ${subj}.
 The lecture covered the topics below. You have NOT seen the lecture and must not try to reconstruct it. Explain each topic from standard academic knowledge, as mainstream introductory textbooks present it, with your own structure, your own wording and your own examples (everyday life, student life, well-known businesses in general). Do not invent statistics, quotes or book/page citations. Keep it accurate; if a concept has several common definitions, give the most standard one.${attempt ? " Use fresh wording; avoid stock textbook sentences." : ""}
 ${langLineFor(lang)}
@@ -4199,7 +4199,7 @@ ${written}`;
         return { q: sText(x.q, 400), options, correct, explanation: sText(x?.explanation), slide: r[0], slides: r };
       }).filter(Boolean);
       if (!quiz.length) { step(3, "err"); throw { code: "incomplete" }; }
-      step(3, "ok", dropped ? `odrzucono ${dropped} ${plural(dropped, "wadliwe pytanie", "wadliwe pytania", "wadliwych pytań")}` : `${flashcards.length} fiszek, ${quiz.length} ${plural(quiz.length, "pytanie", "pytania", "pytań")}`);
+      step(3, "ok", dropped ? `odrzucono ${dropped} ${plural(dropped, "wadliwe pytanie", "wadliwe pytania", "wadliwych pytań")}` : `fiszki: ${flashcards.length}, ${quiz.length} ${plural(quiz.length, "pytanie", "pytania", "pytań")}`);
 
       // 4) kontrola podobieństwa do slajdów
       step(4, "run");
@@ -4234,7 +4234,7 @@ ${written}`;
       { label: "Mapa tematów ze slajdów" },
       { label: "Opracowanie: o co chodzi, po co to jest, co zapamiętać" },
       { label: "Fiszki i quiz z opracowania" },
-      { label: "Kontrola: nic nie jest przepisane ze slajdów" },
+      { label: "Sprawdzam, czy nic nie jest przepisane ze slajdów" },
       { label: "Zapisuję dla całego roku" },
       { label: "Prostsza wersja i „Dlaczego?” do quizu" },
     ];
@@ -4342,7 +4342,7 @@ ${written}`;
     const sk = window.skrot || {};
     if (sk.state === "loading" || S.noDb) return null;
     if (!PAID()) return h("section", { class: "panel" }, page ? null : h("h2", { text: "Moje materiały" }),
-      lockBox("Wgraj własny plik (prezentację, notatki, PDF), a Skrót BM opracuje go tak samo jak materiały roku: skrót, prosty język, pojęcia, fiszki i quiz, w Twojej sekcji. To jest w pełnej wersji."));
+      lockBox("Wgraj własny plik (prezentację, notatki, PDF), a Skrót BM opracuje go tak samo jak materiały roku: skrót, prosty język, pojęcia, fiszki i quiz trafią do Twojej sekcji. Masz to w pełnym dostępie."));
     return h("section", { class: "panel" },
       h("div", { class: "panel-head" }, page ? h("span") : h("h2", { text: "Moje materiały" }),
         h("div", { class: "row", style: "gap:8px" },
@@ -4373,9 +4373,9 @@ ${written}`;
       PAID() ? h("dl", { class: "acc-dl" },
         h("dt", { text: "Plan" }), h("dd", { text: sk.plan === "miesiac" ? `Co miesiąc · ${sk.prices?.miesiac || ""}`.replace(/ · $/, "") : sk.admin && !sk.plan ? "Starosta" : `Cały rok 2026/27 · ${sk.prices?.rok || ""} jednorazowo`.replace(/ ·  jednorazowo$/, " · jednorazowo") }),
         h("dt", { text: sk.plan === "miesiac" ? "Opłacone do" : "Dostęp do" }), h("dd", { text: sk.until ? sk.untilText?.() || sk.until : "bez daty końca" }),
-        h("dt", { text: "Po końcu dostępu" }), h("dd", { text: sk.plan === "miesiac" ? "Subskrypcja odnawia się sama, dopóki jej nie anulujesz. Po anulowaniu dostęp działa do końca opłaconego miesiąca." : "Nic się samo nie odnawia. Materiały się zablokują, a Twoje postępy i wpisy zostaną." }),
-        h("dt", { text: "Potwierdzenie płatności" }), h("dd", { text: sk.plan === "miesiac" ? "Mail ze Stripe; faktury w „Zarządzaj subskrypcją”." : "Mail ze Stripe wysłany po zakupie. Nie masz go? Napisz do nas." }))
-        : h("p", { class: "muted", text: sk.state === "in" ? "Konto bez pełnego dostępu. Masz darmowe próbki materiałów." : "Zaloguj się e-mailem (bez hasła). Jeśli masz pełny dostęp, wróci po zalogowaniu." }),
+        h("dt", { text: "Po zakończeniu dostępu" }), h("dd", { text: sk.plan === "miesiac" ? "Subskrypcja odnawia się sama, dopóki jej nie anulujesz. Po anulowaniu dostęp działa do końca opłaconego miesiąca." : "Nic się samo nie odnawia. Materiały się zablokują, a Twoje postępy i wpisy zostaną." }),
+        h("dt", { text: "Potwierdzenie płatności" }), h("dd", { text: sk.plan === "miesiac" ? "Mail ze Stripe. Faktury znajdziesz w „Zarządzaj subskrypcją”." : "Mail ze Stripe wysłany po zakupie. Nie masz go? Napisz do nas." }))
+        : h("p", { class: "muted", text: sk.state === "in" ? "Konto bez pełnego dostępu. Masz darmowe próbki materiałów." : "Zaloguj się e-mailem (bez hasła). Jeśli masz pełny dostęp, pojawi się po zalogowaniu." }),
       sk.state === "in" && S.uid ? (() => {
         const inp = h("input", { class: "input", id: "acc-name", maxlength: "20", value: S.progress?.name || S.myName || "", autocomplete: "given-name", placeholder: "np. Kasia" });
         const save = async () => { const n = inp.value.replace(/\s+/g, " ").trim().slice(0, 20); await saveProgress({ name: n }); toast(n ? `Zapisane. Cześć, ${n}!` : "Zapisane. Powitanie bez imienia."); render(); };
@@ -4394,12 +4394,12 @@ ${written}`;
   }
   function openHelp() {
     const Q = [
-      ["Zapłaciłem(-am), a nie mam dostępu", "Zaloguj się adresem e-mail użytym przy płatności. Jeśli po kilku minutach dalej nie działa, napisz na skrotbm@outlook.com i dołącz potwierdzenie ze Stripe."],
+      ["Płatność przeszła, ale nie mam dostępu", "Zaloguj się adresem e-mail użytym przy płatności. Jeśli po kilku minutach dalej nie działa, napisz na skrotbm@outlook.com i dołącz potwierdzenie ze Stripe."],
       ["Gdzie jest potwierdzenie płatności albo faktura?", "Stripe wysyła je mailem zaraz po płatności. Przy subskrypcji miesięcznej wszystkie faktury są w „Zarządzaj subskrypcją” (Więcej → Konto i dostęp)."],
-      ["Co się stanie po końcu dostępu?", "Pełne materiały, quizy i terminy się zablokują, ale Twoje postępy i wpisy zostają. Dostęp roczny nie odnawia się sam. Kalendarz w telefonie pokaże wtedy same zajęcia."],
+      ["Co się stanie, gdy skończy się dostęp?", "Pełne materiały, quizy i terminy się zablokują, ale Twoje postępy i wpisy zostaną. Dostęp roczny nie odnawia się sam. Kalendarz w telefonie pokaże wtedy same zajęcia."],
       ["Logowanie nie działa", "Logujesz się bez hasła: wpisz e-mail, a my wyślemy 6-cyfrowy kod. Mail może wpaść do spamu. Kod jest ważny godzinę."],
       ["Zła grupa, złe zajęcia", "Więcej → Moja grupa. Zmiana działa od razu, także w kalendarzu w telefonie."],
-      ["Błąd w materiale", "Przycisk „Zgłoś błąd” przy fiszce albo pytaniu. Trafia prosto do starosty."],
+      ["Błąd w materiale", "Kliknij „Zgłoś błąd” przy fiszce albo pytaniu. Zgłoszenie trafi prosto do starosty."],
     ];
     modal((close) => [
       h("span", { class: "eyebrow", text: "Pomoc" }), h("h3", { style: "margin:0", text: "Najczęstsze pytania" }),
@@ -4436,7 +4436,7 @@ ${written}`;
           row("user", "Konto i dostęp", sk.state === "in" ? (PAID() ? `${sk.email} · ${sk.plan === "miesiac" ? "co miesiąc" : "cały rok"}` : sk.email) : "nie zalogowano", openAccount),
           row("help", "Pomoc i kontakt", "płatność, logowanie, błędy · skrotbm@outlook.com", openHelp),
           row("help", "Przewodnik po stronie", `${GUIDE.length} rozdziałów z ćwiczeniami · ukończone ${guideDoneN()}/${GUIDE.length}`, () => go({ view: "guide" })),
-          row("map", "Szybki tour po ekranach", "1 minuta, podświetla zakładki", () => startTour(QUICK, QUICK_OPTS())),
+          row("map", "Szybki przegląd ekranów", "1 minuta, podświetla zakładki", () => startTour(QUICK, QUICK_OPTS())),
           sk.state === "in" ? row("out", "Wyloguj", null, () => sk.logout?.()) : sk.state === "out" ? row("in", "Zaloguj się", "e-mailem, bez hasła", () => sk.openLogin?.()) : null,
         ], "ty"),
         S.isStarosta ? h("section", { class: "panel more-group staro" },
@@ -4447,7 +4447,7 @@ ${written}`;
             row("upload", "Wgraj materiał", "prezentacja z Teams dla całego roku", () => go({ view: "upload" })),
             row("flag", "Ogłoszenie", "krótka wiadomość na ekranie Dziś", openAnnounce),
             row("flag", "Zgłoszenia błędów", null, () => go({ view: "reports" }), { badge: S.reports.length || 0 }),
-            row("spark", "Panel AI", "brakujące wersje, pytania do testów", () => go({ view: "ai" }), { badge: S.aiMissing || 0 })) : null) : null),
+            row("spark", "Panel AI", "brakujący prosty język i „Dlaczego?”", () => go({ view: "ai" }), { badge: S.aiMissing || 0 })) : null) : null),
     ];
   }
 
@@ -4495,7 +4495,7 @@ ${written}`;
     switch (e?.code) {
       case "limit_dzien": return `Dziś przetworzono już ${q.limit_dzien || 5} plików, to dzienny limit. Spróbuj jutro.`;
       case "limit_miesiac": return `W tym miesiącu przetworzono już ${q.limit_miesiac || 40} plików, to miesięczny limit.`;
-      case "brak_dostepu": return "Własne materiały są dostępne z pełnym dostępem.";
+      case "brak_dostepu": return "Własne materiały masz w pełnym dostępie.";
       case "nie_zalogowany": return "Zaloguj się, żeby wgrać plik.";
       case "no_sql": return "Wgrywanie własnych materiałów nie jest jeszcze włączone na serwerze. Daj znać staroście.";
       case "not_granted": return "Funkcja AI na serwerze nie obsługuje jeszcze własnych materiałów. Daj znać staroście.";
@@ -4508,7 +4508,7 @@ ${written}`;
     const back = backLink(S.route.sectionId ? { view: "myFolder", id: S.route.sectionId } : { view: "materials" });
     const head = h("section", { class: "stack" }, back,
       h("span", { class: "eyebrow", text: "Moje materiały" }), h("h1", { text: "Wgraj swój materiał" }),
-      h("p", { class: "muted", style: "max-width:62ch", text: "Prezentacja, notatki albo PDF. Skrót BM opracuje plik tak samo jak materiały roku: plik służy tylko jako mapa tematów, a skrót, prosty język, pojęcia, fiszki i quiz są pisane od nowa, z odsyłaczami do stron pliku. Sam tekst pliku nie jest nigdzie zapisywany. Wynik widzisz tylko Ty." }));
+      h("p", { class: "muted", style: "max-width:62ch", text: "Prezentacja, notatki albo PDF. Skrót BM opracuje plik tak samo jak materiały roku: plik służy tylko jako mapa tematów, a skrót, wersję w prostym języku, pojęcia, fiszki i quiz AI pisze od nowa, z odsyłaczami do stron pliku. Sam tekst pliku nie jest nigdzie zapisywany. Wynik widzisz tylko Ty." }));
     if (S.noDb || !S.ready) return [head, h("p", { class: "muted", text: S.noDb ? "Zaloguj się, żeby zobaczyć tę część strony." : "Ładuję…" })];
     if (!PAID()) return [head, paywallCard(null)];
     if (S.upload && !S.upload.mine && S.upload.busy) return [head, h("div", { class: "notice", text: "Trwa przetwarzanie innego pliku. Poczekaj, aż się skończy." })];
@@ -4549,7 +4549,7 @@ ${written}`;
         U.file && !U.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { S.upload = null; render(); } }, "Wyczyść") : null),
       U.error ? h("div", { class: "notice err", text: U.error }) : null,
       U.flagged ? h("div", { class: "notice err stack", style: "gap:8px" },
-        h("b", { text: `Opracowanie ma ${U.flagged.check.pct}% wspólnych fragmentów z plikiem, także po drugiej próbie.` }),
+        h("b", { text: `Opracowanie nadal pokrywa się z plikiem w ${U.flagged.check.pct}%, także po drugiej próbie.` }),
         h("span", { text: "Najdłuższe wspólne fragmenty (często to po prostu standardowe definicje):" }),
         h("ul", {}, U.flagged.check.fragments.map((f) => h("li", { text: "„" + f + "”" }))),
         h("div", { class: "row" },
@@ -4570,7 +4570,7 @@ ${written}`;
       { label: "Mapa tematów z pliku" },
       { label: "Opracowanie: o co chodzi, po co to jest, co zapamiętać" },
       { label: "Fiszki i quiz z opracowania" },
-      { label: "Kontrola: nic nie jest przepisane z pliku" },
+      { label: "Sprawdzam, czy nic nie jest przepisane z pliku" },
       { label: `Zapisuję w sekcji „${sec.name}”` },
       { label: "Prostsza wersja i „Dlaczego?” do quizu" },
     ];
@@ -4718,10 +4718,10 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
 
   function simplePanel(m, c) {
     const d = S.simple[m.id];
-    if (d === undefined) { getSimple(m.id).then(render).catch(() => { S.simple[m.id] = null; render(); }); return h("p", { class: "muted", text: "Ładuję prostą wersję…" }); }
+    if (d === undefined) { getSimple(m.id).then(render).catch(() => { S.simple[m.id] = null; render(); }); return h("p", { class: "muted", text: "Ładuję wersję w prostym języku…" }); }
     if (!d) return h("div", { class: "simple" },
       h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prościej" }),
-        h("p", { text: isMine(m) ? "Prostsza wersja nie powstała przy wgrywaniu. Uzupełnisz ją przyciskiem nad krokami." : "Prostsza wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu czytaj wersję Normalnie i powtarzaj fiszki." }),
+        h("p", { text: isMine(m) ? "Wersja w prostym języku nie powstała przy wgrywaniu. Uzupełnisz ją przyciskiem powyżej." : "Prostsza wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu czytaj wersję Normalnie i powtarzaj fiszki." }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "ai" }) }, "Panel AI: uzupełnij brakujące")) : null));
     return h("div", { class: "simple" },
       h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prościej" }), h("p", {}, inline(d.intro))),
@@ -4738,7 +4738,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
 
   function whyBlock(q, picked) {
     const ok = picked === q.correct, mid = q.materialId, letter = (i) => "ABCD"[i];
-    const head = h("span", { class: "verdict " + (ok ? "ok" : "no"), text: ok ? "Dobrze!" : `Niestety nie. Poprawna jest ${letter(q.correct)}.` });
+    const head = h("span", { class: "verdict " + (ok ? "ok" : "no"), text: ok ? "Dobrze!" : `Niestety nie. Poprawna odpowiedź to ${letter(q.correct)}.` });
     let w = null, loading = false;
     if (mid != null) {
       const d = S.why[mid];
@@ -4753,7 +4753,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       h("div", {}, h("span", { class: "lbl", text: `Czemu ${letter(q.correct)}?` }), h("p", {}, inline(w.why))),
       w.example ? h("p", { class: "ex" }, inline(w.example)) : null,
       notTxt ? h("div", { class: "not" }, h("span", { class: "lbl", text: `Czemu nie ${letter(picked)}?` }), h("p", {}, inline(notTxt))) : null,
-      q.explanation ? h("details", {}, h("summary", { text: "Wersja z materiału" }), h("p", {}, inline(q.explanation))) : null);
+      q.explanation ? h("details", {}, h("summary", { text: "Wyjaśnienie z materiału" }), h("p", {}, inline(q.explanation))) : null);
   }
 
   // ================= Panel AI (tylko starosta) =================
@@ -4862,7 +4862,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const mat = { id: m.id, title: m.title, fileName: m.fileName };
     const [rs, rw] = await Promise.allSettled([buildSimple(mat, c), buildWhy(mat, c)]);
     if (AI.status) { if (rs.status === "fulfilled") AI.status.simple.add(m.id); if (rw.status === "fulfilled" && rw.value) AI.status.why.add(m.id); }
-    return `${c.topics.length} ${plural(c.topics.length, "temat", "tematy", "tematów")}, wspólne ze slajdami ${r.check.pct}%${rs.status === "rejected" || rw.status === "rejected" ? " · prostą wersję uzupełnij niżej" : ""}`;
+    return `${c.topics.length} ${plural(c.topics.length, "temat", "tematy", "tematów")}, wspólne ze slajdami ${r.check.pct}%${rs.status === "rejected" || rw.status === "rejected" ? " · wersję w prostym języku uzupełnij niżej" : ""}`;
   }
   async function migrateAll() {
     if (MIG.busy) return;
@@ -4919,16 +4919,16 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
             h("button", { type: "button", class: "btn primary", disabled: AI.busy ? true : null, onclick: aiGenerateAll }, AI.busy ? "Generuję…" : `Uzupełnij brakujące (${todo.length})`),
             AI.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { AI.stop = true; } }, "Zatrzymaj po bieżącym") : null),
           h("h3", { text: "Sposób 2: paczka do wygenerowania" }),
-          h("p", { class: "muted", style: "font-size:.92rem", text: "Bez funkcji na serwerze: pobierz paczkę, wrzuć ją do czatu z Claude z prośbą o plik wynikowy według instrukcji w paczce, a gotowy plik wgraj tutaj." }),
+          h("p", { class: "muted", style: "font-size:.92rem", text: "Bez funkcji na serwerze: pobierz paczkę, wrzuć ją do czatu z Claude'em z prośbą o plik wynikowy według instrukcji w paczce, a gotowy plik wgraj tutaj." }),
           h("div", { class: "row" },
             h("button", { type: "button", class: "btn", onclick: aiExport }, "Pobierz paczkę (JSON)"),
             h("button", { type: "button", class: "btn", onclick: () => file.click() }, "Wgraj gotowe wyjaśnienia"), file))
-          : h("p", { text: "Wszystkie materiały mają prostą wersję i „Dlaczego?”. Nowe materiały dostają je od razu przy wgrywaniu." }),
+          : h("p", { text: "Wszystkie materiały mają wersję w prostym języku i „Dlaczego?”. Nowe materiały dostają je od razu przy wgrywaniu." }),
         AI.log.length ? h("ul", { class: "pipeline" }, AI.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null),
       todo.length ? h("section", { class: "stack" }, h("h2", { text: "Czego brakuje" }),
         h("div", { class: "list" }, todo.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: "prosto" }) },
           h("span", { class: "t", text: m.title || m.fileName }),
-          h("span", { class: "m", text: [subjectById(m.subjectId)?.pl, !AI.status.simple.has(m.id) ? "brak prostej wersji" : null, aiNeedsWhy(m) && !AI.status.why.has(m.id) ? "brak „Dlaczego?”" : null].filter(Boolean).join(" · ") }))))) : null];
+          h("span", { class: "m", text: [subjectById(m.subjectId)?.pl, !AI.status.simple.has(m.id) ? "brak wersji w prostym języku" : null, aiNeedsWhy(m) && !AI.status.why.has(m.id) ? "brak „Dlaczego?”" : null].filter(Boolean).join(" · ") }))))) : null];
   }
 
   // ================= instrukcja: animowany przewodnik po stronie =================
@@ -4937,7 +4937,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     hub: `<div class="tv"><div class="tv-hub"><div><span class="dark"></span><span></span><span></span></div><div><span class="sun"></span><span class="sun"></span><span></span></div></div></div>`,
     group: `<div class="tv"><div class="tv-seg"><i class="pill"></i><b>C111</b><b>C112</b><b>C113</b></div><i class="tv-cursor"></i></div>`,
     books: `<div class="tv"><div class="tv-books"><i style="--c:#1A7F45"></i><i style="--c:#2E9E8F"></i><i style="--c:#6B9E2E"></i><i style="--c:#4CAF72"></i></div></div>`,
-    tabs: `<div class="tv"><div class="tv-tabs"><div class="tv-tabrow"><i class="pill"></i><b>Prosto</b><b>Skrót</b><b>Pojęcia</b><b>Fiszki</b><b>Quiz</b></div><div class="tv-card3d"><div><span>Popyt?</span><span>Ilość, którą kupią</span></div></div></div></div>`,
+    tabs: `<div class="tv"><div class="tv-tabs"><div class="tv-tabrow"><i class="pill"></i><b>Prościej</b><b>Skrót</b><b>Pojęcia</b><b>Fiszki</b><b>Quiz</b></div><div class="tv-card3d"><div><span>Popyt to…</span><span>Ilość, którą klienci chcą kupić</span></div></div></div></div>`,
     tasks: `<div class="tv"><div class="tv-tasks"><div class="tv-task"><i></i><span></span><em>za 3 dni</em></div><div class="tv-task"><i></i><span></span><em>jutro</em></div><div class="tv-task"><i style="animation:none"></i><span style="opacity:.6"></span></div></div></div>`,
     grade: `<div class="tv"><div class="tv-grade"><div class="tv-bar"></div><div class="chips"><span class="chip good">zaliczone</span><span class="chip sun">z sylabusa</span></div></div></div>`,
     cal: () => { const dots = { 3: "#9A5B00", 9: "#B42318", 12: "#1A7F45", 17: "#9A5B00", 22: "#1A7F45", 26: "#B42318" }; let s = ""; for (let i = 0; i < 28; i++) s += `<i class="${i === 15 ? "now" : ""}${dots[i] ? " d" : ""}" style="${dots[i] ? `--c:${dots[i]};--dl:${(i % 7) * 0.18}s` : ""}"></i>`; return `<div class="tv"><div class="tv-cal">${s}</div></div>`; },
@@ -4985,7 +4985,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       { b: "Nowy materiał", e: "Nowy materiał", t: "Przeczytaj: Popyt i podaż", s: `${gPick("makro", 0)} · dodano wczoraj`, btn: "Przeczytaj", r: 3 },
       { b: "Nic pilnego", e: "Nic pilnego", t: "Kontynuuj: Funkcje planowania", s: "Ostatnio otwarty materiał.", btn: "Kontynuuj", r: 4 },
     ];
-    const RUNGS = ["Zaliczenie w ciągu 7 dni", "Termin oddania w ciągu 2 dni", "Fiszki do powtórki", "Nowy materiał z tego tygodnia", "Ostatnio otwarty materiał"];
+    const RUNGS = ["Zaliczenie w ciągu 7 dni", "Termin oddania w ciągu 2 dni", "Fiszki do powtórek", "Nowy materiał z tego tygodnia", "Ostatnio otwarty materiał"];
     const seen = new Set();
     const card = h("div", { class: "now g-now" });
     const ladder = h("ol", { class: "g-ladder" }, RUNGS.map((r) => h("li", { text: r })));
@@ -5002,7 +5002,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     seg.append(...SC.map((x, i) => h("button", { type: "button", onclick: () => show(i) }, x.b)));
     show(0); seen.clear();
     return h("div", { class: "g-demo" }, h("p", { class: "g-small", text: "Wybierz sytuację i zobacz, co pokaże karta:" }), seg, card,
-      h("div", { class: "g-ladder-box" }, h("b", { text: "Kolejność ważności (pierwsze pasujące wygrywa):" }), ladder));
+      h("div", { class: "g-ladder-box" }, h("b", { text: "Od najważniejszej (pokazuje się pierwsza pasująca):" }), ladder));
   }
   function demoGroup() {
     return h("div", { class: "g-demo g-center" },
@@ -5103,13 +5103,13 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   function demoRead(ok) {
     let simple = false, sawSimple = false, sawTerm = false;
     const box = h("div", { class: "g-read" });
-    const def = h("div", { class: "g-pop-def", hidden: true }, h("b", { text: "opportunity cost" }), h("span", { class: "muted", text: "koszt alternatywny" }), h("p", { text: "Wartość najlepszej rzeczy, z której rezygnujesz, kiedy wybierasz coś innego." }));
+    const def = h("div", { class: "g-pop-def", hidden: true }, h("b", { text: "opportunity cost" }), h("span", { class: "muted", text: "koszt alternatywny" }), h("p", { text: "Wartość najlepszej opcji, z której rezygnujesz, kiedy wybierasz coś innego." }));
     const check = () => { if (sawSimple && sawTerm) ok(); };
     const draw = () => {
       [...seg.children].forEach((b, i) => b.setAttribute("aria-pressed", String(!!i === simple)));
       if (simple) {
         box.replaceChildren(h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Po ludzku" }),
-          h("p", { text: "Masz 20 zł i wolny wieczór. Możesz iść do kina albo kupić pizzę. Wybierasz kino. Twoim kosztem jest nie tylko bilet, ale też pizza, której nie zjesz." })),
+          h("p", { text: "Masz 20 zł i wolny wieczór. Możesz iść do kina albo kupić pizzę. Wybierasz kino. Twój koszt alternatywny to pizza, której nie zjesz." })),
           h("div", { class: "spart" }, h("div", { class: "rem", text: "Zapamiętaj: każdy wybór to rezygnacja z czegoś innego." })));
         sawSimple = true; check();
       } else {
@@ -5128,7 +5128,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const CARDS = [["Co to jest koszt alternatywny?", "Wartość najlepszej opcji, z której rezygnujesz, wybierając inną."], ["Inflacja to…", "Trwały wzrost ogólnego poziomu cen. Za te same pieniądze kupujesz mniej."], ["Popyt jest elastyczny, gdy…", "Mała zmiana ceny mocno zmienia kupowaną ilość (|E| > 1)."]];
     let i = 0, flips = 0;
     const counter = h("p", { class: "g-small num" });
-    const fc = h("button", { type: "button", class: "fc g-fc", "aria-label": "Fiszka, kliknij, aby odwrócić" });
+    const fc = h("button", { type: "button", class: "fc g-fc", "aria-label": "Fiszka · kliknij, żeby odwrócić" });
     const draw = () => {
       fc.classList.remove("flipped");
       fc.replaceChildren(h("div", { class: "fc-inner" }, h("div", { class: "fc-face" }, h("span", { class: "eyebrow", text: "Pytanie" }), h("span", { text: CARDS[i][0] })), h("div", { class: "fc-face back" }, h("span", { class: "eyebrow", text: "Odpowiedź" }), h("span", { text: CARDS[i][1] }))));
@@ -5145,17 +5145,17 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const answer = (k) => {
       [...opts.children].forEach((b, j) => { b.disabled = true; if (j === Q.a) b.classList.add("right"); else if (j === k) b.classList.add("wrong"); });
       const why = h("div", { class: "g-why", hidden: true }, h("b", { text: "Dlaczego? " }), Q.why);
-      out.replaceChildren(h("p", { class: "g-status " + (k === Q.a ? "ok" : "bad"), text: k === Q.a ? "Dobrze ✓" : "Prawie. Dobra odpowiedź jest zaznaczona na zielono." }),
+      out.replaceChildren(h("p", { class: "g-status " + (k === Q.a ? "ok" : "bad"), text: k === Q.a ? "Dobrze ✓" : "Nie tym razem. Dobra odpowiedź jest zaznaczona na zielono." }),
         h("div", {}, h("button", { type: "button", class: "btn small sun", onclick: (e) => { why.hidden = false; e.currentTarget.remove(); ok(); } }, "Dlaczego?")), why);
     };
     opts.append(...Q.o.map((t, k) => h("button", { type: "button", class: "opt", onclick: () => answer(k) }, h("span", { class: "k", text: "ABCD"[k] }), h("span", { text: t }))));
     return h("div", { class: "g-demo" }, h("p", { class: "g-q", text: Q.q }), opts, out);
   }
   function demoReport(ok) {
-    const REASONS = ["Błąd w treści", "Literówka", "Zła odpowiedź w quizie", "Coś niejasne"];
+    const REASONS = ["Błąd w treści", "Literówka", "Zła odpowiedź w quizie", "Coś jest niejasne"];
     const area = h("div", { class: "stack", style: "gap:8px" });
     const open = () => area.replaceChildren(h("p", { class: "g-small", text: "Co jest nie tak?" }),
-      h("div", { class: "row", style: "gap:6px" }, REASONS.map((r) => h("button", { type: "button", class: "fchip", onclick: () => { area.replaceChildren(h("p", { class: "g-status ok", text: `Wysłane: „${r}”. Starosta to sprawdzi i poprawi dla całego roku ✓` })); ok(); } }, r))));
+      h("div", { class: "row", style: "gap:6px" }, REASONS.map((r) => h("button", { type: "button", class: "fchip", onclick: () => { area.replaceChildren(h("p", { class: "g-status ok", text: `Wysłane: „${r}”. Starosta to sprawdzi i w razie potrzeby poprawi dla całego roku ✓` })); ok(); } }, r))));
     return h("div", { class: "g-demo g-center" },
       h("div", { class: "g-card" }, h("span", { class: "eyebrow", text: "Fiszka" }), h("b", { text: "Elastyczność cenowa popytu = zmiana ceny / zmiana ilości" }),
         h("div", { class: "row", style: "justify-content:space-between" }, h("span", { class: "slide-ref", text: "📍 slajd 18" }), h("button", { type: "button", class: "link", onclick: open }, "⚑ Zgłoś błąd"))),
@@ -5191,7 +5191,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const legend = h("p", { class: "g-small" });
     const draw = () => {
       const ks = Object.keys(src);
-      if (!ks.length) { sq.className = "pm-sq g-sq"; lbl.textContent = "nieruszone"; legend.textContent = "Jeszcze nic nie zrobiono z tym tematem."; return; }
+      if (!ks.length) { sq.className = "pm-sq g-sq"; lbl.textContent = "nieruszone"; legend.textContent = "Ten temat jest jeszcze nieruszony."; return; }
       const w = ks.reduce((a, k) => a + W[k], 0), score = Math.round(ks.reduce((a, k) => a + W[k] * src[k], 0) / w * 100);
       const st = score >= 80 ? "good" : score >= 50 ? "mid" : "weak";
       sq.className = "pm-sq g-sq st-" + st; lbl.textContent = `${STATE[st].label} · ${score}`;
@@ -5203,7 +5203,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return h("div", { class: "g-demo g-center" },
       h("div", { class: "g-maptopic" }, sq, h("div", { class: "stack", style: "gap:2px" }, h("span", { class: "muted", text: "Temat: Popyt i podaż" }), lbl)),
       legend,
-      h("div", { class: "row", style: "justify-content:center;gap:6px" }, act("quiz", 0.5, "Quiz: 5/10"), act("quiz", 0.9, "Quiz: 9/10"), act("srs", 0.85, "Fiszki: umiem 85%"), act("ex", 1, "Zadania: wszystkie dobrze"), act("exam", 0.8, "Próbny test: 80%")),
+      h("div", { class: "row", style: "justify-content:center;gap:6px" }, act("quiz", 0.5, "Quiz: 5/10"), act("quiz", 0.9, "Quiz: 9/10"), act("srs", 0.85, "Fiszki: 85% opanowane"), act("ex", 1, "Zadania: wszystkie dobrze"), act("exam", 0.8, "Próbny test: 80%")),
       h("div", { class: "pm-legend small" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label))));
   }
   function demoWorked(ok) {
@@ -5335,7 +5335,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       h("div", { class: "g-phone" }, h("span", { class: "g-notch" }), h("div", { class: "g-phone-cal" }, h("b", { text: "Styczeń" }), evs)));
   }
   function demoCalendar(ok) {
-    const EX = { 15: "Kolokwium z ćwiczeń", 22: "Kolokwium z wykładu", 26: "Test z prawa", 27: "Kolokwium z IT" };
+    const EX = { 15: "Kolokwium z ćwiczeń", 22: "Test z wykładu", 26: "Test z prawa", 27: "Kolokwium z IT" };
     const mine = {};
     let sel = 12, kind = "nauka";
     const KINDS = [["nauka", "Nauka"], ["spotkanie", "Spotkanie"], ["przypomnienie", "Przypomnienie"], ["inne", "Inne"]];
@@ -5365,7 +5365,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const run = () => {
       const q = gNorm(inp.value.trim());
       const xs = T.filter((t) => !q || gNorm(t.join(" ")).includes(q));
-      list.replaceChildren(...(xs.length ? xs.map(([en, pl, d]) => h("div", { class: "g-gl-row" }, h("b", { lang: "en", text: en }), h("span", { class: "g-pl", text: pl }), h("span", { class: "muted", text: d }))) : [h("p", { class: "g-small", text: "Brak. Spróbuj krótszego słowa." })]));
+      list.replaceChildren(...(xs.length ? xs.map(([en, pl, d]) => h("div", { class: "g-gl-row" }, h("b", { lang: "en", text: en }), h("span", { class: "g-pl", text: pl }), h("span", { class: "muted", text: d }))) : [h("p", { class: "g-small", text: "Brak wyników. Spróbuj krótszego słowa." })]));
       if (q.length >= 4 && xs.length) ok();
     };
     inp.addEventListener("input", run); run();
@@ -5377,7 +5377,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const status = h("p", { class: "g-status", text: "Plik czeka na wgranie." });
     const btn = h("button", { type: "button", class: "btn primary", onclick: () => {
       btn.disabled = true; btn.textContent = "notatki-z-wykladu.pdf";
-      [...pipe.children].forEach((li, i) => { setTimeout(() => { li.classList.add("on"); if (i === STEPS.length - 1) { setTimeout(() => { li.classList.add("on"); status.className = "g-status ok"; status.textContent = "Gotowe ✓ Materiał czeka w Twojej sekcji „Materiały”. Widzisz go tylko Ty."; ok(); }, 500); } }, 450 * (i + 1)); });
+      [...pipe.children].forEach((li, i) => { setTimeout(() => { li.classList.add("on"); if (i === STEPS.length - 1) { setTimeout(() => { li.classList.add("on"); status.className = "g-status ok"; status.textContent = "Gotowe ✓ Materiał czeka w „Moich materiałach”. Widzisz go tylko Ty."; ok(); }, 500); } }, 450 * (i + 1)); });
       status.textContent = "Opracowuję…";
     } }, h("span", { "aria-hidden": "true", text: "⇪ " }), "Wgraj przykładowy plik");
     return h("div", { class: "g-demo" }, h("div", { class: "g-drop" }, btn, h("span", { class: "g-small", text: "PPTX, PDF, DOCX albo TXT" })), pipe, status);
@@ -5407,36 +5407,36 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   const gMat = () => S.materials.find((m) => readable(m) && !isLesson(m) && m.source !== "sylabus") || S.materials.find(readable) || null;
   const subjRoute = (tab) => () => { const s = gSubj(); return s ? { view: "subject", id: s.id, tab } : { view: "materials" }; };
   const GUIDE = [
-    { id: "start", ic: "home", title: "Pierwsze kroki", gain: "Ustawisz grupę, zainstalujesz stronę jak aplikację i wiesz, od czego zaczynać dzień.", slides: [
-      { t: "Wybierz swoją grupę", p: "Strona pokazuje zajęcia, terminy i kalendarz <b>tylko Twojej grupy</b> (C111, C112 albo C113) i Twojej podgrupy lab A lub B. Bez tego widzisz wszystko naraz.", tip: "Grupę zmienisz zawsze w <b>Więcej → Moja grupa</b>.", try: "Kliknij swoją grupę", real: true, fresh: true, done: () => !!S.group, demo: demoGroup },
+    { id: "start", ic: "home", title: "Pierwsze kroki", gain: "Ustawisz grupę, zainstalujesz stronę jak aplikację i będziesz wiedzieć, od czego zacząć dzień.", slides: [
+      { t: "Wybierz swoją grupę", p: "Strona pokazuje zajęcia, terminy i kalendarz <b>tylko Twojej grupy</b> (C111, C112 albo C113) i Twojej podgrupy lab A lub B. Bez wybranej grupy widzisz wszystko naraz.", tip: "Grupę zmienisz w każdej chwili w <b>Więcej → Moja grupa</b>.", try: "Kliknij swoją grupę", real: true, fresh: true, done: () => !!S.group, demo: demoGroup },
       { t: "Ekran Dziś mówi, od czego zacząć", p: "Na górze ekranu Dziś jest karta <b>„Teraz zrób to”</b>. Sama wybiera najważniejszą rzecz na teraz i daje jeden przycisk. Nie musisz niczego planować.", tip: "Pod kartą: Twoje dzisiejsze zajęcia z salą, 3 najbliższe terminy i to, co doszło od ostatniej wizyty.", try: "Sprawdź 3 różne sytuacje", demo: demoNow },
-      { t: "Skrót BM jak aplikacja", p: "Dodaj stronę do ekranu telefonu. Otwiera się wtedy jednym stuknięciem, na pełnym ekranie, bez paska przeglądarki.", tip: "To nic nie kosztuje i nie zajmuje miejsca jak zwykła aplikacja.", try: "Wybierz swój telefon", demo: demoInstall },
+      { t: "Skrót BM jak aplikacja", p: "Dodaj stronę do ekranu głównego telefonu. Otwiera się wtedy jednym stuknięciem, na pełnym ekranie, bez paska przeglądarki.", tip: "Nic nie kosztuje i nie zajmuje tyle miejsca co zwykła aplikacja.", try: "Wybierz swój telefon", demo: demoInstall },
       { t: "Logowanie bez hasła", p: "Wpisujesz e-mail, a my wysyłamy <b>6-cyfrowy kod</b>. Przepisujesz go i już. Po zalogowaniu postęp (fiszki, quizy, oceny) zapisuje się na koncie i masz go na każdym urządzeniu.", tip: "Bez logowania postęp zostaje tylko w tej przeglądarce. Mail z kodem czasem wpada do spamu.", try: "Zaloguj się w ćwiczeniu", demo: demoLogin },
     ], tour: [
       { go: { view: "home" }, sel: "section.now", title: "Teraz zrób to", text: "Tu codziennie zaczynasz. Jeden przycisk prowadzi do najważniejszej rzeczy na dziś." },
       { go: { view: "home" }, sel: "section.today", title: "Twoje zajęcia", text: "Zajęcia Twojej grupy z godziną i salą. Kliknij przedmiot, żeby otworzyć jego materiały." },
       { go: { view: "more" }, sel: '[data-tour="ty"]', title: "Grupa i konto", text: "Tu zmienisz grupę, zalogujesz się i sprawdzisz, do kiedy masz dostęp." },
     ] },
-    { id: "przedmioty", ic: "materials", title: "Przedmioty i wyszukiwarka", gain: "Wiesz, co jest w każdym przedmiocie i znajdziesz każdy temat w sekundę.", slides: [
-      { t: "Każdy przedmiot ma 3 zakładki", p: "<b>Ucz się</b>: materiały i Twoje postępy. <b>Ćwicz</b>: quiz z całości, fiszki, zadania. <b>Zaliczenie</b>: daty, zasady i przygotowanie do kolokwium. Zawsze w tej samej kolejności.", tip: "Na okładce przedmiotu widzisz najbliższe zajęcia i temat, który pewnie na nich będzie.", try: "Zajrzyj do wszystkich 3 zakładek", demo: demoSubject },
+    { id: "przedmioty", ic: "materials", title: "Przedmioty i wyszukiwarka", gain: "Wiesz, co jest w każdym przedmiocie, i znajdziesz każdy temat w sekundę.", slides: [
+      { t: "Każdy przedmiot ma 3 zakładki", p: "<b>Ucz się</b>: materiały i Twoje postępy. <b>Ćwicz</b>: quiz z całości, fiszki, zadania. <b>Zaliczenie</b>: daty, zasady i przygotowanie do kolokwium. Zawsze w tej samej kolejności.", tip: "Na stronie przedmiotu u góry widzisz najbliższe zajęcia i temat, który pewnie na nich będzie.", try: "Zajrzyj do wszystkich 3 zakładek", demo: demoSubject },
       { t: "Szukaj zamiast przewijać", p: "Wyszukiwarka na ekranie Przedmioty przeszukuje naraz <b>przedmioty, materiały, pojęcia i terminy</b>. Polskie znaki nie są potrzebne.", tip: "Na komputerze naciśnij <b>/</b> na dowolnym ekranie, a kursor od razu wskoczy do wyszukiwarki.", try: "Wyszukaj coś (min. 3 litery)", demo: demoSearch },
     ], tour: [
       { go: { view: "materials" }, sel: ".searchbox", title: "Wyszukiwarka", text: "Przedmioty, materiały, pojęcia i terminy w jednym polu. Na komputerze skrót: /." },
       { go: { view: "materials" }, sel: "#subj-grid", title: "Twoje przedmioty", text: "Każdy kafelek to jeden przedmiot. Ostatni kafelek to Twoje własne materiały." },
       { go: subjRoute("ucz"), sel: ".subj-tabs", title: "Ucz się · Ćwicz · Zaliczenie", text: "Te same trzy zakładki w każdym przedmiocie." },
     ] },
-    { id: "material", ic: "review", title: "Materiał w 3 krokach", gain: "Umiesz czytać skrót, przełączać na prosty język, robić fiszki i quiz z wyjaśnieniami.", slides: [
-      { t: "Krok 1: Przeczytaj", p: "Opracowanie mówi: <b>o co chodzi, po co to jest, co zapamiętać</b> i daje własny przykład. Przełącznik <b>Prościej</b> tłumaczy to samo jak dla 12-latka. Podkreślone pojęcia klikasz, żeby zobaczyć definicję.", tip: "<b>📍 slajdy 12–15</b> mówi, gdzie w prezentacji prowadzącego jest ten temat. Tam zajrzyj po szczegóły z wykładu.", try: "Przełącz na Prościej i kliknij pojęcie", demo: demoRead },
+    { id: "material", ic: "review", title: "Materiał w 3 krokach", gain: "Umiesz czytać opracowanie, włączać prosty język, powtarzać fiszki i robić quiz z wyjaśnieniami.", slides: [
+      { t: "Krok 1: Przeczytaj", p: "Opracowanie mówi: <b>o co chodzi, po co to jest, co zapamiętać</b> i daje własny przykład. Przełącznik <b>Prościej</b> tłumaczy to samo jak dla 12-latka. Podkreślone pojęcia klikasz, żeby zobaczyć definicję.", tip: "<b>📍 slajdy 12–15</b> pokazuje, gdzie w prezentacji prowadzącego jest ten temat. Tam znajdziesz szczegóły z wykładu.", try: "Przełącz na Prościej i kliknij pojęcie", demo: demoRead },
       { t: "Krok 2: Fiszki", p: "Pytanie z przodu, odpowiedź z tyłu. Najpierw spróbuj odpowiedzieć w głowie, dopiero potem odwróć. Przejrzane fiszki same trafiają do Powtórek.", tip: "Fiszki są z naszego opracowania, więc pasują do tego, co przeczytałeś.", try: "Odwróć fiszkę tam i z powrotem", demo: demoFlash },
       { t: "Krok 3: Quiz z „Dlaczego?”", p: "Po każdej odpowiedzi widzisz, czy dobrze. Przycisk <b>Dlaczego?</b> wyjaśnia, skąd ta odpowiedź, także gdy trafiłeś. Najlepszy wynik zapisuje się w Twoich postępach.", tip: "Po quizie przycisk <b>Dalej</b> otwiera następny materiał z przedmiotu.", try: "Odpowiedz i otwórz „Dlaczego?”", demo: demoQuiz },
-      { t: "Widzisz błąd? Zgłoś go", p: "Przy fiszkach i pytaniach jest <b>⚑ Zgłoś błąd</b>. Zgłoszenie trafia do starosty, a poprawka od razu działa dla całego roku.", tip: "Każdy materiał ma też <b>Ściągawkę do druku</b>: jedna strona A4.", try: "Znajdź błąd i zgłoś go", demo: demoReport },
+      { t: "Widzisz błąd? Zgłoś go", p: "Przy fiszkach i pytaniach jest <b>⚑ Zgłoś błąd</b>. Zgłoszenie trafia do starosty, a po poprawce zmiana od razu działa dla całego roku.", tip: "Każdy materiał ma też <b>Ściągawkę do druku</b>: jedna strona A4.", try: "Znajdź błąd i zgłoś go", demo: demoReport },
     ], tour: [
       { go: () => { const m = gMat(); return m ? { view: "material", id: m.id, tab: "czytaj" } : subjRoute("ucz")(); }, sel: ".steps, .paywall, .tabpanel", title: "3 kroki materiału", text: () => gMat() ? "Przeczytaj, Fiszki, Quiz. Ten sam układ w każdym materiale." : "Tu będą materiały. Każdy ma te same 3 kroki: Przeczytaj, Fiszki, Quiz." },
       { sel: ".read .seg", title: "Normalnie | Prościej", text: "Jedno kliknięcie i ten sam temat masz wytłumaczony prostym językiem, z przykładami." },
       { sel: ".slide-ref, .term-link, .remember", title: "Odsyłacze i pojęcia", text: "📍 pokazuje slajdy prowadzącego, a podkreślone słowa otwierają definicję." },
     ] },
     { id: "powtorki", ic: "review", title: "Powtórki, które pamiętają za Ciebie", gain: "Wiesz, kiedy fiszki wracają i jak czytać mapę postępów.", slides: [
-      { t: "Fiszka wraca, zanim ją zapomnisz", p: "Oceniasz każdą fiszkę: <b>Nie pamiętam, Trudne, Pamiętam, Łatwe</b>. Im lepiej pamiętasz, tym później wraca: po 1, 3, 7, 14, 30 i 60 dniach. Przed zaliczeniem z przedmiotu każda karta wraca przynajmniej raz.", tip: "Dziennie dochodzi maks. 20 nowych kart. Na komputerze: <b>spacja</b> odwraca, klawisze <b>1–4</b> oceniają.", try: "Oceń fiszkę 3 razy", demo: demoLeitner },
+      { t: "Fiszka wraca, zanim ją zapomnisz", p: "Oceniasz każdą fiszkę: <b>Nie pamiętam, Trudne, Pamiętam, Łatwe</b>. Im lepiej pamiętasz, tym później wraca: po 1, 3, 7, 14, 30 i 60 dniach. Przed zaliczeniem z przedmiotu każda fiszka wraca przynajmniej raz.", tip: "Dziennie dochodzi maks. 20 nowych fiszek. Na komputerze: <b>spacja</b> odwraca, klawisze <b>1–4</b> oceniają.", try: "Oceń fiszkę 3 razy", demo: demoLeitner },
       { t: "Mapa postępów", p: "Każdy materiał to kwadrat. Kolor mówi, jak dobrze go umiesz: <b>quiz</b> liczy się w 40%, <b>fiszki</b> w 30%, <b>zadania</b> i <b>próbny test</b> po 15%. Zielony = umiesz (80+).", tip: "Przed kolokwium ekran Dziś podpowie, który słaby temat powtórzyć.", try: "Doprowadź temat do zielonego", demo: demoMap },
     ], tour: [
       { go: { view: "review" }, sel: ".rv-hero", title: "Dziś do powtórki", text: "Ile fiszek czeka i ile to minut. Przycisk Zacznij i lecisz." },
@@ -5444,13 +5444,13 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     ] },
     { id: "cwicz", ic: "tasks", title: "Ćwicz: zadania i quiz z całości", gain: "Rozwiążesz zadanie krok po kroku i dodasz cały przedmiot do powtórek.", slides: [
       { t: "Zadania krok po kroku", p: "W przedmiotach z obliczeniami są <b>rozwiązane zadania</b>: każdy krok odsłaniasz osobno, więc możesz najpierw spróbować sam. Potem są zadania do samodzielnego rozwiązania.", tip: "Wyniki liczbowe sprawdza wbudowany kalkulator, więc klucz odpowiedzi jest pewny.", try: "Odsłoń wszystkie kroki", demo: demoWorked },
-      { t: "Cały przedmiot do powtórek jednym kliknięciem", p: "W zakładce <b>Ćwicz</b> jest quiz z 15 losowych pytań ze wszystkich materiałów i przycisk, który dodaje <b>wszystkie fiszki przedmiotu</b> do Powtórek.", tip: "Nie zalejesz się kartami: dziennie dochodzi maks. 20 nowych, reszta czeka na kolejne dni.", try: "Dodaj fiszki do powtórek", demo: demoAddCards },
+      { t: "Cały przedmiot do powtórek jednym kliknięciem", p: "W zakładce <b>Ćwicz</b> jest quiz z 15 losowych pytań ze wszystkich materiałów i przycisk, który dodaje <b>wszystkie fiszki przedmiotu</b> do Powtórek.", tip: "Bez zalewu fiszek: dziennie dochodzi maks. 20 nowych, reszta czeka na kolejne dni.", try: "Dodaj fiszki do powtórek", demo: demoAddCards },
     ], tour: [
       { go: subjRoute("cwicz"), sel: ".practice, .tabpanel", title: "Quiz z całości i fiszki", text: "15 losowych pytań z całego przedmiotu i wszystkie fiszki do powtórek." },
-      { go: subjRoute("cwicz"), sel: '[data-tour="worked"]', title: "Rozwiązane zadania", text: "Przykłady krok po kroku z materiałów, w których się liczy." },
+      { go: subjRoute("cwicz"), sel: '[data-tour="worked"]', title: "Rozwiązane zadania", text: "Przykłady z obliczeniami rozwiązane krok po kroku." },
     ] },
     { id: "zaliczenie", ic: "grading", title: "Przed kolokwium", gain: "Ułożysz plan nauki dzień po dniu i zrobisz próbny test na czas.", slides: [
-      { t: "Plan dzień po dniu", p: "<b>Przedmiot → Zaliczenie → Przygotuj się.</b> Podajesz datę, a strona rozkłada tematy na dni: najpierw kluczowe (★) i te, które idą Ci słabo. Przedostatni dzień to próbny test.", tip: "Zakres i efekty uczenia się są z oficjalnego sylabusa, a nakład nauki przeliczony na dzień.", try: "Przesuń datę kolokwium", demo: demoPlan },
+      { t: "Plan dzień po dniu", p: "<b>Przedmiot → Zaliczenie → Przygotuj się.</b> Podajesz datę, a strona rozkłada tematy na dni: najpierw kluczowe (★) i te, które idą Ci słabo. Przedostatni dzień to próbny test.", tip: "Zakres i efekty uczenia się są z oficjalnego sylabusa, a godziny nauki rozłożone na dni.", try: "Przesuń datę kolokwium", demo: demoPlan },
       { t: "Próbny test na czas", p: "Test z timerem, jak na prawdziwym kolokwium: pytania zamknięte, otwarte i zadania. Pytania otwarte oceniasz sam według <b>rubryki</b>, punkt po punkcie.", tip: "Wynik testu wpada do mapy postępów, więc widzisz, które tematy jeszcze poprawić.", try: "Oceń odpowiedź według rubryki", demo: demoTest },
       { t: "Ściągawka na 1 stronę", p: "Najważniejsze z całego przedmiotu albo jednego materiału na <b>jednej kartce A4</b>. Drukujesz albo zapisujesz jako PDF i powtarzasz w autobusie.", tip: "Przycisk jest w zakładce Zaliczenie i przy każdym materiale.", demo: demoCheat },
     ], tour: [
@@ -5458,11 +5458,11 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       { go: subjRoute("zal"), sel: "#zal, .tabpanel .panel", title: "Kiedy i jak się zalicza", text: "Daty kolokwiów oraz zasady oceniania prosto z sylabusa." },
     ] },
     { id: "terminy", ic: "tasks", title: "Terminy i kalendarz w telefonie", gain: "Wiesz, co i na kiedy oddać, a terminy same pojawiają się w telefonie.", slides: [
-      { t: "Wszystko, co ma datę, w jednym miejscu", p: "Terminy są podzielone na <b>Zaliczenia, Zadania, Projekty, Formalności i Wydarzenia</b>, a w środku według pilności. Zrobione odhaczasz, a lista robi się krótsza.", tip: "Terminy dla całego roku wpisuje starosta, a zadania z Teams dochodzą same. „Data orientacyjna” znaczy, że prowadzący jeszcze jej nie potwierdził.", try: "Wybierz kategorię i odhacz zadanie", demo: demoTerms },
+      { t: "Wszystko, co ma datę, w jednym miejscu", p: "Terminy są podzielone na <b>Zaliczenia, Zadania, Projekty, Formalności i Wydarzenia</b>, a w każdej kategorii ułożone według pilności. Zrobione odhaczasz, a lista robi się krótsza.", tip: "Terminy dla całego roku wpisuje starosta, a zadania z Teams dochodzą same. „Data orientacyjna” znaczy, że prowadzący jeszcze jej nie potwierdził.", try: "Wybierz kategorię i odhacz zadanie", demo: demoTerms },
       { t: "Terminy same w Twoim telefonie", p: "<b>Do kalendarza w telefonie</b> daje Twój prywatny link. Dodajesz go raz, a zajęcia, kolokwia i zadania pojawiają się same, z przypomnieniem dzień wcześniej.", tip: "To subskrypcja: zmiany w planie i nowe terminy też dojdą same.", try: "Wybierz swój kalendarz", demo: demoPhoneCal },
     ], tour: [
       { go: { view: "terms" }, sel: ".tcats, .empty.locked", title: "Kategorie terminów", text: "Kliknij kafelek, żeby zobaczyć tylko zaliczenia, tylko zadania itd." },
-      { go: { view: "terms" }, sel: '[data-tour="phonecal"]', title: "Do kalendarza w telefonie", text: "Twój link do Google, Apple albo Outlooka." },
+      { go: { view: "terms" }, sel: '[data-tour="phonecal"]', title: "Do kalendarza w telefonie", text: "Twój link do Kalendarza Google, Apple albo Outlooka." },
     ] },
     { id: "kalendarz", ic: "calendar", title: "Kalendarz i Twoje wpisy", gain: "Widzisz cały miesiąc i dopisujesz własne plany nauki.", slides: [
       { t: "Miesiąc na jednym ekranie", p: "Zajęcia, zaliczenia (z wykrzyknikiem <b>!</b>), terminy roku i <b>Twoje własne wpisy</b>: nauka, spotkanie, przypomnienie. Na górze odliczanie do najbliższych kolokwiów.", tip: "Swoje wpisy widzisz tylko Ty. Możesz je dodawać także bez pełnego dostępu.", try: "Dodaj swój wpis do dnia", demo: demoCalendar },
@@ -5473,7 +5473,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     ] },
     { id: "wiecej", ic: "menu", title: "Skarby w zakładce Więcej", gain: "Korzystasz ze słowniczka, własnych plików i kalkulatora średniej.", slides: [
       { t: "Słowniczek angielski ↔ polski", p: "Wszystkie pojęcia ze wszystkich przedmiotów: termin po angielsku, tłumaczenie i jedno zdanie wyjaśnienia. Szukasz w obu językach.", tip: "Idealny, gdy na wykładzie po angielsku pada słowo, którego nie znasz.", try: "Znajdź pojęcie", demo: demoGlossary },
-      { t: "Twoje własne pliki", p: "W <b>Moich materiałach</b> wgrywasz własną prezentację albo notatki. Opracujemy je tak samo jak materiały roku: skrót, fiszki, quiz i prosty język, w Twoich sekcjach.", tip: "Widzisz je tylko Ty. Limit: 5 plików dziennie i 40 w miesiącu.", try: "Wgraj przykładowy plik", demo: demoMine },
+      { t: "Twoje własne pliki", p: "W <b>Moich materiałach</b> wgrywasz własną prezentację albo notatki. Opracujemy je tak samo jak materiały roku: opracowanie, fiszki, quiz i prosty język.", tip: "Widzisz je tylko Ty. Limit: 5 plików dziennie i 40 w miesiącu.", try: "Wgraj przykładowy plik", demo: demoMine },
       { t: "Kalkulator średniej", p: "W <b>Zasadach zaliczeń</b> wpisujesz oceny, a strona liczy ocenę z przedmiotu według reguły z sylabusa i średnią semestru: zwykłą i ważoną ECTS.", tip: "Oceny widzisz tylko Ty.", try: "Zmień jedną ocenę", demo: demoGrades },
       { t: "Co jeszcze jest w Więcej", p: "Program studiów z semestrami 1–6 (z porównaniem przedmiotów do wyboru), lektury z katalogiem biblioteki, szkolenia obowiązkowe i Twoje konto.", tip: "Tu też w każdej chwili wrócisz do tego przewodnika.", demo: demoWhere },
     ], tour: [
@@ -5516,11 +5516,11 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       h("div", { class: "stack", style: "gap:12px;min-width:0" },
         h("span", { class: "eyebrow", text: "Przewodnik po Skrócie BM" }),
         h("h1", { text: n === N ? "Znasz już całą stronę" : n ? "Wracamy tam, gdzie skończyłeś" : "Poznaj całą stronę krok po kroku" }),
-        h("p", { class: "g-lead", text: `${N} krótkich rozdziałów, ok. ${Math.round(minutes / 2)} minut razem. W każdym klikasz i sprawdzasz sam na przykładach, a na końcu pokażę Ci to samo na prawdziwych ekranach.` }),
+        h("p", { class: "g-lead", text: `${N} krótkich rozdziałów, ok. ${Math.round(minutes / 2)} minut razem. W każdym klikasz i sprawdzasz sam na przykładach, a na końcu pokażemy Ci to samo na prawdziwych ekranach.` }),
         h("div", { class: "row" },
           next ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "guide", id: next.id }) }, n ? `Kontynuuj: ${next.title}` : "Zacznij od rozdziału 1", " →")
             : h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "guide", id: "test" }) }, g.quiz >= 7 ? "Zrób test jeszcze raz" : "Sprawdź się: test", " →"),
-          h("button", { type: "button", class: "btn", onclick: () => startTour(QUICK, QUICK_OPTS()) }, "Szybki tour po ekranach · 1 min"))),
+          h("button", { type: "button", class: "btn", onclick: () => startTour(QUICK, QUICK_OPTS()) }, "Szybki przegląd ekranów · 1 min"))),
       gRing(n, N));
     const path = h("ol", { class: "g-path" },
       GUIDE.map((c, i) => {
@@ -5534,7 +5534,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       h("li", { class: "g-stop final" + (g.quiz >= 7 ? " done" : "") },
         h("button", { type: "button", class: "g-stop-btn", onclick: () => go({ view: "guide", id: "test" }) },
           h("span", { class: "g-num", "aria-hidden": "true", text: g.quiz >= 7 ? "★" : "?" }),
-          h("span", { class: "g-stop-txt" }, h("b", { text: "Sprawdź się" }), h("span", { text: g.quiz ? `Twój najlepszy wynik: ${g.quiz}/${GTEST.length}. Od 7 punktów odznaka Mistrz Skrótu BM.` : `${GTEST.length} pytań o stronę. Od 7 punktów odznaka Mistrz Skrótu BM.` })),
+          h("span", { class: "g-stop-txt" }, h("b", { text: "Sprawdź się" }), h("span", { text: g.quiz ? `Twój najlepszy wynik: ${g.quiz}/${GTEST.length}. Za 7 punktów dostajesz odznakę „Mistrz Skrótu BM”.` : `${GTEST.length} pytań o stronę. Od 7 punktów odznaka Mistrz Skrótu BM.` })),
           h("span", { class: "g-meta" }, icon("spark"), h("small", { text: "test" })))));
     const keys = h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Skróty klawiszowe" })),
       h("dl", { class: "g-keys" }, [["/", "wyszukiwarka, z każdego ekranu"], ["Spacja", "odwraca fiszkę w Powtórkach"], ["1 2 3 4", "ocena fiszki: nie pamiętam … łatwe"], ["← →", "karty w przewodniku"], ["Esc", "zamyka okno"]].map(([k, t]) => [h("dt", {}, ...k.split(" ").map((x) => h("kbd", { class: "kbd", text: x }))), h("dd", { text: t })])));
@@ -5542,9 +5542,9 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const FAQ = [
       ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} za rok (oba semestry) albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu.`],
       ["Skąd są materiały?", "Prezentacje prowadzących z Teams służą tylko jako lista tematów. Opracowanie, przykłady, fiszki i quizy piszemy od nowa, a przy temacie zostaje odsyłacz do slajdów."],
-      ["Czy postęp się zapisuje?", "Tak. Po zalogowaniu na koncie i na każdym urządzeniu. Bez logowania tylko w tej przeglądarce."],
+      ["Czy postęp się zapisuje?", "Tak. Po zalogowaniu zapisuje się na koncie, więc masz go na każdym urządzeniu. Bez logowania tylko w tej przeglądarce."],
       ["Nie widzę swoich zajęć albo terminów", "Sprawdź grupę w Więcej → Moja grupa. Terminy kolokwiów wymagają pełnego dostępu."],
-      ["Znalazłem błąd w materiale", "Kliknij ⚑ Zgłoś błąd przy fiszce albo pytaniu, albo napisz na skrotbm@outlook.com."],
+      ["Znalazłem błąd w materiale", "Kliknij ⚑ Zgłoś błąd przy fiszce lub pytaniu albo napisz na skrotbm@outlook.com."],
       ["Mail z kodem nie przychodzi", "Zajrzyj do spamu i zakładki Oferty. Kod jest ważny godzinę; możesz wysłać nowy."],
     ];
     const faq = h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Częste pytania" })),
@@ -5559,7 +5559,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const sl = ch.slides[k], key = ch.id + ":" + k, last = k === ch.slides.length - 1;
     const tried = (j) => { const s = ch.slides[j]; return !s.try || G.tried.has(ch.id + ":" + j) || (s.done && s.done()); };
     const tryN = ch.slides.filter((s) => s.try).length, doneN = ch.slides.filter((x, j) => x.try && tried(j)).length;
-    const trycountText = (d, n) => `Ćwiczenia w tym rozdziale: ${d}/${n}${d < n ? " · do pominiętych wrócisz kropkami u góry" : " ✓"}`;
+    const trycountText = (d, n) => `Ćwiczenia w tym rozdziale: ${d}/${n}${d < n ? " · do pominiętych wrócisz, klikając kropki u góry" : " ✓"}`;
     const tryEl = sl.try ? h("span", { class: "g-try" + (tried(k) ? " ok" : ""), "data-k": key, text: (tried(k) ? "Zrobione: " : "Spróbuj: ") + sl.try }) : null;
     const ok = () => {
       if (G.tried.has(key)) return;
@@ -5617,8 +5617,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("section", { class: "g-result" + (pass ? " pass" : "") },
           pass ? h("div", { class: "g-badge", "aria-hidden": "true" }, h("img", { src: "icons/emblem.png", alt: "", width: "70", height: "80" })) : null,
           h("span", { class: "eyebrow", text: pass ? "Odznaka zdobyta" : "Prawie" }),
-          h("h2", { class: "num", text: `${score}/${GTEST.length} · ${pass ? "Mistrz Skrótu BM" : "jeszcze chwila"}` }),
-          h("p", { text: pass ? "Znasz stronę lepiej niż większość roku. Teraz wykorzystaj to do nauki." : "Przejrzyj rozdziały z pytań poniżej i spróbuj jeszcze raz. Od 7 punktów jest odznaka." }),
+          h("h2", { class: "num", text: `${score}/${GTEST.length} · ${pass ? "Mistrz Skrótu BM" : "prawie"}` }),
+          h("p", { text: pass ? "Znasz stronę lepiej niż większość roku. Teraz wykorzystaj to do nauki." : "Przejrzyj rozdziały, do których odsyłają pytania poniżej, i spróbuj jeszcze raz. Od 7 punktów jest odznaka." }),
           h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "home" }) }, "Na ekran Dziś →"), h("button", { type: "button", class: "btn", onclick: () => { G.test = null; render(); } }, "Jeszcze raz"))),
         wrong.length ? h("section", { class: "stack", style: "gap:8px" }, h("h2", { text: "Do powtórki" }),
           h("div", { class: "list" }, wrong.map(([q]) => { const c = GUIDE.find((x) => x.id === q.ch); return h("button", { type: "button", class: "item", onclick: () => go({ view: "guide", id: c.id }) }, h("span", { class: "t", text: q.q }), h("span", { class: "m", text: `Dobra odpowiedź: ${q.o[q.a]} · ${q.why}` }), h("span", { class: "r", text: `${c.title} →` })); }))) : null];
@@ -5651,13 +5651,13 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
 
   // ================= podświetlanie prawdziwych ekranów (szybki tour i „Pokaż mi na stronie”) =================
   const QUICK = [
-    { title: "Cześć! Skrót BM w minutę", text: "Pokażę Ci sześć zakładek. Każda odpowiada na jedno pytanie: co dziś, czego się uczyć, co powtórzyć, co na kiedy.", art: "intro" },
-    { go: { view: "home" }, sel: "section.today", title: "Najpierw Twoja grupa", text: () => S.group ? `Masz ustawioną grupę ${S.group}. Zmienisz ją w Więcej → Moja grupa.` : "Wybierz grupę i podgrupę lab, a zajęcia i terminy pokażą tylko to, co Cię dotyczy.", art: "group" },
-    { go: { view: "home" }, sel: "section.now", title: "Dziś: od tego zaczynasz", text: "Karta „Teraz zrób to” sama wybiera najważniejszą rzecz na teraz. Jeden przycisk i działasz.", art: "hub" },
-    { go: { view: "materials" }, nav: "materials", title: "Przedmioty", text: () => "Wszystkie materiały: skrót, wersja prostym językiem, fiszki i quiz. Plus wyszukiwarka" + (TOUCH ? "." : " (skrót /)."), art: "books" },
-    { go: { view: "review" }, nav: "review", title: "Powtórki", text: "Fiszki wracają same, zanim je zapomnisz. Pod spodem mapa, co już umiesz.", art: "tabs" },
+    { title: "Cześć! Skrót BM w minutę", text: "Pokażę Ci sześć zakładek. Każda odpowiada na inne pytanie, np. co dziś, czego się uczyć, co powtórzyć, co na kiedy.", art: "intro" },
+    { go: { view: "home" }, sel: "section.today", title: "Najpierw Twoja grupa", text: () => S.group ? `Masz ustawioną grupę ${S.group}. Zmienisz ją w Więcej → Moja grupa.` : "Wybierz grupę i podgrupę lab, a w zajęciach i terminach zobaczysz tylko to, co Cię dotyczy.", art: "group" },
+    { go: { view: "home" }, sel: "section.now", title: "Dziś: od tego zaczynasz", text: "Karta „Teraz zrób to” sama wybiera to, co w tej chwili najważniejsze. Klikasz jeden przycisk i działasz.", art: "hub" },
+    { go: { view: "materials" }, nav: "materials", title: "Przedmioty", text: () => "Wszystkie materiały: skrót, wersja w prostym języku, fiszki i quiz. Do tego wyszukiwarka" + (TOUCH ? "." : " (klawisz /)."), art: "books" },
+    { go: { view: "review" }, nav: "review", title: "Powtórki", text: "Fiszki wracają same, zanim je zapomnisz. Pod spodem mapa tego, co już umiesz.", art: "tabs" },
     { go: { view: "terms" }, nav: "terms", title: "Terminy", text: "Kolokwia, zadania, projekty i formalności, ułożone według pilności.", art: "tasks" },
-    { go: { view: "calendar" }, nav: "calendar", title: "Kalendarz", text: "Zajęcia, zaliczenia i Twoje własne wpisy. Można go też mieć w telefonie.", art: "cal" },
+    { go: { view: "calendar" }, nav: "calendar", title: "Kalendarz", text: "Zajęcia, zaliczenia i Twoje własne wpisy. Możesz go też dodać do telefonu.", art: "cal" },
     { go: { view: "more" }, nav: "more", title: "Więcej", text: "Słowniczek EN–PL, Twoje pliki, zasady zaliczeń z kalkulatorem średniej, konto.", art: "grade" },
     { title: "To była wersja w minutę", text: "Pełny przewodnik ma 9 krótkich rozdziałów z ćwiczeniami na przykładach i test na koniec. Zawsze znajdziesz go w Więcej.", art: "done" },
   ];
@@ -5904,7 +5904,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const pairs = await loadContents(ms);
     const keys = pairs.flatMap(([m, c]) => (c?.flashcards || []).map((f) => cardKey(m.id, f)));
     const n = srsAdd(keys);
-    toast(n ? `Dodano ${n} ${plural(n, "kartę", "karty", "kart")}. Codziennie wchodzi do ${NEW_PER_DAY} nowych.` : "Wszystkie fiszki z tego przedmiotu już są w powtórkach.");
+    toast(n ? `Dodano ${n} ${plural(n, "fiszkę", "fiszki", "fiszek")}. Każdego dnia dochodzi najwyżej ${NEW_PER_DAY} nowych.` : "Wszystkie fiszki z tego przedmiotu już są w powtórkach.");
     render();
   }
 
@@ -5986,7 +5986,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       const tomorrow = Object.values(srsAll()).filter((v) => v[0] > 0 && v[1] === t + 1).length;
       return [head, h("div", { class: "box rv-done" },
         h("h2", { text: "Zrobione." }),
-        h("p", { class: "num", text: `Powtórzone: ${R.done} ${plural(R.done, "karta", "karty", "kart")}${R.again ? ` · do poprawki było ${R.again}` : ""}. Jutro ${tomorrow} ${plural(tomorrow, "karta", "karty", "kart")}.` }),
+        h("p", { class: "num", text: `Powtórzone: ${R.done} ${plural(R.done, "fiszka", "fiszki", "fiszek")}${R.again ? ` · do poprawki było ${R.again}` : ""}. Jutro ${tomorrow} ${plural(tomorrow, "fiszka", "fiszki", "fiszek")}.` }),
         streakN() ? h("p", { class: "muted", text: `Seria: ${streakN()} ${plural(streakN(), "dzień", "dni", "dni")} z rzędu.` }) : null,
         h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "review" }) }, "Gotowe"), h("button", { type: "button", class: "btn", onclick: () => go({ view: "home" }) }, "Na ekran Dziś")))];
     }
@@ -5994,7 +5994,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return [head, h("div", { class: "fc-wrap rv" },
       h("div", { class: "progress", "aria-hidden": "true", style: "width:100%;max-width:560px" }, h("i", { style: `width:${(100 * R.pos) / R.cards.length}%` })),
       h("div", { class: "row muted num", style: "font-size:.86rem" }, `Karta ${R.pos + 1} z ${R.cards.length} · ${card.label || ""}`),
-      h("button", { type: "button", class: "fc" + (R.flipped ? " flipped" : ""), "aria-label": R.flipped ? "Odpowiedź" : "Pytanie, kliknij aby zobaczyć odpowiedź", onclick: rvFlip },
+      h("button", { type: "button", class: "fc" + (R.flipped ? " flipped" : ""), "aria-label": R.flipped ? "Odpowiedź" : "Pytanie. Kliknij, żeby zobaczyć odpowiedź", onclick: rvFlip },
         h("div", { class: "fc-inner" }, h("div", { class: "fc-face" }, h("span", { class: "eyebrow", text: "Pytanie" }), h("span", { text: card.q })), h("div", { class: "fc-face back" }, h("span", { class: "eyebrow", text: "Odpowiedź" }), h("span", { text: card.a })))),
       R.flipped
         ? h("div", { class: "rv-grades" }, [["Nie pamiętam", 0, "again"], ["Trudne", 1, "hard"], ["Pamiętam", 2, "good"], ["Łatwe", 3, "easy"]].map(([l, g, c]) =>
@@ -6124,7 +6124,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       t.def ? h("p", {}, h("span", { class: "chip plain", style: "margin-right:6px;font-size:.72rem", title: defLang(t.def) === "PL" ? "Opis po polsku" : "Opis po angielsku", text: defLang(t.def) }), firstSentence(t.def, 260)) : null,
       h("div", { class: "gl-foot" },
         t.s.map((sid) => { const s = subjectById(sid); return s ? h("span", { class: "gl-subj" }, h("i", { class: "dot", style: `--c:${s.color}` }), s.pl) : null; }),
-        m ? h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: m.id, tab: "pojecia" }) }, "w materiale →") : t.syl ? h("span", { class: "chip sun", title: "Pojęcie z tematów sylabusa; definicja Skrót BM", text: "z sylabusa" }) : null));
+        m ? h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: m.id, tab: "pojecia" }) }, "w materiale →") : t.syl ? h("span", { class: "chip sun", title: "Pojęcie z tematów sylabusa, definicję napisał Skrót BM", text: "z sylabusa" }) : null));
   }
   function viewGlossary() {
     if (!GL.terms && !GL.loading && S.ready) loadGlossary().then(render);
@@ -6151,9 +6151,9 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     fill();
     const sidTerms = sid ? GL.terms.filter((t) => t.s.includes(sid)) : [];
     return [head,
-      GL.partial ? h("div", { class: "notice", style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap" }, h("span", { text: "Widzisz pojęcia z darmowych próbek. Pełny słowniczek ze wszystkich materiałów jest w pełnej wersji." }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null,
+      GL.partial ? h("div", { class: "notice", style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap" }, h("span", { text: "Widzisz pojęcia z darmowych próbek. Słowniczek ze wszystkich materiałów masz w pełnym dostępie." }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null,
       h("div", { class: "gl-search" }, input, h("div", { class: "row", style: "justify-content:space-between" }, countEl,
-        sid && sidTerms.length ? h("button", { type: "button", class: "btn small", onclick: () => { if (needPaid("Fiszki ze słowniczka")) return; const n = srsAdd(sidTerms.map((t) => glKey(sid, t.en))); toast(n ? `Dodano ${n} ${plural(n, "kartę", "karty", "kart")} EN → PL do powtórek.` : "Te pojęcia już są w powtórkach."); render(); } }, lockLabel("Fiszki EN → PL z tego przedmiotu")) : null)),
+        sid && sidTerms.length ? h("button", { type: "button", class: "btn small", onclick: () => { if (needPaid("Fiszki ze słowniczka")) return; const n = srsAdd(sidTerms.map((t) => glKey(sid, t.en))); toast(n ? `Dodano ${n} ${plural(n, "fiszkę", "fiszki", "fiszek")} EN → PL do powtórek.` : "Te pojęcia już są w powtórkach."); render(); } }, lockLabel("Fiszki EN → PL z tego przedmiotu")) : null)),
       chips, box];
   }
 
@@ -6197,8 +6197,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("span", { text: SRC_LABEL[k] }),
         h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${Math.round(100 * (ts.src[k] || 0))}%` })),
         h("span", { class: "num muted", text: ts.src[k] == null ? "—" : Math.round(100 * ts.src[k]) + "%" })))),
-      h("p", { class: "foot-note", text: "Wynik łączy quiz (40%), fiszki w powtórkach (30%), zadania (15%) i próbny test (15%). Brakujące źródła nie zaniżają wyniku." }),
-      locked(m) ? h("div", { class: "row" }, h("span", { class: "lock", text: "🔒 pełna wersja" }), h("button", { type: "button", class: "btn primary small", onclick: () => { close(); window.skrot?.buy(); } }, "Kup dostęp"))
+      h("p", { class: "foot-note", text: "Wynik łączy quiz (40%), fiszki w powtórkach (30%), zadania (15%) i próbny test (15%). Nieruszone elementy nie obniżają wyniku." }),
+      locked(m) ? h("div", { class: "row" }, h("span", { class: "lock", text: "🔒 pełny dostęp" }), h("button", { type: "button", class: "btn primary small", onclick: () => { close(); window.skrot?.buy(); } }, "Kup dostęp"))
         : h("div", { class: "row" },
           h("button", { type: "button", class: "btn primary", onclick: () => { close(); go({ view: "material", id: m.id, tab: weakestTab(m, ts) }); } }, "Powtórz"),
           h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "material", id: m.id, tab: "quiz" }); } }, "Quiz"),
@@ -6325,7 +6325,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       W.length > 1 ? h("div", { class: "gl-chips" }, W.map((x, i) => h("button", { type: "button", class: "fchip", "aria-pressed": String(i === st.i), onclick: () => { S.route.wk = { i, shown: 0, sim: {} }; render(); } },
         `Przykład ${i + 1}`, (x.similar || []).every((_, j) => S.progress?.ex?.[`${m.id}:${x.id}:${j}`]?.[0]) && x.similar?.length ? " ✓" : ""))) : null,
       h("section", { class: "example wk-ex" },
-        h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start" }, h("span", { class: "eyebrow", text: "Przerobiony przykład" }), slideRef(m.id, w)),
+        h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start" }, h("span", { class: "eyebrow", text: "Przykład z rozwiązaniem" }), slideRef(m.id, w)),
         h("div", { class: "wk-task" }, inline(w.task)),
         steps.length ? h("ol", { class: "wk-steps" }, steps.slice(0, st.shown).map((x) => h("li", {},
           h("div", { class: "wk-do" }, inline(x.do || "")),
@@ -6337,7 +6337,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
           !all && steps.length > 1 ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = steps.length; render(); } }, "Pokaż całe rozwiązanie") : null,
           all && st.shown ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = 0; render(); } }, "Jeszcze raz od początku") : null)),
       w.similar?.length ? h("section", { class: "stack" },
-        h("h3", { text: "Teraz ty" }),
+        h("h3", { text: "Teraz Ty" }),
         h("p", { class: "muted", style: "font-size:.92rem", text: "Te same kroki, inne liczby. Wpisz wynik; podpowiedź i kolejne kroki odsłaniasz tylko wtedy, gdy utkniesz." }),
         w.similar.map((s, j) => simBox(m, w, s, j, st, doneCount(j)))) : null,
       h("div", { class: "row" }, reportButton(m.id, "zadanie", st.i, w.task)));
@@ -6367,7 +6367,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       h("div", { class: "row" },
         !z.open && z.ok !== true && z.hints < maxHints ? h("button", { type: "button", class: "btn ghost small", onclick: () => { z.hints++; render(); } }, z.hints === 0 && s.hint ? "Podpowiedź" : "Pokaż następny krok") : null,
         !z.open && z.ok !== true ? h("button", { type: "button", class: "btn ghost small", onclick: () => { z.open = true; if (!numeric) z.self = true; render(); } }, numeric ? "Pokaż rozwiązanie" : "Pokaż odpowiedź") : null,
-        !numeric && z.open && z.self !== "done" ? [h("span", { class: "muted", style: "font-size:.86rem", text: "Miałeś dobrze?" }),
+        !numeric && z.open && z.self !== "done" ? [h("span", { class: "muted", style: "font-size:.86rem", text: "Udało się?" }),
           h("button", { type: "button", class: "btn small", onclick: () => { exRecord(key, true, z.hints > 0); z.self = "done"; render(); } }, "Tak"),
           h("button", { type: "button", class: "btn small ghost", onclick: () => { exRecord(key, false, true); z.self = "done"; render(); } }, "Nie")] : null));
   }
@@ -6441,7 +6441,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   const itemMax = (it) => it.type === "abcd" ? it.p || 1 : it.type === "case" ? (it.sub || []).reduce((a, s) => a + rubricMax(s.rubric), 0) : rubricMax(it.rubric);
 
   async function startExam(sid, part) {
-    if (needPaid("Próbny test przed kolokwium")) return;
+    if (needPaid("Próbny test przed zaliczeniem")) return;
     S.route.building = true; exRender();
     try {
       const { tmpl, items } = await buildExam(sid, part);
@@ -6561,7 +6561,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
           h("section", { class: "panel" },
             h("div", { class: "panel-head" }, h("h2", { text: "Plan dzień po dniu" }), ed ? h("span", { class: "muted num", style: "font-size:.86rem", text: `${scopeOf(sid, part).length} ${plural(scopeOf(sid, part).length, "temat", "tematy", "tematów")} w zakresie` }) : null),
             sylLoadLine(sid, part, ed),
-            !PAID() ? lockBox("Plan nauki na każdy dzień do kolokwium i próbny test z timerem są w pełnej wersji.")
+            !PAID() ? lockBox("Plan nauki na każdy dzień do zaliczenia i próbny test z timerem masz w pełnym dostępie.")
               : !ed ? h("div", { class: "empty small", text: "Wpisz datę zaliczenia powyżej." })
               : !plan.length ? h("div", { class: "empty small", text: "Zaliczenie jest dziś. Zrób próbny test na rozgrzewkę albo przejrzyj ściągawkę." })
               : h("ol", { class: "plan-days" }, plan.map((d) => h("li", { class: d.k === todayKey() ? "today" : "" },
@@ -6577,7 +6577,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
           (set.att || []).length ? h("section", { class: "panel" }, h("h2", { text: "Twoje podejścia" }),
             h("div", { class: "att-list" }, [...set.att].reverse().map((a) => h("div", { class: "att" }, h("span", { class: "num", text: fmtDate(a.at) }), h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${a.pct}%` })), h("span", { class: "chip " + (a.pct >= (tmpl.pass || 50) ? "good" : "bad"), text: `${a.pct}% · ${a.pts}/${a.max} pkt` }))))) : null),
         h("div", { class: "stack", style: "min-width:0;gap:20px" },
-          key.some((x) => x.m.core) ? h("section", { class: "panel" }, h("h2", { text: "Najważniejsze tematy" }), h("p", { class: "muted", style: "font-size:.86rem;margin:0", text: "★ oznaczone przez starostę jako kluczowe, potem Twoje najsłabsze." }),
+          key.some((x) => x.m.core) ? h("section", { class: "panel" }, h("h2", { text: "Najważniejsze tematy" }), h("p", { class: "muted", style: "font-size:.86rem;margin:0", text: "★ najpierw tematy wskazane przez starostę, potem Twoje najsłabsze." }),
             h("div", { class: "list" }, key.map(({ m, ts, why }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: isLesson(m) ? "lekcja" : "skrot" }) },
               h("span", { class: "t", text: m.title || m.fileName }), h("span", { class: "m", text: why === "kluczowy" ? "starosta oznaczył jako kluczowy" : why === "słabo" ? "słabo wychodzi w quizach i fiszkach" : "jeszcze nieruszony" }),
               h("span", { class: "r" }, stateChip(ts)))))) : null,
@@ -6634,7 +6634,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const shown = (v) => (String(v || "").trim() ? h("div", { class: "your" }, String(v)) : h("div", { class: "your empty-ans", text: "bez odpowiedzi" }));
     return [h("div", { class: "exam-run" },
       h("div", { class: "exam-bar" }, h("div", { style: "min-width:0" }, h("b", { text: "Sprawdzanie" }), h("span", { class: "muted", text: " · " + s.pl })), totalEl, h("button", { type: "button", class: "btn primary small", onclick: finishGrading }, "Pokaż wynik")),
-      h("p", { class: "muted", style: "font-size:.9rem;max-width:64ch", text: "Test wyboru sprawdziłem sam. Przy pytaniach otwartych i zadaniach porównaj swoją odpowiedź z kluczem i zaznacz elementy, które w niej są. Bądź uczciwy: prowadzący też będzie." }),
+      h("p", { class: "muted", style: "font-size:.9rem;max-width:64ch", text: "Pytania wyboru są już sprawdzone. Przy pytaniach otwartych i zadaniach porównaj swoją odpowiedź z kluczem i zaznacz, co w niej jest. Oceniaj uczciwie, prowadzący też tak zrobi." }),
       run.items.map((it) => {
         if (it.type === "abcd") {
           const a = run.ans[it.id], ok = a === it.correct;
@@ -6671,13 +6671,13 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("span", { class: "eyebrow", text: "Wynik próbnego testu · " + s.pl }),
         h("div", { class: "row", style: "align-items:baseline" }, h("span", { class: "score num", text: r.pct + "%" }), h("span", { class: "num", text: `${r.got}/${r.max} pkt` }), h("span", { class: "chip " + (r.pct >= pass ? "good" : "bad"), text: r.pct >= pass ? `zaliczone (próg ${pass}%)` : `poniżej progu ${pass}%` })),
         h("p", { class: "muted", text: r.pct >= pass ? "Dobrze. Przed zaliczeniem powtórz najsłabsze tematy z listy poniżej." : "Jeszcze trochę pracy. Zacznij od tematów na górze listy, potem zrób nowy test (pytania się nie powtórzą)." })),
-      rows.length ? h("section", { class: "panel" }, h("h2", { text: "Wynik per temat" }),
+      rows.length ? h("section", { class: "panel" }, h("h2", { text: "Wynik według tematów" }),
         h("div", { class: "att-list" }, rows.map((x) => h("div", { class: "att topic-res" },
           h("button", { type: "button", class: "link", style: "text-align:left;color:var(--ink)", onclick: () => go({ view: "material", id: x.m.id, tab: weakestTab(x.m, topicScore(x.m)) }) }, x.m.title || x.m.fileName),
           h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${x.pct}%` })),
           h("span", { class: "chip " + (x.pct >= 80 ? "good" : x.pct >= 50 ? "sun" : "bad"), text: `${x.g}/${x.mx}` }))))) : null,
       Object.keys(r.ep || {}).length ? h("section", { class: "panel" }, h("h2", { text: "Wynik według efektów uczenia się" }),
-        h("p", { class: "muted", style: "font-size:.88rem", text: "Sylabus opisuje, co masz umieć po przedmiocie. Tak wypadłeś w każdym z tych punktów; najsłabsze są na górze." }),
+        h("p", { class: "muted", style: "font-size:.88rem", text: "Sylabus opisuje, co masz umieć po przedmiocie. Oto Twój wynik w każdym z tych punktów; najsłabsze są na górze." }),
         h("div", { class: "att-list" }, Object.entries(r.ep).map(([k, [g, mx]]) => ({ k, g, mx, pct: mx ? Math.round((100 * g) / mx) : 0 })).sort((a, b) => a.pct - b.pct).map((x) => h("div", { class: "att topic-res" },
           h("span", {}, h("b", { class: "num", text: x.k + " " }), h("span", { lang: "en", style: "font-size:.9rem", text: epText(s.id, x.k) })),
           h("span", { class: "pm-bar", "aria-hidden": "true" }, h("i", { style: `width:${x.pct}%` })),
@@ -6709,7 +6709,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     if (!compact && (c.tldr || L?.intro)) out.push(h("p", { class: "ch-lead", text: firstSentence(c.tldr || L.intro, 320) }));
     if (notes.length) out.push(h("div", { class: "ch-sec" }, compact ? null : h("h3", { text: "Co zapamiętać" }), h("ul", {}, notes.map((n) => h("li", {}, inline(n))))));
     if (formulas.length) out.push(h("div", { class: "ch-sec" }, h("h3", { text: /wzory/i.test(L?.cheatTitle || "wzory") ? "Wzory" : "Modele i pojęcia" }), h("div", { class: "ch-formulas" }, formulas.map((f) => h("div", {}, inline(f))))));
-    if (concepts.length) out.push(h("div", { class: "ch-sec" }, h("h3", { text: "Pojęcia EN – PL" }), h("dl", {}, concepts.flatMap((x) => [h("dt", {}, h("b", { text: x.term }), x.pl ? h("span", { text: " · " + x.pl }) : null), h("dd", { text: firstSentence(x.definition, 140) })]))));
+    if (concepts.length) out.push(h("div", { class: "ch-sec" }, h("h3", { text: "Pojęcia EN → PL" }), h("dl", {}, concepts.flatMap((x) => [h("dt", {}, h("b", { text: x.term }), x.pl ? h("span", { text: " · " + x.pl }) : null), h("dd", { text: firstSentence(x.definition, 140) })]))));
     if (!compact && (w || lex)) {
       const ex = w ? { task: w.task, steps: (w.steps || []).map((s) => [s.do, s.result].filter(Boolean).join(": ")), answer: w.answer } : { task: lex.task, steps: lex.steps || [], answer: lex.answer };
       out.push(h("div", { class: "ch-sec" }, h("h3", { text: "Przykład" }), h("p", {}, inline(ex.task)), ex.steps.length ? h("ol", {}, ex.steps.slice(0, 5).map((s) => h("li", {}, inline(s)))) : null, ex.answer ? h("p", {}, h("b", { text: "Wynik: " }), inline(ex.answer)) : null));
@@ -6736,13 +6736,13 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     else {
       const concepts = glossaryFrom(pairs).slice(0, 14);
       body = [...pairs.map(([m, c]) => h("div", { class: "ch-mat" }, h("h3", { text: m.title || m.fileName }), cheatBlocks(m, c, true))),
-        concepts.length ? h("div", { class: "ch-sec" }, h("h3", { text: "Pojęcia EN – PL" }), h("dl", {}, concepts.flatMap((x) => [h("dt", {}, h("b", { text: x.en }), x.pl ? h("span", { text: " · " + x.pl }) : null), h("dd", { text: firstSentence(x.def, 120) })]))) : null];
+        concepts.length ? h("div", { class: "ch-sec" }, h("h3", { text: "Pojęcia EN → PL" }), h("dl", {}, concepts.flatMap((x) => [h("dt", {}, h("b", { text: x.en }), x.pl ? h("span", { text: " · " + x.pl }) : null), h("dd", { text: firstSentence(x.def, 120) })]))) : null];
     }
     return [h("div", { class: "noprint stack", style: "gap:10px" }, back,
         h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => window.print() }, "Drukuj albo zapisz PDF"),
           h("span", { class: "muted", style: "font-size:.88rem", text: "W oknie drukowania wybierz „Zapisz jako PDF”, żeby mieć plik." }))),
       h("article", { class: "cheat-page" + (one ? "" : " subj") },
-        h("header", { class: "ch-top" }, h("span", { class: "ch-brand", text: "Skrót BM" }), h("span", { text: s?.pl || "Moje materiały" }), h("b", { text: one ? one.title || one.fileName : "Cały przedmiot: jedna strona przed kolokwium" })),
+        h("header", { class: "ch-top" }, h("span", { class: "ch-brand", text: "Skrót BM" }), h("span", { text: s?.pl || "Moje materiały" }), h("b", { text: one ? one.title || one.fileName : "Cały przedmiot: jedna strona przed zaliczeniem" })),
         h("div", { class: "ch-cols" }, body),
         h("footer", { class: "ch-foot" }, `${email ? email + " · " : ""}${fmtKey(todayKey())} · skrotbm.pl · do nauki, nie do korzystania na zaliczeniu`))];
   }
@@ -6914,7 +6914,7 @@ Spread the questions so that together they check as many of these outcomes as th
     const bDone = bank ? new Set(bank.done || []).size : null;
     return h("section", { class: "panel" },
       h("h2", { text: "Zadania krok po kroku i pytania do próbnych testów" }),
-      h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "AI pisze je z naszego opracowania, nie ze slajdów. Wyniki liczbowe są sprawdzane automatycznie wzorem obliczeniowym; zadania ze złym kluczem odpadają. Pytania wyboru do testów biorą się z istniejących quizów." }),
+      h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "AI pisze je z naszego opracowania, nie ze slajdów. Wyniki liczbowe sprawdzamy automatycznie wzorem; zadania ze złym kluczem odpadają. Pytania wyboru do testów pochodzą z istniejących quizów." }),
       h("div", { class: "row" },
         h("select", { class: "input", style: "max-width:360px", "aria-label": "Przedmiot", onchange: (e) => { GEN.sid = e.target.value; GEN.log = []; render(); } }, withMats.map((s) => h("option", { value: s.id, selected: s.id === GEN.sid ? true : null }, s.pl + (CALC_SUBJECTS.has(s.id) ? " · z liczeniem" : "")))),
         h("div", { class: "gl-chips" },

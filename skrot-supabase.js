@@ -232,7 +232,7 @@
     if (name === "db") return (db ||= makeDb());
     if (skrot.state !== "in") {
       if (name === "user") return { id: async () => null, canEdit: async () => false, me: async () => ({ name: "" }), profiles: async () => ({}) };
-      throw Object.assign(new Error("Niezalogowany"), { code: "not_signed_in" });
+      throw Object.assign(new Error("Nie zalogowano"), { code: "not_signed_in" });
     }
     if (name === "user") return {
       id: async () => skrot.uid,
@@ -241,7 +241,7 @@
       profiles: async () => ({}),
     };
     // Starosta: pełne AI. Osoby z pełnym dostępem: AI tylko do „Moich materiałów”, z biletem (limit w bazie).
-    if (name === "sample") { if (!skrot.admin && !skrot.paid) throw Object.assign(new Error("AI z pełnym dostępem"), { code: "not_granted" }); return makeSample(); }
+    if (name === "sample") { if (!skrot.admin && !skrot.paid) throw Object.assign(new Error("AI masz w pełnym dostępie"), { code: "not_granted" }); return makeSample(); }
     throw new Error("Nieznana usługa: " + name);
   };
 
@@ -325,7 +325,7 @@
       const p = pending.get();
       body.replaceChildren(
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
-        el("p", { class: "muted", style: "margin:0", text: reason || "Bez hasła: wpisz swój e-mail, a my wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który został kupiony." }),
+        el("p", { class: "muted", style: "margin:0", text: reason || "Bez hasła: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono." }),
         form,
         ...[
           p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
@@ -344,7 +344,7 @@
   // Komunikat, gdy baza nie odpowiada.
   skrot.noticeText = () => ({
     loading: "Łączę z bazą…",
-    error: "Nie mogę połączyć się z bazą. Sprawdź internet i odśwież stronę.",
+    error: "Brak połączenia z serwerem. Spróbuj za chwilę. Sprawdź internet i odśwież stronę.",
   })[skrot.state] || "";
 
   // „2027-10-24” → „24 października 2027”
@@ -374,7 +374,7 @@
   };
   const goPay = (plan) => {
     const link = CONFIG.plans[plan]?.link;
-    if (!link) return info("Płatności startują wkrótce", "Zakup dostępu będzie możliwy za chwilę. Spróbuj ponownie później albo napisz na skrotbm@outlook.com.");
+    if (!link) return info("Płatności startują wkrótce", "Kupno dostępu ruszy wkrótce. Spróbuj później albo napisz na skrotbm@outlook.com.");
     const u = new URL(link);
     u.searchParams.set("client_reference_id", skrot.uid);
     u.searchParams.set("prefilled_email", skrot.email);
@@ -438,7 +438,7 @@
   }
   async function afterReady() {
     if (linkError && skrot.state === "out") {
-      skrot.openLogin("Ten link już nie działa. Logujemy się teraz kodem: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod.");
+      skrot.openLogin("Ten link już nie działa. Teraz logujesz się kodem: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod.");
       return;
     }
     const params = new URLSearchParams(location.search);

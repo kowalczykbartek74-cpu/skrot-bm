@@ -43,11 +43,11 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 <table>
 <thead><tr><th>Cel</th><th>Dane</th><th>Podstawa (RODO)</th></tr></thead>
 <tbody>
-<tr><td>Logowanie (link w mailu) i przypisanie wykupionego dostępu</td><td>adres e-mail, identyfikator konta</td><td>wykonanie umowy (art. 6 ust. 1 lit. b)</td></tr>
+<tr><td>Logowanie (kod z maila) i przypisanie wykupionego dostępu</td><td>adres e-mail, identyfikator konta</td><td>wykonanie umowy (art. 6 ust. 1 lit. b)</td></tr>
 <tr><td>Sprzedaż i realizacja płatnego dostępu</td><td>data i kwota zakupu, identyfikator płatności, data końca dostępu</td><td>wykonanie umowy (lit. b)</td></tr>
 <tr><td>Obowiązki podatkowe i rozliczeniowe</td><td>dane o płatnościach</td><td>obowiązek prawny (lit. c)</td></tr>
 <tr><td>Działanie Serwisu: postęp nauki, wyniki quizów, wybrana grupa zajęciowa</td><td>dane wpisane lub wygenerowane przez Ciebie w aplikacji</td><td>wykonanie umowy (lit. b)</td></tr>
-<tr><td>Moje materiały: opracowanie plików, które wgrywasz</td><td>tekst wgranego pliku (wysyłany do AI tylko na czas opracowania, nie zapisujemy go), gotowe opracowanie, fiszki i quiz, nazwa i typ pliku, Twoje sekcje</td><td>wykonanie umowy (lit. b)</td></tr>
+<tr><td>Moje materiały: opracowanie plików, które wgrywasz</td><td>tekst wgranego pliku (wysyłany do AI tylko na czas opracowania, nie zapisujemy go), gotowe opracowanie, fiszki i quiz, nazwa i typ pliku, nazwy Twoich sekcji</td><td>wykonanie umowy (lit. b)</td></tr>
 <tr><td>Zgłoszenia błędów, które wysyłasz</td><td>treść zgłoszenia lub terminu, powiązanie z kontem</td><td>prawnie uzasadniony interes: poprawianie materiałów (lit. f)</td></tr>
 <tr><td>Obsługa wiadomości, reklamacji i odstąpień</td><td>adres e-mail, treść korespondencji</td><td>wykonanie umowy i prawnie uzasadniony interes (lit. b i f)</td></tr>
 <tr><td>Bezpieczeństwo i działanie techniczne (logi, zapobieganie nadużyciom i udostępnianiu dostępu osobom trzecim)</td><td>adres IP, dane o przeglądarce i urządzeniu, czas żądań</td><td>prawnie uzasadniony interes (lit. f)</td></tr>
@@ -55,20 +55,20 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 </tbody>
 </table>
 </div>
-<p>Podanie adresu e-mail jest dobrowolne, ale niezbędne do założenia konta i korzystania z płatnej części Serwisu. Dane karty i dane płatnicze trafiają bezpośrednio do Stripe i nie są przez nas przechowywane. Nie przetwarzamy danych szczególnych kategorii. Nie profilujemy Cię i nie podejmujemy wobec Ciebie zautomatyzowanych decyzji wywołujących skutki prawne.</p>
+<p>Podanie adresu e-mail jest dobrowolne, ale bez niego nie można założyć konta ani otwierać materiałów (także bezpłatnych). Dane karty i inne dane potrzebne do zapłaty trafiają bezpośrednio do Stripe i nie są przez nas przechowywane. Nie przetwarzamy danych szczególnych kategorii. Nie profilujemy Cię i nie podejmujemy wobec Ciebie zautomatyzowanych decyzji wywołujących skutki prawne.</p>
 
 <h2>Komu przekazujemy dane</h2>
 <p>Korzystamy z podmiotów niezbędnych do działania Serwisu:</p>
 <ul>
 <li><b>Supabase</b> – baza danych i logowanie (konta, dostęp, postęp nauki, zgłoszenia, terminy),</li>
-<li><b>Resend</b> – wysyłka maili z linkiem do logowania,</li>
-<li><b>Stripe Payments Europe, Ltd.</b> – obsługa płatności (w zakresie wymaganym przepisami, np. przeciwdziałania nadużyciom, jako odrębny administrator),</li>
-<li><b>Anthropic PBC</b> (USA) – opracowanie treści plików wgranych w „Moich materiałach” (streszczenie, fiszki, quiz); tekst pliku jest przekazywany tylko na czas opracowania i nie jest przez nas zapisywany; przekazanie na podstawie standardowych klauzul umownych,</li>
+<li><b>Resend</b> – wysyłka maili z kodem do logowania,</li>
+<li><b>Stripe Payments Europe, Ltd.</b> – obsługa płatności; w zakresie wymaganym przepisami (np. przy przeciwdziałaniu nadużyciom) Stripe działa jako odrębny administrator,</li>
+<li><b>Anthropic PBC</b> (USA) – opracowanie treści plików wgranych w „Moich materiałach” (opracowanie, fiszki, quiz); tekst pliku jest przekazywany tylko na czas opracowania i nie jest przez nas zapisywany; przekazanie na podstawie standardowych klauzul umownych,</li>
 <li><b>GitHub Pages</b> – hosting stron Serwisu,</li>
 <li><b>Microsoft (Outlook)</b> – skrzynka skrotbm@outlook.com, na którą trafia korespondencja,</li>
-<li><b>Google Fonts</b> – czcionki ładowane z serwerów Google oraz <b>jsDelivr</b> – biblioteka logowania ładowana z sieci CDN oraz <b>cdnjs (Cloudflare)</b> – biblioteki do odczytu plików i wyświetlania wzorów (JSZip, pdf.js, MathJax); ich serwery widzą Twój adres IP i dane przeglądarki w momencie wczytania strony,</li>
+<li><b>Google Fonts</b> (czcionki), <b>jsDelivr</b> (biblioteka logowania) i <b>cdnjs (Cloudflare)</b> (biblioteki do odczytu plików i wyświetlania wzorów: JSZip, pdf.js, MathJax) – serwery, z których ładują się elementy strony; widzą Twój adres IP i dane przeglądarki w chwili wczytania strony,</li>
 <li><b>rejestrator domeny</b> – utrzymanie domeny skrotbm.pl; nie ma dostępu do danych użytkowników,</li>
-<li>organy publiczne i sądy – wyłącznie gdy obliguje do tego prawo.</li>
+<li>organy publiczne i sądy – wyłącznie gdy wymaga tego prawo.</li>
 </ul>
 <p>Nie sprzedajemy danych i nie wykorzystujemy ich do reklamy.</p>
 
@@ -92,7 +92,7 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 <p>Nie używamy reklamowych ani analitycznych plików cookie ani narzędzi śledzących, dlatego nie wyświetlamy baneru zgody. Serwis zapisuje w pamięci przeglądarki tylko to, co potrzebne do działania: sesję logowania i Twoje ustawienia (np. wybraną grupę). Możesz je usunąć w ustawieniach przeglądarki, ale wtedy trzeba będzie zalogować się ponownie. Strona płatności Stripe stosuje własne pliki cookie zgodnie z polityką Stripe.</p>
 
 <h2>Bezpieczeństwo i osoby niepełnoletnie</h2>
-<p>Stosujemy szyfrowane połączenie (HTTPS), logowanie bez haseł (jednorazowe linki) i ograniczony dostęp do danych. Serwis jest przeznaczony dla studentów; osoba niepełnoletnia powinna kupować dostęp za zgodą rodzica lub opiekuna.</p>
+<p>Stosujemy szyfrowane połączenie (HTTPS), logowanie bez haseł (jednorazowe kody) i ograniczony dostęp do danych. Serwis jest przeznaczony dla studentów; osoba niepełnoletnia powinna kupować dostęp za zgodą rodzica lub opiekuna.</p>
 
 <h2>Zmiany polityki</h2>
 <p>Aktualna wersja jest zawsze dostępna na tej stronie. O istotnych zmianach poinformujemy e-mailem użytkowników z aktywnym dostępem.</p>
