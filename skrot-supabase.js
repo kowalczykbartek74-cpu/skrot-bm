@@ -51,7 +51,7 @@
   }
 
   if (sb) sb.auth.onAuthStateChange((event, session) => {
-    // Po kliknięciu linku z maila w innej karcie albo po wylogowaniu: najprościej przeładować stronę.
+    // Po zalogowaniu w innej karcie albo po wylogowaniu: najprościej przeładować stronę.
     if (event === "SIGNED_IN" && session && skrot.state === "out") location.reload();
     if (event === "SIGNED_OUT" && skrot.state === "in") location.reload();
   });
@@ -246,64 +246,90 @@
     n.append(...kids.filter((k) => k != null));
     return n;
   };
-  skrot.openLogin = (reason) => {
+  // Logowanie kodem z maila. Adres, na który poszedł kod, zapamiętujemy na godzinę (tyle kod jest ważny):
+  // na telefonie przejście do aplikacji pocztowej często przeładowuje stronę i okno z polem na kod znikało.
+  const PENDING = "skrot-login-pending";
+  const pending = {
+    get: () => { try { const p = JSON.parse(ls.get(PENDING) || "null"); return p && p.email && Date.now() - p.t < 60 * 60 * 1000 ? p : null; } catch { return null; } },
+    set: (email, reason) => ls.set(PENDING, JSON.stringify({ email, reason: reason || null, t: Date.now() })),
+    clear: () => ls.set(PENDING, null),
+  };
+  skrot.openLogin = (reason, opts = {}) => {
     const layer = document.getElementById("layer") || document.body;
-    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    // Zamknięcie okna na etapie kodu = rezygnacja, więc po przeładowaniu nie otwieramy go ponownie.
+    let inCode = false;
+    const close = () => { if (inCode) pending.clear(); scrim.remove(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
-    const err = el("p", { class: "notice err", hidden: "" });
-    const input = el("input", { class: "input", id: "skrot-login-email", type: "email", autocomplete: "email", inputmode: "email", required: "", placeholder: "np. 123456@stud.usz.edu.pl" });
-    const btn = el("button", { type: "submit", class: "btn primary" }, "Wyślij link do logowania");
     const body = el("div", { style: "display:grid;gap:12px" });
-    const form = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
-      e.preventDefault();
-      const email = input.value.trim().toLowerCase();
-      const show = (t) => { err.textContent = t; err.hidden = false; };
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Wpisz poprawny adres e-mail.");
-      btn.disabled = true;
-      try { await skrot.sendLink(email); }
-      catch (x) { btn.disabled = false; return show(/rate|limit|seconds/i.test(x?.message || "") ? "Za dużo prób logowania. Odczekaj chwilę i spróbuj ponownie." : "Nie udało się wysłać linku. Spróbuj ponownie za chwilę."); }
-      // Kod z maila działa też wtedy, gdy skaner poczty zużyje link, i na innym urządzeniu niż to, na którym przyszedł mail.
+
+    const codeStep = (email, justSent) => {
+      inCode = true;
       const codeErr = el("p", { class: "notice err", hidden: "" });
-      const code = el("input", { class: "input", id: "skrot-login-code", type: "text", inputmode: "numeric", autocomplete: "one-time-code", maxlength: "10", placeholder: "np. 123456", style: "letter-spacing:.2em;font-size:1.2em" });
-      const codeBtn = el("button", { type: "submit", class: "btn primary" }, "Zaloguj kodem");
+      const code = el("input", { class: "input", id: "skrot-login-code", type: "text", inputmode: "numeric", autocomplete: "one-time-code", maxlength: "6", pattern: "[0-9]*", placeholder: "123456", style: "letter-spacing:.35em;font-size:1.5em;font-weight:800;text-align:center" });
+      const codeBtn = el("button", { type: "submit", class: "btn primary" }, "Zaloguj się");
       const codeForm = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
         e.preventDefault();
-        const token = code.value.replace(/\s+/g, "");
+        const token = code.value.replace(/\D+/g, "");
         const bad = (t) => { codeErr.textContent = t; codeErr.hidden = false; };
-        if (!/^\d{6,10}$/.test(token)) return bad("Wpisz kod z maila (same cyfry).");
+        if (!/^\d{6}$/.test(token)) return bad("Wpisz 6-cyfrowy kod z maila.");
         codeBtn.disabled = true;
         try {
           const { error } = await sb.auth.verifyOtp({ email, token, type: "email" });
           if (error) throw error;
+          pending.clear();
           // Zwykle przeładowuje już onAuthStateChange (SIGNED_IN); to tylko zapas.
           setTimeout(() => location.reload(), 1500);
         } catch (x) {
           codeBtn.disabled = false;
-          bad(/expired|invalid/i.test(x?.message || "") ? "Kod jest nieprawidłowy albo wygasł. Sprawdź najnowszy mail albo wyślij nowy." : "Nie udało się zalogować. Spróbuj ponownie za chwilę.");
+          bad(/expired|invalid/i.test(x?.message || "") ? "Kod jest nieprawidłowy albo wygasł. Sprawdź najnowszy mail albo wyślij nowy kod." : "Nie udało się zalogować. Spróbuj ponownie za chwilę.");
         }
       } },
         el("label", { for: "skrot-login-code", style: "display:grid;gap:6px;font-weight:700" }, "Kod z maila", code),
         codeErr, codeBtn);
+      // Po wpisaniu albo wklejeniu 6 cyfr logujemy od razu.
+      code.addEventListener("input", () => { const d = code.value.replace(/\D+/g, "").slice(0, 6); if (d !== code.value) code.value = d; if (d.length === 6 && !codeBtn.disabled) codeForm.requestSubmit(); });
       body.replaceChildren(
-        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Sprawdź skrzynkę" }),
-        el("p", { style: "margin:0" }, "Wysłaliśmy maila na ", el("b", { text: email }), ". Kliknij link albo wpisz niżej kod z maila. Mail może przyjść z opóźnieniem, zajrzyj też do spamu."),
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wpisz kod z maila" }),
+        el("p", { style: "margin:0" }, justSent ? "Wysłaliśmy 6-cyfrowy kod na " : "Kod wysłaliśmy na ", el("b", { text: email }), ". Mail może przyjść z opóźnieniem, zajrzyj też do spamu. Kod jest ważny przez godzinę."),
         codeForm,
         el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
-          el("button", { type: "button", class: "btn", onclick: () => { close(); skrot.openLogin(reason); } }, "Wyślij nowy mail"),
+          el("button", { type: "button", class: "btn", onclick: () => { close(); skrot.openLogin(reason); } }, "Wyślij nowy kod"),
           el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
       setTimeout(() => code.focus(), 30);
-    } },
-      el("label", { for: "skrot-login-email", style: "display:grid;gap:6px;font-weight:700" }, "E-mail", input),
-      err, btn);
-    body.append(
-      el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
-      el("p", { class: "muted", style: "margin:0", text: reason || "Bez hasła: wpisz swój e-mail, kliknij link z maila i gotowe. Jeśli masz już dostęp, użyj adresu, na który został kupiony." }),
-      form);
+    };
+
+    const emailStep = () => {
+      inCode = false;
+      const err = el("p", { class: "notice err", hidden: "" });
+      const input = el("input", { class: "input", id: "skrot-login-email", type: "email", autocomplete: "email", inputmode: "email", required: "", placeholder: "np. 123456@stud.usz.edu.pl" });
+      const btn = el("button", { type: "submit", class: "btn primary" }, "Wyślij kod");
+      const form = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
+        e.preventDefault();
+        const email = input.value.trim().toLowerCase();
+        const show = (t) => { err.textContent = t; err.hidden = false; };
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Wpisz poprawny adres e-mail.");
+        btn.disabled = true;
+        try { await skrot.sendLink(email); }
+        catch (x) { btn.disabled = false; return show(/rate|limit|seconds/i.test(x?.message || "") ? "Za dużo prób logowania. Odczekaj chwilę i spróbuj ponownie." : "Nie udało się wysłać kodu. Spróbuj ponownie za chwilę."); }
+        pending.set(email, reason);
+        codeStep(email, true);
+      } },
+        el("label", { for: "skrot-login-email", style: "display:grid;gap:6px;font-weight:700" }, "E-mail", input),
+        err, btn);
+      const p = pending.get();
+      body.replaceChildren(
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
+        el("p", { class: "muted", style: "margin:0", text: reason || "Bez hasła: wpisz swój e-mail, a my wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który został kupiony." }),
+        form,
+        p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null);
+      setTimeout(() => input.focus(), 30);
+    };
+
     const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Logowanie" }, body));
     layer.append(scrim);
     document.addEventListener("keydown", onKey);
-    setTimeout(() => input.focus(), 30);
+    if (opts.codeFor) codeStep(opts.codeFor, false); else emailStep();
   };
 
   // Komunikat, gdy baza nie odpowiada.
@@ -335,7 +361,7 @@
     if (skrot.paid) return info("Masz już dostęp", skrot.until ? `Twój dostęp jest ważny do ${plDate(skrot.until)}.` : "Twój dostęp jest aktywny.");
     if (skrot.state !== "in") {
       ls.set("skrot-buy", "1");
-      return skrot.openLogin("Najpierw zaloguj się e-mailem: dostęp przypiszemy do tego adresu. Po kliknięciu linku z maila od razu przejdziesz do płatności.");
+      return skrot.openLogin("Najpierw zaloguj się e-mailem: dostęp przypiszemy do tego adresu. Po wpisaniu kodu z maila od razu przejdziesz do płatności.");
     }
     if (!CONFIG.paymentLink) return info("Płatności startują wkrótce", "Zakup dostępu będzie możliwy za chwilę. Spróbuj ponownie później albo napisz na skrotbm@outlook.com.");
     const u = new URL(CONFIG.paymentLink);
@@ -345,25 +371,36 @@
   };
 
   // Po powrocie z płatności: czekamy, aż Stripe potwierdzi (webhook), i przeładowujemy stronę.
+  // BLIK i Przelewy24 potrafią wrócić w innej przeglądarce (np. po przejściu przez aplikację banku), gdzie nikt nie jest zalogowany.
+  // Wtedy prosimy o zalogowanie kodem i po zalogowaniu kończymy odblokowanie dostępu.
+  async function waitForPaid() {
+    const box = info("Dziękujemy za zakup!", "Odblokowuję dostęp… to zwykle trwa kilka sekund.");
+    for (let i = 0; i < 30 && !skrot.paid; i++) { await new Promise((r) => setTimeout(r, 2000)); try { await refreshMe(); } catch {} }
+    box.remove();
+    if (skrot.paid) location.reload();
+    else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz na skrotbm@outlook.com.");
+  }
   async function afterReady() {
     if (linkError && skrot.state === "out") {
-      skrot.openLogin(linkError === "otp_expired"
-        ? "Link nie zadziałał: wygasł albo został już użyty (czasem robi to skaner poczty). Wyślij nowy mail i zaloguj się kodem z maila."
-        : "Logowanie nie powiodło się. Wyślij nowy mail i zaloguj się kodem z maila.");
+      skrot.openLogin("Ten link już nie działa. Logujemy się teraz kodem: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod.");
       return;
     }
     const params = new URLSearchParams(location.search);
     if (params.get("platnosc") === "ok") {
       history.replaceState(null, "", location.pathname);
-      if (skrot.state !== "in") return;
-      const box = info("Dziękujemy za zakup!", "Odblokowuję dostęp… to zwykle trwa kilka sekund.");
-      for (let i = 0; i < 30 && !skrot.paid; i++) { await new Promise((r) => setTimeout(r, 2000)); try { await refreshMe(); } catch {} }
-      box.remove();
-      if (skrot.paid) location.reload();
-      else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz na skrotbm@outlook.com.");
+      if (skrot.state === "in") { if (!skrot.paid) await waitForPaid(); return; }
+      if (skrot.state === "out") {
+        ls.set("skrot-after-pay", "1");
+        const p = pending.get();
+        const why = "Płatność przyjęta. Zaloguj się adresem e-mail użytym przy zakupie, a dostęp odblokuje się sam.";
+        skrot.openLogin(why, p ? { codeFor: p.email } : {});
+      }
       return;
     }
-    if (skrot.state === "in" && ls.get("skrot-buy")) { ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(); }
+    if (skrot.state === "in" && ls.get("skrot-after-pay")) { ls.set("skrot-after-pay", null); ls.set("skrot-buy", null); if (!skrot.paid) await waitForPaid(); return; }
+    if (skrot.state === "in" && ls.get("skrot-buy")) { ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(); return; }
+    // Strona przeładowała się w trakcie logowania (np. po przejściu do poczty na telefonie): od razu pole na kod.
+    if (skrot.state === "out") { const p = pending.get(); if (p) skrot.openLogin(p.reason, { codeFor: p.email }); }
   }
   skrot.isUni = (e) => UNI.test(e || "");
 })();
