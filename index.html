@@ -1510,7 +1510,7 @@ body::before { opacity: .8; }
       if (sid && sb.id !== sid) continue;
       for (const p of zalOf(sb.id)?.parts || []) {
         if (!p.date || p.date < k0) continue;
-        if (out.some((x) => x.sid === sb.id && x.date === p.date)) continue;
+        if (out.some((x) => x.sid === sb.id && x.date === p.date && (x.src !== "zal" || x.part === p.k))) continue;
         out.push({ key: "z:" + sb.id + ":" + p.k, src: "zal", part: p.k, kind: p.f === "E" ? "egzamin" : "kolokwium", title: `${cap1(partLabel(sb.id, p.k))}: ${sb.pl}`, sid: sb.id, date: p.date, time: "", done: doneKey("z:" + sb.id + ":" + p.k) });
       }
     }
@@ -2185,7 +2185,8 @@ body::before { opacity: .8; }
   const ZAL_SESJA = "Sesja 2–15 lutego 2027, dokładny dzień jeszcze nieogłoszony";
   const ZAL_PRZED = "Przed sesją (zajęcia trwają do 1 lutego), data jeszcze nieogłoszona";
   const ZAL_SYL = { label: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://dsm.usz.edu.pl/wp-content/uploads/wefiz-26-27-sylab.pdf" };
-  const ZAL_CHECKED = "23 października 2026";
+  const ZAL_CHECKED = "24 października 2026";
+  const ZAL_CHAT = { label: "Odpowiedzi prowadzących na czacie Teams, 19–21.10" };
   const ZAL_NOTE = { label: "Terminy podane na zajęciach, zapisane 21.10" };
   const ZAL_BM = { label: "Sylabus Business Management 2026/27, studia stacjonarne I stopnia" };
   const ZAL = {
@@ -2218,21 +2219,22 @@ body::before { opacity: .8; }
     },
     "makroekonomia": {
       parts: [
-        { k: "W", f: "ZO", how: "Kolokwium pisemne z pytaniami testowymi.", rules: ["Trzeba zdobyć ponad połowę punktów.", "Na zajęciach potwierdzono: zaliczenie wykładu to test."], when: ZAL_PRZED },
-        { k: "CW", f: "ZO", how: "Kolokwium pisemne: pytania testowe i zadania otwarte.", rules: ["Trzeba zdobyć ponad połowę punktów."], when: "15 stycznia 2027", date: "2027-01-15" },
+        { k: "W", f: "ZO", how: "Kolokwium pisemne: test jednokrotnego wyboru. Wspólne dla C111, C112 i C113.", rules: ["Trzeba zdobyć ponad połowę punktów."], when: "22 stycznia 2027, na ostatnim wykładzie", date: "2027-01-22" },
+        { k: "CW", f: "ZO", how: "Kolokwium pisemne: pytania otwarte i test jednokrotnego wyboru.", rules: ["Trzeba zdobyć ponad połowę punktów."], when: "C112 i C113: 15 stycznia 2027 · C111: 22 stycznia 2027", date: "2027-01-15",
+          byGroup: { C111: { when: "22 stycznia 2027, na ostatnich ćwiczeniach", date: "2027-01-22" }, C112: { when: "15 stycznia 2027, na ostatnich ćwiczeniach" }, C113: { when: "15 stycznia 2027, na ostatnich ćwiczeniach" } } },
       ],
       final: "Średnia arytmetyczna oceny z ćwiczeń i z wykładu. Gdy średnia wypada między ocenami, decyduje ocena z wykładu.",
-      notes: ["W sylabusie jako prowadzący figuruje dr hab. Rafał Nagaj, a zajęcia prowadzi dr Agnieszka Bretyn.", "Sylabus w jednym miejscu mówi o egzaminie, ale formą zaliczenia wykładu jest zaliczenie z oceną."],
-      sources: [ZAL_SYL, ZAL_NOTE],
+      notes: ["W sylabusie jako prowadzący figuruje dr hab. Rafał Nagaj, a zajęcia prowadzi dr Agnieszka Bretyn.", "Sylabus w jednym miejscu mówi o egzaminie, ale formą zaliczenia wykładu jest zaliczenie z oceną.", "Poprawa: jeden termin w sesji poprawkowej 22–28 lutego 2027. Dokładne daty poprawy z wykładu i z ćwiczeń prowadząca poda w osobnym poście."],
+      sources: [ZAL_SYL, ZAL_NOTE, { label: "Post dr Agnieszki Bretyn „Information about the Colloquia”, 16.10 (zespół Macroeconomics -BM- 2026_2027)" }, ZAL_CHAT],
     },
     "narzedzia-it-w-zarzadzaniu": {
       parts: [
-        { k: "W", f: "ZO", how: "Pisemne kolokwium z pytaniami otwartymi na koniec cyklu wykładów.", rules: ["Według sylabusa są 3 pytania: 1 dobra odpowiedź to 3,0, 2 to 4,0, 3 to 5,0.", "Na pierwszym wykładzie prowadząca mówiła o 5 pytaniach teoretycznych."], when: "Na koniec wykładów; prowadząca poda datę z wyprzedzeniem" },
+        { k: "W", f: "ZO", how: "Pisemne kolokwium z pytaniami otwartymi na koniec cyklu wykładów.", rules: ["Według sylabusa są 3 pytania: 1 dobra odpowiedź to 3,0, 2 to 4,0, 3 to 5,0.", "Na pierwszym wykładzie prowadząca mówiła o 5 pytaniach teoretycznych."], when: "27 stycznia 2027, na ostatnim wykładzie", date: "2027-01-27" },
         { k: "LAB", f: "ZO", how: "Zadania robione na zajęciach (60%) i projekt grupowy z analizy prawdziwych danych (40%).", rules: ["Skala: 60% to 3,0, 70% to 3,5, 80% to 4,0, 90% to 4,5, 95% to 5,0.", "Ocena z lab = 0,6 × zadania + 0,4 × projekt."], when: "Zadania na bieżąco; projekt w ostatnim bloku laboratoriów (10 godzin)" },
       ],
       final: "Średnia z oceny z wykładu i z laboratorium. Liczą się obie oceny.",
       notes: ["Liczbę pytań na kolokwium z wykładu (3 czy 5) warto potwierdzić u prowadzącej.", "Sylabus sam sobie przeczy: opis mówi o średniej ważonej (bez podanych wag), a tabela ocen o średniej arytmetycznej."],
-      sources: [ZAL_SYL, { label: "Wykład 1, slajd 8 „How your grade is calculated” (zespół 202627 IT Tools BM)" }],
+      sources: [ZAL_SYL, { label: "Wykład 1, slajd 8 „How your grade is calculated” (zespół 202627 IT Tools BM)" }, { label: "Dr Anna Borawska na czacie Teams, 19–21.10: zaliczenie na ostatnim wykładzie, 27.01 (tydzień parzysty)" }],
     },
     "ochrona-wlasnosci-intelektualnej": {
       parts: [
@@ -2248,7 +2250,7 @@ body::before { opacity: .8; }
         { k: "CW", f: "ZO", how: "Prezentacja PPT w parze na wybrany temat i dyskusja na zajęciach (90%) oraz aktywność (10%).", rules: ["Plik .ppt albo .pptx w Zadaniach w Teams najpóźniej dzień przed wystąpieniem. PDF nie jest przyjmowany.", "Co najmniej 10 źródeł, w tym 3 artykuły naukowe z lat 2020–2026. Wykresy i tabele zrób sam z danych.", "Skala z sylabusa: 60–69% to 3,0, 70–79% to 3,5, 80–89% to 4,0, 90–99% to 4,5, 100% to 5,0."], when: "Według listy tematów. C111 i C112, tematy 1–6: wysyłka do 20.10, wystąpienie 21.10" },
       ],
       final: "Średnia arytmetyczna oceny z wykładu i z ćwiczeń, po 50%.",
-      notes: ["Data testu się różni: w Teams był 20 stycznia o 12:00, a na zajęciach podano 27 stycznia. Licz na 27.01 i sprawdź godzinę w Teams.", "Próg testu się różni: prowadząca w Teams podaje 70% na 3,0, a sylabus 60%. Licz na 70%.", "Kontakt z prowadzącą tylko przez Teams, nie mailem."],
+      notes: ["Data testu się różni: zadanie w Teams nadal nazywa się „Lecture TEST_20 January 2027” (stan na 24.10), a na zajęciach podano 27 stycznia. Licz na 27.01, ale potwierdź u prowadzącej.", "Próg testu się różni: prowadząca w Teams podaje 70% na 3,0, a sylabus 60%. Licz na 70%.", "Kontakt z prowadzącą tylko przez Teams, nie mailem."],
       sources: [ZAL_SYL, ZAL_NOTE, { label: "„How pass a course” i slajdy z ćwiczeń 1 (zespół FUNDAMENTALS OF FINANCE 2026_2027)" }],
     },
     "podstawy-zarzadzania": {
@@ -2262,23 +2264,25 @@ body::before { opacity: .8; }
     },
     "prawo": {
       parts: [
-        { k: "W", f: "ZO", how: "Pisemne sprawdziany w trakcie wykładów i aktywny udział w dyskusjach.", rules: ["Ocena pozytywna tylko wtedy, gdy zaliczysz wszystkie sprawdziany.", "Na zajęciach potwierdzono: zaliczenie wykładu to test."], when: "W trakcie semestru, daty jeszcze nieogłoszone" },
+        { k: "W", f: "ZO", how: "Test jednokrotnego wyboru na ostatnim wykładzie.", rules: ["Do nauki wystarczą prezentacje z wykładów, które prowadząca wrzuca do zespołu Law (prawo) BM."], when: "26 stycznia 2027, na ostatnim wykładzie", date: "2027-01-26" },
       ],
       final: "Ocena z wykładu jest oceną z przedmiotu.",
-      notes: ["W sylabusie Business Management jako koordynator figuruje dr hab. Pasquale Policastro, a wykłady prowadzi dr Małgorzata Szymszon. Zasady mogą się różnić, więc warto je potwierdzić na wykładzie.", "Sylabus nie podaje progów punktowych."],
-      sources: [ZAL_BM, ZAL_NOTE],
+      notes: ["W sylabusie Business Management jako koordynator figuruje dr hab. Pasquale Policastro, a wykłady prowadzi dr Małgorzata Szymszon. Zasady mogą się różnić, więc warto je potwierdzić na wykładzie.", "Sylabus nie podaje progów punktowych.", "Prowadząca najpierw podała 19 stycznia, a potem poprawiła na 26 stycznia, bo to ostatni wykład."],
+      sources: [ZAL_BM, ZAL_NOTE, { label: "Dr Małgorzata Szymszon na czacie Teams, 19–20.10" }],
     },
     "zarzadzanie-zasobami-ludzkimi": {
       parts: [
         { k: "W", f: "E", how: "Egzamin pisemny w formie testu.", rules: ["To termin zerowy, przed sesją. Czy w sesji będzie jeszcze zwykły termin, warto potwierdzić u prowadzącej."], when: "22 stycznia 2027, termin zerowy", date: "2027-01-22" },
-        { k: "CW", f: "ZO", how: "Testy jednokrotnego wyboru (50% punktów) i pisemne raporty z ćwiczeń (50%), z oceną pracy na zajęciach.", rules: ["Ocena 3,0 od 60% punktów.", "AI wolno używać tylko wtedy, gdy prowadząca wyraźnie pozwoli. Na teście i w raportach jest zakazane."], when: ZAL_PRZED },
+        { k: "CW", f: "ZO", how: "Test jednokrotnego wyboru (50% punktów) i zadania: jedne zajęcia, jedno zadanie, wrzucane do folderu grupy w Teams (50%).", rules: ["Ocena 3,0 od 60% punktów.", "AI wolno używać tylko wtedy, gdy prowadząca wyraźnie pozwoli. Na teście i w raportach jest zakazane."], when: "Test na ostatnich ćwiczeniach; zadania na bieżąco po każdych zajęciach" },
       ],
       final: "Ocena z egzaminu jest oceną z przedmiotu.",
       notes: [],
-      sources: [ZAL_SYL, ZAL_NOTE, { label: "Post mgr Malwiny Jankowskiej „Organizational Information”, 6.10 (zespół HRM practical classes)" }],
+      sources: [ZAL_SYL, ZAL_NOTE, { label: "Post mgr Malwiny Jankowskiej „Organizational Information”, 6.10 (zespół HRM practical classes)" }, { label: "Mgr Malwina Jankowska na czacie Teams, 19.10" }],
     },
   };
-  const zalOf = (sid) => ZAL[sid] || null;
+  // Część zaliczenia może mieć inną datę dla grupy (byGroup: { C111: { when, date } }).
+  const zp = (p) => (p.byGroup && S.group && p.byGroup[S.group]) ? { ...p, ...p.byGroup[S.group] } : p;
+  const zalOf = (sid) => { const z = ZAL[sid]; return z ? { ...z, parts: z.parts.map(zp) } : null; };
   const hasExam = (sid) => !!zalOf(sid)?.parts.some((p) => p.f === "E");
   const formChip = (f) => h("span", { class: "typechip", style: `--t:${ZAL_FORM[f].c}`, text: ZAL_FORM[f].label });
 
