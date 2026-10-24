@@ -41,16 +41,16 @@ Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane ra
 |---|---|---|
 | `--surface` | `#FFFFFF` | karty, pasek u góry i na dole |
 | `--sunk` | `#EEF3F0` | wciśnięte tła, dni wolne w kalendarzu |
-| `--line` | `#E1E9E4` | linie i obramowania |
-| `--muted` | `#4B5C52` | tekst pomocniczy |
-| `--ink` | `#16231B` | tekst główny |
+| `--line` | `#D5E0D9` | linie i obramowania |
+| `--muted` | `#344439` | tekst pomocniczy |
+| `--ink` | `#0B150F` | tekst główny |
 
 ## Kolory, które coś znaczą (używane oszczędnie)
 
 | Zmienna | Kolor | Tło | Kiedy |
 |---|---|---|---|
-| `--bad` | `#B42318` | `#FDECEA` | egzamin, termin za ≤ 3 dni, błąd |
-| `--warn` | `#9A5B00` | `#FFF4DE` | kolokwium/test, termin w tym tygodniu, „z sylabusa” |
+| `--bad` | `#A01B12` | `#FDECEA` | egzamin, termin za ≤ 3 dni, błąd |
+| `--warn` | `#7E4700` | `#FFF4DE` | kolokwium/test, termin w tym tygodniu, „z sylabusa” |
 
 Wszystkie pary tekst/tło spełniają WCAG AA (kontrast ≥ 4,5:1).
 
