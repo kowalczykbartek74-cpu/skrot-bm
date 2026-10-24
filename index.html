@@ -105,7 +105,7 @@ p { margin: 0; }
   .menubtn .lbl { display: none; }
   .menubtn { width: 38px; padding: 0; justify-content: center; }
   .bar-right .btn.small { padding: 6px 12px; }
-  .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; gap: 0; display: grid; grid-template-columns: repeat(5, 1fr);
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; gap: 0; display: grid; grid-template-columns: repeat(6, 1fr);
     background: var(--surface); border-top: 1px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); }
   .navbtn { flex-direction: column; gap: 2px; padding: 4px 2px; font-size: .7rem; font-weight: 600; border-radius: 12px; }
   .navbtn:hover { background: transparent; }
@@ -395,6 +395,46 @@ label.field, div.field { display: grid; gap: 4px; font-size: .86rem; font-weight
   .day .dn { font-size: .86rem; }
   .day .par, .day .cnt { display: none; }
   .day .ev { font-size: 0; height: 4px; padding: 0; border-radius: 2px; background: var(--t); }
+}
+/* kalendarz: zaliczenia, sesja i prywatne wpisy */
+.day.sesja { background: repeating-linear-gradient(135deg, color-mix(in srgb, #B42318 6%, var(--surface)) 0 6px, var(--surface) 6px 12px); }
+.day.has-exam { background: color-mix(in srgb, var(--t) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--t) 55%, var(--line)); box-shadow: inset 0 3px 0 var(--t); }
+.day.has-exam.today { border: 2px solid var(--accent); }
+.day .bang { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 999px; background: var(--t); color: #fff; font-size: .72rem; font-weight: 900; }
+.day .ev.exam { background: var(--t); color: #fff; font-weight: 800; }
+.day .ev.mine { background: var(--surface); border: 1.5px dashed var(--t); color: var(--t); padding: 0 4px; }
+.day .cnt.more { font-weight: 700; color: var(--ink); }
+.dot.mine { background: transparent !important; border: 1.5px dashed #7A4FB0; }
+.legend .sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--line); }
+.legend .sw.sesja { background: repeating-linear-gradient(135deg, #f3d9d6 0 3px, #fff 3px 6px); }
+.examstrip { display: grid; gap: 10px; }
+.examstrip .panel-head h2 { margin: 0; }
+.exams { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.exam-card { display: flex; gap: 12px; align-items: center; text-align: left; padding: 12px; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--t) 40%, var(--line)); background: color-mix(in srgb, var(--t) 7%, var(--surface)); cursor: pointer; color: var(--ink); font: inherit; }
+.exam-card:hover { border-color: var(--t); }
+.exam-card.soon { box-shadow: inset 4px 0 0 var(--t); }
+.exam-n { display: grid; place-items: center; min-width: 54px; height: 54px; border-radius: 12px; background: var(--t); color: #fff; line-height: 1; }
+.exam-n b { font-size: 1.35rem; font-weight: 900; }
+.exam-n small { font-size: .66rem; font-weight: 700; }
+.exam-txt { display: grid; gap: 2px; min-width: 0; }
+.exam-txt .typechip { justify-self: start; }
+.exam-txt b { font-size: 1rem; }
+.exam-txt .muted { font-size: .84rem; }
+.myevs { display: grid; gap: 6px; }
+.myev { display: flex; gap: 10px; align-items: flex-start; text-align: left; width: 100%; padding: 9px 11px; border-radius: 12px; border: 1.5px dashed color-mix(in srgb, var(--t) 60%, var(--line)); background: color-mix(in srgb, var(--t) 6%, var(--surface)); cursor: pointer; color: var(--ink); font: inherit; }
+.myev:hover { border-style: solid; }
+.myev-time { flex: none; min-width: 64px; font-size: .82rem; font-weight: 800; color: var(--t); padding-top: 1px; }
+.myev-body { display: grid; gap: 2px; min-width: 0; }
+.myev-body .muted { font-size: .84rem; overflow-wrap: anywhere; }
+@media (max-width: 720px) {
+  .day .ev.exam { height: 7px; }
+  .day .ev.mine { font-size: 0; height: 4px; padding: 0; border: 0; background: repeating-linear-gradient(90deg, var(--t) 0 4px, transparent 4px 6px); }
+  .day .bang { width: 15px; height: 15px; font-size: .62rem; }
+  .day .cnt.more { display: block; font-size: .6rem; }
+  .exam-n { min-width: 46px; height: 46px; }
+  .exams { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; margin: 0 -16px; padding: 0 16px 4px; scrollbar-width: none; }
+  .exam-card { flex: 0 0 78%; scroll-snap-align: start; padding: 10px; }
+  .exam-txt b { font-size: .94rem; }
 }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -1185,7 +1225,7 @@ body::before { opacity: .8; }
   };
   if (S.sub !== "A" && S.sub !== "B" && S.sub !== "") S.sub = "A";
   // Stare adresy (zapisane linki, przyciski w kodzie) prowadzą do nowych ekranów.
-  const LEGACY = { subjects: { view: "materials" }, przedmioty: { view: "materials" }, dzis: { view: "home" }, terminy: { view: "terms" }, powtorki: { view: "review" }, wiecej: { view: "more" }, start: { view: "home" }, tasks: { view: "terms" }, calendar: { view: "terms", mode: "cal" }, progress: { view: "review" } };
+  const LEGACY = { subjects: { view: "materials" }, przedmioty: { view: "materials" }, dzis: { view: "home" }, terminy: { view: "terms" }, powtorki: { view: "review" }, wiecej: { view: "more" }, start: { view: "home" }, tasks: { view: "terms" }, progress: { view: "review" } };
   const normRoute = (r) => (LEGACY[r?.view] ? { ...r, ...LEGACY[r.view] } : r || { view: "home" });
   const routeHash = (r) => "#/" + [r.view, r.id || r.sid || ""].filter(Boolean).join("/");
   const go = (route) => {
@@ -1347,13 +1387,14 @@ body::before { opacity: .8; }
     sp.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[k] || ""}</svg>`;
     return sp;
   }
-  // Pięć zakładek, każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
-  const NAV_ITEMS = [["home", "Dziś"], ["materials", "Przedmioty"], ["review", "Powtórki"], ["terms", "Terminy"], ["more", "Więcej"]];
+  // Sześć zakładek, każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
+  const NAV_ITEMS = [["home", "Dziś"], ["materials", "Przedmioty"], ["review", "Powtórki"], ["terms", "Terminy"], ["calendar", "Kalendarz"], ["more", "Więcej"]];
   const NAV_OF = {
     home: "home",
     materials: "materials", subject: "materials", material: "materials", subjectQuiz: "materials", exam: "materials", cheat: "materials", upload: "materials",
     review: "review", progress: "review",
     terms: "terms",
+    calendar: "calendar",
     more: "more", mine: "more", glossary: "more", program: "more", reading: "more", compare: "more", myFolder: "more", myUpload: "more", grading: "more", reports: "more", ai: "more",
   };
   function renderNav() {
@@ -1377,7 +1418,7 @@ body::before { opacity: .8; }
     if (S.canEdit && !band) document.body.insertBefore(h("div", { class: "staroband", id: "staroband" }, h("div", { class: "wrap" }, h("b", { text: "Tryb starosty" }), h("span", { text: "Widzisz narzędzia do zarządzania rokiem." }), h("button", { type: "button", class: "link", onclick: () => setStarosta(false) }, "Wyłącz"))), $("main"));
     else if (!S.canEdit && band) band.remove();
   }
-  const NAV_ICON = { home: "home", materials: "materials", review: "review", terms: "calendar", more: "menu" };
+  const NAV_ICON = { home: "home", materials: "materials", review: "review", terms: "tasks", calendar: "calendar", more: "menu" };
   function setStarosta(on) {
     ls.set("bm-starosta", on ? "1" : "0");
     S.canEdit = S.isStarosta && on;
@@ -1394,7 +1435,7 @@ body::before { opacity: .8; }
   function render() {
     renderNav();
     const v = S.route.view;
-    let fn = { terms: viewTerms, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, reading: viewReading, compare: viewCompare }[v];
+    let fn = { terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, reading: viewReading, compare: viewCompare }[v];
     if (!fn) {
       // Nieznany adres (np. literówka w linku): mówimy o tym zamiast po cichu pokazywać Dziś.
       if (v && v !== "home") { toast("Nie ma takiej strony. Pokazuję ekran Dziś."); S.route = { view: "home" }; try { history.replaceState({ view: "home" }, "", "#/"); } catch {} }
@@ -1537,7 +1578,7 @@ body::before { opacity: .8; }
     return G.map(([label, f]) => [label, list.filter(f)]);
   }
   function viewTerms() {
-    const mode = S.route.mode === "cal" ? "cal" : "list";
+    if (S.route.mode === "cal") { S.route = { view: "calendar" }; return viewCalendar(); }
     const f = S.taskFilter === "done" ? "done" : "open";
     const all = termItems();
     const shown = all.filter((x) => (f === "done" ? x.done : !x.done && !(x.n != null && x.n < -14)));
@@ -1551,10 +1592,9 @@ body::before { opacity: .8; }
           h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
           S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj termin") : null)),
       h("div", { class: "row", style: "justify-content:space-between" },
-        seg([["list", "Lista"], ["cal", "Kalendarz"]], mode, (k) => { S.route = { ...S.route, mode: k }; render(); }, "Widok"),
-        mode === "list" && PAID() ? seg([["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"]], f, (k) => { S.taskFilter = k; render(); }, "Filtr") : null),
+        h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "calendar" }) }, "Pokaż w kalendarzu"),
+        PAID() ? seg([["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"]], f, (k) => { S.taskFilter = k; render(); }, "Filtr") : null),
       !S.group ? h("div", { class: "notice" }, h("p", { style: "margin:0 0 8px", text: "Wybierz grupę, a pokażę tylko to, co Cię dotyczy." }), groupPicker(true)) : null);
-    if (mode === "cal") return [head, calendarBlock(), syncLine()];
     if (!PAID()) return [head, lockBox("Terminy kolokwiów, egzaminów i zadania od prowadzących widzą osoby z pełnym dostępem."), syncLine()];
     if (!S.ready) return [head, h("p", { class: "muted", text: "Ładuję…" })];
     const groups = termGroups(shown).filter(([, xs]) => xs.length);
@@ -1965,7 +2005,102 @@ body::before { opacity: .8; }
     });
   }
 
-  function calendarBlock() {
+  // ================= MOJE WPISY: prywatne notatki ucznia w kalendarzu =================
+  // Zapisują się w postępie ucznia (data/users/<id>/progress → myEvents), więc widzi je tylko on.
+  // Bez logowania zostają w tej przeglądarce. Nie trafiają do terminów roku ani do innych osób.
+  const MY_KINDS = [
+    { id: "nauka", label: "Nauka", c: "#0F6E6E" },
+    { id: "spotkanie", label: "Spotkanie", c: "#1F6FA3" },
+    { id: "przypomnienie", label: "Przypomnienie", c: "#7A4FB0" },
+    { id: "inne", label: "Inne", c: "#5A6B61" },
+  ];
+  const myKind = (id) => MY_KINDS.find((k) => k.id === id) || MY_KINDS[3];
+  const myEvents = () => (Array.isArray(S.progress?.myEvents) ? S.progress.myEvents : []).filter((e) => e && e.id && /^\d{4}-\d{2}-\d{2}$/.test(e.date || ""));
+  const myEventsOn = (k) => myEvents().filter((e) => e.date === k).sort((a, b) => (a.time || "99").localeCompare(b.time || "99"));
+  function saveMyEvents(list) { saveProgress({ myEvents: list }); render(); }
+  function openMyEvent(ev, dayKey) {
+    const edit = !!ev;
+    modal((close) => {
+      const title = h("input", { class: "input", id: "me-title", maxlength: "80", placeholder: "np. Powtórka rozdziału 3 z makro", value: ev?.title || "" });
+      const date = h("input", { class: "input", id: "me-date", type: "date", value: ev?.date || dayKey || S.calSel || todayKey() });
+      const time = h("input", { class: "input", id: "me-time", type: "time", value: ev?.time || "" });
+      const subj = h("select", { class: "input", id: "me-subject" }, h("option", { value: "", text: "Bez przedmiotu" }), SUBJECTS.map((s) => h("option", { value: s.id, selected: ev?.sid === s.id ? true : null, text: s.pl })));
+      let kindVal = ev?.kind || "nauka";
+      const kind = h("div", { class: "seg", role: "group", "aria-label": "Rodzaj wpisu" });
+      const drawKind = () => kind.replaceChildren(...MY_KINDS.map((k) => h("button", { type: "button", "aria-pressed": String(kindVal === k.id), onclick: () => { kindVal = k.id; drawKind(); } }, k.label)));
+      drawKind();
+      const note = h("textarea", { class: "input", id: "me-note", maxlength: "400", placeholder: "Szczegóły (opcjonalnie)" }, ev?.note || "");
+      const err = h("p", { class: "notice err", hidden: true });
+      return [
+        h("h2", { text: edit ? "Twój wpis" : "Nowy wpis w Twoim kalendarzu" }),
+        h("p", { class: "muted", style: "margin:0", text: "Wpis widzisz tylko Ty." + (S.uid ? "" : " Bez logowania zostaje w tej przeglądarce. Zaloguj się, a będzie na każdym urządzeniu.") }),
+        kind,
+        h("label", { class: "field", for: "me-title" }, "Co", title),
+        h("div", { class: "split3" }, h("label", { class: "field", for: "me-subject" }, "Przedmiot", subj), h("label", { class: "field", for: "me-date" }, "Dzień", date), h("label", { class: "field", for: "me-time" }, "Godzina (opcjonalnie)", time)),
+        h("label", { class: "field", for: "me-note" }, "Notatka", note),
+        err,
+        h("div", { class: "row" },
+          h("button", { type: "button", class: "btn primary", onclick: () => {
+            const data = { title: title.value.trim(), date: date.value, time: time.value || "", kind: kindVal, sid: subj.value || "", note: note.value.trim() };
+            if (!data.title || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) { err.textContent = "Wpisz, co to jest, i wybierz dzień."; err.hidden = false; return; }
+            const list = myEvents().filter((x) => x.id !== ev?.id);
+            list.push({ ...data, id: ev?.id || "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), at: ev?.at || Date.now() });
+            S.calSel = data.date; S.calMonth = data.date.slice(0, 7);
+            saveMyEvents(list); close(); toast(edit ? "Zapisano wpis." : "Dodano do Twojego kalendarza.");
+          } }, edit ? "Zapisz" : "Dodaj"),
+          h("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"),
+          edit ? h("button", { type: "button", class: "btn ghost danger", style: "margin-left:auto", onclick: () => { if (!confirm("Usunąć ten wpis?")) return; saveMyEvents(myEvents().filter((x) => x.id !== ev.id)); close(); toast("Usunięto wpis."); } }, "Usuń") : null),
+      ];
+    });
+  }
+  function myEventRow(e) {
+    const k = myKind(e.kind), s = subjectById(e.sid);
+    return h("button", { type: "button", class: "myev", style: `--t:${k.c}`, onclick: () => openMyEvent(e) },
+      h("span", { class: "myev-time num", text: e.time || "cały dzień" }),
+      h("span", { class: "myev-body" },
+        h("b", { text: e.title }),
+        h("span", { class: "muted", text: [k.label, s ? s.pl : "", e.note ? "📝 " + e.note : ""].filter(Boolean).join(" · ") })));
+  }
+
+  // ================= KALENDARZ (osobna zakładka) =================
+  const EXAM_KINDS = new Set(["egzamin", "kolokwium"]);
+  // Wszystko z jednego dnia: terminy i zaliczenia roku (pełny dostęp) + prywatne wpisy (każdy).
+  function calItemsOn(k, all) { return PAID() ? all.filter((x) => x.date === k) : []; }
+  function viewCalendar() {
+    const tk = todayKey();
+    if (!S.calMonth) S.calMonth = tk.slice(0, 7);
+    if (!S.calSel) S.calSel = tk;
+    const all = PAID() ? termItems() : [];
+    const head = h("section", { class: "stack" },
+      h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), h("p", { class: "muted", text: "Zajęcia, zaliczenia, terminy roku i Twoje własne wpisy w jednym miejscu." })),
+        h("div", { class: "row", style: "gap:8px" },
+          h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
+          h("button", { type: "button", class: "btn small primary", onclick: () => openMyEvent(null, S.calSel) }, "+ Mój wpis"))),
+      !S.group ? h("div", { class: "notice" }, h("p", { style: "margin:0 0 8px", text: "Wybierz grupę, a pokażę Twoje zajęcia w kalendarzu." }), groupPicker(true)) : null);
+    return [head, examStrip(all, tk), calendarBlock(all)];
+  }
+  // Pasek „Najbliższe zaliczenia”: odliczanie do kolokwiów i egzaminów. Klik przenosi kalendarz na ten dzień.
+  function examStrip(all, tk) {
+    if (!PAID()) return h("section", { class: "examstrip locked" }, lockBox("Daty kolokwiów i egzaminów w kalendarzu widzą osoby z pełnym dostępem. Swoje wpisy możesz dodawać już teraz."));
+    const next = all.filter((x) => EXAM_KINDS.has(x.kind) && x.date && x.n >= 0 && !x.done).slice(0, 4);
+    const undated = zalUndated().length;
+    if (!next.length && !undated) return null;
+    return h("section", { class: "examstrip" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Najbliższe zaliczenia" }),
+        undated ? h("button", { type: "button", class: "link", onclick: () => go({ view: "terms" }) }, `${undated} bez daty →`) : null),
+      next.length ? h("div", { class: "exams" }, next.map((x) => {
+        const s = subjectById(x.sid), t = dlType(x.kind);
+        return h("button", { type: "button", class: "exam-card" + (x.n <= 7 ? " soon" : ""), style: `--t:${t.c}`, onclick: () => { S.calSel = x.date; S.calMonth = x.date.slice(0, 7); render(); } },
+          h("span", { class: "exam-n num" }, h("b", { text: x.n === 0 ? "dziś" : x.n === 1 ? "jutro" : String(x.n) }), x.n > 1 ? h("small", { text: plural(x.n, "dzień", "dni", "dni") }) : null),
+          h("span", { class: "exam-txt" },
+            h("span", { class: "typechip", style: `--t:${t.c}`, text: t.label }),
+            h("b", { text: s ? s.pl : x.title }),
+            h("span", { class: "muted", text: fmtKey(x.date) + (x.time ? ", " + x.time : "") + (x.approx ? " · orientacyjnie" : "") })));
+      })) : h("p", { class: "muted", text: "Żadna data kolokwium ani egzaminu nie jest jeszcze ogłoszona." }));
+  }
+  function calendarBlock(all) {
+    all = all || (PAID() ? termItems() : []);
     const tk = todayKey();
     if (!S.calMonth) S.calMonth = tk.slice(0, 7);
     if (!S.calSel) S.calSel = tk;
@@ -1979,43 +2114,67 @@ body::before { opacity: .8; }
       if (i >= 35 && d.getMonth() !== m - 1) break;
       const info = dayInfo(k), weekend = d.getDay() % 6 === 0;
       const cls = S.group && info.p ? classesOn(k, S.group, S.sub) : [];
-      const dls = visDeadlines().filter((x) => x.date === k);
+      const items = calItemsOn(k, all), mine = myEventsOn(k);
+      const exams = items.filter((x) => EXAM_KINDS.has(x.kind));
+      const others = items.filter((x) => !EXAM_KINDS.has(x.kind));
+      const sesja = /sesja/i.test(info.off || "");
+      const chips = [
+        ...exams.map((x) => h("span", { class: "ev exam", style: `--t:${dlType(x.kind).c}`, title: x.title, text: (x.approx ? "~ " : "") + (subjectById(x.sid)?.abbr ? `${dlType(x.kind).label}: ${subjectById(x.sid).pl}` : x.title) })),
+        ...others.map((x) => h("span", { class: "ev", style: `--t:${dlType(x.kind).c}`, title: x.title, text: (x.approx ? "~ " : "") + x.title })),
+        ...mine.map((e) => h("span", { class: "ev mine", style: `--t:${myKind(e.kind).c}`, title: e.title, text: (e.time ? e.time + " " : "") + e.title })),
+      ];
       cells.push(h("button", {
-        type: "button", class: ["day", d.getMonth() !== m - 1 ? "out" : "", (info.off && !weekend) || weekend ? "off" : "", k === tk ? "today" : "", k === S.calSel ? "sel" : ""].filter(Boolean).join(" "),
-        "aria-label": fmtKey(k), onclick: () => { S.calSel = k; render(); },
+        type: "button",
+        class: ["day", d.getMonth() !== m - 1 ? "out" : "", (info.off && !weekend) || weekend ? "off" : "", sesja ? "sesja" : "", exams.length ? "has-exam" : "", k === tk ? "today" : "", k === S.calSel ? "sel" : ""].filter(Boolean).join(" "),
+        style: exams.length ? `--t:${dlType(exams.some((x) => x.kind === "egzamin") ? "egzamin" : "kolokwium").c}` : null,
+        "aria-label": fmtKey(k) + (exams.length ? `, ${exams.length} ${plural(exams.length, "zaliczenie", "zaliczenia", "zaliczeń")}` : "") + (mine.length ? `, ${mine.length} ${plural(mine.length, "Twój wpis", "Twoje wpisy", "Twoich wpisów")}` : ""),
+        onclick: () => { S.calSel = k; render(); },
+        ondblclick: () => openMyEvent(null, k),
       },
-        h("span", { class: "dn" }, h("span", { class: "num", text: d.getDate() }), info.p && !weekend ? h("span", { class: "par", title: info.p === "odd" ? "tydzień nieparzysty" : "tydzień parzysty", text: info.p === "odd" ? "N" : "P" }) : null),
-        info.off && !weekend && d.getMonth() === m - 1 && info.off ? h("span", { class: "cnt", text: info.off }) : null,
+        h("span", { class: "dn" }, h("span", { class: "num", text: d.getDate() }), exams.length ? h("span", { class: "bang", "aria-hidden": "true", text: "!" }) : info.p && !weekend ? h("span", { class: "par", title: info.p === "odd" ? "tydzień nieparzysty" : "tydzień parzysty", text: info.p === "odd" ? "N" : "P" }) : null),
+        info.off && !weekend && d.getMonth() === m - 1 && !chips.length ? h("span", { class: "cnt", text: info.off }) : null,
         cls.length ? h("span", { class: "cnt", text: `${cls.length} ${plural(cls.length, "zajęcia", "zajęcia", "zajęć")}` }) : null,
-        dls.slice(0, 2).map((x) => h("span", { class: "ev", style: `--t:${dlType(x.type).c}`, text: (x.approx ? "~ " : "") + x.title })),
-        dls.length > 2 ? h("span", { class: "cnt", text: `+${dls.length - 2} więcej` }) : null,
+        chips.slice(0, 3),
+        chips.length > 3 ? h("span", { class: "cnt more", text: `+${chips.length - 3}` }) : null,
       ));
     }
     const sel = S.calSel, selInfo = dayInfo(sel), selCls = S.group ? classesOn(sel, S.group, S.sub) : [];
-    const selDl = visDeadlines().filter((x) => x.date === sel).sort((a, b) => (a.time || "").localeCompare(b.time || ""));
+    const selItems = calItemsOn(sel, all), selMine = myEventsOn(sel);
+    const monthExams = PAID() ? all.filter((x) => EXAM_KINDS.has(x.kind) && x.date && x.date.slice(0, 7) === S.calMonth).length : 0;
     return [
       h("section", { class: "stack" },
         h("div", { class: "cal-head" },
           h("button", { type: "button", class: "btn small", "aria-label": "Poprzedni miesiąc", onclick: () => shift(-1) }, "‹"),
           h("h2", { text: `${MONTHS[m - 1]} ${y}`.replace(/^./, (c) => c.toUpperCase()) }),
           h("button", { type: "button", class: "btn small", "aria-label": "Następny miesiąc", onclick: () => shift(1) }, "›"),
-          h("button", { type: "button", class: "btn small ghost", onclick: () => { S.calMonth = tk.slice(0, 7); S.calSel = tk; render(); } }, "Dziś")),
+          h("button", { type: "button", class: "btn small ghost", onclick: () => { S.calMonth = tk.slice(0, 7); S.calSel = tk; render(); } }, "Dziś"),
+          monthExams ? h("span", { class: "chip bad", style: "margin-left:auto", text: `${monthExams} ${plural(monthExams, "zaliczenie", "zaliczenia", "zaliczeń")} w tym miesiącu` }) : null),
         h("div", { class: "cal-scroll" }, h("div", { class: "cal" }, DOW.map((d) => h("span", { class: "dow", text: d })), cells)),
-        h("div", { class: "legend" }, h("span", { text: "N / P: tydzień nieparzysty / parzysty" }), DL_TYPES.map((t) => h("span", {}, h("i", { class: "dot", style: `--c:${t.c}` }), t.label))),
+        h("div", { class: "legend" },
+          h("span", {}, h("i", { class: "dot", style: "--c:#B42318" }), "Egzamin"),
+          h("span", {}, h("i", { class: "dot", style: "--c:#9A5B00" }), "Kolokwium"),
+          h("span", {}, h("i", { class: "dot", style: "--c:#1A7F45" }), "Projekt / zadanie"),
+          h("span", {}, h("i", { class: "dot mine" }), "Twój wpis"),
+          h("span", {}, h("i", { class: "sw sesja" }), "Sesja"),
+          h("span", { text: "N / P: tydzień nieparzysty / parzysty" })),
       ),
       h("section", { class: "hub" },
         h("div", { class: "panel" },
-          h("div", { class: "panel-head" }, h("h2", { text: fmtKey(sel).replace(/^./, (c) => c.toUpperCase()) }), selInfo.p ? h("span", { class: "eyebrow", text: `tydzień ${selInfo.p === "odd" ? "nieparzysty" : "parzysty"}` }) : null),
+          h("div", { class: "panel-head" }, h("h2", { text: fmtKey(sel).replace(/^./, (c) => c.toUpperCase()) }), selInfo.p ? h("span", { class: "eyebrow", text: `tydzień ${selInfo.p === "odd" ? "nieparzysty" : "parzysty"}` }) : selInfo.off ? h("span", { class: "eyebrow", text: selInfo.off }) : null),
           selInfo.n ? h("p", { class: "muted", text: selInfo.n }) : null,
-          !S.group ? h("p", { class: "muted", text: "Wybierz grupę, żeby zobaczyć zajęcia." })
-            : selCls.length ? classRows(selCls, sel) : h("p", { class: "muted", text: selInfo.off || "Brak zajęć tego dnia." }),
+          PAID() ? (selItems.length ? h("div", { class: "terms" }, selItems.map((x) => termRow(x))) : null) : null,
+          h("div", { class: "stack", style: "gap:8px" },
+            h("div", { class: "row", style: "justify-content:space-between" }, h("h3", { style: "margin:0", text: "Twoje wpisy" }), h("button", { type: "button", class: "btn small", onclick: () => openMyEvent(null, sel) }, "+ Dodaj")),
+            selMine.length ? h("div", { class: "myevs" }, selMine.map(myEventRow)) : h("p", { class: "muted", style: "margin:0", text: "Nic. Dopisz naukę, spotkanie albo przypomnienie." })),
         ),
         h("div", { class: "panel" },
-          h("div", { class: "panel-head" }, h("h2", { text: "Terminy tego dnia" })),
-          !PAID() ? lockBox("Terminy są w pełnej wersji.") : selDl.length ? h("div", {}, selDl.map(deadlineRow)) : h("p", { class: "muted", text: "Nic nie wpisano." }),
+          h("div", { class: "panel-head" }, h("h2", { text: "Zajęcia" })),
+          !S.group ? h("p", { class: "muted", text: "Wybierz grupę, żeby zobaczyć zajęcia." })
+            : selCls.length ? classRows(selCls, sel) : h("p", { class: "muted", text: selInfo.off || "Brak zajęć tego dnia." }),
+          !PAID() ? lockBox("Terminy i zaliczenia roku są w pełnej wersji.") : null,
         ),
       ),
-      h("p", { class: "foot-note" }, `Plan zajęć: stan z ${PLAN.updated || "—"}. Zmiany wprowadzone później sprawdź na `, h("a", { class: "link", href: PLAN_URL, target: "_blank", rel: "noopener" }, "stronie z planem"), "."),
+      h("p", { class: "foot-note" }, `Plan zajęć: stan z ${PLAN.updated || "—"}. Zmiany wprowadzone później sprawdź na `, h("a", { class: "link", href: PLAN_URL, target: "_blank", rel: "noopener" }, "stronie z planem"), ". Dwuklik na dniu dodaje Twój wpis."),
     ];
   }
 
