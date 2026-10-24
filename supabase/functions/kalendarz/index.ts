@@ -11,7 +11,7 @@ const APP = "https://skrotbm.pl";
 const SLOTS = [["8:15","9:45"],["10:00","11:30"],["12:00","13:30"],["13:45","15:15"],["15:30","17:00"],["17:15","18:45"],["19:00","20:30"]];
 const KIND: Record<string, string> = { W: "wykład", CW: "ćwiczenia", LAB: "laboratorium", K: "konwersatorium", S: "seminarium" };
 const SHORT: Record<string, string> = { W: "W", CW: "ĆW", LAB: "LAB", K: "K", S: "S" };
-const DL_TYPE: Record<string, string> = { kolokwium: "Kolokwium", egzamin: "Egzamin", projekt: "Projekt", zadanie: "Zadanie", inne: "Termin" };
+const DL_TYPE: Record<string, string> = { kolokwium: "Kolokwium", egzamin: "Egzamin", projekt: "Projekt", prezentacja: "Prezentacja", zadanie: "Zadanie", formalnosci: "Formalności", wydarzenie: "Wydarzenie", inne: "Termin" };
 
 function serverKey(): string {
   try { const k = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") || "{}"); if (k.default) return k.default; } catch { /* stary format */ }

@@ -910,6 +910,36 @@ button.pm-sq:hover { transform: scale(1.12); }
 .term-group h2 { font-size: 1.02rem; }
 .term-group.late h2 { color: var(--bad); }
 details.undated summary { cursor: pointer; }
+/* Terminy: kafelki kategorii */
+.tcats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.tcat { display: grid; gap: 4px; align-content: start; text-align: left; padding: 12px 12px 11px; border: 1px solid var(--line); border-top: 4px solid var(--cc); border-radius: 14px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; min-width: 0; transition: background .15s, border-color .15s; }
+.tcat:hover { background: color-mix(in srgb, var(--cc) 5%, var(--surface)); }
+.tcat:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+.tcat[aria-pressed="true"] { background: color-mix(in srgb, var(--cc) 10%, var(--surface)); border-color: var(--cc); box-shadow: 0 0 0 1px var(--cc) inset; }
+.tcat.empty0 { opacity: .62; }
+.tcat .tc-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; color: var(--cc); }
+.tcat .tc-top .ico svg { width: 22px; height: 22px; }
+.tcat .tc-n { font-size: 1.5rem; font-weight: 800; line-height: 1; color: var(--ink); }
+.tcat .tc-name { font-weight: 800; font-size: .95rem; line-height: 1.2; overflow-wrap: anywhere; }
+.tcat .tc-line { font-size: .8rem; font-weight: 700; color: var(--muted); }
+.tcat .tc-line.soon { color: var(--warn); }
+.tcat .tc-line.bad { color: var(--bad); }
+@media (max-width: 900px) { .tcats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 520px) {
+  .tcats { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -16px; padding: 2px 16px 6px; scrollbar-width: none; }
+  .tcats::-webkit-scrollbar { display: none; }
+  .tcat { flex: 0 0 132px; scroll-snap-align: start; }
+}
+/* Terminy: sekcje kategorii */
+.term-cat { display: grid; gap: 10px; }
+.tcat-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding-bottom: 6px; border-bottom: 2px solid color-mix(in srgb, var(--cc) 35%, var(--line)); }
+.tcat-head h2 { display: flex; align-items: center; gap: 8px; font-size: 1.15rem; font-weight: 800; }
+.tcat-head h2 .ico { color: var(--cc); }
+.tcat-head h2 .ico svg { width: 22px; height: 22px; }
+.tcat-head > .muted { font-size: .86rem; }
+.term-cat .more-in { justify-self: start; font-weight: 700; font-size: .92rem; }
+.tcat-sel { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--cc) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--cc) 30%, var(--line)); }
+.tcat-sel > .ico { color: var(--cc); }
 details.undated[open] summary { margin-bottom: 12px; }
 @media (max-width: 520px) { .term { grid-template-columns: auto 1fr; } .term > .btn { grid-column: 2; justify-self: start; } }
 
@@ -1208,11 +1238,14 @@ body::before { opacity: .8; }
   const DL_TYPES = [
     { id: "kolokwium", label: "Kolokwium", c: "#9A5B00" },
     { id: "egzamin", label: "Egzamin", c: "#B42318" },
-    { id: "projekt", label: "Projekt", c: "#1A7F45" },
     { id: "zadanie", label: "Zadanie", c: "#1A7F45" },
+    { id: "projekt", label: "Projekt", c: "#4F7A0E" },
+    { id: "prezentacja", label: "Prezentacja", c: "#4F7A0E" },
+    { id: "formalnosci", label: "Formalności", c: "#5A6B61" },
+    { id: "wydarzenie", label: "Wydarzenie", c: "#2F6F73" },
     { id: "inne", label: "Inne", c: "#5A6B61" },
   ];
-  const dlType = (id) => DL_TYPES.find((t) => t.id === id) || DL_TYPES[4];
+  const dlType = (id) => DL_TYPES.find((t) => t.id === id) || DL_TYPES[DL_TYPES.length - 1];
 
   // ================= state =================
   const S = {
@@ -1361,6 +1394,12 @@ body::before { opacity: .8; }
   // ================= nav =================
   // Ikony: proste kreski, jeden styl w całej apce (kolor dziedziczą z tekstu).
   const ICON_PATHS = {
+    t_zal: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+    t_zad: '<path d="M14.5 4.5l5 5L9 20H4v-5z"/><path d="m12.5 6.5 5 5"/>',
+    t_proj: '<rect x="3.5" y="4" width="17" height="11" rx="1.5"/><path d="M12 15v5M8.5 20h7M7.5 11.5l3-3 2 2 4-4"/>',
+    t_form: '<path d="M8 4h8M9 2.5h6v3H9z"/><path d="M7 4H5.5v17h13V4H17"/><path d="M9 11h6M9 15h4"/>',
+    t_wyd: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/><path d="m12 12.5 1 2 2.2.3-1.6 1.5.4 2.2-2-1-2 1 .4-2.2-1.6-1.5 2.2-.3z"/>',
+    t_all: '<path d="M4 6h16M4 12h16M4 18h10"/>',
     home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/>',
     materials: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>',
     tasks: '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12 3 3 5-6"/>',
@@ -1486,8 +1525,17 @@ body::before { opacity: .8; }
       stale ? " · nowe zadania mogą pojawić się z opóźnieniem" : "");
   }
   // ================= TERMINY: zadania od prowadzących, terminy roku i daty zaliczeń w jednej liście =================
-  const TERM_KIND = { kolokwium: "Kolokwium", egzamin: "Egzamin", projekt: "Projekt", zadanie: "Zadanie", inne: "Inne" };
-  const TASK_TO_TERM = { projekt: "projekt", prezentacja: "projekt", test: "kolokwium", zadanie: "zadanie", formalnosci: "inne" };
+  const TERM_KIND = { kolokwium: "Kolokwium", egzamin: "Egzamin", projekt: "Projekt", prezentacja: "Prezentacja", zadanie: "Zadanie", formalnosci: "Formalności", wydarzenie: "Wydarzenie", inne: "Inne" };
+  const TASK_TO_TERM = { projekt: "projekt", prezentacja: "prezentacja", test: "kolokwium", zadanie: "zadanie", formalnosci: "formalnosci" };
+  // Kategorie w zakładce Terminy: każdy rodzaj terminu trafia do jednej z nich.
+  const TERM_CATS = [
+    { id: "zal", label: "Zaliczenia", hint: "kolokwia i egzaminy", kinds: ["kolokwium", "egzamin"], c: "#B42318" },
+    { id: "zad", label: "Zadania", hint: "prace do oddania", kinds: ["zadanie"], c: "#1A7F45" },
+    { id: "proj", label: "Projekty", hint: "projekty i prezentacje", kinds: ["projekt", "prezentacja"], c: "#4F7A0E" },
+    { id: "form", label: "Formalności", hint: "zapisy, deklaracje, dokumenty", kinds: ["formalnosci"], c: "#5A6B61" },
+    { id: "wyd", label: "Wydarzenia i inne", hint: "spotkania, odrabianie zajęć, reszta", kinds: ["wydarzenie", "inne"], c: "#2F6F73" },
+  ];
+  const catOf = (kind) => TERM_CATS.find((c) => c.kinds.includes(kind)) || TERM_CATS[TERM_CATS.length - 1];
   const doneKey = (k) => !!S.progress?.tasksDone?.[k];
   function toggleKey(k) {
     const td = { ...(S.progress.tasksDone || {}) };
@@ -1580,14 +1628,20 @@ body::before { opacity: .8; }
   function viewTerms() {
     if (S.route.mode === "cal") { S.route = { view: "calendar" }; return viewCalendar(); }
     const f = S.taskFilter === "done" ? "done" : "open";
+    if (S.termCat == null) S.termCat = ls.get("skrot-termcat") || "all";
+    const cat = TERM_CATS.some((c) => c.id === S.termCat) ? S.termCat : "all";
+    const setCat = (id) => { S.termCat = id; ls.set("skrot-termcat", id); render(); };
     const all = termItems();
-    const shown = all.filter((x) => (f === "done" ? x.done : !x.done && !(x.n != null && x.n < -14)));
+    const live = (x) => !(x.n != null && x.n < -14);
+    const inF = (x) => (f === "done" ? x.done : !x.done && live(x));
+    const base = all.filter(inF);
+    const shown = cat === "all" ? base : base.filter((x) => catOf(x.kind).id === cat);
     const openN = all.filter((x) => !x.done && !(x.n != null && x.n < 0)).length;
-    const undated = f === "open" ? zalUndated() : [];
+    const undated = f === "open" && (cat === "all" || cat === "zal") ? zalUndated() : [];
     const seg = (items, cur, set, label) => h("div", { class: "seg", role: "group", "aria-label": label }, items.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(cur === k), onclick: () => set(k) }, l)));
     const head = h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
-        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy: kolokwia, egzaminy, projekty i zadania od prowadzących." })),
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy, podzielone na zaliczenia, zadania, projekty i resztę." })),
         h("div", { class: "row", style: "gap:8px" },
           h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
           S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj termin") : null)),
@@ -1597,14 +1651,52 @@ body::before { opacity: .8; }
       !S.group ? h("div", { class: "notice" }, h("p", { style: "margin:0 0 8px", text: "Wybierz grupę, a pokażę tylko to, co Cię dotyczy." }), groupPicker(true)) : null);
     if (!PAID()) return [head, lockBox("Terminy kolokwiów, egzaminów i zadania od prowadzących widzą osoby z pełnym dostępem."), syncLine()];
     if (!S.ready) return [head, h("p", { class: "muted", text: "Ładuję…" })];
-    const groups = termGroups(shown).filter(([, xs]) => xs.length);
-    return [head,
-      groups.length ? groups.map(([label, xs]) => h("section", { class: "term-group" + (label === "Po terminie" ? " late" : "") },
-        h("h2", {}, label, h("span", { class: "muted num", text: " " + xs.length })),
-        h("div", { class: "terms" }, xs.map((x) => termRow(x)))))
-      : h("div", { class: "empty" }, h("h3", { text: f === "done" ? "Nic jeszcze nie odhaczono" : "Nic nie czeka" }),
-          h("p", { class: "muted", text: f === "done" ? "Zrobione terminy i zadania trafią tutaj, gdy je odhaczysz." : "Nowe kolokwia i zadania od prowadzących pojawią się tutaj, gdy starosta je wpisze albo prowadzący wrzuci post w Teams." }),
-          S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn", onclick: () => openDeadline(null) }, "+ Dodaj termin")) : null),
+
+    // Kafelki kategorii: ile czeka, co najbliżej, czy coś przepadło.
+    const openOf = (c) => all.filter((x) => !x.done && live(x) && (!c || catOf(x.kind).id === c.id));
+    const tile = (c) => {
+      const xs = openOf(c), late = xs.filter((x) => x.n != null && x.n < 0).length;
+      const next = xs.find((x) => x.n != null && x.n >= 0);
+      const line = late ? h("span", { class: "tc-line bad", text: `${late} po terminie` })
+        : next ? h("span", { class: "tc-line" + (next.n <= 2 ? " soon" : ""), text: `najbliżej ${whenN(next.n)}` })
+        : h("span", { class: "tc-line muted", text: xs.length ? "bez daty" : "nic nie czeka" });
+      const id = c ? c.id : "all";
+      return h("button", { type: "button", class: "tcat" + (xs.length ? "" : " empty0"), style: `--cc:${c ? c.c : "var(--green-700, #1A7F45)"}`, "aria-pressed": String(cat === id),
+        title: c ? c.hint : "Wszystkie kategorie", onclick: () => setCat(cat === id && id !== "all" ? "all" : id) },
+        h("span", { class: "tc-top" }, icon(c ? "t_" + c.id : "t_all"), h("b", { class: "tc-n num", text: xs.length })),
+        h("span", { class: "tc-name", text: c ? c.label : "Wszystko" }),
+        line);
+    };
+    const tiles = h("nav", { class: "tcats", "aria-label": "Kategorie terminów" }, tile(null), TERM_CATS.map(tile));
+
+    const emptyBox = () => h("div", { class: "empty" },
+      h("h3", { text: f === "done" ? "Nic jeszcze nie odhaczono" : cat === "all" ? "Nic nie czeka" : `${TERM_CATS.find((c) => c.id === cat).label}: nic nie czeka` }),
+      h("p", { class: "muted", text: f === "done" ? "Zrobione terminy i zadania trafią tutaj, gdy je odhaczysz." : "Nowe kolokwia i zadania od prowadzących pojawią się tutaj, gdy starosta je wpisze albo prowadzący wrzuci post w Teams." }),
+      S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn", onclick: () => openDeadline(null) }, "+ Dodaj termin")) : null);
+
+    let body;
+    if (cat === "all") {
+      // Widok ogólny: osobna sekcja dla każdej kategorii, najbliższe na górze.
+      const LIMIT = 4;
+      const secs = TERM_CATS.map((c) => [c, shown.filter((x) => catOf(x.kind).id === c.id)]).filter(([, xs]) => xs.length);
+      body = secs.length ? secs.map(([c, xs]) => h("section", { class: "term-cat", style: `--cc:${c.c}` },
+        h("div", { class: "tcat-head" },
+          h("h2", {}, icon("t_" + c.id), c.label, h("span", { class: "muted num", text: " " + xs.length })),
+          h("span", { class: "muted", text: c.hint })),
+        h("div", { class: "terms" }, xs.slice(0, LIMIT).map((x) => termRow(x))),
+        xs.length > LIMIT ? h("button", { type: "button", class: "link more-in", onclick: () => setCat(c.id) }, `Pokaż wszystkie ${c.label.toLowerCase()} (${xs.length}) →`) : null))
+        : emptyBox();
+    } else {
+      const c = TERM_CATS.find((x) => x.id === cat);
+      const groups = termGroups(shown).filter(([, xs]) => xs.length);
+      body = [h("div", { class: "tcat-sel", style: `--cc:${c.c}` }, icon("t_" + c.id), h("span", {}, h("b", { text: c.label }), h("span", { class: "muted", text: " · " + c.hint })),
+          h("button", { type: "button", class: "link", style: "margin-left:auto", onclick: () => setCat("all") }, "Pokaż wszystko")),
+        groups.length ? groups.map(([label, xs]) => h("section", { class: "term-group" + (label === "Po terminie" ? " late" : "") },
+          h("h2", {}, label, h("span", { class: "muted num", text: " " + xs.length })),
+          h("div", { class: "terms" }, xs.map((x) => termRow(x)))))
+        : emptyBox()];
+    }
+    return [head, tiles, body,
       undated.length ? h("details", { class: "panel undated" },
         h("summary", {}, h("b", { text: `Zaliczenia bez ogłoszonej daty · ${undated.length}` }), h("span", { class: "muted", text: " · z zasad przedmiotów" })),
         h("div", { class: "list" }, undated.map(({ sb, p }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "subject", id: sb.id, tab: "zal" }) },
