@@ -251,7 +251,7 @@ main { padding-block: 24px calc(56px + var(--tabbar-h)); display: flex; flex-dir
 .input { width: 100%; padding: 9px 13px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); }
 .input:focus { border-color: var(--accent); outline: none; }
 textarea.input { min-height: 72px; resize: vertical; }
-label.field { display: grid; gap: 4px; font-size: .86rem; font-weight: 700; min-width: 0; }
+label.field, div.field { display: grid; gap: 4px; font-size: .86rem; font-weight: 700; min-width: 0; }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .split3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
 @media (max-width: 600px) { .split, .split3 { grid-template-columns: 1fr; } }
@@ -1462,7 +1462,7 @@ body::before { opacity: .8; }
     }
     for (const d of visDeadlines()) {
       if (d.taskId || (sid && d.subjectId !== sid)) continue;
-      out.push({ key: "dl:" + d.id, src: "dl", obj: d, kind: TERM_KIND[d.type] ? d.type : "inne", title: d.title, sid: d.subjectId || null, date: d.date, time: d.time || "", approx: !!d.approx, done: doneKey("dl:" + d.id) });
+      out.push({ key: "dl:" + d.id, src: "dl", obj: d, kind: TERM_KIND[d.type] ? d.type : "inne", title: d.title, sid: d.subjectId || null, date: d.date, time: d.time || "", approx: !!d.approx, groups: d.groups, subs: d.subs, done: doneKey("dl:" + d.id) });
     }
     // Daty zaliczeń z „Jak zaliczyć”, jeśli nikt nie wpisał ich jeszcze jako terminu.
     for (const sb of SUBJECTS) {
@@ -1527,6 +1527,7 @@ body::before { opacity: .8; }
           h("span", { class: "typechip", style: `--t:${dlType(x.kind).c}`, text: TERM_KIND[x.kind] || "Inne" }),
           h("span", { class: "when" + (late ? " late" : x.n != null && x.n <= 2 && !x.done ? " soon" : ""), text: whenText(x) }),
           x.approx ? h("span", { class: "chip sun", title: "Data nie jest ogłoszona: to ostatnie zajęcia z planu albo okno sesji.", text: "data orientacyjna" }) : null,
+          x.src === "dl" ? groupChip(x) : null,
           !opts.noSubject ? (s ? h("button", { type: "button", class: "link subj", onclick: () => go({ view: "subject", id: s.id }) }, s.pl) : h("span", { class: "subj", text: "ogólne" })) : null)),
       isPrep(x) && !x.done && !opts.noPrep ? h("button", { type: "button", class: "btn small", onclick: () => go(prepRoute(x)) }, "Przygotuj się") : null);
   }
@@ -1643,14 +1644,16 @@ body::before { opacity: .8; }
   }
 
   const forMyDl = (d) => (!d.groups?.length || !S.group || d.groups.includes(S.group)) && (!d.subs?.length || !S.sub || d.subs.includes(S.sub));
-  const visDeadlines = () => S.deadlines.filter(forMyDl);
+  const visDeadlines = () => (S.canEdit ? S.deadlines : S.deadlines.filter(forMyDl));
+  const groupsLabel = (d) => d?.groups?.length ? d.groups.join(", ") + (d.subs?.length ? " · lab " + d.subs.join("/") : "") : "";
+  const groupChip = (d) => groupsLabel(d) ? h("span", { class: "chip", title: "Termin tylko dla tych grup", text: groupsLabel(d) }) : null;
   const approxChip = (d) => d.approx ? h("span", { class: "chip sun", title: "Forma zaliczenia z sylabusa. Data nie jest ogłoszona: to ostatnie zajęcia z planu albo okno sesji; zmień ją, gdy prowadzący poda termin.", text: "data orientacyjna" }) : null;
   function deadlineRow(d) {
     const dd = dparse(d.date), n = daysUntil(d.date), t = dlType(d.type), s = subjectById(d.subjectId);
     return h("div", { class: "dl" },
       h("div", { class: "datebox" + (n <= 3 ? " soon" : "") }, h("b", { class: "num", text: dd.getDate() }), h("small", { text: MON_SHORT[dd.getMonth()] })),
       h("div", { style: "min-width:0" },
-        h("div", { class: "row", style: "gap:6px" }, h("span", { class: "typechip", style: `--t:${t.c}`, text: t.label }), h("span", { class: "fm", text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` }), d.time ? h("span", { class: "fm num", text: "· " + d.time }) : null, approxChip(d)),
+        h("div", { class: "row", style: "gap:6px" }, h("span", { class: "typechip", style: `--t:${t.c}`, text: t.label }), h("span", { class: "fm", text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` }), d.time ? h("span", { class: "fm num", text: "· " + d.time }) : null, approxChip(d), groupChip(d)),
         h("button", { type: "button", class: "link", style: "color:var(--ink);text-align:left", onclick: () => openDeadline(d) }, d.title),
         h("div", { class: "fm" }, s ? h("span", {}, h("i", { class: "dot", style: `--c:${s.color};display:inline-block;margin-right:6px` }), s.pl) : "ogólne",
           s && ["kolokwium", "egzamin"].includes(d.type) ? h("button", { type: "button", class: "link", style: "margin-left:10px;font-size:.84rem", onclick: () => go({ view: "exam", sid: s.id, part: partsOf(s.id).find((k) => zalPartOf(s.id, k)?.f === (d.type === "egzamin" ? "E" : "ZO")) || partsOf(s.id)[0] }) }, "Przygotuj się →") : null),
@@ -1857,7 +1860,7 @@ body::before { opacity: .8; }
         return [
           h("span", { class: "typechip", style: `--t:${t.c};justify-self:start`, text: t.label }),
           h("h2", { text: d.title }),
-          h("p", { class: "muted", text: `${fmtKey(d.date)}${d.time ? ", " + d.time : ""} · ${s ? s.pl : "ogólne"}${d.approx ? " · data orientacyjna" : ""}` }),
+          h("p", { class: "muted", text: `${fmtKey(d.date)}${d.time ? ", " + d.time : ""} · ${s ? s.pl : "ogólne"}${groupsLabel(d) ? " · " + groupsLabel(d) : ""}${d.approx ? " · data orientacyjna" : ""}` }),
           d.note ? h("p", { text: d.note }) : null,
           h("p", { class: "foot-note", text: `Dodano ${ago(d.createdAt)}${who(d.createdBy) ? " przez " + who(d.createdBy) : ""}. Terminy wpisuje starosta. Widzisz błąd? Napisz na skrotbm@outlook.com.` }),
           h("div", { class: "row" }, s ? h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "subject", id: s.id }); } }, "Materiały z przedmiotu") : null, h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")),
@@ -1872,17 +1875,30 @@ body::before { opacity: .8; }
       const drawType = () => type.replaceChildren(...DL_TYPES.map((t) => h("button", { type: "button", "aria-pressed": String(typeVal === t.id), onclick: () => { typeVal = t.id; drawType(); } }, t.label)));
       drawType();
       const note = h("textarea", { class: "input", id: "dl-note", maxlength: "400", placeholder: "Szczegóły: zakres materiału, forma, sala…" }, d?.note || "");
+      // Dla kogo: żadna grupa zaznaczona = cały rok.
+      const allGroups = Object.keys(PLAN.groups || {});
+      let grpVal = (d?.groups || []).filter((g) => allGroups.includes(g));
+      const grp = h("div", { class: "seg", role: "group", "aria-label": "Dla grup" });
+      const drawGrp = () => grp.replaceChildren(
+        h("button", { type: "button", "aria-pressed": String(!grpVal.length), onclick: () => { grpVal = []; drawGrp(); } }, "Cały rok"),
+        ...allGroups.map((g) => h("button", { type: "button", "aria-pressed": String(grpVal.includes(g)), onclick: () => { grpVal = grpVal.includes(g) ? grpVal.filter((x) => x !== g) : [...grpVal, g].sort(); if (grpVal.length === allGroups.length) grpVal = []; drawGrp(); } }, g)));
+      drawGrp();
+      // Data orientacyjna: zdejmij, gdy prowadzący poda termin. Zmiana daty zdejmuje ją sama.
+      const approx = h("input", { type: "checkbox", id: "dl-approx", checked: d?.approx ? true : null });
+      date.addEventListener("change", () => { approx.checked = false; });
       const err = h("p", { class: "notice err", hidden: true });
       return [
         h("h2", { text: edit ? "Edytuj termin" : "Nowy termin dla roku" }),
         type,
         h("label", { class: "field", for: "dl-title" }, "Co", title),
         h("div", { class: "split3" }, h("label", { class: "field", for: "dl-subject" }, "Przedmiot", subj), h("label", { class: "field", for: "dl-date" }, "Data", date), h("label", { class: "field", for: "dl-time" }, "Godzina (opcjonalnie)", time)),
+        h("div", { class: "field" }, h("span", { text: "Dla kogo" }), grp),
+        h("label", { class: "row", for: "dl-approx", style: "gap:8px;align-items:center;font-size:.92rem" }, approx, h("span", {}, "Data orientacyjna ", h("span", { class: "muted", text: "(odznacz, gdy prowadzący potwierdził termin)" }))),
         h("label", { class: "field", for: "dl-note" }, "Notatka", note),
         err,
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn primary", onclick: async (e) => {
-            const data = { title: title.value.trim(), date: date.value, time: time.value || "", subjectId: subj.value, type: typeVal, note: note.value.trim() };
+            const data = { title: title.value.trim(), date: date.value, time: time.value || "", subjectId: subj.value, type: typeVal, note: note.value.trim(), groups: grpVal, approx: approx.checked };
             if (!data.title || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) { err.textContent = "Wpisz, czego dotyczy termin, i wybierz datę."; err.hidden = false; return; }
             e.currentTarget.disabled = true;
             try {
@@ -4218,7 +4234,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const own = examSet(sid, part).date;
     if (own && own >= todayKey()) return { date: own, own: true };
     const k = todayKey();
-    const ds = visDeadlines().filter((d) => d.subjectId === sid && ["kolokwium", "egzamin"].includes(d.type) && d.date >= k).sort((a, b) => a.date.localeCompare(b.date));
+    const ds = S.deadlines.filter(forMyDl).filter((d) => d.subjectId === sid && ["kolokwium", "egzamin"].includes(d.type) && d.date >= k).sort((a, b) => a.date.localeCompare(b.date));
     const want = zalPartOf(sid, part)?.f === "E" ? "egzamin" : "kolokwium";
     const d = ds.find((x) => x.type === want) || (partsOf(sid).length === 1 ? ds[0] : null);
     return d ? { date: d.date, approx: !!d.approx, dl: d } : null;
