@@ -7,8 +7,13 @@
   const CONFIG = {
     url: "https://zkyxujkdrovfzpasocmv.supabase.co",
     key: "sb_publishable_lVORMiTz9DlQaekBlfKf3Q_qPbKDHxb",
-    paymentLink: "https://buy.stripe.com/test_14A6oGfNjg5g83Pg6NbEA00", // TRYB TESTOWY Stripe — po aktywacji konta podmienić na link produkcyjny
-    price: "199 zł",
+    // TRYB TESTOWY Stripe — po aktywacji konta podmienić wszystkie trzy linki na produkcyjne.
+    plans: {
+      rok: { link: "https://buy.stripe.com/test_14A6oGfNjg5g83Pg6NbEA00", price: "199 zł" },        // jednorazowo, oba semestry
+      miesiac: { link: "https://buy.stripe.com/test_eVq6oG0Sp6uG83P8ElbEA01", price: "35 zł / mies." }, // subskrypcja, anulowanie w portalu
+    },
+    portalLink: "https://billing.stripe.com/p/login/test_14A6oGfNjg5g83Pg6NbEA00", // portal klienta Stripe: anulowanie i karta
+    price: "199 zł/rok albo 35 zł/mies.",
   };
   const TABLE = "nauka_docs";
   const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress", "exams", "examBank", "glossary", "myMaterials", "myContent"]);
@@ -22,7 +27,7 @@
   let sb = null;
   try { sb = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true, autoRefreshToken: true } }); } catch {}
 
-  const skrot = (window.skrot = { sb, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, until: null, price: CONFIG.price, listeners: new Set() });
+  const skrot = (window.skrot = { sb, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const changed = () => skrot.listeners.forEach((fn) => { try { fn(skrot.state); } catch {} });
 
@@ -47,6 +52,7 @@
     skrot.admin = !!me?.admin;
     skrot.paid = !!(me?.platny ?? me?.czytelnik);
     skrot.until = me?.dostep_do || null;
+    skrot.plan = me?.plan || null;
     return me;
   }
 
@@ -357,17 +363,63 @@
     layer.append(scrim);
     return scrim;
   };
-  skrot.buy = () => {
-    if (skrot.paid) return info("Masz już dostęp", skrot.until ? `Twój dostęp jest ważny do ${plDate(skrot.until)}.` : "Twój dostęp jest aktywny.");
-    if (skrot.state !== "in") {
-      ls.set("skrot-buy", "1");
-      return skrot.openLogin("Najpierw zaloguj się e-mailem: dostęp przypiszemy do tego adresu. Po wpisaniu kodu z maila od razu przejdziesz do płatności.");
-    }
-    if (!CONFIG.paymentLink) return info("Płatności startują wkrótce", "Zakup dostępu będzie możliwy za chwilę. Spróbuj ponownie później albo napisz na skrotbm@outlook.com.");
-    const u = new URL(CONFIG.paymentLink);
+  // Portal klienta Stripe: anulowanie subskrypcji, zmiana karty, faktury.
+  skrot.manage = () => {
+    const u = new URL(CONFIG.portalLink);
+    if (skrot.email) u.searchParams.set("prefilled_email", skrot.email);
+    location.href = u.toString();
+  };
+  const goPay = (plan) => {
+    const link = CONFIG.plans[plan]?.link;
+    if (!link) return info("Płatności startują wkrótce", "Zakup dostępu będzie możliwy za chwilę. Spróbuj ponownie później albo napisz na skrotbm@outlook.com.");
+    const u = new URL(link);
     u.searchParams.set("client_reference_id", skrot.uid);
     u.searchParams.set("prefilled_email", skrot.email);
     location.href = u.toString();
+  };
+  // Wybór planu: rok jednorazowo albo co miesiąc.
+  const choosePlan = () => {
+    const layer = document.getElementById("layer") || document.body;
+    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const card = (plan, title, price, lines, badge) => el("button", {
+      type: "button", class: "plan-card", "data-plan": plan,
+      style: "display:grid;gap:4px;text-align:left;width:100%;padding:14px 16px;border-radius:var(--r,14px);cursor:pointer;font:inherit;color:var(--ink);"
+        + (badge ? "background:var(--accent-soft,#EAF5EE);border:2px solid var(--accent,#1A7F45);" : "background:var(--surface,#fff);border:1px solid var(--line,#BFCEC5);"),
+      onclick: () => { close(); goPay(plan); },
+    },
+      el("span", { style: "display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap" },
+        el("b", { style: "font-size:1.05rem", text: title }),
+        badge ? el("span", { style: "font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink,#fff);background:var(--accent,#1A7F45);border-radius:999px;padding:2px 8px", text: badge }) : null),
+      el("span", { style: "font-size:1.5rem;font-weight:800;color:var(--accent-text,#0E5A30)", text: price }),
+      ...lines.map((t) => el("span", { style: "font-size:.9rem;color:var(--muted,#1F2D25)", text: t })));
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Wybierz plan" },
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wybierz plan" }),
+        el("p", { class: "muted", style: "margin:0", text: `Dostęp przypiszemy do ${skrot.email}.` }),
+        card("rok", "Cały rok", CONFIG.plans.rok.price, ["Jednorazowo, oba semestry 2026/27. Wychodzi ok. 17 zł miesięcznie.", "BLIK, karta albo Przelewy24. Nic się samo nie odnawia."], "Najtaniej"),
+        card("miesiac", "Co miesiąc", CONFIG.plans.miesiac.price, ["Odnawia się co miesiąc. Anulujesz w każdej chwili, dostęp działa do końca opłaconego miesiąca.", "Płatność kartą (także Apple Pay i Google Pay)."]),
+        el("p", { class: "foot-note", style: "margin:0" }, "Płatność przez Stripe. ", el("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", el("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")),
+        el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+    setTimeout(() => scrim.querySelector(".plan-card")?.focus(), 30);
+  };
+  skrot.buy = (plan) => {
+    if (skrot.paid) {
+      if (skrot.plan === "miesiac") {
+        const box = info("Masz już dostęp", skrot.until ? `Subskrypcja miesięczna, opłacona do ${plDate(skrot.until)}. Anulować albo zmienić kartę możesz w portalu Stripe.` : "Subskrypcja miesięczna jest aktywna.");
+        box.querySelector(".modal > div")?.prepend(el("button", { type: "button", class: "btn", onclick: skrot.manage }, "Zarządzaj subskrypcją"));
+        return box;
+      }
+      return info("Masz już dostęp", skrot.until ? `Twój dostęp jest ważny do ${plDate(skrot.until)}.` : "Twój dostęp jest aktywny.");
+    }
+    if (skrot.state !== "in") {
+      ls.set("skrot-buy", plan && CONFIG.plans[plan] ? plan : "1");
+      return skrot.openLogin("Najpierw zaloguj się e-mailem: dostęp przypiszemy do tego adresu. Po wpisaniu kodu z maila wybierzesz plan i przejdziesz do płatności.");
+    }
+    if (plan && CONFIG.plans[plan]) return goPay(plan);
+    choosePlan();
   };
 
   // Po powrocie z płatności: czekamy, aż Stripe potwierdzi (webhook), i przeładowujemy stronę.
@@ -398,7 +450,7 @@
       return;
     }
     if (skrot.state === "in" && ls.get("skrot-after-pay")) { ls.set("skrot-after-pay", null); ls.set("skrot-buy", null); if (!skrot.paid) await waitForPaid(); return; }
-    if (skrot.state === "in" && ls.get("skrot-buy")) { ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(); return; }
+    if (skrot.state === "in" && ls.get("skrot-buy")) { const want = ls.get("skrot-buy"); ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(CONFIG.plans[want] ? want : undefined); return; }
     // Strona przeładowała się w trakcie logowania (np. po przejściu do poczty na telefonie): od razu pole na kod.
     if (skrot.state === "out") { const p = pending.get(); if (p) skrot.openLogin(p.reason, { codeFor: p.email }); }
   }
