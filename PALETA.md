@@ -24,7 +24,11 @@ Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane ra
 | `--teal-600` | `#0F6E6E` | pasek marki u góry |
 | `--mint-100` | `#E6F7EE` | początek gradientu karty „dziś” |
 
-## Motyw „zeszyt w kratkę”
+## Motyw „zeszyt w kratkę” i „słoje”
+
+- jeden powtarzalny wzór: **słoje** (koncentryczne linie z rogu) – w prawym górnym rogu strony (zielone), w lewym dolnym przy stopce (limonkowe), w karcie „Teraz zrób to”, w karcie zajęć, w Powtórkach i w pustych stanach
+- **falka** limonkowa pod tytułem każdego głównego ekranu (Dziś, Przedmioty, Powtórki, Terminy, Więcej), miętowa nad stopką
+- nagłówki paneli z krótką zielono-limonkową kreską z lewej
 
 - tło strony: drobna zielona kratka (24 px) z mocniejszą linią co 5 kratek
 - pasek marki u góry: zielony → morski → jasnozielony → limonka

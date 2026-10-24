@@ -941,6 +941,50 @@ details.undated[open] summary { margin-bottom: 12px; }
 .term-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 2px; }
 .term-link:hover { color: var(--accent-hover); }
 
+
+/* ===== jeden motyw w całej stronie: „słoje” (koncentryczne linie z rogu) i falka pod tytułem ===== */
+body { position: relative; }
+body::before, body::after { content: ""; position: absolute; z-index: 0; pointer-events: none; }
+/* słoje w prawym górnym rogu strony, pod paskiem */
+body::before { top: 64px; right: 0; width: min(600px, 75vw); height: 480px;
+  background: repeating-radial-gradient(circle at 100% 0, transparent 0 22px, rgba(26,127,69,.10) 22px 23.5px);
+  -webkit-mask-image: radial-gradient(circle at 100% 0, #000 25%, transparent 70%); mask-image: radial-gradient(circle at 100% 0, #000 25%, transparent 70%); }
+/* limonkowe słoje w lewym dolnym rogu, przy stopce */
+body::after { bottom: 0; left: 0; width: min(520px, 80vw); height: 380px;
+  background: repeating-radial-gradient(circle at 0 100%, transparent 0 22px, rgba(140,180,40,.16) 22px 23.5px);
+  -webkit-mask-image: radial-gradient(circle at 0 100%, #000 22%, transparent 68%); mask-image: radial-gradient(circle at 0 100%, #000 22%, transparent 68%); }
+main, .staroband { position: relative; z-index: 1; }
+@media (max-width: 760px) { body::before { top: 54px; height: 300px; } body::after { height: 260px; bottom: var(--tabbar-h, 0px); } }
+@media print { body::before, body::after { display: none; } }
+
+/* tytuły głównych ekranów z tą samą falką co powitanie */
+.ptitle { justify-self: start; align-self: flex-start; padding-bottom: 8px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='10' viewBox='0 0 40 10'%3E%3Cpath d='M0 6 Q10 0 20 6 T40 6' fill='none' stroke='%23B7DB4A' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") left bottom / 40px 10px repeat-x; }
+
+/* karta „Teraz zrób to” i Powtórki: słoje w rogu zamiast pojedynczego koła */
+.now { background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(26,127,69,.13) 16px 17.5px) right top / 260px 260px no-repeat, linear-gradient(135deg, var(--mint-100), var(--lime-100)); }
+.now.warn { background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(154,91,0,.12) 16px 17.5px) right top / 260px 260px no-repeat, linear-gradient(135deg, var(--warn-soft), var(--lime-100)); }
+.now::after { display: none; }
+.rv-hero { background: repeating-radial-gradient(circle at 100% 100%, transparent 0 16px, rgba(26,127,69,.09) 16px 17.5px) right bottom / 220px 220px no-repeat, linear-gradient(135deg, var(--mint-100), var(--surface)); }
+.rv-hero.calm { background: repeating-radial-gradient(circle at 100% 100%, transparent 0 16px, rgba(26,127,69,.06) 16px 17.5px) right bottom / 200px 200px no-repeat, var(--surface); }
+
+/* panele: delikatny akcent w rogu nagłówka, bez zmiany treści */
+.panel > .panel-head:first-child h2, .more-group > h2 { position: relative; padding-left: 14px; }
+.panel > .panel-head:first-child h2::before, .more-group > h2::before { content: ""; position: absolute; left: 0; top: .2em; bottom: .2em; width: 4px; border-radius: 4px; background: linear-gradient(var(--green-400), var(--lime-400)); }
+
+/* puste stany: małe słoje w rogu */
+.empty:not(.small) { background: repeating-radial-gradient(circle at 100% 100%, transparent 0 12px, rgba(26,127,69,.07) 12px 13px) right bottom / 150px 150px no-repeat, var(--surface); }
+
+/* stopka oddzielona miękką falką */
+.sitefoot { padding-top: 22px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='10' viewBox='0 0 40 10'%3E%3Cpath d='M0 6 Q10 0 20 6 T40 6' fill='none' stroke='%23CFE8D8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") left top / 40px 10px repeat-x; }
+
+/* grupy w Terminach: znacznik w kolorze grupy */
+.term-group h2 { display: flex; align-items: center; gap: 8px; }
+.term-group h2::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--green-400); transform: rotate(45deg); }
+.term-group.late h2::before { background: var(--bad); }
+
+/* kafelki przedmiotów: lekkie uniesienie przy najechaniu (bez ruchu dla osób, które go wyłączyły) */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .now .btn.primary { transition: transform .15s; } .now .btn.primary:hover { transform: translateX(2px); } }
+
 </style>
 
 <header class="bar"><div class="wrap">
@@ -1462,7 +1506,7 @@ details.undated[open] summary { margin-bottom: 12px; }
     const seg = (items, cur, set, label) => h("div", { class: "seg", role: "group", "aria-label": label }, items.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(cur === k), onclick: () => set(k) }, l)));
     const head = h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
-        h("div", { class: "stack", style: "gap:4px" }, h("h1", { text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy: kolokwia, egzaminy, projekty i zadania od prowadzących." })),
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy: kolokwia, egzaminy, projekty i zadania od prowadzących." })),
         h("div", { class: "row", style: "gap:8px" },
           h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
           h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj termin")))),
@@ -2595,7 +2639,7 @@ details.undated[open] summary { margin-bottom: 12px; }
     if (S.q) queueMicrotask(() => update(S.q));
     return [
       h("section", { class: "stack" },
-        h("div", { class: "row", style: "justify-content:space-between" }, h("h1", { text: "Przedmioty" }), S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload" }) }, "Wgraj prezentację") : null),
+        h("div", { class: "row", style: "justify-content:space-between" }, h("h1", { class: "ptitle", text: "Przedmioty" }), S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload" }) }, "Wgraj prezentację") : null),
         h("label", { class: "searchbox" }, icon("search"), input, h("kbd", { class: "kbd", title: "Skrót klawiszowy", text: "/" }))),
       buyBanner(),
       res,
@@ -3490,7 +3534,7 @@ ${written}`;
       icon(ic), h("span", { class: "more-txt" }, h("span", { text: label }), hint ? h("small", { text: hint }) : null), extra.badge ? h("span", { class: "badge num", text: extra.badge }) : h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
     const group = (title, rows) => h("section", { class: "panel more-group" }, h("h2", { text: title }), h("div", { class: "more-list" }, rows.filter(Boolean)));
     return [
-      h("section", { class: "stack" }, h("h1", { text: "Więcej" })),
+      h("section", { class: "stack" }, h("h1", { class: "ptitle", text: "Więcej" })),
       h("div", { class: "more-grid" },
         group("Nauka", [
           row("glossary", "Słowniczek EN–PL", "pojęcia ze wszystkich przedmiotów", () => go({ view: "glossary" })),
@@ -4234,7 +4278,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const mins = Math.max(1, Math.round(n / 3));
     const rows = SUBJECTS.map((x) => progressRow(x)).filter(Boolean);
     return [
-      h("section", { class: "stack" }, s ? backLink({ view: "subject", id: s.id }) : null, h("h1", { text: s ? `Powtórki · ${s.pl}` : "Powtórki" })),
+      h("section", { class: "stack" }, s ? backLink({ view: "subject", id: s.id }) : null, h("h1", { class: "ptitle", text: s ? `Powtórki · ${s.pl}` : "Powtórki" })),
       h("section", { class: "rv-hero" + (n ? "" : " calm") },
         n ? [h("span", { class: "eyebrow", text: "Dziś do powtórki" }),
             h("p", { class: "rv-big" }, h("b", { class: "num", text: n }), ` ${plural(n, "fiszka", "fiszki", "fiszek")}, ok. ${mins} min`),
