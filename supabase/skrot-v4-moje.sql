@@ -97,12 +97,12 @@ begin
   return new;
 end $$;
 
--- 4) bilety AI: jeden bilet = jeden plik (do 8 zapytań do AI w ciągu 2 godzin)
+-- 4) bilety AI: jeden bilet = jeden plik (do 10 zapytań do AI w ciągu 2 godzin)
 create table if not exists public.nauka_ai_bilety (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null,
   created_at  timestamptz not null default now(),
-  zostalo     integer not null default 8
+  zostalo     integer not null default 10
 );
 create index if not exists nauka_ai_bilety_user_idx on public.nauka_ai_bilety (user_id, created_at);
 alter table public.nauka_ai_bilety enable row level security;

@@ -213,8 +213,10 @@
   const firstName = () => {
     const local = skrot.email.split("@")[0] || "";
     if (/^\d+$/.test(local)) return "";
-    const w = local.split(/[._-]/)[0];
-    return w ? w[0].toUpperCase() + w.slice(1) : "";
+    // „kasia2005” → „Kasia”; długie zlepki typu „kowalczykbartek” zamiast imienia → samo „Dzień dobry”.
+    const w = (local.split(/[._-]/)[0] || "").replace(/\d+$/, "");
+    if (!w || w.length > 12 || /\d/.test(w)) return "";
+    return w[0].toUpperCase() + w.slice(1).toLowerCase();
   };
   let db = null;
   window.claude = window.claude || {};
@@ -310,6 +312,14 @@
     error: "Nie mogę połączyć się z bazą. Sprawdź internet i odśwież stronę.",
   })[skrot.state] || "";
 
+  // „2027-10-24” → „24 października 2027”
+  const plDate = (k) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(k || "");
+    if (!m) return k || "";
+    try { return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }); } catch { return k; }
+  };
+  skrot.untilText = () => plDate(skrot.until);
+
   // ---------- zakup dostępu ----------
   const info = (title, text) => {
     const layer = document.getElementById("layer") || document.body;
@@ -322,12 +332,12 @@
     return scrim;
   };
   skrot.buy = () => {
-    if (skrot.paid) return info("Masz już dostęp", skrot.until ? `Twój dostęp jest ważny do ${skrot.until}.` : "Twój dostęp jest aktywny.");
+    if (skrot.paid) return info("Masz już dostęp", skrot.until ? `Twój dostęp jest ważny do ${plDate(skrot.until)}.` : "Twój dostęp jest aktywny.");
     if (skrot.state !== "in") {
       ls.set("skrot-buy", "1");
       return skrot.openLogin("Najpierw zaloguj się e-mailem: dostęp przypiszemy do tego adresu. Po kliknięciu linku z maila od razu przejdziesz do płatności.");
     }
-    if (!CONFIG.paymentLink) return info("Płatności startują wkrótce", "Zakup dostępu będzie możliwy za chwilę. Spróbuj ponownie później albo napisz do starosty.");
+    if (!CONFIG.paymentLink) return info("Płatności startują wkrótce", "Zakup dostępu będzie możliwy za chwilę. Spróbuj ponownie później albo napisz na skrotbm@outlook.com.");
     const u = new URL(CONFIG.paymentLink);
     u.searchParams.set("client_reference_id", skrot.uid);
     u.searchParams.set("prefilled_email", skrot.email);
@@ -350,7 +360,7 @@
       for (let i = 0; i < 30 && !skrot.paid; i++) { await new Promise((r) => setTimeout(r, 2000)); try { await refreshMe(); } catch {} }
       box.remove();
       if (skrot.paid) location.reload();
-      else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz do starosty.");
+      else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz na skrotbm@outlook.com.");
       return;
     }
     if (skrot.state === "in" && ls.get("skrot-buy")) { ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(); }

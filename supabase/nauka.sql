@@ -24,10 +24,8 @@ create table if not exists public.nauka_docs (
 create table if not exists public.nauka_admini (
   email text primary key check (email = lower(email))
 );
-insert into public.nauka_admini (email) values
-  ('251782@stud.usz.edu.pl'),
-  ('kowalczykbartek74@gmail.com')
-on conflict do nothing;
+-- Administratorów (starosta) dodaj ręcznie w SQL Editor, nie w tym pliku (repozytorium jest publiczne):
+--   insert into public.nauka_admini (email) values ('twoj.adres@przyklad.pl') on conflict do nothing;
 
 -- Wykupiony dostęp (na przyszłość: płatności wpisują tu e-mail i datę końca dostępu)
 create table if not exists public.nauka_dostep (

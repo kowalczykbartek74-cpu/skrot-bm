@@ -1,0 +1,8 @@
+# GitHub Pages: strona to zwykłe pliki HTML/JS (bez szablonów Jekylla).
+# Te pliki zostają w repozytorium, ale nie są publikowane na skrotbm.pl.
+exclude:
+  - supabase
+  - scripts
+  - README.md
+  - PALETA.md
+  - shots
