@@ -19,7 +19,7 @@ Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane ra
 | Zmienna | Kolor | Do czego |
 |---|---|---|
 | `--lime-100` | `#F3F9DD` | ciepła końcówka gradientu karty „dziś” |
-| `--lime-400` | `#B7DB4A` | falka pod tytułem, róg logo, paski na „Kup dostęp”, koniec paska postępu |
+| `--lime-400` | `#B7DB4A` | falka pod tytułem, paski na „Kup dostęp”, koniec paska postępu |
 | `--teal-100` | `#E3F3F1` | miękkie tło (zapas) |
 | `--teal-600` | `#0F6E6E` | pasek marki u góry |
 | `--mint-100` | `#E6F7EE` | początek gradientu karty „dziś” |
@@ -62,3 +62,15 @@ Każdy przedmiot ma własny odcień z rodziny zieleni i morskiego (`PALETTE` w k
 ## Czcionka
 
 Jedna: **Plus Jakarta Sans** (Google Fonts), wagi 400–800.
+
+## Logo (pliki w `icons/`)
+
+| Plik | Co to | Gdzie |
+|---|---|---|
+| `logo-mark.png` | książka ze strzałką (sam znak) | pasek u góry strony, nagłówek regulaminu i polityki prywatności |
+| `logo.png` | książka + napis „Skrót BM” | materiały do pobrania, posty, prezentacje |
+| `emblem.png` | heksagon z monogramem SB | ekran z kodem dostępu (przed startem) |
+| `icon-*.png`, `apple-touch-icon.png`, `favicon*`, `icon.svg` | ikona aplikacji: kartka ze strzałką na ciemnej zieleni `#14522E` | karta przeglądarki, ekran główny telefonu |
+| `og.png` | logo na kratce (1200×630) | podgląd linku na Messengerze, WhatsAppie, FB |
+
+Źródło: grafiki z Higgsfield (24.10.2026), wycięte na przezroczyste tło.
