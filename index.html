@@ -833,6 +833,114 @@ button.pm-sq:hover { transform: scale(1.12); }
   .cheat-page.subj .ch-cols { column-gap: 6mm; }
 }
 
+
+/* ===== nowy układ (plan przejrzystości): Dziś, Terminy, Więcej, kroki materiału ===== */
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.staroband { background: var(--green-900); color: #fff; font-size: .86rem; }
+.staroband .wrap { display: flex; gap: 10px; align-items: center; min-height: 34px; flex-wrap: wrap; }
+.staroband span { opacity: .85; }
+.staroband .link { color: #fff; text-decoration: underline; margin-left: auto; }
+
+/* Dziś */
+.now { position: relative; display: grid; gap: 8px; padding: 22px 22px 20px; border-radius: var(--r); border: 1px solid var(--green-200);
+  background: linear-gradient(135deg, var(--mint-100), var(--lime-100)); overflow: hidden; }
+.now::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; border: 18px solid color-mix(in srgb, var(--green-400) 18%, transparent); pointer-events: none; }
+.now h2 { font-size: clamp(1.25rem, 3.4vw, 1.6rem); font-weight: 800; max-width: 34ch; }
+.now .eyebrow { color: var(--accent-text); }
+.now.warn { border-color: color-mix(in srgb, var(--warn) 30%, var(--line)); background: linear-gradient(135deg, var(--warn-soft), var(--lime-100)); }
+.now.warn .eyebrow { color: var(--warn); }
+.now .btn.primary { margin-top: 6px; }
+
+/* Terminy */
+.terms { display: grid; gap: 8px; }
+.term { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--c, var(--line)); border-radius: 12px; }
+.term .tick { width: 34px; height: 34px; grid-row: auto; align-self: center; }
+.term-body { min-width: 0; display: grid; gap: 4px; }
+.term-title { background: none; border: 0; padding: 0; text-align: left; font: inherit; font-weight: 700; color: var(--ink); cursor: pointer; overflow-wrap: anywhere; line-height: 1.25; }
+.term-title:hover { color: var(--accent-hover); }
+.term-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; font-size: .84rem; color: var(--muted); }
+.term-meta .when.soon { color: var(--warn); font-weight: 700; }
+.term-meta .when.late { color: var(--bad); font-weight: 700; }
+.term-meta .subj { font-size: .84rem; font-weight: 600; color: var(--muted); }
+.term-meta .link.subj:hover { color: var(--accent-hover); }
+.term.done { opacity: .7; }
+.term.done .term-title { text-decoration: line-through; }
+.terms.compact .term { padding: 10px 12px; border-top-width: 1px; }
+.term-group { display: grid; gap: 10px; }
+.term-group h2 { font-size: 1.02rem; }
+.term-group.late h2 { color: var(--bad); }
+details.undated summary { cursor: pointer; }
+details.undated[open] summary { margin-bottom: 12px; }
+@media (max-width: 520px) { .term { grid-template-columns: auto 1fr; } .term > .btn { grid-column: 2; justify-self: start; } }
+
+/* Przedmioty: wyszukiwarka, kafelki */
+.searchbox { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 12px; max-width: 640px; }
+.searchbox:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.searchbox .ico { color: var(--muted); }
+.searchbox .ico svg { width: 20px; height: 20px; }
+.searchbox input.search { border: 0; box-shadow: none; background: none; flex: 1; min-width: 0; padding: 10px 0; outline: none; font-size: 1rem; }
+.searchbox .kbd { font: 700 .76rem var(--f-body); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; color: var(--muted); }
+@media (max-width: 760px) { .searchbox .kbd { display: none; } }
+.sr { display: grid; gap: 18px; }
+.sr:empty { display: none; }
+.sr-sec { display: grid; gap: 8px; }
+.sr-sec h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.nb-prog { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); }
+.nb-prog .nb-bar { flex: 1; height: 6px; border-radius: 999px; background: var(--sunk); overflow: hidden; }
+.nb-prog .nb-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green-400), var(--lime-400)); }
+.nb .foot:empty { display: none; }
+.nb-top.mine { background: repeating-linear-gradient(45deg, var(--green-50) 0 8px, var(--surface) 8px 16px); }
+.mine-tile { border-style: dashed; }
+
+/* Więcej */
+.more-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+@media (max-width: 760px) { .more-grid { grid-template-columns: 1fr; } }
+.more-group { gap: 6px; }
+.more-list { display: grid; }
+.more-row { padding: 10px 8px; border-radius: 10px; }
+.more-row .ico svg { color: var(--accent); }
+.more-txt { display: grid; min-width: 0; }
+.more-txt small { color: var(--muted); font-weight: 500; font-size: .8rem; overflow-wrap: anywhere; }
+.more-row .chev { margin-left: auto; color: var(--muted); font-size: 1.3rem; line-height: 1; }
+.more-group.staro { border-color: var(--green-200); }
+.switch { position: relative; width: 46px; height: 26px; border-radius: 999px; border: 0; background: var(--line); cursor: pointer; flex: none; transition: background .15s; }
+.switch i { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: left .15s; }
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"] i { left: 23px; }
+
+/* Powtórki */
+.rv-hero { display: grid; gap: 8px; padding: 22px; border-radius: var(--r); border: 1px solid var(--green-200); background: linear-gradient(135deg, var(--mint-100), var(--surface)); }
+.rv-hero.calm { background: var(--surface); border-color: var(--line); }
+.rv-big { font-size: 1.15rem; font-weight: 700; }
+.rv-big b { font-size: 2rem; font-weight: 800; color: var(--accent-text); }
+
+/* Przedmiot: zakładki i Ćwicz */
+.subj-tabs { margin-bottom: 18px; }
+.subj-tabs .tab { font-size: 1rem; padding: 12px 18px; }
+.practice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 700px) { .practice { grid-template-columns: 1fr; } }
+.item-split { cursor: default; }
+.item-split:hover { background: none; }
+
+/* Materiał: 3 kroki */
+.steps { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.step { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px 6px 6px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.step .sn { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--sunk); font-size: .84rem; }
+.step .c { font-size: .72rem; color: var(--muted); font-weight: 600; }
+.step.past .sn { background: var(--good-soft); color: var(--good); }
+.step[aria-current="step"] { border-color: var(--accent); color: var(--accent-text); background: var(--accent-soft); }
+.step[aria-current="step"] .sn { background: var(--accent); color: #fff; }
+.steps-of { margin-left: auto; font-size: .84rem; }
+@media (max-width: 520px) { .steps { gap: 4px; } .step { padding: 4px 10px 4px 4px; font-size: .9rem; gap: 6px; } .step .c { display: none; } .step .sn { width: 22px; height: 22px; font-size: .78rem; } .steps-of { width: 100%; margin: 0; } }
+.steppanel { padding-top: 18px; }
+.step-next { display: flex; justify-content: flex-end; padding-top: 6px; }
+.read .remember { max-width: 72ch; }
+.remember { background: var(--accent-soft); border: 1px solid var(--green-200); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 8px; }
+.remember h2 { font-size: 1.02rem; color: var(--accent-text); }
+.remember ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.term-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+.term-link:hover { color: var(--accent-hover); }
+
 </style>
 
 <header class="bar"><div class="wrap">
@@ -953,7 +1061,7 @@ button.pm-sq:hover { transform: scale(1.12); }
 
   // ================= state =================
   const S = {
-    ready: false, noDb: false, db: null, user: null, sample: null, ai: null, uid: null, canEdit: false, myName: "",
+    ready: false, noDb: false, db: null, user: null, sample: null, ai: null, uid: null, canEdit: false, isStarosta: false, myName: "",
     mine: [], mineLoaded: false,
     materials: [], deadlines: [], announcements: [], reports: [], progress: {}, names: {}, tasks: [], sync: null, taskFilter: "open",
     group: ls.get("bm-group") || "", sub: ls.get("bm-sub") ?? "A",
@@ -961,7 +1069,22 @@ button.pm-sq:hover { transform: scale(1.12); }
     calMonth: null, calSel: null,
   };
   if (S.sub !== "A" && S.sub !== "B" && S.sub !== "") S.sub = "A";
-  const go = (route) => { S.route = route; render(); window.scrollTo({ top: 0 }); };
+  // Stare adresy (zapisane linki, przyciski w kodzie) prowadzą do nowych ekranów.
+  const LEGACY = { start: { view: "home" }, tasks: { view: "terms" }, calendar: { view: "terms", mode: "cal" }, progress: { view: "review" } };
+  const normRoute = (r) => (LEGACY[r?.view] ? { ...r, ...LEGACY[r.view] } : r || { view: "home" });
+  const routeHash = (r) => "#/" + [r.view, r.id || r.sid || ""].filter(Boolean).join("/");
+  const go = (route) => {
+    S.route = normRoute(route);
+    try { if (location.hash !== routeHash(S.route) || history.state?.view !== S.route.view) history.pushState(JSON.parse(JSON.stringify({ view: S.route.view, id: S.route.id, sid: S.route.sid, tab: S.route.tab, mode: S.route.mode, part: S.route.part })), "", routeHash(S.route)); } catch {}
+    render(); window.scrollTo({ top: 0 });
+  };
+  function routeFromHash() {
+    const [view, id] = decodeURIComponent(location.hash.replace(/^#\/?/, "")).split("/");
+    if (!view) return { view: "home" };
+    if (!id) return normRoute({ view });
+    return normRoute(view === "cheat" ? (subjectById(id) ? { view, sid: id } : { view, id }) : { view, id, sid: id });
+  }
+  addEventListener("popstate", (e) => { S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash()); render(); });
 
   function toast(msg) { document.querySelectorAll(".toast").forEach((x) => x.remove()); const t = h("div", { class: "toast", role: "status", text: msg }); document.body.append(t); setTimeout(() => t.remove(), 3200); }
   function modal(build) {
@@ -1101,6 +1224,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     review: '<rect x="6.5" y="3.5" width="13" height="16" rx="2.5"/><path d="M4.5 7v11.5A2.5 2.5 0 0 0 7 21h9"/><path d="M10 10.5h6M10 14h4"/>',
     map: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="m14 17 2 2 4-4"/>',
     program: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6M9 11h4"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
     glossary: '<path d="M4 5h7M7.5 5V4M5 9c1.5 2.5 3.5 4 6 5M10 5c-.8 4-3 7-6 9"/><path d="m12.5 20 4-10 4 10M14 16.5h5"/>',
   };
   function icon(k) {
@@ -1108,52 +1232,42 @@ button.pm-sq:hover { transform: scale(1.12); }
     sp.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[k] || ""}</svg>`;
     return sp;
   }
-  const NAV_ITEMS = [["home", "Start"], ["materials", "Materiały"], ["tasks", "Zadania"], ["grading", "Zaliczenia"], ["calendar", "Kalendarz"]];
+  // Pięć zakładek, każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
+  const NAV_ITEMS = [["home", "Dziś"], ["materials", "Przedmioty"], ["review", "Powtórki"], ["terms", "Terminy"], ["more", "Więcej"]];
+  const NAV_OF = {
+    home: "home",
+    materials: "materials", subject: "materials", material: "materials", subjectQuiz: "materials", exam: "materials", cheat: "materials", upload: "materials",
+    review: "review", progress: "review",
+    terms: "terms",
+    more: "more", mine: "more", glossary: "more", program: "more", reading: "more", compare: "more", myFolder: "more", myUpload: "more", grading: "more", reports: "more", ai: "more",
+  };
   function renderNav() {
     const v = S.route.view;
-    const active = ["materials", "subject", "material", "subjectQuiz", "upload", "glossary", "exam", "cheat", "myFolder", "myUpload", "program", "reading", "compare"].includes(v) ? "materials" : v === "syllabus" ? (S.route.from?.view === "grading" ? "grading" : "materials") : ["review", "progress"].includes(v) ? "home" : v;
-    const openN = PAID() ? myTasks().filter((t) => t.kind !== "info" && !isDone(t)).length : 0;
+    const active = v === "syllabus" ? (S.route.from?.view === "subject" ? "materials" : "more") : NAV_OF[v] || "home";
+    const dueN = PAID() ? (() => { const { due, fresh } = srsDue(); return due.length + fresh.length; })() : 0;
+    const soonN = PAID() ? termItems().filter((x) => !x.done && x.date && x.n >= 0 && x.n <= 7).length : 0;
+    const adminN = S.canEdit ? (S.reports.length || 0) + (S.aiMissing || 0) : 0;
+    const badge = { review: dueN, terms: soonN, more: adminN };
+    const badgeLbl = { review: "do powtórki", terms: "w tym tygodniu", more: "do sprawdzenia" };
     $("nav").replaceChildren(...NAV_ITEMS.map(([key, label]) => h("button", {
       type: "button", class: "navbtn", "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
-    }, icon(key), h("span", { class: "lbl", text: label }), key === "tasks" && openN ? h("span", { class: "badge num", text: openN, "aria-label": `${openN} do zrobienia` }) : null)));
+    }, icon(NAV_ICON[key]), h("span", { class: "lbl", text: label }), badge[key] ? h("span", { class: "badge num", text: badge[key] > 99 ? "99+" : badge[key], "aria-label": `${badge[key]} ${badgeLbl[key]}` }) : null)));
     const sk = window.skrot || {};
-    const adminN = S.canEdit ? (S.reports.length || 0) + (S.aiMissing || 0) : 0;
-    const open = $("menu") ? "true" : "false";
     $("barRight").replaceChildren(...[
       ["out", "in"].includes(sk.state) && !PAID() ? h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy() }, "Kup dostęp") : null,
-      h("button", { type: "button", class: "menubtn", id: "menubtn", "aria-haspopup": "menu", "aria-expanded": open, "aria-label": "Menu", onclick: toggleMenu },
-        icon("menu"), h("span", { class: "lbl", text: "Menu" }), adminN ? h("span", { class: "dotbadge", "aria-hidden": "true" }) : null),
+      sk.state === "out" ? h("button", { type: "button", class: "btn small ghost", onclick: () => sk.openLogin() }, "Zaloguj") : null,
     ].filter(Boolean));
+    const band = $("staroband");
+    if (S.canEdit && !band) document.body.insertBefore(h("div", { class: "staroband", id: "staroband" }, h("div", { class: "wrap" }, h("b", { text: "Tryb starosty" }), h("span", { text: "Widzisz narzędzia do zarządzania rokiem." }), h("button", { type: "button", class: "link", onclick: () => setStarosta(false) }, "Wyłącz"))), $("main"));
+    else if (!S.canEdit && band) band.remove();
   }
-  function closeMenu() { $("menu")?.remove(); $("menu-scrim")?.remove(); $("menubtn")?.setAttribute("aria-expanded", "false"); document.removeEventListener("keydown", menuKey); }
-  function menuKey(e) { if (e.key === "Escape") { closeMenu(); $("menubtn")?.focus(); } }
-  function toggleMenu() {
-    if ($("menu")) return closeMenu();
-    const sk = window.skrot || {};
-    const act = (fn) => () => { closeMenu(); fn(); };
-    const item = (ic, label, fn, extra) => h("button", { type: "button", class: "mi" + (extra?.strong ? " strong" : ""), role: "menuitem", onclick: act(fn) }, icon(ic), h("span", { text: label }), extra?.badge ? h("span", { class: "badge num", text: extra.badge }) : null);
-    const groupLabel = S.group ? `${S.group}${S.sub ? " · lab " + S.sub : ""}` : "nie wybrano";
-    const box = h("div", { class: "menu", id: "menu", role: "menu", "aria-label": "Menu" },
-      sk.state === "in" ? h("div", { class: "who" }, h("b", { text: PAID() ? "Pełny dostęp" : "Zalogowano" }), sk.email || "") : null,
-      sk.state === "out" ? item("in", "Zaloguj się", () => sk.openLogin(), { strong: true }) : null,
-      item("group", `Moja grupa: ${groupLabel}`, openGroupPicker),
-      h("a", { class: "mi", role: "menuitem", href: PLAN_URL }, icon("plan"), h("span", { text: "Pełny plan zajęć" })),
-      item("review", "Powtórki", () => go({ view: "review" })),
-      item("map", "Mapa postępów", () => go({ view: "progress" })),
-      item("glossary", "Słowniczek EN–PL", () => go({ view: "glossary" })),
-      item("program", "Program studiów i sylabusy", () => go({ view: "program" })),
-      PAID() ? item("upload", "Wgraj swój materiał", () => go({ view: "myUpload" })) : null,
-      item("help", "Jak korzystać (instrukcja)", () => startTour(0)),
-      S.canEdit ? [h("hr"),
-        item("upload", "Wgraj materiał", () => go({ view: "upload" })),
-        item("flag", "Zgłoszenia błędów", () => go({ view: "reports" }), { badge: S.reports.length }),
-        item("spark", "Panel AI", () => go({ view: "ai" }), { badge: S.aiMissing || 0 })] : null,
-      sk.state === "in" ? [h("hr"), item("out", "Wyloguj", () => sk.logout())] : null);
-    const scrim = h("div", { class: "menu-scrim", id: "menu-scrim", onclick: closeMenu });
-    document.body.append(scrim, box);
-    $("menubtn")?.setAttribute("aria-expanded", "true");
-    document.addEventListener("keydown", menuKey);
-    box.querySelector(".mi")?.focus();
+  const NAV_ICON = { home: "home", materials: "materials", review: "review", terms: "calendar", more: "menu" };
+  function setStarosta(on) {
+    ls.set("bm-starosta", on ? "1" : "0");
+    S.canEdit = S.isStarosta && on;
+    if (S.canEdit && !AI.busy) aiRefresh();
+    toast(on ? "Tryb starosty włączony." : "Tryb starosty wyłączony. Widzisz stronę tak jak student z pełnym dostępem.");
+    render();
   }
   function openGroupPicker() {
     modal((close) => [h("h3", { text: "Twoja grupa" }), groupPicker(true), h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: close }, "Gotowe"))]);
@@ -1164,10 +1278,10 @@ button.pm-sq:hover { transform: scale(1.12); }
   function render() {
     renderNav();
     const v = S.route.view;
-    const fn = { materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, calendar: viewCalendar, tasks: viewTasks, grading: viewGrading, review: viewReview, glossary: viewGlossary, progress: viewProgress, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, reading: viewReading, compare: viewCompare }[v] || viewHome;
+    const fn = { terms: viewTerms, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, reading: viewReading, compare: viewCompare }[v] || viewHome;
     // W trakcie próbnego testu strona nie przebudowuje się sama (np. po odświeżeniu danych), żeby nie gubić wpisywanego tekstu.
     if (!EXR.force && examRunning() && $("main").querySelector(".exam-run")) return;
-    const keepIds = ["ann-text", "gl-q"];
+    const keepIds = ["ann-text", "gl-q", "q"];
     const kept = keepIds.map((id) => { const el = document.getElementById(id); return el ? { id, v: el.value, f: document.activeElement === el } : null; }).filter(Boolean);
     // Ten sam widok rysowany ponownie (np. po odświeżeniu danych): otwarte rozwijane elementy zostają otwarte.
     const sig = JSON.stringify([v, S.route.id, S.route.tab]);
@@ -1233,61 +1347,146 @@ button.pm-sq:hover { transform: scale(1.12); }
       t.details?.length ? h("details", {}, h("summary", {}, "Szczegóły od prowadzącego"), h("ul", {}, t.details.map((d) => h("li", { text: d })))) : null,
       h("div", { class: "src" },
         h("span", { text: `Post w Teams${src.team ? ": " + src.team : ""}${src.author ? " · " + src.author : ""}${src.postedAt ? " · " + fmtDate(src.postedAt) : ""}` }),
-        t.auto ? h("span", { class: "chip plain", title: "Dodane automatycznie z Teams", text: "auto" }) : null,
         S.canEdit ? h("button", { type: "button", class: "link", style: "font-size:.78rem;color:var(--bad);margin-left:auto", onclick: async () => {
           try { await S.db.doc("tasks/" + t.id).delete(); await S.db.doc("deadlines/task-" + t.id).delete().catch(() => {}); toast("Usunięto zadanie dla całego roku."); } catch { toast("Nie udało się usunąć."); }
         } }, "Usuń dla roku") : null));
   }
+  // Kiedy ostatnio pobrano nowe zadania i ogłoszenia z Teams. Krótko, w stopce ekranu Terminy.
   function syncLine() {
     const sy = S.sync;
-    if (!sy?.lastRun) return h("p", { class: "syncline" }, h("i", { class: "pulse stale" }), "Automat jeszcze nie sprawdzał Teams.");
+    if (!sy?.lastRun) return null;
+    const d = new Date(sy.lastRun), k = dkey(d), n = daysUntil(k);
+    const day = n === 0 ? "dziś" : n === -1 ? "wczoraj" : fmtDate(sy.lastRun);
     const stale = Date.now() - sy.lastRun > 36 * 3600e3;
-    return h("p", { class: "syncline" }, h("i", { class: "pulse" + (stale ? " stale" : ""), "aria-hidden": "true" }),
-      `Automat sprawdził Teams ${ago(sy.lastRun)}`, sy.teams ? ` · ${sy.teams} ${plural(sy.teams, "zespół", "zespoły", "zespołów")}` : "",
-      sy.note ? h("span", { text: " · " + sy.note }) : null,
-      stale ? h("span", { text: " · ostatnie sprawdzenie było dawno, nowe zadania mogą pojawić się z opóźnieniem" }) : null);
+    return h("p", { class: "foot-note" }, `Ostatnia aktualizacja z Teams: ${day} ${d.getHours()}:${pad(d.getMinutes())}`,
+      stale ? " · nowe zadania mogą pojawić się z opóźnieniem" : "");
   }
-  function viewTasks() {
-    const all = myTasks();
-    const work = all.filter((t) => t.kind !== "info").sort(taskSort);
-    const info = all.filter((t) => t.kind === "info").sort((a, b) => (b.source?.postedAt || 0) - (a.source?.postedAt || 0));
-    const f = S.taskFilter;
-    const shown = f === "open" ? work.filter((t) => !isDone(t)) : f === "done" ? work.filter(isDone) : work;
-    const openN = work.filter((t) => !isDone(t)).length;
-    return [
-      h("section", { class: "greet" },
-        h("h1", { text: "Zadania od prowadzących" }),
-        h("p", { class: "sub", text: "Automat zbiera je z postów w Teams. Odhaczaj, co masz zrobione: Twoje odhaczenia widzisz tylko Ty." }),
-        syncLine()),
-      !S.group ? h("div", { class: "announce" }, h("p", { text: "Wybierz grupę, a pokażę tylko zadania, które Cię dotyczą." }), groupPicker(true)) : null,
+  // ================= TERMINY: zadania od prowadzących, terminy roku i daty zaliczeń w jednej liście =================
+  const TERM_KIND = { kolokwium: "Kolokwium", egzamin: "Egzamin", projekt: "Projekt", zadanie: "Zadanie", inne: "Inne" };
+  const TASK_TO_TERM = { projekt: "projekt", prezentacja: "projekt", test: "kolokwium", zadanie: "zadanie", formalnosci: "inne" };
+  const doneKey = (k) => !!S.progress?.tasksDone?.[k];
+  function toggleKey(k) {
+    const td = { ...(S.progress.tasksDone || {}) };
+    if (td[k]) delete td[k]; else td[k] = Date.now();
+    saveProgress({ tasksDone: td });
+    render();
+  }
+  function termItems(sid) {
+    const out = [], k0 = todayKey();
+    for (const t of myTasks()) {
+      if (t.kind === "info" || (sid && t.subjectId !== sid)) continue;
+      out.push({ key: t.id, src: "task", obj: t, kind: TASK_TO_TERM[t.kind] || "zadanie", title: t.title, sid: t.subjectId || null, date: t.due || null, time: t.dueTime || "", done: isDone(t) });
+    }
+    for (const d of visDeadlines()) {
+      if (d.taskId || (sid && d.subjectId !== sid)) continue;
+      out.push({ key: "dl:" + d.id, src: "dl", obj: d, kind: TERM_KIND[d.type] ? d.type : "inne", title: d.title, sid: d.subjectId || null, date: d.date, time: d.time || "", approx: !!d.approx, done: doneKey("dl:" + d.id) });
+    }
+    // Daty zaliczeń z „Jak zaliczyć”, jeśli nikt nie wpisał ich jeszcze jako terminu.
+    for (const sb of SUBJECTS) {
+      if (sid && sb.id !== sid) continue;
+      for (const p of zalOf(sb.id)?.parts || []) {
+        if (!p.date || p.date < k0) continue;
+        if (out.some((x) => x.sid === sb.id && x.date === p.date)) continue;
+        out.push({ key: "z:" + sb.id + ":" + p.k, src: "zal", part: p.k, kind: p.f === "E" ? "egzamin" : "kolokwium", title: `${cap1(partLabel(sb.id, p.k))}: ${sb.pl}`, sid: sb.id, date: p.date, time: "", done: doneKey("z:" + sb.id + ":" + p.k) });
+      }
+    }
+    for (const x of out) x.n = x.date ? daysUntil(x.date) : null;
+    return out.sort((a, b) => (a.date || "9999").localeCompare(b.date || "9999") || (a.time || "").localeCompare(b.time || ""));
+  }
+  // Zaliczenia, których daty jeszcze nikt nie podał (z „Jak zaliczyć”).
+  function zalUndated(sid) {
+    const out = [];
+    for (const sb of SUBJECTS) {
+      if (sid && sb.id !== sid) continue;
+      for (const p of zalOf(sb.id)?.parts || []) if (!p.date) out.push({ sb, p });
+    }
+    return out;
+  }
+  const isPrep = (x) => x.sid && subjectById(x.sid) && ["kolokwium", "egzamin"].includes(x.kind);
+  function prepRoute(x) {
+    if (x.part) return { view: "exam", sid: x.sid, part: x.part };
+    const want = x.kind === "egzamin" ? "E" : "ZO";
+    const part = partsOf(x.sid).find((k) => zalPartOf(x.sid, k)?.f === want) || null;
+    return { view: "exam", sid: x.sid, part };
+  }
+  function whenText(x) {
+    if (!x.date) return "bez daty";
+    const n = x.n, t = x.time ? " " + x.time : "";
+    if (n < 0) return `minął ${fmtDate(dparse(x.date).getTime())}`;
+    if (n === 0) return "dziś" + t;
+    if (n === 1) return "jutro" + t;
+    return `${fmtKey(x.date)}${t} · za ${n} dni`;
+  }
+  function openTask(t) {
+    const s = subjectById(t.subjectId), src = t.source || {};
+    modal((close) => [
+      h("span", { class: "eyebrow", text: [taskKind(t.kind).label, s?.pl].filter(Boolean).join(" · ") }),
+      h("h3", { text: t.title }),
+      h("p", { class: "muted", text: t.due ? whenText({ date: t.due, n: daysUntil(t.due), time: t.dueTime }) : t.dueText || "bez terminu" }),
+      t.summary ? h("p", { text: t.summary }) : null,
+      t.details?.length ? h("ul", { class: "zal-list" }, t.details.map((d) => h("li", { text: d }))) : null,
+      h("p", { class: "foot-note", text: `Post w Teams${src.team ? ": " + src.team : ""}${src.author ? " · " + src.author : ""}${src.postedAt ? " · " + fmtDate(src.postedAt) : ""}` }),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", onclick: () => { toggleDone(t); close(); } }, isDone(t) ? "Cofnij odhaczenie" : "Odhacz jako zrobione"),
+        S.canEdit ? h("button", { type: "button", class: "btn ghost danger", onclick: async () => {
+          try { await S.db.doc("tasks/" + t.id).delete(); await S.db.doc("deadlines/task-" + t.id).delete().catch(() => {}); toast("Usunięto zadanie dla całego roku."); close(); } catch { toast("Nie udało się usunąć."); }
+        } }, "Usuń dla roku") : null,
+        h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
+  }
+  function termRow(x, opts = {}) {
+    const s = subjectById(x.sid), late = x.n != null && x.n < 0 && !x.done;
+    const open = () => (x.src === "task" ? openTask(x.obj) : x.src === "dl" ? openDeadline(x.obj) : go({ view: "subject", id: x.sid, tab: "zal" }));
+    return h("div", { class: "term" + (x.done ? " done" : ""), style: `--c:${s ? s.color : "var(--muted)"}` },
+      h("button", { type: "button", class: "tick", "aria-pressed": String(x.done), "aria-label": x.done ? "Oznacz jako niezrobione" : "Oznacz jako zrobione", title: x.done ? "Zrobione (kliknij, żeby cofnąć)" : "Odhacz, gdy zrobisz", onclick: () => toggleKey(x.key) }, x.done ? "✓" : ""),
+      h("div", { class: "term-body" },
+        h("button", { type: "button", class: "term-title", onclick: open }, x.title),
+        h("div", { class: "term-meta" },
+          h("span", { class: "typechip", style: `--t:${dlType(x.kind).c}`, text: TERM_KIND[x.kind] || "Inne" }),
+          h("span", { class: "when" + (late ? " late" : x.n != null && x.n <= 2 && !x.done ? " soon" : ""), text: whenText(x) }),
+          x.approx ? h("span", { class: "chip sun", title: "Data nie jest ogłoszona: to ostatnie zajęcia z planu albo okno sesji.", text: "data orientacyjna" }) : null,
+          !opts.noSubject ? (s ? h("button", { type: "button", class: "link subj", onclick: () => go({ view: "subject", id: s.id }) }, s.pl) : h("span", { class: "subj", text: "ogólne" })) : null)),
+      isPrep(x) && !x.done && !opts.noPrep ? h("button", { type: "button", class: "btn small", onclick: () => go(prepRoute(x)) }, "Przygotuj się") : null);
+  }
+  function termGroups(list) {
+    const wd = (new Date().getDay() + 6) % 7, endThis = 6 - wd;
+    const G = [["Po terminie", (x) => x.n != null && x.n < 0 && x.n >= -14], ["Ten tydzień", (x) => x.n != null && x.n >= 0 && x.n <= endThis], ["Następny tydzień", (x) => x.n != null && x.n > endThis && x.n <= endThis + 7], ["Później", (x) => x.n != null && x.n > endThis + 7], ["Bez daty", (x) => x.n == null]];
+    return G.map(([label, f]) => [label, list.filter(f)]);
+  }
+  function viewTerms() {
+    const mode = S.route.mode === "cal" ? "cal" : "list";
+    const f = S.taskFilter === "done" ? "done" : "open";
+    const all = termItems();
+    const shown = all.filter((x) => (f === "done" ? x.done : !x.done && !(x.n != null && x.n < -14)));
+    const openN = all.filter((x) => !x.done && !(x.n != null && x.n < 0)).length;
+    const undated = f === "open" ? zalUndated() : [];
+    const seg = (items, cur, set, label) => h("div", { class: "seg", role: "group", "aria-label": label }, items.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(cur === k), onclick: () => set(k) }, l)));
+    const head = h("section", { class: "stack" },
+      h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy: kolokwia, egzaminy, projekty i zadania od prowadzących." })),
+        h("div", { class: "row", style: "gap:8px" },
+          h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
+          h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj termin")))),
       h("div", { class: "row", style: "justify-content:space-between" },
-        h("div", { class: "seg", role: "group", "aria-label": "Filtr zadań", hidden: PAID() ? null : true }, [["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"], ["all", "Wszystkie"]].map(([k, l]) => h("button", { type: "button", "aria-pressed": String(f === k), onclick: () => { S.taskFilter = k; render(); } }, l))),
-        S.group ? h("span", { class: "fm", text: `Pokazuję zadania dla ${S.group} i ogólne` }) : null),
-      !PAID() ? lockBox("Zadania od prowadzących z terminami widzą osoby z pełnym dostępem.")
-        : !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
-        : shown.length ? h("div", { class: "tasks" }, shown.map(taskCard))
-        : h("div", { class: "empty small", text: f === "open" ? (work.length ? "Wszystko odhaczone. Dobra robota." : "Prowadzący nie dali jeszcze żadnych zadań. Gdy pojawią się w Teams, automat doda je tutaj.") : "Nic tu jeszcze nie ma." }),
-      info.length ? h("section", { class: "stack" },
-        h("h2", { text: "Ważne ogłoszenia prowadzących" }),
-        h("div", { class: "list info-list" }, info.map((t) => {
-          const s = subjectById(t.subjectId);
-          return h("div", { class: "item" },
-            h("span", { class: "t" }, s ? h("i", { class: "dot", style: `--c:${s.color};display:inline-block;margin-right:8px` }) : null, t.title),
-            h("span", { class: "m" }, t.summary || "", t.details?.length ? h("details", { style: "margin-top:4px" }, h("summary", { style: "cursor:pointer;color:var(--accent);font-weight:700" }, "Więcej"), h("ul", { style: "margin:4px 0 0;padding-left:18px" }, t.details.map((d) => h("li", { text: d })))) : null),
-            h("span", { class: "r fm", text: [s?.pl, t.source?.postedAt ? fmtDate(t.source.postedAt) : null].filter(Boolean).join(" · ") }));
-        }))) : null,
-    ];
-  }
-  function tasksPanel() {
-    const open = myTasks().filter((t) => t.kind !== "info" && !isDone(t)).sort(taskSort).slice(0, 4);
-    return h("section", { class: "panel" },
-      h("div", { class: "panel-head" }, h("h2", { text: "Do zrobienia" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "tasks" }) }, "Wszystkie →")),
-      open.length ? h("div", {}, open.map((t) => {
-        const s = subjectById(t.subjectId);
-        return h("button", { type: "button", class: "mini-task", onclick: () => go({ view: "tasks" }) },
-          h("i", { class: "dot", style: `--c:${s ? s.color : taskKind(t.kind).c}` }),
-          h("span", { class: "t", text: t.title }), dueChip(t));
-      })) : !PAID() ? lockBox("Zadania od prowadzących są w pełnej wersji.") : h("div", { class: "empty small", text: S.tasks.length ? "Wszystko odhaczone." : "Brak zadań od prowadzących." }));
+        seg([["list", "Lista"], ["cal", "Kalendarz"]], mode, (k) => { S.route = { ...S.route, mode: k }; render(); }, "Widok"),
+        mode === "list" && PAID() ? seg([["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"]], f, (k) => { S.taskFilter = k; render(); }, "Filtr") : null),
+      !S.group ? h("div", { class: "notice" }, h("p", { style: "margin:0 0 8px", text: "Wybierz grupę, a pokażę tylko to, co Cię dotyczy." }), groupPicker(true)) : null);
+    if (mode === "cal") return [head, calendarBlock(), syncLine()];
+    if (!PAID()) return [head, lockBox("Terminy kolokwiów, egzaminów i zadania od prowadzących widzą osoby z pełnym dostępem."), syncLine()];
+    if (!S.ready) return [head, h("p", { class: "muted", text: "Ładuję…" })];
+    const groups = termGroups(shown).filter(([, xs]) => xs.length);
+    return [head,
+      groups.length ? groups.map(([label, xs]) => h("section", { class: "term-group" + (label === "Po terminie" ? " late" : "") },
+        h("h2", {}, label, h("span", { class: "muted num", text: " " + xs.length })),
+        h("div", { class: "terms" }, xs.map((x) => termRow(x)))))
+      : h("div", { class: "empty" }, h("h3", { text: f === "done" ? "Nic jeszcze nie odhaczono" : "Nic nie czeka" }),
+          h("p", { class: "muted", text: f === "done" ? "Zrobione terminy i zadania trafią tutaj, gdy je odhaczysz." : "Nowe kolokwia i zadania od prowadzących pojawią się tutaj, gdy tylko ktoś je wpisze albo prowadzący wrzuci post w Teams." }),
+          h("div", {}, h("button", { type: "button", class: "btn", onclick: () => openDeadline(null) }, "+ Dodaj termin"))),
+      undated.length ? h("details", { class: "panel undated" },
+        h("summary", {}, h("b", { text: `Zaliczenia bez ogłoszonej daty · ${undated.length}` }), h("span", { class: "muted", text: " · z zasad przedmiotów" })),
+        h("div", { class: "list" }, undated.map(({ sb, p }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "subject", id: sb.id, tab: "zal" }) },
+          h("span", { class: "t" }, h("i", { class: "dot", style: `--c:${sb.color};display:inline-block;margin-right:8px` }), `${sb.pl}: ${partLabel(sb.id, p.k)}`),
+          h("span", { class: "m", text: p.when }))))) : null,
+      syncLine()];
   }
   function subjectTasks(s) {
     const list = myTasks().filter((t) => t.subjectId === s.id).sort(taskSort);
@@ -1366,7 +1565,7 @@ button.pm-sq:hover { transform: scale(1.12); }
 
   const forMyDl = (d) => (!d.groups?.length || !S.group || d.groups.includes(S.group)) && (!d.subs?.length || !S.sub || d.subs.includes(S.sub));
   const visDeadlines = () => S.deadlines.filter(forMyDl);
-  const approxChip = (d) => d.approx ? h("span", { class: "chip sun", title: "Forma zaliczenia z sylabusa. Data nie jest ogłoszona: to ostatnie zajęcia z planu albo okno sesji; zmień ją, gdy prowadzący poda termin.", text: "z sylabusa · data orientacyjna" }) : null;
+  const approxChip = (d) => d.approx ? h("span", { class: "chip sun", title: "Forma zaliczenia z sylabusa. Data nie jest ogłoszona: to ostatnie zajęcia z planu albo okno sesji; zmień ją, gdy prowadzący poda termin.", text: "data orientacyjna" }) : null;
   function upcomingDeadlines(limit, sid) {
     const k = todayKey();
     return visDeadlines().filter((d) => d.date >= k && (!sid || d.subjectId === sid)).sort((a, b) => (a.date + (a.time || "")).localeCompare(b.date + (b.time || ""))).slice(0, limit);
@@ -1497,54 +1696,82 @@ button.pm-sq:hover { transform: scale(1.12); }
         sk.state === "out" ? h("button", { type: "button", class: "btn small ghost", onclick: () => sk.openLogin?.() }, "Mam dostęp") : null,
         h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy?.() }, "Kup dostęp")));
   }
+  // ================= DZIŚ: jedna karta „Teraz zrób to” i trzy krótkie panele =================
+  // Ostatnia wizyta: „Nowe od ostatniej wizyty” pokazuje to, co doszło od poprzedniego wejścia (przerwa co najmniej 30 min).
+  const VISIT = (() => { let v = {}; try { v = JSON.parse(ls.get("bm-visit") || "{}"); } catch {} const now = Date.now(); if (!v.cur || now - v.cur > 30 * 60e3) { v = { prev: v.cur || 0, cur: now }; } else v.cur = now; ls.set("bm-visit", JSON.stringify(v)); return v; })();
+  const seenSet = () => { try { return new Set(JSON.parse(ls.get("bm-seen") || "[]")); } catch { return new Set(); } };
+  function markOpened(id) {
+    const seen = [...seenSet()].filter((x) => x !== id); seen.push(id);
+    ls.set("bm-seen", JSON.stringify(seen.slice(-300))); ls.set("bm-last", id);
+  }
+  const whenN = (n) => (n <= 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni`);
+  function nowAction() {
+    if (PAID()) {
+      let ex = null;
+      for (const sb of SUBJECTS) { const nx = nextExam(sb.id); if (nx && daysUntil(nx.date) >= 0 && daysUntil(nx.date) <= 7 && (!ex || nx.date < ex.date)) ex = { ...nx, s: sb }; }
+      if (ex) { const what = ex.dl ? TERM_KIND[ex.dl.type] || cap1(partLabel(ex.s.id, ex.part)) : cap1(partLabel(ex.s.id, ex.part));
+        return { eyebrow: `${what} ${whenN(daysUntil(ex.date))}`, title: `Przygotuj się: ${ex.s.pl}`, sub: `${ex.dl?.title || what} · ${fmtKey(ex.date)}${ex.approx ? " (data orientacyjna)" : ""}. Plan na każdy dzień i próbny test.`, btn: "Przygotuj się", fn: () => go({ view: "exam", sid: ex.s.id, part: ex.part }), tone: "warn" }; }
+      const due = termItems().filter((x) => !x.done && x.n != null && x.n >= 0 && x.n <= 2 && !["kolokwium", "egzamin"].includes(x.kind))[0];
+      if (due) return { eyebrow: `Termin ${whenN(due.n)}`, title: `Oddaj: ${due.title}`, sub: [subjectById(due.sid)?.pl, whenText(due)].filter(Boolean).join(" · "), btn: "Zobacz szczegóły", fn: () => (due.src === "task" ? openTask(due.obj) : openDeadline(due.obj)), tone: "warn" };
+    }
+    const { due, fresh } = srsDue(); const n = due.length + fresh.length;
+    if (n) return { eyebrow: "Powtórki na dziś", title: `Powtórz ${n} ${plural(n, "fiszkę", "fiszki", "fiszek")}`, sub: `Około ${Math.max(1, Math.round(n / 3))} min. Fiszki wracają wtedy, gdy zaczynasz je zapominać.`, btn: "Zacznij powtórkę", fn: () => go({ view: "review", start: true }) };
+    const seen = seenSet();
+    const fresh7 = S.materials.filter((m) => Date.now() - m.createdAt < 7 * 864e5 && readable(m) && !seen.has(m.id) && !best(m.id)).sort((x, y) => y.createdAt - x.createdAt)[0];
+    if (fresh7) return { eyebrow: "Nowy materiał", title: `Przeczytaj: ${fresh7.title || fresh7.fileName}`, sub: `${subjectById(fresh7.subjectId)?.pl || ""} · dodano ${ago(fresh7.createdAt)}`, btn: "Przeczytaj", fn: () => go({ view: "material", id: fresh7.id }) };
+    const last = materialById(ls.get("bm-last"));
+    if (last && readable(last)) return { eyebrow: "Nic pilnego", title: `Kontynuuj: ${last.title || last.fileName}`, sub: "Ostatnio otwarty materiał.", btn: "Kontynuuj", fn: () => go({ view: "material", id: last.id }) };
+    const first = S.materials.filter(readable).sort((x, y) => y.createdAt - x.createdAt)[0];
+    if (first) return { eyebrow: "Na początek", title: `Zacznij: ${first.title || first.fileName}`, sub: subjectById(first.subjectId)?.pl || "", btn: "Zacznij", fn: () => go({ view: "material", id: first.id }) };
+    return { eyebrow: "Na początek", title: "Wybierz przedmiot", sub: "W każdym przedmiocie: czytanie, fiszki i quiz.", btn: "Przedmioty", fn: () => go({ view: "materials" }) };
+  }
+  function nowCard() {
+    if (!S.ready && !S.noDb) return h("section", { class: "now", "aria-busy": "true" }, h("span", { class: "eyebrow", text: "Teraz zrób to" }), h("p", { class: "muted", text: "Ładuję…" }));
+    const a = nowAction();
+    return h("section", { class: "now" + (a.tone ? " " + a.tone : ""), "aria-label": "Teraz zrób to" },
+      h("span", { class: "eyebrow", text: "Teraz zrób to · " + a.eyebrow }),
+      h("h2", { text: a.title }),
+      a.sub ? h("p", { class: "muted", text: a.sub }) : null,
+      h("div", {}, h("button", { type: "button", class: "btn primary", onclick: a.fn }, a.btn, " →")));
+  }
   function upcomingPanel() {
-    const up = upcomingDeadlines(5);
-    const openN = myTasks().filter((t) => t.kind !== "info" && !isDone(t)).length;
+    const up = termItems().filter((x) => !x.done && x.n != null && x.n >= 0).slice(0, 3);
     return h("section", { class: "panel" },
-      h("div", { class: "panel-head" }, h("h2", { text: "Najbliższe terminy" }), PAID() ? h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj") : null),
-      !PAID() ? h("p", { class: "muted", style: "font-size:.92rem", text: "Kolokwia, egzaminy, projekty i zadania od prowadzących pojawią się tutaj po wykupieniu dostępu." })
-        : up.length ? h("div", {}, up.map(deadlineRow)) : h("div", { class: "empty small", text: "Brak terminów. Dodaj kolokwium albo projekt, żeby cały rok o nim pamiętał." }),
-      PAID() ? h("div", { class: "row", style: "justify-content:space-between;padding-top:4px" },
-        h("button", { type: "button", class: "link", onclick: () => go({ view: "tasks" }) }, openN ? `Zadania do zrobienia: ${openN} →` : "Zadania →"),
-        h("button", { type: "button", class: "link", onclick: () => go({ view: "calendar" }) }, "Kalendarz →")) : null);
+      h("div", { class: "panel-head" }, h("h2", { text: "Najbliższe terminy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "terms" }) }, "Terminy →")),
+      !PAID() ? h("p", { class: "muted", style: "font-size:.92rem", text: "Kolokwia, egzaminy, projekty i zadania od prowadzących zobaczysz z pełnym dostępem." })
+        : up.length ? h("div", { class: "terms compact" }, up.map((x) => termRow(x)))
+        : h("div", { class: "empty small", text: "Nic w najbliższym czasie. Nowe terminy pojawią się tutaj." }));
+  }
+  function newPanel() {
+    const all = feedItems();
+    const fresh = all.filter((it) => it.at > (VISIT.prev || 0));
+    const list = (fresh.length ? fresh : all).slice(0, 3);
+    return h("section", { class: "panel" },
+      h("div", { class: "panel-head" }, h("h2", { text: fresh.length ? "Nowe od ostatniej wizyty" : "Ostatnio dodane" }), fresh.length > 3 ? h("span", { class: "chip plain num", text: `+${fresh.length - 3}` }) : null),
+      !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
+        : list.length ? h("div", { class: "feed" }, list.map(feedRow))
+        : h("div", { class: "empty small", text: "Jeszcze cisza. Nowe materiały i ogłoszenia pojawią się tutaj." }));
   }
   function viewHome() {
-    const out = [];
-    out.push(h("section", { class: "greet" },
-      h("h1", { text: greeting() }),
-      h("p", { class: "sub", text: weekLine() })));
-    if (S.noDb) out.push(accessNotice());
-    else out.push(buyBanner());
-
     const ann = S.announcements[0];
-    const feed = feedItems().slice(0, 5);
-    const today = todayPanel(); today.classList.add("h-today");
-    const left = h("div", { class: "h-feed", style: "min-width:0" },
-      h("section", { class: "panel" },
-        h("div", { class: "panel-head" }, h("h2", { text: "Nowe materiały" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "materials" }) }, "Wszystkie →")),
-        !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
-          : feed.length ? h("div", { class: "feed" }, feed.map(feedRow))
-          : h("div", { class: "empty small", text: "Jeszcze cisza. Nowe materiały i terminy pojawią się tutaj." })),
-    );
-    const right = h("div", { class: "stack h-side", style: "gap:20px;min-width:0" },
-      ann ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
+    const annFresh = ann && Date.now() - (ann.createdAt || 0) < 7 * 864e5;
+    return [
+      h("section", { class: "greet" }, h("h1", { text: greeting() }), h("p", { class: "sub", text: weekLine() })),
+      S.noDb ? accessNotice() : buyBanner(),
+      annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
-      hintPanel(),
-      reviewPanel(),
-      upcomingPanel(),
-      S.canEdit ? h("section", { class: "panel" }, announceForm()) : null,
-    );
-    out.push(h("div", { class: "hub home" }, today, right, left));
-    return out;
+      nowCard(),
+      h("div", { class: "hub" }, todayPanel(), h("div", { class: "stack", style: "gap:20px;min-width:0" }, upcomingPanel(), newPanel())),
+    ];
   }
 
-  function announceForm() {
+  function announceForm(done) {
     const ta = h("textarea", { class: "input", id: "ann-text", placeholder: "Ogłoszenie dla roku, np. zmiana sali, przypomnienie o zapisach…", maxlength: "400", rows: "2" });
     return h("form", { class: "row", style: "align-items:flex-end", onsubmit: async (e) => {
       e.preventDefault();
       const text = ta.value.trim(); if (!text) return;
-      try { await S.db.collection("announcements").add({ text, createdAt: Date.now(), createdBy: S.uid || null }); ta.value = ""; toast("Ogłoszenie opublikowane."); } catch { toast("Nie udało się opublikować."); }
-    } }, h("label", { class: "field", style: "flex:1 1 260px" }, "Ogłoszenie od starosty", ta), h("button", { type: "submit", class: "btn small" }, "Opublikuj"));
+      try { await S.db.collection("announcements").add({ text, createdAt: Date.now(), createdBy: S.uid || null }); ta.value = ""; toast("Ogłoszenie opublikowane."); done?.(); } catch { toast("Nie udało się opublikować."); }
+    } }, h("label", { class: "field", style: "flex:1 1 260px" }, "Ogłoszenie od starosty", ta), h("button", { type: "submit", class: "btn small primary" }, "Opublikuj"));
   }
 
   function weekStrip() {
@@ -1575,7 +1802,7 @@ button.pm-sq:hover { transform: scale(1.12); }
         return [
           h("span", { class: "typechip", style: `--t:${t.c};justify-self:start`, text: t.label }),
           h("h2", { text: d.title }),
-          h("p", { class: "muted", text: `${fmtKey(d.date)}${d.time ? ", " + d.time : ""} · ${s ? s.pl : "ogólne"}${d.approx ? " · z sylabusa, data orientacyjna" : ""}` }),
+          h("p", { class: "muted", text: `${fmtKey(d.date)}${d.time ? ", " + d.time : ""} · ${s ? s.pl : "ogólne"}${d.approx ? " · data orientacyjna" : ""}` }),
           d.note ? h("p", { text: d.note }) : null,
           h("p", { class: "foot-note", text: `Dodano ${ago(d.createdAt)}${who(d.createdBy) ? " przez " + who(d.createdBy) : ""}. Zmienić termin może osoba, która go dodała, albo starosta.` }),
           h("div", { class: "row" }, s ? h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "subject", id: s.id }); } }, "Materiały z przedmiotu") : null, h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")),
@@ -1633,8 +1860,8 @@ button.pm-sq:hover { transform: scale(1.12); }
           h("span", { class: "calico", style: `background:${color}`, text: ico }), h("span", {}, h("b", { text: title }), h("small", { text: small })));
         const inp = h("input", { class: "input", readonly: true, value: https, "aria-label": "Twój link do kalendarza", style: "font-size:.78rem" });
         body.replaceChildren(
-          h("p", { text: S.group ? `Zajęcia grupy ${S.group}${S.sub ? ", lab " + S.sub : ", oba laby"} oraz zaliczenia i zadania z przypomnieniem dzień wcześniej.` : "Zaliczenia i zadania z przypomnieniem dzień wcześniej. Wybierz grupę w Menu, a dojdą też Twoje zajęcia." }),
-          h("p", { class: "muted", text: "To subskrypcja: nowe terminy i zmiany w planie same pojawią się w telefonie. Po zmianie grupy w Menu kalendarz też się dostosuje." }),
+          h("p", { text: S.group ? `Zajęcia grupy ${S.group}${S.sub ? ", lab " + S.sub : ", oba laby"} oraz zaliczenia i zadania z przypomnieniem dzień wcześniej.` : "Zaliczenia i zadania z przypomnieniem dzień wcześniej. Wybierz grupę w „Więcej”, a dojdą też Twoje zajęcia." }),
+          h("p", { class: "muted", text: "To subskrypcja: nowe terminy i zmiany w planie same pojawią się w telefonie. Po zmianie grupy w „Więcej” kalendarz też się dostosuje." }),
           h("div", { class: "calopts" },
             opt(`https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`, "G", "#1A73E8", "Google Calendar", "Android i komputer. Otwórz na koncie Google z telefonu.", true),
             opt(webcal, "A", "#16231B", "iPhone, iPad, Mac", "Kalendarz Apple. Potwierdź „Subskrybuj”.", false),
@@ -1667,7 +1894,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     });
   }
 
-  function viewCalendar() {
+  function calendarBlock() {
     const tk = todayKey();
     if (!S.calMonth) S.calMonth = tk.slice(0, 7);
     if (!S.calSel) S.calSel = tk;
@@ -1697,16 +1924,11 @@ button.pm-sq:hover { transform: scale(1.12); }
     const selDl = visDeadlines().filter((x) => x.date === sel).sort((a, b) => (a.time || "").localeCompare(b.time || ""));
     return [
       h("section", { class: "stack" },
-        h("span", { class: "eyebrow", text: "Kalendarz roku" }),
         h("div", { class: "cal-head" },
           h("button", { type: "button", class: "btn small", "aria-label": "Poprzedni miesiąc", onclick: () => shift(-1) }, "‹"),
           h("h2", { text: `${MONTHS[m - 1]} ${y}`.replace(/^./, (c) => c.toUpperCase()) }),
           h("button", { type: "button", class: "btn small", "aria-label": "Następny miesiąc", onclick: () => shift(1) }, "›"),
-          h("button", { type: "button", class: "btn small ghost", onclick: () => { S.calMonth = tk.slice(0, 7); S.calSel = tk; render(); } }, "Dziś"),
-          h("span", { style: "flex:1" }),
-          h("button", { type: "button", class: "btn small", onclick: openPhoneCal }, lockLabel("📅 Do kalendarza w telefonie")),
-          h("button", { type: "button", class: "btn small primary", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj termin"))),
-        S.group ? null : h("div", { class: "notice" }, groupPicker()),
+          h("button", { type: "button", class: "btn small ghost", onclick: () => { S.calMonth = tk.slice(0, 7); S.calSel = tk; render(); } }, "Dziś")),
         h("div", { class: "cal-scroll" }, h("div", { class: "cal" }, DOW.map((d) => h("span", { class: "dow", text: d })), cells)),
         h("div", { class: "legend" }, h("span", { text: "N / P: tydzień nieparzysty / parzysty" }), DL_TYPES.map((t) => h("span", {}, h("i", { class: "dot", style: `--c:${t.c}` }), t.label))),
       ),
@@ -1718,7 +1940,7 @@ button.pm-sq:hover { transform: scale(1.12); }
             : selCls.length ? classRows(selCls, sel) : h("p", { class: "muted", text: selInfo.off || "Brak zajęć tego dnia." }),
         ),
         h("div", { class: "panel" },
-          h("div", { class: "panel-head" }, h("h2", { text: "Terminy tego dnia" }), h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj"))),
+          h("div", { class: "panel-head" }, h("h2", { text: "Terminy tego dnia" })),
           !PAID() ? lockBox("Terminy są w pełnej wersji.") : selDl.length ? h("div", {}, selDl.map(deadlineRow)) : h("p", { class: "muted", text: "Nic nie wpisano." }),
         ),
       ),
@@ -1834,7 +2056,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     return h("p", { class: "zal-src" }, h("span", { text: "Źródła:" }), z.sources.map((src) => src.url
       ? h("a", { href: src.url, target: "_blank", rel: "noopener", text: src.label })
       : h("span", { text: src.label })),
-      sid && sylOf(sid) ? h("a", { href: "#sylabus", onclick: (e) => { e.preventDefault(); go({ view: "syllabus", id: sid, from: { view: "subject", id: sid } }); }, text: "Karta przedmiotu z sylabusa →" }) : null);
+      sid && sylOf(sid) ? h("a", { href: "#sylabus", onclick: (e) => { e.preventDefault(); go({ view: "syllabus", id: sid, from: { view: "subject", id: sid } }); }, text: "Pełna karta przedmiotu →" }) : null);
   }
 
   function zalPart(p, sid) {
@@ -1853,12 +2075,12 @@ button.pm-sq:hover { transform: scale(1.12); }
     return h("section", { class: "zal", id: "zal" },
       h("div", { class: "row", style: "justify-content:space-between" },
         h("h2", { text: "Jak zaliczyć" }),
-        h("button", { type: "button", class: "link", onclick: () => go({ view: "grading" }) }, "Wszystkie przedmioty →")),
+        h("button", { type: "button", class: "link", onclick: () => go({ view: "grading" }) }, "Zasady wszystkich przedmiotów →")),
       h("div", { class: "zal-parts" }, z.parts.map((p) => zalPart(p, s.id))),
       h("div", { class: "zal-final" }, h("span", { class: "eyebrow", text: "Ocena z przedmiotu" }), h("p", { text: z.final }),
         (() => { const r = calcGrade(s.id); return h("p", { style: "font-size:.88rem" }, r && !r.missing ? h("span", {}, "Z Twoich ocen wychodzi ", h("b", { class: "num", text: gfmt(r.grade) }), ". ") : null, h("button", { type: "button", class: "link", onclick: () => { go({ view: "grading" }); requestAnimationFrame(() => document.getElementById("kalkulator")?.scrollIntoView({ block: "start" })); } }, r && !r.missing ? "Zmień oceny →" : "Policz swoją ocenę →")); })()),
       z.notes.length ? h("div", { class: "zal-note" }, h("b", { text: "Na co uważać" }), h("ul", { class: "zal-list" }, z.notes.map((n) => h("li", { text: n })))) : null,
-      zalSources(z, s.id));
+      zalSources(z));
   }
 
   function zalWhen(z) {
@@ -1875,15 +2097,16 @@ button.pm-sq:hover { transform: scale(1.12); }
       const z = zalOf(s.id), w = zalWhen(z);
       const lec = z.parts.find((p) => p.k === "W"), cls = z.parts.find((p) => p.k !== "W");
       const cell = (p) => p ? h("span", { class: "cell" }, h("small", { text: ZAL_KIND[p.k] }), formChip(p.f)) : h("span", { class: "cell" }, h("small", { text: "Tylko wykład" }));
-      return h("button", { type: "button", class: "zal-row", onclick: () => { go({ view: "subject", id: s.id }); requestAnimationFrame(() => document.getElementById("zal")?.scrollIntoView({ block: "start" })); } },
+      return h("button", { type: "button", class: "zal-row", onclick: () => go({ view: "subject", id: s.id, tab: "zal" }) },
         h("span", { class: "nm" }, h("i", { class: "dot", style: `--c:${s.color}` }), h("span", { text: s.pl })),
         cell(lec), cell(cls),
         h("span", { class: "wh" + (w.known ? " known" : ""), text: w.text }));
     });
     return [
+      backLink({ view: "more" }),
       h("section", { class: "stack" },
         h("span", { class: "eyebrow", text: `semestr zimowy 2026/27 · stan na ${ZAL_CHECKED}` }),
-        h("h1", { text: "Zaliczenia" }),
+        h("h1", { text: "Zasady zaliczeń" }),
         h("p", { class: "muted", style: "max-width:62ch" }, `${exams.length} ${plural(exams.length, "przedmiot kończy", "przedmioty kończą", "przedmiotów kończy")} się egzaminem (${exams.map((s) => s.pl).join(", ")}). Pozostałe zaliczasz na ocenę przed sesją. Wszystko z sylabusów kierunku i z tego, co prowadzący napisali w Teams. Gdzie te źródła się różnią, piszemy o tym przy przedmiocie.`)),
       h("div", { class: "zal-rows" },
         h("div", { class: "zal-row head", role: "presentation" }, h("span", { text: "Przedmiot" }), h("span", { text: "Wykład" }), h("span", { text: "Ćwiczenia / lab" }), h("span", { text: "Kiedy" })),
@@ -1973,7 +2196,7 @@ button.pm-sq:hover { transform: scale(1.12); }
     const c = sylOf(s.id);
     if (!c) return null;
     return h("section", { class: "panel syl-panel", id: "sylabus" },
-      h("div", { class: "panel-head" }, h("h2", { text: "Sylabus: tematy i wymagania" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "syllabus", id: c.id, from: { view: "subject", id: s.id } }) }, "Pełna karta przedmiotu →")),
+      h("div", { class: "panel-head" }, h("h2", { text: "Plan tematów i wymagania" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "syllabus", id: c.id, from: { view: "subject", id: s.id } }) }, "Pełna karta przedmiotu →")),
       sylFacts(c, s),
       Object.keys(c.topics).length ? sylTopics(c) : null,
       sylMore(c, false));
@@ -1998,7 +2221,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   function sylTrainings() {
     const list = (SYL?.courses || []).filter((c) => c.sem.includes(1) && SZKOLENIA[c.id]);
     if (!list.length) return null;
-    return h("section", { class: "panel" },
+    return h("section", { class: "panel", id: "szkolenia" },
       h("h2", { text: "Szkolenia obowiązkowe" }),
       h("p", { class: "muted", text: "Bez ECTS i bez oceny, ale trzeba je zaliczyć w 1. semestrze. Wszystkie są online." }),
       h("div", { class: "list" }, list.map((c) => h("button", { type: "button", class: "item", onclick: () => go({ view: "syllabus", id: c.id, from: { view: "grading" } }) },
@@ -2032,7 +2255,7 @@ button.pm-sq:hover { transform: scale(1.12); }
       h("p", { class: "muted", style: "max-width:62ch", text: "Wszystkie przedmioty z sylabusa kierunku, semestr po semestrze. Kliknij przedmiot, żeby zobaczyć tematy, literaturę i zasady zaliczenia." }),
       h("div", { class: "seg pick", role: "group", "aria-label": "Semestr" }, [1, 2, 3, 4, 5, 6].map((n) => h("button", { type: "button", "aria-pressed": String(sem === n), onclick: () => go({ view: "program", sem: n }) }, `Sem. ${n}`))));
     const sem = S.route.sem || 1;
-    if (!SYL) return [backLink({ view: "materials" }), head(sem), h("p", { class: "muted", text: "Ładuję sylabus…" })];
+    if (!SYL) return [backLink({ view: "more" }), head(sem), h("p", { class: "muted", text: "Ładuję sylabus…" })];
     const all = SYL.courses.filter((c) => c.sem.includes(sem));
     const ob = all.filter((c) => !c.elective), el = all.filter((c) => c.elective);
     const ectsOb = ob.reduce((a, c) => a + c.ects, 0);
@@ -2054,7 +2277,7 @@ button.pm-sq:hover { transform: scale(1.12); }
       g.items.push(c);
     }
     return [
-      backLink({ view: "materials" }),
+      backLink({ view: "more" }),
       head(sem),
       h("div", { class: "row" }, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "reading", sem }) }, `Lektury z semestru ${sem}`)),
       (S.compare || []).length ? h("div", { class: "cmp-bar" }, h("span", { text: `Do porównania: ${(S.compare || []).map((id) => sylName(sylOf(id) || { pl: id })).join(", ")}` }),
@@ -2203,7 +2426,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   const isFreeLit = (x) => /on-?line|openstax|https?:\/\//i.test(x);
   function viewReading() {
     const sem = S.route.sem || 1;
-    const head = h("section", { class: "stack" }, backLink({ view: "materials" }),
+    const head = h("section", { class: "stack" }, backLink({ view: "more" }),
       h("span", { class: "eyebrow", text: `semestr ${sem} · z sylabusa kierunku` }), h("h1", { text: "Lektury" }),
       h("p", { class: "muted", style: "max-width:62ch", text: "Literatura podstawowa i uzupełniająca ze wszystkich przedmiotów semestru. Przycisk szuka książki w katalogu Biblioteki Głównej US. „Online” znaczy, że według sylabusa pozycja jest dostępna w internecie." }));
     if (!SYL) return [head, h("p", { class: "muted", text: "Ładuję sylabus…" })];
@@ -2311,95 +2534,175 @@ button.pm-sq:hover { transform: scale(1.12); }
       SYLMAT.log.length ? h("ul", { class: "pipeline" }, SYLMAT.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null);
   }
 
+  // ================= PRZEDMIOTY: wyszukiwarka i siatka przedmiotów =================
+  function subjectLabel(s) {
+    const nx = nextExam(s.id);
+    if (nx && daysUntil(nx.date) <= 14) { const n = daysUntil(nx.date); return { cls: n <= 3 ? "bad" : "warn", text: `${nx.dl ? (TERM_KIND[nx.dl.type] || "").toLowerCase() : partLabel(s.id, nx.part)} ${whenN(n)}`, pin: nx.date }; }
+    const ms = materialsOf(s.id);
+    if (ms.some((m) => Date.now() - m.createdAt < 7 * 864e5 && !isLesson(m))) return { cls: "sun", text: "nowy materiał" };
+    const scored = ms.map((m) => best(m.id)).filter(Boolean);
+    if (scored.length) { const pct = Math.round(100 * scored.reduce((x, y) => x + y.best / y.total, 0) / scored.length); return { cls: pct >= 80 ? "good" : pct < 50 ? "bad" : "plain", text: `quizy ${pct}%` }; }
+    return null;
+  }
+  function subjectTile(s) {
+    const ms = studyMats(s.id), lb = subjectLabel(s);
+    const good = ms.filter((m) => topicScore(m).state === "good").length;
+    const pct = ms.length ? Math.round((100 * good) / ms.length) : 0;
+    return h("button", { type: "button", class: "nb", style: `--c:${s.color}`, onclick: () => go({ view: "subject", id: s.id }) },
+      h("span", { class: `nb-top pat pat-${s.pat}`, "aria-hidden": "true" }, h("span", { class: "nb-badge", text: s.abbr })),
+      h("h3", { text: s.pl }),
+      s.en ? h("span", { class: "en", text: s.en }) : null,
+      ms.length ? h("span", { class: "nb-prog", title: `Umiesz ${good} z ${ms.length} materiałów` }, h("span", { class: "nb-bar", "aria-hidden": "true" }, h("i", { style: `width:${pct}%` })), h("span", { class: "num", text: `${good}/${ms.length}` }))
+        : h("span", { class: "meta", text: "Jeszcze bez materiałów" }),
+      h("span", { class: "foot" }, lb ? h("span", { class: "chip " + lb.cls, text: lb.text }) : null));
+  }
+  function searchResults(q) {
+    const nq = norm(q);
+    if (nq.length < 2) return null;
+    const hit = (...xs) => xs.some((x) => norm(x).includes(nq));
+    const subs = SUBJECTS.filter((x) => hit(x.pl, x.en)).slice(0, 6);
+    const mats = S.materials.concat(S.mine).filter((m) => hit(m.title, m.fileName, ...(S.content[m.id]?.topics || []).map((t) => t.t))).slice(0, 8);
+    const terms = GL.terms ? glSearch(q).slice(0, 6) : [];
+    const dls = PAID() ? termItems().filter((x) => hit(x.title)).slice(0, 5) : [];
+    const sec = (title, items) => items.length ? h("section", { class: "sr-sec" }, h("h3", { text: title }), h("div", { class: "list" }, items)) : null;
+    const out = [
+      sec("Przedmioty", subs.map((x) => h("button", { type: "button", class: "item", onclick: () => go({ view: "subject", id: x.id }) }, h("span", { class: "t" }, h("i", { class: "dot", style: `--c:${x.color};display:inline-block;margin-right:8px` }), x.pl), h("span", { class: "m", text: x.en })))),
+      sec("Materiały", mats.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id }) }, h("span", { class: "t", text: m.title || m.fileName }), h("span", { class: "m", text: [isMine(m) ? "Moje materiały" : null, subjectById(m.subjectId)?.pl].filter(Boolean).join(" · ") }), locked(m) ? h("span", { class: "r lock", text: "🔒" }) : null))),
+      sec("Pojęcia", terms.map((t) => h("button", { type: "button", class: "item", onclick: () => go({ view: "glossary", q: t.en }) }, h("span", { class: "t" }, h("b", { text: t.en }), t.pl ? h("span", { class: "muted", text: " · " + t.pl }) : null), t.def ? h("span", { class: "m", text: firstSentence(t.def, 140) }) : null))),
+      sec("Terminy", dls.map((x) => h("button", { type: "button", class: "item", onclick: () => go({ view: "terms" }) }, h("span", { class: "t", text: x.title }), h("span", { class: "m", text: [TERM_KIND[x.kind], whenText(x), subjectById(x.sid)?.pl].filter(Boolean).join(" · ") })))),
+    ].filter(Boolean);
+    return out.length ? out : [h("div", { class: "empty small", text: GL.loading ? "Szukam…" : "Nic nie znalazłem. Spróbuj krótszego słowa albo po angielsku." })];
+  }
   function viewMaterials() {
-    const cards = SUBJECTS.map((s) => {
-      const ms = materialsOf(s.id);
-      const scored = ms.map((m) => best(m.id)).filter(Boolean);
-      const pct = scored.length ? Math.round(100 * scored.reduce((a, b) => a + b.best / b.total, 0) / scored.length) : null;
-      const next = upcomingDeadlines(1, s.id)[0];
-      const fresh = ms.find((m) => Date.now() - m.createdAt < 7 * 864e5);
-      return h("button", { type: "button", class: "nb", style: `--c:${s.color}`, onclick: () => go({ view: "subject", id: s.id }) },
-        h("span", { class: `nb-top pat pat-${s.pat}`, "aria-hidden": "true" }, h("span", { class: "nb-badge", text: s.abbr })),
-        h("h3", { text: s.pl }),
-        s.en ? h("span", { class: "en", text: s.en }) : null,
-        h("span", { class: "meta num", text: [lessonsOf(s.id).length ? `kurs: ${lessonsOf(s.id).length} lekcji` : null, (() => { const t = filesOf(s.id).filter((m) => m.source !== "sylabus").length; return t ? `${t} ${plural(t, "materiał", "materiały", "materiałów")} z Teams` : null; })(), filesOf(s.id).some((m) => m.source === "sylabus") ? "mapa z sylabusa" : null].filter(Boolean).join(" · ") || "Jeszcze bez materiałów" }),
-        h("span", { class: "foot" },
-          fresh ? h("span", { class: "chip sun", text: "nowe" }) : null,
-          hasExam(s.id) ? h("span", { class: "chip bad", text: "egzamin" }) : null,
-          pct != null ? h("span", { class: "chip " + (pct >= 80 ? "good" : pct < 50 ? "bad" : ""), text: `quizy ${pct}%` }) : null,
-          next ? h("span", { class: "chip plain", text: `${dlType(next.type).label} za ${daysUntil(next.date)} dni` }) : null));
-    });
+    const wd = (k) => k ? k : "9999";
+    const sorted = SUBJECTS.map((x) => ({ x, lb: subjectLabel(x) })).sort((a, b) => wd(a.lb?.pin).localeCompare(wd(b.lb?.pin)));
+    const pinned = sorted.filter((y) => y.lb?.pin).map((y) => y.x), rest = sorted.filter((y) => !y.lb?.pin).map((y) => y.x);
+    const res = h("div", { class: "sr", id: "sr" });
+    const grid = h("div", { class: "grid", id: "subj-grid" },
+      pinned.map(subjectTile), rest.map(subjectTile),
+      h("button", { type: "button", class: "nb mine-tile", style: "--c:var(--accent)", onclick: () => go({ view: "mine" }) },
+        h("span", { class: "nb-top mine", "aria-hidden": "true" }, h("span", { class: "nb-badge", text: "+" })),
+        h("h3", { text: "Moje materiały" }),
+        h("span", { class: "meta", text: PAID() ? (S.mine.length ? `${S.mine.length} ${plural(S.mine.length, "plik", "pliki", "plików")}` : "Wgraj swój plik, a opracujemy go jak materiały roku") : "🔒 Twoje pliki opracowane jak materiały roku" })));
+    const update = (q) => {
+      S.q = q;
+      const r = searchResults(q);
+      res.replaceChildren(...(r || []));
+      grid.hidden = !!r;
+      if (r && !GL.terms && !GL.loading && S.ready) loadGlossary().then(() => { if (S.route.view === "materials" && S.q === q) update(q); }).catch(() => {});
+    };
+    const input = h("input", { class: "input search", id: "q", type: "search", placeholder: "Szukaj tematu, pojęcia albo przedmiotu", "aria-label": "Szukaj tematu, pojęcia albo przedmiotu", autocomplete: "off", value: S.q || "", oninput: (e) => update(e.target.value) });
+    if (S.q) queueMicrotask(() => update(S.q));
     return [
       h("section", { class: "stack" },
-        h("span", { class: "eyebrow", text: `${SUBJECTS.length} przedmiotów z planu · semestr ${PLAN.semestr || ""} ${PLAN.rokAkademicki || ""}` }),
-        h("div", { class: "row", style: "justify-content:space-between" }, h("h1", { text: "Materiały" }), S.canEdit ? h("button", { type: "button", class: "btn sun", onclick: () => go({ view: "upload" }) }, "Wgraj prezentację") : null),
-        h("p", { class: "muted", style: "max-width:60ch", text: "Wybierz przedmiot. W środku są skróty, fiszki, quizy i wersje prostym językiem." }),
-        h("div", { class: "row" },
-          h("button", { type: "button", class: "btn small", onclick: () => go({ view: "glossary" }) }, "Słowniczek EN–PL"),
-          h("button", { type: "button", class: "btn small", onclick: () => go({ view: "progress" }) }, "Mapa postępów"),
-          h("button", { type: "button", class: "btn small", onclick: () => go({ view: "program" }) }, "Program studiów"),
-          h("button", { type: "button", class: "btn small", onclick: () => go({ view: "reading" }) }, "Lektury"),
-          h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "review" }) }, "Powtórki"))),
+        h("div", { class: "row", style: "justify-content:space-between" }, h("h1", { text: "Przedmioty" }), S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload" }) }, "Wgraj prezentację") : null),
+        h("label", { class: "searchbox" }, icon("search"), input, h("kbd", { class: "kbd", title: "Skrót klawiszowy", text: "/" }))),
       buyBanner(),
-      myPanel(),
-      h("div", { class: "grid" }, cards),
+      res,
+      grid,
     ];
   }
 
+  // ================= STRONA PRZEDMIOTU: zawsze te same 3 zakładki =================
+  const SUBJ_TABS = [["ucz", "Ucz się"], ["cwicz", "Ćwicz"], ["zal", "Zaliczenie"]];
+  // Następny materiał do nauki: pierwsza nieprzerobiona lekcja albo najstarszy materiał bez dobrego wyniku.
+  function nextToLearn(sid) {
+    const ls = lessonsOf(sid), done = S.progress?.done || {};
+    if (ls.length) { const l = ls.find((x) => !done[x.id] && readable(x)); return l ? { m: l, label: `${Object.keys(done).some((k) => ls.some((x) => x.id === k)) ? "Kontynuuj" : "Zacznij"}: ${l.order}. ${l.title}` } : null; }
+    const fs = filesOf(sid).filter(readable).sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
+    const m = fs.find((x) => topicScore(x).state !== "good");
+    if (!m) return null;
+    const started = fs.some((x) => best(x.id) || seenSet().has(x.id));
+    return { m, label: `${started ? "Kontynuuj" : "Zacznij"}: ${m.title || m.fileName}` };
+  }
   function viewSubject() {
     const s = subjectById(S.route.id);
     if (!s) return [backLink({ view: "materials" }), h("p", { class: "muted", text: "Nie ma takiego przedmiotu." })];
-    const ms = materialsOf(s.id);
-    const qCount = ms.filter(readable).reduce((a, m) => a + (m.quizCount || 0), 0);
-    const qAll = ms.reduce((a, m) => a + (m.quizCount || 0), 0);
-    const qN = Math.min(15, qCount);
-    const quizBtn = PAID() || qCount
-      ? h("button", { type: "button", class: "btn", disabled: qCount ? null : true, onclick: () => go({ view: "subjectQuiz", id: s.id }) },
-          PAID() ? `Quiz z całości${qCount ? ` · ${qN} ${plural(qN, "pytanie", "pytania", "pytań")}` : ""}` : `Quiz z darmowego materiału · ${qN} ${plural(qN, "pytanie", "pytania", "pytań")}`)
-      : qAll ? h("button", { type: "button", class: "btn", onclick: () => (window.skrot?.state === "out" && ms.some(isFree) ? window.skrot.openLogin("Zaloguj się e-mailem (bez hasła), żeby zrobić quiz z darmowego materiału.") : lockModal("Quiz z całego przedmiotu")) }, "🔒 Quiz z całości") : null;
-    const dls = upcomingDeadlines(5, s.id);
+    const tab = SUBJ_TABS.some(([k]) => k === S.route.tab) ? S.route.tab : "ucz";
     const people = Object.entries(s.people).map(([k, set]) => h("span", {}, KIND[k] + ": ", h("b", { text: [...set].join(", ") })));
     let nextClass = null;
     if (S.group) { let d = new Date(); for (let i = 0; i < 30 && !nextClass; i++, d = addDays(d, 1)) { const k = dkey(d); const c = classesOn(k, S.group, S.sub).find((e) => slug(e.pl) === s.id); if (c) nextClass = { k, c }; } }
-    return [
-      backLink({ view: "materials" }),
-      h("section", { class: "cover", style: `--c:${s.color}` },
-        h("span", { class: `pat pat-${s.pat}`, "aria-hidden": "true" }),
-        h("span", { class: "nb-badge", "aria-hidden": "true", text: s.abbr }),
-        h("span", { class: "eyebrow", text: "Przedmiot" }),
-        h("h1", { text: s.pl }),
-        s.en ? h("p", { class: "en", text: s.en }) : null,
-        h("div", { class: "people" }, people),
-        nextClass ? h("p", { style: "font-size:.92rem" }, "Najbliższe zajęcia: ", h("b", { text: `${fmtKey(nextClass.k)}, ${SLOTS[nextClass.c.s][0]}` }), ` · ${KIND[nextClass.c.k].toLowerCase()} · ${nextClass.c.r || ""}`) : null,
-        nextClass ? (() => { const t = topicAt(s.id, nextClass.c.k, nextClass.k, nextClass.c.s); return t ? h("p", { style: "font-size:.88rem" }, h("span", { class: "muted", text: `Według sylabusa (zajęcia ${t.n}/${t.of}, szacunek): ` }), h("span", { lang: "en", text: t.topics.join(" · ") })) : null; })() : null,
-        h("div", { class: "row" },
-          S.canEdit ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj materiał") : null,
-          quizBtn,
-          !PAID() && qCount && qAll > qCount ? h("button", { type: "button", class: "link", style: "font-size:.86rem", onclick: () => lockModal("Quiz z całego przedmiotu") }, "🔒 pełny quiz z całości") : null,
-          best("subject:" + s.id) ? scoreChip("subject:" + s.id) : null,
-          h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, lockLabel("+ Termin"))),
-        ms.length ? h("div", { class: "row" },
-          h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "exam", sid: s.id }) }, "Tryb przed kolokwium"),
-          h("button", { type: "button", class: "btn", onclick: () => (PAID() ? go({ view: "cheat", sid: s.id }) : lockModal("Ściągawka z przedmiotu")) }, lockLabel("Ściągawka z przedmiotu")),
-          h("button", { type: "button", class: "btn ghost", onclick: () => addSubjectToReview(s.id) }, "Dodaj fiszki do powtórek")) : null,
-      ),
-      ms.length ? h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Twoje postępy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "progress" }) }, "Cała mapa →")), progressRow(s, true),
+    const topic = nextClass ? topicAt(s.id, nextClass.c.k, nextClass.k, nextClass.c.s) : null;
+    const head = h("section", { class: "cover", style: `--c:${s.color}` },
+      h("span", { class: `pat pat-${s.pat}`, "aria-hidden": "true" }),
+      h("span", { class: "nb-badge", "aria-hidden": "true", text: s.abbr }),
+      h("h1", { text: s.pl }),
+      s.en ? h("p", { class: "en", text: s.en }) : null,
+      h("div", { class: "people" }, people),
+      nextClass ? h("p", { style: "font-size:.92rem" }, "Najbliższe zajęcia: ", h("b", { text: `${fmtKey(nextClass.k)}, ${SLOTS[nextClass.c.s][0]}` }), ` · ${KIND[nextClass.c.k].toLowerCase()} · ${nextClass.c.r || ""}`) : null,
+      topic ? h("p", { style: "font-size:.88rem" }, h("span", { class: "muted", text: `Temat (plan tematów, zajęcia ${topic.n}/${topic.of}): ` }), h("span", { lang: "en", text: topic.topics.join(" · ") })) : null);
+    const tabs = h("div", { class: "tabs subj-tabs", role: "tablist", "aria-label": "Części przedmiotu" }, SUBJ_TABS.map(([k, l]) => h("button", { type: "button", class: "tab", role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k }; render(); } }, l)));
+    const body = tab === "cwicz" ? subjectPractice(s) : tab === "zal" ? subjectGrading(s) : subjectLearn(s);
+    return [backLink({ view: "materials" }), head, h("div", {}, tabs, h("div", { class: "tabpanel", role: "tabpanel" }, body))];
+  }
+  function subjectLearn(s) {
+    const ms = materialsOf(s.id), nx = nextToLearn(s.id);
+    const files = filesOf(s.id);
+    return h("div", { class: "stack" },
+      nx ? h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "material", id: nx.m.id }) }, nx.label, " →"),
+        S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj materiał") : null)
+        : S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj materiał")) : null,
+      ms.length ? h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Twoje postępy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "review" }) }, "Powtórki →")), progressRow(s, true),
         h("div", { class: "pm-legend small" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label)))) : null,
-      zalPanel(s),
-      dls.length ? h("section", { class: "panel" }, h("h2", { text: "Nadchodzące terminy" }), h("div", {}, dls.map(deadlineRow))) : null,
-      subjectTasks(s),
       courseSection(s),
-      h("section", { class: "stack" },
-        h("h2", { text: lessonsOf(s.id).length ? "Materiały z Teams" : "Materiały, od najnowszych" }),
-        !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
-          : filesOf(s.id).length ? materialList(filesOf(s.id))
-          : lessonsOf(s.id).length ? h("div", { class: "empty small", text: "Prowadząca nie wrzuciła jeszcze nic do Teams. Gdy się pojawi, trafi tutaj automatycznie." })
-          : S.canEdit ? h("div", { class: "empty" }, h("h3", { text: "Ten zeszyt jest jeszcze pusty" }), h("p", { class: "muted", text: "Pobierz prezentację z kanału tego przedmiotu w Teams i wgraj ją tutaj. Po około minucie pojawi się skrót, fiszki i quiz dla całego roku." }), h("div", {}, h("button", { type: "button", class: "btn sun", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj pierwszą prezentację")))
-          : h("div", { class: "empty" }, h("h3", { text: "Materiały w przygotowaniu" }),
-              h("p", { class: "muted", text: "Do tego przedmiotu nie ma jeszcze materiałów. Pojawią się tutaj, gdy prowadzący udostępnią pierwsze zajęcia w Teams. Pierwszy materiał będzie do przejrzenia za darmo." }),
-              PAID() ? null : h("div", { class: "row" }, h("span", { class: "lock", text: "🔒 Pełny dostęp obejmuje wszystkie przyszłe materiały" }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")))),
-      sylPanel(s),
-    ];
+      !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
+        : files.length ? h("section", { class: "stack" }, h("h2", { text: lessonsOf(s.id).length ? "Materiały z zajęć" : "Materiały, od najnowszych" }), materialList(files))
+        : lessonsOf(s.id).length ? null
+        : h("div", { class: "empty" }, h("h3", { text: "Materiały w przygotowaniu" }),
+            h("p", { class: "muted", text: "Pierwszy materiał pojawi się tutaj po pierwszych zajęciach, gdy prowadzący wrzuci prezentację do Teams. Do tego czasu zajrzyj do zakładki Zaliczenie: jest tam plan tematów i zasady." }),
+            h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => { S.route = { ...S.route, tab: "zal" }; render(); } }, "Zobacz plan tematów"),
+              PAID() ? null : h("button", { type: "button", class: "btn ghost", onclick: () => window.skrot?.buy() }, "Kup dostęp"))));
+  }
+  function subjectPractice(s) {
+    const ms = materialsOf(s.id);
+    const qCount = ms.filter(readable).reduce((a, m) => a + (m.quizCount || 0), 0);
+    const qN = Math.min(15, qCount);
+    const worked = ms.filter((m) => m.workedCount);
+    const cardsN = ms.filter(readable).reduce((a, m) => a + (m.flashcardCount || 0), 0);
+    if (!ms.length) return h("div", { class: "empty" }, h("h3", { text: "Jeszcze nie ma czego ćwiczyć" }), h("p", { class: "muted", text: "Quiz z całego przedmiotu, fiszki i rozwiązane zadania pojawią się tutaj razem z pierwszym materiałem." }), h("div", {}, h("button", { type: "button", class: "btn", onclick: () => go({ view: "materials" }) }, "Inne przedmioty")));
+    return h("div", { class: "stack" },
+      h("div", { class: "practice" },
+        h("section", { class: "panel" },
+          h("h2", { text: "Quiz z całego przedmiotu" }),
+          h("p", { class: "muted", text: qCount ? `${qN} ${plural(qN, "losowe pytanie", "losowe pytania", "losowych pytań")} ze wszystkich materiałów.` : PAID() ? "Quizy pojawią się z pierwszym materiałem." : "Pełny quiz z całości jest w pełnej wersji." }),
+          h("div", { class: "row" },
+            qCount ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "subjectQuiz", id: s.id }) }, "Zrób quiz") : !PAID() ? h("button", { type: "button", class: "btn", onclick: () => lockModal("Quiz z całego przedmiotu") }, "🔒 Quiz z całości") : null,
+            best("subject:" + s.id) ? scoreChip("subject:" + s.id) : null)),
+        h("section", { class: "panel" },
+          h("h2", { text: "Fiszki do powtórek" }),
+          h("p", { class: "muted", text: cardsN ? `${cardsN} ${plural(cardsN, "fiszka", "fiszki", "fiszek")} z tego przedmiotu. Dodaj je, a wrócą w Powtórkach w dobrym momencie.` : "Fiszki pojawią się z pierwszym materiałem." }),
+          h("div", { class: "row" }, cardsN ? h("button", { type: "button", class: "btn", onclick: () => addSubjectToReview(s.id) }, "Dodaj wszystkie fiszki do powtórek") : null,
+            srsDue(s.id).due.length + srsDue(s.id).fresh.length ? h("button", { type: "button", class: "link", onclick: () => go({ view: "review", sid: s.id }) }, "Powtórki z przedmiotu →") : null))),
+      h("section", { class: "stack" }, h("h2", { text: "Rozwiązane zadania" }),
+        worked.length ? h("div", { class: "list" }, worked.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: "zadania" }) },
+          h("span", { class: "t", text: m.title || m.fileName }),
+          h("span", { class: "m num", text: `${m.workedCount} ${plural(m.workedCount, "przykład", "przykłady", "przykładów")} krok po kroku${m.workedTaskCount ? ` · ${m.workedTaskCount} ${plural(m.workedTaskCount, "zadanie", "zadania", "zadań")} do samodzielnego rozwiązania` : ""}` }),
+          locked(m) ? h("span", { class: "r lock", text: "🔒" }) : null)))
+          : h("div", { class: "empty small", text: "W tym przedmiocie nie ma jeszcze rozwiązanych zadań. Pojawią się przy materiałach z obliczeniami." })),
+      h("section", { class: "stack" }, h("h2", { text: "Quiz i fiszki z jednego materiału" }),
+        h("div", { class: "list" }, studyMats(s.id).map((m) => h("div", { class: "item item-split" },
+          h("span", { class: "t", text: (isLesson(m) ? `${m.order}. ` : "") + (m.title || m.fileName) }),
+          h("span", { class: "r row", style: "gap:6px" },
+            locked(m) ? h("span", { class: "lock", text: "🔒" }) : [
+              h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "material", id: m.id, tab: "fiszki" }) }, "Fiszki"),
+              h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "material", id: m.id, tab: "quiz" }) }, "Quiz")],
+            best(m.id) ? scoreChip(m.id) : null))))));
+  }
+  function subjectGrading(s) {
+    const items = termItems(s.id).filter((x) => !x.done && !(x.n != null && x.n < 0));
+    const info = myTasks().filter((t) => t.kind === "info" && t.subjectId === s.id);
+    return h("div", { class: "stack" },
+      h("div", { class: "row" },
+        materialsOf(s.id).length ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "exam", sid: s.id }) }, "Przygotuj się →") : null,
+        h("button", { type: "button", class: "btn", onclick: () => (PAID() ? go({ view: "cheat", sid: s.id }) : lockModal("Ściągawka z przedmiotu")) }, lockLabel("Ściągawka")),
+        h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, lockLabel("+ Termin"))),
+      h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Kiedy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "terms" }) }, "Wszystkie terminy →")),
+        !PAID() ? h("p", { class: "muted", style: "font-size:.92rem", text: "Terminy kolokwiów i zadania od prowadzących zobaczysz z pełnym dostępem." })
+          : items.length ? h("div", { class: "terms compact" }, items.map((x) => termRow(x, { noSubject: true, noPrep: true })))
+          : h("p", { class: "muted", text: "Nikt nie wpisał jeszcze terminu. Gdy prowadzący poda datę, dodaj ją przyciskiem „+ Termin”, a zobaczy ją cały rok." }),
+        info.length ? h("details", { class: "src" }, h("summary", {}, `Ogłoszenia prowadzących · ${info.length}`), h("ul", { class: "zal-list" }, info.map((t) => h("li", { text: t.title + (t.summary ? ": " + t.summary : "") })))) : null),
+      zalPanel(s),
+      sylPanel(s));
   }
 
   function courseSection(s) {
@@ -2412,11 +2715,10 @@ button.pm-sq:hover { transform: scale(1.12); }
     const next = ls.find((l) => !done[l.id]);
     return h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between" },
-        h("h2", { text: "Kurs: lekcje krok po kroku" }),
+        h("h2", { text: "Kurs: lekcje po kolei" }),
         h("span", { class: "chip " + (doneN === ls.length ? "good" : "sun"), text: `przerobione ${doneN}/${ls.length}` })),
       h("div", { class: "book" }, h("span", { class: "spine", "aria-hidden": "true" }),
         h("span", {}, "Tematy w kolejności podręcznika prowadzącej: ", h("i", { text: "Mathematics for Students of Economics, Finance and Management" }), " (B. Batóg i in., Difin 2021). Wyjaśnienia, przykłady i zadania są nasze; numer rozdziału pokazuje, gdzie szukać w książce.")),
-      next ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "material", id: next.id, tab: "lekcja" }) }, doneN ? `Kontynuuj: ${next.order}. ${next.title}` : `Zacznij: ${next.order}. ${next.title}`)) : null,
       h("div", { class: "course" }, units.map((u) => h("div", { class: "unit" },
         h("h3", {}, h("span", { class: "u", text: u.unit }), h("span", { text: u.title })),
         h("div", { class: "list" }, u.items.map((l) => h("button", { type: "button", class: "item lesson-row", onclick: () => go({ view: "material", id: l.id, tab: "lekcja" }) },
@@ -2434,7 +2736,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   }
 
   function backLink(to) {
-    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : to?.view === "materials" ? "Materiały" : to?.view === "program" ? "Program studiów" : to?.view === "grading" ? "Zaliczenia" : to?.view === "compare" ? "Porównanie" : "Start";
+    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki" }[to?.view] || "Dziś";
     return h("div", {}, h("button", { type: "button", class: "back", onclick: () => go(to || { view: "home" }) }, h("span", { "aria-hidden": "true", text: "←" }), label));
   }
   function confirmBox(question, action) {
@@ -2447,31 +2749,62 @@ button.pm-sq:hover { transform: scale(1.12); }
   }
 
   // ================= material view =================
-  const TABS = [["skrot", "Skrót"], ["prosto", "Prosty język"], ["notatka", "Notatka"], ["pojecia", "Pojęcia"], ["fiszki", "Fiszki"], ["quiz", "Quiz"], ["zrodlo", "Źródło"]];
+  // ================= MATERIAŁ: 3 kroki w tej samej kolejności dla każdego materiału =================
+  const STEPS = [["czytaj", "Przeczytaj"], ["fiszki", "Fiszki"], ["quiz", "Quiz"]];
+  const STEP_OF = { skrot: "czytaj", lekcja: "czytaj", prosto: "czytaj", notatka: "czytaj", pojecia: "czytaj", zrodlo: "czytaj", czytaj: "czytaj", fiszki: "fiszki", quiz: "quiz", zadania: "zadania" };
+  function siblingsOf(m) {
+    if (isMine(m)) return mineIn(folderOf(m).id).slice().reverse();
+    if (isLesson(m)) return lessonsOf(m.subjectId);
+    return filesOf(m.subjectId).slice().sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
+  }
+  function nextMaterial(m) { const xs = siblingsOf(m); const i = xs.findIndex((x) => x.id === m.id); return i >= 0 ? xs[i + 1] || null : null; }
+  // Pojęcia podkreślone w tekście: kliknięcie pokazuje definicję.
+  function termify(text, concepts, used) {
+    const list = (concepts || []).filter((x) => x.term).flatMap((x) => [[x.term, x], x.pl ? [x.pl, x] : null]).filter(Boolean).filter(([t]) => t.length > 2 && !used.has(norm(t)));
+    if (!list.length || !text) return [text];
+    list.sort((a, b) => b[0].length - a[0].length);
+    const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`(^|[^\\p{L}])(${list.map(([t]) => esc(t)).join("|")})(?=[^\\p{L}]|$)`, "iu");
+    const out = []; let rest = String(text);
+    for (let guard = 0; guard < 8; guard++) {
+      const mm = re.exec(rest); if (!mm) break;
+      const start = mm.index + mm[1].length, word = mm[2];
+      const hit = list.find(([t]) => t.toLowerCase() === word.toLowerCase());
+      if (!hit || used.has(norm(hit[1].term))) { out.push(rest.slice(0, start + word.length)); rest = rest.slice(start + word.length); continue; }
+      used.add(norm(hit[1].term));
+      out.push(rest.slice(0, start), h("button", { type: "button", class: "term-link", onclick: () => modal((close) => [h("span", { class: "eyebrow", text: "Pojęcie" }), h("h3", { text: hit[1].term }), hit[1].pl ? h("p", { class: "muted", text: hit[1].pl }) : null, h("p", { text: hit[1].definition || hit[1].def || "" }), h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: close }, "Zamknij"))]) }, word));
+      rest = rest.slice(start + word.length);
+    }
+    out.push(rest);
+    return out;
+  }
   function viewMaterial() {
     const m = materialById(S.route.id);
     if (!m) return [backLink({ view: "materials" }), h("p", { class: "muted", text: S.ready ? "Ten materiał został usunięty." : "Ładuję…" })];
-    if (locked(m)) return [backLink({ view: "subject", id: m.subjectId }), paywallCard(m.title || m.fileName)];
-    if (!PAID() && window.skrot?.state !== "in") return [backLink({ view: "subject", id: m.subjectId }),
+    const backTo = isMine(m) ? { view: "myFolder", id: folderOf(m).id } : { view: "subject", id: m.subjectId };
+    if (locked(m)) return [backLink(backTo), paywallCard(m.title || m.fileName)];
+    if (!PAID() && window.skrot?.state !== "in") return [backLink(backTo),
       h("section", { class: "paywall" }, h("span", { class: "eyebrow", text: "Darmowa próbka" }), h("h2", { text: m.title || m.fileName }),
         h("p", { class: "muted", text: "Ten materiał możesz przejrzeć za darmo. Zaloguj się e-mailem (bez hasła), żeby go otworzyć." }),
         h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => window.skrot?.openLogin() }, "Zaloguj się")))];
     const c = S.content[m.id];
     if (c === undefined) getContent(m.id).then(render).catch(() => { S.content[m.id] = null; render(); });
-    const lessonMode = isLesson(m);
-    const tabList = lessonMode ? [["lekcja", "Lekcja"], ["prosto", "Prosty język"], ["skrot", "Skrót"], ["notatka", "Najważniejsze"], ["pojecia", "Pojęcia"], ["fiszki", "Fiszki"], ["quiz", "Quiz"]]
-      : fromSlides(m) ? TABS.filter(([k]) => k !== "zrodlo").map(([k, l]) => [k, k === "notatka" && isV2(m, c) ? "Co zapamiętać" : l]) : TABS;
-    if (c?.worked?.length) tabList.splice(tabList.findIndex(([k]) => k === "quiz"), 0, ["zadania", "Zadania"]);
-    const tab = S.route.tab || (lessonMode ? "lekcja" : "skrot");
-    const s = subjectById(m.subjectId);
-    const counts = c ? { notatka: c.notes?.length, pojecia: c.concepts?.length, fiszki: c.flashcards?.length, quiz: c.quiz?.length, lekcja: c.lesson?.exercises?.length ? c.lesson.exercises.length + " zad." : null, zadania: c.worked?.length } : {};
-    const mine = isMine(m);
+    if (S.route.tab === "prosto") S.route.simple = true;
+    const step = STEP_OF[S.route.tab] || "czytaj";
+    if (S.route.tab !== step) S.route.tab = step;
+    if (ls.get("bm-last") !== m.id) markOpened(m.id);
+    const lessonMode = isLesson(m), mine = isMine(m), s = subjectById(m.subjectId);
+    const setStep = (k) => { S.route = { ...S.route, tab: k, fc: null, qz: null, wk: null }; render(); window.scrollTo({ top: 0 }); };
     const head = h("section", { class: "stack" },
-      backLink(mine ? { view: "myFolder", id: folderOf(m).id } : { view: "subject", id: m.subjectId }),
-      h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: mine ? ["Moje materiały", folderOf(m).name, s?.pl].filter(Boolean).join(" · ") : s?.pl || "Materiał" }), m.source === "sylabus" ? h("span", { class: "chip sun", title: "Opracowane z sylabusa WEFiZ 2026/27, nie ze slajdów prowadzącego", text: "z sylabusa" }) : null),
+      backLink(backTo),
+      h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: mine ? ["Moje materiały", folderOf(m).name, s?.pl].filter(Boolean).join(" · ") : s?.pl || "Materiał" }), m.source === "sylabus" ? h("span", { class: "chip sun", title: "Opracowane z planu tematów przedmiotu, zanim prowadzący wrzucili slajdy", text: "plan tematów" }) : null),
       h("h1", { text: m.title || m.fileName }),
-      h("div", { class: "row muted num", style: "font-size:.88rem" },
-        h("span", { text: mine ? `${m.fileName} · ${partsTxt(m)} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? `Lekcja ${m.order} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ok. ${m.minutes} min` : `${m.fileName} · ${m.source === "sylabus" ? `${m.slideCount} ${plural(m.slideCount, "sekcja", "sekcje", "sekcji")}` : `${m.slideCount} ${plural(m.slideCount, "slajd", "slajdy", "slajdów")}`} · dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
+      h("div", { class: "row muted num", style: "font-size:.86rem" },
+        h("span", { text: mine ? `${m.fileName} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? `Lekcja ${m.order} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ok. ${m.minutes} min` : `dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
+        h("button", { type: "button", class: "link", style: "font-size:.86rem", onclick: () => go({ view: "cheat", id: m.id }) }, "Ściągawka do druku"),
+        mine && myFolders().length > 1 ? h("select", { class: "input small-sel", "aria-label": "Przenieś do sekcji", onchange: (e) => moveMine(m, e.target.value) },
+          myFolders().map((f) => h("option", { value: f.id, selected: f.id === folderOf(m).id ? true : null, text: f.id === folderOf(m).id ? `Sekcja: ${f.name}` : `Przenieś do: ${f.name}` }))) : null,
+        S.canEdit && !mine ? h("button", { type: "button", class: "btn small ghost", "aria-pressed": String(!!m.core), title: "Kluczowe tematy idą na górę planu przed kolokwium", onclick: () => S.db.doc("materials/" + m.id).update({ core: !m.core }).then(() => { m.core = !m.core; render(); }).catch(() => toast("Nie udało się zapisać.")) }, m.core ? "★ Kluczowy temat" : "☆ Oznacz jako kluczowy") : null,
         mine ? h("button", { type: "button", class: "btn small ghost danger", onclick: () => confirmBox("Usunąć ten materiał?", async () => {
           const fid = folderOf(m).id; await deleteMine(m); go({ view: "myFolder", id: fid });
         }) }, "Usuń")
@@ -2479,44 +2812,66 @@ button.pm-sq:hover { transform: scale(1.12); }
           await Promise.all(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})));
           go({ view: "subject", id: m.subjectId });
         }) }, "Usuń") : null),
-      h("div", { class: "row" },
-        h("button", { type: "button", class: "btn small", onclick: () => go({ view: "cheat", id: m.id }) }, "Ściągawka do druku"),
-        !mine || subjectById(m.subjectId) ? h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "exam", sid: m.subjectId }) }, "Tryb przed kolokwium") : null,
-        mine && myFolders().length > 1 ? h("select", { class: "input small-sel", "aria-label": "Przenieś do sekcji", onchange: (e) => moveMine(m, e.target.value) },
-          myFolders().map((f) => h("option", { value: f.id, selected: f.id === folderOf(m).id ? true : null, text: f.id === folderOf(m).id ? `Sekcja: ${f.name}` : `Przenieś do: ${f.name}` }))) : null,
-        S.canEdit && !mine ? h("button", { type: "button", class: "btn small ghost", "aria-pressed": String(!!m.core), title: "Kluczowe tematy idą na górę planu przed kolokwium", onclick: () => S.db.doc("materials/" + m.id).update({ core: !m.core }).then(() => { m.core = !m.core; render(); }).catch(() => toast("Nie udało się zapisać.")) }, m.core ? "★ Kluczowy temat" : "☆ Oznacz jako kluczowy") : null),
       m.basis ? h("p", { class: "foot-note", text: m.basis }) : null);
-    const tabs = h("div", { class: "tabs", role: "tablist" }, tabList.map(([k, label]) => h("button", { type: "button", class: "tab" + (k === "prosto" ? " simple-tab" : ""), role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k, wk: null }; render(); } }, label, counts[k] ? h("span", { class: "c", text: counts[k] }) : null)));
+    const si = STEPS.findIndex(([k]) => k === step);
+    const counts = c ? { fiszki: c.flashcards?.length, quiz: c.quiz?.length } : {};
+    const stepsBar = h("nav", { class: "steps", "aria-label": "Kroki materiału" },
+      STEPS.map(([k, l], i) => h("button", { type: "button", class: "step" + (i < si ? " past" : ""), "aria-current": k === step ? "step" : null, onclick: () => setStep(k) },
+        h("span", { class: "sn num", text: i + 1 }), h("span", { text: l }), counts[k] ? h("span", { class: "c num", text: counts[k] }) : null)),
+      h("span", { class: "steps-of muted num", text: si >= 0 ? `krok ${si + 1} z 3` : "rozwiązane zadania" }));
+    const nextM = nextMaterial(m);
+    const goNext = nextM ? () => go({ view: "material", id: nextM.id }) : () => go(backTo);
+    const nextLabel = nextM ? `Dalej: ${(nextM.title || nextM.fileName)}` : mine ? "Wróć do sekcji" : "Wróć do przedmiotu";
     let panel;
     if (c === undefined) panel = h("p", { class: "muted", text: "Ładuję materiał…" });
-    else if (c === null && !PAID()) return [backLink({ view: "subject", id: m.subjectId }), paywallCard(m.title || m.fileName)];
+    else if (c === null && !PAID()) return [backLink(backTo), paywallCard(m.title || m.fileName)];
     else if (c === null) panel = h("div", { class: "notice err", text: mine ? "Nie udało się wczytać treści tego materiału. Odśwież stronę." : S.canEdit ? "Nie znalazłem treści tego materiału. Spróbuj wgrać plik jeszcze raz." : "Nie udało się wczytać treści tego materiału. Odśwież stronę, a jeśli to nie pomoże, napisz do starosty." });
-    else if (tab === "lekcja" && c.lesson) panel = lessonPanel(m, c.lesson);
-    else if (tab === "prosto") panel = simplePanel(m, c);
-    else if (tab === "skrot" && c.topics?.length) panel = studyPanel(m, c);
-    else if (tab === "skrot") panel = h("div", { class: "stack" }, h("p", { class: "tldr", text: c.tldr }), h("p", { class: "foot-note", text: m.source === "sylabus" ? "Mapa przedmiotu przygotowana z sylabusa, zanim prowadzący wrzucili materiały. Numery sekcji prowadzą do zakładki Źródło." : "Skrót przygotowany przez AI z prezentacji. Szczegóły z numerami slajdów są w zakładce Notatka." }));
-    else if (tab === "notatka") panel = h("ol", { class: "notes" }, (c.notes || []).map((n) => h("li", {}, h("p", { text: n.point }), slideRef(m.id, n))));
-    else if (tab === "pojecia") panel = h("div", { class: "concepts" }, (c.concepts || []).map((x) => h("div", { class: "concept" }, h("div", { class: "head" }, h("span", { class: "term", text: x.term }), x.pl ? h("span", { class: "pl", text: x.pl }) : null, slideRef(m.id, x)), h("p", { text: x.definition }))));
-    else if (tab === "fiszki") panel = flashcards(c.flashcards || [], m);
-    else if (tab === "zadania") panel = workedPanel(m, c);
-    else if (tab === "quiz") panel = quizRunner((c.quiz || []).map((q, i) => ({ ...q, materialId: m.id, index: i })), m.id);
-    else if (!fromSlides(m)) panel = sourcePanel(m);
-    else panel = studyPanel(m, c);
+    else if (step === "fiszki") panel = h("div", { class: "stack" },
+      (c.flashcards || []).length ? flashcards(c.flashcards, m) : h("div", { class: "empty small", text: "Ten materiał nie ma fiszek. Przejdź do quizu." }),
+      h("div", { class: "step-next" }, h("button", { type: "button", class: "btn", onclick: () => setStep("quiz") }, "Dalej: Quiz →")));
+    else if (step === "quiz") {
+      const qs = (c.quiz || []).map((q, i) => ({ ...q, materialId: m.id, index: i }));
+      const finished = S.route.qz && S.route.qz.pos >= S.route.qz.qs.length;
+      panel = h("div", { class: "stack" },
+        qs.length ? quizRunner(qs, m.id) : h("div", { class: "empty small", text: "Ten materiał nie ma quizu." }),
+        c.worked?.length ? h("p", {}, h("button", { type: "button", class: "link", onclick: () => setStep("zadania") }, `Rozwiązane zadania z tego materiału (${c.worked.length}) →`)) : null,
+        finished || !qs.length ? h("div", { class: "step-next" }, h("button", { type: "button", class: "btn", onclick: goNext }, nextLabel, " →")) : null);
+    }
+    else if (step === "zadania") panel = h("div", { class: "stack" }, workedPanel(m, c), h("div", { class: "step-next" }, h("button", { type: "button", class: "btn", onclick: () => setStep("quiz") }, "← Wróć do quizu")));
+    else {
+      const simple = !!S.route.simple;
+      const used = new Set();
+      const notes = (c.notes || []).filter((n) => n.point);
+      const concepts = (c.concepts || []).filter((x) => x.term);
+      panel = h("div", { class: "stack read" },
+        h("div", { class: "row", style: "justify-content:space-between" },
+          h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [[false, "Normalnie"], [true, "Prościej"]].map(([v, l]) => h("button", { type: "button", "aria-pressed": String(simple === v), onclick: () => { S.route = { ...S.route, simple: v }; render(); } }, l))),
+          !simple && !lessonMode && concepts.length ? h("span", { class: "muted", style: "font-size:.84rem", text: "Podkreślone pojęcia: kliknij, żeby zobaczyć definicję" }) : null),
+        simple ? simplePanel(m, c)
+          : lessonMode && c.lesson ? lessonPanel(m, c.lesson)
+          : c.topics?.length ? studyPanel(m, c, used)
+          : h("div", { class: "stack" }, h("p", { class: "tldr" }, termify(c.tldr, concepts, used))),
+        !simple && notes.length ? h("section", { class: "remember" }, h("h2", { text: "Co zapamiętać" }), h("ul", {}, notes.map((n) => h("li", {}, h("span", { text: n.point }), " ", slideRef(m.id, n))))) : null,
+        !simple && concepts.length ? h("section", { class: "stack", style: "gap:10px" }, h("h2", { text: "Pojęcia" }),
+          h("div", { class: "concepts" }, concepts.map((x) => h("div", { class: "concept" }, h("div", { class: "head" }, h("span", { class: "term", text: x.term }), x.pl ? h("span", { class: "pl", text: x.pl }) : null, slideRef(m.id, x)), h("p", { text: x.definition }))))) : null,
+        h("div", { class: "step-next" }, h("button", { type: "button", class: "btn primary", onclick: () => setStep((c.flashcards || []).length ? "fiszki" : "quiz") }, (c.flashcards || []).length ? "Dalej: Fiszki →" : "Dalej: Quiz →")));
+    }
     const oldNote = fromSlides(m) && !isV2(m, c) && S.canEdit
       ? h("div", { class: "notice", style: "margin-bottom:12px" }, "Ten materiał powstał w starym systemie, bezpośrednio ze slajdów. ", h("button", { type: "button", class: "link", onclick: () => go({ view: "ai" }) }, "Przerób go w Panelu AI"), ".") : null;
-    return [head, oldNote, fillNote(m, c), h("div", {}, tabs, h("div", { class: "tabpanel", role: "tabpanel" }, panel))].filter(Boolean);
+    return [head, oldNote, fillNote(m, c), stepsBar, h("div", { class: "steppanel" }, panel)].filter(Boolean);
   }
   // Skrót w nowym systemie: o co chodzi, po co, a potem tematy z odsyłaczem do slajdów.
-  function studyPanel(m, c) {
-    if (!c.topics?.length) return h("div", { class: "stack" }, h("p", { class: "tldr", text: c.tldr }));
+  function studyPanel(m, c, used = new Set()) {
+    const tf = (t) => termify(t, c.concepts, used);
+    if (!c.topics?.length) return h("div", { class: "stack" }, h("p", { class: "tldr" }, tf(c.tldr)));
     return h("div", { class: "stack study" },
-      h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "O co chodzi" }), h("p", { class: "tldr", text: c.tldr })),
+      h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "O co chodzi" }), h("p", { class: "tldr" }, tf(c.tldr))),
       c.purpose ? h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "Po co to jest" }), h("p", { text: c.purpose })) : null,
       h("div", { class: "stack" }, c.topics.filter((t) => t.summary).map((t, k) => h("section", { class: "topic" },
         h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start" },
           h("h3", {}, h("span", { class: "n num", text: k + 1 }), h("span", { text: t.t })),
           slideRef(m.id, t)),
-        h("p", { text: t.summary }),
+        h("p", {}, tf(t.summary)),
         t.why ? h("p", { class: "why-line" }, h("b", { text: "Po co: " }), t.why) : null,
         t.remember?.length ? h("div", { class: "rem-box" }, h("b", { text: "Zapamiętaj" }), h("ul", {}, t.remember.map((r) => h("li", { text: r })))) : null,
         t.example ? h("div", { class: "ex-box" }, h("b", { text: "Przykład" }), h("p", { text: t.example })) : null))),
@@ -2547,16 +2902,8 @@ button.pm-sq:hover { transform: scale(1.12); }
           h("div", { class: "row", style: "align-items:flex-start;gap:18px" },
             ex.hint ? h("details", {}, h("summary", { text: "Podpowiedź" }), h("div", {}, inline(ex.hint))) : null,
             h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inline(ex.answer))))))) : null,
-      h("div", { class: "box" },
-        h("h3", { text: "Sprawdź, czy rozumiesz" }),
-        h("p", { class: "muted", text: `Quiz ma ${(S.content[m.id]?.quiz || []).length || m.quizCount || 0} ${plural((S.content[m.id]?.quiz || []).length || m.quizCount || 0, "pytanie", "pytania", "pytań")}. Fiszki pomogą zapamiętać definicje i wzory.` }),
-        h("div", { class: "row" },
-          h("button", { type: "button", class: "btn primary", onclick: () => { S.route = { ...S.route, tab: "quiz", qz: null }; render(); window.scrollTo({ top: 0 }); } }, "Zrób quiz"),
-          h("button", { type: "button", class: "btn", onclick: () => { S.route = { ...S.route, tab: "fiszki", fc: null }; render(); window.scrollTo({ top: 0 }); } }, "Fiszki"),
-          h("button", { type: "button", class: "btn " + (done ? "ghost" : "sun"), onclick: () => { const d = { ...(S.progress.done || {}) }; if (done) delete d[m.id]; else d[m.id] = Date.now(); saveProgress({ done: d }); render(); } }, done ? "✓ Przerobione (cofnij)" : "Oznacz jako przerobioną"))),
-      h("nav", { class: "lnav", "aria-label": "Lekcje" },
-        prev ? h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "material", id: prev.id, tab: "lekcja" }) }, `← ${prev.order}. ${prev.title}`) : h("span"),
-        next ? h("button", { type: "button", class: "btn", onclick: () => go({ view: "material", id: next.id, tab: "lekcja" }) }, `${next.order}. ${next.title} →`) : h("span")),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn " + (done ? "ghost" : "sun"), onclick: () => { const d = { ...(S.progress.done || {}) }; if (done) delete d[m.id]; else d[m.id] = Date.now(); saveProgress({ done: d }); render(); } }, done ? "✓ Przerobione (cofnij)" : "Oznacz lekcję jako przerobioną")),
     );
   }
 
@@ -2662,7 +3009,7 @@ button.pm-sq:hover { transform: scale(1.12); }
   function viewSubjectQuiz() {
     const s = subjectById(S.route.id);
     if (!s) return [backLink({ view: "materials" }), h("p", { class: "muted", text: "Ładuję…" })];
-    const head = h("section", { class: "stack" }, backLink({ view: "subject", id: s.id }), h("span", { class: "eyebrow", text: PAID() ? "Quiz z całego przedmiotu" : "Quiz z darmowego materiału" }), h("h1", { text: s.pl }));
+    const head = h("section", { class: "stack" }, backLink({ view: "subject", id: s.id, tab: "cwicz" }), h("span", { class: "eyebrow", text: PAID() ? "Quiz z całego przedmiotu" : "Quiz z darmowego materiału" }), h("h1", { text: s.pl }));
     if (!S.route.qs) {
       if (!S.route.loading) {
         S.route.loading = true;
@@ -2991,7 +3338,7 @@ ${written}`;
       { label: "Fiszki i quiz z opracowania" },
       { label: "Kontrola: nic nie jest przepisane ze slajdów" },
       { label: "Zapisuję dla całego roku" },
-      { label: "Prosty język i „Dlaczego?” do quizu" },
+      { label: "Prostsza wersja i „Dlaczego?” do quizu" },
     ];
     render();
     let r;
@@ -3093,16 +3440,16 @@ ${written}`;
   }
 
   // Panel w zakładce Materiały
-  function myPanel() {
+  function myPanel(page) {
     const sk = window.skrot || {};
     if (sk.state === "loading" || S.noDb) return null;
-    if (!PAID()) return h("section", { class: "panel" }, h("h2", { text: "Moje materiały" }),
+    if (!PAID()) return h("section", { class: "panel" }, page ? null : h("h2", { text: "Moje materiały" }),
       lockBox("Wgraj własny plik (prezentację, notatki, PDF), a Skrót BM opracuje go tak samo jak materiały roku: skrót, prosty język, pojęcia, fiszki i quiz, w Twojej sekcji. To jest w pełnej wersji."));
     return h("section", { class: "panel" },
-      h("div", { class: "panel-head" }, h("h2", { text: "Moje materiały" }),
+      h("div", { class: "panel-head" }, page ? h("span") : h("h2", { text: "Moje materiały" }),
         h("div", { class: "row", style: "gap:8px" },
           h("button", { type: "button", class: "btn small ghost", onclick: () => newFolder((f) => go({ view: "myFolder", id: f.id })) }, "+ Nowa sekcja"),
-          h("button", { type: "button", class: "btn small sun", onclick: () => go({ view: "myUpload" }) }, "Wgraj swój materiał"))),
+          h("button", { type: "button", class: "btn small primary", onclick: () => go({ view: "myUpload" }) }, "Wgraj swój materiał"))),
       h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Twoje pliki opracowane tak samo jak materiały roku. Widzisz je tylko Ty." }),
       h("div", { class: "folders" }, myFolders().map((f) => {
         const n = mineIn(f.id).length;
@@ -3113,8 +3460,69 @@ ${written}`;
       })));
   }
 
+  function viewMine() {
+    return [backLink({ view: "more" }),
+      h("section", { class: "stack" }, h("h1", { text: "Moje materiały" }), h("p", { class: "muted", style: "max-width:62ch", text: "Twoje pliki opracowane tak samo jak materiały roku: skrót, prostsza wersja, pojęcia, fiszki i quiz. Widzisz je tylko Ty." })),
+      myPanel(true)];
+  }
+
+  // ================= WIĘCEJ: rzadziej używane rzeczy, konto i tryb starosty =================
+  function openAccount() {
+    const sk = window.skrot || {};
+    modal((close) => [
+      h("span", { class: "eyebrow", text: "Konto i dostęp" }),
+      h("h3", { text: sk.state === "in" ? sk.email : "Nie zalogowano" }),
+      h("p", { class: "muted", text: PAID() ? (sk.until ? `Pełny dostęp do ${sk.until}.` : "Pełny dostęp jest aktywny.") : sk.state === "in" ? "Konto bez pełnego dostępu. Masz darmowe próbki materiałów." : "Zaloguj się e-mailem (bez hasła). Jeśli masz pełny dostęp, wróci po zalogowaniu." }),
+      h("div", { class: "row" },
+        !PAID() && ["in", "out"].includes(sk.state) ? h("button", { type: "button", class: "btn primary", onclick: () => { close(); sk.buy?.(); } }, `Kup dostęp · ${sk.price || "199 zł"}`) : null,
+        sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Zaloguj się") : null,
+        sk.state === "in" ? h("button", { type: "button", class: "btn ghost", onclick: () => sk.logout?.() }, "Wyloguj") : null,
+        h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")),
+      h("p", { class: "foot-note" }, h("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", h("a", { class: "link", href: "prywatnosc.html" }, "Prywatność"), " · ", h("a", { class: "link", href: "mailto:skrotbm@outlook.com" }, "Kontakt"))]);
+  }
+  function openAnnounce() {
+    modal((close) => [h("h3", { text: "Ogłoszenie dla roku" }), h("p", { class: "muted", text: "Pokaże się na ekranie Dziś przez 7 dni." }), announceForm(close), h("div", { class: "row" }, h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
+  }
+  function viewMore() {
+    const sk = window.skrot || {};
+    const groupLabel = S.group ? `${S.group}${S.sub ? " · lab " + S.sub : ""}` : "nie wybrano";
+    const row = (ic, label, hint, fn, extra = {}) => h(extra.href ? "a" : "button", { type: extra.href ? null : "button", href: extra.href || null, class: "mi more-row", onclick: extra.href ? null : fn },
+      icon(ic), h("span", { class: "more-txt" }, h("span", { text: label }), hint ? h("small", { text: hint }) : null), extra.badge ? h("span", { class: "badge num", text: extra.badge }) : h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
+    const group = (title, rows) => h("section", { class: "panel more-group" }, h("h2", { text: title }), h("div", { class: "more-list" }, rows.filter(Boolean)));
+    return [
+      h("section", { class: "stack" }, h("h1", { text: "Więcej" })),
+      h("div", { class: "more-grid" },
+        group("Nauka", [
+          row("glossary", "Słowniczek EN–PL", "pojęcia ze wszystkich przedmiotów", () => go({ view: "glossary" })),
+          row("upload", "Moje materiały", "Twoje pliki opracowane jak materiały roku", () => go({ view: "mine" })),
+          row("program", "Lektury", "literatura z sylabusów i katalog biblioteki", () => go({ view: "reading" })),
+        ]),
+        group("Studia", [
+          row("program", "Program studiów i sylabusy", "semestry 1–6, przedmioty do wyboru", () => go({ view: "program" })),
+          row("grading", "Zasady zaliczeń i kalkulator średniej", "formy zaliczeń, skala ocen, poprawki", () => go({ view: "grading" })),
+          row("tasks", "Szkolenia obowiązkowe", "BHP, biblioteka, e-learning, AI", () => { go({ view: "grading" }); requestAnimationFrame(() => $("szkolenia")?.scrollIntoView({ block: "start" })); }),
+          row("plan", "Pełny plan zajęć", "plan.skrotbm.pl", null, { href: PLAN_URL }),
+        ]),
+        group("Ty", [
+          row("group", "Moja grupa", groupLabel, openGroupPicker),
+          row("user", "Konto i dostęp", sk.state === "in" ? sk.email : "nie zalogowano", openAccount),
+          row("help", "Jak korzystać", "krótka instrukcja w 3 krokach", () => startTour(0)),
+          sk.state === "in" ? row("out", "Wyloguj", null, () => sk.logout?.()) : sk.state === "out" ? row("in", "Zaloguj się", "e-mailem, bez hasła", () => sk.openLogin?.()) : null,
+        ]),
+        S.isStarosta ? h("section", { class: "panel more-group staro" },
+          h("div", { class: "panel-head" }, h("h2", { text: "Tryb starosty" }),
+            h("button", { type: "button", class: "switch", role: "switch", "aria-checked": String(S.canEdit), "aria-label": "Tryb starosty", onclick: () => setStarosta(!S.canEdit) }, h("i"))),
+          h("p", { class: "muted", style: "font-size:.9rem;margin:0 0 6px", text: S.canEdit ? "Włączony: widzisz narzędzia do zarządzania rokiem." : "Wyłączony: widzisz dokładnie to, co student z pełnym dostępem." }),
+          S.canEdit ? h("div", { class: "more-list" },
+            row("upload", "Wgraj materiał", "prezentacja z Teams dla całego roku", () => go({ view: "upload" })),
+            row("flag", "Ogłoszenie", "krótka wiadomość na ekranie Dziś", openAnnounce),
+            row("flag", "Zgłoszenia błędów", null, () => go({ view: "reports" }), { badge: S.reports.length || 0 }),
+            row("spark", "Panel AI", "brakujące wersje, pytania do testów", () => go({ view: "ai" }), { badge: S.aiMissing || 0 })) : null) : null),
+    ];
+  }
+
   function viewMyFolder() {
-    const back = backLink({ view: "materials" });
+    const back = backLink({ view: "mine" });
     if (S.noDb || !S.ready) return [back, h("p", { class: "muted", text: S.noDb ? "Zaloguj się, żeby zobaczyć tę część strony." : "Ładuję…" })];
     const f = folderById(S.route.id);
     if (!f) return [back, h("p", { class: "muted", text: "Nie ma takiej sekcji." })];
@@ -3234,7 +3642,7 @@ ${written}`;
       { label: "Fiszki i quiz z opracowania" },
       { label: "Kontrola: nic nie jest przepisane z pliku" },
       { label: `Zapisuję w sekcji „${sec.name}”` },
-      { label: "Prosty język i „Dlaczego?” do quizu" },
+      { label: "Prostsza wersja i „Dlaczego?” do quizu" },
     ];
     render();
     let r;
@@ -3382,11 +3790,11 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const d = S.simple[m.id];
     if (d === undefined) { getSimple(m.id).then(render).catch(() => { S.simple[m.id] = null; render(); }); return h("p", { class: "muted", text: "Ładuję prostą wersję…" }); }
     if (!d) return h("div", { class: "simple" },
-      h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język" }),
-        h("p", { text: isMine(m) ? "Prosta wersja nie powstała przy wgrywaniu. Uzupełnisz ją przyciskiem nad zakładkami." : "Prosta wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu ucz się ze Skrótu, Pojęć i Fiszek." }),
+      h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prościej" }),
+        h("p", { text: isMine(m) ? "Prostsza wersja nie powstała przy wgrywaniu. Uzupełnisz ją przyciskiem nad krokami." : "Prostsza wersja tego materiału jest jeszcze w przygotowaniu. Do tego czasu czytaj wersję Normalnie i powtarzaj fiszki." }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "ai" }) }, "Panel AI: uzupełnij brakujące")) : null));
     return h("div", { class: "simple" },
-      h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prosty język" }), h("p", {}, inline(d.intro))),
+      h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Prościej" }), h("p", {}, inline(d.intro))),
       (d.parts || []).map((p) => h("section", { class: "spart" },
         h("h2", {}, h("span", { class: "emo", "aria-hidden": "true", text: p.emoji || "💡" }), h("span", { text: p.h })),
         h("p", { class: "txt" }, inline(p.text)),
@@ -3395,7 +3803,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       d.words?.length ? h("section", { class: "stack", style: "gap:10px" }, h("h2", { text: "Słowniczek" }), h("div", { class: "swords" }, d.words.map((w) => h("div", {}, h("b", { text: w.term }), h("span", {}, inline(w.simple)))))) : null,
       d.check?.length ? h("section", { class: "stack scheck", style: "gap:8px" }, h("h2", { text: "Sprawdź, czy łapiesz" }),
         d.check.map((q) => h("details", {}, h("summary", {}, inline(q.q)), h("div", { class: "ans" }, inline(q.a))))) : null,
-      h("p", { class: "foot-note", text: "Prosta wersja pomaga zrozumieć temat. Do egzaminu ucz się też ze Skrótu, Pojęć i Quizu, bo tam są dokładne definicje po angielsku." }));
+      h("p", { class: "foot-note", text: "Prostsza wersja pomaga zrozumieć temat. Do egzaminu przeczytaj też wersję Normalnie i zrób quiz, bo tam są dokładne definicje po angielsku." }));
   }
 
   function whyBlock(q, picked) {
@@ -3606,15 +4014,9 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     done: () => { const cs = ["#1A7F45", "#4CAF72", "#CFE8D8", "#2E9E8F", "#0E5A30", "#8AAE3A"]; let s = ""; for (let i = 0; i < 14; i++) s += `<i class="tv-conf" style="left:${6 + i * 6.6}%;background:${cs[i % cs.length]};animation-delay:${(i * 0.37) % 2.8}s"></i>`; return `<div class="tv">${s}<div class="tv-help">?</div></div>`; },
   };
   const TOUR = [
-    { view: "home", title: "Cześć! To jest Skrót BM", text: "Wszystko z Teams dla naszego roku w jednym miejscu: <b>skróty wykładów, fiszki i quizy</b>, Twój plan, zadania i terminy. Pokażę Ci w minutę, gdzie co jest.", art: "intro" },
-    { view: "home", nav: "home", title: "Start — Twój dzień", text: "Strona główna: <b>dzisiejsze zajęcia</b>, ogłoszenia od starosty, <b>nowe materiały</b> i najbliższe terminy. Zaglądaj tu rano przed zajęciami.", art: "hub" },
-    { view: "home", sel: "section.today", title: "Ustaw swoją grupę", text: "Wybierz <b>grupę (C111–C113)</b> i <b>podgrupę lab A/B</b>. Wtedy plan, zadania i kalendarz pokazują tylko to, co dotyczy Ciebie.", art: "group" },
-    { view: "materials", nav: "materials", title: "Materiały — każdy przedmiot osobno", text: "Kliknij okładkę przedmiotu. W środku: <b>lekcje po kolei</b>, „Jak zaliczyć”, terminy i <b>quiz z całości</b>.", art: "books" },
-    { view: "materials", title: "Jak uczyć się z materiału", text: "Każdy materiał ma zakładki: <b>Prosty język</b> (wytłumaczone prosto, na przykładach), <b>Skrót</b> (najważniejsze), <b>Notatka</b> (pełniej), <b>Pojęcia</b>, <b>Fiszki</b> — kliknij, żeby odwrócić — i <b>Quiz</b> z wynikiem. „Źródło” pokazuje, skąd to jest.", art: "tabs" },
-    { view: "tasks", nav: "tasks", title: "Zadania od prowadzących", text: "Wszystko, co prowadzący zadali w Teams, z <b>terminem</b>. Odhaczaj zrobione — liczba przy zakładce mówi, ile Ci zostało.", art: "tasks" },
-    { view: "grading", nav: "grading", title: "Zaliczenia — jak zdać", text: "Dla każdego przedmiotu: <b>forma zaliczenia, progi i kiedy</b>. Znaczek <b>„z sylabusa”</b> znaczy, że informacja jest z sylabusa, a nie od prowadzącego.", art: "grade" },
-    { view: "calendar", nav: "calendar", title: "Kalendarz", text: "Miesiąc z <b>kolokwiami, egzaminami, projektami</b> i sesją. Kropka w kolorze typu terminu. Z pełnym dostępem dodasz też własny termin, a zobaczy go cały rok.", art: "cal" },
-    { view: "home", sel: "#menubtn", title: "Gotowe!", text: "Tę instrukcję otworzysz zawsze w <b>Menu</b> w prawym górnym rogu. Tam też jest logowanie, zmiana grupy i plan zajęć. Coś się nie zgadza w pytaniu albo fiszce? Zgłoś to przyciskiem „Zgłoś błąd”.", art: "done", last: true },
+    { view: "home", sel: "section.today", title: "1. Wybierz swoją grupę", text: "Ustaw <b>grupę (C111–C113)</b> i <b>podgrupę lab A/B</b>. Wtedy zajęcia, terminy i kalendarz pokazują tylko to, co dotyczy Ciebie. Zmienisz ją zawsze w <b>Więcej → Moja grupa</b>.", art: "group" },
+    { view: "home", sel: "section.now", title: "2. Zaczynaj od ekranu Dziś", text: "Karta <b>„Teraz zrób to”</b> mówi, od czego zacząć: przygotować się do kolokwium, oddać zadanie, powtórzyć fiszki albo przeczytać nowy materiał. Pod nią zajęcia, najbliższe terminy i nowości.", art: "hub" },
+    { view: "materials", nav: "materials", title: "3. Otwórz pierwszy przedmiot", text: "W każdym przedmiocie są trzy zakładki: <b>Ucz się, Ćwicz, Zaliczenie</b>. Każdy materiał to trzy kroki: <b>Przeczytaj, Fiszki, Quiz</b>. Powtórki i terminy mają własne zakładki, a reszta jest w <b>Więcej</b>.", art: "books", last: true },
   ];
   let tourState = null;
   function tourTarget(st) {
@@ -3666,7 +4068,6 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     removeEventListener("resize", tourPlace); removeEventListener("scroll", tourPlace, true); document.removeEventListener("keydown", onKey);
     root.remove(); ls.set("bm-tour", "1");
     if (S.route.view !== "home") go({ view: "home" });
-    $("menubtn")?.focus({ preventScroll: true });
   }
   function startTour(from = 0) {
     if (tourState) return;
@@ -3802,20 +4203,6 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     render();
   }
 
-  function reviewPanel() {
-    const { due, fresh } = srsDue();
-    const n = due.length + fresh.length, has = Object.keys(srsAll()).length, sk = streakN();
-    const tomorrow = Object.values(srsAll()).filter((v) => v[0] > 0 && v[1] === dayN() + 1).length;
-    return h("section", { class: "panel rv-panel" },
-      h("div", { class: "panel-head" }, h("h2", { text: "Powtórki" }),
-        sk ? h("span", { class: "chip good num", title: "Dni z rzędu z powtórkami", text: `seria ${sk} ${plural(sk, "dzień", "dni", "dni")}` } ) : null),
-      n ? h("div", { class: "rv-today" }, h("b", { class: "num", text: n }), h("span", {}, `${plural(n, "karta", "karty", "kart")} na dziś`, h("small", { class: "muted", text: ` · ok. ${Math.max(1, Math.round(n / 4))} min` })))
-        : h("p", { class: "muted", style: "font-size:.92rem", text: has ? (reviewedToday() ? `Na dziś zrobione. Jutro ${tomorrow} ${plural(tomorrow, "karta", "karty", "kart")}.` : "Na dziś nic nie czeka. Wróć jutro.") : "Fiszki, które przejrzysz w materiałach, wrócą tutaj w dobrym momencie: po 1, 3, 7, 14, 30 i 60 dniach." }),
-      h("div", { class: "row" },
-        n ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "review" }) }, "Zacznij powtórkę") : null,
-        h("button", { type: "button", class: "link", onclick: () => go({ view: "progress" }) }, "Mapa postępów →")));
-  }
-
   function resolveCards(keys, pairs) {
     const byMat = new Map(pairs.map(([m, c]) => [m.id, new Map((c?.flashcards || []).map((f) => [hashStr(f.q), f]))]));
     const loaded = new Set(pairs.filter(([, c]) => c).map(([m]) => m.id));
@@ -3838,15 +4225,44 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return { cards, stale };
   }
 
+  // Ekran „Powtórki”: ile dziś, przycisk Zacznij, a pod spodem mapa postępów.
+  function reviewHome(s) {
+    const sid = s?.id || "";
+    const { due, fresh } = srsDue(sid);
+    const n = due.length + fresh.length, has = Object.keys(srsAll()).length, sk = streakN();
+    const tomorrow = Object.values(srsAll()).filter((v) => v[0] > 0 && v[1] === dayN() + 1).length;
+    const mins = Math.max(1, Math.round(n / 3));
+    const rows = SUBJECTS.map((x) => progressRow(x)).filter(Boolean);
+    return [
+      h("section", { class: "stack" }, s ? backLink({ view: "subject", id: s.id }) : null, h("h1", { text: s ? `Powtórki · ${s.pl}` : "Powtórki" })),
+      h("section", { class: "rv-hero" + (n ? "" : " calm") },
+        n ? [h("span", { class: "eyebrow", text: "Dziś do powtórki" }),
+            h("p", { class: "rv-big" }, h("b", { class: "num", text: n }), ` ${plural(n, "fiszka", "fiszki", "fiszek")}, ok. ${mins} min`),
+            h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { S.route = { ...S.route, start: true }; render(); } }, "Zacznij"),
+              sk ? h("span", { class: "chip good num", title: "Dni z rzędu z powtórkami", text: `seria ${sk} ${plural(sk, "dzień", "dni", "dni")}` }) : null)]
+          : [h("span", { class: "eyebrow", text: "Dziś do powtórki" }),
+            h("p", { class: "rv-big", text: has ? (tomorrow ? `Na dziś koniec. Następne powtórki jutro (${tomorrow} ${plural(tomorrow, "fiszka", "fiszki", "fiszek")}).` : "Na dziś koniec. Nic nie czeka.") : "Jeszcze nic tu nie ma." }),
+            h("p", { class: "muted", text: has ? "Fiszki wracają po 1, 3, 7, 14, 30 i 60 dniach, a przed zaliczeniem z przedmiotu przynajmniej raz." : "Przejrzyj fiszki w dowolnym materiale albo dodaj cały przedmiot (zakładka Ćwicz). Wrócą tutaj w dobrym momencie." }),
+            has ? null : h("div", {}, h("button", { type: "button", class: "btn", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot"))]),
+      hintPanel(!n),
+      h("section", { class: "stack" },
+        h("div", { class: "row", style: "justify-content:space-between" }, h("h2", { text: "Mapa postępów" }),
+          h("div", { class: "pm-legend" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label)))),
+        h("p", { class: "muted", style: "max-width:62ch;font-size:.92rem", text: "Każdy kwadrat to jeden materiał. Kolor mówi, jak dobrze go umiesz (quizy, fiszki, zadania, próbne testy). Kliknij kwadrat, żeby zobaczyć szczegóły." }),
+        !S.ready ? h("p", { class: "muted", text: "Ładuję…" }) : rows.length ? h("section", { class: "panel pm" }, rows) : h("div", { class: "empty small", text: "Gdy pojawią się materiały, zobaczysz tu swoje postępy." }),
+        !S.uid ? h("p", { class: "foot-note", text: "Bez logowania postęp zapisuje się tylko w tej przeglądarce." }) : null),
+    ];
+  }
   function viewReview() {
     const sid = S.route.sid || "";
     const s = sid ? subjectById(sid) : null;
-    const head = h("section", { class: "stack" }, backLink(), h("span", { class: "eyebrow", text: s ? "Powtórka · " + s.pl : "Powtórka" }), h("h1", { text: "Dziś do powtórki" }));
     const R = S.route.rv;
+    if (!R && !S.route.start) return reviewHome(s);
+    const head = h("section", { class: "stack" }, backLink({ view: "review" }), h("span", { class: "eyebrow", text: s ? "Powtórka · " + s.pl : "Powtórka" }), h("h1", { text: "Dziś do powtórki" }));
     if (!R) {
       const { due, fresh } = srsDue(sid);
       const keys = [...due, ...fresh];
-      if (!keys.length) return [head, h("div", { class: "empty" }, h("p", { text: "Na teraz nic nie czeka. Fiszki, które przejrzysz w materiałach, same tu wrócą." }), h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => go({ view: "materials" }) }, "Materiały"), h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "progress" }) }, "Mapa postępów")))];
+      if (!keys.length) { S.route.start = false; return reviewHome(s); }
       S.route.rv = { loading: true };
       const mats = [...new Set(keys.filter((k) => !k.startsWith("g:")).map((k) => k.split(":")[0]))].map(materialById).filter((m) => m && readable(m));
       const needGl = keys.some((k) => k.startsWith("g:"));
@@ -3867,7 +4283,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("h2", { text: "Zrobione." }),
         h("p", { class: "num", text: `Powtórzone: ${R.done} ${plural(R.done, "karta", "karty", "kart")}${R.again ? ` · do poprawki było ${R.again}` : ""}. Jutro ${tomorrow} ${plural(tomorrow, "karta", "karty", "kart")}.` }),
         streakN() ? h("p", { class: "muted", text: `Seria: ${streakN()} ${plural(streakN(), "dzień", "dni", "dni")} z rzędu.` }) : null,
-        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "home" }) }, "Na start"), h("button", { type: "button", class: "btn", onclick: () => go({ view: "progress" }) }, "Mapa postępów")))];
+        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "review" }) }, "Gotowe"), h("button", { type: "button", class: "btn", onclick: () => go({ view: "home" }) }, "Na ekran Dziś")))];
     }
     const card = R.cards[R.pos];
     return [head, h("div", { class: "fc-wrap rv" },
@@ -3984,12 +4400,12 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       t.def ? h("p", { text: firstSentence(t.def, 260) }) : null,
       h("div", { class: "gl-foot" },
         t.s.map((sid) => { const s = subjectById(sid); return s ? h("span", { class: "gl-subj" }, h("i", { class: "dot", style: `--c:${s.color}` }), s.pl) : null; }),
-        m ? h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: m.id, tab: "pojecia" }) }, "w materiale →") : t.syl ? h("span", { class: "chip sun", title: "Pojęcie z tematów sylabusa; definicja Skrót BM", text: "z sylabusa" }) : null));
+        m ? h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: m.id, tab: "pojecia" }) }, "w materiale →") : t.syl ? h("span", { class: "chip sun", title: "Pojęcie z planu tematów przedmiotu; definicja Skrót BM", text: "plan tematów" }) : null));
   }
   function viewGlossary() {
     if (!GL.terms && !GL.loading && S.ready) loadGlossary().then(render);
     const sid = S.route.sid || "";
-    const head = h("section", { class: "stack" }, backLink({ view: "materials" }),
+    const head = h("section", { class: "stack" }, backLink({ view: "more" }),
       h("span", { class: "eyebrow", text: "Angielski ↔ polski" }), h("h1", { text: "Słowniczek" }),
       h("p", { class: "muted", style: "max-width:62ch", text: "Pojęcia ze wszystkich materiałów i z tematów sylabusa: termin po angielsku, polskie tłumaczenie i jedno zdanie wyjaśnienia. Szukaj w obu językach, ogonki nie są potrzebne." }));
     if (!GL.terms) return [head, h("p", { class: "muted", text: "Ładuję pojęcia…" })];
@@ -4078,18 +4494,6 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         "aria-label": `${m.title || m.fileName}: ${STATE[ts.state].label}`, onclick: () => openTopic(m) }))),
       h("span", { class: "pm-count num", text: `umiesz ${good} z ${ms.length}` }));
   }
-  function viewProgress() {
-    const rows = SUBJECTS.map((s) => progressRow(s)).filter(Boolean);
-    const hint = hintPanel();
-    return [
-      h("section", { class: "stack" }, backLink(), h("span", { class: "eyebrow", text: "Twoja nauka" }), h("h1", { text: "Mapa postępów" }),
-        h("p", { class: "muted", style: "max-width:62ch", text: "Każdy kwadrat to jeden materiał. Kolor mówi, jak dobrze go umiesz, na podstawie quizów, fiszek, zadań i próbnych testów. Kliknij kwadrat, żeby zobaczyć szczegóły." })),
-      h("div", { class: "pm-legend" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label))),
-      hint,
-      !S.ready ? h("p", { class: "muted", text: "Ładuję…" }) : rows.length ? h("section", { class: "panel pm" }, rows) : h("div", { class: "empty small", text: "Jeszcze nie ma materiałów." }),
-      !S.uid ? h("p", { class: "foot-note", text: "Bez logowania postęp zapisuje się tylko w tej przeglądarce." }) : null];
-  }
-
   // ---------- podpowiedź „powtórz to przed piątkiem” ----------
   const INSTR = ["poniedziałkiem", "wtorkiem", "środą", "czwartkiem", "piątkiem", "sobotą", "niedzielą"];
   function whenPhrase(k) {
@@ -4114,14 +4518,15 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const top = [...late.entries()].sort((a, b) => b[1] - a[1]).map(([mid]) => materialById(mid)).filter(Boolean).slice(0, 2);
     return top.length ? { kind: "late", pick: top.map((m) => ({ m, ts: topicScore(m) })) } : null;
   }
-  function hintPanel() {
+  function hintPanel(main = true) {
+    const pc = main ? "btn primary small" : "btn small";
     const H = studyHint();
     if (!H) return null;
     const names = (xs) => xs.flatMap((x, i) => [i ? (i === xs.length - 1 ? " i " : ", ") : null, h("b", { text: x.m.title || x.m.fileName })]);
     if (H.kind === "late") {
       return h("section", { class: "hint" }, h("span", { class: "eyebrow", text: "Na dziś" }),
         h("p", {}, "Najdłużej czekają powtórki z ", names(H.pick), "."),
-        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary small", onclick: () => go({ view: "review" }) }, "Powtórz teraz")));
+        h("div", { class: "row" }, h("button", { type: "button", class: pc, onclick: () => go({ view: "review", start: true }) }, "Powtórz teraz")));
     }
     const s = subjectById(H.sid), lbl = partLabel(H.sid, H.part);
     const tail = `${cap1(lbl)}: ${s.pl}, ${fmtKey(H.date)}${H.approx ? " (data orientacyjna)" : ""}.`;
@@ -4129,8 +4534,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       H.pick.length ? h("p", {}, "Powtórz ", names(H.pick), ` ${whenPhrase(H.date)}. `, h("span", { class: "muted", text: tail }))
         : h("p", {}, "Cały zakres wygląda dobrze. Sprawdź się próbnym testem. ", h("span", { class: "muted", text: tail })),
       h("div", { class: "row" },
-        H.pick.length ? h("button", { type: "button", class: "btn primary small", onclick: () => { const x = H.pick[0]; go(locked(x.m) ? { view: "subject", id: x.m.subjectId } : { view: "material", id: x.m.id, tab: weakestTab(x.m, x.ts) }); } }, "Powtórz") : null,
-        h("button", { type: "button", class: "btn small", onclick: () => go({ view: "exam", sid: H.sid, part: H.part }) }, "Tryb przed kolokwium")));
+        H.pick.length ? h("button", { type: "button", class: pc, onclick: () => { const x = H.pick[0]; go(locked(x.m) ? { view: "subject", id: x.m.subjectId } : { view: "material", id: x.m.id, tab: weakestTab(x.m, x.ts) }); } }, "Powtórz") : null,
+        h("button", { type: "button", class: "btn small", onclick: () => go({ view: "exam", sid: H.sid, part: H.part }) }, "Przygotuj się")));
   }
 
   // ================= zadania z rozwiązaniem krok po kroku =================
@@ -4414,7 +4819,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return [
       backLink({ view: "subject", id: sid }),
       h("section", { class: "exam-hero", style: `--c:${s.color}` },
-        h("span", { class: "eyebrow", text: "Tryb przed kolokwium" }),
+        h("span", { class: "eyebrow", text: "Przygotuj się" }),
         h("h1", { text: s.pl }),
         parts.length > 1 ? h("div", { class: "gl-chips" }, parts.map((k) => h("button", { type: "button", class: "fchip", "aria-pressed": String(k === part), onclick: () => { S.route.part = k; render(); } }, `${ZAL_KIND[k] || k}: ${partLabel(sid, k)}`))) : null,
         h("div", { class: "exam-count" },
@@ -4822,8 +5227,9 @@ Spread the questions so that together they check as many of these outcomes as th
     if (typing || e.ctrlKey || e.metaKey || e.altKey || $("layer").childElementCount || $("menu") || document.querySelector(".tour-card")) return;
     if (e.key === "/" && !examRunning()) {
       e.preventDefault();
-      if (S.route.view !== "glossary") go({ view: "glossary" });
-      requestAnimationFrame(() => $("gl-q")?.focus());
+      if (S.route.view === "glossary") { $("gl-q")?.focus(); return; }
+      if (S.route.view !== "materials") go({ view: "materials" });
+      requestAnimationFrame(() => $("q")?.focus());
       return;
     }
     if (S.route.view === "review" && S.route.rv?.cards) {
@@ -4837,6 +5243,8 @@ Spread the questions so that together they check as many of these outcomes as th
   fetch("https://plan.skrotbm.pl/plan.json", { cache: "no-cache" }).then((r) => r.ok ? r.json() : null).then((d) => {
     if (d?.groups) { Object.assign(PLAN, d); buildCalendar(); render(); }
   }).catch(() => {});
+  if (location.hash.startsWith("#/")) S.route = routeFromHash();
+  try { history.replaceState({ view: S.route.view, id: S.route.id, sid: S.route.sid }, "", location.hash || ""); } catch {}
   fetch("sylabus.json").then((r) => r.ok ? r.json() : null).then((d) => { if (d?.courses) { SYL = d; render(); } }).catch(() => {});
   render();
   (async () => {
@@ -4847,9 +5255,11 @@ Spread the questions so that together they check as many of these outcomes as th
     try { const me = await user?.me?.(); S.myName = (me?.name || "").split(" ")[0]; } catch {}
     if (!db) { S.noDb = true; S.ready = true; render(); return; }
     try { S.uid = await user?.id?.(); } catch {}
-    try { S.canEdit = !!(await user?.canEdit?.()); } catch {}
+    try { S.isStarosta = !!(await user?.canEdit?.()); } catch {}
+    // Tryb starosty: narzędzia administratora widać tylko po włączeniu przełącznika w „Więcej”.
+    S.canEdit = S.isStarosta && ls.get("bm-starosta") === "1";
     // AI: starosta ma pełny panel (S.sample); osoby z pełnym dostępem tylko „Moje materiały” (S.ai, z biletem).
-    S.ai = sample; if (!S.canEdit) S.sample = null;
+    S.ai = sample; if (!S.isStarosta) S.sample = null;
     render();
     let got = 0;
     const markReady = () => { if (++got >= 2) S.ready = true; render(); };
@@ -4879,7 +5289,7 @@ Spread the questions so that together they check as many of these outcomes as th
       S.mine = snap.docs.map((d) => ({ id: d.id, ...d.data(), mine: true })); S.mineLoaded = true; render();
     }, () => { S.mineLoaded = true; render(); });
     else S.mineLoaded = true;
-    if (S.canEdit) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
+    if (S.isStarosta) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
 })();
 </script>
