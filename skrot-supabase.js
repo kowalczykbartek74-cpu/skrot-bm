@@ -14,6 +14,11 @@
   const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress", "exams", "examBank", "glossary", "myMaterials", "myContent"]);
   const UNI = /@(stud\.)?usz\.edu\.pl$/i;
 
+  // Link z maila, który wygasł albo został już użyty (np. przez skaner poczty Microsoft 365), wraca z błędem w adresie.
+  // Odczytujemy go, zanim cokolwiek wyczyści adres, i pokazujemy studentowi w afterReady().
+  let linkError = null;
+  try { linkError = new URLSearchParams(location.hash.slice(1)).get("error_code") || (location.hash.includes("error_description") ? "error" : null); } catch {}
+
   let sb = null;
   try { sb = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true, autoRefreshToken: true } }); } catch {}
 
@@ -27,7 +32,7 @@
     try {
       const { data } = await sb.auth.getSession();
       const session = data?.session;
-      if (location.hash.includes("access_token") || location.hash.includes("error_description")) history.replaceState(null, "", location.pathname + location.search);
+      if (location.hash.includes("access_token") || location.hash.includes("error_description") || linkError) history.replaceState(null, "", location.pathname + location.search);
       if (!session) { skrot.state = "out"; return; }
       skrot.uid = session.user.id;
       skrot.email = (session.user.email || "").toLowerCase();
@@ -255,10 +260,36 @@
       btn.disabled = true;
       try { await skrot.sendLink(email); }
       catch (x) { btn.disabled = false; return show(/rate|limit|seconds/i.test(x?.message || "") ? "Za dużo prób logowania. Odczekaj chwilę i spróbuj ponownie." : "Nie udało się wysłać linku. Spróbuj ponownie za chwilę."); }
+      // Kod z maila działa też wtedy, gdy skaner poczty zużyje link, i na innym urządzeniu niż to, na którym przyszedł mail.
+      const codeErr = el("p", { class: "notice err", hidden: "" });
+      const code = el("input", { class: "input", id: "skrot-login-code", type: "text", inputmode: "numeric", autocomplete: "one-time-code", maxlength: "10", placeholder: "np. 123456", style: "letter-spacing:.2em;font-size:1.2em" });
+      const codeBtn = el("button", { type: "submit", class: "btn primary" }, "Zaloguj kodem");
+      const codeForm = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
+        e.preventDefault();
+        const token = code.value.replace(/\s+/g, "");
+        const bad = (t) => { codeErr.textContent = t; codeErr.hidden = false; };
+        if (!/^\d{6,10}$/.test(token)) return bad("Wpisz kod z maila (same cyfry).");
+        codeBtn.disabled = true;
+        try {
+          const { error } = await sb.auth.verifyOtp({ email, token, type: "email" });
+          if (error) throw error;
+          // Zwykle przeładowuje już onAuthStateChange (SIGNED_IN); to tylko zapas.
+          setTimeout(() => location.reload(), 1500);
+        } catch (x) {
+          codeBtn.disabled = false;
+          bad(/expired|invalid/i.test(x?.message || "") ? "Kod jest nieprawidłowy albo wygasł. Sprawdź najnowszy mail albo wyślij nowy." : "Nie udało się zalogować. Spróbuj ponownie za chwilę.");
+        }
+      } },
+        el("label", { for: "skrot-login-code", style: "display:grid;gap:6px;font-weight:700" }, "Kod z maila", code),
+        codeErr, codeBtn);
       body.replaceChildren(
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Sprawdź skrzynkę" }),
-        el("p", {}, "Wysłaliśmy link na ", el("b", { text: email }), ". Otwórz go na tym urządzeniu. Mail może przyjść z opóźnieniem, zajrzyj też do spamu."),
-        el("div", {}, el("button", { type: "button", class: "btn", onclick: close }, "Zamknij")));
+        el("p", { style: "margin:0" }, "Wysłaliśmy maila na ", el("b", { text: email }), ". Kliknij link albo wpisz niżej kod z maila. Mail może przyjść z opóźnieniem, zajrzyj też do spamu."),
+        codeForm,
+        el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
+          el("button", { type: "button", class: "btn", onclick: () => { close(); skrot.openLogin(reason); } }, "Wyślij nowy mail"),
+          el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+      setTimeout(() => code.focus(), 30);
     } },
       el("label", { for: "skrot-login-email", style: "display:grid;gap:6px;font-weight:700" }, "E-mail", input),
       err, btn);
@@ -305,6 +336,12 @@
 
   // Po powrocie z płatności: czekamy, aż Stripe potwierdzi (webhook), i przeładowujemy stronę.
   async function afterReady() {
+    if (linkError && skrot.state === "out") {
+      skrot.openLogin(linkError === "otp_expired"
+        ? "Link nie zadziałał: wygasł albo został już użyty (czasem robi to skaner poczty). Wyślij nowy mail i zaloguj się kodem z maila."
+        : "Logowanie nie powiodło się. Wyślij nowy mail i zaloguj się kodem z maila.");
+      return;
+    }
     const params = new URLSearchParams(location.search);
     if (params.get("platnosc") === "ok") {
       history.replaceState(null, "", location.pathname);

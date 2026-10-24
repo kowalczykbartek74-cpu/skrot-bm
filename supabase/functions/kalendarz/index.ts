@@ -142,7 +142,7 @@ Deno.serve(async (req) => {
   const db = createClient(Deno.env.get("SUPABASE_URL")!, serverKey(), { auth: { persistSession: false } });
   const { data, error } = await db.rpc("nauka_kalendarz_dane", { p_token: token });
   if (error) return new Response("Błąd bazy. Spróbuj później.", { status: 503 });
-  if (!data) return new Response("Ten link do kalendarza jest nieaktualny. Nowy znajdziesz w Skrócie BM → Kalendarz.", { status: 404 });
+  if (!data) return new Response("Ten link do kalendarza jest nieaktualny. Nowy znajdziesz w Skrócie BM: Terminy → Do kalendarza w telefonie.", { status: 404 });
 
   let plan: Plan | null = null;
   try { const r = await fetch(PLAN_URL); if (r.ok) plan = await r.json(); } catch { /* bez planu zostają same terminy */ }

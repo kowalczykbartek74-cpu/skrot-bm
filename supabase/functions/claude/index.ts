@@ -5,6 +5,17 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const MODEL = Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-5-5";
+// Limity dla studentów (starosta bez limitów). Klucz API jest starosty, więc każdy bajt i token to jego koszt.
+const STUDENT_MAX_TOKENS = 12000;      // starczy na opracowanie 12 tematów; starosta ma 16000
+const PROMPT_MAX_BYTES = 160000;       // jedno zapytanie
+// Student może wysłać tylko zapytania z kroków „Moich materiałów” (te same szablony co w index.html: makeStudy, SIMPLE_RULES, WHY_RULES).
+const STUDENT_PROMPTS = [
+  "You are indexing a lecture file for first-year Business Management students",
+  "You write ORIGINAL study materials for first-year Business Management students",
+  "Based ONLY on the study material below, create flashcards and a quiz",
+  "Jesteś nauczycielem, który tłumaczy trudne rzeczy ze studiów (Business Management)",
+  "Jesteś cierpliwym korepetytorem studentów 1. roku Business Management",
+];
 const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 
 function cors(req: Request) {
@@ -26,7 +37,7 @@ Deno.serve(async (req) => {
   const key = Deno.env.get("ANTHROPIC_API_KEY");
   if (!key) return out(500, { code: "no_key", message: "Brak ANTHROPIC_API_KEY w sekretach Supabase." });
 
-  // Kto pyta: tylko administratorzy z tabeli nauka_admini
+  // Kto pyta: administrator (nauka_admini) albo osoba z pełnym dostępem
   let pub = Deno.env.get("SUPABASE_ANON_KEY") || "";
   try { const k = JSON.parse(Deno.env.get("SUPABASE_PUBLISHABLE_KEYS") || "{}"); if (k.default) pub = k.default; } catch { /* stary format */ }
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, pub, {
@@ -38,22 +49,25 @@ Deno.serve(async (req) => {
   let prompt = "", ticket = "";
   try { const b = await req.json(); prompt = String(b?.prompt || ""); ticket = String(b?.ticket || ""); } catch { /* pusty */ }
   if (!prompt) return out(400, { code: "empty", message: "Brak treści zapytania." });
+  const bytes = new TextEncoder().encode(prompt).length;
+  if (bytes > PROMPT_MAX_BYTES) return out(413, { code: "prompt_too_large", message: "Za długie zapytanie." });
 
-  // Starosta bez limitu. Pozostali: tylko z biletem na własny plik (jeden bilet = jeden plik, kilka zapytań).
+  // Starosta bez limitu. Pozostali: tylko z biletem na własny plik (jeden bilet = jeden plik, kilka zapytań
+  // i limit bajtów na cały plik, supabase/skrot-v5.sql) i tylko zapytania z kroków „Moich materiałów”.
   if (!me.admin) {
     if (!me.platny) return out(403, { code: "not_granted", message: "AI jest dostępne z pełnym dostępem." });
     if (!/^[0-9a-f-]{36}$/i.test(ticket)) return out(403, { code: "no_ticket", message: "Brak biletu na przetworzenie pliku." });
-    const { data: ok, error: e2 } = await sb.rpc("nauka_ai_bilet", { b: ticket });
+    if (!STUDENT_PROMPTS.some((p) => prompt.startsWith(p))) return out(403, { code: "not_granted", message: "AI służy tylko do opracowania wgranego pliku." });
+    const { data: ok, error: e2 } = await sb.rpc("nauka_ai_bilet", { b: ticket, n: bytes });
     if (e2 || !ok) return out(429, { code: "ticket_used", message: "Limit zapytań dla tego pliku się skończył. Wgraj plik jeszcze raz." });
   }
-  if (new TextEncoder().encode(prompt).length > 160000) return out(413, { code: "prompt_too_large", message: "Za długie zapytanie." });
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 16000,
+      max_tokens: me.admin ? 16000 : STUDENT_MAX_TOKENS,
       system: "Reply with exactly one valid JSON value and nothing else: no prose, no code fences.",
       messages: [{ role: "user", content: prompt }],
     }),

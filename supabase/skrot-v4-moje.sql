@@ -4,6 +4,7 @@
 -- AI dla studentów działa na kluczu starosty, więc każdy plik wymaga „biletu” z limitem:
 -- domyślnie 5 plików dziennie i 40 w miesiącu na osobę (zmienisz w funkcji nauka_moje_start).
 -- Wklej w Supabase → SQL Editor → Run. Można uruchamiać wielokrotnie. Wymaga wcześniej skrot-v3.sql.
+-- UWAGA: po każdym uruchomieniu tego pliku uruchom też skrot-v5.sql (terminy tylko od starosty, limit bajtów AI).
 -- Potem wdróż ponownie funkcję AI:  npx supabase functions deploy claude
 
 -- 1) nowe kolekcje

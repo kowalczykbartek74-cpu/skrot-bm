@@ -1580,7 +1580,7 @@ body::before { opacity: .8; }
         h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy: kolokwia, egzaminy, projekty i zadania od prowadzących." })),
         h("div", { class: "row", style: "gap:8px" },
           h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
-          h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, lockLabel("+ Dodaj termin")))),
+          S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj termin") : null)),
       h("div", { class: "row", style: "justify-content:space-between" },
         seg([["list", "Lista"], ["cal", "Kalendarz"]], mode, (k) => { S.route = { ...S.route, mode: k }; render(); }, "Widok"),
         mode === "list" && PAID() ? seg([["open", `Do zrobienia · ${openN}`], ["done", "Zrobione"]], f, (k) => { S.taskFilter = k; render(); }, "Filtr") : null),
@@ -1594,8 +1594,8 @@ body::before { opacity: .8; }
         h("h2", {}, label, h("span", { class: "muted num", text: " " + xs.length })),
         h("div", { class: "terms" }, xs.map((x) => termRow(x)))))
       : h("div", { class: "empty" }, h("h3", { text: f === "done" ? "Nic jeszcze nie odhaczono" : "Nic nie czeka" }),
-          h("p", { class: "muted", text: f === "done" ? "Zrobione terminy i zadania trafią tutaj, gdy je odhaczysz." : "Nowe kolokwia i zadania od prowadzących pojawią się tutaj, gdy tylko ktoś je wpisze albo prowadzący wrzuci post w Teams." }),
-          h("div", {}, h("button", { type: "button", class: "btn", onclick: () => openDeadline(null) }, "+ Dodaj termin"))),
+          h("p", { class: "muted", text: f === "done" ? "Zrobione terminy i zadania trafią tutaj, gdy je odhaczysz." : "Nowe kolokwia i zadania od prowadzących pojawią się tutaj, gdy starosta je wpisze albo prowadzący wrzuci post w Teams." }),
+          S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn", onclick: () => openDeadline(null) }, "+ Dodaj termin")) : null),
       undated.length ? h("details", { class: "panel undated" },
         h("summary", {}, h("b", { text: `Zaliczenia bez ogłoszonej daty · ${undated.length}` }), h("span", { class: "muted", text: " · z zasad przedmiotów" })),
         h("div", { class: "list" }, undated.map(({ sb, p }) => h("button", { type: "button", class: "item", onclick: () => go({ view: "subject", id: sb.id, tab: "zal" }) },
@@ -1908,9 +1908,10 @@ body::before { opacity: .8; }
 
   // ================= deadlines =================
   function openDeadline(d) {
-    if (!d && needPaid("Dodawanie terminów")) return;
+    // Terminy widzi cały rok (także w kalendarzach w telefonach), więc dodaje i zmienia je tylko starosta (reguły w supabase/skrot-v5.sql).
+    if (!d && !S.canEdit) return;
     const edit = !!d;
-    const readonly = edit && !canManage(d);
+    const readonly = edit && !S.canEdit;
     modal((close) => {
       if (readonly) {
         const t = dlType(d.type), s = subjectById(d.subjectId);
@@ -1919,7 +1920,7 @@ body::before { opacity: .8; }
           h("h2", { text: d.title }),
           h("p", { class: "muted", text: `${fmtKey(d.date)}${d.time ? ", " + d.time : ""} · ${s ? s.pl : "ogólne"}${d.approx ? " · data orientacyjna" : ""}` }),
           d.note ? h("p", { text: d.note }) : null,
-          h("p", { class: "foot-note", text: `Dodano ${ago(d.createdAt)}${who(d.createdBy) ? " przez " + who(d.createdBy) : ""}. Zmienić termin może osoba, która go dodała, albo starosta.` }),
+          h("p", { class: "foot-note", text: `Dodano ${ago(d.createdAt)}${who(d.createdBy) ? " przez " + who(d.createdBy) : ""}. Terminy wpisuje starosta. Widzisz błąd? Napisz na skrotbm@outlook.com.` }),
           h("div", { class: "row" }, s ? h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "subject", id: s.id }); } }, "Materiały z przedmiotu") : null, h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")),
         ];
       }
@@ -2810,7 +2811,7 @@ body::before { opacity: .8; }
       h("div", { class: "row" },
         materialsOf(s.id).length ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "exam", sid: s.id }) }, "Przygotuj się →") : null,
         h("button", { type: "button", class: "btn", onclick: () => (PAID() ? go({ view: "cheat", sid: s.id }) : lockModal("Ściągawka z przedmiotu")) }, lockLabel("Ściągawka")),
-        h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, lockLabel("+ Termin"))),
+        S.canEdit ? h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, "+ Termin") : null),
       h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Kiedy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "terms" }) }, "Wszystkie terminy →")),
         !PAID() ? h("p", { class: "muted", style: "font-size:.92rem", text: "Terminy kolokwiów i zadania od prowadzących zobaczysz z pełnym dostępem." })
           : items.length ? h("div", { class: "terms compact" }, items.map((x) => termRow(x, { noSubject: true, noPrep: true })))
@@ -3125,11 +3126,13 @@ body::before { opacity: .8; }
     const s = subjectById(S.route.id);
     if (!s) return [backLink({ view: "materials" }), h("p", { class: "muted", text: "Ładuję…" })];
     const head = h("section", { class: "stack" }, backLink({ view: "subject", id: s.id, tab: "cwicz" }), h("span", { class: "eyebrow", text: PAID() ? "Quiz z całego przedmiotu" : "Quiz z darmowego materiału" }), h("h1", { text: s.pl }));
+    // Po odświeżeniu albo z linku lista materiałów jeszcze się wczytuje: czekamy, zamiast zapamiętać pusty quiz.
+    if (S.noDb || !S.ready) return [head, h("p", { class: "muted", text: S.noDb ? "Zaloguj się, żeby zobaczyć tę część strony." : "Ładuję…" })];
     if (!S.route.qs) {
       if (!S.route.loading) {
         S.route.loading = true;
         Promise.all(materialsOf(s.id).filter(readable).map((m) => getContent(m.id).then((c) => (c?.quiz || []).map((q, i) => ({ ...q, materialId: m.id, index: i }))).catch(() => [])))
-          .then((all) => { S.route.qs = shuffle(all.flat()).slice(0, 15); render(); });
+          .then((all) => { S.route.qs = shuffle(all.flat()).slice(0, 15); S.route.loading = false; render(); });
       }
       return [head, h("p", { class: "muted", text: "Zbieram pytania ze wszystkich materiałów…" })];
     }
@@ -5103,6 +5106,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const s = subjectById(sid);
     const one = S.route.id ? materialById(S.route.id) : null;
     const back = backLink(one ? { view: "material", id: one.id } : { view: "subject", id: sid });
+    // Jak w quizie z przedmiotu: bez wczytanej listy materiałów ściągawka wyszłaby pusta.
+    if (S.noDb || !S.ready) return [back, h("p", { class: "muted", text: S.noDb ? "Zaloguj się, żeby zobaczyć tę część strony." : "Ładuję…" })];
     if (!s && !isMine(one)) return [back, h("p", { class: "muted", text: "Ładuję…" })];
     if (!PAID() && !isMine(one)) return [back, paywallCard(null)];
     const mats = one ? [one] : studyMats(sid);
@@ -5376,17 +5381,19 @@ Spread the questions so that together they check as many of these outcomes as th
     // AI: starosta ma pełny panel (S.sample); osoby z pełnym dostępem tylko „Moje materiały” (S.ai, z biletem).
     S.ai = sample; if (!S.isStarosta) S.sample = null;
     render();
-    let got = 0;
-    const markReady = () => { if (++got >= 2) S.ready = true; render(); };
+    // Gotowe dopiero, gdy obie listy odpowiedziały (danymi albo błędem). Liczymy każdą listę raz,
+    // żeby dwa odczyty materiałów albo błąd terminów nie dały „gotowe” przed wczytaniem materiałów.
+    const got = new Set();
+    const markReady = (k) => { got.add(k); if (got.has("materials") && got.has("deadlines")) S.ready = true; render(); };
     db.collection("materials").orderBy("createdAt", "desc").limit(1000).onSnapshot((snap) => {
       S.materials = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      loadNames(S.materials.map((m) => m.createdBy)); markReady();
+      loadNames(S.materials.map((m) => m.createdBy)); markReady("materials");
       if (S.canEdit && !AI.busy) aiRefresh();
-    }, () => { S.ready = true; render(); });
+    }, () => markReady("materials"));
     db.collection("deadlines").orderBy("date").limit(1000).onSnapshot((snap) => {
       S.deadlines = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      loadNames(S.deadlines.map((d) => d.createdBy)); markReady();
-    }, () => { S.ready = true; render(); });
+      loadNames(S.deadlines.map((d) => d.createdBy)); markReady("deadlines");
+    }, () => markReady("deadlines"));
     db.collection("tasks").orderBy("createdAt", "desc").limit(300).onSnapshot((snap) => { S.tasks = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
     db.doc("meta/sync").onSnapshot((snap) => { S.sync = snap.exists ? snap.data() : null; render(); }, () => {});
     db.collection("announcements").orderBy("createdAt", "desc").limit(5).onSnapshot((snap) => { S.announcements = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
