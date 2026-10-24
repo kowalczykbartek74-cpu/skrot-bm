@@ -351,7 +351,7 @@
   const plDate = (k) => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(k || "");
     if (!m) return k || "";
-    try { return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }); } catch { return k; }
+    try { return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString(window.SKROT_LANG === "en" ? "en-GB" : "pl-PL", { day: "numeric", month: "long", year: "numeric" }); } catch { return k; }
   };
   skrot.untilText = () => plDate(skrot.until);
 

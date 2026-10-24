@@ -17,6 +17,16 @@ Pięć zakładek, każda odpowiada na jedno pytanie ucznia (plan: „Skrót BM: 
 
 Stare adresy (`#/tasks`, `#/calendar`, `#/progress`) prowadzą do nowych ekranów. Adres w pasku (`#/subject/makroekonomia`) działa z przyciskiem Wstecz.
 
+## Wersja angielska (PL / EN)
+Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ekranie kodu dostępu. Wybór zapisuje się w przeglądarce (`skrot-lang`); bez wyboru strona otwiera się po angielsku, gdy przeglądarka nie ma ustawionego polskiego. Link `?lang=en` albo `?lang=pl` też ustawia język.
+
+- `i18n.js` (ładowany w `<head>`) w trybie EN dociąga `i18n-en.js` i tłumaczy wszystko, co pojawia się na ekranie: teksty, `title`, `placeholder`, `aria-label`, okna `confirm`/`alert`. Kod strony zostaje po polsku.
+- `i18n-en.js` to słownik `"polski tekst": "English text"`. Teksty z wstawkami mają `{0}`, `{1}` (np. `"Powtórz {0} {1}": "Review {0} {1}"`). Liczebniki (`plural`), dni tygodnia i miesiące przełącza `index.html` (stała `EN`). Nazwy przedmiotów biorą angielską nazwę z planu i sylabusa.
+- **Nowy tekst na stronie** bez wpisu w słowniku pokaże się po polsku. Dopisz parę do `"exact"` w `i18n-en.js` (dokładnie ten sam tekst, łącznie z dwukropkiem czy kropką).
+- Teksty z CSS (`content: "…"`) mają osobne reguły `html[lang="en"] …`.
+- Zostają po polsku: wersja „Prościej · PL” i wyjaśnienia „Dlaczego?” (tak powstają w bazie), polskie odpowiedniki w słowniczku EN–PL, nazwiska, polskie tytuły lektur oraz to, co wpisujesz ręcznie (ogłoszenia, nazwy terminów). Regulamin i polityka prywatności są tylko po polsku.
+- Definicje pojęć z sylabusa mają pole `defEn` w `sylabus-pojecia.json`.
+
 ## Jak to działa
 - `index.html` – cała aplikacja (jedna strona). Plan zajęć pobiera z `https://plan.skrotbm.pl/plan.json`.
 - `skrot-supabase.js` – baza, logowanie mailem i zakup dostępu (Supabase + Stripe Payment Link).
