@@ -737,6 +737,257 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   .tour *, .tour *::before, .tour *::after { animation: none !important; transition: none !important; }
   .tv-file, .tv-hub span, .tv-grade .chip { opacity: 1; } .tv-out span, .tv-bar::before { transform: none; }
 }
+/* ===== PRZEWODNIK: rozdziały z ćwiczeniami na żywo ===== */
+.g-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; padding: 26px 26px 24px; border-radius: 22px; border: 1px solid var(--green-200); overflow: hidden;
+  background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(26,127,69,.10) 16px 17.5px) right top / 320px 320px no-repeat, linear-gradient(135deg, #F0FAF3, #FFFFFF 72%); }
+.g-hero h1 { font-size: clamp(1.6rem, 4.4vw, 2.35rem); font-weight: 800; max-width: 22ch; }
+.g-lead { font-size: 1.04rem; line-height: 1.6; color: #142019; max-width: 56ch; }
+.g-ring { position: relative; flex: none; }
+.g-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.g-ring .bg { stroke: var(--green-100); }
+.g-ring .fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1); }
+.g-ring b { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; font-size: 1.55rem; font-weight: 800; line-height: 1.05; color: var(--ink); }
+.g-ring b small { display: block; font-size: .7rem; font-weight: 700; color: #24342A; margin-top: 2px; }
+.g-hub { margin-top: 4px; }
+.g-path { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; position: relative; }
+.g-path::before { content: ""; position: absolute; left: 29px; top: 26px; bottom: 26px; width: 3px; border-radius: 3px; background: repeating-linear-gradient(var(--green-400) 0 7px, transparent 7px 13px); opacity: .55; }
+.g-stop-btn { position: relative; width: 100%; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; text-align: left; padding: 12px 16px 12px 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px; cursor: pointer; color: var(--ink); transition: border-color .2s, transform .2s, box-shadow .2s; }
+.g-stop-btn:hover { border-color: var(--green-400); transform: translateX(3px); }
+.g-num { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.02rem; background: var(--sunk); color: #142019; border: 2px solid var(--line); }
+.g-stop.done .g-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+.g-stop.next .g-stop-btn { border-color: var(--accent); box-shadow: 0 0 0 4px var(--green-100); }
+.g-stop.next .g-num { background: var(--surface); border-color: var(--accent); color: var(--green-900); animation: tv-nudge 2.4s infinite; }
+.g-stop.final .g-num { background: linear-gradient(135deg, var(--lime-400), var(--green-400)); border-color: transparent; color: var(--green-900); }
+.g-stop.final.done .g-num { background: linear-gradient(135deg, var(--green-600), var(--green-400)); color: #fff; }
+.g-stop-txt { display: grid; gap: 2px; min-width: 0; }
+.g-stop-txt b { font-size: 1.04rem; font-weight: 800; }
+.g-stop-txt span { color: #24342A; font-size: .92rem; line-height: 1.45; }
+.g-meta { display: grid; justify-items: end; gap: 4px; color: #24342A; }
+.g-meta small { font-size: .78rem; font-weight: 800; white-space: nowrap; }
+.g-stop.next .g-meta small { color: var(--green-900); background: var(--green-100); padding: 1px 8px; border-radius: 99px; }
+.g-keys { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; margin: 0; align-items: center; }
+.g-keys dt { display: flex; gap: 4px; flex-wrap: wrap; }
+.g-keys dd { margin: 0; font-size: .92rem; color: #142019; }
+.g-keys .kbd { min-width: 26px; text-align: center; }
+.g-faq { display: grid; gap: 4px; }
+.g-faq details { border-bottom: 1px solid var(--line); padding: 8px 0; }
+.g-faq details:last-child { border-bottom: 0; }
+.g-faq summary { cursor: pointer; font-weight: 700; }
+.g-faq p { margin-top: 6px; font-size: .94rem; color: #142019; }
+/* rozdział */
+.g-chead { display: grid; gap: 4px; }
+.g-chtitle { font-weight: 800; color: var(--green-900); font-size: .98rem; }
+.g-dots { display: flex; gap: 6px; align-items: center; }
+.g-dots button { width: 11px; height: 11px; border-radius: 99px; border: 0; padding: 0; background: var(--line); cursor: pointer; transition: width .3s, background .3s; }
+.g-dots button.tried { background: var(--green-400); }
+.g-dots button[aria-current="step"] { width: 30px; background: var(--accent); }
+.g-slide { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 26px; align-items: start; animation: g-in .45s cubic-bezier(.2,.8,.2,1); }
+@keyframes g-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.g-stage { position: relative; min-height: 320px; border-radius: 22px; border: 1px solid var(--green-200); padding: 48px 18px 18px; display: grid; align-content: center; min-width: 0;
+  background: linear-gradient(rgba(26,127,69,.06) 1px, transparent 1px) 0 0 / 20px 20px, linear-gradient(90deg, rgba(26,127,69,.06) 1px, transparent 1px) 0 0 / 20px 20px, var(--green-50); }
+.g-stage::before { content: "Ćwiczenie na przykładzie"; position: absolute; top: 14px; left: 16px; font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--green-900); background: var(--surface); border: 1px solid var(--green-200); padding: 3px 10px; border-radius: 99px; }
+.g-stage.real::before { content: "Na żywo · to działa naprawdę"; background: var(--accent); color: #fff; border-color: var(--accent); }
+.g-copy { display: grid; gap: 14px; align-content: start; padding-top: 6px; min-width: 0; }
+.g-h { font-size: clamp(1.45rem, 3.4vw, 1.95rem); font-weight: 800; }
+.g-copy > p { font-size: 1.05rem; line-height: 1.62; color: #142019; }
+.g-copy b { color: var(--ink); }
+.g-try { justify-self: start; display: inline-flex; gap: 8px; align-items: center; padding: 6px 13px; border-radius: 99px; background: var(--warn-soft); color: var(--warn); font-weight: 800; font-size: .86rem; }
+.g-try::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: g-blink 1.4s ease-in-out infinite; flex: none; }
+@keyframes g-blink { 50% { opacity: .25; } }
+.g-try.ok { background: var(--good-soft); color: var(--green-900); }
+.g-try.ok::before { content: "✓"; width: auto; height: auto; background: none; animation: none; font-weight: 800; }
+.g-tip { border-left: 4px solid var(--green-400); background: var(--surface); border-radius: 0 12px 12px 0; padding: 11px 14px; font-size: .95rem; line-height: 1.55; color: #142019; }
+.g-tip b:first-child { color: var(--green-900); }
+.g-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--line); }
+.g-small { font-size: .86rem; color: #24342A; }
+.g-status { font-weight: 700; font-size: .94rem; color: #24342A; }
+.g-status.ok { color: var(--green-900); }
+.g-status.bad { color: var(--bad); }
+.g-pop { animation: g-popin .45s cubic-bezier(.2,.9,.3,1.25); }
+@keyframes g-popin { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: none; } }
+/* ćwiczenia */
+.g-demo { display: grid; gap: 12px; min-width: 0; }
+.g-center { justify-items: center; text-align: center; }
+.g-center > * { max-width: 100%; }
+.g-bigicon { width: 64px; height: 64px; border-radius: 20px; background: var(--surface); display: grid; place-items: center; color: var(--accent); box-shadow: var(--shadow); }
+.g-bigicon .ico svg { width: 34px; height: 34px; }
+.g-seg-wrap { border-radius: 14px; }
+.g-seg-wrap button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.g-now { margin: 0; }
+.g-now h2 { font-size: 1.3rem !important; }
+.g-ladder-box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 6px; font-size: .88rem; }
+.g-ladder { margin: 0; padding-left: 22px; display: grid; gap: 3px; }
+.g-ladder li { color: #24342A; transition: color .2s; }
+.g-ladder li.skip { color: #7A8A80; text-decoration: line-through; text-decoration-color: rgba(0,0,0,.25); }
+.g-ladder li.on { color: var(--green-900); font-weight: 800; }
+.g-ladder li.on::marker { color: var(--accent); }
+.g-install { grid-template-columns: minmax(0, 1fr) 150px; align-items: center; gap: 16px; }
+.g-steps-list { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: .94rem; }
+.g-steps-list li { animation: g-popin .4s both; }
+.g-phone { position: relative; width: 150px; height: 270px; border-radius: 28px; border: 6px solid #16231B; background: linear-gradient(160deg, #DDEFE3, #F6FBF7); box-shadow: 0 14px 30px -14px rgba(22,35,27,.45); overflow: hidden; justify-self: center; }
+.g-notch { position: absolute; top: 6px; left: 50%; width: 46px; height: 12px; margin-left: -23px; border-radius: 99px; background: #16231B; z-index: 1; }
+.g-homescreen { position: absolute; inset: 30px 12px 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 10px; align-content: start; }
+.g-homescreen i { aspect-ratio: 1; border-radius: 11px; background: rgba(22,35,27,.12); }
+.g-appicon { grid-column: 3; grid-row: 4; width: 100%; height: auto; border-radius: 11px; opacity: 0; transform: scale(.3); box-shadow: 0 4px 10px -4px rgba(22,35,27,.5); }
+.g-applbl { grid-column: 3; grid-row: 5; font-size: .58rem; font-weight: 800; text-align: center; margin-top: -10px; opacity: 0; }
+.g-homescreen.go .g-appicon { animation: g-appin .6s .75s cubic-bezier(.2,.9,.3,1.4) forwards; }
+.g-homescreen.go .g-applbl { animation: tv-fade .3s 1.1s forwards; }
+@keyframes g-appin { to { opacity: 1; transform: none; } }
+.g-mail { display: grid; gap: 2px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; box-shadow: var(--shadow); font-size: .92rem; }
+.g-mail-from { font-size: .74rem; font-weight: 800; color: var(--green-900); }
+.g-code { font-size: 1.4rem; letter-spacing: .35em; font-weight: 800; text-align: center; max-width: 220px; }
+.g-code.ok { border-color: var(--good); background: var(--good-soft); }
+.g-subj { gap: 0; }
+.g-cover { position: relative; border-radius: 16px 16px 0 0; padding: 16px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-bottom: 0; }
+.g-cover b { font-size: 1.1rem; font-weight: 800; }
+.g-cover .nb-badge { position: static; }
+.g-subj .tabs { background: var(--surface); border-left: 1px solid var(--line); border-right: 1px solid var(--line); padding: 0 6px; }
+.g-list { list-style: none; margin: 0; padding: 12px; display: grid; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 16px 16px; }
+.g-list li { padding: 10px 12px; border-radius: 10px; background: var(--green-50); font-weight: 600; font-size: .94rem; animation: g-popin .35s both; }
+.g-list li:first-child { background: var(--accent-soft); color: var(--green-900); }
+.g-results { display: grid; gap: 6px; min-height: 120px; align-content: start; }
+.g-hit { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; animation: g-popin .3s both; }
+.g-hit .chip { grid-row: span 2; }
+.g-hit .muted { font-size: .84rem; }
+.g-read { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 10px; min-height: 170px; align-content: start; }
+.g-read h3 { display: flex; gap: 8px; align-items: center; }
+.g-read h3 .n { width: 26px; height: 26px; border-radius: 8px; background: var(--accent-soft); color: var(--green-900); display: grid; place-items: center; font-size: .86rem; }
+.g-read .simple-intro p { font-size: 1rem; }
+.g-pop-def { background: var(--green-50); border: 1.5px solid var(--green-400); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; animation: g-popin .3s; }
+.g-fc { min-height: 190px; }
+.g-fc .fc-inner { min-height: 190px; }
+.g-q { font-weight: 700; font-size: 1.02rem; line-height: 1.5; }
+.g-why { background: var(--surface); border: 1px solid var(--green-200); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; padding: 10px 14px; font-size: .94rem; line-height: 1.55; animation: g-popin .3s; }
+.g-card { display: grid; gap: 10px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: var(--shadow); width: min(100%, 380px); }
+.g-boxes { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding-top: 58px; }
+.g-box { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 4px; text-align: center; display: grid; gap: 1px; transition: border-color .3s, background .3s; }
+.g-box b { font-size: 1.05rem; }
+.g-box span { font-size: .7rem; font-weight: 700; color: #24342A; }
+.g-box.on { border-color: var(--accent); background: var(--accent-soft); }
+.g-mini-card { position: absolute; top: 4px; left: calc((100% - 30px) / 6 * var(--b, 0) + 6px * var(--b, 0)); width: calc((100% - 30px) / 6); min-width: 64px; height: 44px; border-radius: 10px; background: var(--accent); color: #fff; font-size: .72rem; font-weight: 800; display: grid; place-items: center; text-align: center; padding: 2px 4px; transition: left .55s cubic-bezier(.65,0,.25,1); box-shadow: 0 6px 14px -6px rgba(22,35,27,.5); }
+.g-mini-card.g-hop { animation: g-hop .55s ease; }
+@keyframes g-hop { 40% { transform: translateY(-14px) rotate(-4deg); } }
+.g-grades { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.g-maptopic { display: flex; align-items: center; gap: 14px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; }
+.g-sq { width: 54px !important; height: 54px !important; border-radius: 12px !important; cursor: default !important; transition: background .4s, border-color .4s; }
+.g-score { font-size: 1.15rem; }
+.g-task { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 4px; }
+.g-worked { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.g-worked li { background: var(--surface); border: 1px solid var(--green-200); border-radius: 12px; padding: 8px 12px; display: grid; gap: 2px; animation: g-popin .35s; }
+.g-worked li::marker { font-weight: 800; color: var(--accent); }
+.g-worked li b { font-size: .84rem; color: var(--green-900); }
+.g-counter { display: grid; justify-items: center; gap: 0; }
+.g-big { font-size: 3rem; font-weight: 800; line-height: 1; color: var(--accent); }
+.g-examhero { padding: 14px 16px !important; gap: 6px !important; }
+.g-range { width: 160px; accent-color: var(--accent); }
+.g-plan { display: grid; gap: 6px; }
+.g-plan-row { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 7px 12px; font-size: .9rem; animation: g-popin .3s both; }
+.g-plan-row.last { border-color: var(--accent); background: var(--accent-soft); }
+.g-day { font-weight: 800; color: var(--green-900); text-align: center; }
+.g-clock { font-size: 1.15rem; color: var(--warn); }
+.g-rub { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: .92rem; cursor: pointer; }
+.g-rub input { width: 18px; height: 18px; accent-color: var(--accent); }
+.g-a4 { width: 200px; aspect-ratio: 210 / 297; background: #fff; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 16px 30px -16px rgba(22,35,27,.45); padding: 16px 14px; display: grid; gap: 8px; align-content: start; text-align: left; transform: rotate(-2deg); }
+.g-a4 b { font-size: .8rem; color: var(--green-900); }
+.g-a4 i { display: block; height: 7px; width: var(--w); border-radius: 4px; background: var(--green-200); transform-origin: left; animation: tv-grow 4s var(--d) ease-out infinite; }
+.g-a4 small { margin-top: auto; font-size: .6rem; color: #5A6B61; }
+.g-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.g-tcat { padding: 8px 6px !important; min-height: 0 !important; text-align: center; }
+.g-tcat .tc-name { font-size: .74rem; }
+.g-term { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 8px 12px; cursor: pointer; font-size: .92rem; transition: opacity .3s; }
+.g-term input { width: 18px; height: 18px; accent-color: var(--accent); }
+.g-term-t { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
+.g-term.done { opacity: .55; }
+.g-term.done b { text-decoration: line-through; }
+.g-calopt { width: 100%; text-align: left; cursor: pointer; font: inherit; }
+.g-phone-cal { position: absolute; inset: 28px 10px 10px; display: grid; gap: 6px; align-content: start; }
+.g-phone-cal > b { font-size: .9rem; }
+.g-evs { display: grid; gap: 6px; }
+.g-ev { display: grid; gap: 0; background: var(--surface); border-left: 4px solid var(--accent); border-radius: 8px; padding: 5px 8px; font-size: .72rem; animation: g-popin .4s both; text-align: left; }
+.g-ev b { font-size: .74rem; line-height: 1.25; }
+.g-ev.bad { border-left-color: var(--bad); }
+.g-ev.warn { border-left-color: #C98A1B; }
+.g-ev.my { border-left-color: var(--teal-600); }
+.g-caldemo { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; gap: 14px; }
+.g-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.g-dow { font-size: .66rem; font-weight: 800; text-align: center; color: #24342A; }
+.g-day-c { position: relative; aspect-ratio: 1; border: 1px solid var(--line); background: var(--surface); border-radius: 7px; font-size: .74rem; font-weight: 700; cursor: pointer; padding: 0; display: grid; place-items: center; }
+.g-day-c.ex { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 35%, var(--line)); }
+.g-day-c.ex .bang { position: absolute; top: 0; right: 3px; font-size: .62rem; color: var(--bad); }
+.g-day-c.my::after { content: ""; position: absolute; bottom: 3px; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: var(--teal-600); }
+.g-day-c.sel { outline: 2.5px solid var(--accent); outline-offset: 1px; }
+.g-key { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -2px; margin-right: 4px; }
+.g-key.ex { background: var(--bad-soft); border: 1px solid var(--bad); }
+.g-key.my { background: var(--teal-600); border-radius: 50%; }
+.g-calside { display: grid; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-width: 0; }
+.g-kinds button { padding: 4px 9px; font-size: .78rem; }
+.g-gl { display: grid; gap: 6px; }
+.g-gl-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; animation: g-popin .3s both; }
+.g-gl-row .g-pl { color: var(--green-900); font-weight: 700; }
+.g-gl-row .muted { grid-column: 1 / -1; font-size: .84rem; }
+.g-drop { display: grid; justify-items: center; gap: 6px; padding: 16px; border: 2px dashed var(--green-400); border-radius: 16px; background: var(--surface); }
+.g-pipe { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; counter-reset: gp; }
+.g-pipe li { counter-increment: gp; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 0 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 7px 12px; opacity: .5; transition: opacity .3s, border-color .3s, background .3s; }
+.g-pipe li::before { content: counter(gp); grid-row: span 2; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .8rem; background: var(--sunk); }
+.g-pipe li span { font-size: .82rem; color: #24342A; }
+.g-pipe li.on { opacity: 1; border-color: var(--green-400); background: var(--green-50); }
+.g-pipe li.on::before { content: "✓"; background: var(--accent); color: #fff; }
+.g-grow { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: .92rem; }
+.g-avg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.g-avg > div { background: var(--accent-soft); border-radius: 14px; padding: 10px 14px; display: grid; }
+.g-avg small { font-size: .78rem; font-weight: 700; color: var(--green-900); }
+.g-avg b { font-size: 1.7rem; font-weight: 800; color: var(--green-900); }
+.g-where { display: grid; gap: 6px; }
+.g-where-row { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; animation: g-popin .35s both; }
+.g-where-row .ico { width: 34px; height: 34px; border-radius: 10px; background: var(--accent-soft); color: var(--green-900); display: grid; place-items: center; }
+.g-where-row .ico svg { width: 19px; height: 19px; }
+.g-where-row span { display: grid; }
+.g-where-row small { font-size: .82rem; color: #24342A; }
+/* test i odznaka */
+.g-testbox { max-width: 640px; }
+.g-testbox h2 { font-size: 1.3rem; }
+.g-result { display: grid; gap: 10px; justify-items: start; padding: 24px; border-radius: 22px; border: 1px solid var(--line); background: var(--surface); max-width: 640px; }
+.g-result.pass { border-color: var(--green-200); background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(26,127,69,.10) 16px 17.5px) right top / 260px 260px no-repeat, linear-gradient(135deg, #F0FAF3, #FFFFFF 75%); }
+.g-result h2 { font-size: 1.6rem; font-weight: 800; }
+.g-badge { width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle, #fff 55%, var(--green-100) 56%); border: 4px solid var(--accent); box-shadow: 0 0 0 6px var(--lime-100); animation: g-badge 1s cubic-bezier(.2,.9,.3,1.3); }
+.g-badge img { width: 58px; height: auto; }
+@keyframes g-badge { from { transform: scale(.2) rotate(-30deg); opacity: 0; } to { transform: none; opacity: 1; } }
+/* pasek na ekranie Dziś */
+.g-strip { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 14px; border-radius: var(--r); border: 1.5px dashed var(--green-400); background: var(--surface); }
+.g-strip-ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--green-900); }
+.g-strip .progress { max-width: 260px; }
+/* konfetti */
+.g-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; overflow: hidden; }
+.g-confetti i { position: absolute; top: -14px; width: 8px; height: 13px; border-radius: 2px; animation: g-fall 2.3s cubic-bezier(.3,.6,.5,1) forwards; }
+@keyframes g-fall { to { transform: translate(var(--dx), 105vh) rotate(var(--r)); } }
+@media (max-width: 760px) {
+  .g-slide { grid-template-columns: 1fr; gap: 18px; }
+  .g-copy { order: -1; padding-top: 0; gap: 10px; }
+  .g-stage { min-height: 0; padding: 46px 12px 14px; }
+  .g-caldemo { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .g-hero { grid-template-columns: 1fr; padding: 20px 18px; gap: 14px; }
+  .g-hero .g-ring { order: -1; width: 92px !important; height: 92px !important; }
+  .g-ring b { font-size: 1.15rem; }
+  .g-stop-btn { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 11px 12px 11px 8px; }
+  .g-path::before { left: 25px; }
+  .g-meta { display: none; }
+  .g-install { grid-template-columns: 1fr; }
+  .g-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .g-tcat .tc-name { font-size: .7rem; }
+  .g-strip { grid-template-columns: auto minmax(0, 1fr); }
+  .g-strip > .row { grid-column: 1 / -1; justify-content: flex-end; }
+  .g-mini-card { min-width: 0; font-size: .62rem; }
+  .g-box span { font-size: .62rem; }
+  .g-foot .btn { flex: 1 1 auto; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-slide, .g-pop, .g-list li, .g-hit, .g-worked li, .g-plan-row, .g-ev, .g-gl-row, .g-where-row, .g-steps-list li, .g-badge { animation: none !important; }
+  .g-mini-card, .g-ring .fg { transition: none; }
+  .g-homescreen .g-appicon, .g-homescreen .g-applbl { opacity: 1; transform: none; animation: none !important; }
+}
+.g-keys .kbd { font: 700 .8rem var(--f-body); border: 1px solid var(--line); border-bottom-width: 2.5px; border-radius: 7px; padding: 1px 8px; background: var(--surface); color: var(--ink); }
 /* Kalendarz w telefonie: opcje subskrypcji w okienku */
 .calopts { display: grid; gap: 8px; }
 .calopt { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--surface); }
@@ -1258,7 +1509,7 @@ body::before { opacity: .8; }
   };
   if (S.sub !== "A" && S.sub !== "B" && S.sub !== "") S.sub = "A";
   // Stare adresy (zapisane linki, przyciski w kodzie) prowadzą do nowych ekranów.
-  const LEGACY = { subjects: { view: "materials" }, przedmioty: { view: "materials" }, dzis: { view: "home" }, terminy: { view: "terms" }, powtorki: { view: "review" }, wiecej: { view: "more" }, start: { view: "home" }, tasks: { view: "terms" }, progress: { view: "review" } };
+  const LEGACY = { subjects: { view: "materials" }, przedmioty: { view: "materials" }, dzis: { view: "home" }, terminy: { view: "terms" }, powtorki: { view: "review" }, wiecej: { view: "more" }, start: { view: "home" }, tasks: { view: "terms" }, progress: { view: "review" }, przewodnik: { view: "guide" } };
   const normRoute = (r) => (LEGACY[r?.view] ? { ...r, ...LEGACY[r.view] } : r || { view: "home" });
   const routeHash = (r) => "#/" + [r.view, r.id || r.sid || ""].filter(Boolean).join("/");
   const go = (route) => {
@@ -1434,7 +1685,7 @@ body::before { opacity: .8; }
     review: "review", progress: "review",
     terms: "terms",
     calendar: "calendar",
-    more: "more", mine: "more", glossary: "more", program: "more", reading: "more", compare: "more", myFolder: "more", myUpload: "more", grading: "more", reports: "more", ai: "more",
+    more: "more", mine: "more", glossary: "more", program: "more", reading: "more", compare: "more", myFolder: "more", myUpload: "more", grading: "more", reports: "more", ai: "more", guide: "more",
   };
   function renderNav() {
     const v = S.route.view;
@@ -1474,7 +1725,7 @@ body::before { opacity: .8; }
   function render() {
     renderNav();
     const v = S.route.view;
-    let fn = { terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, reading: viewReading, compare: viewCompare }[v];
+    let fn = { terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, reading: viewReading, compare: viewCompare, guide: viewGuide }[v];
     if (!fn) {
       // Nieznany adres (np. literówka w linku): mówimy o tym zamiast po cichu pokazywać Dziś.
       if (v && v !== "home") { toast("Nie ma takiej strony. Pokazuję ekran Dziś."); S.route = { view: "home" }; try { history.replaceState({ view: "home" }, "", "#/"); } catch {} }
@@ -1643,7 +1894,7 @@ body::before { opacity: .8; }
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
         h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Co i na kiedy, podzielone na zaliczenia, zadania, projekty i resztę." })),
         h("div", { class: "row", style: "gap:8px" },
-          h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
+          h("button", { type: "button", class: "link", "data-tour": "phonecal", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
           S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj termin") : null)),
       h("div", { class: "row", style: "justify-content:space-between" },
         h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "calendar" }) }, "Pokaż w kalendarzu"),
@@ -1966,6 +2217,7 @@ body::before { opacity: .8; }
       annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
       nowCard(),
+      guideStrip(),
       h("div", { class: "hub" }, todayPanel(), h("div", { class: "stack", style: "gap:20px;min-width:0" }, upcomingPanel(), newPanel())),
     ];
   }
@@ -2167,8 +2419,8 @@ body::before { opacity: .8; }
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
         h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), h("p", { class: "muted", text: "Zajęcia, zaliczenia, terminy roku i Twoje własne wpisy w jednym miejscu." })),
         h("div", { class: "row", style: "gap:8px" },
-          h("button", { type: "button", class: "link", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
-          h("button", { type: "button", class: "btn small primary", onclick: () => openMyEvent(null, S.calSel) }, "+ Mój wpis"))),
+          h("button", { type: "button", class: "link", "data-tour": "phonecal", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
+          h("button", { type: "button", class: "btn small primary", "data-tour": "myev", onclick: () => openMyEvent(null, S.calSel) }, "+ Mój wpis"))),
       !S.group ? h("div", { class: "notice" }, h("p", { style: "margin:0 0 8px", text: "Wybierz grupę, a pokażę Twoje zajęcia w kalendarzu." }), groupPicker(true)) : null);
     return [head, examStrip(all, tk), calendarBlock(all)];
   }
@@ -3033,7 +3285,7 @@ body::before { opacity: .8; }
           h("p", { class: "muted", text: cardsN ? `${cardsN} ${plural(cardsN, "fiszka", "fiszki", "fiszek")} z tego przedmiotu. Dodaj je, a wrócą w Powtórkach w dobrym momencie.` : "Fiszki pojawią się z pierwszym materiałem." }),
           h("div", { class: "row" }, cardsN ? h("button", { type: "button", class: "btn", onclick: () => addSubjectToReview(s.id) }, "Dodaj wszystkie fiszki do powtórek") : null,
             srsDue(s.id).due.length + srsDue(s.id).fresh.length ? h("button", { type: "button", class: "link", onclick: () => go({ view: "review", sid: s.id }) }, "Powtórki z przedmiotu →") : null))),
-      h("section", { class: "stack" }, h("h2", { text: "Rozwiązane zadania" }),
+      h("section", { class: "stack", "data-tour": "worked" }, h("h2", { text: "Rozwiązane zadania" }),
         worked.length ? h("div", { class: "list" }, worked.map((m) => h("button", { type: "button", class: "item", onclick: () => go({ view: "material", id: m.id, tab: "zadania" }) },
           h("span", { class: "t", text: m.title || m.fileName }),
           h("span", { class: "m num", text: `${m.workedCount} ${plural(m.workedCount, "przykład", "przykłady", "przykładów")} krok po kroku${m.workedTaskCount ? ` · ${m.workedTaskCount} ${plural(m.workedTaskCount, "zadanie", "zadania", "zadań")} do samodzielnego rozwiązania` : ""}` }),
@@ -3052,7 +3304,7 @@ body::before { opacity: .8; }
     const items = termItems(s.id).filter((x) => !x.done && !(x.n != null && x.n < 0));
     const info = myTasks().filter((t) => t.kind === "info" && t.subjectId === s.id);
     return h("div", { class: "stack" },
-      h("div", { class: "row" },
+      h("div", { class: "row", "data-tour": "prep" },
         materialsOf(s.id).length ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "exam", sid: s.id }) }, "Przygotuj się →") : null,
         h("button", { type: "button", class: "btn", onclick: () => (PAID() ? go({ view: "cheat", sid: s.id }) : lockModal("Ściągawka z przedmiotu")) }, lockLabel("Ściągawka")),
         S.canEdit ? h("button", { type: "button", class: "btn ghost", onclick: () => { S.route.dlSubject = s.id; openDeadline(null); } }, "+ Termin") : null),
@@ -3096,7 +3348,7 @@ body::before { opacity: .8; }
   }
 
   function backLink(to) {
-    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki" }[to?.view] || "Dziś";
+    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki", guide: "Przewodnik" }[to?.view] || "Dziś";
     return h("div", {}, h("button", { type: "button", class: "back", onclick: () => go(to || { view: "home" }) }, h("span", { "aria-hidden": "true", text: "←" }), label));
   }
   function confirmBox(question, action) {
@@ -3852,7 +4104,7 @@ ${written}`;
     const groupLabel = S.group ? `${S.group}${S.sub ? " · lab " + S.sub : ""}` : "nie wybrano";
     const row = (ic, label, hint, fn, extra = {}) => h(extra.href ? "a" : "button", { type: extra.href ? null : "button", href: extra.href || null, class: "mi more-row", onclick: extra.href ? null : fn },
       icon(ic), h("span", { class: "more-txt" }, h("span", { text: label }), hint ? h("small", { text: hint }) : null), extra.badge ? h("span", { class: "badge num", text: extra.badge }) : h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
-    const group = (title, rows) => h("section", { class: "panel more-group" }, h("h2", { text: title }), h("div", { class: "more-list" }, rows.filter(Boolean)));
+    const group = (title, rows, tour) => h("section", { class: "panel more-group", "data-tour": tour || null }, h("h2", { text: title }), h("div", { class: "more-list" }, rows.filter(Boolean)));
     return [
       h("section", { class: "stack" }, h("h1", { class: "ptitle", text: "Więcej" })),
       h("div", { class: "more-grid" },
@@ -3860,19 +4112,20 @@ ${written}`;
           row("glossary", "Słowniczek EN–PL", "pojęcia ze wszystkich przedmiotów", () => go({ view: "glossary" })),
           row("upload", "Moje materiały", "Twoje pliki opracowane jak materiały roku", () => go({ view: "mine" })),
           row("program", "Lektury", "literatura z sylabusów i katalog biblioteki", () => go({ view: "reading" })),
-        ]),
+        ], "nauka"),
         group("Studia", [
           row("program", "Program studiów i sylabusy", "semestry 1–6, przedmioty do wyboru", () => go({ view: "program" })),
           row("grading", "Zasady zaliczeń i kalkulator średniej", "formy zaliczeń, skala ocen, poprawki", () => go({ view: "grading" })),
           row("tasks", "Szkolenia obowiązkowe", "BHP, biblioteka, e-learning, AI", () => { go({ view: "grading" }); requestAnimationFrame(() => $("szkolenia")?.scrollIntoView({ block: "start" })); }),
           row("plan", "Pełny plan zajęć", "plan.skrotbm.pl", null, { href: PLAN_URL }),
-        ]),
+        ], "studia"),
         group("Ty", [
           row("group", "Moja grupa", groupLabel, openGroupPicker),
           row("user", "Konto i dostęp", sk.state === "in" ? sk.email : "nie zalogowano", openAccount),
-          row("help", "Jak korzystać", "krótka instrukcja w 3 krokach", () => startTour(0)),
+          row("help", "Przewodnik po stronie", `${GUIDE.length} rozdziałów z ćwiczeniami · ukończone ${guideDoneN()}/${GUIDE.length}`, () => go({ view: "guide" })),
+          row("map", "Szybki tour po ekranach", "1 minuta, podświetla zakładki", () => startTour(QUICK, QUICK_OPTS())),
           sk.state === "in" ? row("out", "Wyloguj", null, () => sk.logout?.()) : sk.state === "out" ? row("in", "Zaloguj się", "e-mailem, bez hasła", () => sk.openLogin?.()) : null,
-        ]),
+        ], "ty"),
         S.isStarosta ? h("section", { class: "panel more-group staro" },
           h("div", { class: "panel-head" }, h("h2", { text: "Tryb starosty" }),
             h("button", { type: "button", class: "switch", role: "switch", "aria-checked": String(S.canEdit), "aria-label": "Tryb starosty", onclick: () => setStarosta(!S.canEdit) }, h("i"))),
@@ -4377,31 +4630,746 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     cal: () => { const dots = { 3: "#9A5B00", 9: "#B42318", 12: "#1A7F45", 17: "#9A5B00", 22: "#1A7F45", 26: "#B42318" }; let s = ""; for (let i = 0; i < 28; i++) s += `<i class="${i === 15 ? "now" : ""}${dots[i] ? " d" : ""}" style="${dots[i] ? `--c:${dots[i]};--dl:${(i % 7) * 0.18}s` : ""}"></i>`; return `<div class="tv"><div class="tv-cal">${s}</div></div>`; },
     done: () => { const cs = ["#1A7F45", "#4CAF72", "#CFE8D8", "#2E9E8F", "#0E5A30", "#8AAE3A"]; let s = ""; for (let i = 0; i < 14; i++) s += `<i class="tv-conf" style="left:${6 + i * 6.6}%;background:${cs[i % cs.length]};animation-delay:${(i * 0.37) % 2.8}s"></i>`; return `<div class="tv">${s}<div class="tv-help">?</div></div>`; },
   };
-  const TOUR = [
-    { view: "home", sel: "section.today", title: "1. Wybierz swoją grupę", text: "Ustaw <b>grupę (C111–C113)</b> i <b>podgrupę lab A/B</b>. Wtedy zajęcia, terminy i kalendarz pokazują tylko to, co dotyczy Ciebie. Zmienisz ją zawsze w <b>Więcej → Moja grupa</b>.", art: "group" },
-    { view: "home", sel: "section.now", title: "2. Zaczynaj od ekranu Dziś", text: "Karta <b>„Teraz zrób to”</b> mówi, od czego zacząć: przygotować się do kolokwium, oddać zadanie, powtórzyć fiszki albo przeczytać nowy materiał. Pod nią zajęcia, najbliższe terminy i nowości.", art: "hub" },
-    { view: "materials", nav: "materials", title: "3. Otwórz pierwszy przedmiot", text: "W każdym przedmiocie są trzy zakładki: <b>Ucz się, Ćwicz, Zaliczenie</b>. Każdy materiał to trzy kroki: <b>Przeczytaj, Fiszki, Quiz</b>. Powtórki i terminy mają własne zakładki, a reszta jest w <b>Więcej</b>.", art: "books", last: true },
+  // ================= PRZEWODNIK =================
+  // Pełny przewodnik po stronie: 9 krótkich rozdziałów. Każda karta ma ćwiczenie na przykładowych danych (działa bez dostępu
+  // i bez materiałów), a „Pokaż mi na stronie” podświetla to samo na prawdziwych ekranach (silnik podświetleń niżej).
+  const gx = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const gNorm = (s) => String(s || "").toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const G = { nodes: new Map(), tried: new Set(), test: null };
+  function guideGet() {
+    let a = {}; try { a = JSON.parse(ls.get("bm-guide") || "{}") || {}; } catch {}
+    const b = S.progress?.guide || {};
+    return { done: { ...(a.done || {}), ...(b.done || {}) }, quiz: Math.max(a.quiz || 0, b.quiz || 0), hide: !!(a.hide || b.hide) };
+  }
+  function guideSet(patch) {
+    const g = { ...guideGet(), ...patch };
+    ls.set("bm-guide", JSON.stringify(g));
+    try { saveProgress({ guide: g }).catch(() => {}); } catch {}
+    return g;
+  }
+  const guideDoneN = () => { const d = guideGet().done; return GUIDE.filter((c) => d[c.id]).length; };
+  function gConfetti() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const cs = ["#1A7F45", "#4CAF72", "#B7DB4A", "#2E9E8F", "#0E5A30", "#CFE8D8"];
+    const box = gx("div", "g-confetti"); box.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < 46; i++) {
+      const p = gx("i");
+      p.style.cssText = `left:${(i * 37) % 100}%;background:${cs[i % cs.length]};animation-delay:${(i % 9) * 0.06}s;--dx:${((i * 53) % 120) - 60}px;--r:${(i * 97) % 720}deg`;
+      box.append(p);
+    }
+    document.body.append(box); setTimeout(() => box.remove(), 2600);
+  }
+  // Losowy, ale stały przykład z prawdziwej listy przedmiotów (ćwiczenia wyglądają jak strona).
+  const gSubjNames = () => { const xs = SUBJECTS.map((s) => s.pl); return xs.length ? xs : ["Makroekonomia", "Podstawy zarządzania", "Prawo", "Analiza matematyczna"]; };
+  const gPick = (want, i) => gSubjNames().find((n) => gNorm(n).includes(want)) || gSubjNames()[i % gSubjNames().length];
+
+  // ---------- ćwiczenia (każde zwraca element; ok() = zadanie z karty zrobione) ----------
+  function demoNow(ok) {
+    const SC = [
+      { b: "Kolokwium za 5 dni", e: "Kolokwium za 5 dni", t: `Przygotuj się: ${gPick("makro", 0)}`, s: "Plan na każdy dzień i próbny test.", btn: "Przygotuj się", warn: true, r: 0 },
+      { b: "Zadanie na jutro", e: "Termin jutro", t: "Oddaj: esej o motywacji pracowników", s: `${gPick("zasob", 1)} · jutro, 23:59`, btn: "Zobacz szczegóły", warn: true, r: 1 },
+      { b: "Fiszki czekają", e: "Powtórki na dziś", t: "Powtórz 12 fiszek", s: "Około 4 min. Fiszki wracają wtedy, gdy zaczynasz je zapominać.", btn: "Zacznij powtórkę", r: 2 },
+      { b: "Nowy materiał", e: "Nowy materiał", t: "Przeczytaj: Popyt i podaż", s: `${gPick("makro", 0)} · dodano wczoraj`, btn: "Przeczytaj", r: 3 },
+      { b: "Nic pilnego", e: "Nic pilnego", t: "Kontynuuj: Funkcje planowania", s: "Ostatnio otwarty materiał.", btn: "Kontynuuj", r: 4 },
+    ];
+    const RUNGS = ["Zaliczenie w ciągu 7 dni", "Termin oddania w ciągu 2 dni", "Fiszki do powtórki", "Nowy materiał z tego tygodnia", "Ostatnio otwarty materiał"];
+    const seen = new Set();
+    const card = h("div", { class: "now g-now" });
+    const ladder = h("ol", { class: "g-ladder" }, RUNGS.map((r) => h("li", { text: r })));
+    const seg = h("div", { class: "seg g-seg-wrap", role: "group", "aria-label": "Sytuacja" });
+    const show = (i) => {
+      const x = SC[i]; seen.add(i);
+      card.className = "now g-now" + (x.warn ? " warn" : "");
+      card.replaceChildren(h("span", { class: "eyebrow", text: "Teraz zrób to · " + x.e }), h("h2", { text: x.t }), h("p", { class: "muted", text: x.s }), h("div", {}, h("span", { class: "btn primary", "aria-hidden": "true" }, x.btn, " →")));
+      card.classList.remove("g-pop"); void card.offsetWidth; card.classList.add("g-pop");
+      [...ladder.children].forEach((li, k) => li.className = k === x.r ? "on" : k < x.r ? "skip" : "");
+      [...seg.children].forEach((b, k) => b.setAttribute("aria-pressed", String(k === i)));
+      if (seen.size >= 3) ok();
+    };
+    seg.append(...SC.map((x, i) => h("button", { type: "button", onclick: () => show(i) }, x.b)));
+    show(0); seen.clear();
+    return h("div", { class: "g-demo" }, h("p", { class: "g-small", text: "Wybierz sytuację i zobacz, co pokaże karta:" }), seg, card,
+      h("div", { class: "g-ladder-box" }, h("b", { text: "Kolejność ważności (pierwsze pasujące wygrywa):" }), ladder));
+  }
+  function demoGroup() {
+    return h("div", { class: "g-demo g-center" },
+      h("div", { class: "g-bigicon" }, icon("group")),
+      h("p", { class: "g-small", text: "To prawdziwy przełącznik. Wybór zapisze się od razu." }),
+      groupPicker(true),
+      h("p", { class: "g-status" + (S.group ? " ok" : ""), text: S.group ? `Twoja grupa: ${S.group}${S.sub ? " · lab " + S.sub : " · oba laby"} ✓` : "Nie wybrano jeszcze grupy." }));
+  }
+  function demoInstall(ok) {
+    const OS = {
+      ios: ["Otwórz skrotbm.pl w <b>Safari</b>.", "Stuknij <b>Udostępnij</b> (kwadrat ze strzałką w górę).", "Wybierz <b>Do ekranu początkowego</b>, potem <b>Dodaj</b>."],
+      android: ["Otwórz skrotbm.pl w <b>Chrome</b>.", "Stuknij <b>⋮</b> w prawym górnym rogu.", "Wybierz <b>Zainstaluj aplikację</b> albo <b>Dodaj do ekranu głównego</b>."],
+    };
+    const steps = h("ol", { class: "g-steps-list" });
+    const screen = h("div", { class: "g-homescreen" });
+    const fill = () => { screen.replaceChildren(...Array.from({ length: 11 }, (_, i) => h("i", { style: `--d:${i * 0.04}s` })), h("img", { class: "g-appicon", src: "icons/icon-192.png", alt: "", width: "44", height: "44" }), h("span", { class: "g-applbl", text: "Skrót BM" })); };
+    const seg = h("div", { class: "seg pick", role: "group", "aria-label": "Telefon" });
+    const pick = (k) => {
+      steps.replaceChildren(...OS[k].map((t, i) => { const li = gx("li", "", t); li.style.animationDelay = i * 0.15 + "s"; return li; }));
+      [...seg.children].forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === k)));
+      fill(); screen.classList.remove("go"); void screen.offsetWidth; screen.classList.add("go");
+      ok();
+    };
+    seg.append(h("button", { type: "button", "data-k": "ios", "aria-pressed": "false", onclick: () => pick("ios") }, "iPhone"), h("button", { type: "button", "data-k": "android", "aria-pressed": "false", onclick: () => pick("android") }, "Android"));
+    fill();
+    return h("div", { class: "g-demo g-install" },
+      h("div", { class: "stack", style: "gap:10px;min-width:0" }, h("p", { class: "g-small", text: "Jaki masz telefon?" }), seg, steps),
+      h("div", { class: "g-phone" }, h("span", { class: "g-notch" }), screen));
+  }
+  function demoLogin(ok) {
+    const code = String(100000 + Math.floor(Math.random() * 899999));
+    const mail = h("div", { class: "g-mail", hidden: true },
+      h("span", { class: "g-mail-from", text: "Skrót BM · teraz" }),
+      h("b", { text: `${code.slice(0, 3)} ${code.slice(3)} to Twój kod do Skrótu BM` }),
+      h("span", { class: "muted", text: "Kod jest ważny przez godzinę." }));
+    const inp = h("input", { class: "input g-code", inputmode: "numeric", maxlength: "6", autocomplete: "off", "aria-label": "Kod z maila", placeholder: "••••••", disabled: true });
+    const status = h("p", { class: "g-status", text: "Krok 1: wyślij kod." });
+    const send = h("button", { type: "button", class: "btn primary", onclick: () => {
+      mail.hidden = false; mail.classList.add("g-pop"); inp.disabled = false; inp.focus({ preventScroll: true });
+      send.disabled = true; send.textContent = "Kod wysłany ✓"; status.textContent = "Krok 2: przepisz kod z maila powyżej.";
+    } }, "Wyślij kod");
+    inp.addEventListener("input", () => {
+      inp.value = inp.value.replace(/\D/g, "").slice(0, 6);
+      if (inp.value === code) { inp.disabled = true; inp.classList.add("ok"); status.className = "g-status ok"; status.textContent = "Zalogowano ✓ Postęp zapisuje się teraz na koncie, także na telefonie."; ok(); }
+      else if (inp.value.length === 6) status.textContent = "To nie ten kod. Sprawdź mail jeszcze raz.";
+    });
+    return h("div", { class: "g-demo" }, mail,
+      h("label", { class: "field" }, "Twój e-mail", h("input", { class: "input", value: "ania.nowak@stud.usz.edu.pl", readonly: true, tabindex: "-1" })),
+      h("div", {}, send), h("label", { class: "field" }, "Kod z maila", inp), status);
+  }
+  function demoSubject(ok) {
+    const name = gPick("makro", 0);
+    const T = {
+      ucz: ["Kontynuuj: 2. Popyt i podaż →", "Twoje postępy: mapa tematów", "Materiały z zajęć, od najnowszych"],
+      cwicz: ["Quiz z całego przedmiotu: 15 losowych pytań", "Fiszki do powtórek: dodaj wszystkie jednym kliknięciem", "Rozwiązane zadania krok po kroku"],
+      zal: ["Przygotuj się: plan dzień po dniu i próbny test", "Ściągawka na 1 stronę A4", "Kiedy: kolokwium i egzamin", "Zasady zaliczenia z sylabusa"],
+    };
+    const seen = new Set();
+    const list = h("ul", { class: "g-list" });
+    const tabs = h("div", { class: "tabs", role: "tablist", "aria-label": "Części przedmiotu" });
+    const pick = (k) => {
+      seen.add(k);
+      [...tabs.children].forEach((b) => b.setAttribute("aria-selected", String(b.dataset.k === k)));
+      list.replaceChildren(...T[k].map((t, i) => { const li = h("li", { text: t }); li.style.animationDelay = i * 0.07 + "s"; return li; }));
+      if (seen.size === 3) ok();
+    };
+    tabs.append(...SUBJ_TABS.map(([k, l]) => h("button", { type: "button", class: "tab", role: "tab", "data-k": k, onclick: () => pick(k) }, l)));
+    pick("ucz"); seen.clear(); seen.add("ucz");
+    return h("div", { class: "g-demo g-subj" },
+      h("div", { class: "g-cover pat pat-1", style: "--c:#1A7F45" }, h("span", { class: "nb-badge", text: "ME" }), h("b", { text: name })),
+      tabs, list);
+  }
+  function demoSearch(ok) {
+    const subj = gSubjNames();
+    const IDX = [
+      ...subj.slice(0, 6).map((n) => ({ k: "Przedmiot", t: n })),
+      { k: "Materiał", t: "Popyt i podaż", s: gPick("makro", 0) }, { k: "Materiał", t: "Inflacja i jej przyczyny", s: gPick("makro", 0) },
+      { k: "Materiał", t: "Funkcje planowania", s: gPick("zarzadz", 1) }, { k: "Materiał", t: "Umowa i jej rodzaje", s: gPick("prawo", 2) },
+      { k: "Pojęcie", t: "opportunity cost", s: "koszt alternatywny" }, { k: "Pojęcie", t: "inflation", s: "inflacja" },
+      { k: "Pojęcie", t: "marginal cost", s: "koszt krańcowy" }, { k: "Pojęcie", t: "price elasticity", s: "elastyczność cenowa" },
+      { k: "Termin", t: "Kolokwium z ćwiczeń", s: `${gPick("makro", 0)} · 15 stycznia` }, { k: "Termin", t: "Test z wykładu", s: `${gPick("prawo", 2)} · 26 stycznia` },
+    ];
+    const res = h("div", { class: "g-results" });
+    const inp = h("input", { class: "input search", type: "search", placeholder: "Szukaj tematu, pojęcia albo przedmiotu", "aria-label": "Szukaj (ćwiczenie)", autocomplete: "off" });
+    const run = (q) => {
+      const n = gNorm(q.trim());
+      if (n.length < 2) { res.replaceChildren(h("p", { class: "g-small", text: "Wpisz co najmniej 2 litery." })); return; }
+      const hits = IDX.filter((x) => gNorm(x.t + " " + (x.s || "")).includes(n));
+      res.replaceChildren(...(hits.length ? hits.slice(0, 6).map((x) => h("div", { class: "g-hit" }, h("span", { class: "chip plain", text: x.k }), h("b", { text: x.t }), x.s ? h("span", { class: "muted", text: x.s }) : null))
+        : [h("p", { class: "g-small", text: "Nic nie znalazłem. Spróbuj innego słowa." })]));
+      if (hits.length && n.length >= 3) ok();
+    };
+    inp.addEventListener("input", () => run(inp.value));
+    const chips = h("div", { class: "row", style: "gap:6px" }, h("span", { class: "g-small", text: "Spróbuj:" }), ["inflacja", "koszt", "kolokwium", "krancowy"].map((w) => h("button", { type: "button", class: "fchip", onclick: () => { inp.value = w; run(w); } }, w)));
+    run("");
+    return h("div", { class: "g-demo" }, h("label", { class: "searchbox" }, icon("search"), inp, h("kbd", { class: "kbd", text: "/" })), chips, res);
+  }
+  function demoRead(ok) {
+    let simple = false, sawSimple = false, sawTerm = false;
+    const box = h("div", { class: "g-read" });
+    const def = h("div", { class: "g-pop-def", hidden: true }, h("b", { text: "opportunity cost" }), h("span", { class: "muted", text: "koszt alternatywny" }), h("p", { text: "Wartość najlepszej rzeczy, z której rezygnujesz, kiedy wybierasz coś innego." }));
+    const check = () => { if (sawSimple && sawTerm) ok(); };
+    const draw = () => {
+      [...seg.children].forEach((b, i) => b.setAttribute("aria-pressed", String(!!i === simple)));
+      if (simple) {
+        box.replaceChildren(h("div", { class: "simple-intro" }, h("span", { class: "eyebrow", text: "Po ludzku" }),
+          h("p", { text: "Masz 20 zł i wolny wieczór. Możesz iść do kina albo kupić pizzę. Wybierasz kino. Twoim kosztem jest nie tylko bilet, ale też pizza, której nie zjesz." })),
+          h("div", { class: "spart" }, h("div", { class: "rem", text: "Zapamiętaj: każdy wybór to rezygnacja z czegoś innego." })));
+        sawSimple = true; check();
+      } else {
+        const term = h("button", { type: "button", class: "term-link", onclick: () => { def.hidden = !def.hidden; sawTerm = true; check(); } }, "opportunity cost");
+        box.replaceChildren(
+          h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start;gap:8px" }, h("h3", {}, h("span", { class: "n num", text: "1" }), h("span", { text: "Koszt alternatywny" })), h("span", { class: "slide-ref", title: "Gdzie w prezentacji prowadzącego jest ten temat" }, "📍 slajdy 12–15")),
+          h("p", {}, "Każda decyzja ma ukryty koszt: ", term, ", czyli wartość najlepszej opcji, z której rezygnujesz. Firma, która przeznacza pieniądze na reklamę, nie wyda ich na nową maszynę."),
+          def);
+      }
+    };
+    const seg = h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [["Normalnie", false], ["Prościej", true]].map(([l, v]) => h("button", { type: "button", onclick: () => { simple = v; draw(); } }, l)));
+    draw();
+    return h("div", { class: "g-demo" }, h("div", { class: "row", style: "justify-content:space-between" }, seg, h("span", { class: "g-small", text: "Kliknij podkreślone pojęcie" })), box);
+  }
+  function demoFlash(ok) {
+    const CARDS = [["Co to jest koszt alternatywny?", "Wartość najlepszej opcji, z której rezygnujesz, wybierając inną."], ["Inflacja to…", "Trwały wzrost ogólnego poziomu cen. Za te same pieniądze kupujesz mniej."], ["Popyt jest elastyczny, gdy…", "Mała zmiana ceny mocno zmienia kupowaną ilość (|E| > 1)."]];
+    let i = 0, flips = 0;
+    const counter = h("p", { class: "g-small num" });
+    const fc = h("button", { type: "button", class: "fc g-fc", "aria-label": "Fiszka, kliknij, aby odwrócić" });
+    const draw = () => {
+      fc.classList.remove("flipped");
+      fc.replaceChildren(h("div", { class: "fc-inner" }, h("div", { class: "fc-face" }, h("span", { class: "eyebrow", text: "Pytanie" }), h("span", { text: CARDS[i][0] })), h("div", { class: "fc-face back" }, h("span", { class: "eyebrow", text: "Odpowiedź" }), h("span", { text: CARDS[i][1] }))));
+      counter.textContent = `Fiszka ${i + 1} z ${CARDS.length}`;
+    };
+    fc.addEventListener("click", () => { fc.classList.toggle("flipped"); flips++; if (flips >= 2) ok(); });
+    draw();
+    return h("div", { class: "g-demo g-center" }, counter, fc, h("div", { class: "row" }, h("button", { type: "button", class: "btn small", onclick: () => { i = (i + 1) % CARDS.length; draw(); } }, "Następna fiszka →")));
+  }
+  function demoQuiz(ok) {
+    const Q = { q: "Masz wolny wieczór: praca za 80 zł albo koncert z darmowym biletem. Idziesz na koncert. Jaki jest Twój koszt alternatywny?", o: ["Cena biletu", "80 zł, których nie zarobisz", "Zero, bo bilet był darmowy", "Czas dojazdu na koncert"], a: 1, why: "Koszt alternatywny to wartość najlepszej opcji, którą odrzucasz. Najlepszą odrzuconą opcją była praca za 80 zł. Bilet był darmowy, więc nic Cię nie kosztował." };
+    const out = h("div", { class: "stack", style: "gap:10px" });
+    const opts = h("div", { class: "opts" });
+    const answer = (k) => {
+      [...opts.children].forEach((b, j) => { b.disabled = true; if (j === Q.a) b.classList.add("right"); else if (j === k) b.classList.add("wrong"); });
+      const why = h("div", { class: "g-why", hidden: true }, h("b", { text: "Dlaczego? " }), Q.why);
+      out.replaceChildren(h("p", { class: "g-status " + (k === Q.a ? "ok" : "bad"), text: k === Q.a ? "Dobrze ✓" : "Prawie. Dobra odpowiedź jest zaznaczona na zielono." }),
+        h("div", {}, h("button", { type: "button", class: "btn small sun", onclick: (e) => { why.hidden = false; e.currentTarget.remove(); ok(); } }, "Dlaczego?")), why);
+    };
+    opts.append(...Q.o.map((t, k) => h("button", { type: "button", class: "opt", onclick: () => answer(k) }, h("span", { class: "k", text: "ABCD"[k] }), h("span", { text: t }))));
+    return h("div", { class: "g-demo" }, h("p", { class: "g-q", text: Q.q }), opts, out);
+  }
+  function demoReport(ok) {
+    const REASONS = ["Błąd w treści", "Literówka", "Zła odpowiedź w quizie", "Coś niejasne"];
+    const area = h("div", { class: "stack", style: "gap:8px" });
+    const open = () => area.replaceChildren(h("p", { class: "g-small", text: "Co jest nie tak?" }),
+      h("div", { class: "row", style: "gap:6px" }, REASONS.map((r) => h("button", { type: "button", class: "fchip", onclick: () => { area.replaceChildren(h("p", { class: "g-status ok", text: `Wysłane: „${r}”. Starosta to sprawdzi i poprawi dla całego roku ✓` })); ok(); } }, r))));
+    return h("div", { class: "g-demo g-center" },
+      h("div", { class: "g-card" }, h("span", { class: "eyebrow", text: "Fiszka" }), h("b", { text: "Elastyczność cenowa popytu = zmiana ceny / zmiana ilości" }),
+        h("div", { class: "row", style: "justify-content:space-between" }, h("span", { class: "slide-ref", text: "📍 slajd 18" }), h("button", { type: "button", class: "link", onclick: open }, "⚑ Zgłoś błąd"))),
+      area, h("p", { class: "g-small", text: "Podpowiedź: we wzorze coś się zamieniło miejscami." }));
+  }
+  function demoLeitner(ok) {
+    const DAYS = [1, 3, 7, 14, 30, 60];
+    let box = 0, moves = 0;
+    const lane = h("div", { class: "g-boxes" }, DAYS.map((d, i) => h("div", { class: "g-box" }, h("b", { class: "num", text: i + 1 }), h("span", { text: d === 1 ? "1 dzień" : `${d} dni` }))));
+    const card = h("div", { class: "g-mini-card", text: "Inflacja to…" });
+    lane.append(card);
+    const msg = h("p", { class: "g-status", text: "Nowa fiszka. Oceń, jak dobrze ją pamiętasz." });
+    const place = () => { card.style.setProperty("--b", box); [...lane.querySelectorAll(".g-box")].forEach((b, i) => b.classList.toggle("on", i === box)); };
+    const grade = (g) => {
+      const before = box;
+      box = g === 0 ? 0 : g === 1 ? box : Math.min(5, box + (g === 3 ? 2 : 1));
+      const days = g === 0 ? 1 : g === 1 ? Math.max(1, Math.round(DAYS[box] / 2)) : DAYS[box];
+      msg.className = "g-status" + (g >= 2 ? " ok" : "");
+      msg.textContent = (g === 0 ? "Wraca na początek. " : g === 1 ? "Zostaje w tym pudełku. " : box > before ? `Awans do pudełka ${box + 1}. ` : "") + `Zobaczysz ją za ${days} ${plural(days, "dzień", "dni", "dni")}.`;
+      card.classList.remove("g-hop"); void card.offsetWidth; card.classList.add("g-hop");
+      place(); moves++;
+      if (moves >= 3 || box >= 3) ok();
+    };
+    place();
+    return h("div", { class: "g-demo" }, lane, msg,
+      h("div", { class: "rv-grades g-grades" }, [["Nie pamiętam", 0, "again"], ["Trudne", 1, "hard"], ["Pamiętam", 2, "good"], ["Łatwe", 3, "easy"]].map(([l, g, c]) => h("button", { type: "button", class: "btn small rv-" + c, onclick: () => grade(g) }, h("span", { class: "kbd num", "aria-hidden": "true", text: g + 1 }), l))));
+  }
+  function demoMap(ok) {
+    const W = { quiz: 40, srs: 30, ex: 15, exam: 15 };
+    const src = {};
+    const sq = h("span", { class: "pm-sq g-sq" });
+    const lbl = h("b", { class: "g-score num" });
+    const legend = h("p", { class: "g-small" });
+    const draw = () => {
+      const ks = Object.keys(src);
+      if (!ks.length) { sq.className = "pm-sq g-sq"; lbl.textContent = "nieruszone"; legend.textContent = "Jeszcze nic nie zrobiono z tym tematem."; return; }
+      const w = ks.reduce((a, k) => a + W[k], 0), score = Math.round(ks.reduce((a, k) => a + W[k] * src[k], 0) / w * 100);
+      const st = score >= 80 ? "good" : score >= 50 ? "mid" : "weak";
+      sq.className = "pm-sq g-sq st-" + st; lbl.textContent = `${STATE[st].label} · ${score}`;
+      legend.textContent = "Liczy się: " + ks.map((k) => ({ quiz: "quiz", srs: "fiszki", ex: "zadania", exam: "próbny test" })[k] + ` ${Math.round(src[k] * 100)}%`).join(" · ");
+      if (st === "good") ok();
+    };
+    const act = (k, v, label) => h("button", { type: "button", class: "btn small", onclick: () => { src[k] = v; draw(); } }, label);
+    draw();
+    return h("div", { class: "g-demo g-center" },
+      h("div", { class: "g-maptopic" }, sq, h("div", { class: "stack", style: "gap:2px" }, h("span", { class: "muted", text: "Temat: Popyt i podaż" }), lbl)),
+      legend,
+      h("div", { class: "row", style: "justify-content:center;gap:6px" }, act("quiz", 0.5, "Quiz: 5/10"), act("quiz", 0.9, "Quiz: 9/10"), act("srs", 0.85, "Fiszki: umiem 85%"), act("ex", 1, "Zadania: wszystkie dobrze"), act("exam", 0.8, "Próbny test: 80%")),
+      h("div", { class: "pm-legend small" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label))));
+  }
+  function demoWorked(ok) {
+    const ST = [
+      ["Zmiana ilości w %", "(90 − 100) / 100 = <b>−10%</b>"],
+      ["Zmiana ceny w %", "(12 − 10) / 10 = <b>+20%</b>"],
+      ["Elastyczność = zmiana ilości / zmiana ceny", "−10% / 20% = <b>−0,5</b>"],
+      ["Co to znaczy?", "|−0,5| &lt; 1, więc popyt jest <b>nieelastyczny</b>: ludzie kupują prawie tyle samo mimo podwyżki."],
+    ];
+    let n = 0;
+    const list = h("ol", { class: "g-worked" });
+    const btn = h("button", { type: "button", class: "btn primary small" }, "Pokaż krok 1");
+    btn.addEventListener("click", () => {
+      if (n >= ST.length) return;
+      const li = h("li", {}, h("b", { text: ST[n][0] }), gx("span", "", ST[n][1])); list.append(li); n++;
+      if (n >= ST.length) { btn.textContent = "Gotowe ✓"; btn.disabled = true; ok(); } else btn.textContent = `Pokaż krok ${n + 1}`;
+    });
+    return h("div", { class: "g-demo" },
+      h("div", { class: "g-task" }, h("span", { class: "eyebrow", text: "Zadanie" }), h("p", { text: "Cena kawy wzrosła z 10 zł do 12 zł, a sprzedaż spadła ze 100 do 90 kubków dziennie. Policz elastyczność cenową popytu." })),
+      list, h("div", {}, btn));
+  }
+  function demoAddCards(ok) {
+    let today = 0, later = 0;
+    const num = h("b", { class: "num g-big", text: "0" });
+    const sub = h("p", { class: "g-small", text: "Dziś do powtórki" });
+    const btn = h("button", { type: "button", class: "btn primary", onclick: () => {
+      today = 20; later = 34; num.textContent = String(today);
+      sub.textContent = `Dziś do powtórki · reszta (${later}) dojdzie w kolejnych dniach`;
+      num.classList.remove("g-pop"); void num.offsetWidth; num.classList.add("g-pop");
+      btn.disabled = true; btn.textContent = "Dodane ✓"; ok();
+    } }, "Dodaj wszystkie fiszki do powtórek");
+    return h("div", { class: "g-demo g-center" },
+      h("div", { class: "g-card" }, h("span", { class: "eyebrow", text: gPick("makro", 0) + " · Ćwicz" }), h("b", { text: "54 fiszki z tego przedmiotu" }), h("div", {}, btn)),
+      h("div", { class: "g-counter" }, num, sub));
+  }
+  function demoPlan(ok) {
+    const TOP = [["★ Popyt i podaż", "kluczowy"], ["Elastyczność", "słabo"], ["Rynek i ceny", "nieruszony"], ["PKB i jego pomiar", "w trakcie"], ["Inflacja", "nieruszony"], ["Bezrobocie", "w trakcie"]];
+    const rows = h("div", { class: "g-plan" });
+    const head = h("b", { class: "num" });
+    const range = h("input", { type: "range", min: "2", max: "12", value: "6", class: "g-range", "aria-label": "Za ile dni kolokwium" });
+    let moved = false;
+    const draw = () => {
+      const n = Number(range.value);
+      head.textContent = `Kolokwium za ${n} ${plural(n, "dzień", "dni", "dni")}`;
+      const out = [];
+      const learn = n - 1, per = Math.ceil(TOP.length / Math.max(1, learn - 1));
+      let t = 0;
+      for (let d = 1; d <= n; d++) {
+        let what;
+        if (d === n) what = ["Dzień zaliczenia", "krótka powtórka fiszek rano, bez nowego materiału"];
+        else if (d === n - 1) what = ["Próbny test", "z timerem, potem powtórz słabe tematy"];
+        else { const xs = TOP.slice(t, t + per); t += per; what = xs.length ? [xs.map((x) => x[0]).join(", "), xs.map((x) => x[1]).join(" · ")] : ["Powtórki", "fiszki, które wróciły"]; }
+        out.push(h("div", { class: "g-plan-row" + (d === n ? " last" : "") }, h("span", { class: "g-day num", text: d === n ? "🎯" : `D${d}` }), h("span", {}, h("b", { text: what[0] }), h("small", { class: "muted", text: " · " + what[1] }))));
+      }
+      rows.replaceChildren(...out);
+    };
+    range.addEventListener("input", () => { draw(); if (!moved) { moved = true; ok(); } });
+    draw();
+    return h("div", { class: "g-demo" },
+      h("div", { class: "exam-hero g-examhero", style: "--c:#1A7F45" }, h("span", { class: "eyebrow", text: "Przygotuj się · " + gPick("makro", 0) }), head,
+        h("label", { class: "row", style: "gap:10px;font-size:.9rem" }, h("span", { class: "muted", text: "Przesuń datę:" }), range)),
+      rows);
+  }
+  function demoTest(ok) {
+    let s = 25 * 60;
+    const clock = h("b", { class: "num g-clock", text: "25:00" });
+    setInterval(() => { if (!clock.isConnected) return; s = Math.max(0, s - 1); clock.textContent = `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; }, 1000);
+    const ta = h("textarea", { class: "input", rows: "3", placeholder: "Napisz 2–3 zdania…", "aria-label": "Twoja odpowiedź" });
+    const RUB = ["Wyjaśniam, że inflacja to wzrost ogólnego poziomu cen", "Wyjaśniam, że deflacja to spadek ogólnego poziomu cen", "Podaję przykład z życia"];
+    const area = h("div", { class: "stack", style: "gap:8px" });
+    const check = () => {
+      const boxes = RUB.map((r) => h("label", { class: "g-rub" }, h("input", { type: "checkbox" }), h("span", { text: r }), h("b", { class: "num", text: "1 pkt" })));
+      const score = h("p", { class: "g-status", text: "Zaznacz, co jest w Twojej odpowiedzi." });
+      boxes.forEach((b) => b.querySelector("input").addEventListener("change", () => {
+        const n = boxes.filter((x) => x.querySelector("input").checked).length;
+        score.className = "g-status" + (n >= 2 ? " ok" : ""); score.textContent = `Twój wynik: ${n}/3 pkt${n === 3 ? " · świetnie ✓" : ""}`; ok();
+      }));
+      area.replaceChildren(h("b", { text: "Oceń się według rubryki" }), ...boxes, score);
+    };
+    const wrap = h("div", { class: "g-demo" },
+      h("div", { class: "row", style: "justify-content:space-between" }, h("span", { class: "chip warn", text: "Pytanie otwarte · 3 pkt" }), h("span", { class: "row", style: "gap:6px" }, h("span", { class: "g-small", text: "Zostało" }), clock)),
+      h("p", { class: "g-q", text: "Czym różni się inflacja od deflacji? Podaj przykład." }), ta,
+      h("div", {}, h("button", { type: "button", class: "btn primary small", onclick: (e) => { e.currentTarget.remove(); check(); } }, "Sprawdź według rubryki")), area);
+    return wrap;
+  }
+  function demoCheat() {
+    return h("div", { class: "g-demo g-center" },
+      h("div", { class: "g-a4" }, h("b", { text: "Popyt i podaż · ściągawka" }), ...Array.from({ length: 9 }, (_, i) => h("i", { style: `--w:${[92, 70, 84, 60, 88, 76, 66, 90, 54][i]}%;--d:${i * 0.12}s` })), h("small", { text: "skrotbm.pl · 1 strona A4" })),
+      h("p", { class: "g-small", text: "Przycisk „Ściągawka” → okno drukowania → „Zapisz jako PDF”." }));
+  }
+  function demoTerms(ok) {
+    const CATS = [["zal", "Zaliczenia", "#B42318"], ["zad", "Zadania", "#1A7F45"], ["proj", "Projekty", "#4F7A0E"], ["form", "Formalności", "#5A6B61"], ["wyd", "Wydarzenia", "#2F6F73"]];
+    const ITEMS = [
+      { c: "zad", t: "Esej: motywacja pracowników", g: "Ten tydzień", w: "jutro" }, { c: "zad", t: "Lab 3: tabela przestawna", g: "Następny tydzień", w: "za 9 dni" },
+      { c: "zal", t: "Kolokwium z ćwiczeń", g: "Później", w: "15 stycznia", approx: false }, { c: "zal", t: "Test z wykładu", g: "Później", w: "26 stycznia" },
+      { c: "proj", t: "Prezentacja w grupach", g: "Następny tydzień", w: "za 11 dni" }, { c: "form", t: "Deklaracja przedmiotów do wyboru", g: "Ten tydzień", w: "za 4 dni" },
+      { c: "wyd", t: "Odrabianie zajęć", g: "Później", w: "za 3 tyg.", approx: true },
+    ];
+    const done = new Set();
+    let cat = "zad", clickedCat = false;
+    const tiles = h("div", { class: "g-tiles" });
+    const list = h("div", { class: "stack", style: "gap:8px" });
+    const draw = () => {
+      tiles.replaceChildren(...CATS.map(([id, l, c]) => h("button", { type: "button", class: "tcat g-tcat", style: `--cc:${c}`, "aria-pressed": String(cat === id), onclick: () => { cat = id; clickedCat = true; draw(); } },
+        h("b", { class: "tc-n num", text: ITEMS.filter((x) => x.c === id && !done.has(x.t)).length }), h("span", { class: "tc-name", text: l }))));
+      const xs = ITEMS.filter((x) => x.c === cat);
+      const groups = ["Ten tydzień", "Następny tydzień", "Później"].map((g) => [g, xs.filter((x) => x.g === g)]).filter(([, a]) => a.length);
+      list.replaceChildren(...groups.map(([g, a]) => h("div", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: g }),
+        a.map((x) => h("label", { class: "g-term" + (done.has(x.t) ? " done" : "") },
+          h("input", { type: "checkbox", checked: done.has(x.t) ? true : null, onchange: () => { done.has(x.t) ? done.delete(x.t) : done.add(x.t); draw(); if (clickedCat && done.size) ok(); } }),
+          h("span", { class: "g-term-t" }, h("b", { text: x.t }), x.approx ? h("span", { class: "chip sun", text: "data orientacyjna" }) : null),
+          h("span", { class: "muted num", text: x.w }))))));
+    };
+    draw();
+    return h("div", { class: "g-demo" }, tiles, list);
+  }
+  function demoPhoneCal(ok) {
+    const evs = h("div", { class: "g-evs" });
+    const pick = (name) => {
+      evs.replaceChildren(
+        h("span", { class: "g-small", text: `Dodano do: ${name}` }),
+        ...[["pn 14.01", "Przypomnienie: jutro kolokwium", "warn"], ["wt 15.01", `Kolokwium · ${gPick("makro", 0)}`, "bad"], ["śr 16.01", `Wykład · ${gPick("zarzadz", 1)}`, ""]].map(([d, t, c], i) => {
+          const e = h("div", { class: "g-ev " + c }, h("small", { class: "num", text: d }), h("b", { text: t })); e.style.animationDelay = i * 0.2 + "s"; return e; }));
+      ok();
+    };
+    return h("div", { class: "g-demo g-install" },
+      h("div", { class: "stack", style: "gap:8px;min-width:0" }, h("p", { class: "g-small", text: "Gdzie masz kalendarz?" }),
+        [["Google Calendar", "G", "#1A73E8"], ["iPhone / Mac", "A", "#16231B"], ["Outlook", "O", "#0F6CBD"]].map(([t, l, c]) => h("button", { type: "button", class: "calopt g-calopt", onclick: () => pick(t) }, h("span", { class: "calico", style: `background:${c}`, text: l }), h("span", {}, h("b", { text: t }))))),
+      h("div", { class: "g-phone" }, h("span", { class: "g-notch" }), h("div", { class: "g-phone-cal" }, h("b", { text: "Styczeń" }), evs)));
+  }
+  function demoCalendar(ok) {
+    const EX = { 15: "Kolokwium z ćwiczeń", 22: "Kolokwium z wykładu", 26: "Test z prawa", 27: "Kolokwium z IT" };
+    const mine = {};
+    let sel = 12, kind = "nauka";
+    const KINDS = [["nauka", "Nauka"], ["spotkanie", "Spotkanie"], ["przypomnienie", "Przypomnienie"], ["inne", "Inne"]];
+    const grid = h("div", { class: "g-cal" });
+    const side = h("div", { class: "g-calside" });
+    const draw = () => {
+      // Styczeń 2027 zaczyna się w piątek: 4 puste pola od poniedziałku.
+      const cells = ["pn", "wt", "śr", "cz", "pt", "sb", "nd"].map((d) => h("span", { class: "g-dow", text: d }));
+      for (let i = 0; i < 4; i++) cells.push(h("span"));
+      for (let d = 1; d <= 31; d++) cells.push(h("button", { type: "button", class: "g-day-c" + (EX[d] ? " ex" : "") + (mine[d] ? " my" : "") + (d === sel ? " sel" : ""), "aria-label": `${d} stycznia${EX[d] ? ", " + EX[d] : ""}`, onclick: () => { sel = d; draw(); } }, h("span", { class: "num", text: d }), EX[d] ? h("b", { class: "bang", text: "!" }) : null));
+      grid.replaceChildren(...cells);
+      const title = h("input", { class: "input", value: `Powtórka przed ${EX[sel + 1] || EX[sel + 2] ? "kolokwium" : "zajęciami"}`, "aria-label": "Tytuł wpisu", maxlength: "40" });
+      side.replaceChildren(...[h("b", { text: `${sel} stycznia` }),
+        EX[sel] ? h("div", { class: "g-ev bad" }, h("small", { text: "zaliczenie" }), h("b", { text: EX[sel] })) : null,
+        ...(mine[sel] || []).map((m) => h("div", { class: "g-ev my" }, h("small", { text: KINDS.find((k) => k[0] === m.k)[1].toLowerCase() }), h("b", { text: m.t }))),
+        h("div", { class: "seg pick g-kinds", role: "group", "aria-label": "Rodzaj wpisu" }, KINDS.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(kind === k), onclick: (e) => { kind = k; [...e.currentTarget.parentNode.children].forEach((b) => b.setAttribute("aria-pressed", String(b === e.currentTarget))); } }, l))),
+        title,
+        h("button", { type: "button", class: "btn primary small", onclick: () => { (mine[sel] = mine[sel] || []).push({ k: kind, t: title.value.trim() || "Mój wpis" }); draw(); ok(); } }, "+ Mój wpis")].filter(Boolean));
+    };
+    draw();
+    return h("div", { class: "g-demo g-caldemo" }, h("div", { class: "stack", style: "gap:6px;min-width:0" }, h("b", { text: "Styczeń 2027" }), grid, h("div", { class: "pm-legend small" }, h("span", {}, h("i", { class: "g-key ex" }), "zaliczenie"), h("span", {}, h("i", { class: "g-key my" }), "Twój wpis"))), side);
+  }
+  function demoGlossary(ok) {
+    const T = [["opportunity cost", "koszt alternatywny", "Wartość najlepszej odrzuconej opcji."], ["marginal cost", "koszt krańcowy", "Koszt wytworzenia jednej dodatkowej sztuki."], ["inflation", "inflacja", "Wzrost ogólnego poziomu cen."], ["supply chain", "łańcuch dostaw", "Droga produktu od surowca do klienta."], ["stakeholder", "interesariusz", "Każdy, na kogo wpływa działanie firmy."], ["liability", "zobowiązanie", "To, co firma jest winna innym."]];
+    const list = h("div", { class: "g-gl" });
+    const inp = h("input", { class: "input", type: "search", placeholder: "np. koszt krancowy (bez ogonków też działa)", "aria-label": "Szukaj pojęcia (ćwiczenie)", autocomplete: "off" });
+    const run = () => {
+      const q = gNorm(inp.value.trim());
+      const xs = T.filter((t) => !q || gNorm(t.join(" ")).includes(q));
+      list.replaceChildren(...(xs.length ? xs.map(([en, pl, d]) => h("div", { class: "g-gl-row" }, h("b", { lang: "en", text: en }), h("span", { class: "g-pl", text: pl }), h("span", { class: "muted", text: d }))) : [h("p", { class: "g-small", text: "Brak. Spróbuj krótszego słowa." })]));
+      if (q.length >= 4 && xs.length) ok();
+    };
+    inp.addEventListener("input", run); run();
+    return h("div", { class: "g-demo" }, h("div", { class: "row", style: "gap:6px" }, h("span", { class: "g-small", text: "Spróbuj:" }), ["koszt krancowy", "stakeholder", "lancuch"].map((w) => h("button", { type: "button", class: "fchip", onclick: () => { inp.value = w; run(); } }, w))), inp, list);
+  }
+  function demoMine(ok) {
+    const STEPS = [["Mapa tematów", "czytam plik i wypisuję same tematy"], ["Opracowanie", "piszę od nowa: o co chodzi, po co, przykład"], ["Fiszki i quiz", "z naszego opracowania"], ["Kontrola", "sprawdzam, czy nic nie jest przepisane z pliku"], ["Prosty język", "wersja „Prościej” i „Dlaczego?” do quizu"]];
+    const pipe = h("ol", { class: "g-pipe" }, STEPS.map(([t, s]) => h("li", {}, h("b", { text: t }), h("span", { text: s }))));
+    const status = h("p", { class: "g-status", text: "Plik czeka na wgranie." });
+    const btn = h("button", { type: "button", class: "btn primary", onclick: () => {
+      btn.disabled = true; btn.textContent = "notatki-z-wykladu.pdf";
+      [...pipe.children].forEach((li, i) => { setTimeout(() => { li.classList.add("on"); if (i === STEPS.length - 1) { setTimeout(() => { li.classList.add("on"); status.className = "g-status ok"; status.textContent = "Gotowe ✓ Materiał czeka w Twojej sekcji „Materiały”. Widzisz go tylko Ty."; ok(); }, 500); } }, 450 * (i + 1)); });
+      status.textContent = "Opracowuję…";
+    } }, h("span", { "aria-hidden": "true", text: "⇪ " }), "Wgraj przykładowy plik");
+    return h("div", { class: "g-demo" }, h("div", { class: "g-drop" }, btn, h("span", { class: "g-small", text: "PPTX, PDF, DOCX albo TXT" })), pipe, status);
+  }
+  function demoGrades(ok) {
+    const SUB = [[gPick("makro", 0), 6], [gPick("zarzadz", 1), 5], [gPick("prawo", 2), 3]];
+    const GR = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
+    const val = SUB.map((_, i) => ["4.0", "4.5", "3.5"][i]);
+    const out = h("div", { class: "g-avg" });
+    const draw = () => {
+      const g = val.map(Number), e = SUB.map((x) => x[1]);
+      const plain = g.reduce((a, b) => a + b, 0) / g.length, w = g.reduce((a, b, i) => a + b * e[i], 0) / e.reduce((a, b) => a + b, 0);
+      out.replaceChildren(h("div", {}, h("small", { text: "Średnia zwykła" }), h("b", { class: "num", text: plain.toFixed(2).replace(".", ",") })), h("div", {}, h("small", { text: "Ważona ECTS" }), h("b", { class: "num", text: w.toFixed(2).replace(".", ",") })));
+    };
+    const rows = SUB.map(([n, ects], i) => h("label", { class: "g-grow" }, h("span", {}, h("b", { text: n }), h("small", { class: "muted num", text: ` · ${ects} ECTS` })),
+      h("select", { class: "input", "aria-label": `Ocena: ${n}`, onchange: (e) => { val[i] = e.target.value; draw(); ok(); } }, GR.map((x) => h("option", { value: x, selected: x === val[i] ? true : null, text: x.replace(".", ",") })))));
+    draw();
+    return h("div", { class: "g-demo" }, ...rows, out, h("p", { class: "g-small", text: "Przedmiot z większą liczbą ECTS mocniej wpływa na średnią ważoną. Zmień ocenę z przedmiotu za 6 ECTS i porównaj." }));
+  }
+  function demoWhere() {
+    const W = [["glossary", "Słowniczek EN–PL", "pojęcia ze wszystkich przedmiotów"], ["upload", "Moje materiały", "Twoje pliki opracowane jak materiały roku"], ["program", "Lektury", "literatura z sylabusa i katalog biblioteki US"], ["program", "Program studiów", "semestry 1–6, przedmioty do wyboru i porównanie"], ["grading", "Zasady zaliczeń", "skala ocen, poprawki, kalkulator średniej"], ["tasks", "Szkolenia obowiązkowe", "BHP, biblioteka, e-learning"], ["user", "Konto i dostęp", "logowanie, plan, imię na powitanie"]];
+    return h("div", { class: "g-demo" }, h("div", { class: "g-where" }, W.map(([ic, t, s], i) => { const e = h("div", { class: "g-where-row" }, icon(ic), h("span", {}, h("b", { text: t }), h("small", { text: s }))); e.style.animationDelay = i * 0.06 + "s"; return e; })));
+  }
+
+  // ---------- rozdziały ----------
+  const gSubj = () => { const xs = SUBJECTS.map((s) => [s, materialsOf(s.id).filter(readable).length, materialsOf(s.id).length]).sort((a, b) => b[1] - a[1] || b[2] - a[2]); return xs[0]?.[0] || null; };
+  const gMat = () => S.materials.find((m) => readable(m) && !isLesson(m) && m.source !== "sylabus") || S.materials.find(readable) || null;
+  const subjRoute = (tab) => () => { const s = gSubj(); return s ? { view: "subject", id: s.id, tab } : { view: "materials" }; };
+  const GUIDE = [
+    { id: "start", ic: "home", title: "Pierwsze kroki", gain: "Ustawisz grupę, zainstalujesz stronę jak aplikację i wiesz, od czego zaczynać dzień.", slides: [
+      { t: "Wybierz swoją grupę", p: "Strona pokazuje zajęcia, terminy i kalendarz <b>tylko Twojej grupy</b> (C111, C112 albo C113) i Twojej podgrupy lab A lub B. Bez tego widzisz wszystko naraz.", tip: "Grupę zmienisz zawsze w <b>Więcej → Moja grupa</b>.", try: "Kliknij swoją grupę", real: true, fresh: true, done: () => !!S.group, demo: demoGroup },
+      { t: "Ekran Dziś mówi, od czego zacząć", p: "Na górze ekranu Dziś jest karta <b>„Teraz zrób to”</b>. Sama wybiera najważniejszą rzecz na teraz i daje jeden przycisk. Nie musisz niczego planować.", tip: "Pod kartą: Twoje dzisiejsze zajęcia z salą, 3 najbliższe terminy i to, co doszło od ostatniej wizyty.", try: "Sprawdź 3 różne sytuacje", demo: demoNow },
+      { t: "Skrót BM jak aplikacja", p: "Dodaj stronę do ekranu telefonu. Otwiera się wtedy jednym stuknięciem, na pełnym ekranie, bez paska przeglądarki.", tip: "To nic nie kosztuje i nie zajmuje miejsca jak zwykła aplikacja.", try: "Wybierz swój telefon", demo: demoInstall },
+      { t: "Logowanie bez hasła", p: "Wpisujesz e-mail, a my wysyłamy <b>6-cyfrowy kod</b>. Przepisujesz go i już. Po zalogowaniu postęp (fiszki, quizy, oceny) zapisuje się na koncie i masz go na każdym urządzeniu.", tip: "Bez logowania postęp zostaje tylko w tej przeglądarce. Mail z kodem czasem wpada do spamu.", try: "Zaloguj się w ćwiczeniu", demo: demoLogin },
+    ], tour: [
+      { go: { view: "home" }, sel: "section.now", title: "Teraz zrób to", text: "Tu codziennie zaczynasz. Jeden przycisk prowadzi do najważniejszej rzeczy na dziś." },
+      { go: { view: "home" }, sel: "section.today", title: "Twoje zajęcia", text: "Zajęcia Twojej grupy z godziną i salą. Kliknij przedmiot, żeby otworzyć jego materiały." },
+      { go: { view: "more" }, sel: '[data-tour="ty"]', title: "Grupa i konto", text: "Tu zmienisz grupę, zalogujesz się i sprawdzisz, do kiedy masz dostęp." },
+    ] },
+    { id: "przedmioty", ic: "materials", title: "Przedmioty i wyszukiwarka", gain: "Wiesz, co jest w każdym przedmiocie i znajdziesz każdy temat w sekundę.", slides: [
+      { t: "Każdy przedmiot ma 3 zakładki", p: "<b>Ucz się</b>: materiały i Twoje postępy. <b>Ćwicz</b>: quiz z całości, fiszki, zadania. <b>Zaliczenie</b>: daty, zasady i przygotowanie do kolokwium. Zawsze w tej samej kolejności.", tip: "Na okładce przedmiotu widzisz najbliższe zajęcia i temat, który pewnie na nich będzie.", try: "Zajrzyj do wszystkich 3 zakładek", demo: demoSubject },
+      { t: "Szukaj zamiast przewijać", p: "Wyszukiwarka na ekranie Przedmioty przeszukuje naraz <b>przedmioty, materiały, pojęcia i terminy</b>. Polskie znaki nie są potrzebne.", tip: "Na komputerze naciśnij <b>/</b> na dowolnym ekranie, a kursor od razu wskoczy do wyszukiwarki.", try: "Wyszukaj coś (min. 3 litery)", demo: demoSearch },
+    ], tour: [
+      { go: { view: "materials" }, sel: ".searchbox", title: "Wyszukiwarka", text: "Przedmioty, materiały, pojęcia i terminy w jednym polu. Na komputerze skrót: /." },
+      { go: { view: "materials" }, sel: "#subj-grid", title: "Twoje przedmioty", text: "Każdy kafelek to jeden przedmiot. Ostatni kafelek to Twoje własne materiały." },
+      { go: subjRoute("ucz"), sel: ".subj-tabs", title: "Ucz się · Ćwicz · Zaliczenie", text: "Te same trzy zakładki w każdym przedmiocie." },
+    ] },
+    { id: "material", ic: "review", title: "Materiał w 3 krokach", gain: "Umiesz czytać skrót, przełączać na prosty język, robić fiszki i quiz z wyjaśnieniami.", slides: [
+      { t: "Krok 1: Przeczytaj", p: "Opracowanie mówi: <b>o co chodzi, po co to jest, co zapamiętać</b> i daje własny przykład. Przełącznik <b>Prościej</b> tłumaczy to samo jak dla 12-latka. Podkreślone pojęcia klikasz, żeby zobaczyć definicję.", tip: "<b>📍 slajdy 12–15</b> mówi, gdzie w prezentacji prowadzącego jest ten temat. Tam zajrzyj po szczegóły z wykładu.", try: "Przełącz na Prościej i kliknij pojęcie", demo: demoRead },
+      { t: "Krok 2: Fiszki", p: "Pytanie z przodu, odpowiedź z tyłu. Najpierw spróbuj odpowiedzieć w głowie, dopiero potem odwróć. Przejrzane fiszki same trafiają do Powtórek.", tip: "Fiszki są z naszego opracowania, więc pasują do tego, co przeczytałeś.", try: "Odwróć fiszkę tam i z powrotem", demo: demoFlash },
+      { t: "Krok 3: Quiz z „Dlaczego?”", p: "Po każdej odpowiedzi widzisz, czy dobrze. Przycisk <b>Dlaczego?</b> wyjaśnia, skąd ta odpowiedź, także gdy trafiłeś. Najlepszy wynik zapisuje się w Twoich postępach.", tip: "Po quizie przycisk <b>Dalej</b> otwiera następny materiał z przedmiotu.", try: "Odpowiedz i otwórz „Dlaczego?”", demo: demoQuiz },
+      { t: "Widzisz błąd? Zgłoś go", p: "Przy fiszkach i pytaniach jest <b>⚑ Zgłoś błąd</b>. Zgłoszenie trafia do starosty, a poprawka od razu działa dla całego roku.", tip: "Każdy materiał ma też <b>Ściągawkę do druku</b>: jedna strona A4.", try: "Znajdź błąd i zgłoś go", demo: demoReport },
+    ], tour: [
+      { go: () => { const m = gMat(); return m ? { view: "material", id: m.id, tab: "czytaj" } : subjRoute("ucz")(); }, sel: ".steps, .paywall, .tabpanel", title: "3 kroki materiału", text: () => gMat() ? "Przeczytaj, Fiszki, Quiz. Ten sam układ w każdym materiale." : "Tu będą materiały. Każdy ma te same 3 kroki: Przeczytaj, Fiszki, Quiz." },
+      { sel: ".read .seg", title: "Normalnie | Prościej", text: "Jedno kliknięcie i ten sam temat masz wytłumaczony prostym językiem, z przykładami." },
+      { sel: ".slide-ref, .term-link, .remember", title: "Odsyłacze i pojęcia", text: "📍 pokazuje slajdy prowadzącego, a podkreślone słowa otwierają definicję." },
+    ] },
+    { id: "powtorki", ic: "review", title: "Powtórki, które pamiętają za Ciebie", gain: "Wiesz, kiedy fiszki wracają i jak czytać mapę postępów.", slides: [
+      { t: "Fiszka wraca, zanim ją zapomnisz", p: "Oceniasz każdą fiszkę: <b>Nie pamiętam, Trudne, Pamiętam, Łatwe</b>. Im lepiej pamiętasz, tym później wraca: po 1, 3, 7, 14, 30 i 60 dniach. Przed zaliczeniem z przedmiotu każda karta wraca przynajmniej raz.", tip: "Dziennie dochodzi maks. 20 nowych kart. Na komputerze: <b>spacja</b> odwraca, klawisze <b>1–4</b> oceniają.", try: "Oceń fiszkę 3 razy", demo: demoLeitner },
+      { t: "Mapa postępów", p: "Każdy materiał to kwadrat. Kolor mówi, jak dobrze go umiesz: <b>quiz</b> liczy się w 40%, <b>fiszki</b> w 30%, <b>zadania</b> i <b>próbny test</b> po 15%. Zielony = umiesz (80+).", tip: "Przed kolokwium ekran Dziś podpowie, który słaby temat powtórzyć.", try: "Doprowadź temat do zielonego", demo: demoMap },
+    ], tour: [
+      { go: { view: "review" }, sel: ".rv-hero", title: "Dziś do powtórki", text: "Ile fiszek czeka i ile to minut. Przycisk Zacznij i lecisz." },
+      { go: { view: "review" }, sel: '[data-tour="mapa"]', title: "Mapa postępów", text: "Kliknij kwadrat, żeby zobaczyć, z czego jest wynik i co powtórzyć." },
+    ] },
+    { id: "cwicz", ic: "tasks", title: "Ćwicz: zadania i quiz z całości", gain: "Rozwiążesz zadanie krok po kroku i dodasz cały przedmiot do powtórek.", slides: [
+      { t: "Zadania krok po kroku", p: "W przedmiotach z obliczeniami są <b>rozwiązane zadania</b>: każdy krok odsłaniasz osobno, więc możesz najpierw spróbować sam. Potem są zadania do samodzielnego rozwiązania.", tip: "Wyniki liczbowe sprawdza wbudowany kalkulator, więc klucz odpowiedzi jest pewny.", try: "Odsłoń wszystkie kroki", demo: demoWorked },
+      { t: "Cały przedmiot do powtórek jednym kliknięciem", p: "W zakładce <b>Ćwicz</b> jest quiz z 15 losowych pytań ze wszystkich materiałów i przycisk, który dodaje <b>wszystkie fiszki przedmiotu</b> do Powtórek.", tip: "Nie zalejesz się kartami: dziennie dochodzi maks. 20 nowych, reszta czeka na kolejne dni.", try: "Dodaj fiszki do powtórek", demo: demoAddCards },
+    ], tour: [
+      { go: subjRoute("cwicz"), sel: ".practice, .tabpanel", title: "Quiz z całości i fiszki", text: "15 losowych pytań z całego przedmiotu i wszystkie fiszki do powtórek." },
+      { go: subjRoute("cwicz"), sel: '[data-tour="worked"]', title: "Rozwiązane zadania", text: "Przykłady krok po kroku z materiałów, w których się liczy." },
+    ] },
+    { id: "zaliczenie", ic: "grading", title: "Przed kolokwium", gain: "Ułożysz plan nauki dzień po dniu i zrobisz próbny test na czas.", slides: [
+      { t: "Plan dzień po dniu", p: "<b>Przedmiot → Zaliczenie → Przygotuj się.</b> Podajesz datę, a strona rozkłada tematy na dni: najpierw kluczowe (★) i te, które idą Ci słabo. Przedostatni dzień to próbny test.", tip: "Zakres i efekty uczenia się są z oficjalnego sylabusa, a nakład nauki przeliczony na dzień.", try: "Przesuń datę kolokwium", demo: demoPlan },
+      { t: "Próbny test na czas", p: "Test z timerem, jak na prawdziwym kolokwium: pytania zamknięte, otwarte i zadania. Pytania otwarte oceniasz sam według <b>rubryki</b>, punkt po punkcie.", tip: "Wynik testu wpada do mapy postępów, więc widzisz, które tematy jeszcze poprawić.", try: "Oceń odpowiedź według rubryki", demo: demoTest },
+      { t: "Ściągawka na 1 stronę", p: "Najważniejsze z całego przedmiotu albo jednego materiału na <b>jednej kartce A4</b>. Drukujesz albo zapisujesz jako PDF i powtarzasz w autobusie.", tip: "Przycisk jest w zakładce Zaliczenie i przy każdym materiale.", demo: demoCheat },
+    ], tour: [
+      { go: subjRoute("zal"), sel: '[data-tour="prep"]', title: "Przygotuj się i Ściągawka", text: "Plan na każdy dzień do zaliczenia, próbny test i kartka A4." },
+      { go: subjRoute("zal"), sel: "#zal, .tabpanel .panel", title: "Kiedy i jak się zalicza", text: "Daty kolokwiów oraz zasady oceniania prosto z sylabusa." },
+    ] },
+    { id: "terminy", ic: "tasks", title: "Terminy i kalendarz w telefonie", gain: "Wiesz, co i na kiedy oddać, a terminy same pojawiają się w telefonie.", slides: [
+      { t: "Wszystko, co ma datę, w jednym miejscu", p: "Terminy są podzielone na <b>Zaliczenia, Zadania, Projekty, Formalności i Wydarzenia</b>, a w środku według pilności. Zrobione odhaczasz, a lista robi się krótsza.", tip: "Terminy dla całego roku wpisuje starosta, a zadania z Teams dochodzą same. „Data orientacyjna” znaczy, że prowadzący jeszcze jej nie potwierdził.", try: "Wybierz kategorię i odhacz zadanie", demo: demoTerms },
+      { t: "Terminy same w Twoim telefonie", p: "<b>Do kalendarza w telefonie</b> daje Twój prywatny link. Dodajesz go raz, a zajęcia, kolokwia i zadania pojawiają się same, z przypomnieniem dzień wcześniej.", tip: "To subskrypcja: zmiany w planie i nowe terminy też dojdą same.", try: "Wybierz swój kalendarz", demo: demoPhoneCal },
+    ], tour: [
+      { go: { view: "terms" }, sel: ".tcats, .empty.locked", title: "Kategorie terminów", text: "Kliknij kafelek, żeby zobaczyć tylko zaliczenia, tylko zadania itd." },
+      { go: { view: "terms" }, sel: '[data-tour="phonecal"]', title: "Do kalendarza w telefonie", text: "Twój link do Google, Apple albo Outlooka." },
+    ] },
+    { id: "kalendarz", ic: "calendar", title: "Kalendarz i Twoje wpisy", gain: "Widzisz cały miesiąc i dopisujesz własne plany nauki.", slides: [
+      { t: "Miesiąc na jednym ekranie", p: "Zajęcia, zaliczenia (z wykrzyknikiem <b>!</b>), terminy roku i <b>Twoje własne wpisy</b>: nauka, spotkanie, przypomnienie. Na górze odliczanie do najbliższych kolokwiów.", tip: "Swoje wpisy widzisz tylko Ty. Możesz je dodawać także bez pełnego dostępu.", try: "Dodaj swój wpis do dnia", demo: demoCalendar },
+    ], tour: [
+      { go: { view: "calendar" }, sel: '[data-tour="myev"]', title: "+ Mój wpis", text: "Dopisz naukę, spotkanie albo przypomnienie do wybranego dnia." },
+      { go: { view: "calendar" }, sel: ".examstrip", title: "Najbliższe zaliczenia", text: "Odliczanie dni. Kliknij, żeby przeskoczyć do tego dnia." },
+      { go: { view: "calendar" }, sel: () => document.querySelector(".cal-head")?.parentElement, title: "Kalendarz", text: "Strzałki zmieniają miesiąc, Dziś wraca do bieżącego dnia." },
+    ] },
+    { id: "wiecej", ic: "menu", title: "Skarby w zakładce Więcej", gain: "Korzystasz ze słowniczka, własnych plików i kalkulatora średniej.", slides: [
+      { t: "Słowniczek angielski ↔ polski", p: "Wszystkie pojęcia ze wszystkich przedmiotów: termin po angielsku, tłumaczenie i jedno zdanie wyjaśnienia. Szukasz w obu językach.", tip: "Idealny, gdy na wykładzie po angielsku pada słowo, którego nie znasz.", try: "Znajdź pojęcie", demo: demoGlossary },
+      { t: "Twoje własne pliki", p: "W <b>Moich materiałach</b> wgrywasz własną prezentację albo notatki. Opracujemy je tak samo jak materiały roku: skrót, fiszki, quiz i prosty język, w Twoich sekcjach.", tip: "Widzisz je tylko Ty. Limit: 5 plików dziennie i 40 w miesiącu.", try: "Wgraj przykładowy plik", demo: demoMine },
+      { t: "Kalkulator średniej", p: "W <b>Zasadach zaliczeń</b> wpisujesz oceny, a strona liczy ocenę z przedmiotu według reguły z sylabusa i średnią semestru: zwykłą i ważoną ECTS.", tip: "Oceny widzisz tylko Ty.", try: "Zmień jedną ocenę", demo: demoGrades },
+      { t: "Co jeszcze jest w Więcej", p: "Program studiów z semestrami 1–6 (z porównaniem przedmiotów do wyboru), lektury z katalogiem biblioteki, szkolenia obowiązkowe i Twoje konto.", tip: "Tu też w każdej chwili wrócisz do tego przewodnika.", demo: demoWhere },
+    ], tour: [
+      { go: { view: "more" }, sel: '[data-tour="nauka"]', title: "Nauka", text: "Słowniczek, Twoje pliki i lektury." },
+      { go: { view: "more" }, sel: '[data-tour="studia"]', title: "Studia", text: "Program, zasady zaliczeń z kalkulatorem średniej i szkolenia." },
+      { go: { view: "more" }, sel: '[data-tour="ty"]', title: "Ty", text: "Grupa, konto i ten przewodnik." },
+    ] },
   ];
-  let tourState = null;
+  const GTEST = [
+    { q: "Od czego najlepiej zacząć dzień w Skrócie BM?", o: ["Od listy wszystkich przedmiotów", "Od karty „Teraz zrób to” na ekranie Dziś", "Od kalkulatora średniej"], a: 1, ch: "start", why: "Karta sama wybiera najważniejszą rzecz: zaliczenie, termin, powtórki albo nowy materiał." },
+    { q: "Co robi przełącznik „Prościej” w materiale?", o: ["Skraca tekst do jednego zdania", "Tłumaczy temat prostym językiem, z przykładami", "Pokazuje slajdy prowadzącego"], a: 1, ch: "material", why: "To ta sama wiedza wytłumaczona jak dla 12-latka." },
+    { q: "Co znaczy „📍 slajdy 12–15” przy temacie?", o: ["Że temat zajmuje 4 strony", "Gdzie w prezentacji prowadzącego jest ten temat", "Że trzeba to wykuć na pamięć"], a: 1, ch: "material", why: "To odsyłacz do prezentacji z Teams, gdy chcesz szczegółów z wykładu." },
+    { q: "Fiszkę oceniasz „Łatwe”. Co się dzieje?", o: ["Wraca jutro", "Przeskakuje o dwa pudełka i wraca dużo później", "Znika na zawsze"], a: 1, ch: "powtorki", why: "„Łatwe” to +2 pudełka; przerwy rosną: 1, 3, 7, 14, 30, 60 dni." },
+    { q: "Gdzie ułożysz plan nauki dzień po dniu przed kolokwium?", o: ["Przedmiot → Zaliczenie → Przygotuj się", "Więcej → Lektury", "Kalendarz → + Mój wpis"], a: 0, ch: "zaliczenie", why: "„Przygotuj się” rozkłada tematy na dni i dokłada próbny test." },
+    { q: "Kto wpisuje terminy kolokwiów widoczne dla całego roku?", o: ["Każdy student", "Starosta", "Nikt, trzeba pytać prowadzących"], a: 1, ch: "terminy", why: "Dzięki temu terminy są sprawdzone i nie ma dubli." },
+    { q: "Jak na komputerze najszybciej coś wyszukać?", o: ["Klawisz /", "Ctrl + F", "Klawisz Esc"], a: 0, ch: "przedmioty", why: "„/” działa na każdym ekranie i od razu wstawia kursor do wyszukiwarki." },
+    { q: "Kto widzi pliki wgrane do „Moich materiałów”?", o: ["Cały rok", "Starosta i Ty", "Tylko Ty"], a: 2, ch: "wiecej", why: "Moje materiały są prywatne." },
+  ];
+
+  // ---------- ekrany przewodnika ----------
+  function viewGuide() {
+    if (S.route.id === "test") return guideTest();
+    const ch = GUIDE.find((c) => c.id === S.route.id);
+    return ch ? guideChapter(ch) : guideHome();
+  }
+  function gRing(n, N, size = 120) {
+    const r = 46, c = 2 * Math.PI * r;
+    const el = gx("div", "g-ring", `<svg viewBox="0 0 110 110" aria-hidden="true"><circle class="bg" cx="55" cy="55" r="${r}" fill="none" stroke-width="10"/><circle class="fg" cx="55" cy="55" r="${r}" fill="none" stroke-width="10" stroke-dasharray="${c}" stroke-dashoffset="${c}"/></svg>`);
+    el.style.width = el.style.height = size + "px";
+    el.append(h("b", { class: "num" }, `${n}/${N}`, h("small", { text: "rozdziałów" })));
+    requestAnimationFrame(() => requestAnimationFrame(() => { const fg = el.querySelector(".fg"); if (fg) fg.style.strokeDashoffset = String(c * (1 - n / N)); }));
+    el.setAttribute("role", "img"); el.setAttribute("aria-label", `Ukończone ${n} z ${N} rozdziałów`);
+    return el;
+  }
+  const guideNext = () => { const d = guideGet().done; return GUIDE.find((c) => !d[c.id]) || null; };
+  function guideHome() {
+    const g = guideGet(), n = guideDoneN(), N = GUIDE.length, next = guideNext();
+    const minutes = GUIDE.reduce((a, c) => a + c.slides.length, 0);
+    const hero = h("section", { class: "g-hero" },
+      h("div", { class: "stack", style: "gap:12px;min-width:0" },
+        h("span", { class: "eyebrow", text: "Przewodnik po Skrócie BM" }),
+        h("h1", { text: n === N ? "Znasz już całą stronę" : n ? "Wracamy tam, gdzie skończyłeś" : "Poznaj całą stronę krok po kroku" }),
+        h("p", { class: "g-lead", text: `${N} krótkich rozdziałów, ok. ${Math.round(minutes / 2)} minut razem. W każdym klikasz i sprawdzasz sam na przykładach, a na końcu pokażę Ci to samo na prawdziwych ekranach.` }),
+        h("div", { class: "row" },
+          next ? h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "guide", id: next.id }) }, n ? `Kontynuuj: ${next.title}` : "Zacznij od rozdziału 1", " →")
+            : h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "guide", id: "test" }) }, g.quiz >= 7 ? "Zrób test jeszcze raz" : "Sprawdź się: test", " →"),
+          h("button", { type: "button", class: "btn", onclick: () => startTour(QUICK, QUICK_OPTS()) }, "Szybki tour po ekranach · 1 min"))),
+      gRing(n, N));
+    const path = h("ol", { class: "g-path" },
+      GUIDE.map((c, i) => {
+        const done = !!g.done[c.id], isNext = c === next;
+        return h("li", { class: "g-stop" + (done ? " done" : "") + (isNext ? " next" : "") },
+          h("button", { type: "button", class: "g-stop-btn", onclick: () => go({ view: "guide", id: c.id }), "aria-label": `Rozdział ${i + 1}: ${c.title}${done ? ", ukończony" : ""}` },
+            h("span", { class: "g-num num", "aria-hidden": "true", text: done ? "✓" : i + 1 }),
+            h("span", { class: "g-stop-txt" }, h("b", { text: c.title }), h("span", { text: c.gain })),
+            h("span", { class: "g-meta" }, icon(c.ic), h("small", { class: "num", text: isNext ? "następny" : `${c.slides.length} ${plural(c.slides.length, "karta", "karty", "kart")}` }))));
+      }),
+      h("li", { class: "g-stop final" + (g.quiz >= 7 ? " done" : "") },
+        h("button", { type: "button", class: "g-stop-btn", onclick: () => go({ view: "guide", id: "test" }) },
+          h("span", { class: "g-num", "aria-hidden": "true", text: g.quiz >= 7 ? "★" : "?" }),
+          h("span", { class: "g-stop-txt" }, h("b", { text: "Sprawdź się" }), h("span", { text: g.quiz ? `Twój najlepszy wynik: ${g.quiz}/${GTEST.length}. Od 7 punktów odznaka Mistrz Skrótu BM.` : `${GTEST.length} pytań o stronę. Od 7 punktów odznaka Mistrz Skrótu BM.` })),
+          h("span", { class: "g-meta" }, icon("spark"), h("small", { text: "test" })))));
+    const keys = h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Skróty klawiszowe" })),
+      h("dl", { class: "g-keys" }, [["/", "wyszukiwarka, z każdego ekranu"], ["Spacja", "odwraca fiszkę w Powtórkach"], ["1 2 3 4", "ocena fiszki: nie pamiętam … łatwe"], ["← →", "karty w przewodniku"], ["Esc", "zamyka okno"]].map(([k, t]) => [h("dt", {}, ...k.split(" ").map((x) => h("kbd", { class: "kbd", text: x }))), h("dd", { text: t })])));
+    const sk = window.skrot || {};
+    const FAQ = [
+      ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} za rok (oba semestry) albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu.`],
+      ["Skąd są materiały?", "Prezentacje prowadzących z Teams służą tylko jako lista tematów. Opracowanie, przykłady, fiszki i quizy piszemy od nowa, a przy temacie zostaje odsyłacz do slajdów."],
+      ["Czy postęp się zapisuje?", "Tak. Po zalogowaniu na koncie i na każdym urządzeniu. Bez logowania tylko w tej przeglądarce."],
+      ["Nie widzę swoich zajęć albo terminów", "Sprawdź grupę w Więcej → Moja grupa. Terminy kolokwiów wymagają pełnego dostępu."],
+      ["Znalazłem błąd w materiale", "Kliknij ⚑ Zgłoś błąd przy fiszce albo pytaniu, albo napisz na skrotbm@outlook.com."],
+      ["Mail z kodem nie przychodzi", "Zajrzyj do spamu i zakładki Oferty. Kod jest ważny godzinę; możesz wysłać nowy."],
+    ];
+    const faq = h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Częste pytania" })),
+      h("div", { class: "g-faq" }, FAQ.map(([q, a]) => h("details", {}, h("summary", { text: q }), h("p", { text: a })))));
+    return [backLink({ view: "more" }), hero,
+      h("div", { class: "hub g-hub" }, h("section", { class: "stack", style: "gap:12px;min-width:0" }, h("h2", { text: "Twoja ścieżka" }), path), h("div", { class: "stack", style: "gap:20px;min-width:0" }, keys, faq))];
+  }
+  function guideChapter(ch) {
+    const i = GUIDE.indexOf(ch), N = GUIDE.length;
+    const k = Math.min(ch.slides.length - 1, Math.max(0, Number(S.route.k) || 0));
+    S.route.k = k;
+    const sl = ch.slides[k], key = ch.id + ":" + k, last = k === ch.slides.length - 1;
+    const tried = (j) => { const s = ch.slides[j]; return !s.try || G.tried.has(ch.id + ":" + j) || (s.done && s.done()); };
+    const tryN = ch.slides.filter((s) => s.try).length, doneN = ch.slides.filter((x, j) => x.try && tried(j)).length;
+    const trycountText = (d, n) => `Ćwiczenia w tym rozdziale: ${d}/${n}${d < n ? " · do pominiętych wrócisz kropkami u góry" : " ✓"}`;
+    const tryEl = sl.try ? h("span", { class: "g-try" + (tried(k) ? " ok" : ""), "data-k": key, text: (tried(k) ? "Zrobione: " : "Spróbuj: ") + sl.try }) : null;
+    const ok = () => {
+      if (G.tried.has(key)) return;
+      G.tried.add(key);
+      document.querySelectorAll(`.g-try[data-k="${key}"]`).forEach((e) => { e.classList.add("ok"); e.textContent = "Zrobione: " + sl.try; });
+      const dot = document.querySelector(`.g-dots [data-i="${k}"]`); if (dot) dot.classList.add("tried");
+      const cnt = document.querySelector(`.g-trycount[data-ch="${ch.id}"]`);
+      if (cnt) { const d = ch.slides.filter((x, j) => x.try && tried(j)).length; cnt.textContent = trycountText(d, tryN); }
+    };
+    let stage = sl.fresh ? null : G.nodes.get(key);
+    if (!stage) { stage = h("div", { class: "g-stage" + (sl.real ? " real" : "") }, sl.demo(ok)); if (!sl.fresh) G.nodes.set(key, stage); }
+    if (sl.done && sl.done()) G.tried.add(key);
+    const setK = (j) => { S.route = { ...S.route, k: j }; render(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+    const finish = () => {
+      const was = guideGet().done[ch.id];
+      const gg = guideSet({ done: { ...guideGet().done, [ch.id]: Date.now() } });
+      const n = GUIDE.filter((c) => gg.done[c.id]).length;
+      if (!was) { gConfetti(); toast(n === N ? "Wszystkie rozdziały ukończone! Czas na test." : `Rozdział ukończony · ${n}/${N}`); }
+      const nx = GUIDE[i + 1] && !gg.done[GUIDE[i + 1].id] ? GUIDE[i + 1] : guideNext();
+      go(nx ? { view: "guide", id: nx.id } : { view: "guide", id: "test" });
+    };
+    const show = () => startTour(ch.tour, { lastLabel: "Wróć do przewodnika", end: () => go({ view: "guide", id: ch.id, k }) });
+    return [
+      backLink({ view: "guide" }),
+      h("section", { class: "g-chead" },
+        h("div", { class: "row", style: "justify-content:space-between;gap:10px" },
+          h("span", { class: "eyebrow num", text: `Rozdział ${i + 1} z ${N} · karta ${k + 1} z ${ch.slides.length}` }),
+          h("div", { class: "g-dots", role: "group", "aria-label": "Karty rozdziału" }, ch.slides.map((s, j) => h("button", { type: "button", "data-i": j, class: tried(j) && s.try ? "tried" : null, "aria-current": j === k ? "step" : null, "aria-label": `Karta ${j + 1}: ${s.t}`, onclick: () => setK(j) })))),
+        h("p", { class: "g-chtitle", text: ch.title })),
+      h("article", { class: "g-slide", "aria-labelledby": "g-h" },
+        stage,
+        h("div", { class: "g-copy" },
+          tryEl,
+          h("h1", { id: "g-h", class: "g-h", text: sl.t }),
+          gx("p", "", sl.p),
+          sl.tip ? gx("div", "g-tip", "<b>Wskazówka.</b> " + sl.tip) : null)),
+      h("div", { class: "g-foot" },
+        k ? h("button", { type: "button", class: "btn", onclick: () => setK(k - 1) }, "← Wstecz") : i ? h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "guide", id: GUIDE[i - 1].id, k: GUIDE[i - 1].slides.length - 1 }) }, "← Poprzedni rozdział") : h("span"),
+        last ? h("div", { class: "row", style: "gap:8px" },
+            ch.tour?.length ? h("button", { type: "button", class: "btn sun", onclick: show }, h("span", { "aria-hidden": "true", text: "◎ " }), "Pokaż mi to na stronie") : null,
+            h("button", { type: "button", class: "btn primary", onclick: finish }, guideGet().done[ch.id] ? "Dalej →" : "Ukończ rozdział ✓"))
+          : h("button", { type: "button", class: "btn primary", onclick: () => setK(k + 1) }, "Dalej →")),
+      last && tryN ? h("p", { class: "g-small g-trycount", "data-ch": ch.id, style: "text-align:right", text: trycountText(doneN, tryN) }) : null,
+    ];
+  }
+  function guideTest() {
+    const T = G.test || (G.test = { pos: 0, ans: [] });
+    const head = [backLink({ view: "guide" }), h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "Przewodnik · test" }), h("h1", { text: "Sprawdź się" }))];
+    if (T.pos >= GTEST.length) {
+      const score = T.ans.filter((a, i) => a === GTEST[i].a).length, pass = score >= 7;
+      const g = guideGet();
+      if (!T.saved) { T.saved = true; if (score > (g.quiz || 0)) guideSet({ quiz: score }); if (pass) setTimeout(gConfetti, 150); }
+      const wrong = GTEST.map((q, i) => [q, T.ans[i]]).filter(([q, a]) => a !== q.a);
+      return [...head,
+        h("section", { class: "g-result" + (pass ? " pass" : "") },
+          pass ? h("div", { class: "g-badge", "aria-hidden": "true" }, h("img", { src: "icons/emblem.png", alt: "", width: "70", height: "80" })) : null,
+          h("span", { class: "eyebrow", text: pass ? "Odznaka zdobyta" : "Prawie" }),
+          h("h2", { class: "num", text: `${score}/${GTEST.length} · ${pass ? "Mistrz Skrótu BM" : "jeszcze chwila"}` }),
+          h("p", { text: pass ? "Znasz stronę lepiej niż większość roku. Teraz wykorzystaj to do nauki." : "Przejrzyj rozdziały z pytań poniżej i spróbuj jeszcze raz. Od 7 punktów jest odznaka." }),
+          h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "home" }) }, "Na ekran Dziś →"), h("button", { type: "button", class: "btn", onclick: () => { G.test = null; render(); } }, "Jeszcze raz"))),
+        wrong.length ? h("section", { class: "stack", style: "gap:8px" }, h("h2", { text: "Do powtórki" }),
+          h("div", { class: "list" }, wrong.map(([q]) => { const c = GUIDE.find((x) => x.id === q.ch); return h("button", { type: "button", class: "item", onclick: () => go({ view: "guide", id: c.id }) }, h("span", { class: "t", text: q.q }), h("span", { class: "m", text: `Dobra odpowiedź: ${q.o[q.a]} · ${q.why}` }), h("span", { class: "r", text: `${c.title} →` })); }))) : null];
+    }
+    const q = GTEST[T.pos], a = T.ans[T.pos];
+    const answered = a != null;
+    return [...head,
+      h("div", { class: "progress", "aria-hidden": "true", style: "max-width:640px" }, h("i", { style: `width:${(100 * (T.pos + (answered ? 1 : 0))) / GTEST.length}%` })),
+      h("section", { class: "box g-testbox" },
+        h("span", { class: "eyebrow num", text: `Pytanie ${T.pos + 1} z ${GTEST.length}` }),
+        h("h2", { text: q.q }),
+        h("div", { class: "opts" }, q.o.map((t, k) => h("button", { type: "button", class: "opt" + (answered && k === q.a ? " right" : answered && k === a ? " wrong" : ""), disabled: answered ? true : null, onclick: () => { T.ans[T.pos] = k; render(); } }, h("span", { class: "k", text: "ABC"[k] }), h("span", { text: t })))),
+        answered ? h("p", { class: "g-why" }, h("b", { text: a === q.a ? "Dobrze. " : "Nie tym razem. " }), q.why) : null,
+        answered ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => { T.pos++; render(); } }, T.pos === GTEST.length - 1 ? "Zobacz wynik →" : "Dalej →")) : null)];
+  }
+  // Pasek na ekranie Dziś, dopóki ktoś nie przejdzie przewodnika albo go nie zamknie.
+  function guideStrip() {
+    const g = guideGet(), n = guideDoneN(), N = GUIDE.length;
+    if (g.hide || n >= N) return null;
+    const next = guideNext();
+    return h("section", { class: "g-strip", "aria-label": "Przewodnik" },
+      h("span", { class: "g-strip-ic" }, icon("help")),
+      h("div", { class: "stack", style: "gap:4px;min-width:0" },
+        h("b", { text: n ? `Przewodnik: ${n}/${N} rozdziałów` : "Pierwszy raz tutaj? Poznaj stronę w kilka minut" }),
+        h("div", { class: "progress", "aria-hidden": "true" }, h("i", { style: `width:${Math.max(4, (100 * n) / N)}%` }))),
+      h("div", { class: "row", style: "gap:6px" },
+        h("button", { type: "button", class: "btn small primary", onclick: () => go({ view: "guide", id: n && next ? next.id : undefined }) }, n ? "Kontynuuj" : "Otwórz przewodnik"),
+        h("button", { type: "button", class: "btn small ghost", "aria-label": "Ukryj przewodnik na ekranie Dziś", title: "Ukryj (przewodnik zostaje w Więcej)", onclick: () => { guideSet({ hide: true }); toast("Ukryte. Przewodnik znajdziesz w Więcej."); render(); } }, "✕")));
+  }
+
+  // ================= podświetlanie prawdziwych ekranów (szybki tour i „Pokaż mi na stronie”) =================
+  const QUICK = [
+    { title: "Cześć! Skrót BM w minutę", text: "Pokażę Ci sześć zakładek. Każda odpowiada na jedno pytanie: co dziś, czego się uczyć, co powtórzyć, co na kiedy.", art: "intro" },
+    { go: { view: "home" }, sel: "section.today", title: "Najpierw Twoja grupa", text: () => S.group ? `Masz ustawioną grupę ${S.group}. Zmienisz ją w Więcej → Moja grupa.` : "Wybierz grupę i podgrupę lab, a zajęcia i terminy pokażą tylko to, co Cię dotyczy.", art: "group" },
+    { go: { view: "home" }, sel: "section.now", title: "Dziś: od tego zaczynasz", text: "Karta „Teraz zrób to” sama wybiera najważniejszą rzecz na teraz. Jeden przycisk i działasz.", art: "hub" },
+    { go: { view: "materials" }, nav: "materials", title: "Przedmioty", text: "Wszystkie materiały: skrót, wersja prostym językiem, fiszki i quiz. Plus wyszukiwarka (skrót /).", art: "books" },
+    { go: { view: "review" }, nav: "review", title: "Powtórki", text: "Fiszki wracają same, zanim je zapomnisz. Pod spodem mapa, co już umiesz.", art: "tabs" },
+    { go: { view: "terms" }, nav: "terms", title: "Terminy", text: "Kolokwia, zadania, projekty i formalności, ułożone według pilności.", art: "tasks" },
+    { go: { view: "calendar" }, nav: "calendar", title: "Kalendarz", text: "Zajęcia, zaliczenia i Twoje własne wpisy. Można go też mieć w telefonie.", art: "cal" },
+    { go: { view: "more" }, nav: "more", title: "Więcej", text: "Słowniczek EN–PL, Twoje pliki, zasady zaliczeń z kalkulatorem średniej, konto.", art: "grade" },
+    { title: "To była wersja w minutę", text: "Pełny przewodnik ma 9 krótkich rozdziałów z ćwiczeniami na przykładach i test na koniec. Zawsze znajdziesz go w Więcej.", art: "done" },
+  ];
+  const QUICK_OPTS = () => ({ firstLabel: "Pokaż mi", lastLabel: "Otwórz przewodnik", lastSkip: "Później", end: (fin) => go(fin ? { view: "guide" } : { view: "home" }) });
+  var tourState = null;
   function tourTarget(st) {
     if (st.nav) return document.querySelector(`#nav [data-key="${st.nav}"]`);
+    if (typeof st.sel === "function") { try { return st.sel(); } catch { return null; } }
     if (st.sel) return document.querySelector(st.sel);
     return null;
   }
   function tourPlace() {
     if (!tourState) return;
-    const { root, hole, card, i } = tourState;
-    const el = tourTarget(TOUR[i]);
+    const { root, hole, card, i, steps } = tourState;
+    const el = tourTarget(steps[i]);
     const r = el && el.getBoundingClientRect();
     const vw = innerWidth, vh = innerHeight, pad = 6;
     if (r && r.width && r.bottom > 0 && r.top < vh) {
       root.classList.add("has-hole"); hole.style.opacity = "1";
-      const top = Math.max(4, r.top - pad), h = Math.min(r.height + pad * 2, vh - top - 4);
-      Object.assign(hole.style, { top: top + "px", left: Math.max(4, r.left - pad) + "px", width: Math.min(r.width + pad * 2, vw - 8) + "px", height: h + "px" });
-      card.classList.toggle("up", vw <= 600 && top + h / 2 > vh * 0.45);
+      const top = Math.max(4, r.top - pad), hh = Math.min(r.height + pad * 2, vh - top - 4);
+      Object.assign(hole.style, { top: top + "px", left: Math.max(4, r.left - pad) + "px", width: Math.min(r.width + pad * 2, vw - 8) + "px", height: hh + "px" });
+      card.classList.toggle("up", vw <= 600 && top + hh / 2 > vh * 0.45);
       if (vw > 600) {
         const cw = card.offsetWidth, ch = card.offsetHeight;
-        let ct = top + h + 14; if (ct + ch > vh - 12) ct = Math.max(12, top - ch - 14);
+        let ct = top + hh + 14; if (ct + ch > vh - 12) ct = Math.max(12, top - ch - 14);
         if (ct + ch > vh - 12 || ct < 12) ct = Math.max(12, (vh - ch) / 2);
         const cl = Math.min(vw - cw - 16, Math.max(16, r.left + r.width / 2 - cw / 2));
         Object.assign(card.style, { top: ct + "px", left: cl + "px" });
@@ -4413,38 +5381,58 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     }
   }
   function tourShow(i) {
-    const st = TOUR[i]; tourState.i = i;
-    const r = S.route.view;
-    if (st.view && r !== st.view && !(st.view === "materials" && ["subject", "material"].includes(r) && i === 4)) go({ view: st.view });
-    const { card } = tourState;
-    const art = typeof TV[st.art] === "function" ? TV[st.art]() : TV[st.art];
-    card.innerHTML = `<div class="tour-foot" style="margin:0"><div class="tour-dots" aria-hidden="true">${TOUR.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")}</div><span class="step">${i + 1} / ${TOUR.length}</span></div>${art}<h2 id="tour-h">${st.title}</h2><p>${st.text}</p>
-      <div class="tour-foot"><button type="button" class="btn ghost small" data-a="skip">${st.last ? "" : "Pomiń"}</button><div class="row">${i ? `<button type="button" class="btn small" data-a="prev">← Wstecz</button>` : ""}<button type="button" class="btn primary small" data-a="next">${st.last ? "Zaczynamy!" : i ? "Dalej →" : "Pokaż mi"}</button></div></div>`;
-    if (st.last) card.querySelector('[data-a="skip"]').style.visibility = "hidden";
+    const { steps, opts, card } = tourState;
+    const st = steps[i]; tourState.i = i;
+    const r = typeof st.go === "function" ? st.go() : st.go;
+    if (r && (r.view !== S.route.view || (r.id || "") !== (S.route.id || "") || (r.tab && r.tab !== S.route.tab))) go(r);
+    const last = i === steps.length - 1;
+    const art = st.art ? (typeof TV[st.art] === "function" ? TV[st.art]() : TV[st.art]) : "";
+    const text = typeof st.text === "function" ? st.text() : st.text;
+    card.innerHTML = `<div class="tour-foot" style="margin:0"><div class="tour-dots" aria-hidden="true">${steps.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")}</div><span class="step">${i + 1} / ${steps.length}</span></div>${art}<h2 id="tour-h"></h2><p></p>
+      <div class="tour-foot"><button type="button" class="btn ghost small" data-a="skip"></button><div class="row">${i && !(last && opts.lastSkip) ? `<button type="button" class="btn small" data-a="prev">← Wstecz</button>` : ""}<button type="button" class="btn primary small" data-a="next"></button></div></div>`;
+    card.querySelector("h2").textContent = st.title; card.querySelector("p").textContent = text;
+    const skip = card.querySelector('[data-a="skip"]');
+    skip.textContent = last ? opts.lastSkip || "" : "Pomiń";
+    if (last && !opts.lastSkip) skip.style.visibility = "hidden";
+    card.querySelector('[data-a="next"]').textContent = last ? opts.lastLabel || "Gotowe" : i || !opts.firstLabel ? "Dalej →" : opts.firstLabel;
     card.classList.remove("enter"); void card.offsetWidth; card.classList.add("enter");
-    const t = tourTarget(st); if (t) t.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    requestAnimationFrame(() => { tourPlace(); setTimeout(tourPlace, 380); });
+    const t = tourTarget(st); if (t) t.scrollIntoView({ block: "center", behavior: "smooth" });
+    requestAnimationFrame(tourPlace); [380, 900, 1600].forEach((ms) => setTimeout(() => { if (tourState && tourState.i === i) tourPlace(); }, ms));
     card.querySelector('[data-a="next"]').focus({ preventScroll: true });
   }
-  function tourEnd() {
+  function tourEnd(finished) {
     if (!tourState) return;
-    const { root, onKey } = tourState; tourState = null;
+    const { root, onKey, opts } = tourState; tourState = null;
     removeEventListener("resize", tourPlace); removeEventListener("scroll", tourPlace, true); document.removeEventListener("keydown", onKey);
     root.remove(); ls.set("bm-tour", "1");
-    if (S.route.view !== "home") go({ view: "home" });
+    if (opts.end) opts.end(!!finished); else if (S.route.view !== "home") go({ view: "home" });
   }
-  function startTour(from = 0) {
-    if (tourState) return;
-        const root = h("div", { class: "tour" }), shade = h("div", { class: "tour-shade", onclick: () => tourEnd() }), hole = h("div", { class: "tour-hole" });
+  function startTour(steps = QUICK, opts = QUICK_OPTS()) {
+    if (tourState || !steps?.length) return;
+    $("layer")?.replaceChildren();
+    const root = h("div", { class: "tour" }), shade = h("div", { class: "tour-shade", onclick: () => tourEnd(false) }), hole = h("div", { class: "tour-hole" });
     const card = h("div", { class: "tour-card", role: "dialog", "aria-modal": "true", "aria-labelledby": "tour-h" });
-    card.addEventListener("click", (e) => { const a = e.target.closest("[data-a]")?.dataset.a; if (!a) return; if (a === "skip") tourEnd(); else if (a === "prev") tourShow(Math.max(0, tourState.i - 1)); else if (tourState.i >= TOUR.length - 1) tourEnd(); else tourShow(tourState.i + 1); });
-    const onKey = (e) => { if (e.key === "Escape") tourEnd(); else if (e.key === "ArrowRight") card.querySelector('[data-a="next"]')?.click(); else if (e.key === "ArrowLeft" && tourState.i) tourShow(tourState.i - 1); };
+    card.addEventListener("click", (e) => {
+      const a = e.target.closest("[data-a]")?.dataset.a; if (!a) return;
+      if (a === "skip") tourEnd(false);
+      else if (a === "prev") tourShow(Math.max(0, tourState.i - 1));
+      else if (tourState.i >= tourState.steps.length - 1) tourEnd(true);
+      else tourShow(tourState.i + 1);
+    });
+    const onKey = (e) => { if (e.key === "Escape") tourEnd(false); else if (e.key === "ArrowRight") card.querySelector('[data-a="next"]')?.click(); else if (e.key === "ArrowLeft" && tourState.i) tourShow(tourState.i - 1); };
     root.append(shade, hole, card); document.body.append(root);
-    tourState = { root, hole, card, i: from, onKey };
+    tourState = { root, hole, card, i: 0, onKey, steps, opts };
     addEventListener("resize", tourPlace); addEventListener("scroll", tourPlace, true); document.addEventListener("keydown", onKey);
-    tourShow(from);
+    tourShow(0);
   }
-  if (!ls.get("bm-tour")) setTimeout(() => { if (!tourState && !$("layer").childElementCount) startTour(0); }, 900);
+  // Pierwsza wizyta: szybki tour po zakładkach (po wpisaniu kodu dostępu, jeśli bramka jest jeszcze włączona).
+  if (!ls.get("bm-tour")) {
+    const tryStart = () => {
+      if (document.documentElement.classList.contains("gate")) return setTimeout(tryStart, 1200);
+      if (!tourState && !$("layer").childElementCount && !ls.get("bm-tour")) startTour(QUICK, QUICK_OPTS());
+    };
+    setTimeout(tryStart, 900);
+  }
 
 
   // ================= NAUKA+ (v3): powtórki, słowniczek, mapa postępów, zadania krok po kroku, tryb przed kolokwium, ściągawki =================
@@ -4607,7 +5595,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
             h("p", { class: "muted", text: has ? "Fiszki wracają po 1, 3, 7, 14, 30 i 60 dniach, a przed zaliczeniem z przedmiotu przynajmniej raz." : "Przejrzyj fiszki w dowolnym materiale albo dodaj cały przedmiot (zakładka Ćwicz). Wrócą tutaj w dobrym momencie." }),
             has ? null : h("div", {}, h("button", { type: "button", class: "btn", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot"))]),
       hintPanel(!n),
-      h("section", { class: "stack" },
+      h("section", { class: "stack", "data-tour": "mapa" },
         h("div", { class: "row", style: "justify-content:space-between" }, h("h2", { text: "Mapa postępów" }),
           h("div", { class: "pm-legend" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label)))),
         h("p", { class: "muted", style: "max-width:62ch;font-size:.92rem", text: "Każdy kwadrat to jeden materiał. Kolor mówi, jak dobrze go umiesz (quizy, fiszki, zadania, próbne testy). Kliknij kwadrat, żeby zobaczyć szczegóły." }),
@@ -5603,6 +6591,12 @@ Spread the questions so that together they check as many of these outcomes as th
       if (S.route.view === "glossary") { $("gl-q")?.focus(); return; }
       if (S.route.view !== "materials") go({ view: "materials" });
       requestAnimationFrame(() => $("q")?.focus());
+      return;
+    }
+    if (S.route.view === "guide" && GUIDE.some((c) => c.id === S.route.id) && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+      const foot = document.querySelector(".g-foot"); if (!foot) return;
+      const b = e.key === "ArrowRight" ? foot.querySelector(".btn.primary") : foot.firstElementChild;
+      if (b && b.tagName === "BUTTON") { e.preventDefault(); b.click(); }
       return;
     }
     if (S.route.view === "review" && S.route.rv?.cards) {
