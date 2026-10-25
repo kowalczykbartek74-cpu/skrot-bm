@@ -1463,6 +1463,7 @@ body::before { opacity: .8; }
 @media print { .art { display: none !important; } .greet.has-scene, .exam-hero.has-art, .quiz.has-art { padding-right: 0; } }
 /* Lekcja v2 (nauka na zrozumienie) */
 .lesson2 { gap: 20px; }
+.lesson2 > *, .lesson2 .lsec > *, .lesson2 .lvis > * { min-width: 0; max-width: 100%; }
 .lprog { position: sticky; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 3; background: var(--paper); padding: 8px 0 6px; display: grid; gap: 6px; border-bottom: 1px solid var(--line); }
 .lprog .progress { height: 6px; }
 .lhook { background: var(--accent-soft); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 10px; }
