@@ -3944,7 +3944,7 @@ body::before { opacity: .8; }
   }
   const lvNum = (v) => Math.abs(v) >= 1000 ? Math.round(v).toLocaleString(EN ? "en-GB" : "pl-PL") : String(+v.toFixed(2)).replace(".", EN ? "." : ",");
   function chartSvg(v) {
-    const narrow = (window.innerWidth || 800) < 640, W = narrow ? 360 : 560, H = narrow ? 260 : 300, L = 50, R = 12, T = 16, B = 42;
+    const narrow = (window.innerWidth || 800) < 640, W = narrow ? 360 : 560, H = narrow ? 260 : 300, L = 60, R = 12, T = 16, B = 42;
     const S2 = (v.series || []).filter((s) => (s.points || []).length >= 2);
     const pts = S2.flatMap((s) => s.points).concat((v.marks || []).map((m) => [m.x, m.y]));
     if (!pts.length) return "";
@@ -3957,7 +3957,7 @@ body::before { opacity: .8; }
       + xt.map((t) => `<text x="${X(t)}" y="${H - B + 16}" text-anchor="middle" class="ct">${escX(lvNum(t))}</text>`).join("");
     const axes = `<line x1="${L}" x2="${W - R}" y1="${Y(y0)}" y2="${Y(y0)}" class="ca"/><line x1="${L}" x2="${L}" y1="${T}" y2="${H - B}" class="ca"/>`
       + `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle" class="cl">${escX(v.x || "")}</text>`
-      + `<text transform="translate(14 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle" class="cl">${escX(v.y || "")}</text>`;
+      + `<text transform="translate(13 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle" class="cl">${escX(v.y || "")}</text>`;
     const lines = S2.map((s, i) => `<polyline class="cs s${i}" points="${s.points.map((p) => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ")}"/>`
 ).join("");
     const marks = (v.marks || []).map((m, i) => `<line x1="${X(m.x)}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(y0)}" class="cd"/><line x1="${L}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(m.y)}" class="cd"/><circle cx="${X(m.x)}" cy="${Y(m.y)}" r="5" class="cm"/>`
