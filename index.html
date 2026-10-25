@@ -1239,6 +1239,11 @@ details.undated[open] summary { margin-bottom: 12px; }
 
 /* Przedmiot: zakładki i Ćwicz */
 .subj-tabs { margin-bottom: 18px; }
+.src-switch { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.src-switch .seg button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: .95rem; min-height: 40px; }
+.src-n { font-size: .78rem; padding: 1px 7px; border-radius: 999px; background: rgba(0,0,0,.07); }
+.src-switch .seg button[aria-pressed="true"] .src-n { background: rgba(255,255,255,.25); }
+.src-note { font-size: .88rem; margin: 0; }
 .subj-tabs .tab { font-size: 1rem; padding: 12px 18px; }
 .practice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 700px) { .practice { grid-template-columns: 1fr; } }
@@ -3495,11 +3500,11 @@ body::before { opacity: .8; }
   // Jedna podpowiedź „co dalej” dla ekranu Dziś (sid = null: wszystkie przedmioty) i dla przedmiotu.
   // Kolejność: ostatnio otwarty i jeszcze nieopanowany → najstarszy nieotwierany → najstarszy nieopanowany.
   // „Kontynuuj” tylko przy materiale, który już był otwarty; nowy to „Następny”.
-  function nextToLearn(sid) {
+  function nextToLearn(sid, only) {
     const done = S.progress?.done || {};
-    if (sid) { const ls = lessonsOf(sid); if (ls.length) { const l = ls.find((x) => !done[x.id] && readable(x)); return l ? { m: l, started: !!done[l.id] || seenSet().has(l.id), label: `${seenSet().has(l.id) ? "Kontynuuj" : "Następna lekcja"}: ${l.order}. ${l.title}` } : null; } }
+    if (sid && only !== "slides") { const ls = lessonsOf(sid); if (ls.length) { const l = ls.find((x) => !done[x.id] && readable(x)); return l ? { m: l, started: !!done[l.id] || seenSet().has(l.id), label: `${seenSet().has(l.id) ? "Kontynuuj" : "Następna lekcja"}: ${l.order}. ${l.title}` } : null; } }
     const pool = sid ? filesOf(sid) : SUBJECTS.flatMap((x) => filesOf(x.id));
-    const fs = dedupMats(noMaps(pool)).filter(readable).sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
+    const fs = dedupMats(only === "slides" ? pool.filter((m) => !isMap(m)) : noMaps(pool)).filter(readable).sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
     if (!fs.length) return null;
     const seen = seenSet(), opened = (x) => seen.has(x.id) || !!best(x.id);
     const last = fs.find((x) => x.id === ls.get("bm-last") && topicScore(x).state !== "good");
@@ -3527,29 +3532,50 @@ body::before { opacity: .8; }
     const body = tab === "cwicz" ? subjectPractice(s) : tab === "zal" ? subjectGrading(s) : subjectLearn(s);
     return [backLink({ view: "materials" }), head, h("div", {}, tabs, h("div", { class: "tabpanel", role: "tabpanel" }, body))];
   }
+  // „Ucz się” ma dwie zakładki, żeby od razu było wiadomo, skąd jest materiał:
+  // „Z sylabusa” = nasz kurs i przegląd ułożone według tematów sylabusa (nie ze slajdów),
+  // „Z prezentacji” = opracowania prezentacji, które prowadzący wrzucili do Teams.
+  const SRC_TABS = [["syl", "Z sylabusa"], ["pre", "Z prezentacji"]];
   function subjectLearn(s) {
-    const ms = materialsOf(s.id), nx = nextToLearn(s.id);
-    const all = filesOf(s.id), maps = all.filter(isMap), files = all.filter((m) => !isMap(m));
+    const ms = materialsOf(s.id);
+    const all = filesOf(s.id), maps = all.filter(isMap), files = all.filter((m) => !isMap(m)), lessons = lessonsOf(s.id);
+    const sylN = lessons.length + maps.length, preN = files.length;
+    // Ostatnio wybrana zakładka, chyba że w tym przedmiocie jest pusta, a druga nie.
+    let src = S.route.src || ls.get("bm-src");
+    if (src !== "pre" && src !== "syl") src = sylN || !preN ? "syl" : "pre";
+    if (!S.route.src && (src === "pre" ? !preN && sylN : !sylN && preN)) src = src === "pre" ? "syl" : "pre";
+    const setSrc = (k) => { ls.set("bm-src", k); S.route = { ...S.route, src: k }; render(); };
+    const upBtn = S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj prezentację") : null;
+    const nx = nextToLearn(s.id, src === "pre" ? "slides" : null);
+    const nxOk = nx && (src === "pre" ? fromSlides(nx.m) : !fromSlides(nx.m));
+    const switcher = h("div", { class: "src-switch" },
+      h("div", { class: "seg pick", role: "group", "aria-label": "Skąd jest materiał" }, SRC_TABS.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(src === k), onclick: () => setSrc(k) }, h("span", { text: l }), h("span", { class: "num src-n", text: String(k === "syl" ? sylN : preN) })))),
+      h("p", { class: "muted src-note", text: src === "syl"
+        ? "Nasze lekcje i przegląd ułożone według tematów z sylabusa. Nie są przepisane ze slajdów prowadzących."
+        : "Opracowania prezentacji, które prowadzący wrzucili do Teams. Przy każdym temacie są numery slajdów." }));
     const overview = maps.length ? h("section", { class: "panel overview" },
-      h("div", { class: "panel-head" }, h("h2", { text: "Przegląd przedmiotu" }), h("span", { class: "chip sun", text: "z sylabusa" })),
-      h("p", { class: "muted", style: "font-size:.9rem", text: files.length ? "Opracowane z tematów sylabusa, nie z wykładu. Pokazuje, co jest w całym przedmiocie. Nie musisz go przerabiać osobno: materiały z zajęć poniżej omawiają te same tematy." : "Opracowane z tematów sylabusa, nie z wykładu. Na start, dopóki prowadzący nie wrzuci prezentacji." }),
+      h("div", { class: "panel-head" }, h("h2", { text: "Przegląd przedmiotu" })),
+      h("p", { class: "muted", style: "font-size:.9rem", text: "Pokazuje, co jest w całym przedmiocie. Nie musisz go przerabiać osobno, jeśli robisz lekcje albo materiały z prezentacji." }),
       materialList(maps)) : null;
+    let body;
+    if (!S.ready) body = h("p", { class: "muted", text: "Ładuję…" });
+    else if (S.noDb) body = accessNotice();
+    else if (src === "syl") body = sylN ? [courseSection(s), overview]
+      : h("div", { class: "empty" }, h("h3", { text: "Nie ma jeszcze materiałów z sylabusa" }),
+          h("p", { class: "muted", text: "Lekcje według sylabusa dla tego przedmiotu są w przygotowaniu. Plan tematów znajdziesz w zakładce Zaliczenie." }),
+          h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => { S.route = { ...S.route, tab: "zal" }; render(); } }, "Zobacz plan tematów"),
+            preN ? h("button", { type: "button", class: "btn ghost", onclick: () => setSrc("pre") }, "Materiały z prezentacji") : null));
+    else body = preN ? h("section", { class: "stack" }, h("div", { class: "row", style: "justify-content:space-between" }, h("h2", { text: "Materiały z prezentacji, od najnowszych" }), upBtn), materialList(files))
+      : h("div", { class: "empty" }, h("h3", { text: "Nie ma jeszcze materiałów z prezentacji" }),
+          h("p", { class: "muted", text: "Pojawią się tutaj, gdy prowadzący wrzuci prezentację do Teams. Do tego czasu ucz się z zakładki Z sylabusa." }),
+          h("div", { class: "row" }, sylN ? h("button", { type: "button", class: "btn", onclick: () => setSrc("syl") }, "Materiały z sylabusa") : null, upBtn,
+            PAID() ? null : h("button", { type: "button", class: "btn ghost", onclick: () => window.skrot?.buy() }, "Kup dostęp")));
     return h("div", { class: "stack" },
-      nx ? h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "material", id: nx.m.id }) }, nx.label, " →"),
-        S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj materiał") : null)
-        : S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => go({ view: "upload", subjectId: s.id }) }, "Wgraj materiał")) : null,
       ms.length ? h("section", { class: "panel" }, h("div", { class: "panel-head" }, h("h2", { text: "Twoje postępy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "review" }) }, "Powtórki →")), progressRow(s, true),
         h("div", { class: "pm-legend small" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label)))) : null,
-      courseSection(s),
-      !S.ready ? h("p", { class: "muted", text: "Ładuję…" })
-        : S.noDb ? accessNotice()
-        : files.length ? [overview, h("section", { class: "stack" }, h("h2", { text: lessonsOf(s.id).length ? "Materiały z zajęć" : "Materiały z zajęć, od najnowszych" }), materialList(files))]
-        : maps.length ? overview
-        : lessonsOf(s.id).length ? null
-        : h("div", { class: "empty" }, h("h3", { text: "Materiały w przygotowaniu" }),
-            h("p", { class: "muted", text: "Pierwszy materiał pojawi się tutaj po pierwszych zajęciach, gdy prowadzący wrzuci prezentację do Teams. Do tego czasu zajrzyj do zakładki Zaliczenie: jest tam plan tematów i zasady." }),
-            h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => { S.route = { ...S.route, tab: "zal" }; render(); } }, "Zobacz plan tematów"),
-              PAID() ? null : h("button", { type: "button", class: "btn ghost", onclick: () => window.skrot?.buy() }, "Kup dostęp"))));
+      switcher,
+      nxOk ? h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "material", id: nx.m.id }) }, nx.label, " →")) : null,
+      body);
   }
   function subjectPractice(s) {
     const ms = materialsOf(s.id);

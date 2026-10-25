@@ -1,6 +1,19 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Materiały z sylabusa": "Syllabus materials",
+"Pojawią się tutaj, gdy prowadzący wrzuci prezentację do Teams. Do tego czasu ucz się z zakładki Z sylabusa.": "They'll appear here once the lecturer uploads a presentation to Teams. Until then, learn from the From the syllabus tab.",
+"Nie ma jeszcze materiałów z prezentacji": "No slide materials yet",
+"Materiały z prezentacji, od najnowszych": "Slide materials, newest first",
+"Materiały z prezentacji": "Slide materials",
+"Lekcje według sylabusa dla tego przedmiotu są w przygotowaniu. Plan tematów znajdziesz w zakładce Zaliczenie.": "Syllabus-based lessons for this subject are in preparation. You'll find the topic plan in the Assessment tab.",
+"Nie ma jeszcze materiałów z sylabusa": "No syllabus materials yet",
+"Pokazuje, co jest w całym przedmiocie. Nie musisz go przerabiać osobno, jeśli robisz lekcje albo materiały z prezentacji.": "Shows what the whole subject covers. You don't need to work through it separately if you do the lessons or the slide materials.",
+"Opracowania prezentacji, które prowadzący wrzucili do Teams. Przy każdym temacie są numery slajdów.": "Study versions of the presentations lecturers uploaded to Teams. Each topic shows its slide numbers.",
+"Nasze lekcje i przegląd ułożone według tematów z sylabusa. Nie są przepisane ze slajdów prowadzących.": "Our lessons and overview, ordered by the syllabus topics. They are not copied from the lecturers' slides.",
+"Skąd jest materiał": "Where the material comes from",
+"Z prezentacji": "From the slides",
+"Z sylabusa": "From the syllabus",
 "Prawo": "Law",
 "Logistyka": "Logistics",
 "s. SIL 325": "room SIL 325",
