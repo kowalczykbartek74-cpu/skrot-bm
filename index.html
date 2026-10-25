@@ -603,7 +603,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
 .lsec h2 { display: flex; gap: 12px; align-items: baseline; }
 .lsec h2 .n { color: var(--accent-text); font-size: .95rem; background: var(--accent-soft); border-radius: 999px; min-width: 28px; height: 28px; display: inline-grid; place-items: center; flex: none; }
 .example { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
-.example .task { font-weight: 700; }
+.example .ex-task { font-weight: 700; }
 .example ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
 .example .ans { background: var(--good-soft); border-radius: 10px; padding: 8px 12px; }
 .tip { background: var(--warn-soft); border-radius: 12px; padding: 10px 14px; font-size: .94rem; }
@@ -3903,7 +3903,7 @@ body::before { opacity: .8; }
       rich(sec.body),
       sec.example ? h("div", { class: "example" },
         h("span", { class: "eyebrow", text: "Przykład" }),
-        h("div", { class: "task" }, inline(sec.example.task)),
+        h("div", { class: "ex-task" }, inline(sec.example.task)),
         sec.example.steps?.length ? h("ol", {}, sec.example.steps.map((st) => h("li", {}, inline(st)))) : null,
         sec.example.answer ? h("div", { class: "ans" }, h("b", { text: "Wynik: " }), inline(sec.example.answer)) : null) : null,
       sec.tip ? h("div", { class: "tip" }, h("b", { text: "Uwaga: " }), inline(sec.tip)) : null));
@@ -4043,7 +4043,7 @@ body::before { opacity: .8; }
         visualBlock(sec.visual),
         sec.example ? h("div", { class: "example" },
           h("span", { class: "eyebrow", text: exAll ? "Przykład" : "Przykład · spróbuj sam" }),
-          h("div", { class: "task" }, inline(sec.example.task)),
+          h("div", { class: "ex-task" }, inline(sec.example.task)),
           !exAll && nShown === 0 ? h("p", { class: "muted", style: "font-size:.9rem", text: "Zatrzymaj się na chwilę i spróbuj rozwiązać sam (w głowie albo na kartce). Potem odsłaniaj kroki po jednym." }) : null,
           nShown ? h("ol", {}, exSteps.slice(0, nShown).map((x) => h("li", {}, inline(x)))) : null,
           !exAll ? h("div", { class: "row" },
