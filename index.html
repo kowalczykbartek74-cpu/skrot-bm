@@ -1468,6 +1468,8 @@ body::before { opacity: .8; }
 .rich { grid-template-columns: minmax(0, 1fr); }
 .rich > * { min-width: 0; }
 .lesson :is(ul, ol) { grid-template-columns: minmax(0, 1fr); }
+.lesson2 :is(.lhook, .lrecap, .lmistake, .lintu, .lresult, .lexit, .lpre, .lclose, .lkeys, .why, .stack) { grid-template-columns: minmax(0, 1fr); }
+.lesson2 :is(.lhook, .lrecap, .lmistake, .lintu, .lresult, .lexit, .lpre, .lclose, .why) > * { min-width: 0; }
 .lesson li, .lesson details, .lesson details > div { min-width: 0; max-width: 100%; }
 .lesson .exercise .row > details { flex: 1 1 100%; }
 .lesson mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
