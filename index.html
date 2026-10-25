@@ -1461,6 +1461,69 @@ body::before { opacity: .8; }
 @keyframes a-hit { from { translate: 24px -18px; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .art, .art * { animation: none !important; } .a-tick { stroke-dashoffset: 0; } }
 @media print { .art { display: none !important; } .greet.has-scene, .exam-hero.has-art, .quiz.has-art { padding-right: 0; } }
+/* Lekcja v2 (nauka na zrozumienie) */
+.lesson2 { gap: 20px; }
+.lprog { position: sticky; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 3; background: var(--paper); padding: 8px 0 6px; display: grid; gap: 6px; border-bottom: 1px solid var(--line); }
+.lprog .progress { height: 6px; }
+.lhook { background: var(--accent-soft); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 10px; }
+.lhook .q, .lrecap .q, .lq .q { font-weight: 700; margin: 0; }
+.lhook.done { background: var(--surface); border: 1.5px solid var(--accent); }
+.lpre { gap: 12px; }
+.lq { display: grid; gap: 10px; }
+.lcheck { border: 1.5px solid var(--accent); border-radius: var(--r); padding: 14px 16px; background: var(--surface); }
+.lintu { border-left: 4px solid var(--accent); padding: 4px 0 4px 14px; display: grid; gap: 4px; }
+.lintu p { margin: 0; font-size: 1.04rem; line-height: 1.6; }
+.lmistake { background: var(--bad-soft); border-radius: 12px; padding: 12px 14px; display: grid; gap: 6px; }
+.lmistake p { margin: 0; }
+.lmistake .wrong { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 55%, transparent); }
+.lmistake .right { color: var(--good); }
+.lsimple { background: var(--sunk); border-radius: 12px; padding: 10px 14px; }
+.lsimple summary { cursor: pointer; font-weight: 700; color: var(--accent-hover); }
+.lsimple[open] summary { margin-bottom: 8px; }
+.lvis { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+.lvis figcaption { font-weight: 800; }
+.lv-note { margin: 0; font-size: .9rem; color: var(--muted); }
+.lv-chart svg { width: 100%; height: auto; display: block; }
+.lv-chart .cg { stroke: var(--line); stroke-width: 1; }
+.lv-chart .ca { stroke: var(--ink); stroke-width: 1.4; }
+.lv-chart .ct { fill: var(--muted); font-size: 12px; font-family: var(--f-body); }
+.lv-chart .cl { fill: var(--ink); font-size: 13px; font-weight: 700; font-family: var(--f-body); }
+.lv-chart .cs { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.lv-chart .s0 { stroke: var(--accent); fill: var(--accent); }
+.lv-chart .s1 { stroke: #B45309; fill: #B45309; }
+.lv-chart .s2 { stroke: #2563A8; fill: #2563A8; stroke-dasharray: 7 5; }
+.lv-chart text.s0, .lv-chart text.s1, .lv-chart text.s2 { stroke: none; font-size: 13px; font-weight: 800; font-family: var(--f-body); }
+.lv-chart polyline.s0, .lv-chart polyline.s1, .lv-chart polyline.s2 { fill: none; }
+.lv-chart .cd { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
+.lv-chart .cm { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.lv-chart .cml { fill: var(--ink); font-size: 12.5px; font-weight: 700; font-family: var(--f-body); }
+.lv-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 6px; align-items: stretch; }
+.lv-flow li { display: flex; gap: 8px; align-items: center; background: var(--accent-soft); border-radius: 10px; padding: 8px 12px; font-weight: 600; font-size: .94rem; position: relative; }
+.lv-flow li:not(:last-child)::after { content: "→"; margin-left: 6px; color: var(--accent); font-weight: 800; }
+.lv-flow .n { background: var(--accent); color: var(--accent-ink); border-radius: 999px; min-width: 22px; height: 22px; display: inline-grid; place-items: center; font-size: .78rem; flex: none; }
+.lv-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; justify-items: center; }
+.lv-layers li { width: max(var(--w), 260px); max-width: 100%; box-sizing: border-box; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 10px; padding: 8px 12px; text-align: center; display: grid; gap: 2px; }
+.lv-layers li:first-child { background: var(--accent); color: var(--accent-ink); }
+.lv-layers li span { font-size: .86rem; }
+.lv-table { overflow-x: auto; }
+.lv-table table { border-collapse: collapse; width: 100%; font-size: .92rem; min-width: 420px; }
+.lv-table th, .lv-table td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+.lv-table thead th { background: var(--accent-soft); }
+.lv-table tbody th { background: var(--sunk); font-weight: 700; }
+.lfaded li.blank { color: var(--muted); }
+.lfaded ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.lrecap { display: grid; gap: 10px; }
+.lrecap textarea { width: 100%; box-sizing: border-box; resize: vertical; font: inherit; }
+.lkeys { display: grid; gap: 6px; }
+.lkeys label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.lkeys input { margin-top: 4px; accent-color: var(--accent); }
+.lresult { border-radius: var(--r); padding: 14px 16px; display: grid; gap: 8px; }
+.lresult.ok { background: var(--good-soft); }
+.lresult.no { background: var(--warn-soft); }
+.lresult p { margin: 0; }
+.lclose { gap: 18px; }
+.lesson2 .lsec, .lesson2 .lhook { scroll-margin-top: 130px; }
+
 </style>
 
 <header class="bar"><div class="wrap">
@@ -3800,7 +3863,7 @@ body::before { opacity: .8; }
           h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [[false, "Normalnie · EN", "Pełna wersja po angielsku, jak na zajęciach i zaliczeniu"], [true, "Prościej · PL", "Prosty język po polsku, z przykładami"]].map(([v, l, t]) => h("button", { type: "button", title: t, "aria-pressed": String(simple === v), onclick: () => { S.route = { ...S.route, simple: v }; render(); } }, l))),
           !simple && !lessonMode && concepts.length ? h("span", { class: "muted", style: "font-size:.84rem", text: "Podkreślone pojęcia: kliknij, żeby zobaczyć definicję" }) : null),
         simple ? simplePanel(m, c)
-          : lessonMode && c.lesson ? lessonPanel(m, c.lesson)
+          : lessonMode && c.lesson ? (c.lesson.v2 ? lessonPanel2 : lessonPanel)(m, c.lesson)
           : c.topics?.length ? studyPanel(m, c, used)
           : h("div", { class: "stack" }, h("p", { class: "tldr" }, termify(c.tldr, concepts, used))),
         !simple && notes.length ? h("section", { class: "remember" }, h("h2", { text: "Co zapamiętać" }), h("ul", {}, notes.map((n) => h("li", {}, h("span", { text: n.point }), " ", slideRef(m.id, n))))) : null,
@@ -3858,6 +3921,235 @@ body::before { opacity: .8; }
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn " + (done ? "ghost" : "sun"), onclick: () => { const d = { ...(S.progress.done || {}) }; if (done) delete d[m.id]; else d[m.id] = Date.now(); saveProgress({ done: d }); render(); } }, done ? "✓ Przerobione (cofnij)" : "Oznacz lekcję jako przerobioną")),
     );
+  }
+
+
+  // ================= Lekcja v2: nauka na zrozumienie =================
+  // Zagadka → „zanim zaczniesz” → sekcje po kolei (intuicja, tekst, rysunek, przykład krok po kroku, typowy błąd,
+  // pytanie kontrolne, „nie rozumiem”) → ćwiczenia stopniowane → zamknięcie (rozwiązanie zagadki, własne słowa, bilet wyjścia).
+  // Bilet wyjścia (min. 2 z 3) oznacza lekcję jako opanowaną; przy słabszym wyniku fiszki lekcji trafiają do powtórek.
+  const escX = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function niceTicks(lo, hi, n = 5) {
+    if (!(hi > lo)) { hi = lo + 1; }
+    const raw = (hi - lo) / n, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p;
+    const step = (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p;
+    const a = Math.floor(lo / step) * step, out = [];
+    for (let v = a; v <= hi + step * 1e-9; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  const lvNum = (v) => Math.abs(v) >= 1000 ? Math.round(v).toLocaleString(EN ? "en-GB" : "pl-PL") : String(+v.toFixed(2)).replace(".", EN ? "." : ",");
+  function chartSvg(v) {
+    const W = 560, H = 300, L = 56, R = 16, T = 18, B = 44;
+    const S2 = (v.series || []).filter((s) => (s.points || []).length >= 2);
+    const pts = S2.flatMap((s) => s.points).concat((v.marks || []).map((m) => [m.x, m.y]));
+    if (!pts.length) return "";
+    let x0 = Math.min(...pts.map((p) => p[0])), x1 = Math.max(...pts.map((p) => p[0]));
+    let y0 = Math.min(0, ...pts.map((p) => p[1])), y1 = Math.max(...pts.map((p) => p[1]));
+    const xt = niceTicks(x0, x1), yt = niceTicks(y0, y1);
+    x0 = Math.min(x0, xt[0]); x1 = Math.max(x1, xt[xt.length - 1]); y0 = Math.min(y0, yt[0]); y1 = Math.max(y1, yt[yt.length - 1]);
+    const X = (x) => L + ((x - x0) / (x1 - x0 || 1)) * (W - L - R), Y = (y) => H - B - ((y - y0) / (y1 - y0 || 1)) * (H - T - B);
+    const grid = yt.map((t) => `<line x1="${L}" x2="${W - R}" y1="${Y(t)}" y2="${Y(t)}" class="cg"/><text x="${L - 6}" y="${Y(t) + 4}" text-anchor="end" class="ct">${escX(lvNum(t))}</text>`).join("")
+      + xt.map((t) => `<text x="${X(t)}" y="${H - B + 16}" text-anchor="middle" class="ct">${escX(lvNum(t))}</text>`).join("");
+    const axes = `<line x1="${L}" x2="${W - R}" y1="${Y(y0)}" y2="${Y(y0)}" class="ca"/><line x1="${L}" x2="${L}" y1="${T}" y2="${H - B}" class="ca"/>`
+      + `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle" class="cl">${escX(v.x || "")}</text>`
+      + `<text transform="translate(14 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle" class="cl">${escX(v.y || "")}</text>`;
+    const lines = S2.map((s, i) => `<polyline class="cs s${i}" points="${s.points.map((p) => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ")}"/>`
+      + `<text x="${Math.min(W - R - 2, X(s.points[s.points.length - 1][0]))}" y="${Y(s.points[s.points.length - 1][1]) - 7}" text-anchor="end" class="cn s${i}">${escX(s.name || "")}</text>`).join("");
+    const marks = (v.marks || []).map((m) => `<line x1="${X(m.x)}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(y0)}" class="cd"/><line x1="${L}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(m.y)}" class="cd"/><circle cx="${X(m.x)}" cy="${Y(m.y)}" r="5" class="cm"/>`
+      + `<text x="${X(m.x) + 8}" y="${Y(m.y) - 8}" class="cml">${escX(m.label || "")}</text>`).join("");
+    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${escX(v.title || "Wykres")}" xmlns="http://www.w3.org/2000/svg">${grid}${axes}${lines}${marks}</svg>`;
+  }
+  function visualBlock(v) {
+    if (!v || !v.type) return null;
+    let body = null;
+    if (v.type === "chart") { body = h("div", { class: "lv-chart" }); body.innerHTML = chartSvg(v); }
+    else if (v.type === "flow") body = h("ol", { class: "lv-flow" }, (v.steps || []).map((s, i) => h("li", {}, h("span", { class: "n num", text: i + 1 }), h("span", {}, inline(s)))));
+    else if (v.type === "layers") body = h("ol", { class: "lv-layers" }, (v.items || []).map((it, i, a) => h("li", { style: `--w:${100 - (i * 40) / Math.max(1, a.length - 1)}%` }, h("b", {}, inline(it.t)), it.d ? h("span", {}, inline(it.d)) : null)));
+    else if (v.type === "compare") body = h("div", { class: "lv-table" }, h("table", {},
+      h("thead", {}, h("tr", {}, (v.cols || []).map((c) => h("th", { scope: "col" }, inline(c))))),
+      h("tbody", {}, (v.rows || []).map((r) => h("tr", {}, r.map((c, i) => i ? h("td", {}, inline(c)) : h("th", { scope: "row" }, inline(c))))))));
+    if (!body) return null;
+    return h("figure", { class: "lvis" }, v.title ? h("figcaption", {}, inline(v.title)) : null, body, v.note ? h("p", { class: "lv-note" }, inline(v.note)) : null);
+  }
+  // Pytanie z natychmiastową odpowiedzią. st.ans[key] = wybrana odpowiedź.
+  function mcBlock(q, st, key, opts = {}) {
+    const picked = st.ans[key], done = picked != null, ok = done && picked === q.correct;
+    return h("div", { class: "lq" + (opts.cls ? " " + opts.cls : "") },
+      opts.label ? h("span", { class: "eyebrow", text: opts.label }) : null,
+      h("p", { class: "q" }, inline(q.q)),
+      h("div", { class: "opts" }, q.options.map((o, i) => h("button", {
+        type: "button", disabled: done ? true : null,
+        class: "opt" + (done && i === q.correct ? " right" : "") + (done && i === picked && !ok ? " wrong" : ""),
+        onclick: () => { st.ans[key] = i; lnSave(st); opts.onAnswer?.(i === q.correct, i); render(); },
+      }, h("span", { class: "k", text: "ABCD"[i] }), h("span", {}, inline(o))))),
+      done ? h("div", { class: "why" },
+        h("span", { class: "verdict " + (ok ? "ok" : "no"), text: ok ? "Dobrze!" : `Nie tym razem. Poprawna odpowiedź to ${"ABCD"[q.correct]}.` }),
+        h("p", {}, inline(q.why || "")),
+        !ok && q.not?.[picked] ? h("div", { class: "not" }, h("span", { class: "lbl", text: `Czemu nie ${"ABCD"[picked]}?` }), h("p", {}, inline(q.not[picked]))) : null,
+        opts.after ? opts.after(ok) : null) : null);
+  }
+  const lnKey = (id) => "bm-ln:" + id;
+  function lnState(m, L) {
+    if (S.route.ln?.id === m.id) return S.route.ln;
+    let saved = null; try { saved = JSON.parse(ls.get(lnKey(m.id)) || "null"); } catch {}
+    const mastered = !!S.progress?.mastery?.[m.id]?.ok;
+    S.route.ln = { id: m.id, pos: saved?.pos ?? (mastered ? 99 : 0), ans: saved?.ans || {}, steps: saved?.steps || {}, recap: saved?.recap || "", recapShown: !!saved?.recapShown, keys: saved?.keys || {} };
+    return S.route.ln;
+  }
+  function lnSave(st) { try { ls.set(lnKey(st.id), JSON.stringify({ pos: st.pos, ans: st.ans, steps: st.steps, recap: st.recap, recapShown: st.recapShown, keys: st.keys })); } catch {} }
+  function scrollToId(id) { requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })); }
+
+  function lessonPanel2(m, L) {
+    const lsList = lessonsOf(m.subjectId);
+    const st = lnState(m, L);
+    const secs = L.sections || [], N = secs.length;
+    const all = st.pos >= 99;
+    const shown = all ? N : Math.min(st.pos, N); // ile sekcji widać (0 = tylko wstęp)
+    const finishedSecs = shown >= N;
+    const mast = S.progress?.mastery?.[m.id];
+    const reveal = (k) => { st.pos = Math.max(st.pos, k); lnSave(st); render(); scrollToId(k <= N ? `lsec-${k - 1}` : "lpractice"); };
+    const checksOk = secs.filter((s, k) => s.check && st.ans["c" + k] === s.check.correct).length;
+    const checksDone = secs.filter((s, k) => s.check && st.ans["c" + k] != null).length;
+
+    const bar = h("div", { class: "lprog" },
+      h("div", { class: "progress", "aria-hidden": "true" }, h("i", { style: `width:${Math.round((100 * (finishedSecs ? N + 1 : shown)) / (N + 1))}%` })),
+      h("div", { class: "row muted num", style: "font-size:.84rem;justify-content:space-between" },
+        h("span", { text: finishedSecs ? (mast?.ok ? "Lekcja opanowana" : "Ćwiczenia i bilet wyjścia") : shown ? `Część ${shown} z ${N}` : "Wstęp" }),
+        checksDone ? h("span", { text: `Pytania kontrolne: ${checksOk}/${checksDone}` }) : null,
+        h("button", { type: "button", class: "link", style: "font-size:.84rem", onclick: () => { st.pos = all ? Math.max(1, Math.min(N, Object.keys(st.ans).filter((k) => k[0] === "c").length + 1)) : 99; lnSave(st); render(); } }, all ? "Ucz się krok po kroku" : "Pokaż całą lekcję")));
+
+    // --- wstęp: zagadka i „zanim zaczniesz”
+    const hook = L.hook ? h("section", { class: "lhook" },
+      h("span", { class: "eyebrow", text: "Zagadka na start" }),
+      h("p", { class: "q" }, inline(L.hook.q)),
+      L.hook.options?.length ? h("div", { class: "row", style: "gap:8px" },
+        h("span", { class: "muted", style: "font-size:.86rem", text: "Jak myślisz?" }),
+        L.hook.options.map((o, i) => h("button", { type: "button", class: "fchip", "aria-pressed": String(st.ans.hook === i), onclick: () => { st.ans.hook = i; lnSave(st); render(); } }, inline(o)))) : null,
+      h("p", { class: "muted", style: "font-size:.86rem", text: st.ans.hook != null ? "Zapisane. Odpowiedź poznasz na końcu lekcji." : "Nie musisz wiedzieć. Zgadnij, a na końcu sprawdzisz, czy miałeś rację." })) : null;
+    const prereq = (L.prereq || []).length ? h("section", { class: "lpre stack" },
+      h("h2", { text: "Zanim zaczniesz" }),
+      h("p", { class: "muted", text: "Dwa szybkie pytania z tego, na czym ta lekcja się opiera." }),
+      L.prereq.map((q, i) => mcBlock(q, st, "p" + i, { after: (ok) => !ok && q.link && materialById(q.link) ? h("p", {}, h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: q.link, tab: "lekcja" }) }, `Powtórz: ${materialById(q.link).title} →`)) : null }))) : null;
+
+    // --- sekcje
+    const secEls = secs.slice(0, shown).map((sec, k) => {
+      const exSteps = sec.example?.steps || [], exKey = "e" + k, nShown = all ? exSteps.length : (st.steps[exKey] ?? 0);
+      const exAll = nShown >= exSteps.length;
+      const wrongCheck = sec.check && st.ans["c" + k] != null && st.ans["c" + k] !== sec.check.correct;
+      return h("section", { class: "lsec", id: `lsec-${k}` },
+        h("h2", {}, h("span", { class: "n", text: k + 1 }), h("span", { text: String(sec.h).replace(/^\s*\d+[.)]\s*/, "") })),
+        sec.intuition ? h("div", { class: "lintu" }, h("span", { class: "eyebrow", text: "Najpierw intuicja" }), h("p", {}, inline(sec.intuition))) : null,
+        rich(sec.body),
+        visualBlock(sec.visual),
+        sec.example ? h("div", { class: "example" },
+          h("span", { class: "eyebrow", text: exAll ? "Przykład" : "Przykład · spróbuj sam" }),
+          h("div", { class: "task" }, inline(sec.example.task)),
+          !exAll && nShown === 0 ? h("p", { class: "muted", style: "font-size:.9rem", text: "Zatrzymaj się na chwilę i spróbuj rozwiązać sam (w głowie albo na kartce). Potem odsłaniaj kroki po jednym." }) : null,
+          nShown ? h("ol", {}, exSteps.slice(0, nShown).map((x) => h("li", {}, inline(x)))) : null,
+          !exAll ? h("div", { class: "row" },
+            h("button", { type: "button", class: "btn small", onclick: () => { st.steps[exKey] = nShown + 1; lnSave(st); render(); } }, nShown ? "Następny krok" : "Pokaż pierwszy krok"),
+            h("button", { type: "button", class: "btn small ghost", onclick: () => { st.steps[exKey] = exSteps.length; lnSave(st); render(); } }, "Pokaż całe rozwiązanie")) : null,
+          exAll && sec.example.answer ? h("div", { class: "ans" }, h("b", { text: "Wynik: " }), inline(sec.example.answer)) : null) : null,
+        sec.mistake ? h("div", { class: "lmistake" },
+          h("span", { class: "eyebrow", text: "⚠ Typowy błąd" }),
+          h("p", { class: "wrong" }, h("b", { text: "Myślisz: " }), inline(sec.mistake.wrong)),
+          h("p", {}, h("b", { text: "Dlaczego to źle: " }), inline(sec.mistake.why)),
+          h("p", { class: "right" }, h("b", { text: "Tak jest dobrze: " }), inline(sec.mistake.right))) : null,
+        sec.tip ? h("div", { class: "tip" }, h("b", { text: "Na egzaminie: " }), inline(sec.tip)) : null,
+        sec.check ? mcBlock(sec.check, st, "c" + k, { label: "✓ Sprawdź się", cls: "lcheck" }) : null,
+        sec.simple ? h("details", { class: "lsimple", open: wrongCheck ? true : null },
+          h("summary", { text: wrongCheck ? "Nie łapiesz? Tu to samo prościej, po polsku" : "Nie rozumiem: wyjaśnij prościej (PL)" }),
+          h("div", {}, inline(sec.simple))) : null,
+        !all && k === shown - 1 ? h("div", { class: "step-next" },
+          sec.check && st.ans["c" + k] == null ? h("span", { class: "muted", style: "font-size:.88rem", text: "Odpowiedz na pytanie kontrolne, żeby iść dalej." }) : null,
+          h("button", { type: "button", class: "btn primary", disabled: sec.check && st.ans["c" + k] == null ? true : null, onclick: () => reveal(k + 2) },
+            k + 1 < N ? `Dalej: część ${k + 2} z ${N} →` : "Dalej: ćwiczenia →")) : null);
+    });
+    const start = !all && shown === 0 ? h("div", { class: "step-next" }, h("button", { type: "button", class: "btn primary", onclick: () => reveal(1) }, `Zaczynamy: część 1 z ${N} →`)) : null;
+
+    // --- ćwiczenia stopniowane, zamknięcie, bilet wyjścia
+    let practice = null, closing = null;
+    if (finishedSecs) {
+      const fd = L.faded, fdKey = "f";
+      const exs = (L.exercises || []).map((ex, i) => ({ ...ex, level: ex.level || 2, i })).sort((a, b) => a.level - b.level);
+      const lvlName = { 2: "Poziom 2 · samodzielnie", 3: "Poziom 3 · trudniejsze" };
+      const exBox = (ex, label, n) => h("div", { class: "exercise" },
+        h("span", { class: "eyebrow", text: label }),
+        h("div", {}, h("b", { text: `Zadanie ${n}. ` }), inline(ex.task)),
+        h("div", { class: "row", style: "align-items:flex-start;gap:18px" },
+          ex.hint ? h("details", {}, h("summary", { text: "Podpowiedź" }), h("div", {}, inline(ex.hint))) : null,
+          h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inline(ex.answer)))));
+      let n = 0;
+      practice = h("section", { class: "lsec", id: "lpractice" },
+        h("h2", { text: "Ćwiczenia: od łatwiejszych do trudniejszych" }),
+        h("p", { class: "muted", text: "Najpierw spróbuj samodzielnie. Podpowiedź i odpowiedź odsłaniasz kliknięciem." }),
+        fd ? h("div", { class: "exercise lfaded" },
+          h("span", { class: "eyebrow", text: "Poziom 1 · rozwiązanie z lukami" }),
+          h("div", {}, h("b", { text: `Zadanie ${++n}. ` }), inline(fd.task)),
+          h("ol", {}, (fd.steps || []).map((x, j) => {
+            const open = !x.blank || st.steps[fdKey + j];
+            return h("li", { class: x.blank ? "blank" : null }, open ? inline(x.text)
+              : h("span", {}, h("span", { class: "muted", text: "Twój ruch: zrób ten krok sam. " }), h("button", { type: "button", class: "link", onclick: () => { st.steps[fdKey + j] = 1; lnSave(st); render(); } }, "Sprawdź")));
+          })),
+          h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inline(fd.answer)))) : null,
+        exs.map((ex) => exBox(ex, lvlName[ex.level] || lvlName[2], ++n)),
+        L.transfer ? exBox(L.transfer, "Poziom 3 · nowa sytuacja", ++n) : null);
+
+      const X = L.exit || [];
+      const exitDone = X.length && X.every((_, i) => st.ans["x" + i] != null);
+      const exitOk = X.filter((q, i) => st.ans["x" + i] === q.correct).length;
+      const weak = [...new Set(X.map((q, i) => (st.ans["x" + i] != null && st.ans["x" + i] !== q.correct ? q.sec : null)).filter((x) => x != null))];
+      const pass = exitDone && exitOk >= Math.min(2, X.length);
+      const finishExit = () => {
+        const done2 = X.every((_, i) => st.ans["x" + i] != null); if (!done2) return;
+        const okN = X.filter((q, i) => st.ans["x" + i] === q.correct).length, ok = okN >= Math.min(2, X.length);
+        const mastery = { ...(S.progress.mastery || {}), [m.id]: { ok, score: okN, total: X.length, at: Date.now(), weak: X.map((q, i) => (st.ans["x" + i] !== q.correct ? q.sec : null)).filter((x) => x != null) } };
+        const patch = { mastery };
+        if (ok) patch.done = { ...(S.progress.done || {}), [m.id]: Date.now() };
+        saveProgress(patch);
+        if (!ok) { const cards = S.content[m.id]?.flashcards || []; const added = srsAdd(cards.map((c) => cardKey(m.id, c))); if (added) toast("Fiszki z tej lekcji czekają w „Dziś do powtórki”."); }
+      };
+      const hookPick = st.ans.hook;
+      closing = h("section", { class: "lsec lclose", id: "lclose" },
+        h("h2", { text: "Zamknięcie lekcji" }),
+        L.hook ? h("div", { class: "lhook done" },
+          h("span", { class: "eyebrow", text: "Wracamy do zagadki" }),
+          h("p", { class: "q" }, inline(L.hook.q)),
+          hookPick != null && L.hook.options ? h("p", { class: "muted", style: "font-size:.88rem" }, "Twój strzał na początku: ", inline(L.hook.options[hookPick])) : null,
+          h("p", {}, inline(L.hook.reveal))) : null,
+        L.recap ? h("div", { class: "lrecap" },
+          h("span", { class: "eyebrow", text: "Wyjaśnij własnymi słowami" }),
+          h("p", { class: "q" }, inline(L.recap.prompt)),
+          h("textarea", { class: "input", rows: "4", maxlength: "1500", placeholder: "Napisz 2–3 zdania, jakbyś tłumaczył to koledze. Możesz po polsku.", oninput: (e) => { st.recap = e.target.value; lnSave(st); } }, st.recap || ""),
+          !st.recapShown ? h("div", {}, h("button", { type: "button", class: "btn small", onclick: () => { st.recapShown = true; lnSave(st); render(); } }, "Porównaj z wzorem")) : h("div", { class: "stack", style: "gap:8px" },
+            h("p", { class: "muted", style: "font-size:.88rem", text: "Zaznacz, co masz w swojej odpowiedzi:" }),
+            h("div", { class: "lkeys" }, (L.recap.keys || []).map((kk, i) => h("label", {}, h("input", { type: "checkbox", checked: st.keys[i] ? true : null, onchange: (e) => { st.keys[i] = e.target.checked; lnSave(st); } }), h("span", {}, inline(kk))))),
+            h("details", {}, h("summary", { text: "Wzorcowa odpowiedź" }), h("p", {}, inline(L.recap.model))))) : null,
+        X.length ? h("div", { class: "stack lexit" },
+          h("h2", { text: "Bilet wyjścia" }),
+          h("p", { class: "muted", text: `${X.length} pytania na zastosowanie. Co najmniej 2 dobre odpowiedzi i lekcja jest opanowana.` }),
+          X.map((q, i) => mcBlock(q, st, "x" + i, { label: `Pytanie ${i + 1} z ${X.length}`, onAnswer: () => setTimeout(finishExit, 0) })),
+          exitDone ? h("div", { class: "lresult " + (pass ? "ok" : "no") },
+            h("p", { class: "rv-big" }, h("b", { class: "num", text: `${exitOk}/${X.length}` }), pass ? " Lekcja opanowana ✓" : " Jeszcze nie opanowana"),
+            pass ? h("p", { text: weak.length ? "Dobra robota. Jedno pytanie nie wyszło, więc rzuć okiem na tę część:" : "Rozumiesz ten temat. Fiszki i quiz pomogą go utrwalić." })
+              : h("p", { text: "Nic straconego. Wróć do tych części, a fiszki z lekcji dodałem do powtórek:" }),
+            weak.length ? h("div", { class: "row" }, weak.map((k) => h("button", { type: "button", class: "btn small", onclick: () => scrollToId(`lsec-${k}`) }, `Część ${k + 1}: ${String(secs[k]?.h || "").replace(/^\s*\d+[.)]\s*/, "")}`))) : null,
+            h("div", { class: "row" },
+              !pass ? h("button", { type: "button", class: "btn ghost", onclick: () => { X.forEach((_, i) => delete st.ans["x" + i]); lnSave(st); render(); scrollToId("lclose"); } }, "Spróbuj biletu jeszcze raz") : null)) : null) : null);
+    }
+
+    const doneManual = !!S.progress?.done?.[m.id];
+    return h("div", { class: "lesson lesson2" },
+      bar,
+      h("p", { class: "lesson-intro" }, inline(L.intro)),
+      shown === 0 || all ? [hook, prereq] : [hook && st.ans.hook == null ? hook : null],
+      start,
+      secEls,
+      finishedSecs && L.formulas?.length ? h("section", { class: "lsec" }, h("h2", { text: L.cheatTitle || "Ściągawka: najważniejsze wzory" }), h("div", { class: "formulas" }, L.formulas.map((f) => h("div", {}, inline(f))))) : null,
+      practice,
+      closing,
+      finishedSecs && !mast?.ok ? h("div", { class: "row" },
+        h("button", { type: "button", class: "btn small ghost", onclick: () => { const d = { ...(S.progress.done || {}) }; if (doneManual) delete d[m.id]; else d[m.id] = Date.now(); saveProgress({ done: d }); render(); } }, doneManual ? "✓ Oznaczona jako przerobiona (cofnij)" : "Oznacz jako przerobioną bez biletu")) : null);
   }
 
   // x: numer slajdu albo obiekt z polami slides: [od, do] / slide.
