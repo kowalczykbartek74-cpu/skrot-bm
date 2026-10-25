@@ -1496,6 +1496,11 @@ body::before { opacity: .8; }
 .lv-chart polyline.s0, .lv-chart polyline.s1, .lv-chart polyline.s2 { fill: none; }
 .lv-chart .cd { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
 .lv-chart .cm { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.lv-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .88rem; }
+.lv-legend span { display: inline-flex; gap: 8px; align-items: center; }
+.lv-legend .sw { width: 18px; height: 0; border-top: 3px solid var(--accent); flex: none; }
+.lv-legend .sw.s1 { border-color: #B45309; }
+.lv-legend .sw.s2 { border-color: #2563A8; border-top-style: dashed; }
 .lv-chart .cml { fill: var(--ink); font-size: 12.5px; font-weight: 700; font-family: var(--f-body); }
 .lv-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 6px; align-items: stretch; }
 .lv-flow li { display: flex; gap: 8px; align-items: center; background: var(--accent-soft); border-radius: 10px; padding: 8px 12px; font-weight: 600; font-size: .94rem; position: relative; }
@@ -3939,7 +3944,7 @@ body::before { opacity: .8; }
   }
   const lvNum = (v) => Math.abs(v) >= 1000 ? Math.round(v).toLocaleString(EN ? "en-GB" : "pl-PL") : String(+v.toFixed(2)).replace(".", EN ? "." : ",");
   function chartSvg(v) {
-    const W = 560, H = 300, L = 56, R = 16, T = 18, B = 44;
+    const narrow = (window.innerWidth || 800) < 640, W = narrow ? 360 : 560, H = narrow ? 260 : 300, L = 50, R = 12, T = 16, B = 42;
     const S2 = (v.series || []).filter((s) => (s.points || []).length >= 2);
     const pts = S2.flatMap((s) => s.points).concat((v.marks || []).map((m) => [m.x, m.y]));
     if (!pts.length) return "";
@@ -3954,15 +3959,19 @@ body::before { opacity: .8; }
       + `<text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle" class="cl">${escX(v.x || "")}</text>`
       + `<text transform="translate(14 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle" class="cl">${escX(v.y || "")}</text>`;
     const lines = S2.map((s, i) => `<polyline class="cs s${i}" points="${s.points.map((p) => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ")}"/>`
-      + `<text x="${Math.min(W - R - 2, X(s.points[s.points.length - 1][0]))}" y="${Y(s.points[s.points.length - 1][1]) - 7}" text-anchor="end" class="cn s${i}">${escX(s.name || "")}</text>`).join("");
-    const marks = (v.marks || []).map((m) => `<line x1="${X(m.x)}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(y0)}" class="cd"/><line x1="${L}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(m.y)}" class="cd"/><circle cx="${X(m.x)}" cy="${Y(m.y)}" r="5" class="cm"/>`
-      + `<text x="${X(m.x) + 8}" y="${Y(m.y) - 8}" class="cml">${escX(m.label || "")}</text>`).join("");
+).join("");
+    const marks = (v.marks || []).map((m, i) => `<line x1="${X(m.x)}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(y0)}" class="cd"/><line x1="${L}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(m.y)}" class="cd"/><circle cx="${X(m.x)}" cy="${Y(m.y)}" r="5" class="cm"/>`
+      + `<text x="${X(m.x) + (X(m.x) > (L + W - R) / 2 ? -9 : 9)}" y="${Y(m.y) + (i % 2 ? 18 : -9)}" text-anchor="${X(m.x) > (L + W - R) / 2 ? "end" : "start"}" class="cml">${escX(m.label || "")}</text>`).join("");
     return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${escX(v.title || "Wykres")}" xmlns="http://www.w3.org/2000/svg">${grid}${axes}${lines}${marks}</svg>`;
   }
   function visualBlock(v) {
     if (!v || !v.type) return null;
     let body = null;
-    if (v.type === "chart") { body = h("div", { class: "lv-chart" }); body.innerHTML = chartSvg(v); }
+    if (v.type === "chart") {
+      const svg = h("div", { class: "lv-chart" }); svg.innerHTML = chartSvg(v);
+      const named = (v.series || []).filter((x) => x.name);
+      body = [svg, named.length ? h("div", { class: "lv-legend" }, (v.series || []).map((x, i) => x.name ? h("span", {}, h("i", { class: "sw s" + i, "aria-hidden": "true" }), inline(x.name)) : null)) : null];
+    }
     else if (v.type === "flow") body = h("ol", { class: "lv-flow" }, (v.steps || []).map((s, i) => h("li", {}, h("span", { class: "n num", text: i + 1 }), h("span", {}, inline(s)))));
     else if (v.type === "layers") body = h("ol", { class: "lv-layers" }, (v.items || []).map((it, i, a) => h("li", { style: `--w:${100 - (i * 40) / Math.max(1, a.length - 1)}%` }, h("b", {}, inline(it.t)), it.d ? h("span", {}, inline(it.d)) : null)));
     else if (v.type === "compare") body = h("div", { class: "lv-table" }, h("table", {},
