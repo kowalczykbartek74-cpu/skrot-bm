@@ -1804,7 +1804,7 @@ body::before { opacity: .8; }
       mb.setAttribute("aria-label", "Więcej" + (badge.more ? `, ${badge.more} ${badgeLbl.more}` : ""));
       mb.title = "Więcej: grupa, konto, słowniczek, ustawienia";
       if (active === "more") mb.setAttribute("aria-current", "page"); else mb.removeAttribute("aria-current");
-      mb.replaceChildren(icon(NAV_ICON.more), badge.more ? h("span", { class: "badge num", text: badge.more > 99 ? "99+" : badge.more }) : null);
+      mb.replaceChildren(...[icon(NAV_ICON.more), badge.more ? h("span", { class: "badge num", text: badge.more > 99 ? "99+" : badge.more }) : null].filter(Boolean));
     }
     const sk = window.skrot || {};
     $("barRight").replaceChildren(...[
