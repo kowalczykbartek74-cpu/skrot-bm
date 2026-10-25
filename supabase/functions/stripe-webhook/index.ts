@@ -1,6 +1,7 @@
 // Funkcja „stripe-webhook” dla Skrót BM: Stripe wywołuje ją po opłaceniu dostępu.
 // Sprawdza podpis Stripe i wpisuje dostęp do tabeli nauka_dostep:
-//   • plan roczny (jednorazowo 199 zł): checkout.session.completed w trybie „payment” → +365 dni,
+//   • plan „do końca 2. semestru” (jednorazowo 199 zł): checkout.session.completed w trybie „payment” → dostęp do 30 września
+//     (koniec semestru letniego i roku akademickiego; kupiony od 1 października liczy się do 30 września następnego roku),
 //   • plan miesięczny (35 zł/mies., subskrypcja): checkout.session.completed w trybie „subscription” → dostęp na start,
 //     a każda opłacona faktura (invoice.paid) przedłuża go do końca opłaconego okresu (+1 dzień zapasu).
 //     Po anulowaniu w portalu klienta nowe faktury nie przychodzą, więc dostęp sam wygasa po opłaconym miesiącu.
@@ -10,7 +11,13 @@
 import Stripe from "npm:stripe@16.12.0";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const DAYS = Number(Deno.env.get("ACCESS_DAYS") || 365);
+// Koniec 2. semestru = koniec roku akademickiego (30 września). Można nadpisać sekretem ACCESS_UNTIL, np. "2027-09-30".
+const ACCESS_UNTIL = Deno.env.get("ACCESS_UNTIL") || "";
+function semesterEnd(today: Date): string {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(ACCESS_UNTIL) && ACCESS_UNTIL >= day(today)) return ACCESS_UNTIL;
+  const y = today.getUTCFullYear() + (today.getUTCMonth() >= 9 ? 1 : 0); // od października liczy się kolejny rok akademicki
+  return `${y}-09-30`;
+}
 const MONTH_START_DAYS = 32; // zapas na start subskrypcji, zanim dojdzie pierwsza faktura
 const stripe = new Stripe("sk_unused_only_for_signature_check", { httpClient: Stripe.createFetchHttpClient() });
 const crypto = Stripe.createSubtleCryptoProvider();
@@ -117,9 +124,8 @@ Deno.serve(async (req) => {
     return json(200, { ok: true, email, do_kiedy: doKiedy, plan: "miesiac" });
   }
 
-  const from = cur?.do_kiedy && new Date(cur.do_kiedy) > today ? new Date(cur.do_kiedy) : today;
-  from.setUTCDate(from.getUTCDate() + DAYS);
-  const doKiedy = day(from);
+  // Nigdy nie skracamy już opłaconego dostępu.
+  const doKiedy = later(cur?.do_kiedy, semesterEnd(today));
 
   const { error } = await db.from("nauka_dostep").upsert({
     email, do_kiedy: doKiedy, zrodlo: "stripe", user_id: userId, stripe_session: s.id, plan: "rok", kwota_gr: s.amount_total ?? null,

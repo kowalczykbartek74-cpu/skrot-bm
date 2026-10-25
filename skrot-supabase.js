@@ -431,7 +431,7 @@
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Wybierz plan" },
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wybierz plan" }),
         el("p", { class: "muted", style: "margin:0", text: `Dostęp przypiszemy do ${skrot.email}.` }),
-        card("rok", "Cały rok", CONFIG.plans.rok.price, ["Jednorazowo, oba semestry 2026/27. Wychodzi ok. 17 zł miesięcznie.", "BLIK, karta albo Przelewy24. Nic się samo nie odnawia."], "Najtaniej"),
+        card("rok", "Do końca 2. semestru", CONFIG.plans.rok.price, ["Jednorazowo, dostęp do 30 września 2027 (koniec 2. semestru).", "BLIK, karta albo Przelewy24. Nic się samo nie odnawia."], "Najtaniej"),
         card("miesiac", "Co miesiąc", CONFIG.plans.miesiac.price, ["Odnawia się co miesiąc. Anulujesz w każdej chwili, dostęp działa do końca opłaconego miesiąca.", "Płatność kartą (także Apple Pay i Google Pay)."]),
         el("p", { class: "foot-note", style: "margin:0" }, "Płatność przez Stripe. ", el("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", el("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")),
         el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))));
