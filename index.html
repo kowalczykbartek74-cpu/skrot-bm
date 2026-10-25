@@ -1494,6 +1494,7 @@ body::before { opacity: .8; }
 .lv-chart .s2 { stroke: #2563A8; fill: #2563A8; stroke-dasharray: 7 5; }
 .lv-chart text.s0, .lv-chart text.s1, .lv-chart text.s2 { stroke: none; font-size: 13px; font-weight: 800; font-family: var(--f-body); }
 .lv-chart polyline.s0, .lv-chart polyline.s1, .lv-chart polyline.s2 { fill: none; }
+.lv-chart .cv { stroke: var(--bad); stroke-width: 1.6; stroke-dasharray: 6 5; }
 .lv-chart .cd { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
 .lv-chart .cm { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
 .lv-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .88rem; }
@@ -3960,7 +3961,7 @@ body::before { opacity: .8; }
       + `<text transform="translate(13 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle" class="cl">${escX(v.y || "")}</text>`;
     const lines = S2.map((s, i) => `<polyline class="cs s${i}" points="${s.points.map((p) => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ")}"/>`
 ).join("");
-    const marks = (v.marks || []).map((m, i) => `<line x1="${X(m.x)}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(y0)}" class="cd"/><line x1="${L}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(m.y)}" class="cd"/><circle cx="${X(m.x)}" cy="${Y(m.y)}" r="5" class="cm"/>`
+    const marks = (v.marks || []).map((m, i) => m.vline ? `<line x1="${X(m.x)}" x2="${X(m.x)}" y1="${T}" y2="${H - B}" class="cv"/><text x="${X(m.x) + 6}" y="${T + 12 + (i % 2) * 16}" class="cml">${escX(m.label || "")}</text>` : `<line x1="${X(m.x)}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(y0)}" class="cd"/><line x1="${L}" x2="${X(m.x)}" y1="${Y(m.y)}" y2="${Y(m.y)}" class="cd"/><circle cx="${X(m.x)}" cy="${Y(m.y)}" r="5" class="cm"/>`
       + `<text x="${X(m.x) + (X(m.x) > (L + W - R) / 2 ? -9 : 9)}" y="${Y(m.y) + (i % 2 ? 18 : -9)}" text-anchor="${X(m.x) > (L + W - R) / 2 ? "end" : "start"}" class="cml">${escX(m.label || "")}</text>`).join("");
     return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${escX(v.title || "Wykres")}" xmlns="http://www.w3.org/2000/svg">${grid}${axes}${lines}${marks}</svg>`;
   }
