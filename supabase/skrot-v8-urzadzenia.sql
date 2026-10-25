@@ -161,10 +161,19 @@ declare
   inne text;
 begin
   if uid is null then raise exception 'nie_zalogowany'; end if;
-  if public.nauka_admin() then return jsonb_build_object('stan', 'ok', 'admin', true); end if;
+  p_nazwa := left(coalesce(p_nazwa, ''), 60);
+  -- Starosta: bez limitu i bez jednej sesji, ale jego urządzenia też trafiają na listę („Twoje urządzenia”).
+  if public.nauka_admin() then
+    if dev is not null and not p_zwolnij then
+      insert into public.nauka_urzadzenia (user_id, device_id, nazwa, ip) values (uid, dev, p_nazwa, adres)
+        on conflict (user_id, device_id) do update
+          set nazwa = case when excluded.nazwa <> '' then excluded.nazwa else public.nauka_urzadzenia.nazwa end,
+              ip = coalesce(excluded.ip, public.nauka_urzadzenia.ip), last_seen = now(), usuniete_at = null;
+    end if;
+    return jsonb_build_object('stan', 'ok', 'admin', true);
+  end if;
   if not public.nauka_platny_konto() then return jsonb_build_object('stan', 'brak_dostepu'); end if;
   if dev is null then return jsonb_build_object('stan', 'brak_id'); end if;
-  p_nazwa := left(coalesce(p_nazwa, ''), 60);
 
   insert into public.nauka_konta (user_id, email) values (uid, public.nauka_email())
     on conflict (user_id) do update set email = excluded.email
@@ -220,7 +229,8 @@ begin
   if auth.uid() is null then raise exception 'nie_zalogowany'; end if;
   return jsonb_build_object('limit', public.nauka_urz_limit(),
     'urzadzenia', public.nauka_urz_lista(auth.uid(), public.nauka_urzadzenie_id()),
-    'zmiana_od', public.nauka_urz_zmiana_od(auth.uid()));
+    'zmiana_od', case when public.nauka_admin() then null else public.nauka_urz_zmiana_od(auth.uid()) end,
+    'admin', public.nauka_admin());
 end $$;
 
 -- Usunięcie urządzenia z listy: raz na 30 dni.
@@ -229,13 +239,15 @@ language plpgsql volatile security definer set search_path = '' as $$
 declare uid uuid := auth.uid(); od timestamptz;
 begin
   if uid is null then raise exception 'nie_zalogowany'; end if;
-  od := public.nauka_urz_zmiana_od(uid);
+  od := case when public.nauka_admin() then null else public.nauka_urz_zmiana_od(uid) end;
   if od is not null then raise exception 'za_wczesnie %', to_char(od at time zone 'Europe/Warsaw', 'YYYY-MM-DD'); end if;
   update public.nauka_urzadzenia set usuniete_at = now()
    where user_id = uid and device_id = p_device and usuniete_at is null;
   if not found then raise exception 'nie_ma'; end if;
-  insert into public.nauka_konta (user_id, email, ostatnie_usuniecie) values (uid, public.nauka_email(), now())
-    on conflict (user_id) do update set ostatnie_usuniecie = now();
+  if not public.nauka_admin() then
+    insert into public.nauka_konta (user_id, email, ostatnie_usuniecie) values (uid, public.nauka_email(), now())
+      on conflict (user_id) do update set ostatnie_usuniecie = now();
+  end if;
   update public.nauka_konta set aktywne_urzadzenie = null, aktywne_ping = null
    where user_id = uid and aktywne_urzadzenie = p_device;
   insert into public.nauka_urzadzenia_log (user_id, device_id, zdarzenie, ip) values (uid, p_device, 'usuniete', public.nauka_ip());

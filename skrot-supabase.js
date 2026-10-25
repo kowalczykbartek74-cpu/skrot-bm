@@ -51,7 +51,7 @@
   let sb = null;
   try { sb = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true, autoRefreshToken: true }, global: { headers: { "x-skrot-device": DEVICE } } }); } catch {}
 
-  const skrot = (window.skrot = { sb, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, paidAccount: false, device: null, deviceId: DEVICE, deviceName: DEVICE_NAME, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
+  const skrot = (window.skrot = { sb, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, paidAccount: false, device: null, hasPassword: false, deviceId: DEVICE, deviceName: DEVICE_NAME, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const changed = () => skrot.listeners.forEach((fn) => { try { fn(skrot.state); } catch {} });
 
@@ -65,6 +65,7 @@
       if (!session) { skrot.state = "out"; return; }
       skrot.uid = session.user.id;
       skrot.email = (session.user.email || "").toLowerCase();
+      skrot.hasPassword = !!session.user.user_metadata?.haslo;
       token = session.access_token;
       await refreshMe();
       skrot.state = "in";
@@ -94,6 +95,10 @@
   });
 
   skrot.logout = async () => { try { await sb?.auth.signOut(); } catch {} location.reload(); };
+  skrot.loginPassword = async (email, password) => {
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  };
   skrot.sendLink = async (email) => {
     const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + "/", shouldCreateUser: true } });
     if (error) throw error;
@@ -286,6 +291,8 @@
   // Logowanie kodem z maila. Adres, na który poszedł kod, zapamiętujemy na godzinę (tyle kod jest ważny):
   // na telefonie przejście do aplikacji pocztowej często przeładowuje stronę i okno z polem na kod znikało.
   const PENDING = "skrot-login-pending";
+  const MODE = "skrot-login-mode"; // ostatnio użyty sposób: "kod" albo "haslo"
+  const LAST_EMAIL = "skrot-login-email";
   const pending = {
     get: () => { try { const p = JSON.parse(ls.get(PENDING) || "null"); return p && p.email && Date.now() - p.t < 60 * 60 * 1000 ? p : null; } catch { return null; } },
     set: (email, reason) => ls.set(PENDING, JSON.stringify({ email, reason: reason || null, t: Date.now() })),
@@ -314,6 +321,7 @@
           const { error } = await sb.auth.verifyOtp({ email, token, type: "email" });
           if (error) throw error;
           pending.clear();
+          ls.set("skrot-offer-pass", "1");
           // Zwykle przeładowuje już onAuthStateChange (SIGNED_IN); to tylko zapas.
           setTimeout(() => location.reload(), 1500);
         } catch (x) {
@@ -335,10 +343,59 @@
       setTimeout(() => code.focus(), 30);
     };
 
+    // Logowanie hasłem (hasło ustawia się po pierwszym zalogowaniu kodem: Więcej → Hasło do logowania).
+    const passStep = () => {
+      inCode = false;
+      ls.set(MODE, "haslo");
+      const err = el("p", { class: "notice err", hidden: "" });
+      const input = el("input", { class: "input", id: "skrot-login-email", type: "email", autocomplete: "username", inputmode: "email", required: "", placeholder: "np. 123456@stud.usz.edu.pl", value: ls.get(LAST_EMAIL) || pending.get()?.email || null });
+      const pass = el("input", { class: "input", id: "skrot-login-pass", type: "password", autocomplete: "current-password", required: "", placeholder: "Twoje hasło" });
+      const btn = el("button", { type: "submit", class: "btn primary" }, "Zaloguj się");
+      const form = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
+        e.preventDefault();
+        const email = input.value.trim().toLowerCase();
+        const show = (t) => { err.textContent = t; err.hidden = false; };
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Wpisz poprawny adres e-mail.");
+        if (!pass.value) return show("Wpisz hasło.");
+        btn.disabled = true;
+        try {
+          await skrot.loginPassword(email, pass.value);
+          ls.set(LAST_EMAIL, email); pending.clear();
+          setTimeout(() => location.reload(), 1500);
+        } catch (x) {
+          btn.disabled = false;
+          const m = x?.message || "";
+          show(/invalid login|credentials/i.test(m) ? "Zły e-mail albo hasło. Nie ustawiłeś jeszcze hasła? Zaloguj się kodem z maila, a potem ustaw je w Więcej → Hasło do logowania."
+            : /rate|limit|seconds|too many/i.test(m) ? "Za dużo prób logowania. Odczekaj chwilę i spróbuj ponownie."
+            : /not confirmed/i.test(m) ? "Ten adres nie jest jeszcze potwierdzony. Zaloguj się raz kodem z maila."
+            : "Nie udało się zalogować. Spróbuj ponownie za chwilę.");
+        }
+      } },
+        el("label", { for: "skrot-login-email", style: "display:grid;gap:6px;font-weight:700" }, "E-mail", input),
+        el("label", { for: "skrot-login-pass", style: "display:grid;gap:6px;font-weight:700" }, "Hasło", pass),
+        err, btn);
+      body.replaceChildren(...[
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
+        reason ? el("p", { class: "muted", style: "margin:0", text: reason }) : null,
+        modeSwitch("haslo"),
+        form,
+        el("button", { type: "button", class: "btn ghost", onclick: () => emailStep() }, "Nie pamiętam hasła: wyślij kod na maila"),
+        el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"),
+      ].filter(Boolean));
+      setTimeout(() => (input.value ? pass : input).focus(), 30);
+    };
+    // Dwie zakładki nad formularzem.
+    const modeSwitch = (now) => {
+      const tab = (mode, label, go) => el("button", { type: "button", role: "tab", "aria-selected": String(now === mode), class: "btn small" + (now === mode ? " primary" : " ghost"), style: "flex:1", onclick: () => { if (now !== mode) go(); } }, label);
+      return el("div", { role: "tablist", "aria-label": "Sposób logowania", style: "display:flex;gap:6px" },
+        tab("kod", "Kod z maila", () => emailStep()), tab("haslo", "Hasło", () => passStep()));
+    };
+
     const emailStep = () => {
       inCode = false;
+      ls.set(MODE, "kod");
       const err = el("p", { class: "notice err", hidden: "" });
-      const input = el("input", { class: "input", id: "skrot-login-email", type: "email", autocomplete: "email", inputmode: "email", required: "", placeholder: "np. 123456@stud.usz.edu.pl" });
+      const input = el("input", { class: "input", id: "skrot-login-email", type: "email", autocomplete: "email", inputmode: "email", required: "", placeholder: "np. 123456@stud.usz.edu.pl", value: ls.get(LAST_EMAIL) || null });
       const btn = el("button", { type: "submit", class: "btn primary" }, "Wyślij kod");
       const form = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
         e.preventDefault();
@@ -349,6 +406,7 @@
         try { await skrot.sendLink(email); }
         catch (x) { btn.disabled = false; return show(/rate|limit|seconds/i.test(x?.message || "") ? "Za dużo prób logowania. Odczekaj chwilę i spróbuj ponownie." : "Nie udało się wysłać kodu. Spróbuj ponownie za chwilę."); }
         pending.set(email, reason);
+        ls.set(LAST_EMAIL, email);
         codeStep(email, true);
       } },
         el("label", { for: "skrot-login-email", style: "display:grid;gap:6px;font-weight:700" }, "E-mail", input),
@@ -356,7 +414,8 @@
       const p = pending.get();
       body.replaceChildren(
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
-        el("p", { class: "muted", style: "margin:0", text: reason || "Bez hasła: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono." }),
+        el("p", { class: "muted", style: "margin:0", text: reason || "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono." }),
+        modeSwitch("kod"),
         form,
         ...[
           p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
@@ -369,7 +428,84 @@
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Logowanie" }, body));
     layer.append(scrim);
     document.addEventListener("keydown", onKey);
-    if (opts.codeFor) codeStep(opts.codeFor, false); else emailStep();
+    if (opts.codeFor) codeStep(opts.codeFor, false); else if (ls.get(MODE) === "haslo") passStep(); else emailStep();
+  };
+
+  // ---------- hasło do logowania (opcjonalne) ----------
+  // Ustawia się będąc zalogowanym (kodem z maila). Potem można logować się e-mailem i hasłem bez czekania na maila.
+  // Dzielenie się hasłem nic nie daje: dalej pilnuje limit 3 urządzeń i jedna aktywna sesja.
+  skrot.openPassword = (opts = {}) => {
+    if (skrot.state !== "in") return skrot.openLogin();
+    const layer = document.getElementById("layer") || document.body;
+    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const body = el("div", { style: "display:grid;gap:12px" });
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Hasło do logowania" }, body));
+    const err = el("p", { class: "notice err", hidden: "" });
+    const show = (t) => { err.textContent = t; err.hidden = false; };
+    const p1 = el("input", { class: "input", id: "skrot-pass-1", type: "password", autocomplete: "new-password", placeholder: "co najmniej 8 znaków" });
+    const p2 = el("input", { class: "input", id: "skrot-pass-2", type: "password", autocomplete: "new-password", placeholder: "to samo jeszcze raz" });
+    const reveal = el("label", { style: "display:flex;gap:8px;align-items:center;font-size:.92rem" },
+      el("input", { type: "checkbox", onchange: (e) => { p1.type = p2.type = e.target.checked ? "text" : "password"; } }), "Pokaż hasło");
+    const btn = el("button", { type: "submit", class: "btn primary" }, skrot.hasPassword ? "Zmień hasło" : "Ustaw hasło");
+    // Supabase może wymagać potwierdzenia kodem z maila przy zmianie hasła („Secure password change”).
+    const nonceStep = (password) => {
+      const nErr = el("p", { class: "notice err", hidden: "" });
+      const code = el("input", { class: "input", id: "skrot-pass-nonce", type: "text", inputmode: "numeric", autocomplete: "one-time-code", maxlength: "6", placeholder: "123456", style: "letter-spacing:.35em;font-size:1.5em;font-weight:800;text-align:center" });
+      const ok = el("button", { type: "submit", class: "btn primary" }, "Potwierdź");
+      body.replaceChildren(
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Potwierdź kodem z maila" }),
+        el("p", { style: "margin:0" }, "Dla bezpieczeństwa wysłaliśmy kod na ", el("b", { text: skrot.email }), ". Wpisz go, a hasło się zapisze."),
+        el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
+          e.preventDefault(); ok.disabled = true;
+          const { error } = await sb.auth.updateUser({ password, nonce: code.value.replace(/\D+/g, ""), data: { haslo: true } });
+          if (error) { ok.disabled = false; nErr.textContent = /expired|invalid|nonce/i.test(error.message || "") ? "Kod jest nieprawidłowy albo wygasł." : "Nie udało się zapisać hasła. Spróbuj ponownie."; nErr.hidden = false; return; }
+          done();
+        } }, el("label", { for: "skrot-pass-nonce", style: "display:grid;gap:6px;font-weight:700" }, "Kod z maila", code), nErr, ok),
+        el("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"));
+      setTimeout(() => code.focus(), 30);
+    };
+    const done = () => {
+      skrot.hasPassword = true; ls.set(MODE, "haslo"); ls.set(LAST_EMAIL, skrot.email);
+      body.replaceChildren(
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Hasło zapisane" }),
+        el("p", { style: "margin:0" }, "Następnym razem zaloguj się adresem ", el("b", { text: skrot.email }), " i hasłem. Kod z maila dalej działa, gdyby hasło wyleciało Ci z głowy."),
+        el("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Konto jest osobiste: działa na 3 urządzeniach i na jednym naraz, więc podanie hasła komuś i tak nic nie da." }),
+        el("div", {}, el("button", { type: "button", class: "btn primary", onclick: close }, "Gotowe")));
+      changed();
+    };
+    body.append(
+      el("h2", { style: "margin:0;font-family:var(--f-display)", text: opts.offer ? "Ustawić hasło?" : skrot.hasPassword ? "Zmień hasło" : "Hasło do logowania" }),
+      el("p", { class: "muted", style: "margin:0", text: opts.offer
+        ? "Z hasłem zalogujesz się od razu, bez czekania na maila z kodem. Możesz to zrobić też później w Więcej → Hasło do logowania."
+        : skrot.hasPassword ? "Wpisz nowe hasło. Stare przestanie działać." : "Ustaw hasło, a zalogujesz się e-mailem i hasłem, bez czekania na kod. Kod z maila dalej będzie działał." }),
+      el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
+        e.preventDefault();
+        if (p1.value.length < 8) return show("Hasło musi mieć co najmniej 8 znaków.");
+        if (p1.value !== p2.value) return show("Hasła się różnią. Wpisz to samo w obu polach.");
+        btn.disabled = true;
+        const { error } = await sb.auth.updateUser({ password: p1.value, data: { haslo: true } });
+        if (!error) return done();
+        btn.disabled = false;
+        const m = String(error.message || ""), c = String(error.code || "");
+        if (/reauth/i.test(m + c)) {
+          const r = await sb.auth.reauthenticate();
+          if (r.error) return show("Nie udało się wysłać kodu potwierdzającego. Spróbuj za chwilę.");
+          return nonceStep(p1.value);
+        }
+        if (/same_password|should be different/i.test(m + c)) return show("To jest Twoje obecne hasło. Wpisz inne.");
+        if (/weak|pwned|leaked|characters/i.test(m + c)) return show("To hasło jest za słabe albo wyciekło kiedyś z innej strony. Wymyśl inne.");
+        show("Nie udało się zapisać hasła. Spróbuj ponownie za chwilę.");
+      } },
+        el("input", { type: "email", autocomplete: "username", value: skrot.email, hidden: "", readonly: "" }),
+        el("label", { for: "skrot-pass-1", style: "display:grid;gap:6px;font-weight:700" }, "Nowe hasło", p1),
+        el("label", { for: "skrot-pass-2", style: "display:grid;gap:6px;font-weight:700" }, "Powtórz hasło", p2),
+        reveal, err, btn),
+      el("button", { type: "button", class: "btn ghost", onclick: close }, opts.offer ? "Nie teraz" : "Zamknij"));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+    setTimeout(() => p1.focus(), 30);
   };
 
   // Komunikat, gdy baza nie odpowiada.
@@ -493,6 +629,11 @@
     if (skrot.state === "in" && ls.get("skrot-buy")) { const want = ls.get("skrot-buy"); ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(CONFIG.plans[want] ? want : undefined); return; }
     // Strona przeładowała się w trakcie logowania (np. po przejściu do poczty na telefonie): od razu pole na kod.
     if (skrot.state === "out") { const p = pending.get(); if (p) skrot.openLogin(p.reason, { codeFor: p.email }); }
+    // Pierwsze logowanie kodem: raz proponujemy ustawienie hasła.
+    if (skrot.state === "in" && ls.get("skrot-offer-pass")) {
+      ls.set("skrot-offer-pass", null);
+      if (!skrot.hasPassword && !ls.get("skrot-welcome")) setTimeout(() => { if (!document.querySelector(".scrim, .tour")) skrot.openPassword({ offer: true }); }, 900);
+    }
   }
   // ---------- jedno konto = jedna osoba: urządzenia i jedna aktywna sesja (supabase/skrot-v8-urzadzenia.sql) ----------
   // Stan z bazy: ok | zajete (konto jest teraz otwarte na innym urządzeniu) | limit (3 urządzenia już są) | zablokowane.
@@ -627,7 +768,11 @@
       deviceList(info, (next) => fill(next)),
       el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
     const { data, error } = await sb.rpc("nauka_urzadzenia_moje");
-    if (error) body.replaceChildren(el("p", { text: "Nie udało się wczytać urządzeń. Spróbuj za chwilę." }), el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+    const noSql = error && /function|does not exist|schema cache|Could not find/i.test(error.message || "");
+    if (error) body.replaceChildren(
+      el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Twoje urządzenia" }),
+      el("p", { text: noSql ? (skrot.admin ? "Baza nie ma jeszcze listy urządzeń. Uruchom supabase/skrot-v8-urzadzenia.sql w Supabase → SQL Editor." : "Lista urządzeń jeszcze się nie wczytuje, pracujemy nad tym. Konto działa normalnie.") : "Nie udało się wczytać urządzeń. Spróbuj za chwilę." }),
+      el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
     else fill(data);
   };
 

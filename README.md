@@ -37,6 +37,14 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 - Maile logowania: Resend (SMTP) z domeny skrotbm.pl.
 - Kalendarz roku (tygodnie parzyste/nieparzyste, dni wolne, przerwy) strona bierze z `https://plan.skrotbm.pl/plan.json` (pole `kalendarz`, edytowane w `kalendarz.json` w repozytorium plan-bm). W `index.html` jest tylko kopia zapasowa.
 
+## Hasło do logowania (opcjonalne)
+- Logowanie: zakładka **Kod z maila** (jak dotąd) albo **Hasło**. Strona pamięta ostatnio użytą zakładkę i e-mail.
+- Hasło ustawia się po zalogowaniu kodem: Więcej → Hasło do logowania (po pierwszym logowaniu kodem strona raz to proponuje). Min. 8 znaków; zapisuje się w Supabase Auth (`updateUser`), a w `user_metadata.haslo` znacznik, że jest ustawione.
+- Gdy w Supabase włączone jest „Secure password change”, strona sama prosi o kod z maila (`reauthenticate`) i dopiero wtedy zapisuje hasło.
+- Zapomniane hasło = zaloguj się kodem i ustaw nowe. Konto bez hasła loguje się tylko kodem.
+- Dzielenie się hasłem nic nie daje: dalej działa limit 3 urządzeń i jedna aktywna sesja (`skrot-v8-urzadzenia.sql`).
+- Supabase → Authentication → Sign In / Providers → Email musi być włączony (jest, bo działa kod); hasło nie wymaga dodatkowych ustawień.
+
 ## Jedno konto = jedna osoba (`skrot-v8-urzadzenia.sql`)
 - **Do 3 urządzeń** na konto. Każda przeglądarka ma losowe ID (`skrot-device` w localStorage), które `skrot-supabase.js` wysyła w nagłówku `x-skrot-device` przy każdym zapytaniu. Baza daje pełny dostęp (`nauka_platny()`) tylko urządzeniu z listy, więc pilnują tego wszystkie reguły tabel, bez zmian w nich. Urządzenie nieużywane 60 dni wypada z listy samo.
 - **Zmiana urządzenia raz na 30 dni** (Więcej → Twoje urządzenia albo ekran „Masz już 3 urządzenia”).
@@ -44,6 +52,7 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 - **Panel starosty**: Więcej → Tryb starosty → „Konta i urządzenia”. Podejrzane: ≥ 6 przejęć w 7 dni albo ≥ 5 nowych urządzeń w 30 dni. Przyciski: Ostrzeż mailem (otwiera gotowego maila), Zablokuj (z powodem, który widzi osoba), Odblokuj, Wyczyść urządzenia (np. po zgubieniu telefonu). Blokuje zawsze człowiek, nie automat.
 - **Znak wodny**: adres konta przy prawej krawędzi ekranu i na wydruku ściągawki.
 - Starosta (nauka_admini) jest z tego zwolniony. Limity zmienia się w funkcjach `nauka_urz_limit/wygasa/zmiana/okno` na górze pliku SQL.
+- Starosta też ma swoje urządzenia na liście (Więcej → Twoje urządzenia), ale bez limitu i bez blokady 30 dni.
 - **Wdrożenie**: strona z nowym `skrot-supabase.js` działa także ze starą bazą (bez SQL zachowuje się jak dotąd). Potem: (1) ponownie wdrożyć funkcję `claude` (przepuszcza nagłówek `x-skrot-device`; do tego czasu AI na stronie nie odpowiada, bo przeglądarka blokuje nieznany nagłówek), (2) uruchomić `skrot-v8-urzadzenia.sql` w SQL Editor.
 
 ## Sylabus kierunku (`sylabus.json`)
