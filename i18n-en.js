@@ -1713,6 +1713,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Pokażę Ci sześć zakładek. Każda odpowiada na inne pytanie, np. co dziś, czego się uczyć, co powtórzyć, co na kiedy.": "I’ll show you six tabs. Each answers one question: what today, what to learn, what to review, what’s due when.",
 "Najpierw Twoja grupa": "Your group first",
 "Masz ustawioną grupę {0}. Zmienisz ją w Więcej → Moja grupa.": "Your group is set to {0}. You can change it in More → My group.",
+"Masz ustawioną grupę {0}. Możesz ją zmienić tutaj albo później w Więcej → Moja grupa.": "Your group is set to {0}. You can change it here or later in More → My group.",
+"Wybierz tutaj grupę i podgrupę lab, a w zajęciach i terminach zobaczysz tylko to, co Cię dotyczy. Przegląd leci dalej, nic nie musisz zamykać.": "Pick your group and lab subgroup right here, and your classes and deadlines will show only what concerns you. The tour carries on, nothing to close.",
 "Wybierz grupę i podgrupę lab, a w zajęciach i terminach zobaczysz tylko to, co Cię dotyczy.": "Choose your group and lab subgroup, and classes and deadlines will show only what applies to you.",
 "Dziś: od tego zaczynasz": "Today: start here",
 "Karta „Teraz zrób to” sama wybiera to, co w tej chwili najważniejsze. Klikasz jeden przycisk i działasz.": "The “Do this now” card picks the most important thing right now. One button and you’re on it.",

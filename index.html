@@ -658,6 +658,10 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
 .tour-card h2 { font-size: 1.22rem; }
 .tour-card p { color: var(--muted); font-size: .95rem; }
 .tour-card p b { color: var(--ink); }
+.tour-pick { display: grid; gap: 8px; padding: 10px 12px; background: var(--sunk); border-radius: 14px; }
+.tour-pick .seg { background: var(--surface); }
+.tour-pick .g-status { margin: 0; font-size: .88rem; color: var(--ink); }
+.tour-pick .g-status.ok { color: var(--accent-text); }
 .tour-dots { display: flex; gap: 5px; }
 .tour-dots i { width: 7px; height: 7px; border-radius: 99px; background: var(--line); transition: width .3s, background .3s; }
 .tour-dots i.on { width: 20px; background: var(--accent); }
@@ -5702,7 +5706,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   // ================= podświetlanie prawdziwych ekranów (szybki tour i „Pokaż mi na stronie”) =================
   const QUICK = [
     { title: "Cześć! Skrót BM w minutę", text: "Pokażę Ci sześć zakładek. Każda odpowiada na inne pytanie, np. co dziś, czego się uczyć, co powtórzyć, co na kiedy.", art: "intro" },
-    { go: { view: "home" }, sel: "section.today", title: "Najpierw Twoja grupa", text: () => S.group ? `Masz ustawioną grupę ${S.group}. Zmienisz ją w Więcej → Moja grupa.` : "Wybierz grupę i podgrupę lab, a w zajęciach i terminach zobaczysz tylko to, co Cię dotyczy.", art: "group" },
+    { go: { view: "home" }, sel: "section.today", title: "Najpierw Twoja grupa", text: () => S.group ? `Masz ustawioną grupę ${S.group}. Możesz ją zmienić tutaj albo później w Więcej → Moja grupa.` : "Wybierz tutaj grupę i podgrupę lab, a w zajęciach i terminach zobaczysz tylko to, co Cię dotyczy. Przegląd leci dalej, nic nie musisz zamykać.", art: "group", picker: true },
     { go: { view: "home" }, sel: "section.now", title: "Dziś: od tego zaczynasz", text: "Karta „Teraz zrób to” sama wybiera to, co w tej chwili najważniejsze. Klikasz jeden przycisk i działasz.", art: "hub" },
     { go: { view: "materials" }, nav: "materials", title: "Przedmioty", text: () => "Wszystkie materiały: skrót, wersja w prostym języku, fiszki i quiz. Do tego wyszukiwarka" + (TOUCH ? "." : " (klawisz /)."), art: "books" },
     { go: { view: "review" }, nav: "review", title: "Powtórki", text: "Fiszki wracają same, zanim je zapomnisz. Pod spodem mapa tego, co już umiesz.", art: "tabs" },
@@ -5758,6 +5762,21 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     card.innerHTML = `<div class="tour-foot" style="margin:0"><div class="tour-dots" aria-hidden="true">${steps.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")}</div><span class="step">${i + 1} / ${steps.length}</span></div>${art}<h2 id="tour-h"></h2><p></p>
       <div class="tour-foot"><button type="button" class="btn ghost small" data-a="skip"></button><div class="row">${i && !(last && opts.lastSkip) ? `<button type="button" class="btn small" data-a="prev">← Wstecz</button>` : ""}<button type="button" class="btn primary small" data-a="next"></button></div></div>`;
     card.querySelector("h2").textContent = st.title; card.querySelector("p").textContent = tapTxt(text);
+    // Krok z grupą: prawdziwy wybór grupy i labu w samej karcie, bez zamykania przeglądu.
+    if (st.picker) {
+      const status = h("p", { class: "g-status" });
+      const sync = () => {
+        status.className = "g-status" + (S.group ? " ok" : "");
+        status.textContent = S.group ? `Twoja grupa: ${S.group}${S.sub ? " · lab " + S.sub : S.sub === "" ? " · oba laby" : ""} ✓` : "Nie wybrano jeszcze grupy.";
+        const t2 = typeof st.text === "function" ? st.text() : st.text;
+        card.querySelector("p").textContent = tapTxt(t2);
+        requestAnimationFrame(tourPlace);
+      };
+      const box = h("div", { class: "tour-pick" }, groupPicker(true), status);
+      box.addEventListener("click", (e) => { if (e.target.closest("[data-g],[data-sub]")) setTimeout(sync, 0); });
+      card.querySelector("p").after(box);
+      sync();
+    }
     const skip = card.querySelector('[data-a="skip"]');
     skip.textContent = last ? opts.lastSkip || "" : "Pomiń";
     if (last && !opts.lastSkip) skip.style.visibility = "hidden";
