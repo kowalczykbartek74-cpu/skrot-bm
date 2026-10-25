@@ -67,7 +67,7 @@ p { margin: 0; }
 
 /* górny pasek + nawigacja
    Komputer: logo | 5 zakładek | Kup dostęp + Menu.
-   Telefon: logo + Kup dostęp + Menu u góry, 5 zakładek z ikonami przyklejonych na dole ekranu. */
+   Telefon: Więcej (lewy górny róg) + logo + Kup dostęp u góry, 5 zakładek do nauki z ikonami przyklejonych na dole ekranu. */
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); border-bottom: 1px solid var(--line); }
 .bar::before { content: ""; display: block; height: 4px; background: linear-gradient(90deg, var(--green-600) 0 40%, var(--teal-600) 40% 62%, var(--green-400) 62% 82%, var(--lime-400) 82% 100%); }
 .bar .wrap { display: flex; align-items: center; gap: 16px; min-height: 60px; }
@@ -85,6 +85,7 @@ p { margin: 0; }
 .menubtn:hover, .menubtn[aria-expanded="true"] { border-color: var(--green-200); background: var(--green-50); }
 .menubtn .ico svg { width: 20px; height: 20px; }
 .menubtn .dotbadge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--bad); }
+.morebtn { display: none; }
 .menu-scrim { position: fixed; inset: 0; z-index: 40; }
 .menu { position: fixed; z-index: 41; top: calc(64px + env(safe-area-inset-top, 0px)); right: max(16px, calc((100vw - 1040px) / 2 + 16px)); width: 280px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding: 6px; display: grid; }
 .menu .who { padding: 10px 12px 8px; font-size: .84rem; color: var(--muted); overflow-wrap: anywhere; }
@@ -105,7 +106,16 @@ p { margin: 0; }
   .menubtn .lbl { display: none; }
   .menubtn { width: 38px; padding: 0; justify-content: center; }
   .bar-right .btn.small { padding: 6px 12px; }
-  .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; gap: 0; display: grid; grid-template-columns: repeat(6, 1fr);
+  /* Telefon: „Więcej” (ustawienia, konto, słowniczek) siedzi w lewym górnym rogu, na dole zostaje 5 zakładek do nauki. */
+  .morebtn { position: relative; display: grid; place-items: center; flex: none; width: 40px; height: 40px; margin-left: -6px; padding: 0; border: 0; border-radius: 12px; background: transparent; color: var(--ink); cursor: pointer; }
+  .morebtn:hover { background: var(--green-50); }
+  .morebtn[aria-current="page"] { background: var(--accent-soft); color: var(--accent-text); }
+  .morebtn .ico svg { width: 24px; height: 24px; }
+  .morebtn .badge { position: absolute; top: 2px; right: 0; min-width: 16px; line-height: 16px; padding: 0 4px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: .64rem; font-weight: 700; text-align: center; }
+  .bar .wrap { gap: 6px; }
+  .brand { margin-right: auto; }
+  .navbtn[data-key="more"] { display: none; }
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; gap: 0; display: grid; grid-template-columns: repeat(5, 1fr);
     background: var(--surface); border-top: 1px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); }
   .navbtn { flex-direction: column; gap: 2px; padding: 4px 2px; font-size: .7rem; font-weight: 600; border-radius: 12px; }
   .navbtn:hover { background: transparent; }
@@ -1448,6 +1458,7 @@ body::before { opacity: .8; }
 </style>
 
 <header class="bar"><div class="wrap">
+  <button class="morebtn" id="moreBtn" type="button" aria-label="Więcej"></button>
   <button class="brand" id="brand" type="button" aria-label="Skrót BM, start"><img class="logo" src="icons/logo-mark.png" alt="" width="41" height="32" decoding="async"><b>Skrót BM</b></button>
   <nav class="nav" id="nav" aria-label="Menu główne"></nav>
   <div class="bar-right" id="barRight"></div>
@@ -1766,7 +1777,7 @@ body::before { opacity: .8; }
     sp.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[k] || ""}</svg>`;
     return sp;
   }
-  // Sześć zakładek, każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
+  // Sześć zakładek (na telefonie „Więcej” jest w lewym górnym rogu, na dole zostaje pięć), każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
   const NAV_ITEMS = [["home", "Dziś"], ["materials", "Przedmioty"], ["review", "Powtórki"], ["terms", "Terminy"], ["calendar", "Kalendarz"], ["more", "Więcej"]];
   const NAV_OF = {
     home: "home",
@@ -1788,6 +1799,13 @@ body::before { opacity: .8; }
       type: "button", class: "navbtn", "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
       "aria-label": label + (badge[key] ? `, ${badge[key]} ${badgeLbl[key]}` : ""),
     }, icon(NAV_ICON[key]), h("span", { class: "lbl", text: label }), badge[key] ? h("span", { class: "badge num", text: badge[key] > 99 ? "99+" : badge[key], "aria-label": `${badge[key]} ${badgeLbl[key]}` }) : null)));
+    const mb = $("moreBtn");
+    if (mb) {
+      mb.setAttribute("aria-label", "Więcej" + (badge.more ? `, ${badge.more} ${badgeLbl.more}` : ""));
+      mb.title = "Więcej: grupa, konto, słowniczek, ustawienia";
+      if (active === "more") mb.setAttribute("aria-current", "page"); else mb.removeAttribute("aria-current");
+      mb.replaceChildren(icon(NAV_ICON.more), badge.more ? h("span", { class: "badge num", text: badge.more > 99 ? "99+" : badge.more }) : null);
+    }
     const sk = window.skrot || {};
     $("barRight").replaceChildren(...[
       ["out", "in"].includes(sk.state) && !PAID() ? h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy() }, "Kup dostęp") : null,
@@ -1810,6 +1828,7 @@ body::before { opacity: .8; }
     modal((close) => [h("h3", { text: "Twoja grupa" }), groupPicker(true), h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: close }, "Gotowe"))]);
   }
   $("brand").addEventListener("click", () => go({ view: "home" }));
+  $("moreBtn").addEventListener("click", () => go({ view: "more" }));
 
   let lastRenderSig = "";
   function render() {
@@ -5690,7 +5709,11 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   const QUICK_OPTS = () => ({ firstLabel: "Pokaż mi", lastLabel: "Otwórz przewodnik", lastSkip: "Później", end: (fin) => go(fin ? { view: "guide" } : { view: "home" }) });
   var tourState = null;
   function tourTarget(st) {
-    if (st.nav) return document.querySelector(`#nav [data-key="${st.nav}"]`);
+    if (st.nav) {
+      const el = document.querySelector(`#nav [data-key="${st.nav}"]`);
+      if (st.nav === "more" && (!el || !el.offsetParent)) return $("moreBtn");
+      return el;
+    }
     if (typeof st.sel === "function") { try { return st.sel(); } catch { return null; } }
     if (st.sel) return document.querySelector(st.sel);
     return null;
