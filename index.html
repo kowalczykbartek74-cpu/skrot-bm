@@ -1465,6 +1465,8 @@ body::before { opacity: .8; }
 .lesson2 { gap: 20px; }
 .lesson2 > *, .lesson2 .lsec > *, .lesson2 .lvis > * { min-width: 0; max-width: 100%; }
 .lesson2, .lesson2 .lsec, .lesson2 .lvis, .lesson2 .example, .lesson2 .exercise, .lesson2 .lq { grid-template-columns: minmax(0, 1fr); }
+.rich { grid-template-columns: minmax(0, 1fr); }
+.rich > * { min-width: 0; }
 .lesson mjx-container[display="true"], .lesson mjx-container[display] { display: block; max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 .lprog { position: sticky; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 3; background: var(--paper); padding: 8px 0 6px; display: grid; gap: 6px; border-bottom: 1px solid var(--line); }
 .lprog .progress { height: 6px; }
