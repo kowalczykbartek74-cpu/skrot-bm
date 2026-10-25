@@ -24,10 +24,34 @@
   let linkError = null;
   try { linkError = new URLSearchParams(location.hash.slice(1)).get("error_code") || (location.hash.includes("error_description") ? "error" : null); } catch {}
 
-  let sb = null;
-  try { sb = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true, autoRefreshToken: true } }); } catch {}
+  // ---------- urządzenie ----------
+  // Losowe ID tej przeglądarki. Idzie w nagłówku x-skrot-device przy każdym zapytaniu do bazy,
+  // a baza (supabase/skrot-v8-urzadzenia.sql) daje pełny dostęp tylko z urządzeń z listy konta (do 3).
+  const DEVICE = (() => {
+    const K = "skrot-device", ok = (v) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(v || "");
+    let v = null;
+    try { v = localStorage.getItem(K); } catch {}
+    if (!ok(v)) {
+      try { v = crypto.randomUUID(); } catch { v = "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (c ^ (Math.random() * 16) >> (c / 4)).toString(16)); }
+      try { localStorage.setItem(K, v); } catch {}
+    }
+    return v;
+  })();
+  const DEVICE_NAME = (() => {
+    const ua = navigator.userAgent || "";
+    const os = /iPhone/.test(ua) ? "iPhone"
+      : /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ? "iPad"
+      : /Android/.test(ua) ? (/Mobile/.test(ua) ? "Telefon z Androidem" : "Tablet z Androidem")
+      : /CrOS/.test(ua) ? "Chromebook" : /Windows/.test(ua) ? "Windows" : /Mac OS X|Macintosh/.test(ua) ? "Mac" : /Linux/.test(ua) ? "Linux" : "Urządzenie";
+    const br = /Edg[A-Z]*\//.test(ua) ? "Edge" : /OPR\//.test(ua) ? "Opera" : /SamsungBrowser/.test(ua) ? "Samsung Internet"
+      : /Firefox|FxiOS/.test(ua) ? "Firefox" : /CriOS|Chrome\//.test(ua) ? "Chrome" : /Safari/.test(ua) ? "Safari" : "przeglądarka";
+    return os + " · " + br;
+  })();
 
-  const skrot = (window.skrot = { sb, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
+  let sb = null;
+  try { sb = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true, autoRefreshToken: true }, global: { headers: { "x-skrot-device": DEVICE } } }); } catch {}
+
+  const skrot = (window.skrot = { sb, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, paidAccount: false, device: null, deviceId: DEVICE, deviceName: DEVICE_NAME, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const changed = () => skrot.listeners.forEach((fn) => { try { fn(skrot.state); } catch {} });
 
@@ -41,22 +65,29 @@
       if (!session) { skrot.state = "out"; return; }
       skrot.uid = session.user.id;
       skrot.email = (session.user.email || "").toLowerCase();
+      token = session.access_token;
       await refreshMe();
       skrot.state = "in";
     } catch { skrot.state = "error"; }
   })().finally(() => { changed(); afterReady(); });
 
   async function refreshMe() {
+    // Najpierw sygnał urządzenia: rejestruje je na liście konta (jeśli jest miejsce) i zajmuje sesję.
+    const dev = await ping();
+    if (dev) skrot.device = dev;
     const { data: me, error } = await sb.rpc("nauka_ja");
     if (error) throw error;
     skrot.admin = !!me?.admin;
     skrot.paid = !!(me?.platny ?? me?.czytelnik);
+    skrot.paidAccount = !!(me?.platny_konto ?? skrot.paid);
     skrot.until = me?.dostep_do || null;
     skrot.plan = me?.plan || null;
     return me;
   }
 
+  let token = null;
   if (sb) sb.auth.onAuthStateChange((event, session) => {
+    if (session?.access_token) token = session.access_token;
     // Po zalogowaniu w innej karcie albo po wylogowaniu: najprościej przeładować stronę.
     if (event === "SIGNED_IN" && session && skrot.state === "out") location.reload();
     if (event === "SIGNED_OUT" && skrot.state === "in") location.reload();
@@ -202,7 +233,7 @@
         try {
           res = await fetch(CONFIG.url + "/functions/v1/claude", {
             method: "POST",
-            headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + token },
+            headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + token, "x-skrot-device": DEVICE },
             body: JSON.stringify(opts.ticket ? { prompt, ticket: opts.ticket } : { prompt }),
           });
         } catch { throw fail("no_function", "Funkcja AI na serwerze nie odpowiada."); }
@@ -409,6 +440,7 @@
     setTimeout(() => scrim.querySelector(".plan-card")?.focus(), 30);
   };
   skrot.buy = (plan) => {
+    if (skrot.state === "in" && !skrot.paid && skrot.paidAccount && skrot.device && skrot.device.stan !== "ok") return showGate();
     if (skrot.paid) {
       if (skrot.plan === "miesiac") {
         const box = info("Masz już dostęp", skrot.until ? `Subskrypcja miesięczna, opłacona do ${plDate(skrot.until)}. Anulować albo zmienić kartę możesz w portalu Stripe.` : "Subskrypcja miesięczna jest aktywna.");
@@ -441,6 +473,10 @@
       skrot.openLogin("Ten link już nie działa. Teraz logujesz się kodem: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod.");
       return;
     }
+    if (skrot.state === "in" && !skrot.admin && skrot.paidAccount) {
+      if (skrot.device && ["zajete", "limit", "zablokowane"].includes(skrot.device.stan)) { showGate(); return; }
+      if (skrot.paid) { startHeartbeat(); watermark(); }
+    }
     const params = new URLSearchParams(location.search);
     if (params.get("platnosc") === "ok") {
       history.replaceState(null, "", location.pathname);
@@ -458,5 +494,195 @@
     // Strona przeładowała się w trakcie logowania (np. po przejściu do poczty na telefonie): od razu pole na kod.
     if (skrot.state === "out") { const p = pending.get(); if (p) skrot.openLogin(p.reason, { codeFor: p.email }); }
   }
+  // ---------- jedno konto = jedna osoba: urządzenia i jedna aktywna sesja (supabase/skrot-v8-urzadzenia.sql) ----------
+  // Stan z bazy: ok | zajete (konto jest teraz otwarte na innym urządzeniu) | limit (3 urządzenia już są) | zablokowane.
+  async function ping(opts = {}) {
+    if (!sb) return null;
+    try {
+      const { data, error } = await sb.rpc("nauka_ping", { p_nazwa: DEVICE_NAME, p_przejmij: !!opts.take, p_zwolnij: false });
+      // Baza jeszcze bez skrot-v8: zachowujemy się jak dotąd.
+      if (error) return /function|does not exist|schema cache|Could not find/i.test(error.message || "") ? { stan: "ok", stary: true } : null;
+      return data;
+    } catch { return null; }
+  }
+  const whenText = (iso) => {
+    const d = new Date(iso);
+    if (isNaN(d)) return "";
+    const days = Math.floor((Date.now() - d.getTime()) / 864e5);
+    return days <= 0 ? "dziś" : days === 1 ? "wczoraj" : plDate(iso);
+  };
+  const devErr = (e) => {
+    const m = String(e?.message || "");
+    const od = /za_wczesnie (\d{4}-\d{2}-\d{2})/.exec(m);
+    if (od) return `Urządzenie możesz zmienić raz na 30 dni. Następna zmiana: ${plDate(od[1])}.`;
+    return "Nie udało się usunąć urządzenia. Spróbuj ponownie za chwilę.";
+  };
+  // Lista urządzeń z przyciskiem „Usuń” (raz na 30 dni).
+  function deviceList(info, onRemoved) {
+    const list = info?.urzadzenia || [];
+    const err = el("p", { class: "notice err", hidden: "" });
+    const lock = info?.zmiana_od ? el("p", { class: "muted", style: "margin:0;font-size:.9rem" }, `Następną zmianę urządzenia zrobisz ${plDate(info.zmiana_od)}. Zgubiony telefon? Napisz na `, el("a", { class: "link", href: "mailto:skrotbm@outlook.com" }, "skrotbm@outlook.com"), ".") : null;
+    const rows = list.map((d) => el("div", { class: "device-row", style: "display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--line,#BFCEC5);border-radius:12px;background:var(--surface,#fff)" },
+      el("span", { style: "display:grid;gap:2px;min-width:0" },
+        el("b", { style: "overflow-wrap:anywhere", text: d.nazwa || "Urządzenie" }),
+        el("small", { class: "muted", text: d.to ? "to urządzenie" : d.aktywne ? "używane teraz" : `ostatnio: ${whenText(d.ostatnio)}` })),
+      d.to ? null : el("button", { type: "button", class: "btn small ghost", disabled: info?.zmiana_od ? "" : null, onclick: async (e) => {
+        if (!confirm(`Usunąć „${d.nazwa || "Urządzenie"}” z listy? Kolejną zmianę zrobisz dopiero za 30 dni.`)) return;
+        e.currentTarget.disabled = true;
+        const { data, error } = await sb.rpc("nauka_urzadzenie_usun", { p_device: d.id });
+        if (error) { err.textContent = devErr(error); err.hidden = false; e.currentTarget.disabled = false; return; }
+        onRemoved?.(data);
+      } }, "Usuń")));
+    return el("div", { style: "display:grid;gap:8px" }, ...rows, lock, err);
+  }
+  let gateEl = null;
+  function gate(title, ...kids) {
+    gateEl?.remove();
+    const layer = document.getElementById("layer") || document.body;
+    // Bez zamykania kliknięciem obok i klawiszem Esc: to jest wybór, nie komunikat.
+    gateEl = el("div", { class: "scrim skrot-gate", style: "z-index:9999" },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": title },
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: title }), ...kids));
+    layer.append(gateEl);
+    setTimeout(() => gateEl?.querySelector(".btn.primary")?.focus(), 30);
+    return gateEl;
+  }
+  const logoutBtn = () => el("button", { type: "button", class: "btn ghost", onclick: () => skrot.logout() }, "Wyloguj");
+  function showGate() {
+    const d = skrot.device || {};
+    if (d.stan === "zajete") {
+      const btn = el("button", { type: "button", class: "btn primary", onclick: async () => {
+        btn.disabled = true;
+        const r = await ping({ take: true });
+        if (r?.stan === "ok") location.reload(); else { btn.disabled = false; skrot.device = r || d; showGate(); }
+      } }, "Używaj tutaj");
+      return gate("Konto jest otwarte na innym urządzeniu",
+        el("p", { style: "margin:0;font-weight:600", text: `Właśnie uczysz się na: ${d.inne || "innym urządzeniu"}. W jednej chwili konto działa na jednym urządzeniu.` }),
+        el("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Jeśli to Ty, kliknij „Używaj tutaj”, a tamto urządzenie się wstrzyma. Jeśli nie, ktoś zna Twoje konto: napisz do nas." }),
+        el("div", { class: "row", style: "display:flex;gap:8px;flex-wrap:wrap" }, btn, logoutBtn()));
+    }
+    if (d.stan === "limit") {
+      return gate("Masz już 3 urządzenia",
+        el("p", { style: "margin:0", text: `Z konta korzystasz na maksymalnie ${d.limit || 3} urządzeniach. Żeby dodać to urządzenie (${DEVICE_NAME}), usuń jedno z listy. Usuwać można raz na 30 dni.` }),
+        deviceList(d, () => location.reload()),
+        el("p", { class: "muted", style: "margin:0;font-size:.88rem", text: "W trybie prywatnym albo po wyczyszczeniu danych przeglądarki strona widzi nowe urządzenie. Ucz się w zwykłym oknie." }),
+        el("div", { class: "row", style: "display:flex;gap:8px;flex-wrap:wrap" }, logoutBtn()));
+    }
+    if (d.stan === "zablokowane") {
+      return gate("Dostęp zablokowany",
+        el("p", { style: "margin:0", text: "Konto było używane przez kilka osób, co narusza regulamin (§ 3)." }),
+        d.powod ? el("p", { class: "muted", style: "margin:0" }, "Powód: ", el("b", { text: d.powod })) : null,
+        el("p", { style: "margin:0" }, "Jeśli to pomyłka, napisz na ", el("a", { class: "link", href: "mailto:skrotbm@outlook.com" }, "skrotbm@outlook.com"), ". Odpowiemy w ciągu 14 dni."),
+        el("div", { class: "row", style: "display:flex;gap:8px;flex-wrap:wrap" }, logoutBtn()));
+    }
+  }
+  skrot.showGate = showGate;
+
+  // Sygnał co 45 s, gdy karta jest na wierzchu. Gdy ktoś przejmie konto na innym urządzeniu, ta karta się przeładuje i pokaże pytanie.
+  let beatTimer = null;
+  async function beat() {
+    if (document.visibilityState !== "visible") return;
+    const r = await ping();
+    if (r && r.stan && r.stan !== "ok") location.reload();
+  }
+  // Karta schowana albo zamknięta: zwalniamy sesję, żeby drugie urządzenie mogło od razu zacząć.
+  function release() {
+    if (!beatTimer || !token) return;
+    try {
+      fetch(CONFIG.url + "/rest/v1/rpc/nauka_ping", {
+        method: "POST", keepalive: true,
+        headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + token, "x-skrot-device": DEVICE },
+        body: JSON.stringify({ p_nazwa: DEVICE_NAME, p_zwolnij: true }),
+      }).catch(() => {});
+    } catch {}
+  }
+  function startHeartbeat() {
+    if (beatTimer || skrot.device?.stary) return;
+    beatTimer = setInterval(beat, 45000);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") beat(); else release(); });
+    window.addEventListener("pagehide", release);
+  }
+
+  // Znak wodny: adres konta przy prawej krawędzi ekranu. Zrzuty ekranu i wydruki pokazują, czyje to konto.
+  function watermark() {
+    if (!skrot.email || document.getElementById("skrot-wm")) return;
+    document.documentElement.setAttribute("data-wm", skrot.email);
+    document.body.append(el("div", { id: "skrot-wm", "aria-hidden": "true", translate: "no", text: skrot.email,
+      style: "position:fixed;right:2px;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font:600 10px/1 system-ui,sans-serif;letter-spacing:.06em;color:var(--ink,#16231B);opacity:.22;pointer-events:none;user-select:none;z-index:50;white-space:nowrap" }));
+  }
+
+  // Więcej → Twoje urządzenia
+  skrot.openDevices = async () => {
+    const layer = document.getElementById("layer") || document.body;
+    const body = el("div", { style: "display:grid;gap:12px" }, el("p", { class: "muted", text: "Wczytuję…" }));
+    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Twoje urządzenia" }, body));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+    const fill = (info) => body.replaceChildren(
+      el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Twoje urządzenia" }),
+      el("p", { class: "muted", style: "margin:0", text: `Jedno konto = jedna osoba. Możesz mieć do ${info?.limit || 3} urządzeń (np. telefon i laptop), a w jednej chwili konto działa na jednym z nich.` }),
+      deviceList(info, (next) => fill(next)),
+      el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+    const { data, error } = await sb.rpc("nauka_urzadzenia_moje");
+    if (error) body.replaceChildren(el("p", { text: "Nie udało się wczytać urządzeń. Spróbuj za chwilę." }), el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+    else fill(data);
+  };
+
+  // Panel starosty: konta i urządzenia, podejrzane na górze.
+  skrot.openAdminAccounts = async () => {
+    if (!skrot.admin) return;
+    const layer = document.getElementById("layer") || document.body;
+    const body = el("div", { style: "display:grid;gap:12px" }, el("p", { class: "muted", text: "Wczytuję…" }));
+    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Konta i urządzenia", style: "max-width:720px;max-height:88vh;overflow:auto" }, body));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+    let all = [], onlySus = true;
+    const act = async (k, akcja, powod) => {
+      const { data, error } = await sb.rpc("nauka_admin_konto", { p_user: k.user_id, akcja, p_powod: powod || null });
+      if (error) return alert("Nie udało się: " + error.message);
+      all = data || []; draw();
+    };
+    const warnMail = (k) => {
+      const subject = "Skrót BM: Twoje konto jest używane przez kilka osób";
+      const text = `Cześć,\n\nTwoje konto Skrót BM (${k.email}) jest ostatnio używane na wielu urządzeniach na zmianę, co wygląda na korzystanie z niego przez kilka osób. Konto jest osobiste i nie wolno go udostępniać (regulamin, § 3).\n\nJeśli to pomyłka, np. zmieniłeś telefon, po prostu odpisz na tego maila. Jeśli sytuacja się powtórzy, będziemy musieli zablokować dostęp.\n\nPozdrawiam\nBartłomiej Kowalczyk, Skrót BM`;
+      location.href = `mailto:${k.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+      act(k, "ostrzezenie");
+    };
+    const chip = (t, bad) => el("span", { style: `font-size:.75rem;font-weight:800;border-radius:999px;padding:2px 8px;${bad ? "background:#B42318;color:#fff" : "background:var(--accent-soft,#EAF5EE);color:var(--accent-text,#0E5A30)"}`, text: t });
+    const card = (k) => el("div", { style: `display:grid;gap:6px;padding:12px 14px;border-radius:12px;border:${k.podejrzane || k.zablokowane ? "2px solid #B42318" : "1px solid var(--line,#BFCEC5)"};background:var(--surface,#fff)` },
+      el("div", { style: "display:flex;gap:8px;align-items:center;flex-wrap:wrap" }, el("b", { style: "overflow-wrap:anywhere", text: k.email || k.user_id }),
+        k.zablokowane ? chip("Zablokowane", true) : k.podejrzane ? chip("Podejrzane", true) : null,
+        k.ostrzezenie_at ? chip(`ostrzeżony ${plDate(k.ostrzezenie_at)}`) : null),
+      el("small", { class: "muted", text: `Urządzenia: ${k.urzadzenia}/3 · nowe w 30 dni: ${k.nowe_30d} · przejęcia sesji w 7 dni: ${k.przejecia_7d} · próby ponad limit w 7 dni: ${k.limit_7d} · różne adresy IP w 7 dni: ${k.ip_7d}` }),
+      (k.lista || []).length ? el("small", { text: k.lista.map((d) => `${d.nazwa || "Urządzenie"} (${d.aktywne ? "teraz" : whenText(d.ostatnio)})`).join(" · ") }) : null,
+      k.powod ? el("small", {}, "Powód blokady: ", el("b", { text: k.powod })) : null,
+      el("div", { style: "display:flex;gap:6px;flex-wrap:wrap" },
+        k.email ? el("button", { type: "button", class: "btn small", onclick: () => warnMail(k) }, "Ostrzeż mailem") : null,
+        k.zablokowane
+          ? el("button", { type: "button", class: "btn small", onclick: () => act(k, "odblokuj") }, "Odblokuj")
+          : el("button", { type: "button", class: "btn small ghost", onclick: () => { const p = prompt(`Zablokować ${k.email}? Wpisz powód (zobaczy go ta osoba):`, "Konto używane przez kilka osób"); if (p != null) act(k, "blokuj", p); } }, "Zablokuj"),
+        el("button", { type: "button", class: "btn small ghost", onclick: () => { if (confirm(`Wyczyścić listę urządzeń ${k.email}? Ta osoba będzie mogła od razu dodać nowe (np. po zgubieniu telefonu).`)) act(k, "reset"); } }, "Wyczyść urządzenia")));
+    function draw() {
+      const sus = all.filter((k) => k.podejrzane || k.zablokowane);
+      const shown = onlySus && sus.length ? sus : all;
+      body.replaceChildren(
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Konta i urządzenia" }),
+        el("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Podejrzane: co najmniej 6 przejęć sesji w 7 dni albo co najmniej 5 nowych urządzeń w 30 dni. Najpierw ostrzeż mailem, blokuj przy powtórce. Sama zmiana telefonu albo nauka w trybie prywatnym też dodaje urządzenia, więc sprawdź, zanim zablokujesz." }),
+        sus.length ? el("label", { style: "display:flex;gap:8px;align-items:center" }, el("input", { type: "checkbox", checked: onlySus ? "" : null, onchange: (e) => { onlySus = e.target.checked; draw(); } }), `Tylko podejrzane i zablokowane (${sus.length} z ${all.length})`)
+          : el("p", { style: "margin:0", text: all.length ? `Nic podejrzanego. Kont z urządzeniami: ${all.length}.` : "Nikt jeszcze nie dodał urządzenia." }),
+        ...shown.map(card),
+        el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+    }
+    const { data, error } = await sb.rpc("nauka_admin_konta");
+    if (error) body.replaceChildren(el("p", { text: /function|does not exist|schema cache|Could not find/i.test(error.message || "") ? "Najpierw uruchom supabase/skrot-v8-urzadzenia.sql w Supabase." : "Nie udało się wczytać kont." }), el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+    else { all = data || []; draw(); }
+  };
+
   skrot.isUni = (e) => UNI.test(e || "");
 })();

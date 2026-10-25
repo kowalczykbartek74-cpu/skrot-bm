@@ -22,7 +22,7 @@ function cors(req: Request) {
   const o = req.headers.get("origin") || "";
   return {
     "Access-Control-Allow-Origin": ORIGINS.includes(o) ? o : ORIGINS[0],
-    "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
+    "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, x-skrot-device",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Vary": "Origin",
   };
@@ -41,7 +41,8 @@ Deno.serve(async (req) => {
   let pub = Deno.env.get("SUPABASE_ANON_KEY") || "";
   try { const k = JSON.parse(Deno.env.get("SUPABASE_PUBLISHABLE_KEYS") || "{}"); if (k.default) pub = k.default; } catch { /* stary format */ }
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, pub, {
-    global: { headers: { Authorization: req.headers.get("Authorization") || "" } },
+    // x-skrot-device: urządzenie z listy urządzeń konta (supabase/skrot-v8-urzadzenia.sql); bez niego student nie ma pełnego dostępu.
+    global: { headers: { Authorization: req.headers.get("Authorization") || "", "x-skrot-device": req.headers.get("x-skrot-device") || "" } },
   });
   const { data: me, error } = await sb.rpc("nauka_ja");
   if (error || !me) return out(403, { code: "not_granted", message: "Zaloguj się, żeby korzystać z AI." });
