@@ -59,6 +59,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 " · dla chętnych": " · optional",
 " · zrobione": " · done",
 "Ta lekcja nie ma jeszcze kart.": "This lesson has no cards yet.",
+"Tu nie ma jeszcze kart.": "There are no cards here yet.",
+"Zamknij (postęp się zapisze)": "Close (progress will be saved)",
 "🔥 Seria 5! +5 XP": "🔥 Streak 5! +5 XP",
 "🔥🔥 Seria 10! +5 XP": "🔥🔥 Streak 10! +5 XP",
 "Część {0}": "Part {0}",
