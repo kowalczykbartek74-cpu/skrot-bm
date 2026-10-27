@@ -8398,7 +8398,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const ask = h("div", { class: "tour-ask", role: "alertdialog", "aria-modal": "true", "aria-labelledby": "tour-ask-h", onclick: (e) => { if (e.target === ask) back(); } },
       h("div", { class: "tour-ask-card" },
         h("h2", { id: "tour-ask-h", text: quick ? "Zakończyć przegląd strony?" : "Zakończyć przegląd?" }),
-        h("p", { text: quick ? "Możesz do niego wrócić w każdej chwili: Więcej → Szybki przegląd ekranów." : "Możesz go uruchomić ponownie z przewodnika." }),
+        h("p", { text: quick ? "Wrócisz do niego w każdej chwili przyciskiem ? w prawym górnym rogu." : "Możesz go uruchomić ponownie z przewodnika." }),
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn ghost small", onclick: () => tourEnd(false) }, "Wyjdź"),
           stay)));

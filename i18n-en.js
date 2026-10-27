@@ -4,7 +4,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Szybki przegląd strony": "Quick site tour",
 "Zakończyć przegląd strony?": "End the site tour?",
 "Zakończyć przegląd?": "End the tour?",
-"Możesz do niego wrócić w każdej chwili: Więcej → Szybki przegląd ekranów.": "You can come back to it any time: More → Quick tour of the screens.",
+"Wrócisz do niego w każdej chwili przyciskiem ? w prawym górnym rogu.": "You can come back to it any time with the ? button in the top right corner.",
 "Możesz go uruchomić ponownie z przewodnika.": "You can start it again from the guide.",
 "Wyjdź": "Exit",
 "Fiszki wracają same, zanim zdążysz je zapomnieć.": "Flashcards come back on their own, before you forget them.",
