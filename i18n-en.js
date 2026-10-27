@@ -793,6 +793,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "{0} masz {1} {2}": "{0} you have {1} {2}",
 "Brak zajęć w najbliższych dniach. Odpocznij.": "No classes in the next few days. Get some rest.",
 "Pełny plan zajęć →": "Full timetable →",
+"Komunikat dziekanatu ↗": "Dean's office notice ↗",
 "Termin tylko dla tych grup": "Deadline only for these groups",
 "Forma zaliczenia z sylabusa. Data jeszcze nieogłoszona, więc pokazujemy ostatnie zajęcia z planu albo okres sesji. Zmień ją, gdy prowadzący poda termin.": "Assessment form from the syllabus. The date hasn't been announced: this is the last class in the timetable or the exam session window; change it once the lecturer gives a date.",
 "za {0} dni": "in {0} days",
