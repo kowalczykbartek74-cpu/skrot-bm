@@ -1,6 +1,19 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Według planu poniżej to średnio": "Following the plan below, that's on average",
+"Tylko powtórki fiszek z tego, co już było": "Just flashcard reviews of what you've covered",
+"· ok. {0} min": "· about {0} min",
+"· ok. {0} min dziennie": "· about {0} min a day",
+"Od {0} do {1}": "From {0} to {1}",
+"{0} {1} już teraz: wracają tylko w powtórkach.": "{0} {1} already: they only come back in reviews.",
+"temat umiesz": "topic you know",
+"tematy umiesz": "topics you know",
+"tematów umiesz": "topics you know",
+"Cały plan do {0} ({1} {2} więcej)": "Full plan until {0} ({1} more {2})",
+"wiersz": "row",
+"wiersze": "rows",
+"wierszy": "rows",
 "Tematy do zaliczeń, które umiesz": "Exam topics you know",
 "Temat umiesz, gdy zdasz bilet wyjścia z lekcji albo dobrze idą Ci quiz i fiszki.": "You know a topic once you pass the lesson's exit ticket, or when the quiz and flashcards go well.",
 "Tematy, które umiesz": "Topics you know",
