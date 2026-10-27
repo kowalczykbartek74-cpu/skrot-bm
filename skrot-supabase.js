@@ -7,12 +7,12 @@
   const CONFIG = {
     url: "https://zkyxujkdrovfzpasocmv.supabase.co",
     key: "sb_publishable_lVORMiTz9DlQaekBlfKf3Q_qPbKDHxb",
-    // TRYB TESTOWY Stripe — po aktywacji konta podmienić wszystkie trzy linki na produkcyjne.
+    // Stripe LIVE (konto skrotbm). Webhook: Stripe → Workbench → skrotbm-supabase.
     plans: {
-      rok: { link: "https://buy.stripe.com/test_14A6oGfNjg5g83Pg6NbEA00", price: "199 zł" },        // jednorazowo, oba semestry
-      miesiac: { link: "https://buy.stripe.com/test_eVq6oG0Sp6uG83P8ElbEA01", price: "35 zł / mies." }, // subskrypcja, anulowanie w portalu
+      rok: { link: "https://buy.stripe.com/5kQ00keXo1Nv3QfgXlao800", price: "199 zł" },        // jednorazowo, oba semestry
+      miesiac: { link: "https://buy.stripe.com/bJecN66qS63L4Uj7mLao801", price: "35 zł / mies." }, // subskrypcja, anulowanie w portalu
     },
-    portalLink: "https://billing.stripe.com/p/login/test_14A6oGfNjg5g83Pg6NbEA00", // portal klienta Stripe: anulowanie i karta
+    portalLink: "https://billing.stripe.com/p/login/5kQ00keXo1Nv3QfgXlao800", // portal klienta Stripe: anulowanie i karta
     price: "199 zł/rok albo 35 zł/mies.",
   };
   const TABLE = "nauka_docs";
