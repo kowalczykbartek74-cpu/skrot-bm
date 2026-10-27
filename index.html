@@ -1330,14 +1330,15 @@ main, .staroband { position: relative; z-index: 1; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) { .now .btn.primary { transition: transform .15s; } .now .btn.primary:hover { transform: translateX(2px); } }
 
 
-/* ===== czytelność: ważne napisy większe i ciemniejsze ===== */
-.eyebrow { font-size: .78rem; font-weight: 800; color: #3E5046; }
-.navbtn { color: #3E5046; font-weight: 700; }
+/* ===== czytelność i kontrast: wartości końcowe =====
+   Jedna warstwa zamiast trzech („ważne napisy większe i ciemniejsze”, „mocniejszy kontrast”, „jeszcze mocniejszy kontrast”).
+   Wartości obliczone są takie same jak przed złożeniem (sprawdzone zrzutem getComputedStyle). */
+.eyebrow { font-size: .78rem; font-weight: 800; }
+.navbtn { font-weight: 700; }
 .chip { font-size: .82rem; }
 .typechip { font-size: .76rem; padding: 2px 9px; }
 .fm, .item .m, .cls .where, .term-meta, .nb .meta, .nb-prog { font-size: .88rem; }
 .foot-note { font-size: .86rem; }
-/* nazwy rzeczy, w które się klika */
 .term-title { font-size: 1.05rem; }
 .feed-item .ft, .item .t { font-size: 1rem; }
 .nb h3 { font-size: 1.1rem; font-weight: 800; }
@@ -1348,14 +1349,16 @@ main, .staroband { position: relative; z-index: 1; }
 .term-meta .when.late { color: var(--bad); font-weight: 800; }
 .cls { grid-template-columns: 108px 1fr auto; }
 .cls .time { font-size: .94rem; white-space: nowrap; }
-@media (max-width: 480px) { .cls { grid-template-columns: 96px 1fr; } .cls .time { font-size: .86rem; } }
+@media (max-width: 480px) {
+  .cls { grid-template-columns: 96px 1fr; }
+  .cls .time { font-size: .86rem; }
+}
 .cls .name { font-size: 1.02rem; }
 /* karta „Teraz zrób to”: tytuł i opis */
 .now h2 { font-size: clamp(1.4rem, 3.8vw, 1.85rem); }
-.now p.muted { color: var(--ink); opacity: .85; font-size: 1rem; }
-/* kroki materiału i zakładki */
-.step { color: #3E5046; font-size: .98rem; }
-.tab { color: #3E5046; font-weight: 700; }
+.now p.muted { font-size: 1rem; }
+.step { font-size: .98rem; }
+.tab { font-weight: 700; }
 .more-txt > span { font-weight: 700; font-size: 1.02rem; }
 .more-txt small { font-size: .84rem; color: var(--muted); }
 .rv-big { font-size: 1.25rem; }
@@ -1363,31 +1366,17 @@ main, .staroband { position: relative; z-index: 1; }
   .navbtn { font-size: .74rem; font-weight: 700; }
   .navbtn[aria-current="page"] { font-weight: 800; }
 }
-
-
-/* ===== mocniejszy kontrast tekst / tło ===== */
-.eyebrow, .navbtn, .step, .tab { color: #24342A; }
-.navbtn[aria-current="page"], .tab[aria-selected="true"], .step[aria-current="step"] { color: var(--green-900); }
-.link { color: var(--green-700); }
 /* tła pod tekstem jaśniejsze, żeby napisy odcinały się mocniej */
 .today { background: repeating-radial-gradient(circle at 100% 0, transparent 0 14px, rgba(26,127,69,.10) 14px 15.5px) right top / 220px 220px no-repeat, linear-gradient(160deg, #F2FBF5, #FFFFFF 70%); }
 .today .cls { border-top-color: var(--line); }
 .now { background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(26,127,69,.12) 16px 17.5px) right top / 260px 260px no-repeat, linear-gradient(135deg, #F0FAF3, #FFFFFF 75%); border-color: var(--green-200); }
 .now.warn { background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(126,71,0,.10) 16px 17.5px) right top / 260px 260px no-repeat, linear-gradient(135deg, #FFF6E5, #FFFFFF 75%); border-color: #F0D9AE; }
-.now p.muted { opacity: 1; color: #24342A; }
+.now p.muted { opacity: 1; }
 .rv-hero { background: repeating-radial-gradient(circle at 100% 100%, transparent 0 16px, rgba(26,127,69,.09) 16px 17.5px) right bottom / 220px 220px no-repeat, linear-gradient(135deg, #F0FAF3, #FFFFFF 75%); }
 .remember { background: #F1FAF4; }
-/* etykiety typu: ciemniejszy tekst na jaśniejszym tle */
-.typechip { background: color-mix(in srgb, var(--t, var(--accent)) 12%, #FFFFFF); color: color-mix(in srgb, var(--t, var(--accent)) 80%, #000000); }
-.chip.good, .chip { color: var(--green-900); }
 .chip.sun, .chip.warn { color: var(--warn); }
 .chip.bad { color: var(--bad); }
-.chip.plain { color: #24342A; border-color: var(--line); }
-/* tekst bezpośrednio na tle strony: kratka i słoje słabsze pod nim */
-.greet .sub, main > section > p.muted, .stack > p.muted { color: #24342A; }
-
-
-/* ===== jeszcze mocniejszy kontrast ===== */
+.chip.plain { border-color: var(--line); }
 body { font-weight: 500; }
 .eyebrow, .navbtn, .step, .tab, .chip.plain, .greet .sub, main > section > p.muted, .stack > p.muted, .now p.muted { color: #142019; }
 .link, .feed-item:hover .ft { color: var(--green-900); }
