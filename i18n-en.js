@@ -1,6 +1,7 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Cel dnia: {0}/{1} XP ✓": "Daily goal: {0}/{1} XP ✓",
 "Poziom {0} · {1}": "Level {0} · {1}",
 "{0} XP do poziomu {1}": "{0} XP to level {1}",
 "🎉 Nowy poziom {0}: {1}!": "🎉 New level {0}: {1}!",
