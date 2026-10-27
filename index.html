@@ -1686,7 +1686,7 @@ html.lp-lock, html.lp-lock body { overflow: hidden; }
 .sk-sheet.on, .lp-sheet.on { transform: none; }
 .sk-sheet .grab, .lp-sheet .grab { width: 44px; height: 5px; border-radius: 9px; background: var(--line); margin: -6px auto 4px; }
 .lp-float { position: fixed; z-index: 90; pointer-events: none; font-weight: 800; font-size: 1.05rem; color: var(--accent); text-shadow: 0 1px 0 #fff; animation: lp-float .95s var(--lp-out) forwards; }
-.lp-banner { position: fixed; left: 50%; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 90; transform: translateX(-50%); background: var(--ink); color: #fff; border-radius: 999px; padding: 8px 16px; font-weight: 800; pointer-events: none; animation: lp-banner 1.6s var(--lp-out) forwards; white-space: nowrap; }
+.lp-banner { width: max-content; max-width: calc(100vw - 32px); text-align: center; position: fixed; left: 50%; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 90; transform: translateX(-50%); background: var(--ink); color: #fff; border-radius: 999px; padding: 8px 16px; font-weight: 800; pointer-events: none; animation: lp-banner 1.6s var(--lp-out) forwards; white-space: normal; }
 .lp-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 95; overflow: hidden; }
 .lp-confetti i { position: absolute; top: -14px; width: 8px; height: 13px; border-radius: 2px; animation: lp-fall 2.2s cubic-bezier(.3, .6, .5, 1) forwards; }
 
@@ -1736,6 +1736,70 @@ html.lp-lock, html.lp-lock body { overflow: hidden; }
 .sk-lvbar, .lp-lvbar { height: 10px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
 .sk-lvbar i, .lp-lvbar i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--green-400)); animation: lp-grow .9s var(--lp-out) both; }
 .sk-lvbar.lesson i, .lp-lvbar.lesson i { background: var(--accent); }
+
+/* punkty kursu: pasek przedmiotu z działami, karta „Twój postęp”, rozbicie lekcji, mini-miernik w kursie */
+.pts-bar { position: relative; display: flex; gap: 3px; height: 14px; }
+.pts-md { height: 10px; }
+.pts-sm { height: 8px; }
+.pts-seg { position: relative; flex: 1 1 0; min-width: 6px; height: 100%; padding: 0; border: 0; border-radius: 99px; background: var(--sunk); overflow: hidden; }
+.pts-seg > i { position: absolute; left: 0; top: 0; bottom: 0; width: var(--w, 0%); border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--green-400)); transition: width 700ms var(--lp-out); }
+.pts-seg.max > i { background: var(--green-900); }
+.pts-seg.locked { background: repeating-linear-gradient(135deg, var(--sunk) 0 5px, var(--line) 5px 7px); cursor: pointer; }
+.pts-ico { position: absolute; inset: 0; display: grid; place-items: center; font-size: 9px; line-height: 1; color: #fff; font-weight: 800; }
+.pts-seg.locked .pts-ico { color: var(--ink); }
+.pts-tick { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 2px; background: var(--lime-400); pointer-events: none; }
+.pts-tick::before { content: ""; position: absolute; top: -6px; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; border: 1.5px solid var(--lime-400); background: var(--surface); box-sizing: border-box; }
+.pts-tick.on::before { background: var(--lime-400); }
+.pts-box { display: grid; gap: 8px; margin-top: 4px; }
+.pts-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; font-size: .92rem; }
+.pts-head b.num { font-size: 1.05rem; }
+.pts-units { display: flex; gap: 3px; font-size: .72rem; color: var(--muted); }
+.pts-units span { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pts-foot { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; font-size: .9rem; }
+.pts-foot .link { text-align: left; }
+.pts-card { display: grid; gap: 10px; }
+.pts-card .panel-head { margin: 0; }
+.pts-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: .9rem; font-weight: 700; }
+.pts-sub { margin: 6px 0 0; font-size: 1rem; }
+.pts-list { display: grid; gap: 2px; }
+.pts-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(70px, 1fr) 3.2em 1em; align-items: center; gap: 4px 12px; width: 100%; padding: 8px 6px; border: 0; border-radius: 10px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.pts-row:hover { background: var(--sunk); }
+.pts-row .nm { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+.pts-row .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c); transform: translateY(1px); }
+.pts-row .t { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; min-width: 0; }
+.pts-row .t b { overflow-wrap: anywhere; }
+.pts-row .when { font-size: .82rem; color: var(--muted); }
+.pts-row .pc { text-align: right; font-weight: 800; }
+.pts-row .go { color: var(--muted); }
+.pts-more summary { cursor: pointer; font-weight: 700; font-size: .9rem; color: var(--accent-text); padding: 4px 6px; }
+.pts-lockline { margin: 0; font-size: .88rem; }
+@media (max-width: 520px) {
+  .pts-row { grid-template-columns: minmax(0, 1fr) 3.2em; }
+  .pts-row .pts-bar { grid-column: 1 / -1; grid-row: 2; }
+  .pts-row .go { display: none; }
+}
+.pts-lesson .pts-bar { margin: 2px 0; }
+.pts-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .86rem; color: var(--muted); }
+.pts-legend .ok { color: var(--accent-text); font-weight: 700; }
+.pts-next { margin: 0; font-weight: 700; font-size: .92rem; color: var(--accent-text); }
+.pts-state { padding: 2px 9px; border-radius: 999px; font-size: .78rem; font-weight: 800; }
+.pts-state.st-none { background: var(--sunk); color: var(--muted); }
+.pts-state.st-doing { background: var(--green-400); color: var(--ink); }
+.pts-state.st-done { background: var(--accent); color: #fff; }
+.pts-state.st-mastered { background: var(--green-900); color: #fff; }
+.pts-meter { display: inline-flex; align-items: center; gap: 3px; font-size: .82rem; }
+.pts-meter i { width: 8px; height: 8px; border-radius: 50%; background: var(--sunk); border: 1px solid var(--line); box-sizing: border-box; }
+.pts-meter i.on { background: var(--accent); border-color: var(--accent); }
+.pts-meter i.half { background: linear-gradient(90deg, var(--accent) 50%, var(--sunk) 50%); border-color: var(--accent); }
+.pts-meter.mastered i.on { background: var(--green-900); border-color: var(--green-900); }
+.pts-meter b { min-width: 2em; margin-left: 4px; text-align: right; font-weight: 800; }
+.unit h3 > span:nth-child(2) { flex: 1 1 auto; min-width: 0; }
+.unit h3 .pts-u { margin-left: auto; display: grid; gap: 3px; justify-items: end; flex: none; font-size: .78rem; font-weight: 700; color: var(--muted); }
+.pts-mini { display: block; width: 90px; height: 6px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
+.pts-mini i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: var(--accent); }
+.pts-gain { display: grid; gap: 8px; width: 100%; margin: 0; text-align: center; }
+.pts-gain p { margin: 0; }
+.pts-gain.small { color: var(--accent-text); font-size: .95rem; }
 @keyframes lp-grow { from { width: 0; } }
 .more-level { padding: 10px 8px 4px; }
 
@@ -2296,6 +2360,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
 
   let lastRenderSig = "";
   function render() {
+    if (ptsBfState === 0) queueMicrotask(ptsBackfill);
     renderNav();
     const v = S.route.view;
     $("main").dataset.view = v || "home";
@@ -3014,6 +3079,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       needGroup() ? groupStep() : nowCard(),
       needGroup() || !S.ready ? null : dayPath(),
       needGroup() ? null : guideStrip(),
+      needGroup() || !S.ready ? null : ptsHome(),
       needGroup() ? h("div", { class: "hub" }, h("div", { class: "stack", style: "gap:20px;min-width:0" }, newPanel()))
         : h("div", { class: "hub" }, todayPanel(), h("div", { class: "stack", style: "gap:20px;min-width:0" }, upcomingPanel(), newPanel())),
     ];
@@ -4063,6 +4129,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       h("div", { class: "people" }, people),
       nextClass ? h("p", { style: "font-size:.92rem" }, "Najbliższe zajęcia: ", h("b", { text: `${fmtKey(nextClass.k)}, ${SLOTS[nextClass.c.s][0]}` }), ` · ${KIND[nextClass.c.k].toLowerCase()} · ${nextClass.c.r || ""}`) : null,
       topic ? h("p", { style: "font-size:.88rem" }, h("span", { class: "muted", text: `Prawdopodobny temat (szacunek z sylabusa, zajęcia ${topic.n} z ${topic.of}): ` }), h("span", { lang: "en", text: topic.topics.join(" · ") })) : null);
+
     const tabs = h("div", { class: "tabs subj-tabs", role: "tablist", "aria-label": "Części przedmiotu" }, SUBJ_TABS.map(([k, l]) => h("button", { type: "button", class: "tab", role: "tab", "aria-selected": String(k === tab), onclick: () => { S.route = { ...S.route, tab: k }; render(); } }, l)));
     const body = tab === "cwicz" ? subjectPractice(s) : tab === "zal" ? subjectGrading(s) : subjectLearn(s);
     return [backLink({ view: "materials" }), head, S.ready && !S.noDb ? subjectHero(s) : null, h("div", {}, tabs, h("div", { class: "tabpanel", role: "tabpanel" }, body))];
@@ -4077,9 +4144,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       nx && n >= 0 ? h("div", { class: "row" }, h("span", { class: "eyebrow", text: what }),
         h("span", { class: "sk-chip num" + (n <= 3 ? " bad" : n <= 7 ? " warn" : ""), text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` }),
         h("span", { class: "muted", style: "font-size:.9rem", text: fmtKey(nx.date) + (nx.approx ? " (data orientacyjna)" : "") })) : null,
-      L.n ? h("div", { class: "lp-level sk-level" },
-        h("div", { class: "row" }, h("b", { text: "Postęp kursu" }), h("span", { class: "muted", text: `${L.done}/${L.n} ${plural(L.n, "lekcja", "lekcje", "lekcji")}${L.stars ? ` · ⭐ ${L.stars}` : ""}` })),
-        h("div", { class: "lp-lvbar sk-lvbar lesson", role: "progressbar", "aria-label": "Postęp kursu", "aria-valuemin": "0", "aria-valuemax": String(L.n), "aria-valuenow": String(L.done) }, h("i", { style: `--w:${(100 * L.done / L.n).toFixed(1)}%` }))) : null,
+      L.n ? ptsSubjectBox(s, L.stars) : null,
       next ? h("button", { type: "button", class: "btn primary sk-start sk-long", title: next.label, onclick: () => go({ view: "material", id: next.m.id }) }, h("span", { class: "txt", text: next.label }), h("span", { "aria-hidden": "true", text: "→" }))
         : L.n ? h("p", { class: "big", style: "margin:0", text: "Wszystkie lekcje przerobione 🎉" }) : null);
   }
@@ -4187,34 +4252,30 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   function courseSection(s) {
     const ls = lessonsOf(s.id);
     if (!ls.length) return null;
-    const done = S.progress?.done || {};
-    const doneN = ls.filter(lessonDone).length;
-    const units = [];
-    for (const l of ls) { let u = units.find((x) => x.unit === l.unit); if (!u) units.push(u = { unit: l.unit, title: l.unitTitle, items: [] }); u.items.push(l); }
+    const sp = subjectPts(s.id), units = sp.units;
     const nextL = nextLesson(s.id)?.m || null;
     return h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between" },
         h("h2", { text: "Kurs: lekcje po kolei" }),
-        h("span", { class: "chip " + (doneN === ls.length ? "good" : "sun"), text: `przerobione ${doneN}/${ls.length}` })),
+        h("span", { class: "chip " + (sp.doneN === sp.n ? "good" : "sun"), text: `${sp.doneN}/${sp.n} · ${fmtN(sp.pts)} pkt` })),
       h("div", { class: "book" }, h("span", { class: "spine", "aria-hidden": "true" }),
         ls.some((l) => l.sylRef)
           ? h("span", {}, "Lekcje ułożone według tematów sylabusa WEFiZ 2026/27 (W = wykład, ĆW = ćwiczenia). Wyjaśnienia, przykłady i zadania są nasze, nie ze slajdów prowadzących. Gdy prowadzący wrzucą slajdy, sprawdzaj w nich szczegóły z zajęć.")
           : h("span", {}, "Tematy w kolejności podręcznika prowadzącej: ", h("i", { text: "Mathematics for Students of Economics, Finance and Management" }), " (B. Batóg i in., Difin 2021). Wyjaśnienia, przykłady i zadania są nasze; numer rozdziału pokazuje, gdzie szukać w książce.")),
       // Mapa przedmiotu: działy jako nagłówki, lekcje jako kropki (✓ + gwiazdki, „now” = następna, 🔒 zablokowane).
       h("div", { class: "course sk-course" }, units.map((u) => h("div", { class: "unit" },
-        h("h3", {}, h("span", { class: "u", text: u.unit }), h("span", { text: u.title })),
-        h("ol", { class: "sk-path", "aria-label": `Dział ${u.unit}: ${u.title}` }, u.items.map((l) => {
-          const ok = lessonDone(l), lock = locked(l), stars = S.progress?.lp?.[l.id]?.stars || 0, cur = nextL && nextL.id === l.id;
-          const st = !ok ? lpStateOf(lpKey(l.id)) : null, parts = st ? Object.keys(st.done || {}).length : 0;
+        h("h3", {}, h("span", { class: "u", text: u.unit }), h("span", { text: u.title }),
+          h("span", { class: "pts-u" }, h("span", { class: "num", text: `${fmtN(u.pts)} / ${fmtN(u.max)} pkt` }), h("span", { class: "pts-mini", "aria-hidden": "true" }, h("i", { style: `--w:${(100 * u.pts / (u.max || 1)).toFixed(1)}%` })))),
+        h("ol", { class: "sk-path", "aria-label": `Dział ${u.unit}: ${u.title}` }, u.rows.map(({ l, ...r }) => {
+          const ok = lessonDone(l), lock = locked(l), cur = nextL && nextL.id === l.id;
           const open = () => go({ view: "material", id: l.id, tab: "lekcja" });
           return h("li", { class: "sk-node" + (ok ? " done" : "") + (cur ? " now" : "") + (lock ? " lock" : "") },
             h("button", { type: "button", class: "sk-dot", "aria-label": `${l.order}. ${l.title}${ok ? ", przerobiona" : ""}${lock ? ", zablokowana" : ""}`, onclick: open }, lock ? "🔒" : ok ? "✓" : String(l.order)),
             h("button", { type: "button", class: "t", onclick: open },
               h("b", { text: `${l.order}. ${l.title}` }),
               h("span", { class: "num", text: (l.sylRef ? `sylabus: ${l.sylRef}` : `rozdz. ${l.bookRef}`) + ` · ok. ${l.minutes} min · ${l.quizCount || 0} ${plural(l.quizCount || 0, "pytanie", "pytania", "pytań")} w quizie` }),
-              stars || parts || (!lock && !PAID()) || best(l.id) ? h("span", { class: "sk-tags" },
-                stars ? h("span", { class: "lp-stars sk-stars", "aria-label": `${stars} z 3 gwiazdek` }, [1, 2, 3].map((i) => h("span", { class: i <= stars ? null : "off", text: "⭐" }))) : null,
-                !ok && parts ? h("span", { class: "chip sun num", text: `zaczęta: ${parts} ${plural(parts, "część", "części", "części")}` }) : null,
+              !lock || best(l.id) ? h("span", { class: "sk-tags" },
+                !lock ? ptsMeter(r) : null,
                 !lock && !PAID() ? h("span", { class: "chip good", text: "za darmo" }) : null,
                 best(l.id) ? scoreChip(l.id) : null) : null));
         }))))),
@@ -4593,9 +4654,10 @@ html.calm .a-tick { stroke-dashoffset: 0; }
         const done2 = X.every((_, i) => st.ans["x" + i] != null); if (!done2) return;
         const okN = X.filter((q, i) => st.ans["x" + i] === q.correct).length, ok = okN >= Math.min(2, X.length);
         const mastery = { ...(S.progress.mastery || {}), [m.id]: { ok, score: okN, total: X.length, at: Date.now(), weak: X.map((q, i) => (st.ans["x" + i] !== q.correct ? q.sec : null)).filter((x) => x != null) } };
-        const patch = { mastery };
+        const patch = { mastery }, before = subjectPts(m.subjectId).pts;
         if (ok) patch.done = { ...(S.progress.done || {}), [m.id]: Date.now() };
         saveProgress(patch);
+        if (ok) ptsMilestone(m.subjectId, before);
         if (!ok) { const cards = S.content[m.id]?.flashcards || []; const added = srsAdd(cards.map((c) => cardKey(m.id, c))); if (added) toast("Fiszki z tej lekcji czekają w „Dziś do powtórki”."); }
       };
       const hookPick = st.ans.hook;
@@ -4639,7 +4701,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       practice,
       closing,
       finishedSecs && !mast?.ok ? h("div", { class: "row" },
-        h("button", { type: "button", class: "btn small ghost", onclick: () => { const d = { ...(S.progress.done || {}) }; if (doneManual) delete d[m.id]; else d[m.id] = Date.now(); saveProgress({ done: d }); render(); } }, doneManual ? "✓ Oznaczona jako przerobiona (cofnij)" : "Oznacz jako przerobioną bez biletu")) : null);
+        h("button", { type: "button", class: "btn small ghost", onclick: () => { const d = { ...(S.progress.done || {}) }, before = subjectPts(m.subjectId).pts; if (doneManual) delete d[m.id]; else d[m.id] = Date.now(); saveProgress({ done: d }); if (!doneManual) ptsMilestone(m.subjectId, before); render(); } }, doneManual ? "✓ Oznaczona jako przerobiona (cofnij)" : "Oznacz jako przerobioną bez biletu")) : null);
   }
 
   // =====================================================================
@@ -4832,9 +4894,9 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   // key: klucz stanu w localStorage albo materiał (lekcja: bm-lp:<id>, jak dotąd).
   function lpLoad(key, deck) {
     let s = null; try { s = JSON.parse(ls.get(typeof key === "string" ? key : lpKey(key.id)) || "null"); } catch {}
-    if (s && s.sig === deck.sig) return s;
+    if (s && s.sig === deck.sig) { s.paid ||= {}; return s; }
     const keepDone = s && s.n === deck.bites.length ? s.done || {} : {};
-    return { sig: deck.sig, n: deck.bites.length, bite: 0, idx: 0, ans: {}, rev: {}, extra: {}, done: keepDone, xp: 0, combo: 0, best: 0, bs: {}, checks: {} };
+    return { sig: deck.sig, n: deck.bites.length, bite: 0, idx: 0, ans: {}, rev: {}, extra: {}, done: keepDone, xp: 0, combo: 0, best: 0, bs: {}, checks: {}, paid: {} };
   }
   function lpSave() { if (LP.st && LP.src) ls.set(LP.src.stateKey, JSON.stringify(LP.st)); }
   // XP za typ karty: nadpisania źródła (src.xp) albo LP_XP, przycięte limitem dziennym źródła (src.pool, 4.4).
@@ -4864,11 +4926,8 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     const started = Object.keys(st.ans).length > 0 || doneN > 0;
     const allDone = req.every((b) => st.done[b.id]);
     const resumeI = st.idx > 0 && !st.done[deck.bites[st.bite]?.id] ? st.bite : curI;
-    const xpDay = S.progress?.xp?.d === dayN() ? S.progress.xp.n || 0 : 0;
-    const goal = Math.min(1, xpDay / LP_DAILY_GOAL), C = 2 * Math.PI * 13;
-    const ring = h("span", { class: "lp-goal" });
-    ring.innerHTML = `<svg viewBox="0 0 34 34" aria-hidden="true"><circle class="bg" cx="17" cy="17" r="13"/><circle class="fg" cx="17" cy="17" r="13" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - goal)).toFixed(1)}"/></svg>`;
-    ring.append(h("span", { text: `Cel dnia: ${Math.min(xpDay, LP_DAILY_GOAL)}/${LP_DAILY_GOAL} XP${xpDay >= LP_DAILY_GOAL ? " ✓" : ""}` }));
+    lpSyncB(m.id, deck, st); // części zrobione przed zapisem b w bazie
+    const ring = goalRing();
     const minutes = deck.bites.filter((b) => !b.optional).reduce((s, b) => s + b.min, 0);
     return h("div", { class: "lp-map" },
       h("section", { class: "lp-hero" },
@@ -4876,9 +4935,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
           h("span", { class: "big", text: allDone ? "Lekcja przerobiona" : started ? "Wracasz do lekcji" : `${deck.bites.length} ${plural(deck.bites.length, "krótka część", "krótkie części", "krótkich części")} · ok. ${minutes} min` }),
           stars ? h("span", { class: "lp-stars", "aria-label": `${stars} z 3 gwiazdek` }, [1, 2, 3].map((i) => h("span", { class: i <= stars ? null : "off", text: "⭐" }))) : null),
         h("p", { class: "muted", style: "margin:0", text: allDone ? "Możesz powtórzyć dowolną część albo poprawić wynik biletu wyjścia." : "Jedna część to 2–4 minuty. Po każdej możesz zrobić przerwę, postęp się zapisuje." }),
-        h("div", { class: "lp-level" },
-          h("div", { class: "row" }, h("b", { text: "Postęp lekcji" }), h("span", { class: "muted", text: `${req.filter((b) => st.done[b.id]).length}/${req.length} części zrobione` })),
-          h("div", { class: "lp-lvbar lesson", role: "progressbar", "aria-label": "Postęp lekcji", "aria-valuemin": "0", "aria-valuemax": String(req.length), "aria-valuenow": String(req.filter((b) => st.done[b.id]).length) }, h("i", { style: `--w:${(100 * req.filter((b) => st.done[b.id]).length / Math.max(1, req.length)).toFixed(1)}%` }))),
+        ptsLessonBox(m, deck, st),
         lpLevelBar(lpXpTotal()),
         h("div", { class: "row" }, ring, streakN() ? h("span", { class: "lp-goal", text: `🔥 ${streakN()} ${plural(streakN(), "dzień", "dni", "dni")} z rzędu` }) : null),
         h("button", { type: "button", class: "btn primary lp-start", onclick: () => lpOpen(m, c, resumeI >= 0 ? resumeI : 0) },
@@ -4906,7 +4963,13 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       closeTo: null,
     };
   }
-  function lpOpen(m, c, bi) { playerOpen(lpLessonSource(m, c), bi); }
+  function lpOpen(m, c, bi) {
+    // Punkty przed lekcją: ekran końca części pokazuje przyrost, a pasek przedmiotu rośnie od tej wartości.
+    const sub = subjectPts(m.subjectId).pts;
+    LP.pts = { les: lessonPts(m).pts, sub, sub0: sub };
+    if (lessonsOf(m.subjectId).length) ptsBar(m.subjectId, { size: "sm" });
+    playerOpen(lpLessonSource(m, c), bi);
+  }
   // Odtwarzacz dla dowolnej talii. src: { kind, id, title, label, closeLabel, empty, stateKey, build() → { sig, bites, simple },
   // xp (nadpisania LP_XP), retry (druga szansa), feedback ("now" | "end"), onCard(card, wynik), onFinish(st), closeTo (trasa po ✕), m?, c? }.
   function playerOpen(src, bi) {
@@ -4915,8 +4978,9 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     const deck = src.build();
     if (!deck.bites.length) { toast(src.empty || "Tu nie ma jeszcze kart."); return false; }
     LP.src = src; LP.m = src.m || null; LP.c = src.c || null; LP.deck = deck; LP.st = lpLoad(src.stateKey, deck);
-    if (bi != null && bi !== LP.st.bite) { LP.st.bite = Math.max(0, Math.min(bi, deck.bites.length - 1)); LP.st.idx = 0; LP.st.extra[LP.st.bite] = []; }
-    if (LP.st.done[deck.bites[LP.st.bite].id] && LP.st.idx >= lpCards().length) LP.st.idx = 0;
+    // Część zaczynana od nowa dostaje świeże statystyki (inaczej stare bs.closed blokuje zapis XP z powtórki).
+    if (bi != null && bi !== LP.st.bite) { LP.st.bite = Math.max(0, Math.min(bi, deck.bites.length - 1)); LP.st.idx = 0; LP.st.extra[LP.st.bite] = []; delete LP.st.bs[LP.st.bite]; }
+    if (LP.st.done[deck.bites[LP.st.bite].id] && LP.st.idx >= lpCards().length) { LP.st.idx = 0; delete LP.st.bs[LP.st.bite]; }
     lpBiteStats().t0 = Date.now();
     LP.open = true;
     const el = LP.el = {};
@@ -5037,11 +5101,14 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   // ---------- punkty, seria, efekty ----------
   function lpAward(n, opts = {}) {
     const st = LP.st, bs = lpBiteStats();
+    // Powtórka karty w lekcji: XP liczy się do celu dnia, ale najwyżej 1 za kartę (paid = karty, za które XP już było).
+    const cid = LP.src?.kind === "lesson" ? lpCur()?.id : null;
+    if (cid && (n > 0 || opts.graded)) { st.paid ||= {}; if (st.paid[cid]) n = Math.min(n, 1); else st.paid[cid] = 1; }
     if (opts.graded) { bs.tot++; if (opts.ok) bs.ok++; st.combo = opts.ok ? st.combo + 1 : 0; st.best = Math.max(st.best, st.combo); try { LP.src.onCard?.(lpCur(), { ok: !!opts.ok }); } catch {} }
     if (n > 0) { st.xp += n; bs.xp += n; st.xpPending = (st.xpPending || 0) + n; lpFloat("+" + n, opts.at); }
     LP.el.xp.textContent = "⚡ " + st.xp; if (n > 0) lpBump(LP.el.xp);
     const cb = LP.el.combo;
-    if (st.combo >= 3) { cb.hidden = false; cb.textContent = "🔥 x" + st.combo; lpBump(cb); if (st.combo === 5 || st.combo === 10) { const bonus = lpXv("combo"); if (bonus) { st.xp += bonus; bs.xp += bonus; st.xpPending += bonus; lpBanner(st.combo === 5 ? "🔥 Seria 5! +5 XP" : "🔥🔥 Seria 10! +5 XP"); } } }
+    if (st.combo >= 3) { cb.hidden = false; cb.textContent = "🔥 x" + st.combo; lpBump(cb); if (opts.graded && opts.ok && (st.combo === 5 || st.combo === 10)) { const bonus = lpXv("combo"); if (bonus) { st.xp += bonus; bs.xp += bonus; st.xpPending += bonus; lpBanner(st.combo === 5 ? "🔥 Seria 5! +5 XP" : "🔥🔥 Seria 10! +5 XP"); } } }
     else cb.hidden = true;
     if (opts.graded) lpBuzz(opts.ok);
     lpSave();
@@ -5371,8 +5438,13 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       bs.closed = true;
       if (firstTime) { st.xp += lpXv("bite"); bs.xp += lpXv("bite"); st.xpPending = (st.xpPending || 0) + lpXv("bite"); }
       st.done[b.id] = Date.now();
+      if (LP.src.kind === "lesson") lpSyncB(LP.m.id, LP.deck, st);
       if (b.kind === "final") LP.src.onFinish?.(st);
       lpFlushXp();
+      if (LP.src.kind === "lesson" && LP.pts) {
+        const les = lessonPts(LP.m).pts, sub = subjectPts(LP.m.subjectId).pts;
+        bs.ptsL = les - LP.pts.les; bs.ptsS = sub - LP.pts.sub0; ptsMilestone(LP.m.subjectId, LP.pts.sub); LP.pts.les = les; LP.pts.sub = sub;
+      }
       setTimeout(() => { lpConfetti(b.kind === "final" ? 46 : 18); }, 250);
     }
     LP.el.xp.textContent = "⚡ " + st.xp; LP.el.help.hidden = true;
@@ -5390,6 +5462,9 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       return h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") },
         h("div", { class: "lp-bigstars", "aria-label": `${stars} z 3 gwiazdek` }, [1, 2, 3].map((i) => h("span", { class: "lp-star" + (i <= stars ? "" : " off"), style: `--i:${i - 1}`, text: "⭐" }))),
         h("h2", { text: res?.ok ? "Lekcja opanowana! 🎉" : "Lekcja przerobiona" }),
+        subjectById(LP.m.subjectId) && lessonsOf(LP.m.subjectId).length ? h("div", { class: "pts-gain" },
+          bs.ptsS > 0 ? h("p", { class: "num", text: `+${bs.ptsS} pkt w przedmiocie ${subjectById(LP.m.subjectId).pl}` }) : null,
+          ptsBar(LP.m.subjectId, { size: "sm" })) : null,
         h("p", { class: "muted", style: "margin:0", text: res?.ok ? (weak.length ? "Super. Jedno pytanie nie wyszło, rzuć okiem na tę część:" : "Rozumiesz ten temat. Fiszki z lekcji utrwalą go na dłużej.") : "Bilet wyjścia jeszcze nie wyszedł. Fiszki z lekcji czekają w powtórkach, a słabsze części masz poniżej." }),
         lpLevelBar(lpXpTotal()),
         h("div", { class: "lp-stats" }, lpStat(st.xp, "XP w lekcji"), lpStat(`${res?.score ?? 0}/${res?.total ?? 0}`, "bilet wyjścia"), lpStat(st.best, "najdłuższa seria")),
@@ -5401,6 +5476,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     LP.el.cta.textContent = nextB ? `Dalej: ${nextB.title} →` : "Wróć do mapy lekcji"; LP.el.ctaFn = nextB ? () => goTo(nextI) : () => lpClose(); LP.el.cta.disabled = false; LP.el.cta.hidden = false;
     return h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") }, check,
       h("h2", { text: b.kind === "warm" ? "Rozgrzewka zrobiona!" : `${b.title}: zrobione!` }),
+      LP.src.kind === "lesson" && bs.ptsL > 0 ? h("p", { class: "pts-gain small num", text: `+${bs.ptsL} pkt · lekcja ${lessonPts(LP.m).pts}/100` }) : null,
       h("div", { class: "lp-stats" }, lpStat("+" + bs.xp, "XP"), lpStat(bs.tot ? `${bs.ok}/${bs.tot}` : "—", "z pierwszej próby"), lpStat(sec >= 60 ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}` : sec + " s", "czas")),
       lpLevelBar(lpXpTotal()),
       h("p", { class: "muted", style: "margin:0", text: `Cel dnia: ${Math.min(xpDay, LP_DAILY_GOAL)}/${LP_DAILY_GOAL} XP${xpDay >= LP_DAILY_GOAL ? " ✓" : ""}. Możesz teraz zrobić przerwę, wszystko jest zapisane.` }),
@@ -5417,12 +5493,222 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     const weak = [...new Set(X.filter((q) => st.ans[q.id] !== q.correct && q.sec != null).map((q) => q.sec))];
     const ch = Object.values(st.checks), acc = ch.length ? ch.filter(Boolean).length / ch.length : 1;
     const stars = !ok ? 1 : okN === X.length && acc >= 0.8 ? 3 : 2;
-    if (ok) { st.xp += lpXv("lesson"); st.xpPending = (st.xpPending || 0) + lpXv("lesson"); }
     const prev = S.progress?.lp?.[m.id];
-    const patch = { mastery: { ...(S.progress.mastery || {}), [m.id]: { ok, score: okN, total: X.length, at: Date.now(), weak } }, lp: { ...(S.progress.lp || {}), [m.id]: { stars: Math.max(stars, prev?.stars || 0), last: stars, at: Date.now() } } };
+    // Bonus za lekcję tylko raz (xpL). Lekcja zdana przed wprowadzeniem xpL (≥ 2★) też już go dostała.
+    if (ok && !prev?.xpL && !(prev?.stars >= 2)) { st.xp += lpXv("lesson"); st.xpPending = (st.xpPending || 0) + lpXv("lesson"); }
+    const patch = { mastery: { ...(S.progress.mastery || {}), [m.id]: { ok, score: okN, total: X.length, at: Date.now(), weak } }, lp: { ...(S.progress.lp || {}), [m.id]: { ...(prev || {}), stars: Math.max(stars, prev?.stars || 0), last: stars, at: Date.now(), ...(ok ? { xpL: true } : {}) } } };
     if (ok) patch.done = { ...(S.progress.done || {}), [m.id]: Date.now() };
     saveProgress(patch);
     if (!ok) { const added = srsAdd((LP.c.flashcards || []).map((c) => cardKey(m.id, c))); if (added) toast("Fiszki z tej lekcji czekają w „Dziś do powtórki”."); }
+  }
+
+  // =====================================================================
+  // PUNKTY KURSU — ile kursu masz za sobą (0–100 pkt na lekcję). Nie są licznikiem: wyliczamy je przy każdym renderze
+  // ze stanu lekcji w S.progress, więc nie da się ich nabić, nie spadają i są takie same na każdym urządzeniu.
+  // XP (⚡) mówi, ile pracujesz dziś; punkty mówią, ile kursu jest za Tobą.
+  // =====================================================================
+  const PTS = { parts: 50, ticket: 30, star3: 20, star2: 10 };
+  const PTS_STATE = { none: "nieruszona", doing: "w trakcie", done: "przerobiona", mastered: "opanowana" };
+  const fmtN = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, EN ? "," : " ");
+  const pctOf = (f) => Math.floor(f * 100 + 1e-9); // 99,6% to nadal 99%
+  // Talia lekcji z wczytanej treści (pamiętana, bo mapa kursu pyta o każdą lekcję przy każdym renderze).
+  const lpDeckCache = new Map();
+  function lpDeckOf(m, c) {
+    c = c || S.content[m.id]; if (!c?.lesson) return null;
+    const hit = lpDeckCache.get(m.id); if (hit && hit.c === c) return hit.d;
+    const d = lpBuildDeck(m, c.lesson, c); lpDeckCache.set(m.id, { c, d }); return d;
+  }
+  // [zrobione, wszystkie] wymagane części (bez „dla chętnych”).
+  function lpPartsB(deck, st) { const req = deck.bites.filter((b) => !b.optional); return [req.filter((b) => st?.done?.[b.id]).length, req.length]; }
+  // Ułamek zrobionych części z tej przeglądarki (bm-lp:<id>), dopóki lp[id].b nie trafi do bazy.
+  function localParts(id) {
+    const st = lpStateOf(lpKey(id)); if (!st?.done) return 0;
+    const m = materialById(id), deck = m && lpDeckOf(m);
+    if (deck) { const [n, t] = lpPartsB(deck, st); return t ? n / t : 0; }
+    const n = Object.keys(st.done).filter((k) => !/^tr([2-9]|\d\d)/.test(k)).length; // bez treści: bonusy tr2+ pomijamy, mianownik przybliżony
+    return st.n ? Math.min(1, n / st.n) : 0;
+  }
+  // Zapis lp[id].b (części do bazy, żeby telefon i komputer pokazywały to samo). b nigdy nie maleje; po zmianie liczby części liczy się większy ułamek.
+  function lpSyncB(id, deck, st) {
+    const [n, t] = lpPartsB(deck, st); if (!n || !t) return false;
+    const prev = S.progress?.lp?.[id], pb = prev?.b;
+    if (pb?.[1] && pb[0] / pb[1] >= n / t) return false;
+    progSoon({ lp: { ...(S.progress.lp || {}), [id]: { ...(prev || {}), b: [n, t] } } });
+    return true;
+  }
+  function lessonPts(l) {
+    const id = l.id, p = S.progress || {}, lp = p.lp?.[id], mast = p.mastery?.[id], ok = !!mast?.ok, manual = !!p.done?.[id] && !ok;
+    // Zdany bilet (także w wersji tekstowej) i „bez biletu” = wszystkie części. Inaczej to, co w bazie, albo więcej z tej przeglądarki.
+    let frac = ok || manual ? 1 : lp?.b?.[1] ? lp.b[0] / lp.b[1] : 0;
+    if (frac < 1) frac = Math.max(frac, localParts(id));
+    const parts = Math.floor(PTS.parts * Math.min(1, frac) + 1e-9);
+    const ticket = ok ? PTS.ticket : 0;
+    const bonus = !ok ? 0 : (lp?.stars || 0) >= 3 ? PTS.star3 : lp?.stars === 2 ? PTS.star2 : 0;
+    const pts = Math.min(100, parts + ticket + bonus);
+    return { pts, parts, ticket, bonus, state: pts === 0 ? "none" : pts < 50 ? "doing" : pts < 80 ? "done" : "mastered" };
+  }
+  // Do maksimum wchodzą wszystkie lekcje kursu, także zablokowane na darmowym koncie. Materiały ze slajdów nie (zostają w mapie postępów).
+  function subjectPts(sid) {
+    const ls = lessonsOf(sid), units = [];
+    let pts = 0, doneN = 0, lockedN = 0;
+    for (const l of ls) {
+      const r = { l, ...lessonPts(l), locked: locked(l) };
+      pts += r.pts; if (r.pts >= 50) doneN++; if (r.locked) lockedN++;
+      let u = units.find((x) => x.unit === l.unit); if (!u) units.push(u = { unit: l.unit, title: l.unitTitle, pts: 0, max: 0, rows: [] });
+      u.pts += r.pts; u.max += 100; u.rows.push(r);
+    }
+    const max = 100 * ls.length;
+    return { sid, pts, max, pct: max ? pts / max : 0, doneN, n: ls.length, lockedN, units };
+  }
+  function semesterPts() {
+    const subs = SUBJECTS.map((s) => subjectPts(s.id)).filter((x) => x.n);
+    const pts = subs.reduce((a, x) => a + x.pts, 0), max = subs.reduce((a, x) => a + x.max, 0);
+    return { sid: "sem", pts, max, pct: max ? pts / max : 0, units: [], subs };
+  }
+  // Progi 25/50/75/100% przedmiotu: świętujemy raz (najwyższy próg w S.progress.ms).
+  // before = punkty przedmiotu sprzed tej zmiany: próg przekroczony już wcześniej zapisujemy bez świętowania.
+  const ptsHit = (pct) => [100, 75, 50, 25].find((x) => pct >= x) || 0;
+  function ptsMilestone(sid, before) {
+    const sp = sid && subjectPts(sid); if (!sp?.n) return;
+    const hit = ptsHit(pctOf(sp.pct)), old = before == null ? 0 : ptsHit(pctOf(before / sp.max)), had = Math.max(S.progress?.ms?.[sid] || 0, old);
+    if (hit > (S.progress?.ms?.[sid] || 0)) progSoon({ ms: { ...(S.progress.ms || {}), [sid]: hit } });
+    if (!hit || hit <= had) return;
+    const s = subjectById(sid)?.pl || "";
+    const show = () => {
+      lpBanner(hit === 100 ? `Cały kurs ${s} przerobiony 🎉` : hit === 75 ? `Trzy czwarte kursu z ${s} za Tobą` : hit === 50 ? `Połowa kursu z ${s} za Tobą` : `Ćwierć kursu z ${s} za Tobą`);
+      if (hit > 25) lpConfetti(hit === 100 ? 46 : hit === 75 ? 24 : 18);
+    };
+    // Baner poziomu (xpFlush) mógł właśnie wyskoczyć: wtedy nasz pokazujemy po nim.
+    document.querySelector(".lp-banner") ? setTimeout(show, 1800) : show();
+  }
+  // Raz po zalogowaniu: części lekcji zapisane tylko w tej przeglądarce (bm-lp:*) trafiają do bazy jako lp[id].b.
+  var ptsBfState = 0; // 0 czeka, 1 trwa, 2 zrobione
+  async function ptsBackfill() {
+    if (ptsBfState || !S.ready || !S.progReady) return;
+    if (ls.get("bm-pts-bf") === "1") { ptsBfState = 2; return; }
+    ptsBfState = 1;
+    try {
+      const ids = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k?.startsWith("bm-lp:")) ids.push(k.slice(6)); }
+      const got = {};
+      for (const id of ids) {
+        const m = materialById(id); if (!isLesson(m) || S.progress?.lp?.[id]?.b) continue;
+        const st = lpStateOf(lpKey(id)); if (!st?.done || !Object.keys(st.done).length) continue;
+        let c = null; try { c = await getContent(id); } catch {}
+        const deck = c?.lesson ? lpDeckOf(m, c) : null; if (!deck) continue;
+        const [n, t] = lpPartsB(deck, st); if (n && t) got[id] = [n, t];
+      }
+      const lp = { ...(S.progress.lp || {}) };
+      for (const [id, b] of Object.entries(got)) if (!lp[id]?.b) lp[id] = { ...(lp[id] || {}), b };
+      if (Object.keys(got).length) await saveProgress({ lp });
+      ls.set("bm-pts-bf", "1"); ptsBfState = 2;
+      if (Object.keys(got).length) render();
+    } catch { ptsBfState = 0; }
+  }
+
+  // ---------- wygląd punktów ----------
+  // Pasek przedmiotu: segment = dział (szerokość wg liczby lekcji), progi 25/50/75%, animacja od poprzedniej wartości z tej karty przeglądarki.
+  // o: { size: "lg" | "md" | "sm", segments: false, sp (gotowe subjectPts / semesterPts), label }
+  function ptsBar(sid, o = {}) {
+    const sp = o.sp || subjectPts(sid), size = o.size || "lg";
+    const segs = o.segments !== false && sp.units.length > 1 ? sp.units : [{ pts: sp.pts, max: sp.max, rows: [] }];
+    const fr = (u) => (u.max ? Math.min(1, u.pts / u.max) : 0);
+    const key = "bm-pts-last:" + sid + (segs.length > 1 ? "" : ":1"), now = segs.map((u) => u.pts);
+    let prev = null; try { prev = JSON.parse(sessionStorage.getItem(key) || "null"); sessionStorage.setItem(key, JSON.stringify(now)); } catch {}
+    const anim = Array.isArray(prev) && prev.length === now.length && prev.some((v, i) => v !== now[i]) && !lpReduced();
+    const pct = pctOf(sp.pct), name = subjectById(sid)?.pl;
+    const fills = [];
+    const bar = h("div", { class: `pts-bar pts-${size}`, role: "progressbar", "aria-label": o.label || (name ? `Punkty: ${name}` : "Punkty"), "aria-valuemin": "0", "aria-valuemax": String(sp.max), "aria-valuenow": String(sp.pts), "aria-valuetext": `${sp.pts} z ${sp.max} punktów, ${pct} procent` },
+      segs.map((u, i) => {
+        const full = u.max && u.pts >= u.max, lock = u.rows.length && u.rows.every((r) => r.locked);
+        const f = h("i", { style: `--w:${((anim ? Math.min(1, prev[i] / (u.max || 1)) : fr(u)) * 100).toFixed(1)}%` }); fills.push([f, fr(u)]);
+        const attrs = { class: "pts-seg" + (full ? " max" : "") + (lock ? " locked" : ""), style: `flex:${u.rows.length || 1} 1 0`, title: segs.length > 1 ? `${u.unit ? "Dział " + u.unit : "Dział"}: ${u.pts}/${u.max} pkt` : null };
+        const ico = lock ? h("span", { class: "pts-ico", text: "🔒" }) : full && size !== "sm" ? h("span", { class: "pts-ico", text: "✓" }) : null;
+        return lock ? h("button", { type: "button", ...attrs, "aria-label": `${attrs.title || "Dział"} · pełny dostęp`, onclick: () => window.skrot?.buy() }, f, ico) : h("span", attrs, f, ico);
+      }),
+      size === "sm" ? null : [25, 50, 75].map((p) => h("i", { class: "pts-tick" + (pct >= p ? " on" : ""), style: `left:${p}%`, "aria-hidden": "true" })));
+    if (anim) requestAnimationFrame(() => requestAnimationFrame(() => fills.forEach(([f, v]) => f.style.setProperty("--w", (v * 100).toFixed(1) + "%"))));
+    return bar;
+  }
+  // Pełny blok przedmiotu (okładka): liczby, pasek z działami, podpisy działów, co dalej.
+  // Punkty przedmiotu w hero przedmiotu: liczby, pasek z działami, podpisy działów („Kontynuuj” jest w hero).
+  function ptsSubjectBox(s, stars) {
+    const sp = subjectPts(s.id); if (!sp.n) return null;
+    return h("div", { class: "pts-box" },
+      h("div", { class: "pts-head" }, h("b", { class: "num", text: `${fmtN(sp.pts)} / ${fmtN(sp.max)} pkt` }), h("b", { class: "num", text: pctOf(sp.pct) + "%" })),
+      ptsBar(s.id, { size: "lg", sp }),
+      sp.units.length > 1 && sp.units.length <= 8 ? h("div", { class: "pts-units", "aria-hidden": "true" }, sp.units.map((u) => h("span", { style: `flex:${u.rows.length} 1 0`, text: u.unit ? "Dział " + u.unit : "" }))) : null,
+      h("p", { class: "pts-foot muted", text: `Przerobione ${sp.doneN} z ${sp.n}${stars ? ` · ⭐ ${stars}` : ""}` }));
+  }
+  // Mini-miernik lekcji w kursie: części / bilet / ★★ / ★★★ i liczba punktów.
+  function ptsMeter(r) {
+    const dot = (cls) => h("i", { class: cls });
+    return h("span", { class: "pts-meter" + (r.state === "mastered" ? " mastered" : ""), title: `${PTS_STATE[r.state]} · części ${r.parts}/50 · bilet ${r.ticket}/30 · gwiazdki ${r.bonus}/20`, "aria-label": `${r.pts} pkt, ${PTS_STATE[r.state]}` },
+      dot(r.parts >= PTS.parts ? "on" : r.parts > 0 ? "half" : ""), dot(r.ticket ? "on" : ""), dot(r.bonus >= PTS.star2 ? "on" : ""), dot(r.bonus >= PTS.star3 ? "on" : ""),
+      h("b", { class: "num", text: String(r.pts) }));
+  }
+  // Pierścień celu dnia (ten sam na mapie lekcji i na Dziś).
+  function goalRing() {
+    const xpDay = S.progress?.xp?.d === dayN() ? S.progress.xp.n || 0 : 0;
+    const goal = Math.min(1, xpDay / LP_DAILY_GOAL), C = 2 * Math.PI * 13;
+    const ring = h("span", { class: "lp-goal" });
+    ring.innerHTML = `<svg viewBox="0 0 34 34" aria-hidden="true"><circle class="bg" cx="17" cy="17" r="13"/><circle class="fg" cx="17" cy="17" r="13" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - goal)).toFixed(1)}"/></svg>`;
+    ring.append(h("span", { text: `Cel dnia: ${Math.min(xpDay, LP_DAILY_GOAL)}/${LP_DAILY_GOAL} XP${xpDay >= LP_DAILY_GOAL ? " ✓" : ""}` }));
+    return ring;
+  }
+  function whenExam(t) {
+    if (!t) return "—";
+    const what = t.kind === "egzamin" ? "egzamin" : "kolokwium";
+    return t.n === 0 ? `${what} dziś` : t.n === 1 ? `${what} jutro` : `${what} za ${t.n} ${plural(t.n, "dzień", "dni", "dni")}`;
+  }
+  // Karta „Twój postęp” na ekranie Dziś.
+  function ptsHome() {
+    const sem = semesterPts(); if (!sem.subs.length) return null;
+    const rows = sem.subs.map((sp) => ({ sp, s: subjectById(sp.sid), t: termItems(sp.sid).find((x) => !x.done && x.n != null && x.n >= 0 && ["egzamin", "kolokwium"].includes(x.kind)) || null }));
+    rows.sort((a, b) => (a.t ? a.t.n : 1e9) - (b.t ? b.t.n : 1e9) || a.sp.pct - b.sp.pct);
+    const L = lpLevel(lpXpTotal()), sk = streakN();
+    const row = ({ sp, s, t }) => {
+      const pct = pctOf(sp.pct), left = sp.units.flatMap((u) => u.rows).filter((r) => r.pts < 50).length;
+      const risk = t && t.n <= 14 && sp.pct < 0.5 && left;
+      return h("button", { type: "button", class: "pts-row", style: `--c:${s.color}`, onclick: () => go({ view: "subject", id: s.id }) },
+        h("span", { class: "nm" }, h("span", { class: "dot", "aria-hidden": "true" }), h("span", { class: "t" }, h("b", { text: s.pl }), h("span", { class: "when", text: whenExam(t) }), risk ? h("span", { class: "chip sun", text: `nadrób: ok. ${left > 5 ? "5+" : left} lekcji` }) : null)),
+        ptsBar(s.id, { size: "sm", segments: false, sp }),
+        h("span", { class: "pc num", text: pct + "%" }), h("span", { class: "go", "aria-hidden": "true", text: "→" }));
+    };
+    const top = rows.slice(0, 3), rest = rows.slice(3);
+    const lockedN = sem.subs.reduce((a, x) => a + x.lockedN, 0);
+    return h("section", { class: "panel pts-card" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Twój postęp" })),
+      h("div", { class: "pts-head" }, h("b", { class: "num", text: `Semestr 1 · ${fmtN(sem.pts)} / ${fmtN(sem.max)} pkt` }), h("b", { class: "num", text: pctOf(sem.pct) + "%" })),
+      ptsBar("sem", { size: "md", sp: sem, label: "Punkty w semestrze" }),
+      h("div", { class: "pts-stats" }, h("span", { class: "lvl", text: `Poziom ${L.n} · ${L.name}` }), sk ? h("span", { text: `🔥 ${sk} ${plural(sk, "dzień", "dni", "dni")}` }) : null, goalRing()),
+      h("h3", { class: "pts-sub", text: "Najbliżej zaliczenia" }),
+      h("div", { class: "pts-list" }, top.map(row)),
+      rest.length ? h("details", { class: "pts-more" }, h("summary", {}, `Pokaż wszystkie przedmioty (${rows.length})`), h("div", { class: "pts-list" }, rest.map(row))) : null,
+      !PAID() && lockedN ? h("p", { class: "muted pts-lockline" }, h("span", { text: `${lockedN} ${plural(lockedN, "lekcja czeka", "lekcje czekają", "lekcji czeka")} w pełnym dostępie.` }), " ", h("button", { type: "button", class: "link", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null);
+  }
+  // Rozbicie punktów jednej lekcji (mapa lekcji): co już jest i co zrobić, żeby było więcej.
+  function ptsLessonBox(m, deck, st) {
+    const r = lessonPts(m), stars = S.progress?.lp?.[m.id]?.stars || 0;
+    const [n, t] = lpPartsB(deck, st);
+    let tip;
+    if (r.parts < PTS.parts) {
+      // Części zrobione na innym urządzeniu (b w bazie) liczą się tak samo jak te z tej przeglądarki.
+      const k = Math.max(n, Math.min(t, Math.round(r.parts / PTS.parts * t)));
+      const reqI = deck.bites.map((b, j) => (b.optional ? -1 : j)).filter((j) => j >= 0);
+      const i = k > n ? reqI[k] ?? -1 : deck.bites.findIndex((b) => !b.optional && !st.done[b.id]);
+      const gain = Math.max(1, Math.floor(PTS.parts * Math.min(t, k + 1) / Math.max(1, t) + 1e-9) - r.parts);
+      tip = i >= 0 ? `Zrób część ${i + 1}: +${gain} pkt` : `Zdaj bilet wyjścia: +${PTS.ticket} pkt`;
+    } else if (!r.ticket) tip = `Zdaj bilet wyjścia: +${PTS.ticket} pkt`;
+    else if (r.pts >= 100) tip = "Lekcja na maksa ✓";
+    else if (stars === 2) tip = `Popraw na 3★: +${PTS.star3 - PTS.star2} pkt`;
+    else tip = `Zdobądź 3★ w bilecie wyjścia: +${PTS.star3} pkt`;
+    const seg = (v, max) => h("span", { class: "pts-seg" + (v >= max ? " max" : ""), style: `flex:${max} 1 0` }, h("i", { style: `--w:${(100 * v / max).toFixed(1)}%` }));
+    const item = (v, max, label) => h("span", { class: v >= max ? "ok" : null, text: `${v >= max ? "✓" : "○"} ${label} ${v}/${max}` });
+    return h("div", { class: "lp-level pts-lesson" },
+      h("div", { class: "row" }, h("b", { text: `Ta lekcja: ${r.pts} / 100 pkt` }), h("span", { class: "pts-state st-" + r.state, text: PTS_STATE[r.state] })),
+      h("div", { class: "pts-bar pts-sm", role: "progressbar", "aria-label": "Punkty za tę lekcję", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(r.pts) }, seg(r.parts, PTS.parts), seg(r.ticket, PTS.ticket), seg(r.bonus, PTS.star3)),
+      h("div", { class: "pts-legend" }, item(r.parts, PTS.parts, "Części"), item(r.ticket, PTS.ticket, "Bilet wyjścia"), item(r.bonus, PTS.star3, "Gwiazdki")),
+      h("p", { class: "pts-next", text: (r.pts >= 100 ? "" : "→ ") + tip }));
   }
 
   // =====================================================================
@@ -9000,13 +9286,14 @@ Spread the questions so that together they check as many of these outcomes as th
     db.collection("tasks").orderBy("createdAt", "desc").limit(300).onSnapshot((snap) => { S.tasks = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
     db.doc("meta/sync").onSnapshot((snap) => { S.sync = snap.exists ? snap.data() : null; render(); }, () => {});
     db.collection("announcements").orderBy("createdAt", "desc").limit(5).onSnapshot((snap) => { S.announcements = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
-    if (!S.uid) S.progress = progLocal.get()?.data || {};
+    if (!S.uid) { S.progress = progLocal.get()?.data || {}; S.progReady = true; }
     if (S.uid) db.collection("data/users/" + S.uid).doc("progress").onSnapshot((snap) => {
       const server = snap.exists ? (snap.data() || {}) : {};
       const local = progLocal.get();
       // Niezapisane zmiany z tej przeglądarki mają pierwszeństwo, dopóki nie trafią do bazy.
       if (local?.dirty && local.data) { S.progress = { ...server, ...local.data }; flushProgress(); }
       else { S.progress = server; progLocal.set({ data: server, dirty: false }); }
+      S.progReady = true;
       if (S.progress.group && !ls.get("bm-group")) { S.group = S.progress.group; S.sub = S.progress.sub ?? S.sub; }
       else if (S.group && S.group === S.progress.group && S.sub == null && S.progress.sub != null) S.sub = S.progress.sub;
       render();
