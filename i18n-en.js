@@ -248,6 +248,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "dni z rzędu": "days in a row",
 "Jak dobrze pamiętasz?": "How well do you remember?",
 "Dotknij karty albo naciśnij spację, żeby zobaczyć odpowiedź.": "Tap the card or press space to see the answer.",
+"Dotknij karty, żeby zobaczyć odpowiedź.": "Tap the card to see the answer.",
 "Odwróć kartę": "Flip the card",
 "Odpowiedź: {0}": "Answer: {0}",
 "Dni z rzędu z nauką": "Days in a row with learning",

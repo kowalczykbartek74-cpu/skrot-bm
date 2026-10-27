@@ -963,6 +963,8 @@ html[lang="en"] .g-stage.real::before { content: "Live · this really works"; }
 .rv-grades { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 560px; }
 .rv-grades .btn { justify-content: center; padding: 10px 8px; border-radius: 14px; flex-direction: column; gap: 2px; font-size: .9rem; }
 .rv-grades .kbd { font-size: .7rem; color: var(--muted); font-weight: 700; }
+/* Klawisze 1–4 przy ocenach tylko na komputerze z myszą. */
+@media not all and (hover: hover) and (pointer: fine) { .rv-grades .kbd, .sk-grade4 .opt .k { display: none !important; } }
 .rv-again { border-color: var(--bad-soft); } .rv-again:hover { background: var(--bad-soft); border-color: var(--bad); }
 .rv-hard:hover { background: var(--warn-soft); border-color: var(--warn); }
 .rv-good { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent-text); }
@@ -2027,6 +2029,8 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   // ================= DOM helpers =================
   // Telefon i tablet: bez myszki „klikanie” i „dwuklik” mylą (dwuklik przybliża stronę), więc teksty mówią „dotknij”.
   const TOUCH = (() => { try { return matchMedia("(hover: none) and (pointer: coarse)").matches; } catch { return false; } })();
+  // Mysz i klawiatura: tylko wtedy podpowiedzi „spacja” i „1–4” w Powtórkach.
+  const KEYS = (() => { try { return matchMedia("(hover: hover) and (pointer: fine)").matches; } catch { return true; } })();
   const TAP = [[/\bKliknij\b/g, "Dotknij"], [/\bkliknij\b/g, "dotknij"], [/\bKliknięcie\b/g, "Dotknięcie"], [/\bkliknięciem\b/g, "dotknięciem"], [/\bKlikasz\b/g, "Dotykasz"], [/\bklikasz\b/g, "dotykasz"], [/\bKlik\b/g, "Dotknięcie"], [/\(kliknij, żeby/g, "(dotknij, żeby"], [/ \(skrót \/\)/g, ""], [/; skrót \//g, ""]];
   const tapTxt = (t) => { if (window.SKROT_LANG === "en" || !TOUCH || typeof t !== "string" || !/[Kk]lik|skrót \//.test(t)) return t; for (const [a, b] of TAP) t = t.replace(a, b); return t; };
   const h = (tag, props, ...kids) => {
@@ -5486,7 +5490,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       return { el: [kick(card.again ? "🔁 Jeszcze raz" : "🔁 Powtórka"), h("div", { class: "lp-swipe" }, top),
         flipped ? h("div", { class: "lp-opts sk-grade4 lp-new", role: "group", "aria-label": "Jak dobrze pamiętasz?" }, [["Nie pamiętam", 0, "again"], ["Trudne", 1, "hard"], ["Pamiętam", 2, "good"], ["Łatwe", 3, "easy"]].map(([l, g, c]) =>
           h("button", { type: "button", class: "opt g-" + c + (a === g ? " right" : ""), disabled: a != null ? true : null, "aria-keyshortcuts": String(g + 1), onclick: (e) => grade(g, e.currentTarget) }, h("span", { class: "k", text: String(g + 1) }), h("span", { text: l }))))
-          : h("p", { class: "lp-tapmore", style: "text-align:center", text: "Dotknij karty albo naciśnij spację, żeby zobaczyć odpowiedź." }),
+          : h("p", { class: "lp-tapmore", style: "text-align:center", text: KEYS ? "Dotknij karty albo naciśnij spację, żeby zobaczyć odpowiedź." : "Dotknij karty, żeby zobaczyć odpowiedź." }),
         flipped && card.foot ? h("div", { class: "lp-row sk-links" }, card.foot()) : null],
         cta: flipped ? { hidden: true } : { label: "Odwróć kartę", fn: () => lpRefresh({ flip: true }) } };
     },
@@ -8394,7 +8398,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       R.flipped
         ? h("div", { class: "rv-grades" }, [["Nie pamiętam", 0, "again"], ["Trudne", 1, "hard"], ["Pamiętam", 2, "good"], ["Łatwe", 3, "easy"]].map(([l, g, c]) =>
             h("button", { type: "button", class: "btn rv-" + c, onclick: () => rvGrade(g) }, h("span", { class: "kbd num", "aria-hidden": "true", text: g + 1 }), l)))
-        : h("p", { class: "muted", style: "font-size:.86rem", text: "Kliknij kartę albo naciśnij spację, żeby zobaczyć odpowiedź." }),
+        : h("p", { class: "muted", style: "font-size:.86rem", text: KEYS ? "Kliknij kartę albo naciśnij spację, żeby zobaczyć odpowiedź." : "Dotknij karty, żeby zobaczyć odpowiedź." }),
       card.mid ? h("div", { class: "row" }, slideRef(card.mid, card.card), reportButton(card.mid, "fiszka", null, card.q)) : null)];
   }
   function rvFlip() { const R = S.route.rv; if (!R?.cards) return; R.flipped = !R.flipped; render(); }
