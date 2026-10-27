@@ -1,45 +1,31 @@
 // Audyt, paczka 4: poprawki z „uwag do decyzji” (27.10.2026).
-// Jak użyć: zaloguj się na skrotbm.pl jako starosta, otwórz konsolę (F12 → Console), wklej cały plik i Enter.
+// Jak użyć: zaloguj się na skrotbm.pl kontem starosty (window.skrot.admin === true; zwykłe konto baza odrzuci), otwórz konsolę (F12 → Console), wklej cały plik i Enter.
 // Najpierw działa na sucho (SUCHO = true): pokazuje, co by zmienił, i niczego nie zapisuje.
 // Gdy wszystko jest „OK”, zmień SUCHO na false i wklej jeszcze raz.
 // Kopia zmienianych dokumentów trafia do localStorage pod kluczem bm-backup-audyt-4.
 // Cofnięcie: wklej w konsoli funkcję cofnij() z dołu pliku i wywołaj cofnij().
 (async () => {
   const SUCHO = true;
-  // Kilka wpisów z tym samym id i p to warianty odmiany: zadziała ten, który pasuje, reszta pokaże „NIE ZNALEZIONO”.
+  // Sprawdzone na sucho w bazie 27.10.2026: każdy fragment występuje dokładnie raz.
   const FIXES = [
     {
       "c": "S",
       "id": "an-16-definite-integral",
       "p": "parts.5.text",
-      "find": "zyskiem sprzedawców",
-      "rep": "korzyścią sprzedawców"
-    },
-    {
-      "c": "S",
-      "id": "an-16-definite-integral",
-      "p": "parts.5.text",
-      "find": "zysk sprzedawców",
-      "rep": "korzyść sprzedawców"
+      "find": "to zysk sprzedawców",
+      "rep": "to korzyść sprzedawców"
     },
     {
       "c": "S",
       "id": "an-16-definite-integral",
       "p": "words.8.simple",
-      "find": "zysk sprzedawców",
-      "rep": "korzyść sprzedawców"
-    },
-    {
-      "c": "S",
-      "id": "an-16-definite-integral",
-      "p": "words.8.simple",
-      "find": "Zysk sprzedawców",
-      "rep": "Korzyść sprzedawców"
+      "find": "Łączny zysk sprzedawców",
+      "rep": "Łączna korzyść sprzedawców"
     },
     {
       "c": "C",
       "id": "syl-it",
-      "p": "notes.7",
+      "p": "notes.7.point",
       "find": "means a real association",
       "rep": "means a positive association"
     },
@@ -82,8 +68,8 @@
       "c": "C",
       "id": "fn-10-public",
       "p": "lesson.sections.5.body",
-      "find": "general subsidies (e.g. the education subsidy)",
-      "rep": "general subsidies (since 2025 a single general subsidy that includes an education component)"
+      "find": "(e.g. the education subsidy)",
+      "rep": "(since 2025 one general subsidy that includes an education component)"
     },
     {
       "c": "C",
@@ -189,7 +175,7 @@
   const COL = { C: "materialContent", S: "materialSimple", W: "quizWhy" };
   const docs = new Map(), backup = {}, wynik = [];
   const at = (o, p) => p.split(".").reduce((x, k) => (x == null ? x : x[/^\d+$/.test(k) ? +k : k]), o);
-  const put = (o, p, v) => { const ks = p.split("."), last = ks.pop(); at(o, ks.join("."))[/^\d+$/.test(last) ? +last : last] = v; };
+  const put = (o, p, v) => { const ks = p.split("."), last = ks.pop(); (ks.length ? at(o, ks.join(".")) : o)[/^\d+$/.test(last) ? +last : last] = v; };
 
   for (const f of FIXES) {
     const key = COL[f.c] + "/" + f.id;
