@@ -1613,6 +1613,9 @@ html.lp-lock, html.lp-lock body { overflow: hidden; }
 .lp-float { position: fixed; z-index: 90; pointer-events: none; font-weight: 800; font-size: 1.05rem; color: var(--accent); text-shadow: 0 1px 0 #fff; animation: lp-float .95s var(--lp-out) forwards; }
 .lp-banner { width: max-content; max-width: calc(100vw - 32px); text-align: center; position: fixed; left: 50%; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 90; transform: translateX(-50%); background: var(--ink); color: #fff; border-radius: 999px; padding: 8px 16px; font-weight: 800; pointer-events: none; animation: lp-banner 1.6s var(--lp-out) forwards; white-space: normal; }
 .lp-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 95; overflow: hidden; }
+/* W odtwarzaczu konfetti leci pod treścią karty i pod przyciskiem „Dalej”, a nie po nich. */
+.lp > .lp-confetti { position: absolute; z-index: 1; }
+.lp-stage, .lp-bottom { position: relative; z-index: 2; }
 .lp-confetti i { position: absolute; top: -14px; width: 8px; height: 13px; border-radius: 2px; animation: lp-fall 2.2s cubic-bezier(.3, .6, .5, 1) forwards; }
 
 /* --- ruch: wejście karty, nowe elementy, informacja zwrotna --- */
@@ -5156,7 +5159,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     if (lpReduced()) return;
     const cs = ["#1A7F45", "#4CAF72", "#B7DB4A", "#2E9E8F", "#0E5A30", "#CFE8D8"], box = h("div", { class: "lp-confetti", "aria-hidden": "true" });
     for (let i = 0; i < n; i++) box.append(h("i", { style: `left:${(i * 37) % 100}%;background:${cs[i % cs.length]};animation-delay:${(i % 9) * 0.06}s;--dx:${((i * 53) % 120) - 60}px;--r:${(i * 97) % 720}deg` }));
-    document.body.append(box); setTimeout(() => box.remove(), 2500);
+    (LP.open && LP.el?.root?.isConnected ? LP.el.root : document.body).append(box); setTimeout(() => box.remove(), 2500);
   }
   // XP z całej strony: jedyne miejsce, które zapisuje progress.xp (t łącznie, d dzień, n dziś) i progress.streak.
   function xpFlush(n) {
