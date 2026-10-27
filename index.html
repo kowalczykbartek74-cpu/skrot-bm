@@ -4280,6 +4280,71 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     out.push(rest);
     return out;
   }
+  // Zadania i przykłady: trudne pojęcia i nowe konteksty są podkreślone, kliknięcie pokazuje, co to właściwie jest.
+  // Źródła po kolei: wyjaśnienia dopisane do zadań materiału (content.explain, Panel AI), pojęcia materiału,
+  // pojęcia z sylabusa przedmiotu (sylabus-pojecia.json) i słowniczek przedmiotu. Jedno pojęcie podkreśla się raz na zadanie.
+  const SYLP = { data: null, loading: false };
+  function sylPoj(sid) {
+    if (!SYLP.data && !SYLP.loading) {
+      SYLP.loading = true;
+      fetch("sylabus-pojecia.json").then((r) => (r.ok ? r.json() : null)).then((d) => { SYLP.data = d?.subjects || {}; XPL.clear(); if (!LP.open) render(); }).catch(() => { SYLP.data = {}; });
+    }
+    return SYLP.data?.[sid] || [];
+  }
+  const XPL = new Map(), XPL_MAX = 5;
+  const xplEsc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Odmiana: dłuższe słowo bez ostatniej litery + do 3 liter („pochodna” łapie „pochodnej”, „demand” łapie „demands”).
+  const xplPat = (t) => t.trim().split(/\s+/).map((w) => (/^\p{L}{5,}$/u.test(w) ? xplEsc(w.slice(0, -1)) + "\\p{L}{0,3}" : xplEsc(w))).join("\\s+");
+  function xplCtx(m, c) {
+    if (!m) return null;
+    const sp = sylPoj(m.subjectId), gl = (GL.terms || []).filter((t) => t.s?.includes(m.subjectId));
+    const sig = [c?.explain?.length, c?.concepts?.length, sp.length, gl.length].join("|");
+    const hit = XPL.get(m.id); if (hit?.sig === sig) return hit;
+    const items = [], seen = new Set();
+    const add = (names, e) => {
+      names = [...new Set(names.filter((t) => t && t.trim().length > 2).map((t) => t.trim()))].filter((t) => !seen.has(norm(t)));
+      if (!names.length || !e.d) return;
+      names.forEach((t) => seen.add(norm(t)));
+      items.push({ ...e, names, re: new RegExp(`^(?:${names.map(xplPat).join("|")})$`, "iu") });
+    };
+    for (const x of c?.explain || []) add([x.t, ...(x.also || [])], { t: x.t, pl: x.pl, d: x.d, ctx: true });
+    for (const x of c?.concepts || []) add([x.term, x.pl], { t: x.term, pl: x.pl, d: x.definition || x.def });
+    for (const x of sp) add([x.en, x.pl], { t: x.en, pl: x.pl, d: (EN && x.defEn) || x.def });
+    for (const x of gl) add([x.en, x.pl, ...(x.also || [])], { t: x.en, pl: x.pl, d: x.def });
+    const all = items.flatMap((e) => e.names).sort((a, b) => b.length - a.length).map(xplPat);
+    const X = { sig, items, re: all.length ? new RegExp(`(^|[^\\p{L}])(${all.join("|")})(?!\\p{L})`, "iu") : null };
+    XPL.set(m.id, X);
+    return X;
+  }
+  // Jedno zadanie = jeden licznik: treść, podpowiedź i odpowiedź dzielą to samo „used”.
+  const xplUse = (m, c) => ({ X: xplCtx(m, c), used: new Set(), n: 0 });
+  function inlineX(s, u) {
+    if (!u?.X?.re) return inline(s);
+    return String(s).split("**").map((p, i) => (!p ? null : i % 2 ? h("b", {}, xplParts(p, u)) : xplParts(p, u)));
+  }
+  // Wzory (\( … \), \[ … \]) zostają w całości dla MathJax.
+  const xplParts = (text, u) => text.split(/(\\\(.*?\\\)|\\\[.*?\\\])/s).flatMap((seg, k) => (k % 2 ? [seg] : xplSeg(seg, u)));
+  function xplSeg(text, u) {
+    const out = []; let rest = text;
+    while (rest && u.n < XPL_MAX) {
+      const mm = u.X.re.exec(rest); if (!mm) break;
+      const start = mm.index + mm[1].length, word = mm[2], end = start + word.length;
+      const e = u.X.items.find((x) => x.re.test(word));
+      out.push(rest.slice(0, start));
+      if (!e || u.used.has(e)) out.push(word);
+      else { u.used.add(e); u.n++; out.push(h("button", { type: "button", class: "term-link", "aria-haspopup": "dialog", onclick: (ev) => { ev.stopPropagation(); xplShow(e); } }, word)); }
+      rest = rest.slice(end);
+    }
+    out.push(rest);
+    return out;
+  }
+  function xplShow(e) {
+    modal((close) => [h("span", { class: "eyebrow", text: "Co to właściwie jest?" }), h("h3", { text: e.t }),
+      e.pl && norm(e.pl) !== norm(e.t) ? h("p", { class: "muted", text: e.pl }) : null,
+      h("p", {}, inline(e.d)),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: close }, "Rozumiem"),
+        !e.ctx && !LP.open ? h("button", { type: "button", class: "btn ghost", onclick: () => { close(); go({ view: "glossary", q: e.t }); } }, "Pokaż w słowniczku") : null)]);
+  }
   function viewMaterial() {
     const m = materialById(S.route.id);
     if (!m) return [backLink({ view: "materials" }), S.noDb ? accessNotice() : h("p", { class: "muted", text: S.ready ? "Ten materiał został usunięty." : "Ładuję…" })];
@@ -4404,11 +4469,11 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       L.formulas?.length ? h("section", { class: "lsec" }, h("h2", { text: L.cheatTitle || "Ściągawka: najważniejsze wzory" }), h("div", { class: "formulas" }, L.formulas.map((f) => h("div", {}, inline(f))))) : null,
       L.exercises?.length ? h("section", { class: "lsec" }, h("h2", { text: "Zadania do przećwiczenia" }),
         h("p", { class: "muted", text: "Najpierw spróbuj samodzielnie. Podpowiedź i odpowiedź odsłaniasz kliknięciem." }),
-        L.exercises.map((ex, k) => h("div", { class: "exercise" },
-          h("div", {}, h("b", { text: `Zadanie ${k + 1}. ` }), inline(ex.task)),
+        L.exercises.map((ex, k) => { const u = xplUse(m, S.content[m.id]); return h("div", { class: "exercise" },
+          h("div", {}, h("b", { text: `Zadanie ${k + 1}. ` }), inlineX(ex.task, u)),
           h("div", { class: "row", style: "align-items:flex-start;gap:18px" },
-            ex.hint ? h("details", {}, h("summary", { text: "Podpowiedź" }), h("div", {}, inline(ex.hint))) : null,
-            h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inline(ex.answer))))))) : null,
+            ex.hint ? h("details", {}, h("summary", { text: "Podpowiedź" }), h("div", {}, inlineX(ex.hint, u))) : null,
+            h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inlineX(ex.answer, u))))); })) : null,
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn " + (done ? "ghost" : "sun"), onclick: () => { const d = { ...(S.progress.done || {}) }; if (done) delete d[m.id]; else d[m.id] = Date.now(); saveProgress({ done: d }); render(); } }, done ? "✓ Przerobione (cofnij)" : "Oznacz lekcję jako przerobioną")),
     );
@@ -4570,25 +4635,26 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       const fd = L.faded, fdKey = "f";
       const exs = (L.exercises || []).map((ex, i) => ({ ...ex, level: ex.level || 2, i })).sort((a, b) => a.level - b.level);
       const lvlName = { 2: "Poziom 2 · samodzielnie", 3: "Poziom 3 · trudniejsze" };
-      const exBox = (ex, label, n) => h("div", { class: "exercise" },
+      const exBox = (ex, label, n, u = xplUse(m, S.content[m.id])) => h("div", { class: "exercise" },
         h("span", { class: "eyebrow", text: label }),
-        h("div", {}, h("b", { text: `Zadanie ${n}. ` }), inline(ex.task)),
+        h("div", {}, h("b", { text: `Zadanie ${n}. ` }), inlineX(ex.task, u)),
         h("div", { class: "row", style: "align-items:flex-start;gap:18px" },
-          ex.hint ? h("details", {}, h("summary", { text: "Podpowiedź" }), h("div", {}, inline(ex.hint))) : null,
-          h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inline(ex.answer)))));
+          ex.hint ? h("details", {}, h("summary", { text: "Podpowiedź" }), h("div", {}, inlineX(ex.hint, u))) : null,
+          h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inlineX(ex.answer, u)))));
+      const fu = xplUse(m, S.content[m.id]);
       let n = 0;
       practice = h("section", { class: "lsec", id: "lpractice" },
         h("h2", { text: "Ćwiczenia: od łatwiejszych do trudniejszych" }),
         h("p", { class: "muted", text: "Najpierw spróbuj samodzielnie. Podpowiedź i odpowiedź odsłaniasz kliknięciem." }),
         fd ? h("div", { class: "exercise lfaded" },
           h("span", { class: "eyebrow", text: "Poziom 1 · rozwiązanie z lukami" }),
-          h("div", {}, h("b", { text: `Zadanie ${++n}. ` }), inline(fd.task)),
+          h("div", {}, h("b", { text: `Zadanie ${++n}. ` }), inlineX(fd.task, fu)),
           h("ol", {}, (fd.steps || []).map((x, j) => {
             const open = !x.blank || st.steps[fdKey + j];
-            return h("li", { class: x.blank ? "blank" : null }, open ? inline(x.text)
+            return h("li", { class: x.blank ? "blank" : null }, open ? inlineX(x.text, fu)
               : h("span", {}, h("span", { class: "muted", text: "Twój ruch: zrób ten krok sam. " }), h("button", { type: "button", class: "link", onclick: () => { st.steps[fdKey + j] = 1; lnSave(st); render(); } }, "Sprawdź")));
           })),
-          h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inline(fd.answer)))) : null,
+          h("details", {}, h("summary", { text: "Odpowiedź" }), h("div", {}, inlineX(fd.answer, fu)))) : null,
         exs.map((ex) => exBox(ex, lvlName[ex.level] || lvlName[2], ++n)),
         L.transfer ? exBox(L.transfer, "Poziom 3 · nowa sytuacja", ++n) : null);
 
@@ -5236,10 +5302,11 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       const C = 2 * Math.PI * 14;
       const think = h("div", { class: "lp-think" }); think.innerHTML = `<svg viewBox="0 0 34 34" aria-hidden="true"><circle class="bg" cx="17" cy="17" r="14"/><circle class="fg" cx="17" cy="17" r="14" style="stroke-dasharray:${C.toFixed(1)}"/></svg>`; think.append(h("span", { text: "Pomyśl chwilę, jak byś to policzył. Potem odsłaniaj kroki." }));
       const reveal = () => { if (r === n - 1) lpAward(lpXv("example"), { at: LP.el.cta }); ctx.setRev(r + 1, { newStep: r }); };
-      return { el: [kick("✍️ Przykład: spróbuj sam", card), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inline(card.task)),
+      const u = xplUse(LP.m, LP.c);
+      return { el: [kick("✍️ Przykład: spróbuj sam", card), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inlineX(card.task, u)),
         r === 0 ? think : null,
-        r ? h("ol", { class: "lp-steps" }, card.steps.slice(0, r).map((s, i) => h("li", { class: i === ctx.fx.newStep ? "lp-new" : null }, h("span", {}, inline(s))))) : null,
-        all && card.answer ? h("div", { class: "lp-ans lp-new" }, h("b", { text: "Wynik: " }), inline(card.answer)) : null],
+        r ? h("ol", { class: "lp-steps" }, card.steps.slice(0, r).map((s, i) => h("li", { class: i === ctx.fx.newStep ? "lp-new" : null }, h("span", {}, inlineX(s, u))))) : null,
+        all && card.answer ? h("div", { class: "lp-ans lp-new" }, h("b", { text: "Wynik: " }), inlineX(card.answer, u)) : null],
         cta: all ? null : { label: r === 0 ? "Pokaż pierwszy krok" : r === n - 1 ? "Pokaż ostatni krok i wynik" : `Następny krok (${r + 1}/${n})`, fn: reveal } };
     },
     tip(card) { return { el: [kick("🎯 Na egzaminie", card), h("p", { class: "lp-tip" }, inline(card.text))] }; },
@@ -5256,19 +5323,20 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     },
     faded(card, ctx) {
       const a = ctx.ans || {}, open = a.open || {}, blanks = card.steps.map((s, i) => (s.blank ? i : -1)).filter((i) => i >= 0), allOpen = blanks.every((i) => open[i]);
-      return { el: [kick("🧩 Rozwiązanie z lukami"), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inline(card.task)),
-        h("ol", { class: "lp-steps" }, card.steps.map((s, i) => !s.blank || open[i] ? h("li", { class: (s.blank ? "blank " : "") + (ctx.fx.newStep === i ? "lp-new" : "") }, h("span", {}, inline(s.text)))
+      const u = xplUse(LP.m, LP.c);
+      return { el: [kick("🧩 Rozwiązanie z lukami"), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inlineX(card.task, u)),
+        h("ol", { class: "lp-steps" }, card.steps.map((s, i) => !s.blank || open[i] ? h("li", { class: (s.blank ? "blank " : "") + (ctx.fx.newStep === i ? "lp-new" : "") }, h("span", {}, inlineX(s.text, u)))
           : h("li", { class: "blank" }, h("span", {}, h("span", { class: "muted", text: "Twój ruch ✍️ Zrób ten krok sam. " }), h("button", { type: "button", class: "link", onclick: () => ctx.set({ ...a, open: { ...open, [i]: 1 } }, { newStep: i }) }, "Sprawdź"))))),
-        allOpen && card.answer ? h("div", { class: "lp-ans lp-new" }, h("b", { text: "Wynik: " }), inline(card.answer)) : null,
+        allOpen && card.answer ? h("div", { class: "lp-ans lp-new" }, h("b", { text: "Wynik: " }), inlineX(card.answer, u)) : null,
         allOpen && a.grade == null ? h("div", { class: "lp-row lp-new" }, h("button", { type: "button", class: "btn", onclick: (e) => { lpAward(lpXv("fadedNo"), { at: e.currentTarget }); ctx.set({ ...a, grade: 0 }); } }, "Nie wyszło"), h("button", { type: "button", class: "btn primary", onclick: (e) => { lpAward(lpXv("faded"), { at: e.currentTarget }); ctx.set({ ...a, grade: 1 }); } }, "Wyszło mi 👍")) : null,
         a.grade != null ? h("p", { class: "muted lp-new", style: "margin:0", text: a.grade ? "Super, idziemy dalej." : "Spokojnie, zadanie wróci w powtórkach." }) : null],
         cta: { label: a.grade != null ? "Dalej" : allOpen ? "Oceń się" : "Odsłoń brakujące kroki", disabled: a.grade == null } };
     },
     exercise(card, ctx) {
-      const a = ctx.ans || {};
-      return { el: [kick(card.transfer ? "🚀 Nowa sytuacja" : `💪 Zadanie · poziom ${card.level}`), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inline(card.task)),
-        card.hint && !a.shown ? (a.hint ? h("div", { class: "lp-fb ok lp-new" }, h("p", {}, h("span", { class: "lbl", text: "💡 Podpowiedź: " }), inline(card.hint))) : h("button", { type: "button", class: "btn small ghost", style: "justify-self:start", onclick: () => ctx.set({ ...a, hint: 1 }) }, "💡 Podpowiedź")) : null,
-        a.shown ? h("div", { class: "lp-ans lp-new" }, h("b", { text: "Odpowiedź: " }), inline(card.answer)) : h("p", { class: "muted", style: "margin:0", text: "Rozwiąż w głowie albo na kartce. Potem porównaj." }),
+      const a = ctx.ans || {}, u = xplUse(LP.m, LP.c);
+      return { el: [kick(card.transfer ? "🚀 Nowa sytuacja" : `💪 Zadanie · poziom ${card.level}`), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inlineX(card.task, u)),
+        card.hint && !a.shown ? (a.hint ? h("div", { class: "lp-fb ok lp-new" }, h("p", {}, h("span", { class: "lbl", text: "💡 Podpowiedź: " }), inlineX(card.hint, u))) : h("button", { type: "button", class: "btn small ghost", style: "justify-self:start", onclick: () => ctx.set({ ...a, hint: 1 }) }, "💡 Podpowiedź")) : null,
+        a.shown ? h("div", { class: "lp-ans lp-new" }, h("b", { text: "Odpowiedź: " }), inlineX(card.answer, u)) : h("p", { class: "muted", style: "margin:0", text: "Rozwiąż w głowie albo na kartce. Potem porównaj." }),
         a.shown && a.grade == null ? h("div", { class: "lp-row lp-new" }, h("button", { type: "button", class: "btn", onclick: (e) => { lpAward(lpXv("exNo"), { at: e.currentTarget }); ctx.set({ ...a, grade: 0 }); } }, "Miałem źle"), h("button", { type: "button", class: "btn primary", onclick: (e) => { lpAward(a.hint ? lpXv("exHint") : lpXv("ex"), { at: e.currentTarget }); ctx.set({ ...a, grade: 1 }); } }, "Miałem dobrze 👍")) : null],
         cta: a.grade != null ? null : a.shown ? { label: "Oceń się", disabled: true } : { label: "Pokaż odpowiedź", fn: () => ctx.set({ ...a, shown: 1 }) } };
     },
@@ -8580,17 +8648,18 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const steps = w.steps || [];
     const all = st.shown >= steps.length;
     const doneCount = (j) => S.progress?.ex?.[`${m.id}:${w.id}:${j}`]?.[0];
+    const u = xplUse(m, c);
     return h("div", { class: "stack worked" },
       W.length > 1 ? h("div", { class: "gl-chips" }, W.map((x, i) => h("button", { type: "button", class: "fchip", "aria-pressed": String(i === st.i), onclick: () => { S.route.wk = { i, shown: 0, sim: {} }; render(); } },
         `Przykład ${i + 1}`, (x.similar || []).every((_, j) => S.progress?.ex?.[`${m.id}:${x.id}:${j}`]?.[0]) && x.similar?.length ? " ✓" : ""))) : null,
       h("section", { class: "example wk-ex" },
         h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start" }, h("span", { class: "eyebrow", text: "Przykład z rozwiązaniem" }), slideRef(m.id, w)),
-        h("div", { class: "wk-task" }, inline(w.task)),
+        h("div", { class: "wk-task" }, inlineX(w.task, u)),
         steps.length ? h("ol", { class: "wk-steps" }, steps.slice(0, st.shown).map((x) => h("li", {},
-          h("div", { class: "wk-do" }, inline(x.do || "")),
+          h("div", { class: "wk-do" }, inlineX(x.do || "", u)),
           x.result ? h("div", { class: "wk-res" }, inline(x.result)) : null,
-          x.why ? h("details", { class: "wk-why" }, h("summary", { text: "Dlaczego?" }), h("div", {}, inline(x.why))) : null))) : null,
-        all ? h("div", { class: "ans" }, h("b", { text: "Odpowiedź: " }), inline(w.answer || "")) : null,
+          x.why ? h("details", { class: "wk-why" }, h("summary", { text: "Dlaczego?" }), h("div", {}, inlineX(x.why, u))) : null))) : null,
+        all ? h("div", { class: "ans" }, h("b", { text: "Odpowiedź: " }), inlineX(w.answer || "", u)) : null,
         h("div", { class: "row" },
           !all ? h("button", { type: "button", class: "btn primary small", onclick: () => { st.shown++; render(); } }, st.shown ? "Następny krok" : "Pokaż pierwszy krok") : null,
           !all && steps.length > 1 ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = steps.length; render(); } }, "Pokaż całe rozwiązanie") : null,
@@ -8608,6 +8677,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const steps = s.steps || [];
     const maxHints = (s.hint ? 1 : 0) + steps.length;
     const shownSteps = Math.max(0, z.hints - (s.hint ? 1 : 0));
+    const u = xplUse(m, S.content[m.id]);
     const check = () => {
       const r = numMatch(z.val, s);
       if (r == null) { z.ok = "bad-input"; render(); return; }
@@ -8617,12 +8687,12 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const input = numeric ? h("input", { class: "input wk-in num", id: "sim-" + key, inputmode: "decimal", autocomplete: "off", value: z.val, placeholder: "wynik" + (s.unit ? ` (${s.unit})` : ""), "aria-label": `Wynik zadania ${j + 1}`,
       oninput: (e) => { z.val = e.target.value; }, onkeydown: (e) => { if (e.key === "Enter") { e.preventDefault(); check(); } } }) : null;
     return h("div", { class: "exercise wk-sim" + (z.ok === true || done ? " solved" : "") },
-      h("div", {}, h("b", { text: `Zadanie ${j + 1}. ` }), inline(s.task), done && z.ok !== true ? h("span", { class: "chip good", style: "margin-left:8px", text: "rozwiązane" }) : null),
+      h("div", {}, h("b", { text: `Zadanie ${j + 1}. ` }), inlineX(s.task, u), done && z.ok !== true ? h("span", { class: "chip good", style: "margin-left:8px", text: "rozwiązane" }) : null),
       numeric ? h("div", { class: "row" }, input, h("button", { type: "button", class: "btn primary small", onclick: check }, "Sprawdź"),
         z.ok === true ? h("span", { class: "chip good", text: "Dobrze!" }) : z.ok === false ? h("span", { class: "chip bad", text: "Jeszcze nie. Sprawdź obliczenia." }) : z.ok === "bad-input" ? h("span", { class: "chip sun", text: "Wpisz liczbę, np. 12,5" }) : null) : null,
-      z.hints > 0 && s.hint ? h("div", { class: "tip" }, h("b", { text: "Podpowiedź: " }), inline(s.hint)) : null,
-      shownSteps || z.open ? h("ol", { class: "wk-steps small" }, (z.open ? steps : steps.slice(0, shownSteps)).map((x) => h("li", {}, inline(x)))) : null,
-      z.open ? h("div", { class: "ans" }, h("b", { text: "Odpowiedź: " }), inline(s.answer || (numeric ? fmtNum(s.result) + (s.unit ? " " + s.unit : "") : ""))) : null,
+      z.hints > 0 && s.hint ? h("div", { class: "tip" }, h("b", { text: "Podpowiedź: " }), inlineX(s.hint, u)) : null,
+      shownSteps || z.open ? h("ol", { class: "wk-steps small" }, (z.open ? steps : steps.slice(0, shownSteps)).map((x) => h("li", {}, inlineX(x, u)))) : null,
+      z.open ? h("div", { class: "ans" }, h("b", { text: "Odpowiedź: " }), inlineX(s.answer || (numeric ? fmtNum(s.result) + (s.unit ? " " + s.unit : "") : ""))) : null,
       h("div", { class: "row" },
         !z.open && z.ok !== true && z.hints < maxHints ? h("button", { type: "button", class: "btn ghost small", onclick: () => { z.hints++; render(); } }, z.hints === 0 && s.hint ? "Podpowiedź" : "Pokaż następny krok") : null,
         !z.open && z.ok !== true ? h("button", { type: "button", class: "btn ghost small", onclick: () => { z.open = true; if (!numeric) z.self = true; render(); } }, numeric ? "Pokaż rozwiązanie" : "Pokaż odpowiedź") : null,
@@ -9108,6 +9178,31 @@ NOTES: ${JSON.stringify(genTopics(c)).slice(0, 40000)}
 Reply with only one JSON object:
 {"open": [{"i": 0, "q": "question", "ep": ["EP1"], "answer": "model answer, 2-5 sentences", "rubric": [{"t": "element", "p": 2}]}]${calcS ? `, "tasks": [{"i": 0, "q": "task", "ep": ["EP2"], "result": 12.5, "unit": "zł", "calc": "...", "answer": "final answer", "steps": ["step"], "rubric": [{"t": "correct method", "p": 2}, {"t": "correct result", "p": 2}]}]` : ""}${caseS ? `, "case": {"text": "case study", "questions": [{"q": "question", "ep": ["EP3"], "answer": "model answer", "rubric": [{"t": "element", "p": 2}]}]}` : ""}}`;
   }
+  // Wyjaśnienia w zadaniach: AI wskazuje w treści zadań nowe, trudne pojęcia i konteksty (instytucje, skróty, sytuacje
+  // w firmie), których nie ma jeszcze w pojęciach materiału ani w sylabusie. Zapis: materialContent.explain = [{ t, also, pl, d }].
+  function explainTexts(c) {
+    const L = c?.lesson, out = [];
+    (L?.exercises || []).forEach((e) => out.push(e.task, e.hint, e.answer));
+    if (L?.transfer) out.push(L.transfer.task, L.transfer.hint, L.transfer.answer);
+    if (L?.faded) out.push(L.faded.task, ...(L.faded.steps || []).map((x) => x.text), L.faded.answer);
+    (L?.sections || []).forEach((x) => x.example && out.push(x.example.task, ...(x.example.steps || []), x.example.answer));
+    (c?.worked || []).forEach((w) => { out.push(w.task, w.answer, ...(w.steps || []).map((x) => x.do)); (w.similar || []).forEach((x) => out.push(x.task, x.hint, x.answer)); });
+    return out.filter((t) => typeof t === "string" && t.trim());
+  }
+  function explainPrompt(m, c) {
+    const known = [...new Set([...(c.concepts || []).map((x) => x.term), ...sylPoj(m.subjectId).map((x) => x.en)].filter(Boolean))];
+    return `You help first-year Business Management students at the University of Szczecin understand practice exercises. Subject: ${genSubj(m)}. Most students are 19 and have never worked in a company.
+Read the EXERCISES below and find what a first-year student may not really understand: new or advanced concepts, jargon, acronyms, institutions, legal or financial instruments, and business situations or contexts that a task takes for granted (for example "Incoterms", "kredyt kupiecki", "spółka z o.o.", "rok obrachunkowy", "due diligence"). Skip everyday words, maths notation and these terms, which already have a definition: ${JSON.stringify(known).slice(0, 6000)}
+For each item give: "t" = the phrase EXACTLY as written in the exercise text (same word form, 1-5 words, so it can be found and underlined); "also" = up to 2 other forms of the same phrase that appear in the texts; "pl" = the Polish name if "t" is English, otherwise ""; "d" = what it really is, in Polish, 1-3 short sentences in plain language for a 19-year-old, with a tiny everyday example when it helps. Stick to standard textbook knowledge. Give 0-12 items, fewer when the texts are simple.
+EXERCISES: ${JSON.stringify(explainTexts(c)).slice(0, 30000)}
+Reply with only one JSON object: {"explain": [{"t": "...", "also": [], "pl": "", "d": "..."}]}`;
+  }
+  function cleanExplain(r, c) {
+    const txt = norm(explainTexts(c).join(" \n "));
+    return (Array.isArray(r?.explain) ? r.explain : []).map((x) => ({ t: sText(x?.t, 80), also: (Array.isArray(x?.also) ? x.also : []).map((y) => sText(y, 80)).filter(Boolean).slice(0, 3), pl: sText(x?.pl, 80), d: sText(x?.d, 600) }))
+      .filter((x) => x.t && x.d && [x.t, ...x.also].some((y) => txt.includes(norm(y)))).slice(0, 15);
+  }
+  const genPrompt = (kind, m, c) => (kind === "worked" ? workedPrompt(m, c) : kind === "explain" ? explainPrompt(m, c) : bankPrompt(m, c));
   function bankEps(sid) {
     const c = sylOf(sid); if (!c?.out.length) return "";
     const tested = new Set(c.assess.filter((a) => /egzamin|kolokwium|sprawdzian|test/i.test(a.m)).flatMap((a) => a.ep));
@@ -9141,6 +9236,7 @@ Spread the questions so that together they check as many of these outcomes as th
   async function genTodo(sid, kind) {
     const ms = studyMats(sid);
     if (kind === "worked") return ms.filter((m) => m.workedCount == null);
+    if (kind === "explain") return ms.filter((m) => m.explainCount == null);
     const bank = await genBankDoc(sid);
     const done = new Set(bank.done || []);
     // Po dodaniu sylabusa: materiał, którego pytania nie mają przypisanych efektów uczenia się, robimy jeszcze raz.
@@ -9159,6 +9255,15 @@ Spread the questions so that together they check as many of these outcomes as th
       await S.db.doc("materials/" + m.id).update({ workedCount: worked.length, workedTaskCount: tasks });
       m.workedCount = worked.length; m.workedTaskCount = tasks;
       return worked.length ? `${worked.length} ${plural(worked.length, "przykład", "przykłady", "przykładów")}, ${tasks} ${plural(tasks, "zadanie", "zadania", "zadań")}` : "bez obliczeń, pominięty";
+    }
+    if (kind === "explain") {
+      const explain = cleanExplain(raw, c);
+      const nc = { ...c, explain };
+      await S.db.doc("materialContent/" + m.id).set(nc);
+      S.content[m.id] = nc; XPL.delete(m.id);
+      await S.db.doc("materials/" + m.id).update({ explainCount: explain.length });
+      m.explainCount = explain.length;
+      return explain.length ? `${explain.length} ${plural(explain.length, "wyjaśnienie", "wyjaśnienia", "wyjaśnień")}` : "nic nowego do wyjaśnienia";
     }
     const items = cleanBank(raw, m);
     const bank = await genBankDoc(m.subjectId);
@@ -9179,7 +9284,8 @@ Spread the questions so that together they check as many of these outcomes as th
       try {
         const c = await getContent(m.id);
         if (!c) throw { code: "empty_completion" };
-        const raw = await S.sample.json(kind === "worked" ? workedPrompt(m, c) : bankPrompt(m, c), { modelTier: "default" });
+        if (kind === "explain" && !explainTexts(c).length) { line.detail = await genSave(kind, m, { explain: [] }); line.state = "ok"; render(); continue; }
+        const raw = await S.sample.json(genPrompt(kind, m, c), { modelTier: "default" });
         line.detail = await genSave(kind, m, raw); line.state = "ok";
       } catch (e) {
         line.state = "err"; line.detail = sampleError(e);
@@ -9193,10 +9299,10 @@ Spread the questions so that together they check as many of these outcomes as th
     const kind = GEN.kind, todo = await genTodo(GEN.sid, kind);
     if (!todo.length) { toast("W tym przedmiocie nie ma nic do wygenerowania."); return; }
     const zadania = [];
-    for (const m of todo) { const c = await getContent(m.id).catch(() => null); if (c) zadania.push({ klucz: `${kind}:${m.id}`, material: m.title || m.fileName, polecenie: kind === "worked" ? workedPrompt(m, c) : bankPrompt(m, c) }); }
+    for (const m of todo) { const c = await getContent(m.id).catch(() => null); if (c && (kind !== "explain" || explainTexts(c).length)) zadania.push({ klucz: `${kind}:${m.id}`, material: m.title || m.fileName, polecenie: genPrompt(kind, m, c) }); }
     const pack = { instrukcja: "Dla każdego elementu z listy „zadania” wykonaj polecenie z pola „polecenie” (każde osobno). Odpowiedz jednym plikiem JSON: {\"wyniki\": {\"<klucz>\": <obiekt JSON, którego wymaga polecenie>}}. Użyj dokładnie tych samych kluczy.", zadania };
     const blob = new Blob([JSON.stringify(pack, null, 1)], { type: "application/json" });
-    const a = h("a", { href: URL.createObjectURL(blob), download: `skrot-bm-${kind === "worked" ? "zadania" : "pytania"}-${GEN.sid}-${todayKey()}.json` });
+    const a = h("a", { href: URL.createObjectURL(blob), download: `skrot-bm-${{ worked: "zadania", explain: "wyjasnienia" }[kind] || "pytania"}-${GEN.sid}-${todayKey()}.json` });
     document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
   async function genImport(file) {
@@ -9208,7 +9314,7 @@ Spread the questions so that together they check as many of these outcomes as th
     for (const [key, raw] of entries) {
       const [kind, mid] = key.split(":"); const m = materialById(mid);
       const line = { title: m?.title || mid, state: "run", detail: "" }; GEN.log.push(line);
-      try { if (!m || !["worked", "bank"].includes(kind)) throw { code: "x" }; line.detail = await genSave(kind, m, raw); line.state = "ok"; ok++; }
+      try { if (!m || !["worked", "bank", "explain"].includes(kind)) throw { code: "x" }; line.detail = await genSave(kind, m, raw); line.state = "ok"; ok++; }
       catch { line.state = "err"; line.detail = "nie udało się zapisać"; }
       render();
     }
@@ -9219,18 +9325,19 @@ Spread the questions so that together they check as many of these outcomes as th
     if (!GEN.sid) GEN.sid = (withMats.find((s) => CALC_SUBJECTS.has(s.id)) || withMats[0])?.id || "";
     const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: (e) => { const f = e.target.files[0]; if (f) genImport(f); e.target.value = ""; } });
     const ms = studyMats(GEN.sid);
-    const wDone = ms.filter((m) => m.workedCount != null).length;
+    const wDone = ms.filter((m) => m.workedCount != null).length, xDone = ms.filter((m) => m.explainCount != null).length;
     const bank = GEN.bank[GEN.sid];
     if (!bank && GEN.sid) genBankDoc(GEN.sid).then(render);
     const bDone = bank ? new Set(bank.done || []).size : null;
     return h("section", { class: "panel" },
-      h("h2", { text: "Zadania krok po kroku i pytania do próbnych testów" }),
+      h("h2", { text: "Zadania krok po kroku, pytania do próbnych testów i wyjaśnienia w zadaniach" }),
       h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "AI pisze je z naszego opracowania, nie ze slajdów. Wyniki liczbowe sprawdzamy automatycznie wzorem; zadania ze złym kluczem odpadają. Pytania wyboru do testów pochodzą z istniejących quizów." }),
       h("div", { class: "row" },
         h("select", { class: "input", style: "max-width:360px", "aria-label": "Przedmiot", onchange: (e) => { GEN.sid = e.target.value; GEN.log = []; render(); } }, withMats.map((s) => h("option", { value: s.id, selected: s.id === GEN.sid ? true : null }, s.pl + (CALC_SUBJECTS.has(s.id) ? " · z liczeniem" : "")))),
         h("div", { class: "gl-chips" },
           h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "worked"), onclick: () => { GEN.kind = "worked"; render(); } }, `Zadania krok po kroku · ${wDone}/${ms.length}`),
-          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "bank"), onclick: () => { GEN.kind = "bank"; render(); } }, `Pytania do testów · ${bDone == null ? "…" : bDone}/${ms.length}${bank?.items ? ` (${bank.items.length})` : ""}`))),
+          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "bank"), onclick: () => { GEN.kind = "bank"; render(); } }, `Pytania do testów · ${bDone == null ? "…" : bDone}/${ms.length}${bank?.items ? ` (${bank.items.length})` : ""}`),
+          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "explain"), title: "Podkreślone trudne pojęcia i konteksty w zadaniach: kliknięcie pokazuje wyjaśnienie", onclick: () => { GEN.kind = "explain"; render(); } }, `Wyjaśnienia w zadaniach · ${xDone}/${ms.length}`))),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn primary", disabled: GEN.busy || AI.busy ? true : null, onclick: genRun }, GEN.busy ? "Generuję…" : "Uzupełnij przez funkcję AI"),
         GEN.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { GEN.stop = true; } }, "Zatrzymaj po bieżącym") : null,

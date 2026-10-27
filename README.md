@@ -66,6 +66,7 @@ Wszystkie 84 przedmioty z sylabusa „Business Management, studia stacjonarne I 
 - **Lektury** (Więcej) – literatura z semestru z wyszukiwaniem w katalogu Biblioteki Głównej US,
 - **Porównanie** przedmiotów do wyboru (Program studiów → „porównaj” przy 2–3 przedmiotach),
 - **Słowniczku** – pojęcia z tematów sylabusa z `sylabus-pojecia.json` (definicje własne), także dla przedmiotów bez materiałów,
+- **zadaniach i przykładach** (lekcje, „Zadania krok po kroku”) – trudne pojęcia i nowe konteksty są podkreślone, kliknięcie pokazuje okienko „Co to właściwie jest?”. Źródła po kolei: wyjaśnienia dopisane do zadań (`materialContent.explain`, Panel AI → „Wyjaśnienia w zadaniach”), pojęcia materiału, `sylabus-pojecia.json` i słowniczek przedmiotu; jedno pojęcie raz na zadanie, najwyżej 5 podkreśleń,
 - **Panelu AI → Mapy przedmiotów z sylabusa BM** – materiał startowy (opracowanie, fiszki, quiz, prosty język) z oficjalnych tematów i efektów; zastępuje starą mapę z sylabusa.
 
 Próbne testy: pytania z „Pytania do testów” dostają kody efektów (`ep`). Materiały, których pytania nie mają jeszcze kodów, Panel AI → „Pytania do testów” zrobi ponownie.
