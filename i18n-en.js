@@ -1259,6 +1259,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Pojęcie: {0}": "Term: {0}",
 "{0}: pokaż znaczenie": "{0}: show meaning",
 "Po polsku:": "In Polish:",
+"po polsku:": "in Polish:",
 "Ten materiał został usunięty.": "This material has been deleted.",
 "Darmowa próbka": "Free sample",
 "Ten materiał możesz przejrzeć za darmo. Zaloguj się e-mailem (bez hasła), żeby go otworzyć.": "You can view this material for free. Log in with your e-mail (no password) to open it.",
