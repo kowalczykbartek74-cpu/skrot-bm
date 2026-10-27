@@ -1035,6 +1035,11 @@ button.pm-sq:hover { transform: scale(1.12); }
 .att { display: grid; grid-template-columns: 70px 1fr auto; gap: 12px; align-items: center; font-size: .9rem; }
 .att.topic-res { grid-template-columns: minmax(0, 1.4fr) minmax(60px, 1fr) auto; }
 .scope { display: grid; gap: 2px; }
+.hint-sub > summary { cursor: pointer; padding: 6px 0; }
+.hint-list { display: grid; gap: 12px; padding-left: 20px; margin: 6px 0 0; }
+.hint-opts { margin: 4px 0; padding-left: 18px; font-size: .9rem; }
+.hint-opts li.ok { font-weight: 700; color: var(--accent); }
+.hint-fix { margin: 4px 0 0; font-size: .88rem; }
 .scope-extra { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 8px; }
 .scope-extra > summary { cursor: pointer; font-size: .92rem; }
 .scope-extra .scope-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "t b" "s b"; gap: 2px 10px; cursor: default; }
@@ -7241,7 +7246,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const noSimple = S.materials.filter((m) => !AI.status.simple.has(m.id)).length;
     const noWhy = S.materials.filter((m) => aiNeedsWhy(m) && !AI.status.why.has(m.id)).length;
     const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: (e) => { const f = e.target.files[0]; if (f) aiImport(f); e.target.value = ""; } });
-    return [head, migrateSection(), genSection(), sylMatSection(), glossarySection(),
+    return [head, migrateSection(), genSection(), sylMatSection(), glossarySection(), hintSection(),
       h("section", { class: "panel" },
         h("div", { class: "row" },
           h("span", { class: "chip " + (noSimple ? "sun" : "good"), text: `prosty język: brak ${noSimple}` }),
@@ -9571,6 +9576,80 @@ Spread the questions so that together they check as many of these outcomes as th
         try { const n = await glossaryRebuild(); toast(`Słowniczek: ${n} ${plural(n, "pojęcie", "pojęcia", "pojęć")}.`); } catch { toast("Nie udało się zapisać słowniczka (czy uruchomiono skrot-v3.sql?)."); }
         GEN.glBusy = false; render();
       } }, GEN.glBusy ? "Odświeżam…" : "Odśwież słowniczek")));
+  }
+
+  // ---------- podpowiedzi w odpowiedziach (Panel AI, tylko odczyt) ----------
+  // Szuka pytań wyboru, w których dobra odpowiedź sama się zdradza: dopisek po myślniku (np. „200 PLN – the best
+  // alternative forgone”), wyjaśnienie w nawiasie albo dużo dłuższa treść niż reszta odpowiedzi. Niczego nie zapisuje:
+  // lista służy do przejrzenia i zatwierdzenia poprawek.
+  const HINT = { busy: false, list: null, at: 0 };
+  const HINT_DASH = /^(.{1,80}?\S)\s+[–—-]\s+(\S.{8,})$/;
+  function hintCheck(q) {
+    const opts = (q.options || []).map((o) => String(o ?? "").trim()), c = q.correct;
+    if (opts.length < 2 || c == null || !opts[c]) return null;
+    const right = opts[c], wrong = opts.filter((_, i) => i !== c), why = [];
+    let fix = null;
+    const d = right.match(HINT_DASH);
+    if (d && d[2].split(/\s+/).length >= 2 && !wrong.some((o) => HINT_DASH.test(o))) { why.push("dopisek po myślniku"); fix = { option: d[1], toExplanation: d[2] }; }
+    if (/\([^)]{8,}\)\s*$/.test(right) && !wrong.some((o) => /\([^)]{8,}\)/.test(o))) why.push("wyjaśnienie w nawiasie");
+    const longest = Math.max(...wrong.map((o) => o.length));
+    if (right.length >= 1.6 * longest && right.length - longest >= 20) why.push("dużo dłuższa niż reszta");
+    return why.length ? { why, fix } : null;
+  }
+  async function hintScan() {
+    HINT.busy = true; render();
+    const out = [];
+    const add = (src, m, where, q, path) => { const r = hintCheck(q); if (r) out.push({ sid: m?.subjectId || src.sid || "", mid: m?.id || null, title: m ? m.title || m.fileName : src.title, where, path, q: q.q, options: q.options, correct: q.correct, explanation: q.explanation || q.why || "", ...r }); };
+    try {
+      const pairs = await loadContents(S.materials);
+      for (const [m, c] of pairs) {
+        if (!c) continue;
+        (c.quiz || []).forEach((q, i) => add({}, m, `Quiz · pytanie ${i + 1}`, q, `materialContent/${m.id}:quiz.${i}`));
+        const L = c.lesson; if (!L) continue;
+        (L.prereq || []).forEach((q, i) => add({}, m, `Lekcja · rozgrzewka ${i + 1}`, q, `materialContent/${m.id}:lesson.prereq.${i}`));
+        (L.sections || []).forEach((sec, k) => sec.check?.q && add({}, m, `Lekcja · część ${k + 1}: Sprawdź się`, sec.check, `materialContent/${m.id}:lesson.sections.${k}.check`));
+        (L.exit || []).forEach((q, i) => add({}, m, `Lekcja · bilet wyjścia ${i + 1}`, q, `materialContent/${m.id}:lesson.exit.${i}`));
+      }
+      for (const s of SUBJECTS) {
+        let bank = null; try { const d = await S.db.doc("examBank/" + s.id).get(); bank = d.exists ? d.data() : null; } catch {}
+        (bank?.items || []).forEach((it, i) => { if (it.type === "abcd") add({ sid: s.id, title: "Pytania do testów" }, materialById(it.mid), `Próbny test · pytanie ${i + 1}`, it, `examBank/${s.id}:items.${i}`); });
+      }
+      HINT.list = out; HINT.at = Date.now();
+    } catch { toast("Nie udało się przejrzeć pytań."); }
+    HINT.busy = false; render();
+  }
+  function hintDownload(kind) {
+    const L = HINT.list || [];
+    let blob;
+    if (kind === "csv") {
+      const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const rows = [["przedmiot", "materiał", "gdzie", "pytanie", "dobra odpowiedź", "inne odpowiedzi", "powód", "propozycja: odpowiedź", "propozycja: do wyjaśnienia", "adres"]];
+      for (const x of L) rows.push([subjectById(x.sid)?.pl || x.sid, x.title, x.where, x.q, x.options[x.correct], x.options.filter((_, i) => i !== x.correct).join(" | "), x.why.join(", "), x.fix?.option || "", x.fix?.toExplanation || "", x.path]);
+      blob = new Blob(["\ufeff" + rows.map((r) => r.map(esc).join(";")).join("\n")], { type: "text/csv" });
+    } else blob = new Blob([JSON.stringify({ at: new Date(HINT.at).toISOString(), items: L }, null, 1)], { type: "application/json" });
+    const a = h("a", { href: URL.createObjectURL(blob), download: `skrot-bm-podpowiedzi-w-odpowiedziach-${todayKey()}.${kind}` });
+    document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  function hintSection() {
+    const L = HINT.list, bySid = new Map();
+    for (const x of L || []) { if (!bySid.has(x.sid)) bySid.set(x.sid, []); bySid.get(x.sid).push(x); }
+    const auto = (L || []).filter((x) => x.fix).length;
+    return h("section", { class: "panel" }, h("h2", { text: "Podpowiedzi w odpowiedziach quizów" }),
+      h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "Szuka pytań, w których dobra odpowiedź sama się zdradza: dopisek po myślniku, wyjaśnienie w nawiasie albo dużo dłuższa treść. Tylko pokazuje listę, niczego nie zmienia w bazie." }),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn", disabled: HINT.busy ? true : null, onclick: hintScan }, HINT.busy ? "Przeglądam pytania…" : L ? "Sprawdź jeszcze raz" : "Sprawdź wszystkie pytania"),
+        L?.length ? h("button", { type: "button", class: "btn ghost", onclick: () => hintDownload("csv") }, "Pobierz listę (CSV)") : null,
+        L?.length ? h("button", { type: "button", class: "btn ghost", onclick: () => hintDownload("json") }, "Pobierz listę (JSON)") : null),
+      L == null ? null : !L.length ? h("p", { text: "Nie znalazłem pytań z podpowiedzią w odpowiedzi." })
+        : h("div", { class: "stack", style: "gap:12px" },
+          h("p", { class: "num" }, h("b", { text: `${L.length} ${plural(L.length, "pytanie", "pytania", "pytań")} do poprawy` }), ` · ${auto} z gotową propozycją (dopisek przechodzi do wyjaśnienia), reszta do przepisania odpowiedzi.`),
+          [...bySid].map(([sid, xs]) => h("details", { class: "hint-sub" }, h("summary", {}, h("b", { text: subjectById(sid)?.pl || "Bez przedmiotu" }), ` · ${xs.length}`),
+            h("ol", { class: "hint-list" }, xs.map((x) => h("li", {},
+              h("div", { class: "muted", style: "font-size:.82rem", text: `${x.title} · ${x.where}` }),
+              h("p", { style: "margin:2px 0;font-weight:700", translate: "no", text: x.q }),
+              h("ul", { class: "hint-opts", translate: "no" }, x.options.map((o, i) => h("li", { class: i === x.correct ? "ok" : null, text: (i === x.correct ? "✓ " : "") + o }))),
+              h("div", { class: "row", style: "gap:6px" }, x.why.map((w) => h("span", { class: "chip sun", text: w }))),
+              x.fix ? h("p", { class: "hint-fix", translate: "no" }, h("span", { class: "muted", text: "Propozycja: " }), h("b", { text: x.fix.option }), h("span", { class: "muted", text: " · do wyjaśnienia: " }), x.fix.toExplanation) : null)))))));
   }
 
   // ---------- skróty klawiszowe: „/” słowniczek, w powtórce spacja i 1–4 ----------
