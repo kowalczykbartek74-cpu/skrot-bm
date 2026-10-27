@@ -132,6 +132,8 @@
     }
     return false;
   }
+  // Pole tekstowe: treść (to, co ktoś wpisał) zostaje, ale podpowiedź i etykieta (placeholder, aria-label, title) się tłumaczą.
+  function skipAttr(el) { return el.tagName === "TEXTAREA" ? !el.parentNode || (el.parentNode.nodeType === 1 && skipEl(el.parentNode)) : skipEl(el); }
   function doText(n) {
     var p = n.parentNode;
     if (!p || p.nodeType !== 1 || skipEl(p)) return;
@@ -148,11 +150,11 @@
   function walk(root) {
     if (root.nodeType === 3) return doText(root);
     if (root.nodeType !== 1 && root.nodeType !== 11) return;
-    if (root.nodeType === 1) { if (skipEl(root)) return; doAttrs(root); }
+    if (root.nodeType === 1) { if (skipEl(root)) { if (!skipAttr(root)) doAttrs(root); return; } doAttrs(root); }
     var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null), n;
     while ((n = w.nextNode())) {
       if (n.nodeType === 3) doText(n);
-      else if (SKIP[n.tagName]) continue;
+      else if (SKIP[n.tagName]) { if (n.tagName === "TEXTAREA" && !skipAttr(n)) doAttrs(n); continue; }
       else doAttrs(n);
     }
   }
@@ -163,7 +165,7 @@
       else if (r.type === "characterData") doText(r.target);
       else if (r.type === "attributes" && r.target.nodeType === 1) {
         var a = r.target.getAttribute(r.attributeName);
-        if (a && !skipEl(r.target)) { var t = tr(a, 0); if (t !== a) r.target.setAttribute(r.attributeName, t); }
+        if (a && !skipAttr(r.target)) { var t = tr(a, 0); if (t !== a) r.target.setAttribute(r.attributeName, t); }
       }
     }
   }).observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS });
