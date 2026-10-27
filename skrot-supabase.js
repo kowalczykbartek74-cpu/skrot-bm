@@ -298,11 +298,21 @@
     set: (email, reason) => ls.set(PENDING, JSON.stringify({ email, reason: reason || null, t: Date.now() })),
     clear: () => ls.set(PENDING, null),
   };
+  // Osobny ekran logowania przed aplikacją (#login w index.html). Bez sesji strona pokazuje tylko jego.
+  const loginBox = () => document.getElementById("loginBox");
+  function showLoginPage(reason, opts = {}) {
+    if (!loginBox()) return skrot.openLogin(reason, opts);
+    document.documentElement.classList.add("needlogin");
+    skrot.openLogin(reason, { ...opts, page: true });
+  }
   skrot.openLogin = (reason, opts = {}) => {
+    // Bez sesji (ekran logowania widoczny) zawsze logujemy na nim, a nie w oknie.
+    const page = (opts.page || document.documentElement.classList.contains("needlogin")) ? loginBox() : null;
     const layer = document.getElementById("layer") || document.body;
     // Zamknięcie okna na etapie kodu = rezygnacja, więc po przeładowaniu nie otwieramy go ponownie.
     let inCode = false;
-    const close = () => { if (inCode) pending.clear(); scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const close = () => { if (page) return; if (inCode) pending.clear(); scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const closeBtn = () => page ? null : el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij");
     const onKey = (e) => { if (e.key === "Escape") close(); };
     const body = el("div", { style: "display:grid;gap:12px" });
 
@@ -338,8 +348,8 @@
         el("p", { style: "margin:0" }, justSent ? "Wysłaliśmy 6-cyfrowy kod na " : "Kod wysłaliśmy na ", el("b", { text: email }), ". Mail może przyjść z opóźnieniem, zajrzyj też do spamu. Kod jest ważny przez godzinę."),
         codeForm,
         el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
-          el("button", { type: "button", class: "btn", onclick: () => { close(); skrot.openLogin(reason); } }, "Wyślij nowy kod"),
-          el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+          el("button", { type: "button", class: "btn", onclick: () => { if (page) return emailStep(); close(); skrot.openLogin(reason); } }, page ? "Wyślij nowy kod albo zmień e-mail" : "Wyślij nowy kod"),
+          closeBtn()));
       setTimeout(() => code.focus(), 30);
     };
 
@@ -380,7 +390,7 @@
         modeSwitch("haslo"),
         form,
         el("button", { type: "button", class: "btn ghost", onclick: () => emailStep() }, "Nie pamiętam hasła: wyślij kod na maila"),
-        el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"),
+        closeBtn(),
       ].filter(Boolean));
       setTimeout(() => (input.value ? pass : input).focus(), 30);
     };
@@ -414,20 +424,20 @@
       const p = pending.get();
       body.replaceChildren(
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
-        el("p", { class: "muted", style: "margin:0", text: reason || "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono." }),
+        el("p", { class: "muted", style: "margin:0", text: reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
         modeSwitch("kod"),
         form,
         ...[
           p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
-          el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"),
+          closeBtn(),
         ].filter(Boolean));
       setTimeout(() => input.focus(), 30);
     };
 
-    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+    const scrim = page ? null : el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Logowanie" }, body));
-    layer.append(scrim);
-    document.addEventListener("keydown", onKey);
+    if (page) page.replaceChildren(body);
+    else { layer.append(scrim); document.addEventListener("keydown", onKey); }
     if (opts.codeFor) codeStep(opts.codeFor, false); else if (ls.get(MODE) === "haslo") passStep(); else emailStep();
   };
 
@@ -605,10 +615,22 @@
     else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz na skrotbm@outlook.com.");
   }
   async function afterReady() {
-    if (linkError && skrot.state === "out") {
-      skrot.openLogin("Ten link już nie działa. Teraz logujesz się kodem: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod.");
+    // Bez sesji: tylko ekran logowania (powód i pole na kod, jeśli kod już poszedł).
+    if (skrot.state === "out") {
+      const params = new URLSearchParams(location.search);
+      const p = pending.get();
+      let why = p?.reason || null;
+      if (linkError) why = "Ten link już nie działa. Teraz logujesz się kodem: wpisz e-mail, a wyślemy Ci 6-cyfrowy kod.";
+      if (params.get("platnosc") === "ok") {
+        history.replaceState(null, "", location.pathname);
+        ls.set("skrot-after-pay", "1");
+        why = "Płatność przyjęta. Zaloguj się adresem e-mail użytym przy zakupie, a dostęp odblokuje się sam.";
+      }
+      showLoginPage(why, p && !linkError ? { codeFor: p.email } : {});
       return;
     }
+    // Zalogowany albo baza nieosiągalna: pokazujemy aplikację.
+    document.documentElement.classList.remove("needlogin");
     if (skrot.state === "in" && !skrot.admin && skrot.paidAccount) {
       if (skrot.device && ["zajete", "limit", "zablokowane"].includes(skrot.device.stan)) { showGate(); return; }
       if (skrot.paid) { startHeartbeat(); watermark(); }
@@ -617,18 +639,10 @@
     if (params.get("platnosc") === "ok") {
       history.replaceState(null, "", location.pathname);
       if (skrot.state === "in") { if (!skrot.paid) await waitForPaid(); return; }
-      if (skrot.state === "out") {
-        ls.set("skrot-after-pay", "1");
-        const p = pending.get();
-        const why = "Płatność przyjęta. Zaloguj się adresem e-mail użytym przy zakupie, a dostęp odblokuje się sam.";
-        skrot.openLogin(why, p ? { codeFor: p.email } : {});
-      }
       return;
     }
     if (skrot.state === "in" && ls.get("skrot-after-pay")) { ls.set("skrot-after-pay", null); ls.set("skrot-buy", null); if (!skrot.paid) await waitForPaid(); return; }
     if (skrot.state === "in" && ls.get("skrot-buy")) { const want = ls.get("skrot-buy"); ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(CONFIG.plans[want] ? want : undefined); return; }
-    // Strona przeładowała się w trakcie logowania (np. po przejściu do poczty na telefonie): od razu pole na kod.
-    if (skrot.state === "out") { const p = pending.get(); if (p) skrot.openLogin(p.reason, { codeFor: p.email }); }
     // Pierwsze logowanie kodem: raz proponujemy ustawienie hasła.
     if (skrot.state === "in" && ls.get("skrot-offer-pass")) {
       ls.set("skrot-offer-pass", null);

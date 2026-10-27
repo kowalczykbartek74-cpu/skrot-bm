@@ -38,6 +38,13 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 - Maile logowania: Resend (SMTP) z domeny skrotbm.pl.
 - Kalendarz roku (tygodnie parzyste/nieparzyste, dni wolne, przerwy) strona bierze z `https://plan.skrotbm.pl/plan.json` (pole `kalendarz`, edytowane w `kalendarz.json` w repozytorium plan-bm). W `index.html` jest tylko kopia zapasowa.
 
+## Ekran logowania
+Bez zalogowania strona pokazuje tylko osobny, prosty ekran logowania (`#login` w `index.html`): logo, kod z maila albo hasło, linki do regulaminu i prywatności, przełącznik EN/PL. Aplikacja pojawia się dopiero po zalogowaniu.
+- Skrypt w `<head>` sprawdza, czy w przeglądarce jest sesja Supabase (`sb-zkyxujkdrovfzpasocmv-auth-token`); jeśli nie, od razu dodaje klasę `needlogin`, więc aplikacja nie miga.
+- `skrot-supabase.js` (`showLoginPage`) wypełnia ekran tym samym logowaniem co okno (`openLogin` z `page: true`). Komunikaty po płatności, po nieważnym linku i pole na kod po przeładowaniu działają jak wcześniej, tylko na tym ekranie.
+- Kod dostępu przed startem (`#gate`) jest nadal pierwszy; ekran logowania pokazuje się po nim.
+- Gdy baza jest nieosiągalna, strona pokazuje aplikację (stan offline), żeby nikt nie utknął.
+
 ## Hasło do logowania (opcjonalne)
 - Logowanie: zakładka **Kod z maila** (jak dotąd) albo **Hasło**. Strona pamięta ostatnio użytą zakładkę i e-mail.
 - Hasło ustawia się po zalogowaniu kodem: Więcej → Hasło do logowania (po pierwszym logowaniu kodem strona raz to proponuje). Min. 8 znaków; zapisuje się w Supabase Auth (`updateUser`), a w `user_metadata.haslo` znacznik, że jest ustawione.
