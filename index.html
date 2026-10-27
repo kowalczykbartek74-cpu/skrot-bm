@@ -1715,6 +1715,50 @@ html.lp-lock, html.lp-lock body { overflow: hidden; }
 .sk-lvbar, .lp-lvbar { height: 10px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
 .sk-lvbar i, .lp-lvbar i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--green-400)); animation: lp-grow .9s var(--lp-out) both; }
 .sk-lvbar.lesson i, .lp-lvbar.lesson i { background: var(--accent); }
+/* Pasek poziomu jako przycisk + okno „Poziomy i rangi” (drabinka rang w motywie słojów) */
+button.lv-open { padding: 8px 10px; margin: -8px -10px; width: calc(100% + 20px); border: 0; border-radius: 14px; background: none; color: inherit; font: inherit; cursor: pointer; transition: background var(--lp-fast); }
+button.lv-open:hover, button.lv-open:focus-visible { background: var(--green-50); }
+.lv-chev { display: inline-block; margin-left: 6px; color: var(--accent); font-weight: 800; transition: transform var(--lp-fast) var(--lp-out); }
+button.lv-open:hover .lv-chev, .lv-link:hover .lv-chev { transform: translateX(3px); }
+.lv-link { padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-decoration: underline dotted var(--green-200); text-underline-offset: 4px; }
+.lv-link:hover { color: var(--accent-text); }
+.modal.lv-modal { width: min(500px, 100%); padding: 0; gap: 0; overflow: hidden; display: flex; flex-direction: column; }
+.lv-head { position: relative; display: grid; gap: 10px; padding: 22px 22px 16px; border-bottom: 1px solid var(--green-200);
+  background: repeating-radial-gradient(circle at 100% 0, transparent 0 14px, rgba(26,127,69,.10) 14px 15.5px) right top / 200px 200px no-repeat, linear-gradient(160deg, var(--mint-100), var(--green-100) 60%, var(--lime-100)); }
+.lv-head .eyebrow { color: var(--accent-text); }
+.lv-head .lp-lvbar { background: rgba(255,255,255,.75); }
+.lv-me { display: flex; align-items: center; gap: 14px; }
+.lv-me h2 { margin: 0; font-size: 1.25rem; line-height: 1.2; }
+.lv-me h2::after { content: ""; display: block; width: 44px; height: 6px; margin-top: 6px; background: radial-gradient(circle at 3px 3px, var(--lime-400) 2.2px, transparent 2.6px) 0 0 / 9px 6px repeat-x; border-radius: 3px; }
+.lv-me p { margin: 6px 0 0; font-size: .9rem; }
+.lv-list { position: relative; list-style: none; margin: 0; padding: 14px 18px 6px; display: grid; gap: 4px; overflow-y: auto; min-height: 0; flex: 1 1 auto; }
+.lv-row::before { content: ""; position: absolute; z-index: -1; left: 24px; top: 50%; height: calc(100% + 4px); width: 3px; border-radius: 3px; background: repeating-linear-gradient(var(--line) 0 5px, transparent 5px 9px); }
+.lv-row:last-child::before { display: none; }
+.lv-row.lv-done::before { background: linear-gradient(var(--accent), var(--green-400)); }
+.lv-row.lv-now::before { background: linear-gradient(var(--green-400), var(--lime-400) var(--f), transparent var(--f)), repeating-linear-gradient(var(--line) 0 5px, transparent 5px 9px); }
+.lv-row { position: relative; z-index: 1; display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px 10px 8px 2px; border-radius: 14px; animation: lp-in var(--lp-base) var(--lp-out) both; animation-delay: calc(var(--i) * 35ms); }
+.lv-badge { position: relative; width: 42px; height: 42px; margin-left: 2px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line); flex: none; }
+.lv-badge .ico { font-size: 1.25rem; line-height: 1; }
+.lv-badge .n { position: absolute; right: -5px; bottom: -4px; min-width: 19px; height: 19px; padding: 0 4px; border-radius: 99px; display: grid; place-items: center; font-size: .68rem; font-weight: 800; background: var(--surface); color: var(--muted); border: 1.5px solid var(--line); box-sizing: border-box; }
+.lv-badge.big { width: 58px; height: 58px; border-color: var(--accent); box-shadow: 0 0 0 5px rgba(255,255,255,.7); }
+.lv-badge.big .ico { font-size: 1.75rem; }
+.lv-txt { display: grid; gap: 2px; min-width: 0; }
+.lv-txt b { font-size: 1rem; }
+.lv-txt .muted { font-size: .8rem; }
+.lv-row.lv-done .lv-badge { border-color: var(--green-400); background: var(--green-100); }
+.lv-row.lv-done .lv-badge .n { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv-ok { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--green-100); color: var(--accent-text); font-weight: 800; font-size: .85rem; }
+.lv-row.lv-now { background: var(--green-50); box-shadow: inset 0 0 0 1.5px var(--green-200); }
+.lv-row.lv-now .lv-badge { border-color: var(--accent); box-shadow: 0 0 0 5px var(--accent-soft); animation: lp-ring 1.8s var(--lp-out) 2; }
+.lv-row.lv-now .lv-badge .n { background: var(--lime-400); border-color: var(--lime-400); color: var(--ink); }
+.lv-here { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 800; }
+.lv-mini { height: 6px; margin-top: 4px; max-width: 220px; }
+.lv-row.lv-next .lv-badge { border-style: dashed; background: var(--green-50); }
+.lv-row.lv-next .lv-badge .ico { filter: grayscale(1); opacity: .5; }
+.lv-left { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+.lv-foot { margin: 0; padding: 10px 22px 0; font-size: .82rem; border-top: 1px dashed var(--line); }
+.lv-modal > .btn { margin: 12px 22px 22px; }
+@media (max-width: 420px) { .lv-head { padding: 18px 16px 14px; } .lv-list { padding: 10px 10px 4px; } .lv-foot { padding: 10px 16px 0; } .lv-modal > .btn { margin: 12px 16px 16px; } .lv-row { gap: 10px; } }
 
 /* punkty kursu: pasek przedmiotu z działami, karta „Twój postęp”, rozbicie lekcji, mini-miernik w kursie */
 .pts-bar { position: relative; display: flex; gap: 3px; height: 14px; }
@@ -2168,10 +2212,10 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   addEventListener("popstate", (e) => { if (LP.open) { lpClose(true); return; } if (LP.skipPop) { LP.skipPop = false; render(); return; } S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash()); render(); });
 
   function toast(msg) { document.querySelectorAll(".toast").forEach((x) => x.remove()); const t = h("div", { class: "toast", role: "status", text: msg }); document.body.append(t); setTimeout(() => t.remove(), 3200); }
-  function modal(build) {
+  function modal(build, cls) {
     const close = () => { $("layer").replaceChildren(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
-    const box = h("div", { class: "modal", role: "dialog", "aria-modal": "true" }, build(close));
+    const box = h("div", { class: "modal" + (cls ? " " + cls : ""), role: "dialog", "aria-modal": "true" }, build(close));
     const scrim = h("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } }, box);
     $("layer").replaceChildren(scrim);
     document.addEventListener("keydown", onKey);
@@ -4797,10 +4841,41 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     return { n, name: LP_LEVELS[Math.min(n, LP_LEVELS.length) - 1], xp, lo, hi, frac: (xp - lo) / (hi - lo) };
   }
   const lpXpTotal = () => S.progress?.xp?.t || 0;
+  // Podgląd wszystkich rang (klik w pasek poziomu): drabinka 10 rang z progami XP, zdobyte / tu jesteś / przed Tobą.
+  const LP_LEVEL_ICO = ["🌱", "🔥", "🔍", "📅", "✅", "💡", "📊", "♟️", "🎓", "🏆"];
+  function lpLevelsShow() {
+    const L = lpLevel(lpXpTotal()), top = LP_LEVELS.length, cur = Math.min(L.n, top);
+    modal((close) => {
+      const rows = LP_LEVELS.map((name, i) => {
+        const n = i + 1, from = lpLevelAt(n), st = n < cur ? "lv-done" : n === cur ? "lv-now" : "lv-next";
+        const right = st === "lv-done" ? h("span", { class: "lv-ok", "aria-label": "zdobyte", text: "✓" })
+          : st === "lv-now" ? h("span", { class: "chip lv-here", text: "Tu jesteś" })
+          : h("span", { class: "lv-left num", text: `jeszcze ${fmtN(from - L.xp)} XP` });
+        return h("li", { class: "lv-row " + st, style: `--i:${i}` + (st === "lv-now" ? `;--f:${(L.frac * 100).toFixed(1)}%` : "") },
+          h("span", { class: "lv-badge", "aria-hidden": "true" }, h("span", { class: "ico", text: LP_LEVEL_ICO[i] }), h("span", { class: "n num", text: String(n) })),
+          h("span", { class: "lv-txt" }, h("b", { text: name }), h("span", { class: "muted num", text: n === top ? `Poziom ${n}+ · od ${fmtN(from)} XP` : `Poziom ${n} · od ${fmtN(from)} XP` }),
+            st === "lv-now" ? h("span", { class: "lp-lvbar lv-mini", "aria-hidden": "true" }, h("i", { style: `--w:${(L.frac * 100).toFixed(1)}%` })) : null),
+          right);
+      });
+      const list = h("ol", { class: "lv-list" }, rows);
+      requestAnimationFrame(() => { const r = list.querySelector(".lv-row.lv-now"); if (r) list.scrollTop = r.offsetTop - (list.clientHeight - r.offsetHeight) / 2; });
+      return [
+        h("div", { class: "lv-head" },
+          h("span", { class: "eyebrow", text: "Poziomy i rangi" }),
+          h("div", { class: "lv-me" },
+            h("span", { class: "lv-badge big", "aria-hidden": "true" }, h("span", { class: "ico", text: LP_LEVEL_ICO[cur - 1] })),
+            h("div", {}, h("h2", { text: `Poziom ${L.n} · ${L.name}` }), h("p", { class: "muted", text: `Masz ${fmtN(L.xp)} XP. Do poziomu ${L.n + 1} brakuje ${fmtN(L.hi - L.xp)} XP.` }))),
+          h("div", { class: "lp-lvbar", role: "progressbar", "aria-label": "Postęp do następnego poziomu", "aria-valuemin": "0", "aria-valuemax": String(L.hi - L.lo), "aria-valuenow": String(L.xp - L.lo) }, h("i", { style: `--w:${(L.frac * 100).toFixed(1)}%` }))),
+        list,
+        h("p", { class: "lv-foot muted", text: "XP dostajesz za części lekcji, bilet wyjścia, serie dobrych odpowiedzi, powtórki fiszek i próbne testy. Każdy kolejny poziom wymaga 100 XP więcej niż poprzedni. Po poziomie 10 zostajesz Mistrzem, a poziomy rosną dalej." }),
+        h("button", { type: "button", class: "btn primary", onclick: close }, "Jasne"),
+      ];
+    }, "lv-modal");
+  }
   function lpLevelBar(xp, cls) {
     const L = lpLevel(xp);
-    return h("div", { class: "lp-level" + (cls ? " " + cls : "") },
-      h("div", { class: "row" }, h("b", { text: `Poziom ${L.n} · ${L.name}` }), h("span", { class: "muted", text: `${L.hi - L.xp} XP do poziomu ${L.n + 1}` })),
+    return h("button", { type: "button", class: "lp-level lv-open" + (cls ? " " + cls : ""), "aria-haspopup": "dialog", title: "Zobacz wszystkie rangi", onclick: (e) => { e.stopPropagation(); lpLevelsShow(); } },
+      h("div", { class: "row" }, h("b", {}, h("span", { text: `Poziom ${L.n} · ${L.name}` }), h("span", { class: "lv-chev", "aria-hidden": "true", text: "›" })), h("span", { class: "muted", text: `${L.hi - L.xp} XP do poziomu ${L.n + 1}` })),
       h("div", { class: "lp-lvbar", role: "progressbar", "aria-label": "Postęp do następnego poziomu", "aria-valuemin": "0", "aria-valuemax": String(L.hi - L.lo), "aria-valuenow": String(L.xp - L.lo) }, h("i", { style: `--w:${(L.frac * 100).toFixed(1)}%` })));
   }
   const LP_PASSIVE = new Set(["title", "intuition", "read", "tip", "formulas", "reveal", "visual"]);
@@ -5829,7 +5904,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       h("div", { class: "pts-head" }, h("b", { text: "Tematy do zaliczeń, które umiesz" }), h("b", { class: "num", text: `${all.known}/${all.n}` })),
       knowBar(all, { size: "md", label: "Tematy do zaliczeń, które umiesz" }),
       h("p", { class: "muted pts-why", text: "Temat umiesz, gdy zdasz bilet wyjścia z lekcji albo dobrze idą Ci quiz i fiszki." }),
-      h("div", { class: "pts-stats" }, h("span", { class: "lvl", text: `Poziom ${L.n} · ${L.name}` }), sk ? h("span", { text: `🔥 ${sk} ${plural(sk, "dzień", "dni", "dni")}` }) : null, goalRing()),
+      h("div", { class: "pts-stats" }, h("button", { type: "button", class: "lvl lv-link", "aria-haspopup": "dialog", title: "Zobacz wszystkie rangi", onclick: lpLevelsShow }, `Poziom ${L.n} · ${L.name}`, h("span", { class: "lv-chev", "aria-hidden": "true", text: "›" })), sk ? h("span", { text: `🔥 ${sk} ${plural(sk, "dzień", "dni", "dni")}` }) : null, goalRing()),
       h("h3", { class: "pts-sub", text: "Najbliżej zaliczenia" }),
       h("div", { class: "pts-list" }, top.map(row)),
       rest.length ? h("details", { class: "pts-more" }, h("summary", {}, `Pokaż wszystkie przedmioty (${rows.length})`), h("div", { class: "pts-list" }, rest.map(row))) : null,
