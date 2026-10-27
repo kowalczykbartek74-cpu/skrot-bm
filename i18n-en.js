@@ -1,6 +1,13 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Fiszki wracają same, zanim zdążysz je zapomnieć.": "Flashcards come back on their own, before you forget them.",
+"Gdzie są Twoje fiszki": "Where your flashcards are",
+"Każde „Pamiętam” przesuwa fiszkę do następnego pudełka i wraca ona coraz rzadziej. „Nie pamiętam” odsyła ją na początek.": "Each “I remember” moves a card to the next box, so it comes back less and less often. “I don't remember” sends it back to the start.",
+"nowe": "new",
+"czekają": "waiting",
+"wracają po… →": "come back after… →",
+"Każdy kwadrat to jeden materiał, a kolor mówi, jak dobrze go umiesz. Dotknij kwadratu, żeby zobaczyć szczegóły.": "Each square is one material, and its colour shows how well you know it. Tap a square to see the details.",
 "Najbliższy termin": "Next deadline",
 "Dodatkowo · {0}": "Extra · {0}",
 "· stare materiały z prezentacji o tym samym co lekcja": "· old slide materials on the same topic as a lesson",

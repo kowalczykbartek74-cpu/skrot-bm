@@ -1262,6 +1262,24 @@ main, .staroband { position: relative; z-index: 1; }
 .now.warn { background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(154,91,0,.12) 16px 17.5px) right top / 260px 260px no-repeat, linear-gradient(135deg, var(--warn-soft), var(--lime-100)); }
 .now::after { display: none; }
 
+/* Powtórki: karta „dziś” ze słojami jak „Teraz zrób to”, pudełka fiszek i mapa postępów w panelu */
+.rv-head .muted { margin: 0; }
+.rv-hero { background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(26,127,69,.13) 16px 17.5px) right top / 220px 220px no-repeat, linear-gradient(135deg, var(--mint-100), var(--lime-100)); }
+.rv-hero.calm { background: repeating-radial-gradient(circle at 100% 0, transparent 0 16px, rgba(26,127,69,.08) 16px 17.5px) right top / 180px 180px no-repeat, var(--surface); border-color: var(--green-200); }
+.rv-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 10px; border-top: 1px dashed var(--green-200); }
+.rv-meta .rv-classic { margin-left: auto; font-size: .86rem; }
+.rv-track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; position: relative; }
+.rv-box { display: grid; justify-items: center; gap: 2px; padding: 10px 2px 8px; border-radius: 12px; background: var(--accent-soft); border: 1px solid var(--green-200); text-align: center; }
+.rv-box b { font-family: var(--f-display); font-size: 1.35rem; font-weight: 800; line-height: 1.1; color: var(--accent-text); }
+.rv-box span { font-size: .72rem; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.rv-box.new { background: var(--surface); border-style: dashed; }
+.rv-box.top { background: linear-gradient(160deg, var(--green-100), var(--lime-100)); border-color: var(--lime-400); }
+.rv-box.zero { background: var(--surface); border-color: var(--line); }
+.rv-box.zero b { color: var(--muted); opacity: .55; }
+.rv-track-legend { display: flex; justify-content: space-between; margin: -6px 2px 0; font-size: .78rem; }
+@media (max-width: 420px) { .rv-track { gap: 4px; } .rv-box { padding: 8px 0 6px; border-radius: 10px; } .rv-box b { font-size: 1.1rem; } .rv-box span { font-size: .64rem; } }
+.rv-map .pm-legend { margin-top: -4px; }
+
 /* panele: delikatny akcent w rogu nagłówka, bez zmiany treści */
 .panel > .panel-head:first-child h2, .more-group > h2 { position: relative; padding-left: 14px; }
 .panel > .panel-head:first-child h2::before, .more-group > h2::before { content: ""; position: absolute; left: 0; top: .2em; bottom: .2em; width: 4px; border-radius: 4px; background: linear-gradient(var(--green-400), var(--lime-400)); }
@@ -8373,33 +8391,47 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return { cards, stale };
   }
 
-  // Ekran „Powtórki”: ile dziś, przycisk Zacznij, a pod spodem mapa postępów.
+  // Ekran „Powtórki”: ile dziś i przycisk Zacznij, pudełka (gdzie są fiszki i kiedy wrócą), a pod spodem mapa postępów.
   function reviewHome(s) {
     const sid = s?.id || "";
-    const { due, fresh } = srsDue(sid);
+    const { due, fresh, freshAll } = srsDue(sid);
     const n = due.length + fresh.length, has = Object.keys(srsAll()).length, sk = streakN();
     const tomorrow = Object.values(srsAll()).filter((v) => v[0] > 0 && v[1] === dayN() + 1).length;
     const mins = Math.max(1, Math.round(n / 3));
     const rows = SUBJECTS.map((x) => progressRow(x)).filter(Boolean);
     return [
-      h("section", { class: "stack" }, s ? backLink({ view: "subject", id: s.id }) : null, h("h1", { class: "ptitle", text: s ? `Powtórki · ${s.pl}` : "Powtórki" })),
-      h("section", { class: "sk-hero rv-start" + (n ? "" : " calm") },
+      h("section", { class: "stack rv-head" }, s ? backLink({ view: "subject", id: s.id }) : null, h("h1", { class: "ptitle", text: s ? `Powtórki · ${s.pl}` : "Powtórki" }),
+        h("p", { class: "muted", text: "Fiszki wracają same, zanim zdążysz je zapomnieć." })),
+      h("section", { class: "sk-hero rv-start rv-hero" + (n ? "" : " calm") },
         h("span", { class: "eyebrow", text: "Dziś do powtórki" }),
         n ? h("p", { class: "sk-bignum" }, h("b", { class: "num", text: n }), h("span", { text: `${plural(n, "fiszka", "fiszki", "fiszek")}, ok. ${mins} min` }))
           : h("p", { class: "big", style: "margin:0", text: has ? (tomorrow ? `Na dziś koniec. Następne powtórki jutro (${tomorrow} ${plural(tomorrow, "fiszka", "fiszki", "fiszek")}).` : "Na dziś koniec. Nic nie czeka.") : "Jeszcze nic tu nie ma." }),
-        n ? null : h("p", { class: "muted", style: "margin:0", text: has ? "Fiszki wracają po 1, 3, 7, 14, 30 i 60 dniach, a przed zaliczeniem z przedmiotu przynajmniej raz." : "Przejrzyj fiszki w dowolnym materiale albo dodaj cały przedmiot (zakładka Ćwicz). Wrócą tutaj w dobrym momencie." }),
-        h("div", { class: "row" }, skGoal(), sk ? h("span", { class: "sk-goal", title: "Dni z rzędu z nauką", text: `🔥 ${sk} ${plural(sk, "dzień", "dni", "dni")} z rzędu` }) : null),
+        n ? null : has ? null : h("p", { class: "muted", style: "margin:0", text: "Przejrzyj fiszki w dowolnym materiale albo dodaj cały przedmiot (zakładka Ćwicz). Wrócą tutaj w dobrym momencie." }),
         n ? h("button", { type: "button", class: "btn primary sk-start", disabled: S.route.rvLoading ? true : null, onclick: () => reviewStart(sid) }, S.route.rvLoading ? "Zbieram karty…" : "Zaczynamy →") : null,
-        n ? h("p", { class: "muted", style: "margin:0;font-size:.88rem" }, h("button", { type: "button", class: "link", onclick: () => { S.route = { ...S.route, start: true }; render(); } }, "Klasyczny widok")) : null,
-        !n && !has ? h("div", {}, h("button", { type: "button", class: "btn", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot")) : null),
+        !n && !has ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot")) : null,
+        h("div", { class: "rv-meta" }, skGoal(), sk ? h("span", { class: "sk-goal", title: "Dni z rzędu z nauką", text: `🔥 ${sk} ${plural(sk, "dzień", "dni", "dni")} z rzędu` }) : null,
+          n ? h("button", { type: "button", class: "link rv-classic", onclick: () => { S.route = { ...S.route, start: true }; render(); } }, "Klasyczny widok") : null)),
       hintPanel(!n),
-      h("section", { class: "stack", "data-tour": "mapa" },
-        h("div", { class: "row", style: "justify-content:space-between" }, h("h2", { text: "Mapa postępów" }),
-          h("div", { class: "pm-legend" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label)))),
-        h("p", { class: "muted", style: "max-width:62ch;font-size:.92rem", text: "Każdy kwadrat to jeden materiał. Kolor mówi, jak dobrze go umiesz (quizy, fiszki, zadania, próbne testy). Kliknij kwadrat, żeby zobaczyć szczegóły." }),
-        !S.ready ? h("p", { class: "muted", text: "Ładuję…" }) : rows.length ? h("section", { class: "sk-card wide panel pm" }, rows) : h("div", { class: "empty small", text: "Gdy pojawią się materiały, zobaczysz tu swoje postępy." }),
-        !S.uid ? h("p", { class: "foot-note", text: "Bez logowania postęp zapisuje się tylko w tej przeglądarce." }) : null),
+      has ? reviewBoxes(sid, freshAll) : null,
+      h("section", { class: "panel rv-map", "data-tour": "mapa" },
+        h("div", { class: "panel-head" }, h("h2", { text: "Mapa postępów" })),
+        h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Każdy kwadrat to jeden materiał, a kolor mówi, jak dobrze go umiesz. Dotknij kwadratu, żeby zobaczyć szczegóły." }),
+        h("div", { class: "pm-legend" }, Object.entries(STATE).map(([k, v]) => h("span", {}, h("i", { class: "pm-sq st-" + k, "aria-hidden": "true" }), v.label))),
+        !S.ready ? h("p", { class: "muted", text: "Ładuję…" }) : rows.length ? h("div", { class: "pm" }, rows) : h("div", { class: "empty small", text: "Gdy pojawią się materiały, zobaczysz tu swoje postępy." }),
+        !S.uid ? h("p", { class: "foot-note", style: "margin:0", text: "Bez logowania postęp zapisuje się tylko w tej przeglądarce." }) : null),
     ];
+  }
+  // Pudełka: ile fiszek czeka jako nowe i ile leży w każdym pudełku (1, 3, 7, 14, 30, 60 dni).
+  function reviewBoxes(sid, freshAll) {
+    const per = SRS_DAYS.map(() => 0);
+    for (const [k, v] of Object.entries(srsAll())) if (Array.isArray(v) && v[0] > 0 && (!sid || keySubject(k) === sid)) per[Math.min(6, v[0])]++;
+    const cols = [{ n: freshAll, t: "nowe", cls: " new" }, ...SRS_DAYS.slice(1).map((d, i) => ({ n: per[i + 1], t: `${d} ${plural(d, "dzień", "dni", "dni")}`, cls: i === 5 ? " top" : "" }))];
+    return h("section", { class: "panel rv-boxes" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Gdzie są Twoje fiszki" })),
+      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Każde „Pamiętam” przesuwa fiszkę do następnego pudełka i wraca ona coraz rzadziej. „Nie pamiętam” odsyła ją na początek." }),
+      h("ol", { class: "rv-track" }, cols.map((c) => h("li", { class: "rv-box" + c.cls + (c.n ? "" : " zero") },
+        h("b", { class: "num", text: c.n }), h("span", { text: c.t })))),
+      h("p", { class: "rv-track-legend muted", "aria-hidden": "true" }, h("span", { text: "czekają" }), h("span", { text: "wracają po… →" })));
   }
   function viewReview() {
     const sid = S.route.sid || "";
