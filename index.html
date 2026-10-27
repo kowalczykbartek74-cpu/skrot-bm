@@ -1103,6 +1103,14 @@ i.pm-sq { width: 14px; height: 14px; border-radius: 4px; cursor: default; vertic
 .pm-sq.st-weak { background: var(--bad); border-color: var(--bad); }
 .pm-sq.lk { opacity: .45; background-image: repeating-linear-gradient(45deg, transparent 0 3px, var(--line) 3px 5px); }
 button.pm-sq:hover { transform: scale(1.12); }
+.pm-tip { position: fixed; z-index: 9999; max-width: min(300px, calc(100vw - 16px)); padding: 8px 11px; border-radius: 10px; background: var(--ink); color: var(--surface); font-size: 13.5px; line-height: 1.35; box-shadow: 0 6px 20px rgba(0,0,0,.18); pointer-events: none; opacity: 0; transform: translateY(3px); transition: opacity .12s, transform .12s; visibility: hidden; }
+.pm-tip.on { opacity: 1; transform: none; visibility: visible; }
+.pm-tip b { display: block; font-weight: 700; }
+.pm-tip-st { display: flex; align-items: center; gap: 5px; margin-top: 3px; opacity: .85; font-size: 12.5px; }
+.pm-tip-st .pm-sq { width: 11px; height: 11px; border-radius: 3px; border-width: 1px; }
+.pm-tip::after { content: ""; position: absolute; left: var(--ax, 50%); top: 100%; margin-left: -6px; border: 6px solid transparent; border-top-color: var(--ink); }
+.pm-tip.below::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .pm-tip { transition: none; } }
 .pm-count { font-size: .82rem; color: var(--muted); white-space: nowrap; }
 .pm-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .84rem; color: var(--muted); }
 .pm-legend span { display: inline-flex; gap: 6px; align-items: center; }
@@ -8984,10 +8992,39 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return h("div", { class: "pm-row" + (compact ? " compact" : "") },
       compact ? null : h("button", { type: "button", class: "pm-name", onclick: () => go({ view: "subject", id: s.id }) }, h("i", { class: "dot", style: `--c:${s.color}` }), h("span", { text: s.pl })),
       h("div", { class: "pm-grid" }, scored.map(({ m, ts }) => h("button", {
-        type: "button", class: "pm-sq st-" + ts.state + (locked(m) ? " lk" : ""), title: `${m.title || m.fileName} · ${STATE[ts.state].label}${ts.score != null ? " " + ts.score : ""}`,
+        type: "button", class: "pm-sq st-" + ts.state + (locked(m) ? " lk" : ""),
+        "data-tip": m.title || m.fileName, "data-tip-st": ts.state, "data-tip-score": ts.score != null ? String(ts.score) : "", "data-tip-lk": locked(m) ? "1" : "",
         "aria-label": `${m.title || m.fileName}: ${STATE[ts.state].label}`, onclick: () => openTopic(m) }))),
       h("span", { class: "pm-count num", text: `umiesz ${good} z ${ms.length}` }));
   }
+  // Dymek nad kwadratem mapy: po najechaniu myszą (albo Tabem) od razu widać temat i stan. Dotyk dalej otwiera okno.
+  (() => {
+    let tip = null, cur = null;
+    const hide = () => { cur = null; if (tip) tip.classList.remove("on"); };
+    const show = (sq) => {
+      if (!sq.dataset.tip) return;
+      cur = sq;
+      if (!tip) { tip = h("div", { class: "pm-tip", role: "tooltip", "aria-hidden": "true" }); document.body.appendChild(tip); }
+      const st = sq.dataset.tipSt || "none", sc = sq.dataset.tipScore;
+      tip.replaceChildren(
+        h("b", { text: sq.dataset.tip }),
+        h("span", { class: "pm-tip-st" }, h("i", { class: "pm-sq st-" + st }), h("span", { text: STATE[st].label }), sc ? h("span", { class: "num", text: " · " + sc }) : null,
+          sq.dataset.tipLk ? h("span", { text: " · 🔒" }) : null));
+      tip.classList.add("on");
+      const r = sq.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight, vw = document.documentElement.clientWidth;
+      let x = Math.max(8, Math.min(vw - tw - 8, r.left + r.width / 2 - tw / 2)), y = r.top - th - 8;
+      const below = y < 8; if (below) y = r.bottom + 8;
+      tip.classList.toggle("below", below);
+      tip.style.left = x + "px"; tip.style.top = y + "px";
+      tip.style.setProperty("--ax", (r.left + r.width / 2 - x) + "px");
+    };
+    const sqOf = (e) => e.target.closest?.("button.pm-sq");
+    document.addEventListener("pointerover", (e) => { if (e.pointerType === "touch") return; const sq = sqOf(e); if (sq && sq !== cur) show(sq); });
+    document.addEventListener("pointerout", (e) => { const sq = sqOf(e); if (sq && sq === cur && !sq.contains(e.relatedTarget)) hide(); });
+    document.addEventListener("focusin", (e) => { const sq = sqOf(e); if (sq && sq.matches(":focus-visible")) show(sq); else hide(); });
+    document.addEventListener("focusout", (e) => { if (sqOf(e) === cur) hide(); });
+    for (const ev of ["scroll", "pointerdown", "keydown"]) window.addEventListener(ev, (e) => { if (ev === "keydown" && e.key !== "Escape") return; hide(); }, { capture: true, passive: true });
+  })();
   // ---------- podpowiedź „powtórz to przed piątkiem” ----------
   const INSTR = ["poniedziałkiem", "wtorkiem", "środą", "czwartkiem", "piątkiem", "sobotą", "niedzielą"];
   function whenPhrase(k) {
