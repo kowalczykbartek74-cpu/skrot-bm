@@ -1214,6 +1214,14 @@ details.undated[open] summary { margin-bottom: 12px; }
 .remember ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
 .term-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 2px; }
 .term-link:hover { color: var(--accent-hover); }
+.lead-help { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 8px; }
+.lead-help > p { margin: 0; }
+.qhelp { flex: none; }
+.qhelp[open] { flex-basis: 100%; display: flex; gap: 8px; align-items: flex-start; }
+.qhelp > summary { list-style: none; cursor: pointer; flex: none; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--muted); font-weight: 800; font-size: .82rem; }
+.qhelp > summary::-webkit-details-marker { display: none; }
+.qhelp[open] > summary { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.qhelp > p { margin: 2px 0 0; font-size: .9rem; max-width: 62ch; }
 
 
 /* ===== jeden motyw w całej stronie: „słoje” (koncentryczne linie z rogu) i falka pod tytułem ===== */
@@ -2691,7 +2699,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     const seg = (items, cur, set, label) => h("div", { class: "seg", role: "group", "aria-label": label }, items.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(cur === k), onclick: () => set(k) }, l)));
     const head = h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
-        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), h("p", { class: "muted", text: "Lista do odhaczania: co i na kiedy. Odhaczasz kółkiem po lewej." })),
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Terminy" }), leadHelp("Lista do odhaczania: co i na kiedy.", "Odhaczasz kółkiem po lewej. Przełącznik „Do zrobienia | Zrobione” pokazuje to, co już masz. Terminy sprzed Twojego dołączenia są w zwiniętej sekcji „Minione”.")),
         h("div", { class: "row", style: "gap:8px" },
           h("button", { type: "button", class: "link", "data-tour": "phonecal", onclick: openPhoneCal }, lockLabel("Do kalendarza w telefonie")),
           S.canEdit ? h("button", { type: "button", class: "btn small", onclick: () => openDeadline(null) }, "+ Dodaj termin") : null)),
@@ -3255,7 +3263,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     const all = PAID() ? termItems() : [];
     const head = h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
-        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), h("p", { class: "muted", text: "Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy. Listę do odhaczania i link do telefonu znajdziesz w Terminach." })),
+        h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), leadHelp("Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy.", "Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach. Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.")),
         h("div", { class: "row", style: "gap:8px" },
           h("button", { type: "button", class: "btn small primary", "data-tour": "myev", onclick: () => openMyEvent(null, S.calSel) }, "+ Mój wpis"))),
       needGroup() ? h("div", { class: "notice" }, "Zajęcia pokażę, gdy wybierzesz grupę i lab. ", h("button", { type: "button", class: "link", onclick: openGroupPicker }, "Wybierz grupę")) : null);
@@ -4265,6 +4273,12 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   function backLink(to) {
     const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki", guide: "Przewodnik" }[to?.view] || "Dziś";
     return h("div", {}, h("button", { type: "button", class: "back", onclick: () => go(to || { view: "home" }) }, h("span", { "aria-hidden": "true", text: "←" }), label));
+  }
+  // Krótka instrukcja ekranu: jedno zdanie na wierzchu, reszta pod „?”.
+  function leadHelp(first, more, style) {
+    return h("div", { class: "lead-help", style },
+      h("p", { class: "muted", text: first }),
+      more ? h("details", { class: "qhelp" }, h("summary", { "aria-label": "Więcej wyjaśnień", title: "Więcej wyjaśnień" }, "?"), h("p", { class: "muted", text: more })) : null);
   }
   function confirmBox(question, action) {
     modal((close) => [
@@ -8545,7 +8559,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const sid = S.route.sid || "";
     const head = h("section", { class: "stack" }, backLink({ view: "more" }),
       h("span", { class: "eyebrow", text: "Angielski ↔ polski" }), h("h1", { text: "Słowniczek" }),
-      h("p", { class: "muted", style: "max-width:62ch", text: "Pojęcia ze wszystkich materiałów i z tematów sylabusa: termin po angielsku, polskie tłumaczenie i jedno zdanie wyjaśnienia. Znaczek EN albo PL mówi, w jakim języku jest opis (materiały z zajęć są po angielsku, tematy z sylabusa często po polsku). Szukaj w obu językach, ogonki nie są potrzebne." }));
+      leadHelp("Pojęcia ze wszystkich materiałów i z sylabusa: angielski termin, polskie tłumaczenie i jedno zdanie wyjaśnienia.", "Znaczek EN albo PL mówi, w jakim języku jest opis (materiały z zajęć są po angielsku, tematy z sylabusa często po polsku). Szukaj w obu językach, ogonki nie są potrzebne.", "max-width:62ch"));
     if (!GL.terms) return [head, h("p", { class: "muted", text: "Ładuję pojęcia…" })];
     const box = h("div", { class: "gl-list" });
     const countEl = h("span", { class: "muted num", style: "font-size:.86rem" });
@@ -8566,14 +8580,15 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const sidTerms = sid ? GL.terms.filter((t) => t.s.includes(sid)) : [];
     const words = glossaryPairs(glSearch(S.route.q || "", sid));
     return [head,
+      h("div", { class: "gl-search" }, input, h("div", { class: "row", style: "justify-content:space-between" }, countEl,
+        sid && sidTerms.length ? h("button", { type: "button", class: "btn small", onclick: () => { if (needPaid("Fiszki ze słowniczka")) return; const n = srsAdd(sidTerms.map((t) => glKey(sid, t.en))); toast(n ? `Dodano ${n} ${plural(n, "fiszkę", "fiszki", "fiszek")} EN → PL do powtórek.` : "Te pojęcia już są w powtórkach."); render(); } }, lockLabel("Fiszki EN → PL z tego przedmiotu")) : null)),
+      chips,
+      GL.partial ? h("div", { class: "notice", style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap" }, h("span", { text: "Widzisz pojęcia z darmowych próbek. Słowniczek ze wszystkich materiałów masz w pełnym dostępie." }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null,
       words.length >= 4 ? h("section", { class: "sk-card wide sk-practice" },
         h("div", { class: "sk-kick" }, h("span", { text: "🔗 Ćwicz słówka" })),
         h("p", { class: "muted", style: "margin:0", text: "Dobierz angielskie pojęcie do polskiego znaczenia. 3 krótkie rundy po 4 pary, z tego, co masz teraz na liście." }),
         h("button", { type: "button", class: "btn primary sk-start", onclick: () => playerOpen(glossarySource(words, sid)) }, "Ćwicz słówka →")) : null,
-      GL.partial ? h("div", { class: "notice", style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap" }, h("span", { text: "Widzisz pojęcia z darmowych próbek. Słowniczek ze wszystkich materiałów masz w pełnym dostępie." }), h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null,
-      h("div", { class: "gl-search" }, input, h("div", { class: "row", style: "justify-content:space-between" }, countEl,
-        sid && sidTerms.length ? h("button", { type: "button", class: "btn small", onclick: () => { if (needPaid("Fiszki ze słowniczka")) return; const n = srsAdd(sidTerms.map((t) => glKey(sid, t.en))); toast(n ? `Dodano ${n} ${plural(n, "fiszkę", "fiszki", "fiszek")} EN → PL do powtórek.` : "Te pojęcia już są w powtórkach."); render(); } }, lockLabel("Fiszki EN → PL z tego przedmiotu")) : null)),
-      chips, box];
+      box];
   }
 
   // ================= mapa postępów =================

@@ -1,6 +1,13 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Więcej wyjaśnień": "More explanation",
+"Lista do odhaczania: co i na kiedy.": "A checklist: what's due and when.",
+"Odhaczasz kółkiem po lewej. Przełącznik „Do zrobienia | Zrobione” pokazuje to, co już masz. Terminy sprzed Twojego dołączenia są w zwiniętej sekcji „Minione”.": "Tick things off with the circle on the left. The “To do | Done” switch shows what you've finished. Deadlines from before you joined are in the collapsed “Past” section.",
+"Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy.": "Month view: your classes, year deadlines and your own entries.",
+"Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach. Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.": "The checklist and the link for your phone calendar are in Deadlines. Tap a day to see details and add your own entry.",
+"Pojęcia ze wszystkich materiałów i z sylabusa: angielski termin, polskie tłumaczenie i jedno zdanie wyjaśnienia.": "Terms from all materials and the syllabus: the English term, the Polish translation and a one-sentence explanation.",
+"Znaczek EN albo PL mówi, w jakim języku jest opis (materiały z zajęć są po angielsku, tematy z sylabusa często po polsku). Szukaj w obu językach, ogonki nie są potrzebne.": "The EN or PL badge shows the language of the description (class materials are in English, syllabus topics are often in Polish). Search in either language; Polish diacritics are optional.",
 "Twój postęp": "Your progress",
 "Semestr 1 · {0} / {1} pkt": "Semester 1 · {0} / {1} pts",
 "{0} / {1} pkt": "{0} / {1} pts",
