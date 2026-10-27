@@ -2189,12 +2189,12 @@ html[data-theme="pink"] body {
   background-color: var(--paper);
   /* serduszka i gwiazdki zamiast kratki */
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M22 30c-3-5-11-3-10 3 1 5 10 10 10 10s9-5 10-10c1-6-7-8-10-3z' fill='%23FFD1E8'/%3E%3Cpath d='M86 78l2.4 5.6 5.6 2.4-5.6 2.4L86 94l-2.4-5.6L78 86l5.6-2.4z' fill='%23E2D1FF'/%3E%3Ccircle cx='96' cy='22' r='2.5' fill='%23FFC2E0'/%3E%3Ccircle cx='30' cy='96' r='2' fill='%23C9E8FF'/%3E%3C/svg%3E"),
-    radial-gradient(circle at 12% 18%, rgba(255, 179, 217, .25), transparent 40%),
-    radial-gradient(circle at 88% 70%, rgba(201, 182, 255, .22), transparent 45%);
-  background-size: 120px 120px, 100% 100%, 100% 100%;
-  background-attachment: scroll, fixed, fixed;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M22 30c-3-5-11-3-10 3 1 5 10 10 10 10s9-5 10-10c1-6-7-8-10-3z' fill='%23FFD1E8'/%3E%3Cpath d='M86 78l2.4 5.6 5.6 2.4-5.6 2.4L86 94l-2.4-5.6L78 86l5.6-2.4z' fill='%23E2D1FF'/%3E%3Ccircle cx='96' cy='22' r='2.5' fill='%23FFC2E0'/%3E%3Ccircle cx='30' cy='96' r='2' fill='%23C9E8FF'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
 }
+/* miękkie plamy koloru na osobnej, przyklejonej warstwie: background-attachment: fixed malowało całe tło przy każdej klatce przewijania */
+html[data-theme="pink"]::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; transform: translateZ(0);
+  background: radial-gradient(circle at 12% 18%, rgba(255, 179, 217, .25), transparent 40%), radial-gradient(circle at 88% 70%, rgba(201, 182, 255, .22), transparent 45%); }
 html[data-theme="pink"] ::selection { background: #FFC9E3; color: #2A0D1C; }
 /* tęcza z rogu zamiast słojów */
 html[data-theme="pink"] body::before {
@@ -2227,7 +2227,7 @@ html[data-theme="pink"] .now, html[data-theme="pink"] .rv-hero { background: rad
 
 /* jednorożec w rogu: kliknięcie = brokat i dobre słowo */
 .uni-mascot { display: none; }
-html[data-theme="pink"] .uni-mascot { display: grid; place-items: center; position: fixed; z-index: 40; right: 16px; bottom: calc(16px + var(--tabbar-h, 0px) + env(safe-area-inset-bottom, 0px)); width: 58px; height: 58px; padding: 0; border: 2px solid #FFC9E3; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #FFE6F2 70%); box-shadow: 0 8px 22px -8px rgba(224, 67, 143, .55); font-size: 32px; line-height: 1; cursor: pointer; animation: uni-bob 3.2s ease-in-out infinite; }
+html[data-theme="pink"] .uni-mascot { display: grid; place-items: center; position: fixed; z-index: 40; right: 16px; bottom: calc(16px + var(--tabbar-h, 0px) + env(safe-area-inset-bottom, 0px)); width: 58px; height: 58px; padding: 0; border: 2px solid #FFC9E3; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #FFE6F2 70%); box-shadow: 0 8px 22px -8px rgba(224, 67, 143, .55); font-size: 32px; line-height: 1; cursor: pointer; animation: uni-bob 3.2s ease-in-out infinite; will-change: transform; }
 html[data-theme="pink"] .uni-mascot:hover { transform: scale(1.08) rotate(-6deg); animation-play-state: paused; }
 .uni-mascot .uni-bubble { position: absolute; right: 64px; bottom: 30px; width: max-content; max-width: min(240px, 60vw); padding: 8px 12px; border-radius: 16px 16px 4px 16px; background: #fff; border: 1.5px solid #FFC9E3; color: #8E1856; font: 700 13.5px/1.35 var(--f-body); box-shadow: var(--shadow); text-align: left; animation: uni-pop .35s cubic-bezier(.34,1.56,.64,1); }
 @keyframes uni-bob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-7px) rotate(4deg); } }
@@ -2410,11 +2410,13 @@ html.calm .uni-spark { display: none; }
       });
     }
     const ATTR = ["style", "fill", "stroke", "stop-color"], SEL = "[style],[fill],[stroke],[stop-color]";
+    function paintOne(e, a) { const v = e.getAttribute(a); if (v && /#|%23|rgb/i.test(v)) { const nv = recolor(v); if (nv !== v) e.setAttribute(a, nv); } }
     function paint(el) {
       if (el.nodeType !== 1) return;
-      for (const e of [el, ...el.querySelectorAll(SEL)]) for (const a of ATTR) { const v = e.getAttribute(a); if (v) { const nv = recolor(v); if (nv !== v) e.setAttribute(a, nv); } }
+      for (const e of [el, ...el.querySelectorAll(SEL)]) for (const a of ATTR) paintOne(e, a);
     }
-    const mo = new MutationObserver((list) => { for (const m of list) m.type === "attributes" ? paint(m.target) : m.addedNodes.forEach(paint); });
+    // Zmiana atrybutu = tylko ten element i ten atrybut (animacje z kodu ustawiają style co klatkę, więc bez przeszukiwania poddrzewa).
+    const mo = new MutationObserver((list) => { for (const m of list) m.type === "attributes" ? paintOne(m.target, m.attributeName) : m.addedNodes.forEach(paint); });
     const on = () => root.getAttribute("data-theme") === "pink";
     const meta = () => document.querySelector('meta[name="theme-color"]')?.setAttribute("content", on() ? "#FF8FC4" : "#1A7F45");
     const LINES = ["Dasz radę! 💖", "Jesteś mega! ✨", "Jeszcze jedna fiszka? 🦄", "Brokat mocy aktywowany 🌈", "Zaliczysz to, wierzę w Ciebie 💗", "Przerwa na wodę i wracamy 💧", "Każda powtórka się liczy ⭐"];
@@ -2429,7 +2431,7 @@ html.calm .uni-spark { display: none; }
     }
     function trail(e) {
       if (e.pointerType !== "mouse" || root.classList.contains("calm")) return;
-      const t = performance.now(); if (t - lastSpark < 70) return; lastSpark = t;
+      const t = performance.now(); if (t - lastSpark < 110 || document.querySelectorAll(".uni-spark").length > 8) return; lastSpark = t;
       const s = h("span", { class: "uni-spark", "aria-hidden": "true", text: Math.random() < .7 ? "✨" : "💖", style: `left:${e.clientX + 6}px;top:${e.clientY + 6}px;font-size:${10 + Math.random() * 6}px;--dx:${(Math.random() - .5) * 20}px;--dy:22px` });
       document.body.append(s); setTimeout(() => s.remove(), 950);
     }
