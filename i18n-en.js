@@ -269,6 +269,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Nie tym razem. Poprawna: {0}.": "Not this time. Correct: {0}.",
 "🔁 Druga szansa": "🔁 Second chance",
 "🔁 To pytanie wróci za chwilę, żeby utrwalić.": "🔁 This question will come back shortly to help it stick.",
+"🔁 Masz drugą szansę: to pytanie wróci za chwilę, wtedy zobaczysz poprawną odpowiedź.": "🔁 You get a second chance: this question will come back shortly, and then you'll see the right answer.",
 "Warto powtórzyć:": "Worth reviewing:",
 "Zakończ część": "Finish the part",
 "💡 Najpierw intuicja": "💡 Intuition first",

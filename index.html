@@ -4952,6 +4952,8 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     return out;
   }
   const lpCur = () => lpCards()[LP.st.idx];
+  // Karta, która po złej odpowiedzi czeka na drugą szansę dalej w tej części.
+  const lpRetryLater = (card) => !card.again && LP.st.ans[card.id] !== card.correct && (LP.st.extra[LP.st.bite] || []).some((e) => e.of === card.id) && LP.st.ans[card.id + "#r"] == null;
   function lpBiteStats(bi = LP.st.bite) { return LP.st.bs[bi] || (LP.st.bs[bi] = { ok: 0, tot: 0, xp: 0, t0: Date.now() }); }
 
   // ---------- mapa lekcji (w treści strony, zamiast lessonPanel2) ----------
@@ -5133,7 +5135,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     LP.el.cta.disabled = !!out.cta?.disabled;
     LP.el.cta.hidden = !!out.cta?.hidden;
     const simple = card.sec != null ? LP.deck.simple[card.sec] : "";
-    LP.el.help.hidden = !simple && !(card.help && lpIsDone(card));
+    LP.el.help.hidden = !simple && !(card.help && lpIsDone(card) && !lpRetryLater(card));
     LP.el.help.classList.toggle("lp-hint", !!LP.fx?.hint);
     return node;
   }
@@ -5228,7 +5230,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   function lpSheetOpen() {
     const card = lpCur(); const txt = card?.sec != null ? LP.deck.simple[card.sec] : "";
     // Karta z własnym wyjaśnieniem (quiz: „Dlaczego?”) pokazuje je po odpowiedzi.
-    const help = !txt && card?.help && lpIsDone(card) ? card.help() : null;
+    const help = !txt && card?.help && lpIsDone(card) && !lpRetryLater(card) ? card.help() : null;
     if (!txt && !help) return;
     LP.el.sheet.replaceChildren(h("div", { class: "grab", "aria-hidden": "true" }), h("span", { class: "eyebrow", text: help ? "Dlaczego?" : "Prościej, po polsku" }), help || h("div", { class: "lp-text" }, h("p", {}, inline(txt))), h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam"));
     LP.el.sheet.setAttribute("aria-label", help ? "Dlaczego?" : "Prościej, po polsku");
@@ -5286,6 +5288,8 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       const a = ctx.ans, done = a != null;
       const order = lpOrder(card);
       const ok = done && a === card.correct;
+      // Zła odpowiedź z drugą szansą: poprawnej jeszcze nie pokazujemy, pytanie wraca za chwilę (5 XP).
+      const later = done && !ok && lpRetryLater(card);
       const pick = (orig, btn) => {
         if (LP.st.ans[card.id] != null) return;
         const good = orig === card.correct;
@@ -5296,15 +5300,15 @@ html.calm .a-tick { stroke-dashoffset: 0; }
         ctx.set(orig, { pick: orig, retryNote, hint: !good && card.sec != null && !!LP.deck.simple[card.sec] });
       };
       const fb = done ? h("div", { class: "lp-fb lp-new " + (ok ? "ok" : "no") },
-        h("p", { class: "v", text: ok ? ["Dobrze! 🎉", "Tak jest! ✅", "Brawo! 💚", "Trafione! 🎯"][card.id.length % 4] : `Nie tym razem. Poprawna: ${"ABCD"[order.indexOf(card.correct)]}.` }),
-        card.why ? h("p", {}, inline(card.why)) : null,
+        h("p", { class: "v", text: ok ? ["Dobrze! 🎉", "Tak jest! ✅", "Brawo! 💚", "Trafione! 🎯"][card.id.length % 4] : later ? "Nie tym razem." : `Nie tym razem. Poprawna: ${"ABCD"[order.indexOf(card.correct)]}.` }),
+        card.why && !later ? h("p", {}, inline(card.why)) : null,
         !ok && card.not?.[a] ? h("p", {}, h("span", { class: "lbl", text: `Czemu nie ${"ABCD"[order.indexOf(a)]}? ` }), inline(card.not[a])) : null,
-        ctx.fx.retryNote ? h("p", { class: "lbl", text: "🔁 To pytanie wróci za chwilę, żeby utrwalić." }) : null,
+        later ? h("p", { class: "lbl", text: "🔁 Masz drugą szansę: to pytanie wróci za chwilę, wtedy zobaczysz poprawną odpowiedź." }) : null,
         !ok && card.link && materialById(card.link) ? h("p", {}, "Warto powtórzyć: ", h("b", { text: materialById(card.link).title })) : null) : null;
       return { el: [kick(card.label || "Pytanie", card), h("p", { class: "lp-big q", translate: "no" }, inline(card.q)),
         h("div", { class: "lp-opts lp-stag", style: "display:grid;gap:8px" }, order.map((orig, i) => h("button", {
           type: "button", style: `--i:${i}`, disabled: done ? true : null,
-          class: "opt" + (done && orig === card.correct ? " right" + (ctx.fx.pick != null ? " lp-now" : "") : "") + (done && orig === a && !ok ? " wrong" + (ctx.fx.pick === orig ? " lp-shake" : "") : ""),
+          class: "opt" + (done && !later && orig === card.correct ? " right" + (ctx.fx.pick != null ? " lp-now" : "") : "") + (done && orig === a && !ok ? " wrong" + (ctx.fx.pick === orig ? " lp-shake" : "") : ""),
           onclick: (e) => pick(orig, e.currentTarget) }, h("span", { class: "k", text: "ABCD"[i] }), h("span", { translate: "no" }, inline(card.options[orig]))))),
         fb, done && card.foot ? h("div", { class: "lp-row sk-links lp-new" }, card.foot()) : null],
         cta: { label: done ? (LP.st.idx + 1 >= lpCards().length ? "Zakończ część" : "Dalej") : "Wybierz odpowiedź", disabled: !done } };
