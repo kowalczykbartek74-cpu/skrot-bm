@@ -6943,7 +6943,7 @@ ${written}`;
   function mineError(e) {
     const q = S.myQuota || {};
     switch (e?.code) {
-      case "limit_dzien": return `Dziś przetworzono już ${q.limit_dzien || 5} plików, to dzienny limit. Spróbuj jutro.`;
+      case "limit_dzien": return `Dziś wykorzystano już dzienny limit: ${q.limit_dzien || 2} z ${q.limit_dzien || 2} plików. Kolejne wgrasz jutro.`;
       case "limit_miesiac": return `W tym miesiącu przetworzono już ${q.limit_miesiac || 40} plików, to miesięczny limit.`;
       case "brak_dostepu": return "Własne materiały masz w pełnym dostępie.";
       case "nie_zalogowany": return "Zaloguj się, żeby wgrać plik.";
@@ -7924,7 +7924,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     ] },
     { id: "wiecej", ic: "menu", title: "Skarby w zakładce Więcej", gain: "Korzystasz ze słowniczka, własnych plików i kalkulatora średniej.", slides: [
       { t: "Słowniczek angielski ↔ polski", p: "Wszystkie pojęcia ze wszystkich przedmiotów: termin po angielsku, tłumaczenie i jedno zdanie wyjaśnienia. Szukasz w obu językach.", tip: "Idealny, gdy na wykładzie po angielsku pada słowo, którego nie znasz.", try: "Znajdź pojęcie", demo: demoGlossary },
-      { t: "Twoje własne pliki", p: "W <b>Moich materiałach</b> wgrywasz własną prezentację albo notatki. Opracujemy je tak samo jak materiały roku: opracowanie, fiszki, quiz i prosty język.", tip: "Widzisz je tylko Ty. Limit: 5 plików dziennie i 40 w miesiącu.", try: "Wgraj przykładowy plik", demo: demoMine },
+      { t: "Twoje własne pliki", p: "W <b>Moich materiałach</b> wgrywasz własną prezentację albo notatki. Opracujemy je tak samo jak materiały roku: opracowanie, fiszki, quiz i prosty język.", tip: "Widzisz je tylko Ty. Limit: 2 pliki dziennie i 40 w miesiącu.", try: "Wgraj przykładowy plik", demo: demoMine },
       { t: "Kalkulator średniej", p: "W <b>Zasadach zaliczeń</b> wpisujesz oceny, a strona liczy ocenę z przedmiotu według reguły z sylabusa i średnią semestru: zwykłą i ważoną ECTS.", tip: "Oceny widzisz tylko Ty.", try: "Zmień jedną ocenę", demo: demoGrades },
       { t: "Co jeszcze jest w Więcej", p: "Program studiów z semestrami 1–6 (z porównaniem przedmiotów do wyboru), lektury z katalogiem biblioteki, szkolenia obowiązkowe i Twoje konto.", tip: "Tu też w każdej chwili wrócisz do tego przewodnika.", demo: demoWhere },
     ], tour: [

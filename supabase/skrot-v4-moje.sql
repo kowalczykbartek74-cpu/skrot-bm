@@ -2,9 +2,9 @@
 -- AI opracowuje je tak samo jak materiały roku, a wynik trafia do sekcji wybranej przez tę osobę.
 -- Materiały są prywatne: widzi je, zmienia i usuwa tylko ich właściciel (created_by).
 -- AI dla studentów działa na kluczu starosty, więc każdy plik wymaga „biletu” z limitem:
--- domyślnie 5 plików dziennie i 40 w miesiącu na osobę (zmienisz w funkcji nauka_moje_start).
+-- domyślnie 2 pliki dziennie i 40 w miesiącu na osobę (liczby w funkcji nauka_moje_stan).
 -- Wklej w Supabase → SQL Editor → Run. Można uruchamiać wielokrotnie. Wymaga wcześniej skrot-v3.sql.
--- UWAGA: po każdym uruchomieniu tego pliku uruchom też skrot-v5.sql (terminy tylko od starosty, limit bajtów AI).
+-- UWAGA: po każdym uruchomieniu tego pliku uruchom też skrot-v5.sql i skrot-v9-limit-moje.sql (terminy tylko od starosty, limit bajtów AI).
 -- Potem wdróż ponownie funkcję AI:  npx supabase functions deploy claude
 
 -- 1) nowe kolekcje
@@ -117,7 +117,7 @@ language sql stable security definer set search_path = '' as $$
               and b.created_at >= (date_trunc('day', now() at time zone 'Europe/Warsaw') at time zone 'Europe/Warsaw')),
     'miesiac', (select count(*) from public.nauka_ai_bilety b where b.user_id = auth.uid()
               and b.created_at >= (date_trunc('month', now() at time zone 'Europe/Warsaw') at time zone 'Europe/Warsaw')),
-    'limit_dzien', 5,
+    'limit_dzien', 2,
     'limit_miesiac', 40,
     'admin', public.nauka_admin()
   )
