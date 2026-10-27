@@ -2545,7 +2545,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     }
     for (const d of visDeadlines()) {
       if (d.taskId || (sid && d.subjectId !== sid)) continue;
-      out.push({ key: "dl:" + d.id, src: "dl", obj: d, kind: TERM_KIND[d.type] ? d.type : "inne", title: d.title, sid: d.subjectId || null, date: d.date, time: d.time || "", approx: !!d.approx, groups: d.groups, subs: d.subs, done: doneKey("dl:" + d.id) });
+      out.push({ key: "dl:" + d.id, src: "dl", obj: d, kind: TERM_KIND[d.type] ? d.type : "inne", title: d.title, sid: d.subjectId || null, part: dlPart(d), date: d.date, time: d.time || "", approx: !!d.approx, groups: d.groups, subs: d.subs, done: doneKey("dl:" + d.id) });
     }
     // Daty zaliczeń z „Jak zaliczyć”, jeśli nikt nie wpisał ich jeszcze jako terminu.
     for (const sb of SUBJECTS) {
@@ -2569,12 +2569,13 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     return out;
   }
   const isPrep = (x) => x.sid && subjectById(x.sid) && ["kolokwium", "egzamin"].includes(x.kind);
-  function prepRoute(x) {
-    if (x.part) return { view: "exam", sid: x.sid, part: x.part };
-    const want = x.kind === "egzamin" ? "E" : "ZO";
-    const part = partsOf(x.sid).find((k) => zalPartOf(x.sid, k)?.f === want) || null;
-    return { view: "exam", sid: x.sid, part };
+  // Część przedmiotu dla „Przygotuj się”: oznaczona w terminie (albo słowo w tytule), inaczej po rodzaju zaliczenia.
+  function prepPart(sid, part, kind) {
+    if (part && partsOf(sid).includes(part)) return part;
+    const want = kind === "egzamin" ? "E" : "ZO";
+    return partsOf(sid).find((k) => zalPartOf(sid, k)?.f === want) || partsOf(sid)[0];
   }
+  const prepRoute = (x) => ({ view: "exam", sid: x.sid, part: prepPart(x.sid, x.part, x.kind) });
   function whenText(x) {
     if (!x.date) return "bez daty";
     const n = x.n, t = x.time ? " " + x.time : "";
@@ -2815,7 +2816,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
         h("div", { class: "row", style: "gap:6px" }, h("span", { class: "typechip", style: `--t:${t.c}`, text: t.label }), h("span", { class: "fm", text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` }), d.time ? h("span", { class: "fm num", text: "· " + d.time }) : null, approxChip(d), groupChip(d)),
         h("button", { type: "button", class: "link", style: "color:var(--ink);text-align:left", onclick: () => openDeadline(d) }, d.title),
         h("div", { class: "fm" }, s ? h("span", {}, h("i", { class: "dot", style: `--c:${s.color};display:inline-block;margin-right:6px` }), s.pl) : "ogólne",
-          s && ["kolokwium", "egzamin"].includes(d.type) ? h("button", { type: "button", class: "link", style: "margin-left:10px;font-size:.84rem", onclick: () => go({ view: "exam", sid: s.id, part: (partsOf(s.id).includes(dlPart(d)) && dlPart(d)) || partsOf(s.id).find((k) => zalPartOf(s.id, k)?.f === (d.type === "egzamin" ? "E" : "ZO")) || partsOf(s.id)[0] }) }, "Przygotuj się →") : null),
+          s && ["kolokwium", "egzamin"].includes(d.type) ? h("button", { type: "button", class: "link", style: "margin-left:10px;font-size:.84rem", onclick: () => go({ view: "exam", sid: s.id, part: prepPart(s.id, dlPart(d), d.type) }) }, "Przygotuj się →") : null),
       ));
   }
 
