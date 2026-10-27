@@ -8464,7 +8464,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       countEl.textContent = `${res.length} ${plural(res.length, "pojęcie", "pojęcia", "pojęć")}`;
       const shown = more ? res : res.slice(0, LIMIT);
       box.replaceChildren(...(res.length ? shown.map(glRow) : [h("div", { class: "empty small", text: S.route.q ? "Nic nie znalazłem. Spróbuj krótszego słowa albo drugiego języka." : "Tu jeszcze nic nie ma." })]),
-        res.length > shown.length ? h("button", { type: "button", class: "btn", onclick: () => fill(true) }, `Pokaż wszystkie (${res.length})`) : null);
+        ...(res.length > shown.length ? [h("button", { type: "button", class: "btn", onclick: () => fill(true) }, `Pokaż wszystkie (${res.length})`)] : []));
     };
     const input = h("input", { class: "input gl-q", id: "gl-q", type: "search", value: S.route.q || "", autocomplete: "off", spellcheck: "false", placeholder: "np. opportunity cost, koszt krańcowy, elastyczność", "aria-label": "Szukaj pojęcia", oninput: (e) => { S.route.q = e.target.value; fill(); } });
     const present = SUBJECTS.filter((s) => GL.terms.some((t) => t.s.includes(s.id)));
