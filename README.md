@@ -7,7 +7,7 @@ Darmowy plan zajęć i skrzynka do opiekunki roku są w osobnym repozytorium [pl
 ## Układ strony
 Pięć zakładek, każda odpowiada na jedno pytanie ucznia (plan: „Skrót BM: plan przejrzystości”):
 - **Postęp do nauki** to jedna miara: „tematy do zaliczeń, które umiesz” (np. 3/14), liczona z zakresu najbliższego zaliczenia (`knowOf` w `index.html`). Temat umiesz po zdanym bilecie wyjścia lekcji albo gdy w mapie postępów jest „umiesz”. Karta „Twój postęp” na Dziś pokazuje tylko to (plus poziom, serię i cel dnia do zabawy); punkty kursu są w przedmiocie i w lekcji.
-- **Dziś** – karta „Teraz zrób to” z jednym przyciskiem (kolejność: zaliczenie ≤ 7 dni → zadanie ≤ 2 dni → fiszki do powtórki → nowy materiał → ostatnio otwarty), zajęcia, 3 najbliższe terminy, „Nowe od ostatniej wizyty”.
+- **Dziś** – krótki ekran: karta „Teraz zrób to” z jednym przyciskiem (kolejność: zaliczenie ≤ 7 dni → zadanie ≤ 2 dni → fiszki do powtórki → nowy materiał → ostatnio otwarty), zajęcia dziś lub jutro i najbliższy termin. „Twój postęp” i „Nowe od ostatniej wizyty” są zwinięte (`homeFold`, stan otwarcia w `bm-fold:*`).
 - **Przedmioty** – wyszukiwarka (przedmioty, materiały, pojęcia, terminy; skrót `/`) i siatka przedmiotów. Przedmiot ma zawsze 3 zakładki: **Ucz się · Ćwicz · Zaliczenie**. Materiał to 3 kroki: **Przeczytaj (Normalnie | Prościej) · Fiszki · Quiz**.
 - **Powtórki** – ile fiszek dziś, przycisk Zacznij, pod spodem mapa postępów.
 - **Terminy** – jedna lista „co i na kiedy” (zadania z Teams, terminy roku, daty zaliczeń) z przełącznikiem Lista | Kalendarz.
