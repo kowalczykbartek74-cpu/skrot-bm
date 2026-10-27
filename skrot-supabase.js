@@ -83,6 +83,10 @@
     skrot.paidAccount = !!(me?.platny_konto ?? skrot.paid);
     skrot.until = me?.dostep_do || null;
     skrot.plan = me?.plan || null;
+    // Okres próbny (supabase/skrot-v9-proba.sql): trialUntil tylko wtedy, gdy to on daje dostęp.
+    skrot.trialUntil = me?.proba_do || null;
+    skrot.trialCan = !!me?.proba_mozna && !skrot.paid;
+    skrot.trialDays = me?.proba_dni || 3;
     return me;
   }
 
@@ -521,6 +525,21 @@
     try { return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString(window.SKROT_LANG === "en" ? "en-GB" : "pl-PL", { day: "numeric", month: "long", year: "numeric" }); } catch { return k; }
   };
   skrot.untilText = () => plDate(skrot.until);
+  skrot.trialUntilText = () => {
+    const d = new Date(skrot.trialUntil);
+    if (isNaN(d)) return "";
+    try { return d.toLocaleString(window.SKROT_LANG === "en" ? "en-GB" : "pl-PL", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); } catch { return ""; }
+  };
+  // „zostały 2 dni” / „został 1 dzień” / „zostało kilka godzin” do końca okresu próbnego.
+  skrot.trialLeftText = () => {
+    const ms = new Date(skrot.trialUntil).getTime() - Date.now();
+    if (!(ms > 0)) return "";
+    const days = Math.floor(ms / 864e5);
+    if (days >= 2) return `zostały ${days} dni`;
+    if (days === 1) return "został 1 dzień";
+    const hrs = Math.max(1, Math.round(ms / 36e5));
+    return hrs === 1 ? "została godzina" : hrs < 5 ? `zostały ${hrs} godziny` : `zostało ${hrs} godzin`;
+  };
 
   // ---------- zakup dostępu ----------
   const info = (title, text) => {
@@ -577,7 +596,8 @@
   };
   skrot.buy = (plan) => {
     if (skrot.state === "in" && !skrot.paid && skrot.paidAccount && skrot.device && skrot.device.stan !== "ok") return showGate();
-    if (skrot.paid) {
+    // W okresie próbnym zakup działa normalnie (płatny dostęp liczy się od dnia zakupu).
+    if (skrot.paid && !skrot.trialUntil) {
       if (skrot.plan === "miesiac") {
         const box = info("Masz już dostęp", skrot.until ? `Subskrypcja miesięczna, opłacona do ${plDate(skrot.until)}. Anulować albo zmienić kartę możesz w portalu Stripe.` : "Subskrypcja miesięczna jest aktywna.");
         box.querySelector(".modal > div")?.prepend(el("button", { type: "button", class: "btn", onclick: skrot.manage }, "Zarządzaj subskrypcją"));
@@ -591,6 +611,30 @@
     }
     if (plan && CONFIG.plans[plan]) return goPay(plan);
     choosePlan();
+  };
+
+  // ---------- okres próbny: 3 dni pełnego dostępu, raz na konto (supabase/skrot-v9-proba.sql) ----------
+  const TRIAL_ERR = {
+    ma_dostep: "Masz już pełny dostęp, okres próbny nie jest potrzebny.",
+    wykorzystany: "Okres próbny na tym koncie został już wykorzystany. Pełny dostęp możesz kupić od 35 zł miesięcznie.",
+    urzadzenie: "Na tym urządzeniu okres próbny został już wykorzystany (także z innego konta).",
+  };
+  skrot.startTrial = async () => {
+    if (skrot.state !== "in") {
+      ls.set("skrot-trial", "1");
+      return skrot.openLogin(`Zaloguj się e-mailem, a ${skrot.trialDays || 3} dni pełnego dostępu włączy się od razu. Bez karty i bez płatności.`);
+    }
+    if (skrot.paid && !skrot.trialUntil) return info("Masz już dostęp", "Okres próbny nie jest potrzebny.");
+    const { data, error } = await sb.rpc("nauka_proba_start");
+    if (error) {
+      const code = Object.keys(TRIAL_ERR).find((k) => (error.message || "").includes(k));
+      const noSql = /function|does not exist|schema cache|Could not find/i.test(error.message || "");
+      return info("Okres próbny", code ? TRIAL_ERR[code] : noSql ? "Okres próbny ruszy wkrótce." : "Nie udało się włączyć okresu próbnego. Spróbuj za chwilę.");
+    }
+    skrot.trialUntil = data?.do_kiedy || null;
+    // Po przeładowaniu index.html pokaże powitanie okresu próbnego.
+    ls.set("skrot-welcome", "proba");
+    location.reload();
   };
 
   // Po powrocie z płatności: czekamy, aż Stripe potwierdzi (webhook), i przeładowujemy stronę.
@@ -626,6 +670,7 @@
       return;
     }
     if (skrot.state === "in" && ls.get("skrot-after-pay")) { ls.set("skrot-after-pay", null); ls.set("skrot-buy", null); if (!skrot.paid) await waitForPaid(); return; }
+    if (skrot.state === "in" && ls.get("skrot-trial")) { ls.set("skrot-trial", null); if (!skrot.paid) skrot.startTrial(); return; }
     if (skrot.state === "in" && ls.get("skrot-buy")) { const want = ls.get("skrot-buy"); ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(CONFIG.plans[want] ? want : undefined); return; }
     // Strona przeładowała się w trakcie logowania (np. po przejściu do poczty na telefonie): od razu pole na kod.
     if (skrot.state === "out") { const p = pending.get(); if (p) skrot.openLogin(p.reason, { codeFor: p.email }); }

@@ -2355,7 +2355,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     }
     const sk = window.skrot || {};
     $("barRight").replaceChildren(...[
-      ["out", "in"].includes(sk.state) && !PAID() ? h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy() }, "Kup dostęp") : null,
+      ["out", "in"].includes(sk.state) && (!PAID() || sk.trialUntil) ? h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy() }, "Kup dostęp") : null,
       sk.state === "out" ? h("button", { type: "button", class: "btn small ghost", onclick: () => sk.openLogin() }, "Zaloguj") : null,
       h("button", { type: "button", class: "btn small ghost lang-btn", translate: "no", title: EN ? "Zmień język na polski" : "Switch the whole site to English", "aria-label": EN ? "Zmień język na polski" : "Switch the whole site to English", onclick: () => window.SKROT_I18N.toggle() }, EN ? "PL" : "EN"),
     ].filter(Boolean));
@@ -2956,6 +2956,11 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     const sk = window.skrot || {};
     return h("div", { class: "notice err" }, sk.noticeText?.() || "Brak połączenia z serwerem. Spróbuj za chwilę.");
   }
+  // Okres próbny (skrot-supabase.js → startTrial): 3 dni pełnego dostępu, raz na konto. Niezalogowanym pokazujemy przycisk zawsze,
+  // bo nie wiemy jeszcze, czy go wykorzystali (baza powie po zalogowaniu).
+  const canTrial = () => { const sk = window.skrot || {}; return !PAID() && (sk.state === "out" || (sk.state === "in" && !!sk.trialCan)); };
+  const trialLabel = () => `Wypróbuj za darmo przez ${window.skrot?.trialDays || 3} dni`;
+  const trialBtn = (cls = "btn primary", after) => canTrial() ? h("button", { type: "button", class: cls, onclick: () => { after?.(); window.skrot?.startTrial?.(); } }, trialLabel()) : null;
   function paywallCard(title) {
     const sk = window.skrot || {};
     if (sk.state === "loading") return null;
@@ -2964,8 +2969,10 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       h("h2", { text: title || "Cały rok nauki w jednym miejscu" }),
       h("p", { class: "muted", text: "Skróty, notatki, pojęcia, fiszki, quizy i wyjaśnienia prostym językiem do wszystkich przedmiotów, a do tego zadania od prowadzących, terminy kolokwiów i kalendarz roku. Dostęp obejmuje oba semestry roku 2026/27, aż do końca sesji letniej 11 lipca 2027. Pierwszy materiał z każdego przedmiotu przejrzysz za darmo." }),
       h("div", { class: "row" },
-        h("button", { type: "button", class: "btn primary", onclick: () => sk.buy?.() }, `Kup dostęp · od ${sk.prices?.miesiac || "35 zł / mies."}`),
+        trialBtn(),
+        h("button", { type: "button", class: canTrial() ? "btn" : "btn primary", onclick: () => sk.buy?.() }, `Kup dostęp · od ${sk.prices?.miesiac || "35 zł / mies."}`),
         sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => sk.openLogin?.() }, "Mam już dostęp, zaloguj się") : null),
+      canTrial() ? h("p", { class: "foot-note", style: "margin:0", text: "Okres próbny: pełny dostęp do wszystkiego, bez karty i bez płatności. Raz na konto. Po 3 dniach materiały same się zablokują, a Twoje postępy zostaną." }) : null,
       sk.state === "in" ? h("p", { class: "foot-note", style: "margin:0", text: `Zalogowano jako ${sk.email}. Dostęp przypiszemy do tego adresu.` }) : null,
       h("p", { class: "foot-note", style: "margin:0" }, `Do końca 2. semestru: ${sk.prices?.rok || "199 zł"} jednorazowo (BLIK, karta, Przelewy24). Co miesiąc: ${sk.prices?.miesiac || "35 zł / mies."}, kartą, anulujesz w każdej chwili. `, h("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", h("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")));
   }
@@ -2977,7 +2984,8 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       h("h2", { text: what }),
       h("p", { class: "muted", text: `To jest w pełnej wersji. Dostęp kupujesz do końca 2. semestru za ${sk.prices?.rok || "199 zł"} albo co miesiąc za ${sk.prices?.miesiac || "35 zł / mies."}.` }),
       h("div", { class: "row" },
-        h("button", { type: "button", class: "btn primary", onclick: () => { close(); sk.buy?.(); } }, "Kup dostęp"),
+        trialBtn("btn primary", close),
+        h("button", { type: "button", class: canTrial() ? "btn" : "btn primary", onclick: () => { close(); sk.buy?.(); } }, "Kup dostęp"),
         sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Mam już dostęp, zaloguj się") : null,
         h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
   }
@@ -2985,19 +2993,24 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   function lockBox(text) {
     return h("div", { class: "empty small locked" },
       h("p", { style: "margin:0;color:var(--ink)" }, h("span", { "aria-hidden": "true" }, "🔒 "), text),
-      h("div", {}, h("button", { type: "button", class: "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")));
+      h("div", { class: "row", style: "gap:8px" }, trialBtn("btn primary small"), h("button", { type: "button", class: canTrial() ? "btn small" : "btn primary small", onclick: () => window.skrot?.buy() }, "Kup dostęp")));
   }
   const lockLabel = (label) => (PAID() ? label : "🔒 " + label.replace(/^\+\s*/, ""));
 
   // Wąski pasek „kup dostęp” zamiast kilku kłódek naraz.
   function buyBanner() {
     const sk = window.skrot || {};
+    // W okresie próbnym: ile zostało i zakup (płatny dostęp liczy się od dnia zakupu, nic nie przepada).
+    if (PAID() && sk.trialUntil) return h("section", { class: "buybar" },
+      h("div", { style: "min-width:0" }, h("b", { text: "Okres próbny" }), h("span", { class: "muted", text: ` · ${sk.trialLeftText?.() || "ostatnie godziny"} pełnego dostępu · potem ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}` })),
+      h("div", { class: "row", style: "gap:8px" }, h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy?.() }, "Kup dostęp")));
     if (PAID() || sk.state === "loading") return null;
     return h("section", { class: "buybar" },
       h("div", { style: "min-width:0" }, h("b", { text: "Pełny dostęp" }), h("span", { class: "muted", text: ` · wszystkie materiały, quizy, zadania i terminy · ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}` })),
       h("div", { class: "row", style: "gap:8px" },
         sk.state === "out" ? h("button", { type: "button", class: "btn small ghost", onclick: () => sk.openLogin?.() }, "Mam dostęp") : null,
-        h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy?.() }, "Kup dostęp")));
+        trialBtn("btn primary small"),
+        h("button", { type: "button", class: canTrial() ? "btn small" : "btn primary small", onclick: () => sk.buy?.() }, "Kup dostęp")));
   }
   // ================= DZIŚ: jedna karta „Teraz zrób to” i trzy krótkie panele =================
   // Ostatnia wizyta: „Nowe od ostatniej wizyty” pokazuje to, co doszło od poprzedniego wejścia (przerwa co najmniej 30 min).
@@ -6714,12 +6727,16 @@ ${written}`;
     modal((close) => [
       h("span", { class: "eyebrow", text: "Konto i dostęp" }),
       h("h3", { text: sk.state === "in" ? sk.email : "Nie zalogowano" }),
-      PAID() ? h("dl", { class: "acc-dl" },
+      PAID() && sk.trialUntil ? h("dl", { class: "acc-dl" },
+        h("dt", { text: "Plan" }), h("dd", { text: "Okres próbny (za darmo)" }),
+        h("dt", { text: "Pełny dostęp do" }), h("dd", { text: `${sk.trialUntilText?.() || ""} · ${sk.trialLeftText?.() || ""}`.replace(/^ · | · $/g, "") }),
+        h("dt", { text: "Po zakończeniu" }), h("dd", { text: "Nic nie płacisz i nic się samo nie włącza. Materiały się zablokują, a Twoje postępy i wpisy zostaną." }))
+      : PAID() ? h("dl", { class: "acc-dl" },
         h("dt", { text: "Plan" }), h("dd", { text: sk.plan === "miesiac" ? `Co miesiąc · ${sk.prices?.miesiac || ""}`.replace(/ · $/, "") : sk.admin && !sk.plan ? "Starosta" : `Do końca 2. semestru · ${sk.prices?.rok || ""} jednorazowo`.replace(/ ·  jednorazowo$/, " · jednorazowo") }),
         h("dt", { text: sk.plan === "miesiac" ? "Opłacone do" : "Dostęp do" }), h("dd", { text: sk.until ? sk.untilText?.() || sk.until : "bez daty końca" }),
         h("dt", { text: "Po zakończeniu dostępu" }), h("dd", { text: sk.plan === "miesiac" ? "Subskrypcja odnawia się sama, dopóki jej nie anulujesz. Po anulowaniu dostęp działa do końca opłaconego miesiąca." : "Nic się samo nie odnawia. Materiały się zablokują, a Twoje postępy i wpisy zostaną." }),
         h("dt", { text: "Potwierdzenie płatności" }), h("dd", { text: sk.plan === "miesiac" ? "Mail ze Stripe. Faktury znajdziesz w „Zarządzaj subskrypcją”." : "Mail ze Stripe wysłany po zakupie. Nie masz go? Napisz do nas." }))
-        : h("p", { class: "muted", text: sk.state === "in" ? "Konto bez pełnego dostępu. Masz darmowe próbki materiałów." : "Zaloguj się kodem z maila albo hasłem. Jeśli masz pełny dostęp, pojawi się po zalogowaniu." }),
+        : h("p", { class: "muted", text: sk.state === "in" ? (sk.trialCan ? "Konto bez pełnego dostępu. Masz darmowe próbki materiałów i możesz raz włączyć 3 dni pełnego dostępu za darmo." : "Konto bez pełnego dostępu. Masz darmowe próbki materiałów.") : "Zaloguj się kodem z maila albo hasłem. Jeśli masz pełny dostęp, pojawi się po zalogowaniu." }),
       sk.state === "in" && S.uid ? (() => {
         const inp = h("input", { class: "input", id: "acc-name", maxlength: "20", value: S.progress?.name || S.myName || "", autocomplete: "given-name", placeholder: "np. Kasia" });
         const save = async () => { const n = inp.value.replace(/\s+/g, " ").trim().slice(0, 20); await saveProgress({ name: n }); toast(n ? `Zapisane. Cześć, ${n}!` : "Zapisane. Powitanie bez imienia."); render(); };
@@ -6727,7 +6744,8 @@ ${written}`;
         return h("div", { class: "row", style: "align-items:flex-end" }, h("label", { class: "field", for: "acc-name", style: "flex:1 1 180px" }, "Jak mamy się do Ciebie zwracać?", inp), h("button", { type: "button", class: "btn small", onclick: save }, "Zapisz imię"));
       })() : null,
       h("div", { class: "row" },
-        !PAID() && ["in", "out"].includes(sk.state) ? h("button", { type: "button", class: "btn primary", onclick: () => { close(); sk.buy?.(); } }, "Kup dostęp") : null,
+        trialBtn("btn primary", close),
+        (!PAID() || sk.trialUntil) && ["in", "out"].includes(sk.state) ? h("button", { type: "button", class: canTrial() ? "btn" : "btn primary", onclick: () => { close(); sk.buy?.(); } }, "Kup dostęp") : null,
         PAID() && sk.plan === "miesiac" && sk.manage ? h("button", { type: "button", class: "btn", onclick: () => sk.manage() }, "Zarządzaj subskrypcją") : null,
         sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Zaloguj się") : null,
         sk.state === "in" ? h("button", { type: "button", class: "btn ghost", onclick: () => sk.logout?.() }, "Wyloguj") : null,
@@ -8185,15 +8203,16 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   // z trzema pierwszymi krokami. Szybki tour startuje dopiero osobom z dostępem, po powitaniu.
   function showWelcome() {
     const sk = window.skrot || {};
+    const trial = !!sk.trialUntil;
     try { localStorage.removeItem("skrot-welcome"); } catch {}
     const step = (n, t, sub, done, fn, btn) => h("div", { class: "welcome-step" + (done ? " done" : "") },
       h("span", { class: "wn num", "aria-hidden": "true", text: done ? "✓" : n }),
       h("span", {}, h("b", { text: t }), h("small", { class: "muted", style: "display:block", text: sub })),
       h("button", { type: "button", class: "btn small" + (done ? " ghost" : " primary"), onclick: fn }, btn));
     modal((close) => [
-      h("span", { class: "eyebrow", text: "Płatność przyjęta" }),
-      h("h2", { style: "margin:0", text: "Dostęp aktywny" }),
-      h("p", { text: sk.plan === "miesiac" ? `Subskrypcja miesięczna${sk.until ? ", opłacona do " + (sk.untilText?.() || sk.until) : ""}. Potwierdzenie płatności przyszło mailem ze Stripe.` : `Pełny dostęp do ${sk.untilText?.() || sk.until || "końca roku akademickiego"} (oba semestry 2026/27). Potwierdzenie płatności przyszło mailem ze Stripe.` }),
+      h("span", { class: "eyebrow", text: trial ? "Okres próbny" : "Płatność przyjęta" }),
+      h("h2", { style: "margin:0", text: trial ? `Masz ${sk.trialDays || 3} dni pełnego dostępu` : "Dostęp aktywny" }),
+      h("p", { text: trial ? `Wszystkie materiały, quizy, zadania i terminy są odblokowane do ${sk.trialUntilText?.() || ""}. Nic nie płacisz i nic się samo nie przedłuża. Postępy z tych dni zostaną na koncie.` : sk.plan === "miesiac" ? `Subskrypcja miesięczna${sk.until ? ", opłacona do " + (sk.untilText?.() || sk.until) : ""}. Potwierdzenie płatności przyszło mailem ze Stripe.` : `Pełny dostęp do ${sk.untilText?.() || sk.until || "końca roku akademickiego"} (oba semestry 2026/27). Potwierdzenie płatności przyszło mailem ze Stripe.` }),
       h("div", { class: "welcome-steps" },
         step(1, "Wybierz grupę i lab", S.group && S.sub != null ? `Masz: ${S.group}${S.sub ? " · lab " + S.sub : ""}` : "Bez tego nie wiem, które zajęcia i terminy są Twoje.", !needGroup(), () => { close(); openGroupPicker(); }, needGroup() ? "Wybierz" : "Zmień"),
         step(2, "Otwórz pierwszy materiał", "Przeczytaj, potem fiszki i quiz.", false, () => { close(); const nx = nextToLearn(null); go(nx ? { view: "material", id: nx.m.id } : { view: "materials" }); }, "Otwórz"),
