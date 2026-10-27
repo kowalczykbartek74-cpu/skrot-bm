@@ -1915,7 +1915,7 @@ html.calm .lp-confetti { display: none !important; }
     if (!id) return normRoute({ view });
     return normRoute(view === "cheat" ? (subjectById(id) ? { view, sid: id } : { view, id }) : { view, id, sid: id });
   }
-  addEventListener("popstate", (e) => { S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash()); render(); });
+  addEventListener("popstate", (e) => { if (LP.open) { lpClose(true); return; } S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash()); render(); });
 
   function toast(msg) { document.querySelectorAll(".toast").forEach((x) => x.remove()); const t = h("div", { class: "toast", role: "status", text: msg }); document.body.append(t); setTimeout(() => t.remove(), 3200); }
   function modal(build) {
@@ -4087,7 +4087,7 @@ html.calm .lp-confetti { display: none !important; }
           h("div", { class: "seg", role: "group", "aria-label": "Wersja tekstu" }, [[false, "Normalnie · EN", "Pełna wersja po angielsku, jak na zajęciach i zaliczeniu"], [true, "Prościej · PL", "Prosty język po polsku, z przykładami"]].map(([v, l, t]) => h("button", { type: "button", title: t, "aria-pressed": String(simple === v), onclick: () => { S.route = { ...S.route, simple: v }; render(); } }, l))),
           !simple && !lessonMode && concepts.length ? h("span", { class: "muted", style: "font-size:.84rem", text: "Podkreślone pojęcia: kliknij, żeby zobaczyć definicję" }) : null),
         simple ? simplePanel(m, c)
-          : lessonMode && c.lesson ? (c.lesson.v2 ? lessonPanel2 : lessonPanel)(m, c.lesson)
+          : lessonMode && c.lesson ? (c.lesson.v2 ? (LP_ON() && !S.route.lpText ? lessonPanel3(m, c) : lessonPanel2(m, c.lesson)) : lessonPanel(m, c.lesson))
           : c.topics?.length ? studyPanel(m, c, used)
           : h("div", { class: "stack" }, h("p", { class: "tldr" }, termify(c.tldr, concepts, used))),
         !simple && notes.length ? h("section", { class: "remember" }, h("h2", { text: "Co zapamiętać" }), h("ul", {}, notes.map((n) => h("li", {}, h("span", { text: n.point }), " ", slideRef(m.id, n))))) : null,
@@ -4370,6 +4370,7 @@ html.calm .lp-confetti { display: none !important; }
 
     const doneManual = !!S.progress?.done?.[m.id];
     return h("div", { class: "lesson lesson2" },
+      LP_ON() ? h("button", { type: "button", class: "btn small", onclick: () => { S.route = { ...S.route, lpText: false }; render(); } }, "← Wróć do lekcji w krótkich krokach") : null,
       bar,
       h("p", { class: "lesson-intro" }, inline(L.intro)),
       shown === 0 || all ? [hook, prereq] : [hook && st.ans.hook == null ? hook : null],
@@ -4601,10 +4602,11 @@ html.calm .lp-confetti { display: none !important; }
           h("button", { type: "button", class: "lp-dot", "aria-label": `Otwórz: ${b.title}`, onclick: () => lpOpen(m, c, i) }, done ? "✓" : b.icon),
           h("button", { type: "button", class: "t", onclick: () => lpOpen(m, c, i) }, h("b", { text: b.title }), h("span", { text: `ok. ${b.min} min · ${b.cards.length - 1} ${plural(b.cards.length - 1, "karta", "karty", "kart")}${b.optional ? " · dla chętnych" : ""}${done ? " · zrobione" : ""}` })));
       })),
-      h("p", { class: "muted", style: "font-size:.88rem;margin:0" }, "Wolisz czytać całość? ", h("button", { type: "button", class: "link", onclick: () => toast("W index.html: przełącza na lessonPanel2 (widok tekstowy).") }, "Pokaż lekcję jako tekst")));
+      h("p", { class: "muted", style: "font-size:.88rem;margin:0" }, "Wolisz czytać całość? ", h("button", { type: "button", class: "link", onclick: () => { S.route = { ...S.route, lpText: true }; render(); } }, "Pokaż lekcję jako tekst")));
   }
 
   // ---------- otwieranie i zamykanie ----------
+  const LP_ON = () => S.isStarosta || ls.get("skrot-lp") === "1";
   function lpOpen(m, c, bi) {
     const deck = lpBuildDeck(m, c.lesson, c);
     if (!deck.bites.length) { toast("Ta lekcja nie ma jeszcze kart."); return; }
@@ -5017,7 +5019,7 @@ html.calm .lp-confetti { display: none !important; }
         h("div", { class: "lp-stats" }, lpStat(st.xp, "XP w lekcji"), lpStat(`${res?.score ?? 0}/${res?.total ?? 0}`, "bilet wyjścia"), lpStat(st.best, "najdłuższa seria")),
         weak.length ? h("div", { class: "lp-actions" }, weak.map((k) => { const i = bites.findIndex((x) => x.sec === k); return i >= 0 ? h("button", { type: "button", class: "btn", onclick: () => goTo(i) }, `Powtórz część ${k + 1}: ${bites[i].title}`) : null; })) : null,
         h("div", { class: "lp-actions" }, !res?.ok ? h("button", { type: "button", class: "btn", onclick: () => { LP.deck.bites[bi].cards.forEach((x) => { delete st.ans[x.id]; }); bs.closed = false; goTo(bi); } }, "Spróbuj biletu jeszcze raz") : null,
-          h("button", { type: "button", class: "btn", onclick: () => toast("W index.html: przejście do kroku Fiszki tego materiału.") }, "⚡ Wszystkie fiszki z lekcji")));
+          h("button", { type: "button", class: "btn", onclick: () => { const id = LP.m.id; lpClose(true); go({ view: "material", id, tab: "fiszki" }); } }, "⚡ Wszystkie fiszki z lekcji")));
     }
     const nextB = nextI >= 0 ? bites[nextI] : null;
     LP.el.cta.textContent = nextB ? `Dalej: ${nextB.title} →` : "Wróć do mapy lekcji"; LP.el.ctaFn = nextB ? () => goTo(nextI) : () => lpClose(); LP.el.cta.disabled = false; LP.el.cta.hidden = false;
