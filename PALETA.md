@@ -63,6 +63,12 @@ Każdy przedmiot ma własny odcień z rodziny zieleni i morskiego (`PALETTE` w k
 
 Jedna: **Plus Jakarta Sans** (Google Fonts), wagi 400–800.
 
+## Kształt
+
+- **Przyciski** (`.btn`): prostokąt z rogami **12 px**. Główny przycisk ekranu (`.sk-cta`, `.sk-start`): rogi **14 px**, wysokość min. 54 px na telefonie i 48 px na komputerze. Bez „pigułek” na przyciskach.
+- **Chipy** (`.chip`, `.sk-chip`) i znaczniki zostają okrągłe.
+- Karty: 22 px (`.sk-card`, panele), wiersze list i kafelki 14–16 px, kalendarz 12 px.
+
 ## Logo (pliki w `icons/`)
 
 | Plik | Co to | Gdzie |

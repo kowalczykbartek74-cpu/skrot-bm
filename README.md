@@ -82,7 +82,48 @@ Wymaga `pip install pdfplumber`.
 - Kod: `lessonPanel3`, `lpBuildDeck` i funkcje `lp…` w `index.html` (blok „LEKCJE V3”); wzorzec z opisem zasad: `docs/lekcje-v3/prototyp.html`.
 - Karty powstają w przeglądarce z obecnych danych lekcji v2 przy każdym otwarciu. Baza się nie zmienia: stan odtwarzacza jest w localStorage, a XP, gwiazdki (`lp`) i opanowanie w dokumencie postępu osoby.
 - Poziomy: liczone z całego XP (`progress.xp.t`), próg poziomu n = 50·n·(n−1) XP (0, 100, 300, 600…), nazwy w `LP_LEVELS`. Pasek poziomu jest na mapie lekcji, na końcu każdej części i w Więcej → Ty.
-- „Mniej animacji” (Więcej → Ty, `skrot-calm`) i `prefers-reduced-motion` wyłączają ruch i konfetti.
+- „Mniej animacji” (Więcej → Ty, `skrot-calm`) i `prefers-reduced-motion` wyłączają ruch i konfetti na całej stronie.
+
+## Wygląd: styl lekcji na całej stronie
+Cała strona używa języka wizualnego lekcji v3: jedna rzecz na ekranie, duże karty, jeden wyraźny przycisk, natychmiastowa informacja zwrotna i postęp widoczny na każdym kroku (specyfikacja: „Przemiana: cała strona w stylu lekcji v3”, etapy 0–6).
+
+**Komponenty `sk-*`** (CSS w `index.html`). Reguły z bloku „LEKCJE V3” mają obok selektorów `lp-*` selektory `sk-*`, więc lekcje i reszta strony korzystają z tych samych reguł. Nowe rzeczy są w bloku „WSPÓLNE KOMPONENTY sk-*” i w blokach etapów pod nim.
+- `sk-hero` (+ `.warn` bursztynowy, `.bad` czerwony, `.calm` spokojny): karta startowa ekranu. `sk-bignum` to duża liczba w hero.
+- `sk-goal` / `sk-ring` (kółko postępu, `skGoal()`, `skRing(p)`), `sk-start` (duży przycisk w hero), `sk-cta` (główny przycisk ekranu: 54 px na telefonie, 48 px na komputerze).
+- `sk-path`, `sk-node` (`.done` ✓, `.now` pulsuje, `.opt` przerywana), `sk-dot`: ścieżki (dzień na ekranie Dziś, mapa przedmiotu, plan przed kolokwium, przewodnik).
+- `sk-card` (`.wide` = na całą szerokość), `sk-kick`, `sk-text`, `sk-chip` (`.warn`, `.bad`), `sk-fb` (`.ok`, `.no`), `sk-stats`/`sk-stat`, `sk-done`, `sk-level`/`sk-lvbar`, `sk-sheet` (panel od dołu), `sk-steps`, `sk-flow`, `sk-formula`, `sk-tip`.
+- `sk-row-big`: duży wiersz listy (min. 56 px, ikona w kółku 40 px, tytuł, opis, coś na końcu). `sk-seg`: segmenty 44 px.
+- Ruch: `sk-fresh` (wejście ekranu), `sk-stag > *` z `--i` (kolejne elementy co 90 ms). **Mniej animacji** (`html.calm`) i `prefers-reduced-motion` są w jednym miejscu na końcu `<style>` i obejmują całą stronę, także nowe animacje.
+- Stany kropek `.now`/`.opt` mają te same nazwy co karta „Teraz zrób to” i odpowiedź w quizie; reguła na początku bloku etapu 2 zeruje to, co te klasy dokładają.
+- `<main>` ma `data-view` z nazwą widoku (CSS ekranów do czytania).
+
+**Odtwarzacz dla dowolnej talii.** `playerOpen(src, bi)` przyjmuje źródło: `{ kind, id, title, label, closeLabel, stateKey, build() → { sig, bites, simple }, xp, pool, retry, feedback, onCard, onFinish(st), done(st) → ekran końcowy, onX, decorTop, closeTo }`. Lekcja to jedno ze źródeł (`lpLessonSource`, `lpOpen` zostaje), klucz stanu lekcji bez zmian (`bm-lp:<id>`). Pozostałe źródła mają stan w `bm-pl:<kind>:…` i po ukończeniu zaczynają od nowa.
+
+| Źródło | Gdzie | Karty |
+|---|---|---|
+| `quiz` | zakładka Quiz w materiale, quiz z całego przedmiotu | `mc` (druga szansa, „Dlaczego?” w „🤔 Nie łapię” po odpowiedzi) |
+| `flash` | zakładka Fiszki w materiale | `swipe` („Wiem” nie przyspiesza karty z terminem w przyszłości) |
+| `review` | Powtórki | `grade4` (4 oceny, spacja, 1–4, gest w lewo/prawo) |
+| `exam` | próbny test przed kolokwium | `examAbcd`, `examOpen`, `examCase`; zegar, siatka pytań, ⚑; odpowiedzi w `bm-exam-run` |
+| `glossary` | Słowniczek → „Ćwicz słówka” | `match` (4 pary, 3 rundy) |
+| `guide` | Przewodnik → „Sprawdź się” | `mc`, odznaka od 7 punktów |
+
+Stare widoki zostają pod „Pokaż jako listę” / „Klasyczny widok”. Treść pytań, fiszek i pojęć ma `translate="no"` (słownik EN nie zmienia treści materiałów).
+
+**XP i limity.** Jedyne miejsce zapisu `progress.xp` i `progress.streak` to `xpFlush(n)` (`lpFlushXp` zostaje jako alias odtwarzacza). Limity liczy przeglądarka w `bm-xpcap:<dzień>`, bez nowych pól w bazie:
+
+| Źródło | XP | Limit |
+|---|---|---|
+| lekcja | `LP_XP` (bez zmian) | — |
+| quiz | 10 za dobrą odpowiedź z 1. próby, 5 z drugiej szansy, +10 za ukończenie | ten sam quiz raz dziennie |
+| fiszki | 2 za „Wiem” | razem z Powtórkami 40 dziennie |
+| Powtórki | 2 za „Pamiętam”/„Łatwe”, 1 za „Trudne”, +10 za wszystkie na dziś | wspólny z fiszkami |
+| próbny test | po ocenie: wynik % × 0,5 (max 50) | raz dziennie na przedmiot i część |
+| słówka | 10 za rundę bez błędu, 5 z błędami | 20 dziennie |
+
+Combo (🔥 x5/x10, +5 XP) działa wszędzie poza próbnym testem.
+
+**Testy wyglądu (lokalnie).** Bramka sprawdza `localStorage["skrot-gate"]` (hash `H` z `<head>`). Przy przemianie każdy etap był sprawdzany w Playwright na atrapie `skrot-supabase.js` (dane w pamięci, nic nie idzie do bazy): zrzut `getComputedStyle` przed/po, brak poziomego przewijania na 375/360/1280 px, EN bez polskich napisów, zero błędów konsoli i test regresji lekcji (ta sama trasa kart, XP, gwiazdki i wznowienie co przed zmianą).
 
 ## Jak powstają materiały z prezentacji (system v2)
 Slajdy prowadzących służą tylko jako mapa tematów. Po wgraniu pliku:

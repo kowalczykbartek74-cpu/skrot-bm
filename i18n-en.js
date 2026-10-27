@@ -108,6 +108,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Ta lekcja nie ma jeszcze kart.": "This lesson has no cards yet.",
 "Tu nie ma jeszcze kart.": "There are no cards here yet.",
 "Zamknij (postęp się zapisze)": "Close (progress will be saved)",
+"waga {0}": "weight {0}",
 "❓ Test o stronie": "❓ Test about the site",
 "{0} pytań · ok. 3 min": "{0} questions · approx. 3 min",
 "Od 7 punktów dostajesz odznakę „Mistrz Skrótu BM”.": "7 points earns you the “Skrót BM Master” badge.",
