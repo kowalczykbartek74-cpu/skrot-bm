@@ -1,6 +1,22 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Poziom {0} · {1}": "Level {0} · {1}",
+"{0} XP do poziomu {1}": "{0} XP to level {1}",
+"🎉 Nowy poziom {0}: {1}!": "🎉 New level {0}: {1}!",
+"Postęp do następnego poziomu": "Progress to the next level",
+"Postęp lekcji": "Lesson progress",
+"{0}/{1} części zrobione": "{0}/{1} parts done",
+"Świeżak": "Newcomer",
+"Rozgrzany": "Warmed up",
+"Ciekawski": "Curious",
+"Systematyczny": "Consistent",
+"Ogarnięty": "On top of it",
+"Bystrzak": "Sharp",
+"Analityk": "Analyst",
+"Strateg": "Strategist",
+"Ekspert": "Expert",
+"Mistrz": "Master",
 "{0} Część {1} z {2}": "{0} Part {1} of {2}",
 "Krótko i konkretnie.": "Short and to the point.",
 "Dasz radę!": "You've got this!",

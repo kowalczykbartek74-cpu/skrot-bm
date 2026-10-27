@@ -77,6 +77,13 @@ python3 scripts/sylabus-build.py sylabus.json
 ```
 Wymaga `pip install pdfplumber`.
 
+## Lekcje v3 (krótkie kroki)
+- Lekcja z `lesson.v2` otwiera się jako mapa krótkich części (2–5 min) i odtwarzacz kart na pełnym ekranie: jedna myśl na kartę, co 2–3 karty coś do zrobienia, XP, seria, gwiazdki, cel dnia 50 XP. „Pokaż lekcję jako tekst” wraca do starego widoku (`lessonPanel2`).
+- Kod: `lessonPanel3`, `lpBuildDeck` i funkcje `lp…` w `index.html` (blok „LEKCJE V3”); wzorzec z opisem zasad: `docs/lekcje-v3/prototyp.html`.
+- Karty powstają w przeglądarce z obecnych danych lekcji v2 przy każdym otwarciu. Baza się nie zmienia: stan odtwarzacza jest w localStorage, a XP, gwiazdki (`lp`) i opanowanie w dokumencie postępu osoby.
+- Poziomy: liczone z całego XP (`progress.xp.t`), próg poziomu n = 50·n·(n−1) XP (0, 100, 300, 600…), nazwy w `LP_LEVELS`. Pasek poziomu jest na mapie lekcji, na końcu każdej części i w Więcej → Ty.
+- „Mniej animacji” (Więcej → Ty, `skrot-calm`) i `prefers-reduced-motion` wyłączają ruch i konfetti.
+
 ## Jak powstają materiały z prezentacji (system v2)
 Slajdy prowadzących służą tylko jako mapa tematów. Po wgraniu pliku:
 1. **Mapa tematów** – AI czyta slajdy i zwraca wyłącznie listę tematów z numerami slajdów (bez streszczania).
