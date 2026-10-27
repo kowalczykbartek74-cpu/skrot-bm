@@ -649,6 +649,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Później": "Later",
 "Bez daty": "No date",
 "Minione · {0}": "Past · {0}",
+"minione": "past",
 "· terminy sprzed Twojego dołączenia": "· deadlines from before you joined",
 "Te terminy minęły przed Twoim dołączeniem. Odhacz w kółku to, co masz zrobione. Resztę możesz zostawić, nie liczy się do „po terminie”.": "These deadlines passed before you joined. Use the circle to mark what you've done. You can leave the rest: it doesn't count as “overdue”.",
 "Rozumiem, zwiń": "Got it, collapse",
