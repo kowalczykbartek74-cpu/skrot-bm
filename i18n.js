@@ -130,9 +130,13 @@
     var seps = [" · ", " — ", " – ", " | ", " / ", ": ", ", ", " (", ") ", "; "];
     for (i = 0; i < seps.length; i++) {
       if (core.indexOf(seps[i]) < 0) continue;
-      var parts = core.split(seps[i]), changed = false;
-      for (j = 0; j < parts.length; j++) { var t = tr(parts[j], depth + 1); if (t !== parts[j]) { parts[j] = t; changed = true; } }
-      if (changed) return parts.join(seps[i]);
+      var parts = core.split(seps[i]), changed = false, kept = false;
+      for (j = 0; j < parts.length; j++) {
+        if (KEEP.has(norm(parts[j].trim()))) { kept = true; continue; }
+        var t = tr(parts[j], depth + 1); if (t !== parts[j]) { parts[j] = t; changed = true; }
+      }
+      // Tekst wpisany ręcznie jest jedną z części: nie tniemy dalej innymi separatorami (np. „ (” w tytule terminu).
+      if (changed || kept) return parts.join(seps[i]);
     }
     return null;
   }
