@@ -2951,16 +2951,14 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     if (first) return { eyebrow: "Na początek", title: `Przegląd: ${first.title || first.fileName}`, sub: subjectById(first.subjectId)?.pl || "", btn: "Otwórz", fn: () => go({ view: "material", id: first.id }) };
     return { eyebrow: "Na początek", title: "Wybierz przedmiot", sub: "W każdym przedmiocie: czytanie, fiszki i quiz.", btn: "Przedmioty", fn: () => go({ view: "materials" }) };
   }
-  // Hero ekranu Dziś: „Teraz zrób to” (nowAction) z jednym dużym przyciskiem, pod nim poziom, cel dnia i seria.
+  // Hero ekranu Dziś: „Teraz zrób to” (nowAction) z jednym dużym przyciskiem. Poziom, cel dnia i seria są w karcie „Twój postęp” pod spodem.
   function nowCard() {
     if (!S.ready && !S.noDb) return h("section", { class: "sk-hero sk-now", "aria-busy": "true" }, h("span", { class: "eyebrow", text: "Teraz zrób to" }), h("p", { class: "muted", style: "margin:0", text: "Ładuję…" }));
-    const a = nowAction(), sk = streakN();
+    const a = nowAction();
     return h("section", { class: "sk-hero sk-now" + (a.tone ? " " + a.tone : ""), "aria-label": "Teraz zrób to" },
       h("span", { class: "eyebrow", text: "Teraz zrób to · " + a.eyebrow }),
       h("h2", { text: a.title }),
       a.sub ? h("p", { class: "muted", style: "margin:0", text: a.sub }) : null,
-      lpLevelBar(lpXpTotal()),
-      h("div", { class: "row" }, skGoal(), sk ? h("span", { class: "sk-goal", text: `🔥 ${sk} ${plural(sk, "dzień", "dni", "dni")} z rzędu` }) : null),
       h("button", { type: "button", class: "btn primary sk-start sk-long", onclick: a.fn }, h("span", { class: "txt", text: a.btn }), h("span", { "aria-hidden": "true", text: "→" })));
   }
   // Ścieżka dnia: najwyżej 4 kropki w stałej kolejności (zajęcia, powtórki, lekcja, termin). „now” = pierwsza niezrobiona.
