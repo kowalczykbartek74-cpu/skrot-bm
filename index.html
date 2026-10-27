@@ -1859,6 +1859,11 @@ html.lp-lock .scrim { z-index: 97; }
 .day { min-height: 92px; min-width: 44px; border-radius: 12px; }
 .day.has-exam { border-width: 2px; box-shadow: inset 0 4px 0 var(--t); }
 .day.has-exam .dn .num { font-weight: 900; color: var(--t); }
+/* Telefon: siatka mieści się w szerokości ekranu (343 px przy 375), weekend trochę węższy, bez minimalnej szerokości komórki. */
+@media (max-width: 600px) {
+  .cal { grid-template-columns: repeat(5, minmax(0, 1fr)) repeat(2, minmax(0, .8fr)); }
+  .day { min-width: 0; overflow: hidden; }
+}
 main[data-view="calendar"] .panel, main[data-view="terms"] .panel { border-radius: 22px; box-shadow: var(--shadow); }
 .exam-card { border-radius: 14px; }
 /* Ekrany do czytania: panele jak karty, listy jak kafelki */
