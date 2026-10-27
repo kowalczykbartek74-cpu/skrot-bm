@@ -646,7 +646,7 @@ function lpCtx(card) {
     next: () => lpNext(),
   };
 }
-function lpNext() { if (LP.busy) return; const card = lpCur(); if (card && LPR.done && !lpIsDone(card)) return; LP.st.idx++; lpShow(1); }
+function lpNext() { if (LP.busy) return; const card = lpCur(); if (card && !lpIsDone(card)) return; LP.st.idx++; lpShow(1); }
 function lpPrev() { if (LP.busy || LP.st.idx <= 0) return; LP.st.idx--; lpShow(-1); }
 function lpIsDone(card) {
   const a = LP.st.ans[card.id], r = LP.st.rev[card.id] || 0;
@@ -663,7 +663,6 @@ function lpIsDone(card) {
     default: return true;
   }
 }
-LPR_DONE_GUARD: void 0;
 
 // ---------- punkty, seria, efekty ----------
 function lpAward(n, opts = {}) {
@@ -907,7 +906,6 @@ const LPR = {
     return { el: [kick("🧩 Wracamy do zagadki"), h("p", { class: "lp-big q" }, inline(card.q)), pick != null && card.options[pick] ? h("p", { class: "muted", style: "margin:0" }, "Twój strzał na początku: ", h("b", {}, inline(card.options[pick]))) : null, h("div", { class: "lp-fb ok lp-stag" }, h("p", { style: "--i:2" }, inline(card.text)))] };
   },
 };
-LPR.done = true;
 function lpFlowList(steps, stag) { return h("ol", { class: "lp-flow" + (stag ? " lp-stag" : "") }, steps.map((s, i) => h("li", { style: `--i:${i}` }, h("span", { class: "n", text: i + 1 }), h("span", {}, inline(s))))); }
 // Przeciąganie fiszki palcem (w lewo / w prawo).
 function lpDrag(el, onDone) {
