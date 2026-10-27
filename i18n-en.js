@@ -26,6 +26,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "✓ Gwiazdki {0}/{1}": "✓ Stars {0}/{1}",
 "○ Gwiazdki {0}/{1}": "○ Stars {0}/{1}",
 "→ Zrób część {0}: +{1} pkt": "→ Do part {0}: +{1} pts",
+"→ Zrób rozgrzewkę: +{0} pkt": "→ Do the warm-up: +{0} pts",
 "→ Zdaj bilet wyjścia: +{0} pkt": "→ Pass the exit ticket: +{0} pts",
 "→ Popraw na 3★: +{0} pkt": "→ Improve to 3★: +{0} pts",
 "→ Zdobądź 3★ w bilecie wyjścia: +{0} pkt": "→ Get 3★ on the exit ticket: +{0} pts",

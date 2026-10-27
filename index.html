@@ -4897,12 +4897,16 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     if ((L.formulas || []).length) fin.push({ id: "f-fm", type: "formulas", title: L.cheatTitle || "Ściągawka: najważniejsze wzory", items: L.formulas });
     (L.exit || []).forEach((q, i) => fin.push(lpMc(q, "f-x" + i, `🎟️ Bilet wyjścia · ${i + 1} z ${L.exit.length}`, { exit: true, sec: q.sec })));
     if (fin.length) bites.push({ id: "fin", kind: "final", title: "Finał: bilet wyjścia", icon: "🏁", cards: fin });
+    // Jedna numeracja części na mapie, w nagłówkach kart i w podpowiedziach: rozgrzewka bez numeru, potem 1, 2, 3…
+    let no = 0;
     bites.forEach((b, i) => {
+      b.no = b.kind === "warm" ? null : ++no;
+      if (b.kind === "sec") b.icon = String(b.no);
       b.cards.unshift({ id: b.id + "-t", type: "title", bite: i });
       b.secs = lpSecsOf(b.cards);
       b.min = Math.max(1, Math.round(b.secs / 60));
     });
-    return { sig: hashStr(JSON.stringify(L)), bites, simple: (L.sections || []).map((s) => s.simple || "") };
+    return { sig: hashStr(JSON.stringify(L)), bites, parts: no, simple: (L.sections || []).map((s) => s.simple || "") };
   }
 
   // ---------- stan ----------
@@ -5200,12 +5204,15 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   // ---------- rysowanie kart (LPR = renderery) ----------
   // Kolejność odpowiedzi na karcie mc (powtarzalna; druga szansa ma inną).
   const lpOrder = (card) => card.fixed ? card.options.map((_, i) => i) : lpShuffle(card.options.map((_, i) => i), card.id.replace("#r", "") + (card.again ? ":again" : ""));
-  const kick = (label, card) => h("div", { class: "lp-kick" }, h("span", { text: label }), card?.sec != null ? h("span", { class: "sec", text: `Część ${card.sec + 1}` }) : null);
+  // Numer bieżącej części: w lekcji z lpBuildDeck (rozgrzewka bez numeru), w innych taliach numer sekcji karty.
+  const lpNo = (card) => { const b = LP.deck?.bites?.[LP.st?.bite]; return b?.kind === "warm" ? null : b?.no ?? card.sec + 1; };
+  const kick = (label, card) => h("div", { class: "lp-kick" }, h("span", { text: label }), card?.sec != null && lpNo(card) ? h("span", { class: "sec", text: `Część ${lpNo(card)}` }) : null);
   const LPR = {
     title(card) {
       const b = LP.deck.bites[card.bite], N = LP.deck.bites.length, i = card.bite;
       const n = lpCards().length - 1;
-      return { el: [h("div", { class: "lp-kick" }, h("span", { text: `${b.icon} Część ${i + 1} z ${N}` })),
+      const head = b.kind === "warm" ? `${b.icon} ${b.title}` : `${/^\d/.test(b.icon) ? "" : b.icon + " "}Część ${b.no ?? i + 1} z ${LP.deck.parts ?? N}`;
+      return { el: [h("div", { class: "lp-kick" }, h("span", { text: head })),
         h("h2", { text: b.title }),
         h("p", { class: "lp-big", text: `ok. ${b.min} min · ${n} ${plural(n, "karta", "karty", "kart")}` }),
         h("p", { class: "muted", style: "margin:0", text: b.kind === "final" ? "Ostatnia prosta: trzy pytania i lekcja zaliczona." : b.optional ? "Dla chętnych. Możesz to pominąć i iść do finału." : LP_CHEER[i % LP_CHEER.length] })],
@@ -5356,7 +5363,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
         setTimeout(() => ctx.set({ i: i + 1, k: (a.k || 0) + (ok ? 1 : 0), no: ok ? a.no : [...(a.no || []), i] }), lpReduced() ? 0 : 300);
       };
       const top = h("div", { class: "lp-sw top" + (flipped ? " flip" : "") + (ctx.fx.newCard ? " lp-new" : ""), role: "button", tabindex: "0", "aria-label": flipped ? "Odpowiedź: " + f.a : "Pytanie: " + f.q + ". Dotknij, żeby odwrócić.", onclick: () => !flipped && lpRefresh({ flip: true }) },
-        h("div", { class: "in" }, h("div", { class: "face" }, h("span", { class: "eyebrow", text: `Fiszka ${i + 1} z ${n}` }), h("span", { translate: "no" }, inline(f.q))), h("div", { class: "face back" }, h("span", { class: "eyebrow", text: "Odpowiedź" }), h("span", { translate: "no" }, inline(f.a)))));
+        h("div", { class: "in" }, h("div", { class: "face" }, h("span", { class: "eyebrow", text: `Fiszka ${(card.from || 0) + i + 1} z ${card.total || n}` }), h("span", { translate: "no" }, inline(f.q))), h("div", { class: "face back" }, h("span", { class: "eyebrow", text: "Odpowiedź" }), h("span", { translate: "no" }, inline(f.a)))));
       lpDrag(top, (dir) => flipped && grade(dir > 0, dir));
       return { el: [kick("⚡ Szybka seria fiszek"), h("div", { class: "lp-swipe" }, i + 2 < n ? h("div", { class: "lp-sw under2" }) : null, i + 1 < n ? h("div", { class: "lp-sw under" }) : null, top),
         flipped ? h("div", { class: "lp-row lp-new" }, h("button", { type: "button", class: "btn", onclick: () => grade(false, -1) }, "← Nie wiem"), h("button", { type: "button", class: "btn primary", onclick: () => grade(true, 1) }, "Wiem →")) : h("p", { class: "lp-tapmore", style: "text-align:center", text: "Dotknij fiszki, żeby ją odwrócić. Potem przesuń: w prawo „wiem”, w lewo „nie wiem”." })],
@@ -5502,7 +5509,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
         h("p", { class: "muted", style: "margin:0", text: res?.ok ? (weak.length ? "Super. Jedno pytanie nie wyszło, rzuć okiem na tę część:" : "Rozumiesz ten temat. Fiszki z lekcji utrwalą go na dłużej.") : "Bilet wyjścia jeszcze nie wyszedł. Fiszki z lekcji czekają w powtórkach, a słabsze części masz poniżej." }),
         lpLevelBar(lpXpTotal()),
         h("div", { class: "lp-stats" }, lpStat(st.xp, "XP w lekcji"), lpStat(`${res?.score ?? 0}/${res?.total ?? 0}`, "bilet wyjścia"), lpStat(st.best, "najdłuższa seria")),
-        weak.length ? h("div", { class: "lp-actions" }, weak.map((k) => { const i = bites.findIndex((x) => x.sec === k); return i >= 0 ? h("button", { type: "button", class: "btn", onclick: () => goTo(i) }, `Powtórz część ${k + 1}: ${bites[i].title}`) : null; })) : null,
+        weak.length ? h("div", { class: "lp-actions" }, weak.map((k) => { const i = bites.findIndex((x) => x.sec === k); return i >= 0 ? h("button", { type: "button", class: "btn", onclick: () => goTo(i) }, `Powtórz część ${bites[i].no}: ${bites[i].title}`) : null; })) : null,
         h("div", { class: "lp-actions" }, !res?.ok ? h("button", { type: "button", class: "btn", onclick: () => { LP.deck.bites[bi].cards.forEach((x) => { delete st.ans[x.id]; }); bs.closed = false; goTo(bi); } }, "Spróbuj biletu jeszcze raz") : null,
           h("button", { type: "button", class: "btn", onclick: () => { const id = LP.m.id; lpClose(true); go({ view: "material", id, tab: "fiszki" }); } }, "⚡ Wszystkie fiszki z lekcji")));
     }
@@ -5731,7 +5738,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       const reqI = deck.bites.map((b, j) => (b.optional ? -1 : j)).filter((j) => j >= 0);
       const i = k > n ? reqI[k] ?? -1 : deck.bites.findIndex((b) => !b.optional && !st.done[b.id]);
       const gain = Math.max(1, Math.floor(PTS.parts * Math.min(t, k + 1) / Math.max(1, t) + 1e-9) - r.parts);
-      tip = i >= 0 ? `Zrób część ${i + 1}: +${gain} pkt` : `Zdaj bilet wyjścia: +${PTS.ticket} pkt`;
+      tip = i >= 0 ? (deck.bites[i].no == null ? `Zrób rozgrzewkę: +${gain} pkt` : `Zrób część ${deck.bites[i].no}: +${gain} pkt`) : `Zdaj bilet wyjścia: +${PTS.ticket} pkt`;
     } else if (!r.ticket) tip = `Zdaj bilet wyjścia: +${PTS.ticket} pkt`;
     else if (r.pts >= 100) tip = "Lekcja na maksa ✓";
     else if (stars === 2) tip = `Popraw na 3★: +${PTS.star3 - PTS.star2} pkt`;
@@ -5864,7 +5871,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       xp: { bite: 0 }, pool: { name: "srs" }, retry: false, feedback: "now", swipeGrade: srsSeen,
       build: () => {
         const parts = []; for (let i = 0; i < cards.length; i += 10) parts.push(cards.slice(i, i + 10));
-        const bites = lpChunkBites(parts.map((p, j) => ({ id: "sw" + j, type: "swipe", cards: p, from: j * 10 })), 1, "Fiszki", "⚡");
+        const bites = lpChunkBites(parts.map((p, j) => ({ id: "sw" + j, type: "swipe", cards: p, from: j * 10, total: cards.length })), 1, "Fiszki", "⚡");
         if (bites.length > 1) bites.forEach((b, j) => { const p = parts[j]; b.title = `Fiszki ${j * 10 + 1}–${j * 10 + p.length}`; });
         return { sig: hashStr("flash|" + m.id + "|" + cards.map((f) => f.q).join("|")), bites, simple: [] };
       },
