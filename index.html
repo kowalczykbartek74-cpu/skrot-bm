@@ -2122,10 +2122,14 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   const fromSlides = (m) => !!m && !isLesson(m) && m.source !== "sylabus";
   const rangeTxt = (r) => (!r ? "" : r[0] === r[1] ? `slajd ${r[0]}` : `slajdy ${r[0]}–${r[1]}`);
 
-  // ---- rich text: paragraphs, "- " bullets, **bold**; maths stays as text for MathJax
+  // ---- rich text: paragraphs, "- " bullets, **bold**, *italic*; maths stays as text for MathJax
+  // Kursywa: gwiazdka przy słowie z obu stron („*best*”), więc „2 * 3” i wzory zostają bez zmian.
+  const ITALIC_RX = /(^|[^\w*\\])\*(?=[^\s*])([^*\n]*?[^\s*\\])\*(?![\w*])/gu;
+  const noItalic = (s) => String(s).replace(ITALIC_RX, "$1$2");
   function inline(s) {
     const out = []; const parts = String(s).split("**");
-    parts.forEach((p, i) => { if (p) out.push(i % 2 ? h("b", { text: p }) : document.createTextNode(p)); });
+    const plain = (p) => { let last = 0; for (const m of p.matchAll(ITALIC_RX)) { const at = m.index + m[1].length; if (at > last) out.push(document.createTextNode(p.slice(last, at))); out.push(h("i", { text: m[2] })); last = m.index + m[0].length; } if (last < p.length) out.push(document.createTextNode(p.slice(last))); };
+    parts.forEach((p, i) => { if (p) i % 2 ? out.push(h("b", { text: noItalic(p) })) : plain(p); });
     return out;
   }
   function rich(text, cls) {
@@ -4435,7 +4439,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   // Skrót w nowym systemie: o co chodzi, po co, a potem tematy z odsyłaczem do slajdów.
   function studyPanel(m, c, used = new Set()) {
     // AI czasem dopisuje **pogrubienia** – w opracowaniu ich nie pokazujemy jako gwiazdek.
-    const tf = (t) => termify(String(t || "").replace(/\*\*/g, ""), c.concepts, used);
+    const tf = (t) => termify(noItalic(String(t || "").replace(/\*\*/g, "")), c.concepts, used);
     if (!c.topics?.length) return h("div", { class: "stack" }, h("p", { class: "tldr" }, tf(c.tldr)));
     return h("div", { class: "stack study" },
       h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "O co chodzi" }), h("p", { class: "tldr" }, tf(c.tldr))),
