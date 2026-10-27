@@ -9094,7 +9094,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const shown = (v) => (String(v || "").trim() ? h("div", { class: "your", translate: "no" }, String(v)) : h("div", { class: "your empty-ans", text: "bez odpowiedzi" }));
     const ab = run.items.filter((it) => it.type === "abcd"), abOk = ab.filter((it) => run.ans[it.id] === it.correct);
     const head = (it) => h("div", { class: "sk-kick" }, h("span", {}, h("span", { class: "num", text: it.n + ". " }), h("span", { text: TYPE_LABEL[it.type] })), h("span", { class: "sec num", text: `${itemMax(it)} pkt` }));
-    return [h("div", { class: "exam-run" },
+    // Ocena zapisuje się na bieżąco (saveRun), więc można wyjść do przedmiotu i wrócić do sprawdzania.
+    return [backLink({ view: "subject", id: s.id }), h("div", { class: "exam-run" },
       h("section", { class: "sk-hero" },
         h("span", { class: "eyebrow", text: "Sprawdzanie · " + s.pl }),
         h("p", { class: "sk-bignum" }, totalEl),
