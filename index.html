@@ -668,6 +668,11 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
 .tour-foot { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 .tour-foot .row { gap: 6px; }
 .tour-foot .btn.primary { min-width: 104px; }
+.tour-ask { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center; padding: 16px; background: rgba(14, 38, 24, .35); pointer-events: auto; animation: tv-fade .2s ease both; opacity: 0; }
+.tour-ask-card { width: min(340px, 100%); background: var(--surface); color: var(--ink); border-radius: 20px; padding: 20px 18px 16px; display: grid; gap: 10px; box-shadow: 0 24px 60px -16px rgba(14, 38, 24, .5), 0 0 0 1px rgba(26,127,69,.12); animation: tv-pop .35s cubic-bezier(.2,.9,.3,1.25); }
+.tour-ask-card h2 { font-size: 1.15rem; margin: 0; }
+.tour-ask-card p { margin: 0; color: var(--muted); font-size: .94rem; line-height: 1.5; }
+.tour-ask-card .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 4px; }
 .tour-keys { font-size: .72rem; color: #4A5B51; text-align: center; margin-top: -4px; }
 .tour-keys kbd { font: 700 .7rem var(--f-display, inherit); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 4px; background: var(--green-50); }
 
@@ -8381,6 +8386,22 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     requestAnimationFrame(tourPlace); [380, 900, 1600].forEach((ms) => setTimeout(() => { if (tourState && tourState.i === i) tourPlace(); }, ms));
     card.querySelector('[data-a="next"]').focus({ preventScroll: true });
   }
+  // Klik obok karty nie zamyka przeglądu od razu: najpierw pytamy, czy na pewno wyjść.
+  function tourAskExit() {
+    if (!tourState || tourState.ask) return;
+    const quick = tourState.steps === QUICK;
+    const back = () => { if (!tourState) return; tourState.ask?.remove(); tourState.ask = null; tourState.card.querySelector('[data-a="next"]')?.focus({ preventScroll: true }); };
+    const stay = h("button", { type: "button", class: "btn primary small", onclick: back }, "Kontynuuj");
+    const ask = h("div", { class: "tour-ask", role: "alertdialog", "aria-modal": "true", "aria-labelledby": "tour-ask-h", onclick: (e) => { if (e.target === ask) back(); } },
+      h("div", { class: "tour-ask-card" },
+        h("h2", { id: "tour-ask-h", text: quick ? "Zakończyć przegląd strony?" : "Zakończyć przegląd?" }),
+        h("p", { text: quick ? "Możesz do niego wrócić w każdej chwili: Więcej → Szybki przegląd ekranów." : "Możesz go uruchomić ponownie z przewodnika." }),
+        h("div", { class: "row" },
+          h("button", { type: "button", class: "btn ghost small", onclick: () => tourEnd(false) }, "Wyjdź"),
+          stay)));
+    tourState.ask = ask; tourState.root.append(ask);
+    stay.focus({ preventScroll: true });
+  }
   function tourEnd(finished) {
     if (!tourState) return;
     const { root, onKey, opts } = tourState; tourState = null;
@@ -8392,7 +8413,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   function startTour(steps = QUICK, opts = QUICK_OPTS()) {
     if (tourState || !steps?.length) return;
     $("layer")?.replaceChildren();
-    const root = h("div", { class: "tour" }), shade = h("div", { class: "tour-shade", onclick: () => tourEnd(false) }), hole = h("div", { class: "tour-hole" });
+    const root = h("div", { class: "tour" }), shade = h("div", { class: "tour-shade", onclick: tourAskExit }), hole = h("div", { class: "tour-hole" });
     const card = h("div", { class: "tour-card", role: "dialog", "aria-modal": "true", "aria-labelledby": "tour-h" });
     card.addEventListener("click", (e) => {
       const a = e.target.closest("[data-a]")?.dataset.a; if (!a) return;
@@ -8401,7 +8422,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       else if (tourState.i >= tourState.steps.length - 1) tourEnd(true);
       else tourShow(tourState.i + 1);
     });
-    const onKey = (e) => { if (e.key === "Escape") tourEnd(false); else if (e.key === "ArrowRight") card.querySelector('[data-a="next"]')?.click(); else if (e.key === "ArrowLeft" && tourState.i) tourShow(tourState.i - 1); };
+    const onKey = (e) => { if (tourState?.ask) { if (e.key === "Escape") { e.preventDefault(); tourState.ask.querySelector(".btn.primary")?.click(); } return; } if (e.key === "Escape") tourEnd(false); else if (e.key === "ArrowRight") card.querySelector('[data-a="next"]')?.click(); else if (e.key === "ArrowLeft" && tourState.i) tourShow(tourState.i - 1); };
     root.append(shade, hole, card); document.body.append(root);
     tourState = { root, hole, card, i: 0, onKey, steps, opts };
     addEventListener("resize", tourPlace); addEventListener("scroll", tourPlace, true); document.addEventListener("keydown", onKey);

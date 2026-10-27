@@ -1,6 +1,11 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Zakończyć przegląd strony?": "End the site tour?",
+"Zakończyć przegląd?": "End the tour?",
+"Możesz do niego wrócić w każdej chwili: Więcej → Szybki przegląd ekranów.": "You can come back to it any time: More → Quick tour of the screens.",
+"Możesz go uruchomić ponownie z przewodnika.": "You can start it again from the guide.",
+"Wyjdź": "Exit",
 "Fiszki wracają same, zanim zdążysz je zapomnieć.": "Flashcards come back on their own, before you forget them.",
 "Gdzie są Twoje fiszki": "Where your flashcards are",
 "Każde „Pamiętam” przesuwa fiszkę do następnego pudełka i wraca ona coraz rzadziej. „Nie pamiętam” odsyła ją na początek.": "Each “I remember” moves a card to the next box, so it comes back less and less often. “I don't remember” sends it back to the start.",
