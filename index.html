@@ -2804,7 +2804,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
         h("span", { class: "time num", text: `${SLOTS[e.s][0]}–${SLOTS[e.s][1]}` }),
         h("span", { class: "name" }, h("i", { class: "dot", style: `--c:${colorOf(sid)}` }),
           subjectById(sid) ? h("button", { type: "button", class: "link", style: "color:inherit;text-align:left", onclick: () => go({ view: "subject", id: sid }) }, e.pl) : h("span", { text: e.pl })),
-        h("span", { class: "where" }, [e.r, e.p].filter(Boolean).join(" · "), e.n ? " · " + e.n : "", fresh ? h("span", { class: "chip sun", style: "margin-left:6px", text: "nowy materiał" }) : null),
+        h("span", { class: "where" }, [e.r, e.p].filter(Boolean).join(" · "), e.n ? " · " + e.n : "", fresh ? [" ", h("span", { class: "chip sun", style: "margin-left:2px", text: "nowy materiał" })] : null),
         k ? topicLine(sid, e.k, k, e.s) : null,
         h("span", { class: "kind" }, h("span", { class: "kind-tag k-" + e.k, title: KIND[e.k], text: KIND_SHORT[e.k] + (e.g ? " " + e.g : "") })),
       );
