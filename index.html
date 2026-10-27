@@ -1875,6 +1875,7 @@ html.calm .lp-confetti { display: none !important; }
   const todayKey = () => dkey(new Date());
   const daysUntil = (k) => Math.round((dparse(k) - dparse(todayKey())) / 864e5);
   const ls = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+  if (ls.get("skrot-calm") === "1") document.documentElement.classList.add("calm");
 
   const DL_TYPES = [
     { id: "kolokwium", label: "Kolokwium", c: "#9A5B00" },
@@ -5672,6 +5673,8 @@ ${written}`;
         ], "studia"),
         group("Ty", [
           row("group", "Moja grupa", groupLabel, openGroupPicker),
+          (() => { const on = document.documentElement.classList.contains("calm"); return h("button", { type: "button", class: "mi more-row", role: "switch", "aria-checked": String(on), onclick: () => { ls.set("skrot-calm", on ? "" : "1"); document.documentElement.classList.toggle("calm", !on); render(); } },
+            icon("spark"), h("span", { class: "more-txt" }, h("span", { text: "Mniej animacji" }), h("small", { text: on ? "Włączone: karty lekcji zmieniają się bez ruchu, bez konfetti" : "wyłącza ruch i konfetti w lekcjach" })), h("span", { class: "switch", "aria-hidden": "true", "aria-checked": String(on), style: "margin-left:auto" }, h("i"))); })(),
           h("button", { type: "button", class: "mi more-row", translate: "no", onclick: () => window.SKROT_I18N.toggle() }, icon("help"), h("span", { class: "more-txt" }, h("span", { text: EN ? "Language: English" : "Język: polski" }), h("small", { text: EN ? "Przełącz na polski" : "Switch to English: the whole site in English" })), h("span", { class: "chev", "aria-hidden": "true", text: EN ? "PL" : "EN" })),
           (PAID() || sk.admin) && sk.openDevices ? row("user", "Twoje urządzenia", sk.admin ? "lista Twoich urządzeń · starosta bez limitu" : "do 3 urządzeń · jedno konto = jedna osoba", () => sk.openDevices()) : null,
           sk.state === "in" && sk.openPassword ? row("user", "Hasło do logowania", sk.hasPassword ? "ustawione · zmień" : "ustaw, a zalogujesz się bez czekania na maila", () => sk.openPassword()) : null,
