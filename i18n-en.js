@@ -2393,6 +2393,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wynik łączy quiz (40%), fiszki w powtórkach (30%), zadania (15%) i próbny test (15%). Nieruszone elementy nie obniżają wyniku.": "The score combines the quiz (40%), flashcards in reviews (30%), tasks (15%) and the mock test (15%). Missing sources don't lower your score.",
 "Powtórz": "Review",
 "umiesz {0} z {1}": "you know {0} of {1}",
+"umiesz {0} z {1} materiałów": "you know {0} of {1} materials",
+"umiesz {0} z {1} materiału": "you know {0} of {1} material",
 "poniedziałkiem": "Monday",
 "środą": "Wednesday",
 "piątkiem": "Friday",

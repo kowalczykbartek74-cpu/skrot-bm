@@ -25,6 +25,7 @@
     t: function (s) { return s; },
     add: function () {},
     keep: function () {},
+    user: function () {},
     plural: function (n, one, few, many) { return n === 1 ? one : many; },
   };
   if (lang !== "en") return;
@@ -36,6 +37,15 @@
   // Teksty wpisane ręcznie (tytuły terminów, ogłoszenia, zadania z Teams): zostają po polsku w całości,
   // żeby słownik nie zamieniał w nich pojedynczych słów („do 9.11” → „to 9.11”).
   var KEEP = new Set();
+  // Teksty wpisane ręcznie razem z ich tłumaczeniem (z meta/en, I.user) albo bez (I.keep: zostają po polsku).
+  // Gdy taki tekst jest tylko częścią napisu („Ogłoszenie: <tytuł>”, „<tytuł> · za 3 dni”), podmieniamy go w całości,
+  // zamiast ciąć go separatorami i tłumaczyć po słowie.
+  var USER = new Map(), USER_LIST = [], userDirty = false;
+  function userPut(k, v) { if (!k || k.length < 8 || k.indexOf(" ") < 0) return; /* krótkie pojedyncze słowa („Kolokwium”) tłumaczy słownik */ if (!USER.has(k)) userDirty = true; USER.set(k, v); }
+  function userList() {
+    if (userDirty) { USER_LIST = Array.from(USER.keys()).sort(function (a, b) { return b.length - a.length; }); userDirty = false; }
+    return USER_LIST;
+  }
   var TOUCH = false;
   try { TOUCH = matchMedia("(hover: none) and (pointer: coarse)").matches; } catch (e) {}
   var esc = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); };
@@ -68,8 +78,14 @@
       if (typeof s !== "string") continue;
       var lines = s.split(/\n/);
       lines.push(s);
-      for (var j = 0; j < lines.length; j++) { var k = norm(lines[j].replace(/^\s*[-•]\s+/, "").trim()); if (k && !exact.has(k)) KEEP.add(k); }
+      for (var j = 0; j < lines.length; j++) { var k = norm(lines[j].replace(/^\s*[-•]\s+/, "").trim()); if (k && !exact.has(k)) { KEEP.add(k); if (!USER.has(k)) userPut(k, k); } }
     }
+  };
+  // Tłumaczenie tekstu wpisanego ręcznie (tytuł terminu, ogłoszenie, zadanie z Teams), np. z meta/en.
+  I.user = function (k, v) {
+    k = norm(String(k || "").trim()); v = String(v || "").trim();
+    if (!k || !v) return;
+    exact.set(k, v); KEEP.delete(k); userPut(k, v);
   };
   I.load = function (dict) {
     var e = dict.exact || {};
@@ -100,6 +116,17 @@
     if (r != null) return r;
     if (KEEP.has(core)) return core;
     if (depth > 3) return null;
+    // Napis zawiera cały tekst wpisany ręcznie: ten kawałek w całości (po angielsku, jeśli jest tłumaczenie), reszta osobno.
+    var ul = userList();
+    for (var u = 0; u < ul.length; u++) {
+      var uk = ul[u];
+      if (uk.length >= core.length) continue;
+      var at = core.indexOf(uk);
+      if (at < 0) continue;
+      var before = core.slice(0, at), after = core.slice(at + uk.length);
+      if (/[A-Za-zÀ-ž0-9]$/.test(before) || /^[A-Za-zÀ-ž0-9]/.test(after)) continue; // tylko całe słowa
+      return (before ? tr(before, depth + 1) : "") + USER.get(uk) + (after ? tr(after, depth + 1) : "");
+    }
     for (var i = 0; i < pats.length; i++) {
       var p = pats[i];
       if (p.lit && core.indexOf(p.lit) < 0) continue;

@@ -27,6 +27,7 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 - Teksty z CSS (`content: "…"`) mają osobne reguły `html[lang="en"] …`.
 - Zostają po polsku: wersja „Prościej · PL” i wyjaśnienia „Dlaczego?” (tak powstają w bazie), polskie odpowiedniki w słowniczku EN–PL, nazwiska, polskie tytuły lektur oraz to, co wpisujesz ręcznie (ogłoszenia, nazwy terminów). Regulamin i polityka prywatności są tylko po polsku.
 - Definicje pojęć z sylabusa mają pole `defEn` w `sylabus-pojecia.json`.
+- **Teksty wpisane ręcznie** (tytuły i opisy terminów, zadania z Teams, ogłoszenia) tłumaczy AI w przeglądarce starosty (`enSync` w `index.html`, kilka sekund po wczytaniu strony i po każdej zmianie) i zapisuje w `meta/en` jako `{ t: { "polski tekst": "English text" } }`. W trybie EN strona podaje je do `SKROT_I18N.user()`. Gdy tekst jest tylko częścią napisu („Ogłoszenie: …”, „… · za 3 dni”), `i18n.js` podmienia go w całości, a resztę tłumaczy słownikiem, więc nie tnie go już na pojedyncze słowa. Nowy termin dostaje tłumaczenie, gdy starosta następnym razem otworzy stronę. Bez SQL: `meta` czytają osoby z dostępem, zapisuje starosta.
 
 ## Jak to działa
 - `index.html` – cała aplikacja (jedna strona). Plan zajęć pobiera z `https://plan.skrotbm.pl/plan.json`.
