@@ -358,6 +358,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Mniej animacji": "Less animation",
 "Włączone: karty lekcji zmieniają się bez ruchu, bez konfetti": "On: lesson cards change without motion, no confetti",
 "wyłącza ruch i konfetti w lekcjach": "turns off motion and confetti in lessons",
+"Włączone: cała strona bez ruchu i bez konfetti": "On: the whole site without motion or confetti",
+"wyłącza ruch i konfetti na całej stronie": "turns off motion and confetti on the whole site",
 "Zagadka na start": "A puzzle to start",
 "Jak myślisz?": "What do you think?",
 "Zapisane. Odpowiedź poznasz na końcu lekcji.": "Saved. You'll find out the answer at the end of the lesson.",
