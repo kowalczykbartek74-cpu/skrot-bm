@@ -4612,7 +4612,7 @@ html.calm .lp-lvbar i { animation: none; }
     const goal = Math.min(1, xpDay / LP_DAILY_GOAL), C = 2 * Math.PI * 13;
     const ring = h("span", { class: "lp-goal" });
     ring.innerHTML = `<svg viewBox="0 0 34 34" aria-hidden="true"><circle class="bg" cx="17" cy="17" r="13"/><circle class="fg" cx="17" cy="17" r="13" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - goal)).toFixed(1)}"/></svg>`;
-    ring.append(h("span", { text: `Cel dnia: ${xpDay}/${LP_DAILY_GOAL} XP` }));
+    ring.append(h("span", { text: `Cel dnia: ${Math.min(xpDay, LP_DAILY_GOAL)}/${LP_DAILY_GOAL} XP${xpDay >= LP_DAILY_GOAL ? " ✓" : ""}` }));
     const minutes = deck.bites.filter((b) => !b.optional).reduce((s, b) => s + b.min, 0);
     return h("div", { class: "lp-map" },
       h("section", { class: "lp-hero" },
