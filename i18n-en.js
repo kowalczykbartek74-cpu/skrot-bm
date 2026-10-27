@@ -1,6 +1,7 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Szybki przegląd strony": "Quick site tour",
 "Zakończyć przegląd strony?": "End the site tour?",
 "Zakończyć przegląd?": "End the tour?",
 "Możesz do niego wrócić w każdej chwili: Więcej → Szybki przegląd ekranów.": "You can come back to it any time: More → Quick tour of the screens.",

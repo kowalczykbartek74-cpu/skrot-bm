@@ -673,6 +673,7 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
 .tour-ask-card h2 { font-size: 1.15rem; margin: 0; }
 .tour-ask-card p { margin: 0; color: var(--muted); font-size: .94rem; line-height: 1.5; }
 .tour-ask-card .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 4px; }
+.help-btn { width: 32px; height: 32px; min-height: 0; padding: 0; justify-content: center; border-radius: 50%; font-weight: 800; font-size: .95rem; line-height: 1; }
 .tour-keys { font-size: .72rem; color: #4A5B51; text-align: center; margin-top: -4px; }
 .tour-keys kbd { font: 700 .7rem var(--f-display, inherit); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 4px; background: var(--green-50); }
 
@@ -815,7 +816,6 @@ mjx-container[display="true"] { margin: 6px 0 !important; padding: 2px 0; }
   .tour-card::after { display: none !important; }
   .tour-keys { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .tour *, .tour *::before, .tour *::after { animation: none !important; transition: none !important; } }
 html.calm .tour *, html.calm .tour *::before, html.calm .tour *::after { animation: none !important; transition: none !important; }
 /* ===== PRZEWODNIK: rozdziały z ćwiczeniami na żywo ===== */
 .g-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; padding: 26px 26px 24px; border-radius: 22px; border: 1px solid var(--green-200); overflow: hidden;
@@ -2149,7 +2149,7 @@ main[data-view="ai"] .notice.err, main[data-view="upload"] .notice.err, main[dat
    Nowe animacje nie potrzebują tu osobnych reguł.
    ===================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
+  *:not(.tour *), *:not(.tour *)::before, *:not(.tour *)::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
   .lp-confetti { display: none !important; }
   .sk-lvbar i, .lp-lvbar i { animation: none; }
 }
@@ -2524,6 +2524,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     $("barRight").replaceChildren(...[
       ["out", "in"].includes(sk.state) && !PAID() ? h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy() }, "Kup dostęp") : null,
       sk.state === "out" ? h("button", { type: "button", class: "btn small ghost", onclick: () => sk.openLogin() }, "Zaloguj") : null,
+      h("button", { type: "button", class: "btn small ghost help-btn", title: "Szybki przegląd strony", "aria-label": "Szybki przegląd strony", onclick: () => startTour(QUICK, QUICK_OPTS()) }, "?"),
       h("button", { type: "button", class: "btn small ghost lang-btn", translate: "no", title: EN ? "Zmień język na polski" : "Switch the whole site to English", "aria-label": EN ? "Zmień język na polski" : "Switch the whole site to English", onclick: () => window.SKROT_I18N.toggle() }, EN ? "PL" : "EN"),
     ].filter(Boolean));
     const band = $("staroband");
@@ -5689,7 +5690,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
       const ok = () => { if (G.tried.has(key)) return; G.tried.add(key); LP.el.stage.querySelectorAll(`.g-try[data-k="${key}"]`).forEach((e) => { e.classList.add("ok", "just"); e.textContent = "Zrobione: " + sl.try; }); };
       if (sl.fresh && ctx.fresh) card._stage = null;
       let stage = sl.fresh ? card._stage : G.nodes.get(key);
-      if (!stage) { stage = h("div", { class: "g-stage" + (sl.real ? " real" : "") }, sl.demo(ok)); if (sl.fresh) card._stage = stage; else G.nodes.set(key, stage); }
+      if (!stage) { stage = h("div", { class: "g-stage" + (sl.real ? " real" : "") }, sl.demo(ok)); if (sl.fresh) card._stage = stage; else G.nodes.set(key, stage); } else gReplay(stage);
       const tried = !sl.try || G.tried.has(key);
       return { el: [kick(`📘 ${ch.title} · karta ${k + 1} z ${N}`), h("div", { class: "g-slide sk-gslide" }, stage),
         sl.try ? h("span", { class: "g-try" + (tried ? " ok" : ""), "data-k": key, text: (tried ? "Zrobione: " : "Spróbuj: ") + sl.try }) : null,
@@ -7520,6 +7521,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
   const gx = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
   const gNorm = (s) => String(s || "").toLowerCase().replace(/ł/g, "l").normalize("NFD").replace(/[̀-ͯ]/g, "");
   const G = { nodes: new Map(), tried: new Set(), test: null };
+  // Karta przewodnika jest trzymana w pamięci (żeby nie gubić ćwiczenia), więc przy powrocie jej animacje puszczamy od nowa.
+  const gReplay = (el) => requestAnimationFrame(() => { try { el.getAnimations({ subtree: true }).forEach((a) => { a.cancel(); a.play(); }); } catch {} });
   function guideGet() {
     let a = {}; try { a = JSON.parse(ls.get("bm-guide") || "{}") || {}; } catch {}
     const b = S.progress?.guide || {};
@@ -8153,7 +8156,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       if (cnt) { const d = ch.slides.filter((x, j) => x.try && tried(j)).length; cnt.textContent = trycountText(d, tryN); }
     };
     let stage = sl.fresh ? null : G.nodes.get(key);
-    if (!stage) { stage = h("div", { class: "g-stage" + (sl.real ? " real" : "") }, sl.demo(ok)); if (!sl.fresh) G.nodes.set(key, stage); }
+    if (!stage) { stage = h("div", { class: "g-stage" + (sl.real ? " real" : "") }, sl.demo(ok)); if (!sl.fresh) G.nodes.set(key, stage); } else gReplay(stage);
     if (sl.done && sl.done()) G.tried.add(key);
     const setK = (j) => { S.route = { ...S.route, k: j }; render(); window.scrollTo({ top: 0, behavior: "smooth" }); };
     const finish = () => {
