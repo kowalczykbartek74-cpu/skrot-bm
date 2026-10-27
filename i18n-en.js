@@ -1,6 +1,12 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Dodatkowo · {0}": "Extra · {0}",
+"· stare materiały z prezentacji o tym samym co lekcja": "· old slide materials on the same topic as a lesson",
+"Nie ma ich w planie ani w liczniku tematów: uczysz się z lekcji, a te możesz przejrzeć dodatkowo. Jeśli któryś to inny temat, dodaj go do zakresu.": "They're not in the plan or the topic count: you learn from the lesson and can look at these as extras. If one is a different topic, add it to the scope.",
+"jak: {0}": "same as: {0}",
+"To osobny temat": "It's a separate topic",
+"to dubel": "duplicate",
 "Według planu poniżej to średnio": "Following the plan below, that's on average",
 "Tylko powtórki fiszek z tego, co już było": "Just flashcard reviews of what you've covered",
 "· ok. {0} min": "· about {0} min",
