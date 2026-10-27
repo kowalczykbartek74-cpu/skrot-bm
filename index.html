@@ -1530,6 +1530,8 @@ html.lp-lock, html.lp-lock body { overflow: hidden; }
 .lp-text li.lp-ghost { background: var(--sunk); color: transparent; user-select: none; min-height: 44px; }
 .lp-text li.lp-ghost::before { background: var(--line); }
 .sk-text b, .lp-text b { background: linear-gradient(transparent 58%, var(--mark) 58%) no-repeat 0 0 / 100% 100%; border-radius: 2px; }
+.lp b.lp-term { cursor: pointer; text-decoration: underline dotted var(--accent) 2px; text-underline-offset: 3px; }
+.lp b.lp-term:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .lp-tapmore { font-size: .88rem; color: var(--muted); font-weight: 600; }
 .lp-quote { font-size: 1.15rem; font-weight: 700; line-height: 1.45; padding: 14px 16px; border-radius: 14px; background: var(--sunk); margin: 0; }
 .lp-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -5074,7 +5076,47 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   function lpRefresh(fx) { if (!LP.open) return; LP.fx = fx || null; const node = lpBuild(false, 0); LP.el.stage.firstElementChild?.replaceWith(node); lpAfterMount(node); }
   function lpAfterMount(node) {
     node.querySelectorAll(".lp-draw").forEach((p) => { try { p.style.setProperty("--len", Math.ceil(p.getTotalLength()) + 1); } catch {} });
-    typeset(node); lpSave(); lpTop(); lpIdle();
+    lpTerms(node); typeset(node); lpSave(); lpTop(); lpIdle();
+  }
+  // Pojęcia na kartach lekcji: wyróżnione słowo, które jest w słowniczku (albo w pojęciach lekcji), po dotknięciu
+  // otwiera panel od dołu z polskim odpowiednikiem i jednym zdaniem definicji. Bez wpisu zostaje samo wyróżnienie.
+  function lpTermOf(word) {
+    const k = norm(String(word || "").replace(/[.,:;!?…"„”()]+$/g, "").trim());
+    if (k.length < 2) return null;
+    const keys = [k, k.replace(/(es|s)$/, "")];
+    const fromLesson = (LP.c?.concepts || []).filter((x) => x.term).map((x) => ({ en: x.term, pl: x.pl || "", def: x.definition || "" }));
+    for (const t of [...fromLesson, ...(GL.terms || [])]) {
+      const names = [t.en, t.pl, ...(t.also || [])].filter(Boolean).map(norm);
+      if (names.some((n) => keys.includes(n))) {
+        const g = (GL.terms || []).find((x) => norm(x.en) === norm(t.en));
+        return { en: t.en, pl: t.pl || g?.pl || "", def: lpFirstSentence(t.def || g?.def || "") };
+      }
+    }
+    return null;
+  }
+  function lpTerms(node) {
+    if (LP.src?.kind !== "lesson") return;
+    if (!GL.terms && !GL.loading) loadGlossary().catch(() => {});
+    node.querySelectorAll(".lp-text b, .lp-big b, .lp-quote b").forEach((b) => {
+      if (b.closest("button, .opt, [role=button]")) return;
+      const t = lpTermOf(b.textContent);
+      if (!t || (!t.pl && !t.def)) return;
+      b.classList.add("lp-term"); b.setAttribute("role", "button"); b.setAttribute("tabindex", "0");
+      b.setAttribute("aria-label", `${t.en}: pokaż znaczenie`);
+      const open = (e) => { e.stopPropagation(); lpTermSheet(t); };
+      b.addEventListener("click", open);
+      b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
+    });
+  }
+  function lpTermSheet(t) {
+    LP.el.sheet.replaceChildren(h("div", { class: "grab", "aria-hidden": "true" }), h("span", { class: "eyebrow", text: "Pojęcie" }),
+      h("h3", { style: "margin:0", lang: "en", translate: "no", text: t.en }),
+      t.pl ? h("p", { class: "lp-term-pl", style: "margin:0" }, h("span", { class: "muted", text: "Po polsku: " }), h("b", { translate: "no", text: t.pl })) : null,
+      t.def ? h("p", { style: "margin:0", translate: "no", text: t.def }) : null,
+      h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam"));
+    LP.el.sheet.setAttribute("aria-label", "Pojęcie: " + t.en);
+    LP.el.sheet.classList.add("on"); LP.el.scrim.classList.add("on");
+    LP.el.sheet.querySelector("button")?.focus();
   }
   function lpBuild(fresh, dir) {
     const st = LP.st, b = LP.deck.bites[st.bite];
@@ -5186,6 +5228,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     const help = !txt && card?.help && lpIsDone(card) ? card.help() : null;
     if (!txt && !help) return;
     LP.el.sheet.replaceChildren(h("div", { class: "grab", "aria-hidden": "true" }), h("span", { class: "eyebrow", text: help ? "Dlaczego?" : "Prościej, po polsku" }), help || h("div", { class: "lp-text" }, h("p", {}, inline(txt))), h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam"));
+    LP.el.sheet.setAttribute("aria-label", help ? "Dlaczego?" : "Prościej, po polsku");
     LP.el.sheet.classList.add("on"); LP.el.scrim.classList.add("on"); LP.el.help.classList.remove("lp-hint");
     typeset(LP.el.sheet); LP.el.sheet.querySelector("button")?.focus();
   }
