@@ -2057,7 +2057,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
 <div id="layer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="skrot-supabase.js?v=20261027-stripe-live"></script>
+<script src="skrot-supabase.js?v=20261027-stripe-live2"></script>
 <script>
 (() => {
   "use strict";
@@ -3020,7 +3020,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
         h("button", { type: "button", class: "btn primary", onclick: () => sk.buy?.() }, `Kup dostęp · od ${sk.prices?.miesiac || "35 zł / mies."}`),
         sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => sk.openLogin?.() }, "Mam już dostęp, zaloguj się") : null),
       sk.state === "in" ? h("p", { class: "foot-note", style: "margin:0", text: `Zalogowano jako ${sk.email}. Dostęp przypiszemy do tego adresu.` }) : null,
-      h("p", { class: "foot-note", style: "margin:0" }, `Do końca 2. semestru: ${sk.prices?.rok || "199 zł"} jednorazowo (BLIK, karta, Przelewy24). Co miesiąc: ${sk.prices?.miesiac || "35 zł / mies."}, kartą, anulujesz w każdej chwili. `, h("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", h("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")));
+      h("p", { class: "foot-note", style: "margin:0" }, `Do końca 2. semestru: ${sk.prices?.rok || "199 zł"} jednorazowo (BLIK, karta, Apple Pay, Google Pay). Co miesiąc: ${sk.prices?.miesiac || "35 zł / mies."}, kartą, anulujesz w każdej chwili. `, h("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", h("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")));
   }
   // Okno z kłódką zamiast błędu zapisu albo mylącego komunikatu.
   function lockModal(what) {
