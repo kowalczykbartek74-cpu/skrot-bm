@@ -1,6 +1,18 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Tematy do zaliczeń, które umiesz": "Exam topics you know",
+"Temat umiesz, gdy zdasz bilet wyjścia z lekcji albo dobrze idą Ci quiz i fiszki.": "You know a topic once you pass the lesson's exit ticket, or when the quiz and flashcards go well.",
+"Tematy, które umiesz": "Topics you know",
+"Tematy, które umiesz: {0}": "Topics you know: {0}",
+"Tematy z zakresu, które umiesz: {0}": "Topics in scope you know: {0}",
+"do nauki: {0} {1}": "to learn: {0} {1}",
+"{0} z {1} tematów": "{0} of {1} topics",
+"Umiesz z zakresu ({0})": "You know of the scope ({0})",
+"umiesz {0}": "you know {0}",
+"{0} z {1} tematu": "{0} of {1} topic",
+"Tematy z zakresu ({0}), które umiesz: {1} z {2}": "Topics in scope ({0}) you know: {1} of {2}",
+"{0}, tematy do zaliczenia, które umiesz: {1} z {2}{3}{4}": "{0}, exam topics you know: {1} of {2}{3}{4}",
 "Więcej wyjaśnień": "More explanation",
 "Lista do odhaczania: co i na kiedy.": "A checklist: what's due and when.",
 "Odhaczasz kółkiem po lewej. Przełącznik „Do zrobienia | Zrobione” pokazuje to, co już masz. Terminy sprzed Twojego dołączenia są w zwiniętej sekcji „Minione”.": "Tick things off with the circle on the left. The “To do | Done” switch shows what you've finished. Deadlines from before you joined are in the collapsed “Past” section.",
