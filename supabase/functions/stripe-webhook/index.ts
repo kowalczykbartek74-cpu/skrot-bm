@@ -1,7 +1,8 @@
 // Funkcja „stripe-webhook” dla Skrót BM: Stripe wywołuje ją po opłaceniu dostępu.
 // Sprawdza podpis Stripe i wpisuje dostęp do tabeli nauka_dostep:
-//   • plan „do końca 2. semestru” (jednorazowo 199 zł): checkout.session.completed w trybie „payment” → dostęp do 30 września
-//     (koniec semestru letniego i roku akademickiego; kupiony od 1 października liczy się do 30 września następnego roku),
+//   • plan „do końca 2. semestru” (jednorazowo 199 zł): checkout.session.completed w trybie „payment” → dostęp od dnia zakupu
+//     do 11 lipca (koniec letniej sesji egzaminacyjnej, ok. 8 miesięcy przy zakupie w październiku–listopadzie);
+//     kupiony po 11 lipca liczy się do 11 lipca następnego roku,
 //   • plan miesięczny (35 zł/mies., subskrypcja): checkout.session.completed w trybie „subscription” → dostęp na start,
 //     a każda opłacona faktura (invoice.paid) przedłuża go do końca opłaconego okresu (+1 dzień zapasu).
 //     Po anulowaniu w portalu klienta nowe faktury nie przychodzą, więc dostęp sam wygasa po opłaconym miesiącu.
@@ -11,12 +12,16 @@
 import Stripe from "npm:stripe@16.12.0";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-// Koniec 2. semestru = koniec roku akademickiego (30 września). Można nadpisać sekretem ACCESS_UNTIL, np. "2027-09-30".
+// Koniec 2. semestru = koniec letniej sesji egzaminacyjnej na US (2026/27: 28.06–11.07.2027, zarządzenie Rektora nr 59/2026).
+// Gdy uczelnia poda daty na kolejny rok, można je ustawić sekretem ACCESS_UNTIL, np. "2028-07-09", bez zmiany kodu.
 const ACCESS_UNTIL = Deno.env.get("ACCESS_UNTIL") || "";
+const SEMESTER_END_MMDD = "07-11";
 function semesterEnd(today: Date): string {
-  if (/^\d{4}-\d{2}-\d{2}$/.test(ACCESS_UNTIL) && ACCESS_UNTIL >= day(today)) return ACCESS_UNTIL;
-  const y = today.getUTCFullYear() + (today.getUTCMonth() >= 9 ? 1 : 0); // od października liczy się kolejny rok akademicki
-  return `${y}-09-30`;
+  const t = day(today);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(ACCESS_UNTIL) && ACCESS_UNTIL >= t) return ACCESS_UNTIL;
+  const y = today.getUTCFullYear();
+  const end = `${y}-${SEMESTER_END_MMDD}`;
+  return t <= end ? end : `${y + 1}-${SEMESTER_END_MMDD}`;
 }
 const MONTH_START_DAYS = 32; // zapas na start subskrypcji, zanim dojdzie pierwsza faktura
 const stripe = new Stripe("sk_unused_only_for_signature_check", { httpClient: Stripe.createFetchHttpClient() });
