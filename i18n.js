@@ -24,6 +24,7 @@
     toggle: function () { I.set(lang === "en" ? "pl" : "en"); },
     t: function (s) { return s; },
     add: function () {},
+    keep: function () {},
     plural: function (n, one, few, many) { return n === 1 ? one : many; },
   };
   if (lang !== "en") return;
@@ -32,6 +33,9 @@
   document.write('<script src="i18n-en.js?v=' + (document.currentScript && document.currentScript.src.split("v=")[1] || "1") + '"><\/script>');
 
   var exact = new Map(), pats = [], prefixes = [], suffixes = [], PL = {};
+  // Teksty wpisane ręcznie (tytuły terminów, ogłoszenia, zadania z Teams): zostają po polsku w całości,
+  // żeby słownik nie zamieniał w nich pojedynczych słów („do 9.11” → „to 9.11”).
+  var KEEP = new Set();
   var TOUCH = false;
   try { TOUCH = matchMedia("(hover: none) and (pointer: coarse)").matches; } catch (e) {}
   var esc = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); };
@@ -58,6 +62,15 @@
   function norm(s) { return s.replace(/ /g, " ").replace(/\s+/g, " "); }
 
   I.add = function (k, v) { if (k && v && k !== v) addEntry(String(k), String(v)); };
+  I.keep = function () {
+    for (var i = 0; i < arguments.length; i++) {
+      var s = arguments[i];
+      if (typeof s !== "string") continue;
+      var lines = s.split(/\n/);
+      lines.push(s);
+      for (var j = 0; j < lines.length; j++) { var k = norm(lines[j].replace(/^\s*[-•]\s+/, "").trim()); if (k && !exact.has(k)) KEEP.add(k); }
+    }
+  };
   I.load = function (dict) {
     var e = dict.exact || {};
     for (var k in e) addEntry(k, e[k]);
@@ -85,6 +98,7 @@
   function find(core, depth) {
     var r = exact.get(core);
     if (r != null) return r;
+    if (KEEP.has(core)) return core;
     if (depth > 3) return null;
     for (var i = 0; i < pats.length; i++) {
       var p = pats[i];

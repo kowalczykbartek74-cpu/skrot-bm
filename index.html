@@ -1986,7 +1986,8 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     for (const g of Object.values(PLAN.groups || {})) for (const w of ["odd", "even"]) for (const e of g[w] || []) {
       if (e.k === "X") continue;
       const id = slug(e.pl);
-      if (!map.has(id)) map.set(id, { id, pl: e.pl, en: e.en || "", people: {} });
+      // Nazwy EN są przepisane z planu i sylabusa uczelni, razem z literówką „Intelectual”.
+      if (!map.has(id)) map.set(id, { id, pl: e.pl, en: (e.en || "").replace(/\bIntelectual\b/g, "Intellectual"), people: {} });
       const s = map.get(id);
       if (e.p) (s.people[e.k] ||= new Set()).add(e.p);
     }
@@ -2033,6 +2034,8 @@ html.calm .a-tick { stroke-dashoffset: 0; }
   };
   const $ = (id) => document.getElementById(id);
   const EN = window.SKROT_LANG === "en";
+  // Teksty wpisane ręcznie zostają w trybie EN po polsku w całości (i18n.js: keep).
+  const keepText = (...xs) => { if (EN) window.SKROT_I18N?.keep?.(...xs.filter((x) => typeof x === "string" && x)); };
   const MONTHS = EN ? ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] : ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"];
   const MON_SHORT = EN ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] : ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
   const DOW = EN ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] : ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Nd"];
@@ -3177,7 +3180,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     { id: "inne", label: "Inne", c: "#5A6B61" },
   ];
   const myKind = (id) => MY_KINDS.find((k) => k.id === id) || MY_KINDS[3];
-  const myEvents = () => (Array.isArray(S.progress?.myEvents) ? S.progress.myEvents : []).filter((e) => e && e.id && /^\d{4}-\d{2}-\d{2}$/.test(e.date || ""));
+  const myEvents = () => (Array.isArray(S.progress?.myEvents) ? S.progress.myEvents : []).filter((e) => e && e.id && /^\d{4}-\d{2}-\d{2}$/.test(e.date || "")).map((e) => (keepText(e.title, e.note), e));
   const myEventsOn = (k) => myEvents().filter((e) => e.date === k).sort((a, b) => (a.time || "99").localeCompare(b.time || "99"));
   function saveMyEvents(list) { saveProgress({ myEvents: list }); render(); }
   function openMyEvent(ev, dayKey) {
@@ -9444,11 +9447,12 @@ Spread the questions so that together they check as many of these outcomes as th
     }, () => markReady("materials"));
     db.collection("deadlines").orderBy("date").limit(1000).onSnapshot((snap) => {
       S.deadlines = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      S.deadlines.forEach((d) => keepText(d.title, d.note));
       loadNames(S.deadlines.map((d) => d.createdBy)); markReady("deadlines");
     }, () => markReady("deadlines"));
-    db.collection("tasks").orderBy("createdAt", "desc").limit(300).onSnapshot((snap) => { S.tasks = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
+    db.collection("tasks").orderBy("createdAt", "desc").limit(300).onSnapshot((snap) => { S.tasks = snap.docs.map((d) => ({ id: d.id, ...d.data() })); S.tasks.forEach((t) => keepText(t.title, t.summary, t.dueText, ...(t.details || []))); render(); }, () => {});
     db.doc("meta/sync").onSnapshot((snap) => { S.sync = snap.exists ? snap.data() : null; render(); }, () => {});
-    db.collection("announcements").orderBy("createdAt", "desc").limit(5).onSnapshot((snap) => { S.announcements = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
+    db.collection("announcements").orderBy("createdAt", "desc").limit(5).onSnapshot((snap) => { S.announcements = snap.docs.map((d) => ({ id: d.id, ...d.data() })); S.announcements.forEach((a) => keepText(a.text)); render(); }, () => {});
     if (!S.uid) { S.progress = progLocal.get()?.data || {}; S.progReady = true; }
     if (S.uid) db.collection("data/users/" + S.uid).doc("progress").onSnapshot((snap) => {
       const server = snap.exists ? (snap.data() || {}) : {};
