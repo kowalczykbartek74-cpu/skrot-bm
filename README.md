@@ -42,7 +42,8 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 Bez zalogowania strona pokazuje tylko osobny ekran logowania (`#login` w `index.html`). Na komputerze (od 900 px) po lewej jest zielony panel z hasłem strony i trzema korzyściami, po prawej formularz; na telefonie tylko logo i formularz. Kod z maila albo hasło, regulamin, prywatność, kontakt i przełącznik EN/PL. Aplikacja pojawia się dopiero po zalogowaniu.
 - Skrypt w `<head>` sprawdza, czy w przeglądarce jest sesja Supabase (`sb-zkyxujkdrovfzpasocmv-auth-token`); jeśli nie, od razu dodaje klasę `needlogin`, więc aplikacja nie miga.
 - `skrot-supabase.js` (`showLoginPage`) wypełnia ekran tym samym logowaniem co okno (`openLogin` z `page: true`). Komunikaty po płatności, po nieważnym linku i pole na kod po przeładowaniu działają jak wcześniej, tylko na tym ekranie.
-- Kod dostępu przed startem (`#gate`) jest nadal pierwszy; ekran logowania pokazuje się po nim.
+- Strona jest otwarta (bez kodu dostępu przed startem, bez `noindex`), od 27.10.2026. Pierwszy ekran to logowanie.
+- Przed płatnością okno „Zanim zapłacisz”: akceptacja regulaminu i zgoda na natychmiastowe dostarczenie Treści (utrata prawa odstąpienia, regulamin § 5). Bez obu ptaszków nie da się przejść do Stripe. Zgoda trafia do tabeli `nauka_zgody` przez `nauka_zgoda()` (`supabase/skrot-v10-zgody.sql`, uruchom raz w SQL Editor); gdy zapis się nie uda, zakup idzie dalej, a ślad zostaje w `localStorage["skrot-zgoda"]`. Treść zgody i `CONSENT_V` w `skrot-supabase.js` zmieniaj razem z regulaminem.
 - Gdy baza jest nieosiągalna, strona pokazuje aplikację (stan offline), żeby nikt nie utknął.
 
 ## Hasło do logowania (opcjonalne)
@@ -132,7 +133,7 @@ Stare widoki zostają pod „Pokaż jako listę” / „Klasyczny widok”. Tre�
 
 Combo (🔥 x5/x10, +5 XP) działa wszędzie poza próbnym testem.
 
-**Testy wyglądu (lokalnie).** Bramka sprawdza `localStorage["skrot-gate"]` (hash `H` z `<head>`). Przy przemianie każdy etap był sprawdzany w Playwright na atrapie `skrot-supabase.js` (dane w pamięci, nic nie idzie do bazy): zrzut `getComputedStyle` przed/po, brak poziomego przewijania na 375/360/1280 px, EN bez polskich napisów, zero błędów konsoli i test regresji lekcji (ta sama trasa kart, XP, gwiazdki i wznowienie co przed zmianą).
+**Testy wyglądu (lokalnie).** Przy przemianie każdy etap był sprawdzany w Playwright na atrapie `skrot-supabase.js` (dane w pamięci, nic nie idzie do bazy): zrzut `getComputedStyle` przed/po, brak poziomego przewijania na 375/360/1280 px, EN bez polskich napisów, zero błędów konsoli i test regresji lekcji (ta sama trasa kart, XP, gwiazdki i wznowienie co przed zmianą).
 
 ## Jak powstają materiały z prezentacji (system v2)
 Slajdy prowadzących służą tylko jako mapa tematów. Po wgraniu pliku:

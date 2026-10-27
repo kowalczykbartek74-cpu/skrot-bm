@@ -549,13 +549,59 @@
     if (skrot.email) u.searchParams.set("prefilled_email", skrot.email);
     location.href = u.toString();
   };
+  // Przed płatnością: akceptacja regulaminu i zgoda na natychmiastowe dostarczenie Treści
+  // (utrata prawa odstąpienia, art. 38 ust. 1 pkt 13 ustawy o prawach konsumenta, regulamin § 5).
+  // Zgodę zapisuje baza (nauka_zgoda, supabase/skrot-v10-zgody.sql) z datą, kontem i e-mailem.
+  // Treść zgody to dowód: zmieniasz ją tylko razem z regulaminem i z nową CONSENT_V.
+  const CONSENT_V = "2026-10-27";
+  const CONSENT_TERMS = "Znam i akceptuję Regulamin oraz Politykę prywatności.";
+  const CONSENT_NOW = "Chcę, żeby dostęp do Treści zaczął działać od razu po zapłacie, przed upływem 14 dni na odstąpienie od umowy. Wiem, że przez to tracę prawo odstąpienia od umowy.";
+  const recordConsent = async (plan) => {
+    try {
+      const call = sb.rpc("nauka_zgoda", { p_plan: plan, p_tresc: `${CONSENT_TERMS}\n${CONSENT_NOW}`, p_wersja: CONSENT_V, p_ua: navigator.userAgent || null });
+      const res = await Promise.race([call, new Promise((r) => setTimeout(() => r({ error: { message: "timeout" } }), 5000))]);
+      if (res?.error || res?.data?.ok === false) throw new Error(res?.error?.message || res?.data?.code || "error");
+      return true;
+    } catch (e) {
+      // Zapis zgody nie blokuje zakupu, ale zostawiamy ślad w przeglądarce i w konsoli.
+      console.warn("Skrót BM: nie zapisano zgody w bazie", e);
+      try { ls.set("skrot-zgoda", JSON.stringify({ plan, v: CONSENT_V, t: new Date().toISOString(), email: skrot.email })); } catch {}
+      return false;
+    }
+  };
   const goPay = (plan) => {
-    const link = CONFIG.plans[plan]?.link;
+    const cfg = CONFIG.plans[plan];
+    const link = cfg?.link;
     if (!link) return info("Płatności startują wkrótce", "Kupno dostępu ruszy wkrótce. Spróbuj później albo napisz na skrotbm@outlook.com.");
-    const u = new URL(link);
-    u.searchParams.set("client_reference_id", skrot.uid);
-    u.searchParams.set("prefilled_email", skrot.email);
-    location.href = u.toString();
+    const layer = document.getElementById("layer") || document.body;
+    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const row = (box, ...kids) => el("label", { style: "display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.95rem;line-height:1.45" }, box, el("span", {}, ...kids));
+    const box = () => el("input", { type: "checkbox", style: "flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--accent,#1A7F45)", onchange: () => sync() });
+    const terms = box(), now = box();
+    const pay = el("button", { type: "button", class: "btn primary", disabled: "" }, `Przejdź do płatności (${cfg.price})`);
+    const sync = () => { pay.disabled = !(terms.checked && now.checked); };
+    pay.addEventListener("click", async () => {
+      if (!(terms.checked && now.checked)) return;
+      pay.disabled = true;
+      pay.textContent = "Przechodzę do płatności…";
+      await recordConsent(plan);
+      const u = new URL(link);
+      u.searchParams.set("client_reference_id", skrot.uid);
+      u.searchParams.set("prefilled_email", skrot.email);
+      location.href = u.toString();
+    });
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Zanim zapłacisz" },
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zanim zapłacisz" }),
+        el("p", { class: "muted", style: "margin:0", text: plan === "rok" ? "Plan do końca 2. semestru, płatność jednorazowa." : "Plan miesięczny, odnawia się co miesiąc do anulowania." }),
+        row(terms, "Znam i akceptuję ", el("a", { class: "link", href: "regulamin.html", target: "_blank", rel: "noopener" }, "Regulamin"), " oraz ", el("a", { class: "link", href: "prywatnosc.html", target: "_blank", rel: "noopener" }, "Politykę prywatności"), "."),
+        row(now, CONSENT_NOW),
+        el("p", { class: "foot-note", style: "margin:0", text: "Zaznaczenie zgody zapisujemy razem z datą i adresem e-mail konta." }),
+        el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, pay, el("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"))));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+    setTimeout(() => terms.focus(), 30);
   };
   // Wybór planu: rok jednorazowo albo co miesiąc.
   const choosePlan = () => {
