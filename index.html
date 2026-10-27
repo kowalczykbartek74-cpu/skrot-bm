@@ -66,7 +66,7 @@ p { margin: 0; }
 .wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 
 /* górny pasek + nawigacja
-   Komputer: logo | 5 zakładek | Kup dostęp + Menu.
+   Komputer: Więcej (trzy kreski) + logo | 5 zakładek | Kup dostęp.
    Telefon: Więcej (lewy górny róg) + logo + Kup dostęp u góry, 5 zakładek do nauki z ikonami przyklejonych na dole ekranu. */
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); border-bottom: 1px solid var(--line); }
 .bar::before { content: ""; display: block; height: 4px; background: linear-gradient(90deg, var(--green-600) 0 40%, var(--teal-600) 40% 62%, var(--green-400) 62% 82%, var(--lime-400) 82% 100%); }
@@ -81,7 +81,13 @@ p { margin: 0; }
 .navbtn .ico { display: none; }
 .ico svg { width: 22px; height: 22px; display: block; }
 .bar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.morebtn { display: none; }
+/* „Więcej” = trzy kreski w lewym górnym rogu, na komputerze i na telefonie. */
+.morebtn { position: relative; display: grid; place-items: center; flex: none; width: 40px; height: 40px; margin-left: -8px; margin-right: -6px; padding: 0; border: 0; border-radius: 12px; background: transparent; color: var(--ink); cursor: pointer; }
+.morebtn:hover { background: var(--green-50); }
+.morebtn[aria-current="page"] { background: var(--accent-soft); color: var(--accent-text); }
+.morebtn .ico svg { width: 24px; height: 24px; }
+.morebtn .badge { position: absolute; top: 2px; right: 0; min-width: 16px; line-height: 16px; padding: 0 4px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: .64rem; font-weight: 700; text-align: center; }
+.navbtn[data-key="more"] { display: none; }
 .menu { position: fixed; z-index: 41; top: calc(64px + env(safe-area-inset-top, 0px)); right: max(16px, calc((100vw - 1040px) / 2 + 16px)); width: 280px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding: 6px; display: grid; }
 .menu .who { padding: 10px 12px 8px; font-size: .84rem; color: var(--muted); overflow-wrap: anywhere; }
 .menu .who b { display: block; color: var(--ink); font-size: .92rem; }
@@ -100,14 +106,9 @@ p { margin: 0; }
   .logo { height: 28px; }
   .bar-right .btn.small { padding: 6px 12px; }
   /* Telefon: „Więcej” (ustawienia, konto, słowniczek) siedzi w lewym górnym rogu, na dole zostaje 5 zakładek do nauki. */
-  .morebtn { position: relative; display: grid; place-items: center; flex: none; width: 40px; height: 40px; margin-left: -6px; padding: 0; border: 0; border-radius: 12px; background: transparent; color: var(--ink); cursor: pointer; }
-  .morebtn:hover { background: var(--green-50); }
-  .morebtn[aria-current="page"] { background: var(--accent-soft); color: var(--accent-text); }
-  .morebtn .ico svg { width: 24px; height: 24px; }
-  .morebtn .badge { position: absolute; top: 2px; right: 0; min-width: 16px; line-height: 16px; padding: 0 4px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: .64rem; font-weight: 700; text-align: center; }
+  .morebtn { margin-left: -6px; margin-right: 0; }
   .bar .wrap { gap: 6px; }
   .brand { margin-right: auto; }
-  .navbtn[data-key="more"] { display: none; }
   .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; gap: 0; display: grid; grid-template-columns: repeat(5, 1fr);
     background: var(--surface); border-top: 1px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); }
   .navbtn { flex-direction: column; gap: 2px; padding: 4px 2px; font-size: .7rem; font-weight: 600; border-radius: 12px; }
