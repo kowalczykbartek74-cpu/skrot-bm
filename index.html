@@ -5356,7 +5356,7 @@ html.calm .a-tick { stroke-dashoffset: 0; }
     tf(card, ctx) {
       const a = ctx.ans, done = a != null, ok = done && a === card.truth;
       const pick = (v, btn) => { if (LP.st.ans[card.id] != null) return; const good = v === card.truth; lpAward(good ? lpXv("tf") : 0, { graded: true, ok: good, at: btn }); ctx.set(v, { pick: v }); };
-      return { el: [kick("⚠️ Pułapka: prawda czy fałsz?", card), h("p", { class: "lp-quote" }, "„", inline(card.stmt), "”"),
+      return { el: [kick("⚠️ Pułapka: prawda czy fałsz?", card), h("p", { class: "lp-quote" }, "„", inline(String(card.stmt || "").trim().replace(/^[„"“]+|[”"“]+$/g, "").trim()), "”"),
         h("div", { class: "lp-two lp-opts" }, [[true, "✅ Prawda"], [false, "❌ Fałsz"]].map(([v, l]) => h("button", { type: "button", disabled: done ? true : null, class: "opt" + (done && v === card.truth ? " right" + (ctx.fx.pick != null ? " lp-now" : "") : "") + (done && v === a && !ok ? " wrong lp-shake" : ""), onclick: (e) => pick(v, e.currentTarget) }, l))),
         done ? h("div", { class: "lp-fb lp-new " + (ok ? "ok" : "no") },
           h("p", { class: "v", text: (ok ? "Dobrze! " : "Uwaga, pułapka! ") + (card.truth ? "To prawda." : "To fałsz.") }),
