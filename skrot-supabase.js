@@ -251,6 +251,49 @@
   };
   skrot.mojeStan = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_stan"); if (error) throw rpcErr(error); return data; };
   skrot.mojeStart = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_start"); if (error) throw rpcErr(error); return data; };
+  // ---------- monety, Zadania dnia i Sklep (supabase/skrot-v14-monety.sql) ----------
+  // Saldo, zakupy i misje liczy tylko baza; tu tylko pamiętamy ostatni stan i dajemy znać stronie zdarzeniem „skrot:sklep”.
+  // sklep.ok = stan z bazy; sklep.err = "no_sql" (v14 jeszcze nie uruchomione, więc nikt nic nie kupił) albo inny błąd.
+  skrot.sklep = { saldo: 0, posiadane: new Set(), katalog: [], loaded: false, ok: false, err: null };
+  const sklepEvt = () => window.dispatchEvent(new CustomEvent("skrot:sklep"));
+  let sklepAt = 0, sklepBusy = null, sklepTimer = 0;
+  skrot.sklepStan = async () => {
+    await ready;
+    if (skrot.state !== "in") { skrot.sklep.loaded = true; sklepEvt(); return skrot.sklep; }
+    if (sklepBusy) return sklepBusy;
+    sklepBusy = (async () => {
+      try {
+        const { data, error } = await sb.rpc("nauka_sklep_stan");
+        if (error) throw rpcErr(error);
+        if (data?.ok) Object.assign(skrot.sklep, data, { posiadane: new Set(data.posiadane || []), ok: true, err: null });
+        else skrot.sklep.err = data?.code || "error";
+      } catch (e) { skrot.sklep.err = e.code || "error"; }
+      skrot.sklep.loaded = true; sklepAt = Date.now(); sklepEvt();
+      return skrot.sklep;
+    })().finally(() => { sklepBusy = null; });
+    return sklepBusy;
+  };
+  // Po zapytaniu, które dało punkty rankingu (pkt > 0): monety przelicza baza, my tylko odświeżamy stan po 3 s.
+  skrot.sklepPozniej = () => { clearTimeout(sklepTimer); sklepTimer = setTimeout(() => skrot.sklepStan(), 3000); };
+  skrot.sklepKup = async (item) => {
+    await ready;
+    const { data, error } = await sb.rpc("nauka_sklep_kup", { p_item: item });
+    if (error) throw rpcErr(error);
+    if (data?.ok || data?.code === "owned") await skrot.sklepStan();
+    return data;
+  };
+  skrot.misje = async () => { await ready; const { data, error } = await sb.rpc("nauka_misje"); if (error) throw rpcErr(error); return data; };
+  skrot.misjaOdbierz = async (id) => {
+    await ready;
+    const { data, error } = await sb.rpc("nauka_misja_odbierz", { p_id: id });
+    if (error) throw rpcErr(error);
+    if (typeof data?.saldo === "number") { skrot.sklep.saldo = data.saldo; sklepEvt(); }
+    return data;
+  };
+  skrot.monetyHistoria = async (limit = 30) => { await ready; const { data, error } = await sb.rpc("nauka_monety_historia", { p_limit: limit }); if (error) throw rpcErr(error); return data; };
+  ready.then(() => skrot.sklepStan());
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && skrot.state === "in" && Date.now() - sklepAt > 60e3) skrot.sklepStan(); });
+
   skrot.list = async (col) => { await ready; const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col); if (error) throw error; return data; };
 
   // ---------- AI przez funkcję serwerową (supabase/functions/claude) ----------
