@@ -253,6 +253,37 @@
   skrot.mojeStart = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_start"); if (error) throw rpcErr(error); return data; };
   skrot.list = async (col) => { await ready; const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col); if (error) throw error; return data; };
 
+  // ---------- Gry i ranking (skrot-v13-gry.sql) ----------
+  // Każda funkcja zwraca obiekt z bazy ({ ok: true, … } albo { ok: false, code }).
+  // Brak bazy v13 → { ok: false, code: "not_enabled" }; brak sieci → { ok: false, code: "offline" }.
+  const rpCall = async (fn, args) => {
+    await ready;
+    if (!sb) return { ok: false, code: "offline" };
+    try {
+      const { data, error } = await sb.rpc(fn, args || {});
+      if (error) {
+        if (error.code === "PGRST202" || /does not exist/i.test(error.message || "")) return { ok: false, code: "not_enabled" };
+        return { ok: false, code: error.code || "error" };
+      }
+      return data || { ok: false, code: "empty" };
+    } catch { return { ok: false, code: "offline" }; }
+  };
+  skrot.rp = {
+    profil:   ()                       => rpCall("nauka_profil_moj"),
+    ustaw:    ({ nick = null, widoczny = null } = {}) => rpCall("nauka_profil_ustaw", { p_nick: nick, p_w_rankingu: widoczny }),
+    start:    (gra, sid = null)        => rpCall("nauka_gra_start", { p_gra: gra, p_sid: sid }),
+    odp:      ({ mid, idx, wybor, zrodlo, run = null }) => rpCall("nauka_rp_odpowiedz", { p_mid: mid, p_idx: idx, p_wybor: wybor, p_zrodlo: zrodlo, p_run: run }),
+    zadanie:  ({ mid, wid, j, wynik, zrodlo, run = null }) => rpCall("nauka_rp_zadanie", { p_mid: mid, p_wid: String(wid), p_j: j, p_wynik: wynik, p_zrodlo: zrodlo, p_run: run }),
+    powtorka: (klucz)                  => rpCall("nauka_rp_powtorka", { p_klucz: klucz }),
+    lekcja:   (lid)                    => rpCall("nauka_rp_lekcja", { p_lid: lid }),
+    koniec:   ({ run, wynik, czasMs, bledy = 0 }) => rpCall("nauka_gra_koniec", { p_run: run, p_wynik: wynik, p_czas_ms: czasMs, p_bledy: bledy }),
+    ranking:  ({ zakres = "tydzien", grupa = null, sid = null } = {}) => rpCall("nauka_ranking", { p_zakres: zakres, p_grupa: grupa, p_sid: sid }),
+    rekordy:  (gra)                    => rpCall("nauka_rekordy", { p_gra: gra }),
+    stat:     ()                       => rpCall("nauka_kierunek_stat"),
+    admin:    ()                       => rpCall("nauka_admin_gry"),
+    nickUsun: (userId)                 => rpCall("nauka_admin_nick_usun", { p_user: userId }),
+  };
+
   // ---------- AI przez funkcję serwerową (supabase/functions/claude) ----------
   function makeSample() {
     const fail = (code, message) => Object.assign(new Error(message), { code });

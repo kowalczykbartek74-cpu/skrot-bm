@@ -32,7 +32,7 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 ## Jak to działa
 - `index.html` – cała aplikacja (jedna strona). Plan zajęć pobiera z `https://plan.skrotbm.pl/plan.json`.
 - `skrot-supabase.js` – baza, logowanie mailem i zakup dostępu (Supabase + Stripe Payment Link).
-- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`) i funkcje serwerowe:
+- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`, `skrot-v12-zabezpieczenia.sql`, `skrot-v13-gry.sql`) i funkcje serwerowe:
   - `functions/stripe-webhook` – po płatności w Stripe (konto live „skrotbm”, endpoint „skrotbm-supabase”) wpisuje dostęp (sekret `STRIPE_WEBHOOK_SECRET`, bez weryfikacji JWT),
   - `functions/kalendarz` – osobisty kalendarz do telefonu (zajęcia + zaliczenia + zadania) pod tajnym linkiem; reguły w `skrot-kalendarz.sql`, wdrażanie z `--no-verify-jwt`,
   - `functions/claude` – AI (sekret `ANTHROPIC_API_KEY`): starosta bez limitu, osoby z pełnym dostępem tylko do „Moich materiałów”, z biletem i limitem plików. Prosty język i „Dlaczego?” materiałów roku powstają z góry.
@@ -54,6 +54,15 @@ Bez zalogowania strona pokazuje tylko osobny ekran logowania (`#login` w `index.
 - Zapomniane hasło = zaloguj się kodem i ustaw nowe. Konto bez hasła loguje się tylko kodem.
 - Dzielenie się hasłem nic nie daje: dalej działa limit 3 urządzeń i jedna aktywna sesja (`skrot-v8-urzadzenia.sql`).
 - Supabase → Authentication → Sign In / Providers → Email musi być włączony (jest, bo działa kod); hasło nie wymaga dodatkowych ustawień.
+
+## Gry i ranking (v13, `skrot-v13-gry.sql`)
+- Pełny opis i etapy: `docs/gry/SPEC.md`. Punkty rankingu (🏆) to osobna liczba od XP (⚡): XP liczy przeglądarka, punkty rankingu **wyłącznie baza**. Przeglądarka nie ma prawa czytać ani pisać tabel `nauka_profil`, `nauka_rp`, `nauka_odp`, `nauka_gry`; wszystko idzie przez funkcje RPC.
+- Za co są punkty: dobra odpowiedź w quizie albo grze +10, zadanie liczbowe +20, oceniona fiszka w Powtórkach +1 (max 20 dziennie), zdana lekcja +30 (raz), seria dni +5. To samo pytanie liczy się raz dziennie i tylko za pierwszą odpowiedź tego dnia. Dzienne limity: gry 150, quizy 300, lekcje 150. Liczby zmienia się w jednym miejscu: `nauka_rp_cfg()` w SQL.
+- Odpowiedź sprawdza baza na podstawie `materialContent` (materiały roku). „Moje materiały” nie dają punktów rankingu.
+- Kod w przeglądarce: `window.skrot.rp` w `skrot-supabase.js` (jedyne miejsce, które woła te RPC). `index.html` wysyła punkty w tle funkcją `rpSend` z czterech miejsc: quiz (`quizSource` → `onCard`, pierwsza odpowiedź na pytanie, indeks w oryginalnej kolejności opcji), zadanie krok po kroku (`simBox` → `check`), Powtórki (ocena karty w odtwarzaczu `grade4` i stary widok `rvGrade`), lekcja ze zdanym biletem (`lpFinishLesson`). Bez pełnego dostępu nic nie jest wysyłane. Gdy SQL v13 nie jest uruchomiony, wywołania zwracają `not_enabled` i strona działa jak dotąd.
+- XP z gier ma własną dzienną pulę `games: 30` w `XP_CAP`.
+- Testy bazy: `supabase/test/stub.sql` (atrapa Supabase) + `supabase/test/v13.sql` (przypadki B1–B20). Bez Postgresa: `node supabase/test/pglite.mjs` (PGlite).
+- **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v13-gry.sql` → Run (po v12; plik można uruchomić ponownie). Strona działa też bez niego.
 
 ## Aktywność dla starosty (`skrot-v11-aktywnosc.sql`)
 - Więcej → Tryb starosty → **Aktywność**: kto jest teraz na stronie (sygnał z karty w ostatnich 2 min), historia logowań (kod / hasło / link, urządzenie, godzina), wizyty (początek i długość; nowa wizyta po 30 min przerwy) i wszystkie konta z datą ostatniego logowania z Supabase Auth i ostatnią obecnością. Panel odświeża się co 30 s, ma wyszukiwarkę po e-mailu.
