@@ -80,3 +80,21 @@ Jedna: **Plus Jakarta Sans** (Google Fonts), wagi 400–800.
 | `og.png` | logo na kratce (1200×630) | podgląd linku na Messengerze, WhatsAppie, FB |
 
 Źródło: grafiki z Higgsfield (24.10.2026), wycięte na przezroczyste tło.
+
+## Motyw „Kokardka” (nagroda za poziom 5)
+
+Włączany w Więcej (`html[data-theme="bow"]`, `localStorage skrot-theme = "bow"`). Do poziomu `BOW_LEVEL` (5, czyli 1000 XP) wiersz jest zablokowany i pokazuje, ile XP brakuje; starosta ma go zawsze. Po wczytaniu postępów `pinkTheme.enforce()` wyłącza Kokardkę, jeśli poziom jest za niski. Przy awansie na poziom 5 pokazuje się okno „Odblokowano motyw Kokardka”.
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--paper` | `#FFF9F8` | kremowe tło strony |
+| `--green-100` | `#FBE7EC` | pudrowy róż: miękkie tła, chipy |
+| `--green-200` / `--line` | `#F3C9D5` / `#EBC7D2` | obramowania |
+| `--green-400` | `#E58BA6` | akcenty bez tekstu |
+| `--green-600` | `#A8325D` | główny kolor, przyciski (satynowy gradient) |
+| `--green-900` | `#7A2445` | tekst na różowym tle |
+| `--ink` / `--muted` | `#2A1219` / `#5A2E3C` | tekst główny i pomocniczy |
+
+Kontrast: biały na `#A8325D` 6,4:1, `#7A2445` na `#FBE7EC` 8,2:1, `#5A2E3C` na tle 10,7:1.
+
+Wzory (własne SVG w zmiennych `--bow-*` na `:root`): kokardki z tiulu i serduszka w tle, koronkowy brzeg pod górnym paskiem, bukiet (storczyk, lilia, kwiat wiśni) w konturze w prawym górnym rogu, koronkowa serwetka w lewym dolnym i w karcie „Teraz zrób to”. Tytuły ekranów kursywą Playfair Display (wczytywana tylko przy tym motywie) z wstążką i kokardką. W rogu kokardka 🎀 z dobrym słowem, bez śladu za kursorem.
