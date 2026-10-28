@@ -115,3 +115,18 @@ Włączany w Więcej (`html[data-theme="lilia"]`, `localStorage skrot-theme = "l
 | `--ink` / `--muted` | `#170D29` / `#3B2E57` | tekst główny i pomocniczy |
 
 Wzory (własne SVG): liście lilii i kwiat lotosu zamiast kratki, „malowane” plamy nieba w tle, zawirowanie nieba w prawym górnym rogu, kręgi na wodzie przy stopce, pasek u góry w kolorach zmierzchu. W rogu lotos 🪷 ze spokojnym słowem, bez śladu za kursorem.
+
+## Motyw „Łąka” (nagroda za poziom 5)
+
+Włączany w Więcej → Ty, odblokowuje się na poziomie 5 „Ogarnięty” (1000 XP); próg to stała `MEADOW_LV` w `index.html`.
+Na podstawie zdjęć: złota godzina, mgła z promieniami słońca, owce na wzgórzach, dmuchawce.
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--paper` | `#F8F4E7` | ciepłe tło (mgła o zachodzie) |
+| `--surface` | `#FFFDF7` | karty |
+| `--accent` | `#3F6B22` | mech: przyciski, aktywne elementy (biały tekst 6,3:1) |
+| `--lime-400` | `#D2A93E` | złoto: paski postępu, kreski |
+| `--ink` / `--muted` | `#16200F` / `#3A4530` | tekst (15:1 i 9:1 na tle) |
+
+Wzór: dmuchawce i źdźbła w tle zamiast kratki, promienie słońca z prawego górnego rogu zamiast słojów, wzgórza z dwiema owcami przyklejone na dole ekranu, kępka trawy pod tytułami. Owca w rogu (klik = dobre słowo i dmuchawce), kilka dmuchawców powoli przelatuje przez ekran. „Mniej animacji” wyłącza cały ruch.
