@@ -130,3 +130,28 @@ Na podstawie zdjęć: złota godzina, mgła z promieniami słońca, owce na wzg�
 | `--ink` / `--muted` | `#16200F` / `#3A4530` | tekst (15:1 i 9:1 na tle) |
 
 Wzór: dmuchawce i źdźbła w tle zamiast kratki, promienie słońca z prawego górnego rogu zamiast słojów, wzgórza z dwiema owcami przyklejone na dole ekranu, kępka trawy pod tytułami. Owca w rogu (klik = dobre słowo i dmuchawce), kilka dmuchawców powoli przelatuje przez ekran. „Mniej animacji” wyłącza cały ruch.
+
+## Motyw „Nocny rejs” (nagroda za poziom 8)
+
+Odblokowuje się po zdobyciu **poziomu 8 (Strateg, 2800 XP)** — stała `SEA_LEVEL` w `index.html`. Raz odblokowany zostaje na zawsze. Starosta widzi go zawsze. Włącza się w **Więcej**; przed odblokowaniem w tym miejscu jest kłódka z brakującym XP, a w oknie „Poziomy i rangi” przy poziomie 8 widać nagrodę. W chwili zdobycia poziomu wyskakuje okno „Odblokowano motyw Nocny rejs” z przyciskiem „Włącz teraz”.
+
+Inspiracja: nocne morze, kremowo-złote żagle w świetle, księżyc nad horyzontem, mgła.
+
+| Rola | Kolor |
+|---|---|
+| tło strony (niebo nocy) | `#070D18` → `#04080F` |
+| karty | `#0E1828` |
+| wciśnięte tła | `#0A1322` |
+| linie | `#2A3B56` |
+| tekst główny (kremowy żagiel) | `#F3EADB` |
+| tekst pomocniczy | `#BAC4D3` |
+| akcent: złoto żagla | `#E2B66E` (najechanie `#F0C886`) |
+| tekst na złotym przycisku | `#0A1220` |
+| światło księżyca (błękit) | `#6F9CC9` |
+| dobrze / uwaga / źle | `#8BD5B0` / `#FFBE7A` / `#FF9A90` |
+
+Wszystkie pary tekst/tło mają kontrast ≥ 7,9:1.
+
+Wzory: delikatne linie fal zamiast kratki, złota poświata w prawym górnym rogu zamiast słojów, mgła w lewym dolnym rogu, na dole ekranu horyzont z falami, księżycem z odbiciem i małą złotą żaglówką, która powoli przepływa (zatrzymuje się przy „Mniej animacji”).
+
+Jak działa: zmienne w `html[data-theme="sea"]` + skrypt `seaTheme`, który w kolorach wpisanych na sztywno odwraca jasność (białe tła → granat, czarny tekst → krem), a zielenie zamienia na złoto. Reguły z `data-theme=` w selektorze skrypt pomija, więc kolory samego motywu się nie psują.
