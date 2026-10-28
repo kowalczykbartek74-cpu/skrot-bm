@@ -85,7 +85,7 @@
     skrot.paidAccount = !!(me?.platny_konto ?? skrot.paid);
     skrot.until = me?.dostep_do || null;
     skrot.plan = me?.plan || null;
-    // Okres próbny (supabase/skrot-v9-proba.sql): trialUntil tylko wtedy, gdy to on daje dostęp.
+    // Okres próbny (supabase/skrot-v16-proba.sql): trialUntil tylko wtedy, gdy to on daje dostęp.
     skrot.trialUntil = me?.proba_do || null;
     skrot.trialCan = !!me?.proba_mozna && !skrot.paid;
     skrot.trialDays = me?.proba_dni || 3;
@@ -785,7 +785,7 @@
     choosePlan();
   };
 
-  // ---------- okres próbny: 3 dni pełnego dostępu, raz na konto (supabase/skrot-v9-proba.sql) ----------
+  // ---------- okres próbny: 3 dni pełnego dostępu, raz na konto (supabase/skrot-v16-proba.sql) ----------
   const TRIAL_ERR = {
     ma_dostep: "Masz już pełny dostęp, okres próbny nie jest potrzebny.",
     wykorzystany: "Okres próbny na tym koncie został już wykorzystany. Pełny dostęp możesz kupić od 35 zł miesięcznie.",

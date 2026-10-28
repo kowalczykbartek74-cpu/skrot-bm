@@ -1,6 +1,10 @@
 -- Skrót BM: okres próbny. Jednorazowo 3 dni pełnego dostępu za darmo, bez karty.
 -- Student włącza go sam przyciskiem „Wypróbuj za darmo przez 3 dni” (po zalogowaniu).
--- Wymaga wcześniej skrot-v8-urzadzenia.sql. Można uruchamiać wielokrotnie.
+-- Można uruchamiać wielokrotnie. Na produkcji: PO skrot-v15-gry2.sql (i skrot-v14-monety.sql), czyli na końcu.
+-- (Plik powstał jako skrot-v9-proba.sql. Nazwa v16 = kolejność uruchomienia.)
+-- Nadpisuje nauka_platny_konto, nauka_ja i nauka_kalendarz_dane. Ich ostatnie wcześniejsze wersje są
+-- w skrot-v8-urzadzenia.sql (v9–v15 ich nie zmieniają), więc niczego nie cofa; dochodzi tylko okres próbny.
+-- Okres próbny działa jak opłacone konto także w grach, rankingu i monetach: nauka_platny → nauka_rp_mozna (v13).
 --
 -- Jeden okres próbny na konto, na adres e-mail i na urządzenie (nagłówek x-skrot-device),
 -- żeby nowy adres na tym samym telefonie nie dawał kolejnych 3 dni.

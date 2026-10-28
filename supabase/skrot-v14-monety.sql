@@ -1,11 +1,15 @@
 -- Skrót BM v14: monety 🪙, Zadania dnia / tygodnia i Sklep z motywami.
--- Wklej w Supabase → SQL Editor → Run, PO skrot-v13-gry.sql. Można uruchamiać wielokrotnie (nie kasuje danych).
+-- Wklej w Supabase → SQL Editor → Run, PO skrot-v13-gry.sql i skrot-v15-gry2.sql (na produkcji v15 jest już w bazie,
+-- więc ten plik idzie po nim; numer v14 został z kolejności pisania). Można uruchamiać wielokrotnie (nie kasuje danych).
+-- Nie zmienia niczego z v13/v15 (nauka_rp_pula, nauka_rp_zrodlo_check, nauka_rp_dodaj zostają z v15): tylko dokłada
+-- trigger na nauka_rp i własne tabele/funkcje. Działa też bez v15 (wtedy bez Hasła dnia w limicie i w Zadaniach dnia).
 --
 -- Zasady:
 --   • Monety liczy WYŁĄCZNIE baza. Przeglądarka nie ma prawa czytać ani pisać tabel nauka_monety i nauka_posiadane
 --     (RLS włączone, zero reguł); wszystko idzie przez funkcje security definer poniżej.
 --   • Monety z nauki wynikają z księgi punktów rankingu nauka_rp (v13): 10 pkt dnia = 1 moneta (w dół), przeliczane
---     triggerem po każdym wpisie. Limity dzienne nauka_rp dają najwyżej 62 monety dziennie. Nigdy z XP (XP jest w przeglądarce).
+--     triggerem po każdym wpisie, ze WSZYSTKICH źródeł (także 'haslo' i 'boss' z v15). Limity dzienne nauka_rp dają
+--     najwyżej 64 monety dziennie z nauki (62 + Hasło dnia), do tego jednorazowo +5 za Bossa. Nigdy z XP (XP jest w przeglądarce).
 --   • Saldo = suma wpisów księgi. Każdy wpis ma unikalny klucz, więc ta sama nagroda / zakup nie wpadnie dwa razy.
 --   • Zarabiają tylko osoby z pełnym dostępem (nauka_rp_mozna). Kupować może każdy zalogowany, kto ma monety.
 --   • Zakupy są ostateczne. Ręcznie dodać / odjąć monety albo dać motyw może tylko starosta.
@@ -95,17 +99,25 @@ language sql stable security definer set search_path = '' as $$
   select coalesce(sum(delta), 0)::int from public.nauka_monety where user_id = p_user
 $$;
 
--- Najwięcej monet z nauki dziennie (wynika z limitów v13: gry + quiz + powtórki + lekcje + seria).
+-- Najwięcej monet z nauki dziennie (wynika z limitów v13: gry + quiz + powtórki + lekcje + seria, i z v15: Hasło dnia).
+-- Nagrody za Bossa (v15) tu nie liczymy: to jednorazowy bonus, nie codzienny limit.
+-- plpgsql, bo nauka_gry2_cfg() (v15) może jeszcze nie istnieć.
 create or replace function public.nauka_mon_dzis_max() returns int
-language sql immutable set search_path = '' as $$
-  select ((c->>'max_dzien_gry')::int + (c->>'max_dzien_quiz')::int + (c->>'max_dzien_powtorki')::int
-        + (c->>'max_dzien_lekcje')::int + (c->>'pkt_seria')::int) / (public.nauka_mon_cfg()->>'kurs_pkt')::int
-    from (select public.nauka_rp_cfg() c) x
-$$;
+language plpgsql stable set search_path = '' as $$
+declare c jsonb := public.nauka_rp_cfg(); haslo int := 0;
+begin
+  if to_regprocedure('public.nauka_gry2_cfg()') is not null then
+    select coalesce(max(v::int), 0) into haslo from jsonb_array_elements_text(public.nauka_gry2_cfg()->'haslo_pkt') v;
+  end if;
+  return ((c->>'max_dzien_gry')::int + (c->>'max_dzien_quiz')::int + (c->>'max_dzien_powtorki')::int
+        + (c->>'max_dzien_lekcje')::int + (c->>'pkt_seria')::int + haslo) / (public.nauka_mon_cfg()->>'kurs_pkt')::int;
+end $$;
 
 -- =====================================================================
 -- 5) Zadania dnia i tygodnia (misje)
 -- =====================================================================
+-- „gra1” liczy rundy z punktami za wynik (Fruń, Pary, Przejdź, Drabina), „odp10/odp25/zad2” także odpowiedzi
+-- w Drabinie i ciosy w Bossa (to zwykłe odpowiedzi quizu/gry), „haslo1” – rozwiązane Hasło dnia (v15, źródło 'haslo').
 -- Katalog. co: wiersze (liczba wpisów nauka_rp o źródle z listy i kluczu z prefiksem) | pkt (suma punktów dnia)
 -- | dni (dni z punktami w tygodniu). Kolejność dziennych ma znaczenie (wybór po kolei, patrz nauka_misje_na).
 create or replace function public.nauka_misje_pula() returns jsonb
@@ -117,6 +129,7 @@ language sql immutable set search_path = '' as $$
     {"id":"pow10",  "okres":"dzien",   "co":"wiersze", "zrodla":["powtorka"],   "prefix":"p:", "ile":10, "nagroda":6,  "pl":"Zrób 10 powtórek fiszek",                 "en":"Do 10 flashcard reviews"},
     {"id":"lek1",   "okres":"dzien",   "co":"wiersze", "zrodla":["lekcja"],     "prefix":"l:", "ile":1,  "nagroda":10, "pl":"Skończ jedną lekcję",                     "en":"Finish one lesson"},
     {"id":"gra1",   "okres":"dzien",   "co":"wiersze", "zrodla":["wynik"],      "prefix":"r:", "ile":1,  "nagroda":5,  "pl":"Zagraj jedną rundę gry",                  "en":"Play one game round"},
+    {"id":"haslo1", "okres":"dzien",   "co":"wiersze", "zrodla":["haslo"],      "prefix":"h:", "ile":1,  "nagroda":5,  "pl":"Rozwiąż Hasło dnia",                      "en":"Solve the Word of the Day"},
     {"id":"pkt60",  "okres":"dzien",   "co":"pkt",     "zrodla":null,           "prefix":null, "ile":60, "nagroda":8,  "pl":"Zbierz dziś 60 pkt",                      "en":"Earn 60 points today"},
     {"id":"tyd_l5", "okres":"tydzien", "co":"wiersze", "zrodla":["lekcja"],     "prefix":"l:", "ile":5,  "nagroda":40, "pl":"Skończ 5 lekcji w tym tygodniu",          "en":"Finish 5 lessons this week"},
     {"id":"tyd_d5", "okres":"tydzien", "co":"dni",     "zrodla":null,           "prefix":null, "ile":5,  "nagroda":50, "pl":"Ucz się 5 dni w tym tygodniu",            "en":"Study on 5 days this week"}
@@ -337,7 +350,7 @@ language plpgsql stable security definer set search_path = '' as $$
 declare d date := public.nauka_dzis(); t date := public.nauka_tydzien(public.nauka_dzis());
 begin
   if not public.nauka_admin() then return jsonb_build_object('ok', false, 'code', 'not_admin'); end if;
-  return jsonb_build_object('ok', true, 'dzien', d, 'tydzien', t,
+  return jsonb_build_object('ok', true, 'dzien', d, 'tydzien', t, 'dzis_max', public.nauka_mon_dzis_max(),
     'konta', coalesce((
       select jsonb_agg(jsonb_build_object('user_id', x.user_id, 'email', lower(coalesce(u.email, '')), 'dzis', x.dzis, 'tydzien', x.tydz,
                                           'saldo', x.saldo, 'posiadane', x.pos) order by x.tydz desc, x.saldo desc)
