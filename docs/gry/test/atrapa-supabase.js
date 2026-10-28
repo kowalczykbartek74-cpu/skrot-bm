@@ -81,11 +81,11 @@
       if (sc === "daleko") {
         const ludzie = Array.from({ length: 41 }, (_, i) => ({ nick: "Osoba " + (i + 1), pkt: 610 - i * 20 }));
         ludzie[4].pkt = ludzie[3].pkt; // remis
-        ludzie[13] = { nick, pkt: ludzie[13].pkt, ja: true };
+        const J = +ls("mock-ja", "13"); ludzie[J] = { nick, pkt: ludzie[J].pkt, ja: true };
         const lista = ludzie.filter((x) => vis || !x.ja);
         let m = 0; const z = lista.map((x, i) => ({ miejsce: i && x.pkt === lista[i - 1].pkt ? m : (m = i + 1), nick: x.nick, pkt: x.pkt, ja: !!x.ja }));
         const me = vis ? z.find((x) => x.ja) : null, lp = me ? z.indexOf(me) : -1;
-        return { ...base, n: z.length, top: z.slice(0, 10), sasiedzi: lp > 9 ? z.slice(lp - 2, lp + 3) : [], ja: { pkt: ludzie[13].pkt, widoczny: vis, w_grupie: true, miejsce: vis ? me.miejsce : 14, z: vis ? z.length : z.length + 1 } };
+        return { ...base, n: z.length, top: z.slice(0, 10), sasiedzi: lp > 9 ? z.slice(lp - 2, lp + 3) : [], ja: { pkt: ludzie[J].pkt, widoczny: vis, w_grupie: true, miejsce: vis ? me.miejsce : J + 1, z: vis ? z.length : z.length + 1 } };
       }
       const top = [{ miejsce: 1, nick: "Łoś Ania", pkt: 240, ja: false }, { miejsce: 2, nick: "Cela", pkt: 180, ja: false }];
       if (vis) top.push({ miejsce: 3, nick, pkt: 90, ja: true });

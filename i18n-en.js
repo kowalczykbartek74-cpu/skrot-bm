@@ -1,6 +1,33 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Do #{0} brakuje Ci {1} pkt": "{1} pts to #{0}",
+/* Gry: etap 5 – demo i odznaki (2026-10-28) */
+"Zagraj w demo (1 min) →": "Play the demo (1 min) →",
+"W pełnej wersji pytania są z Twoich przedmiotów, a punkty liczą się do rankingu roku.": "In the full version the questions come from your subjects and points count towards your year's ranking.",
+"Zaloguj się albo kup dostęp": "Log in or buy access",
+"Odznaki": "Badges",
+"{0} Odznaka: {1}": "{0} Badge: {1}",
+"(jeszcze nie)": "(not yet)",
+"Pierwszy lot": "First flight",
+"10 kolumn we Fruń": "10 columns in Fly",
+"Ponad półkami": "Above the shelves",
+"30 kolumn we Fruń": "30 columns in Fly",
+"Druga szansa": "Second chance",
+"10 wskrzeszeń łącznie": "10 revivals in total",
+"Bez pomyłki": "No mistakes",
+"plansza Par trudna bez błędu": "a hard Pairs board without a mistake",
+"Na drugi brzeg": "To the other bank",
+"50 rzędów w Przejdź": "50 rows in Cross",
+"Dziesiątka": "Top ten",
+"top 10 rankingu tygodnia": "top 10 in the weekly ranking",
+"Pierwszy lot: 10 kolumn we Fruń": "First flight: 10 columns in Fly",
+"Ponad półkami: 30 kolumn we Fruń": "Above the shelves: 30 columns in Fly",
+"Druga szansa: 10 wskrzeszeń łącznie": "Second chance: 10 revivals in total",
+"Bez pomyłki: plansza Par trudna bez błędu": "No mistakes: a hard Pairs board without a mistake",
+"Na drugi brzeg: 50 rzędów w Przejdź": "To the other bank: 50 rows in Cross",
+"Dziesiątka: top 10 rankingu tygodnia": "Top ten: top 10 in the weekly ranking",
+"{0} (jeszcze nie)": "{0} (not yet)",
 /* Gry: etap 4 – Przejdź (2026-10-28) */
 "Przejdź": "Cross",
 "Przejdź przez Cukrową.": "Cross Cukrowa Street.",

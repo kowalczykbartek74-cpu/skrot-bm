@@ -2,8 +2,8 @@
 // zawsze istnieje droga przez trawę (BFS), reguły grup, bramki co 25 rzędów, ≥ 4 wolne pola na trawie.
 import fs from "fs";
 import vm from "vm";
-const src = fs.readFileSync(new URL("../../../gry.js", import.meta.url), "utf8");
-const ctx = { performance, console }; ctx.window = ctx; vm.createContext(ctx); vm.runInContext(src, ctx);
+const ctx = { performance, console }; ctx.window = ctx; vm.createContext(ctx);
+for (const f of ["gry.js", "gry-przejdz.js"]) vm.runInContext(fs.readFileSync(new URL("../../../" + f, import.meta.url), "utf8"), ctx);
 const N = 300, COLS = 9, bledy = [];
 for (let seed = 1; seed <= 200; seed++) {
   const rows = ctx.SKROT_GRY._gen(seed, N);
