@@ -80,3 +80,19 @@ Jedna: **Plus Jakarta Sans** (Google Fonts), wagi 400–800.
 | `og.png` | logo na kratce (1200×630) | podgląd linku na Messengerze, WhatsAppie, FB |
 
 Źródło: grafiki z Higgsfield (24.10.2026), wycięte na przezroczyste tło.
+
+## Motyw „Nenufary” (nagroda za poziom 5)
+
+Fioletowy zmierzch nad stawem z liliami, odblokowany od poziomu 5 (Ogarnięty, 1000 XP); próg to `THEMES.lilia.lvl` w `index.html`. Starosta (admin) ma go zawsze. Wybór motywu: przycisk w pasku (komputer) albo Więcej → Motyw strony.
+
+| Zmienna | Kolor | Rola |
+|---|---|---|
+| `--green-600` | `#6A3DAE` | główny fiolet (przyciski, aktywne) |
+| `--green-900` | `#3A1D6B` | tekst na jasnym fiolecie |
+| `--lime-400` | `#E58BC9` | lotosowy róż (akcenty, falka) |
+| `--teal-600` | `#4A58B0` | barwinek |
+| `--sun` | `#E9C97A` | ciepła poświata zachodu |
+| `--paper` | `#FAF8FE` | tło strony |
+| `--ink` | `#170D29` | tekst główny |
+
+Wzory: liście lilii i kwiat lotosu zamiast kratki, „malowane” plamy nieba w tle, zawirowanie nieba w rogu zamiast słojów, kręgi na wodzie przy stopce, pasek u góry w kolorach zmierzchu. Lotos w rogu daje spokojne słowo po kliknięciu (bez brokatu za kursorem).
