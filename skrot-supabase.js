@@ -255,6 +255,50 @@
   };
   skrot.mojeStan = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_stan"); if (error) throw rpcErr(error); return data; };
   skrot.mojeStart = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_start"); if (error) throw rpcErr(error); return data; };
+  // ---------- monety, Zadania dnia i Sklep (supabase/skrot-v14-monety.sql) ----------
+  // Saldo, zakupy i misje liczy tylko baza; tu tylko pamiętamy ostatni stan i dajemy znać stronie zdarzeniem „skrot:sklep”.
+  // sklep.ok = stan z bazy; sklep.err = "no_sql" (v14 jeszcze nie uruchomione, więc nikt nic nie kupił) albo inny błąd.
+  skrot.sklep = { saldo: 0, posiadane: new Set(), katalog: [], loaded: false, ok: false, err: null };
+  const sklepEvt = () => window.dispatchEvent(new CustomEvent("skrot:sklep"));
+  let sklepAt = 0, sklepBusy = null, sklepTimer = 0;
+  skrot.sklepStan = async () => {
+    await ready;
+    if (skrot.state !== "in") { skrot.sklep.loaded = true; sklepEvt(); return skrot.sklep; }
+    if (sklepBusy) return sklepBusy;
+    sklepBusy = (async () => {
+      try {
+        const { data, error } = await sb.rpc("nauka_sklep_stan");
+        if (error) throw rpcErr(error);
+        if (data?.ok) Object.assign(skrot.sklep, data, { posiadane: new Set(data.posiadane || []), ok: true, err: null });
+        else skrot.sklep.err = data?.code || "error";
+      } catch (e) { skrot.sklep.err = e.code || "error"; }
+      skrot.sklep.loaded = true; sklepAt = Date.now(); sklepEvt();
+      return skrot.sklep;
+    })().finally(() => { sklepBusy = null; });
+    return sklepBusy;
+  };
+  // Po zapytaniu, które dało punkty rankingu (pkt > 0): monety przelicza baza, my tylko odświeżamy stan po 3 s.
+  // Seria odpowiedzi w quizie/grze = jedno odświeżenie (timer liczy się od ostatniej).
+  skrot.sklepPozniej = () => { if (skrot.state !== "in") return; clearTimeout(sklepTimer); sklepTimer = setTimeout(() => skrot.sklepStan(), 3000); };
+  skrot.sklepKup = async (item) => {
+    await ready;
+    const { data, error } = await sb.rpc("nauka_sklep_kup", { p_item: item });
+    if (error) throw rpcErr(error);
+    if (data?.ok || data?.code === "owned") await skrot.sklepStan();
+    return data;
+  };
+  skrot.misje = async () => { await ready; const { data, error } = await sb.rpc("nauka_misje"); if (error) throw rpcErr(error); return data; };
+  skrot.misjaOdbierz = async (id) => {
+    await ready;
+    const { data, error } = await sb.rpc("nauka_misja_odbierz", { p_id: id });
+    if (error) throw rpcErr(error);
+    if (typeof data?.saldo === "number") { skrot.sklep.saldo = data.saldo; sklepEvt(); }
+    return data;
+  };
+  skrot.monetyHistoria = async (limit = 30) => { await ready; const { data, error } = await sb.rpc("nauka_monety_historia", { p_limit: limit }); if (error) throw rpcErr(error); return data; };
+  ready.then(() => skrot.sklepStan());
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && skrot.state === "in" && Date.now() - sklepAt > 60e3) skrot.sklepStan(); });
+
   skrot.list = async (col) => { await ready; const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col); if (error) throw error; return data; };
 
   // ---------- Gry i ranking (skrot-v13-gry.sql, skrot-v15-gry2.sql) ----------
@@ -269,9 +313,13 @@
         if (error.code === "PGRST202" || /does not exist/i.test(error.message || "")) return { ok: false, code: "not_enabled" };
         return { ok: false, code: error.code || "error" };
       }
+      // Punkty rankingu dają monety (v14, trigger w bazie): po każdym zapytaniu, które coś przyznało, odświeżamy saldo i Zadania dnia.
+      if (data?.ok && data.pkt > 0 && RP_ZAROBEK.has(fn)) skrot.sklepPozniej?.();
       return data || { ok: false, code: "empty" };
     } catch { return { ok: false, code: "offline" }; }
   };
+  // Zapytania, w których pkt to punkty przyznane teraz (nauka_haslo_dzis i nauka_bossy zwracają pkt informacyjnie).
+  const RP_ZAROBEK = new Set(["nauka_rp_odpowiedz", "nauka_rp_zadanie", "nauka_rp_powtorka", "nauka_rp_lekcja", "nauka_gra_koniec", "nauka_haslo_proba", "nauka_boss_odbierz"]);
   skrot.rp = {
     profil:   ()                       => rpCall("nauka_profil_moj"),
     ustaw:    ({ nick = null, widoczny = null } = {}) => rpCall("nauka_profil_ustaw", { p_nick: nick, p_w_rankingu: widoczny }),
@@ -1016,7 +1064,36 @@
     layer.append(scrim);
     document.addEventListener("keydown", onKey);
 
-    let d = null, tab = "teraz", q = "", loadedAt = null;
+    let d = null, tab = "teraz", q = "", loadedAt = null, mon = null;
+    // Monety (supabase/skrot-v14-monety.sql): dziś / tydzień / saldo na osobę, ręczne dodanie / odjęcie i motyw w prezencie.
+    const KATALOG = [["motyw:bow", "Kokardka"], ["motyw:meadow", "Łąka"], ["motyw:lilia", "Nenufary"], ["motyw:sea", "Nocny rejs"]];
+    const loadMon = async () => {
+      const { data, error } = await sb.rpc("nauka_admin_monety_stat");
+      mon = error ? { ok: false, noSql: /function|does not exist|schema cache|Could not find/i.test(error.message || "") } : data || { ok: false };
+      if (scrim.isConnected) draw();
+    };
+    const monOf = (uid) => (mon?.konta || []).find((k) => k.user_id === uid);
+    const giveCoins = async (uid, email) => {
+      const n = parseInt(prompt(`Ile monet dla ${email}? (minus = odjąć, np. -50)`, "50") || "", 10);
+      if (!n) return;
+      const powod = prompt("Powód (zobaczy go ta osoba w historii monet):", "Konkurs");
+      if (!powod || !powod.trim()) return;
+      const { data, error } = await sb.rpc("nauka_admin_monety", { p_user: uid, p_delta: n, p_powod: powod.trim() });
+      if (error || !data?.ok) return alert("Nie udało się: " + (error?.message || { below_zero: "saldo nie może zejść poniżej zera", max_saldo: "za dużo monet", no_reason: "brak powodu" }[data?.code] || data?.code));
+      await loadMon();
+    };
+    const giveItem = async (uid, email) => {
+      const nr = prompt(`Który motyw dać ${email} za darmo?\n` + KATALOG.map(([, n], i) => `${i + 1}. ${n}`).join("\n"), "1");
+      const it = KATALOG[parseInt(nr || "", 10) - 1]; if (!it) return;
+      const powod = prompt("Powód (np. nagroda w konkursie):", "Konkurs") || "";
+      const { data, error } = await sb.rpc("nauka_admin_daj_item", { p_user: uid, p_item: it[0], p_powod: powod.trim() || null });
+      if (error || !data?.ok) return alert("Nie udało się: " + (error?.message || data?.code));
+      alert(data.juz ? `${email} już ma motyw ${it[1]}.` : `Dano motyw ${it[1]}.`);
+      await loadMon();
+    };
+    const monBtns = (uid, email) => [
+      el("button", { type: "button", class: "btn small ghost", onclick: () => giveCoins(uid, email) }, "± monety"),
+      el("button", { type: "button", class: "btn small ghost", onclick: () => giveItem(uid, email) }, "Daj motyw")];
     const TZ = { timeZone: "Europe/Warsaw" };
     const fmt = (iso) => {
       if (!iso) return "—";
@@ -1059,6 +1136,15 @@
         if (!ws.length) return [empty(q ? "Brak wizyt tego adresu." : "Brak zapisanych wizyt.")];
         return ws.map((w) => rowBox(who(w.email, w.nazwa || "Urządzenie"), el("small", { class: "muted", text: `${fmt(w.od)} · ${dur(w.od, w.koniec)}` })));
       }
+      if (tab === "monety") {
+        if (!mon) { loadMon(); return [empty("Wczytuję…")]; }
+        if (!mon.ok) return [empty(mon.noSql ? "Najpierw uruchom supabase/skrot-v14-monety.sql w Supabase → SQL Editor." : "Nie udało się wczytać monet.")];
+        const ks = mon.konta.filter(match);
+        if (!ks.length) return [empty("Nikt jeszcze nie ma monet. Dać komuś monety możesz w zakładce Konta.")];
+        return [empty(`Najwięcej monet w tym tygodniu na górze (z nauki i Zadań dnia). Z samej nauki da się najwyżej ${mon.dzis_max || 64} dziennie (z Hasłem dnia), do tego jednorazowo nagroda za Bossa. Więcej to Zadania dnia albo monety od starosty.`)]
+          .concat(ks.map((k) => rowBox(who(k.email, `motywy: ${(k.posiadane || []).map((i) => (KATALOG.find((x) => x[0] === i) || [, i])[1]).join(", ") || "brak"}`),
+            el("span", { style: "display:flex;gap:6px;flex-wrap:wrap;align-items:center" }, chip(`dziś ${k.dzis}`, k.dzis >= 60), chip(`tydzień ${k.tydzien}`), chip(`saldo ${k.saldo}`), ...monBtns(k.user_id, k.email)))));
+      }
       if (!d.konta) return [empty("Lista kont jest niedostępna (baza nie pozwala czytać Supabase Auth). Reszta panelu działa.")];
       const online = new Set((d.online || []).map((o) => o.user_id));
       const ks = d.konta.filter(match);
@@ -1067,7 +1153,8 @@
         el("span", { style: "display:grid;gap:4px;min-width:0;flex:1 1 220px" },
           el("span", { style: "display:flex;gap:6px;align-items:center;flex-wrap:wrap" }, online.has(k.user_id) ? dot() : null, el("b", { style: "overflow-wrap:anywhere", text: k.email || k.user_id }),
             k.admin ? chip("starosta") : k.platny ? chip("dostęp", true) : chip("bez dostępu")),
-          el("small", { class: "muted", text: `konto od ${fmt(k.od)}` })),
+          el("small", { class: "muted", text: `konto od ${fmt(k.od)}` }),
+          mon?.ok ? el("span", { style: "display:flex;gap:6px;flex-wrap:wrap;align-items:center" }, chip(`🪙 monety dziś ${monOf(k.user_id)?.dzis || 0} · saldo ${monOf(k.user_id)?.saldo || 0}`), ...monBtns(k.user_id, k.email)) : null),
         el("small", { style: "display:grid;gap:2px" },
           el("span", {}, "ostatnie logowanie: ", el("b", { text: fmt(k.logowanie) })),
           el("span", { class: "muted", text: `ostatnio na stronie: ${online.has(k.user_id) ? "teraz" : fmt(k.ostatnio)}` }))));
@@ -1075,7 +1162,7 @@
 
     function draw() {
       const nOn = (d.online || []).length;
-      const tabs = [["teraz", `Teraz (${nOn})`], ["logowania", "Logowania"], ["wizyty", "Wizyty"], ["konta", `Konta${d.konta ? ` (${d.konta.length})` : ""}`]];
+      const tabs = [["teraz", `Teraz (${nOn})`], ["logowania", "Logowania"], ["wizyty", "Wizyty"], ["konta", `Konta${d.konta ? ` (${d.konta.length})` : ""}`], ["monety", "Monety"]];
       const search = el("input", { class: "input", type: "search", placeholder: "Szukaj po e-mailu", value: q, "aria-label": "Szukaj po e-mailu", style: "flex:1 1 200px" });
       search.addEventListener("input", () => { q = search.value.trim().toLowerCase(); const keep = search.selectionStart; draw(); const s2 = body.querySelector("input[type=search]"); s2?.focus(); try { s2?.setSelectionRange(keep, keep); } catch {} });
       const stat = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 14px;border-radius:12px;background:var(--accent-soft,#EAF5EE);min-width:120px;flex:1" },
@@ -1111,6 +1198,7 @@
       draw();
     }
     await load(true);
+    loadMon();
     timer = setInterval(() => { if (document.visibilityState === "visible") load(false); }, 30000);
   };
 
