@@ -15,9 +15,9 @@
   const cards = (n, tag) => Array.from({ length: n }, (_, i) => ({ q: `${tag}: pojęcie ${i + 1}`, a: `Definicja ${i + 1}` }));
   const DOCS = {
     materials: {
-      m1: { subjectId: "makroekonomia", title: "PKB i inflacja", createdAt: now - 5e6, v: 2, source: "sylabus" },
-      m2: { subjectId: "makroekonomia", title: "Polityka pieniężna", createdAt: now - 4e6, v: 2, source: "sylabus" },
-      m3: { subjectId: "prawo", title: "Źródła prawa", createdAt: now - 3e6, v: 2, source: "sylabus" },
+      m1: { subjectId: "makroekonomia", title: "PKB i inflacja", quizCount: 14, flashcardCount: 8, workedCount: 1, createdAt: now - 5e6, v: 2, source: "sylabus" },
+      m2: { subjectId: "makroekonomia", title: "Polityka pieniężna", quizCount: 12, flashcardCount: 6, createdAt: now - 4e6, v: 2, source: "sylabus" },
+      m3: { subjectId: "prawo", title: "Źródła prawa", quizCount: 6, flashcardCount: 4, createdAt: now - 3e6, v: 2, source: "sylabus" },
     },
     materialContent: {
       m1: { v: 2, summary: "PKB to wartość dóbr finalnych.", quiz: quiz(14, "PKB"), flashcards: cards(8, "PKB"),

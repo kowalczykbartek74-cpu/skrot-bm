@@ -63,6 +63,10 @@ Bez zalogowania strona pokazuje tylko osobny ekran logowania (`#login` w `index.
 - XP z gier ma własną dzienną pulę `games: 30` w `XP_CAP`.
 - Testy bazy: `supabase/test/stub.sql` (atrapa Supabase) + `supabase/test/v13.sql` (przypadki B1–B20). Bez Postgresa: `node supabase/test/pglite.mjs` (PGlite).
 - **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v13-gry.sql` → Run (po v12; plik można uruchomić ponownie). Strona działa też bez niego.
+- **Gry (etap 1: Fruń i Druga szansa)**: kod gier w `gry.js`, ładowany dopiero przy pierwszym wejściu w grę (`loadGry` / `grajOpen` w `index.html`). `gry.js` nie widzi zmiennych strony; wszystko dostaje w `GRY_API` (pytania do rundy `gryQuestions`, zadania `gryTasks`, fiszki po błędzie `gryOnWrong`, XP z puli `games`). Liczby gier (fizyka Fruń, czasy pytań) są w `GRY_CFG` na górze `gry.js`; prędkości i odstępów Fruń nie zmieniaj bez zmiany granicy w `nauka_gra_koniec` (SQL).
+- Ekran **Graj** (`#/gry`, `viewGames`): wybór przedmiotu (domyślnie ten z najbliższym zaliczeniem; < 20 pytań = wyszarzony), kafelki Fruń / Pary / Przejdź (dwie ostatnie „wkrótce”). Wejścia: Powtórki („Powtarzaj grając”), Dziś (raz dziennie „Masz 3 minuty?”), Przedmiot → Ćwicz, Więcej → Nauka.
+- Fruń: każda porażka otwiera Drugą szansę (1. ABCD 20 s, 2. zadanie liczbowe 60 s albo trudniejsze ABCD), dobra odpowiedź = grasz dalej. Przeglądarka sprawdza odpowiedź sama i od razu wskrzesza; baza w tle dolicza punkty rankingu. Zła odpowiedź: fiszki materiału (max 5) do Powtórek, pytanie na listę `bm-gry-zle` (wraca w kolejnych rundach). Rekord lokalny: `bm-gry-rekord:frun`.
+- Testy w przeglądarce: `docs/gry/test/etap0.mjs`, `etap1.mjs` (Playwright na atrapie Supabase, opis w `docs/gry/test/README.md`).
 
 ## Aktywność dla starosty (`skrot-v11-aktywnosc.sql`)
 - Więcej → Tryb starosty → **Aktywność**: kto jest teraz na stronie (sygnał z karty w ostatnich 2 min), historia logowań (kod / hasło / link, urządzenie, godzina), wizyty (początek i długość; nowa wizyta po 30 min przerwy) i wszystkie konta z datą ostatniego logowania z Supabase Auth i ostatnią obecnością. Panel odświeża się co 30 s, ma wyszukiwarkę po e-mailu.
