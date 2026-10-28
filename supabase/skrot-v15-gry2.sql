@@ -346,6 +346,11 @@ begin
   if v_p = any (g.proby) then return jsonb_build_object('ok', false, 'code', 'repeated'); end if;
   v_w := public.nauka_haslo_wzor(s.slowo, v_p);
   v_n := coalesce(array_length(g.proby, 1), 0) + 1;
+  -- retencja: przy pierwszej próbie dnia (tanio, przy okazji) usuwamy próby wszystkich osób starsze niż 12 miesięcy.
+  -- nauka_haslo_dni zostaje (słowa dnia służą do niepowtarzania słów).
+  if v_n = 1 then
+    delete from public.nauka_haslo where dzien < (d - interval '12 months')::date;
+  end if;
   g.proby := g.proby || v_p; g.wzory := g.wzory || v_w;
   if v_p = s.slowo then
     g.wynik := v_n;

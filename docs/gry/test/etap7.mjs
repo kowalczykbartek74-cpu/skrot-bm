@@ -228,18 +228,24 @@ for (const [nazwa, ls, konto] of [["no_words", { "mock-haslo-slowo": "" }, "plat
   await p.context().close();
 }
 
-// ---------- H. 9 liter na 360 px, klawisze ≥ 32 × 48 ----------
-for (const [w, hgt, slowo] of [[360, 740, "Inflation"], [390, 844, "Revenue"]]) {
-  const p = await page(b, { w, h: hgt, ls: { "mock-haslo-slowo": slowo } });
+// ---------- H. 9 liter na 360 px, klawisze ≥ 32 × 44; niskie telefony z podpowiedzią: plansza + klawiatura nad dolnym paskiem ----------
+for (const [w, hgt, slowo, n] of [[360, 740, "Inflation", 0], [390, 844, "Revenue", 0], [375, 667, "Revenue", 3], [360, 640, "Inflation", 3], [390, 844, "Revenue", 3]]) {
+  const S = slowo.toUpperCase(), proby = ["QWERTYUIO", "ZXCVBNMLK", "PLMOKNIJB"].slice(0, n).map((x) => x.slice(0, S.length));
+  const p = await page(b, { w, h: hgt, ls: { "mock-haslo-slowo": slowo, ...(n ? { "mock-haslo-stan": stan(proby, S) } : {}) } });
   await open(p);
   const m = await p.evaluate(() => {
     const ts = [...document.querySelectorAll(".hd-t")].map((t) => t.getBoundingClientRect()), ks = [...document.querySelectorAll(".hd-k")].map((k) => k.getBoundingClientRect());
+    const nav = [...document.querySelectorAll("nav")].find((e) => getComputedStyle(e).position === "fixed")?.getBoundingClientRect().top ?? innerHeight;
     return { n: document.querySelectorAll(".hd-row")[0].children.length, left: Math.min(...ts.map((r) => r.left)), right: Math.max(...ts.map((r) => r.right)), sw: document.documentElement.scrollWidth,
-      kw: Math.min(...ks.map((r) => r.width)), kh: Math.min(...ks.map((r) => r.height)), kr: Math.max(...ks.map((r) => r.right)), kl: Math.min(...ks.map((r) => r.left)) };
+      kw: Math.min(...ks.map((r) => r.width)), kh: Math.min(...ks.map((r) => r.height)), kr: Math.max(...ks.map((r) => r.right)), kl: Math.min(...ks.map((r) => r.left)),
+      hint: !!document.querySelector(".hd-hint"), top: document.querySelector(".hd-view").getBoundingClientRect().top, kb: document.querySelector(".hd-kb").getBoundingClientRect().bottom, nav, sy: scrollY };
   });
-  ok(`${w} px: ${slowo.length} liter mieści się bez przewijania`, m.n === slowo.length && m.left >= 16 && m.right <= w - 16 && m.sw <= w, m);
-  ok(`${w} px: klawisze ≥ 32 × 48 px, w ekranie`, m.kw >= 32 && m.kh >= 48 && m.kl >= 0 && m.kr <= w, m);
-  if (w === 360) await shot(p, "e7-9liter-360");
+  const tag = `${w}×${hgt}${n ? " z podpowiedzią" : ""}`;
+  ok(`${tag}: ${slowo.length} liter mieści się bez przewijania w poziomie`, m.n === slowo.length && m.left >= 16 && m.right <= w - 16 && m.sw <= w, m);
+  ok(`${tag}: klawisze ≥ 32 × 44 px, w ekranie`, m.kw >= 32 && m.kh >= 44 && m.kl >= 0 && m.kr <= w, m);
+  if (n) ok(`${tag}: cała plansza i klawiatura widoczne bez przewijania (nad dolnym paskiem)`, m.hint && m.sy === 0 && m.top >= 0 && m.kb <= m.nav, m);
+  if (w === 360 && !n) await shot(p, "e7-9liter-360");
+  if (n && hgt < 700) await shot(p, `e7-niski-${w}x${hgt}`);
   await p.context().close();
 }
 

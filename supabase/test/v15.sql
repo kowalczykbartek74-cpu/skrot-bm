@@ -1,4 +1,4 @@
--- Testy H1–H8, D1–D6, B1–B9 dla skrot-v15-gry2.sql (docs/gry/SPEC-2.md, sekcja 2). Tylko lokalnie, na atrapie z test/stub.sql.
+-- Testy H1–H9, D1–D6, B1–B9 dla skrot-v15-gry2.sql (docs/gry/SPEC-2.md, sekcja 2). Tylko lokalnie, na atrapie z test/stub.sql.
 -- Uruchamiaj po test/v13.sql (korzysta z jego kont, schematu test i funkcji test.jako / test.chk).
 -- Własne materiały i przedmioty (hm, md, bs, bs2), żeby dane z test/v13.sql nie wpływały na wyniki.
 -- Daty terminów liczone od nauka_dzis(). Cały plik idzie w jednej transakcji, więc now() jest stałe:
@@ -106,6 +106,23 @@ begin perform test.chk('H7 finished', r->>'code' = 'finished', r); end $$;
 reset role; select test.jako('c@x.pl'); set role authenticated;
 do $$ declare r jsonb := public.nauka_haslo_proba((select v from test.kv where k = 'slowo'));
 begin perform test.chk('H8 bez dostępu: wynik 1, 0 pkt', (r->>'ok')::boolean and (r->>'wynik')::int = 1 and (r->>'pkt')::int = 0, r); end $$;
+
+-- ---------- H9 retencja: pierwsza próba dnia usuwa próby starsze niż 12 miesięcy (słowa dnia zostają) ----------
+reset role;
+insert into public.nauka_haslo (user_id, dzien, proby, wzory, wynik)
+select u.id, public.nauka_dzis() - k, '{ABC}', '{000}', 0 from auth.users u, (values (400), (300)) v(k) where u.email = 'h1@x.pl';
+insert into public.nauka_haslo_dni (dzien, slowo, term) values (public.nauka_dzis() - 400, 'OLDWORD', 'Oldword') on conflict do nothing;
+select test.jako('d7@x.pl'); set role authenticated;
+do $$ declare r jsonb := public.nauka_haslo_proba(repeat('Q', char_length((select v from test.kv where k = 'slowo'))));
+begin perform test.chk('H9a pierwsza próba dnia działa', (r->>'ok')::boolean and (r->>'proba')::int = 1, r); end $$;
+reset role;
+select test.chk('H9 retencja: próba sprzed 400 dni usunięta, sprzed 300 dni zostaje, słowo dnia zostaje',
+  not exists (select 1 from public.nauka_haslo where dzien = public.nauka_dzis() - 400)
+  and exists (select 1 from public.nauka_haslo where dzien = public.nauka_dzis() - 300)
+  and exists (select 1 from public.nauka_haslo_dni where dzien = public.nauka_dzis() - 400));
+delete from public.nauka_haslo where dzien < public.nauka_dzis();
+delete from public.nauka_haslo_dni where dzien = public.nauka_dzis() - 400 and slowo = 'OLDWORD';
+delete from public.nauka_haslo h using auth.users u where u.id = h.user_id and u.email = 'd7@x.pl';
 
 -- =====================================================================
 -- Drabina
@@ -279,4 +296,4 @@ do $$ declare n int := 0; begin
 end $$;
 reset role;
 
-do $$ begin raise notice 'WSZYSTKIE TESTY H1–H8, D1–D6, B1–B9 OK'; end $$;
+do $$ begin raise notice 'WSZYSTKIE TESTY H1–H9, D1–D6, B1–B9 OK'; end $$;
