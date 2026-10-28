@@ -229,3 +229,10 @@ Włączenie (jednorazowo):
 2. W terminalu, w folderze tego repozytorium: `npx supabase functions deploy claude`
 
 Dopóki tego nie zrobisz, strona pokazuje studentom „nie jest jeszcze włączone na serwerze” zamiast błędu.
+
+## Okres próbny (`skrot-v9-proba.sql`)
+
+- Student raz włącza **3 dni pełnego dostępu za darmo**, bez karty: przycisk „Wypróbuj za darmo przez 3 dni” w paskach zakupu, kłódkach i w „Konto i dostęp”. Niezalogowany najpierw się loguje, potem okres próbny włącza się sam.
+- Jeden na konto, na adres e-mail i na urządzenie (`x-skrot-device`). Kto kiedyś zapłacił, nie dostaje okresu próbnego. Liczba dni: `nauka_proba_dni()`.
+- W trakcie działa jak opłacone konto (`nauka_platny_konto`), z tymi samymi zasadami urządzeń; na górze widać pasek „Okres próbny · zostały 2 dni” z „Kup dostęp”. Po 3 dniach wszystko blokuje się samo, postępy zostają.
+- **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v9-proba.sql` → Run. Bez tego strona działa jak dotąd (po zalogowaniu przycisk się nie pokazuje).
