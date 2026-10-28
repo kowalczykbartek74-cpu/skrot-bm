@@ -6,7 +6,7 @@
 //   mock-v15   = "1" (SQL v15 uruchomiony, domyślnie) | "0" (funkcji v15 nie ma → not_enabled); bez v13 nie ma też v15
 //   v15 (docs/gry/SPEC-2.md, sekcja 3): mock-rok = "malo" (za_malo) · mock-haslo-slowo (domyślnie "Revenue"; "" = no_words)
 //     · mock-haslo-seria · mock-haslo-stat = "1" · mock-boss = "trwa" (domyślnie) | "pokonany" | "malo" (pokonany, 4 moje ciosy)
-//     | "uciekl" | "dwa" (trwa + pokonany) | "brak"; stan Hasła dnia przeżywa przeładowanie (localStorage mock-haslo-stan)
+//     | "uciekl" | "dwa" (trwa + pokonany) | "brak" | "slaby" (trwa, < 25% życia); dobra odpowiedź z przedmiotu bossa = cios (moje/zadane rosną); stan Hasła dnia przeżywa przeładowanie (localStorage mock-haslo-stan)
 //     · Drabina (etap 8): mock-trud = "liniowo" (proc 95 → 20 w kolejności kluczy, bez braków) · mock-pf = "1" (pytania m2 mają 2 opcje)
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
@@ -57,6 +57,7 @@
       const q = DOCS.materialContent[a.p_mid]?.quiz?.[a.p_idx]; if (!q) return { ok: false, code: "no_question" };
       if (a.p_zrodlo === "gra") { const r = RP.runs[a.p_run]; if (!r || r.done || r.q >= 12) return { ok: false, code: "bad_run" }; r.q++; }
       const ok = a.p_wybor === q.correct;
+      if (ok) bossCios(DOCS.materials[a.p_mid]?.subjectId, 1);
       return { ok: true, poprawna: ok, correct: q.correct, pkt: ok ? daj("q:" + a.p_mid + ":" + a.p_idx, 10, a.p_zrodlo === "gra" ? "gry" : "quiz") : 0 };
     },
     nauka_rp_zadanie: (a) => {
@@ -122,11 +123,14 @@
     const trwa = { id: "d-kol-makro", sid: "makroekonomia", typ: "kolokwium", tytul: "Kolokwium 1", termin: plusDni(5), start: plusDni(-2), grupy: [], hp: 300, zadane: 112, osob: 9, moje: 14, stan: "trwa", pokonany_at: null };
     const pok = { id: "d-kol-prawo", sid: "prawo", typ: "kolokwium", tytul: "Kolokwium z prawa", termin: plusDni(2), start: plusDni(-5), grupy: ["C111"], hp: 150, zadane: 163, osob: 11, moje: sc === "malo" ? 4 : 22, stan: "pokonany", pokonany_at: new Date(Date.now() - 36e5).toISOString() };
     const ucie = { id: "d-egz-makro", sid: "makroekonomia", typ: "egzamin", tytul: "Egzamin", termin: plusDni(-1), start: plusDni(-8), grupy: [], hp: 400, zadane: 280, osob: 14, moje: 31, stan: "uciekl", pokonany_at: null };
-    const lista = { trwa: [trwa], pokonany: [pok], malo: [pok], uciekl: [ucie], dwa: [trwa, pok], brak: [] }[sc] || [trwa];
+    const slaby = { ...trwa, zadane: 250 };
+    const lista = { trwa: [trwa], slaby: [slaby], pokonany: [pok], malo: [pok], uciekl: [ucie], dwa: [trwa, pok], brak: [] }[sc] || [trwa];
     return lista.map((b) => ({ ...b, top: top(b.moje) }));
   };
-  const BOSS = { odebrane: {}, zmiany: {} };
-  const bossyTeraz = () => bossBaza().map((b) => ({ ...b, ...BOSS.zmiany[b.id] })).filter((b) => !b.ukryty).map(({ ukryty, ...b }) => {
+  const BOSS = { odebrane: {}, zmiany: {}, ciosy: {} };
+  // cios = dobra odpowiedź z przedmiotu bossa w trakcie walki (jak nauka_boss_ciosy w bazie, bez limitów dziennych)
+  function bossCios(sid, n) { for (const b of bossBaza()) if (b.sid === sid && b.stan === "trwa") BOSS.ciosy[b.id] = (BOSS.ciosy[b.id] || 0) + n; }
+  const bossyTeraz = () => bossBaza().map((b) => ({ ...b, moje: b.moje + (BOSS.ciosy[b.id] || 0), zadane: b.zadane + (BOSS.ciosy[b.id] || 0), ...BOSS.zmiany[b.id] })).filter((b) => !b.ukryty).map(({ ukryty, ...b }) => {
     const odebrane = !!BOSS.odebrane[b.id];
     return { ...b, odebrane, mozna_odebrac: b.stan === "pokonany" && b.moje >= 10 && !odebrane }; });
   const V15FN = {
@@ -159,7 +163,8 @@
       if (p === slowo) { g.wynik = n; g.pkt = paid ? daj("h:" + dzis(), [0, 20, 20, 15, 12, 10, 8][n], "haslo") : 0; } else if (n >= 6) g.wynik = 0;
       hasloZapisz(g);
       return { ok: true, wzor: w, proba: n, koniec: g.wynik != null, wynik: g.wynik, pkt: g.pkt }; },
-    nauka_bossy: () => ({ ok: true, min_ciosow: 10, pkt: 50, bossy: bossyTeraz() }),
+    nauka_bossy: () => (window.__bossyN = (window.__bossyN || 0) + 1, { ok: true, min_ciosow: 10, pkt: 50, bossy: bossyTeraz() }),
+    // ↑ window.__bossyN = licznik wywołań nauka_bossy (etap 9: na Dziś najwyżej raz na 60 s)
     nauka_boss_odbierz: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
       const b = bossyTeraz().find((x) => x.id === a.p_id); if (!b) return { ok: false, code: "no_boss" };
