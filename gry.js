@@ -188,8 +188,95 @@
     return game;
   })();
 
-  const GAMES = { frun: FRUN };
-  const UNITS = { frun: "kolumn" };
+  // =====================================================================
+  // PARY: memory w DOM, nie na canvasie (SPEC 8). Bez Drugiej szansy – uczy samo dopasowywanie.
+  // =====================================================================
+  const PARY = (() => {
+    const C = GRY_CFG.pary;
+    // Na telefonie (< 400 px) siatki są węższe i wyższe.
+    const GRID = { latwy: [[4, 3], [3, 4]], sredni: [[4, 4], [4, 4]], trudny: [[5, 4], [4, 5]] };
+    const ORDER = ["latwy", "sredni", "trudny"];
+    let X = null; // stan planszy
+    const mmss = (ms) => { const s = Math.max(0, Math.round(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+    const elapsed = () => (!X?.t0 ? 0 : (X.t1 || performance.now()) - X.t0);
+    function label(i) {
+      const c = X.cards[i];
+      return c.ok ? T(`Karta ${i + 1}: ${c.text}, dopasowana`) : c.up ? T(`Karta ${i + 1}: ${c.text}`) : T(`Karta ${i + 1}, zakryta`);
+    }
+    function paintCard(i) {
+      const c = X.cards[i], b = X.els[i];
+      b.classList.toggle("up", !!(c.up || c.ok)); b.classList.toggle("ok", !!c.ok); b.classList.toggle("bad", !!c.bad);
+      b.setAttribute("aria-label", label(i));
+    }
+    function focusCard(i) { X.els.forEach((b, k) => b.setAttribute("tabindex", k === i ? "0" : "-1")); X.focus = i; X.els[i]?.focus(); }
+    function onKey(e, i) {
+      const { cols } = X, n = X.els.length;
+      const to = { ArrowRight: i + 1, ArrowLeft: i - 1, ArrowDown: i + cols, ArrowUp: i - cols }[e.key];
+      if (to != null) { e.preventDefault(); if (to >= 0 && to < n) focusCard(to); return; }
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(i); }
+    }
+    function explain(p) {
+      clearTimeout(X.infoT);
+      X.info.textContent = X.tryb === "def" ? `${p.a}: ${p.b}` : `${p.a} = ${p.b}`;
+      X.info.classList.add("on");
+      X.infoT = setTimeout(() => { X.info.classList.remove("on"); }, C.explainMs);
+    }
+    function flip(i) {
+      const c = X.cards[i];
+      if (!c || X.lock || X.done || c.up || c.ok) return;
+      if (!X.t0) { X.t0 = performance.now(); X.cb.onStart(); X.timer = setInterval(() => { X.cb.onTime(mmss(elapsed())); }, 250); }
+      c.up = true; X.open.push(i); paintCard(i); GAME_SFX("hop");
+      if (X.open.length < 2) return;
+      const [i1, i2] = X.open, a = X.cards[i1], b = X.cards[i2];
+      if (a.pid === b.pid) {
+        a.ok = b.ok = true; X.open = []; X.matched++;
+        paintCard(i1); paintCard(i2); BUZZ(true); GAME_SFX("point");
+        explain(X.pairs[a.pid]); X.cb.onMatch(X.matched);
+        if (X.matched === X.n) { X.done = true; X.t1 = performance.now(); clearInterval(X.timer); X.cb.onTime(mmss(elapsed())); setTimeout(() => X.cb.onEnd(), REDUCED() ? 300 : 900); }
+        return;
+      }
+      // pomyłka: czerwona obwódka na 900 ms, potem obie karty się zakrywają; trzeciej nie da się w tym czasie odkryć
+      X.lock = true; X.bledy++; a.bad = b.bad = true; paintCard(i1); paintCard(i2); BUZZ(false); GAME_SFX("hit");
+      for (const pid of [a.pid, b.pid]) if (!X.wrong.includes(X.pairs[pid])) X.wrong.push(X.pairs[pid]);
+      X.cb.onMiss(X.bledy);
+      setTimeout(() => { if (!X) return; a.up = b.up = a.bad = b.bad = false; X.open = []; X.lock = false; paintCard(i1); paintCard(i2); }, C.flipBackMs);
+    }
+    const game = {
+      id: "pary", title: "Pary", dom: true,
+      // ctx = { pairs, tryb, trudnosc, rnd, box, cb: { onStart, onMatch, onMiss, onTime, onEnd } }
+      mount(ctx) {
+        const narrow = (window.innerWidth || 400) < 400;
+        let k = Math.max(0, ORDER.indexOf(ctx.trudnosc));
+        while (k > 0 && ctx.pairs.length < GRID[ORDER[k]][0][0] * GRID[ORDER[k]][0][1] / 2) k--; // za mało par → plansza o rozmiar mniejsza
+        const trud = ORDER[k], [cols, rows] = GRID[trud][narrow ? 1 : 0], n = (cols * rows) / 2;
+        const pairs = ctx.pairs.slice(0, n);
+        const cards = shuffled(pairs.flatMap((p, pid) => [{ pid, side: "a", text: p.a }, { pid, side: "b", text: p.b }]), ctx.rnd);
+        X = { pairs, cards, n, cols, rows, trud, tryb: ctx.tryb, open: [], matched: 0, bledy: 0, wrong: [], lock: false, done: false, t0: 0, t1: 0, cb: ctx.cb, focus: 0 };
+        X.els = cards.map((c, i) => h("button", { type: "button", class: "pk pk-" + c.side, tabindex: i ? "-1" : "0", onclick: () => { focusCard(i); flip(i); }, onkeydown: (e) => onKey(e, i) },
+          h("span", { class: "pk-in", "aria-hidden": "true" },
+            h("span", { class: "pk-back" }, h("i", { class: "pk-leaf" })),
+            h("span", { class: "pk-front", translate: "no", lang: c.side === "a" ? "en" : null }, h("span", { text: c.text })))));
+        X.info = h("p", { class: "pk-info", translate: "no", "aria-live": "polite" });
+        const board = h("div", { class: "pk-board", role: "grid", "aria-label": T("Pary"), style: `--cols:${cols};--rows:${rows}` }, X.els);
+        ctx.box.replaceChildren(h("div", { class: "pk-wrap" + (ctx.tryb === "def" ? " def" : "") }, board, X.info));
+        X.els.forEach((_, i) => paintCard(i));
+        return { n, trudnosc: trud };
+      },
+      score: () => X?.matched || 0,
+      errors: () => X?.bledy || 0,
+      timeMs: () => Math.round(elapsed()),
+      wrongPairs: () => X?.wrong || [],
+      size: () => X?.n || 0,
+      mmss,
+      stop() { if (X) { clearInterval(X.timer); clearTimeout(X.infoT); } },
+      // Tylko do testów (docs/gry/test).
+      debug: () => (X ? { st: X.done ? "koniec" : "gra", n: X.n, cols: X.cols, rows: X.rows, trud: X.trud, matched: X.matched, bledy: X.bledy, lock: X.lock, cards: X.cards.map((c) => ({ pid: c.pid, side: c.side, up: c.up, ok: c.ok })) } : null),
+    };
+    return game;
+  })();
+
+  const GAMES = { frun: FRUN, pary: PARY };
+  const UNITS = { frun: "kolumn", pary: "par" };
   const TITLES = { frun: "Fruń", pary: "Pary", przejdz: "Przejdź" };
 
   // =====================================================================
@@ -278,14 +365,15 @@
     if (state === "off") return;
     const k = e.key;
     if (state === "pytanie") return qKey(e);
+    if (G?.dom) { if (k === "Escape" && !document.querySelector("#layer .scrim")) { e.preventDefault(); askClose(); } return; }
     if (k === "Escape" || k === "p" || k === "P") { e.preventDefault(); if (state === "gra") pause(); else if (state === "pauza" && k !== "Escape") resume(); else if (state === "pauza") askClose(); return; }
     if (state === "wynik" || state === "blokada" || state === "load") return;
     if (k === " " || k === "ArrowUp" || k === "w" || k === "W" || k === "Enter") { if (e.target?.closest?.("button") && k !== " ") return; e.preventDefault(); tap(); }
   }
   function pause() { if (state !== "gra") return; state = "pauza"; stopLoop(); hintSync(); ui.pauseBtn.setAttribute("aria-pressed", "true"); }
   function resume() { if (state !== "pauza") return; state = "gra"; ui.pauseBtn.setAttribute("aria-pressed", "false"); hintSync(); startLoop(); }
-  const onVis = () => { if (document.visibilityState === "hidden") pause(); };
-  const onResize = () => { fit(); if (state !== "gra" && G && run) paint(1); };
+  const onVis = () => { if (document.visibilityState === "hidden" && !G?.dom) pause(); };
+  const onResize = () => { if (G?.dom) return; fit(); if (state !== "gra" && G && run) paint(1); };
   // Wstecz w telefonie = jak ✕ (najpierw nasz wpis w historii, żeby nie zamknąć strony).
   const onPop = (e) => {
     if (state === "off") return;
@@ -309,8 +397,10 @@
     addEventListener("resize", onResize);
     addEventListener("popstate", onPop, true);
     try { history.pushState({ gry: 1 }, ""); } catch {}
+    runOpts = { tryb: opts.tryb, trudnosc: opts.trudnosc };
     await newRun(gra, opts.sid ?? null);
   }
+  let runOpts = {};
   function build(gra) {
     document.querySelector(".gry")?.remove();
     const num = h("b", { class: "gry-num num", text: "0" });
@@ -321,17 +411,20 @@
     cv = h("canvas", { class: "gry-cv", "aria-hidden": "true" });
     const hint = h("div", { class: "gry-hint", hidden: true, "aria-live": "polite" });
     const sheet = h("div", { class: "gry-layer" });
-    const stage = h("div", { class: "gry-stage", onpointerdown: (e) => { if (e.target.closest("button, a, input, .gry-sheet, .gry-res, .gry-load")) return; e.preventDefault(); tap(); } }, cv, hint, sheet);
-    const root = h("div", { class: "gry", role: "dialog", "aria-modal": "true", "aria-label": TITLES[gra] },
-      h("header", { class: "gry-top" }, x, h("div", { class: "gry-score" }, num, h("small", { text: UNITS[gra] })), liveEl, pauseBtn, snd), stage);
+    const dom = !!GAMES[gra].dom;
+    const stage = h("div", { class: "gry-stage", onpointerdown: (e) => { if (dom || e.target.closest("button, a, input, .gry-sheet, .gry-res, .gry-load")) return; e.preventDefault(); tap(); } }, cv, hint, sheet);
+    const time = h("span", { class: "gry-time-txt num", hidden: !dom, text: "0:00" });
+    if (dom) pauseBtn.hidden = true;
+    const root = h("div", { class: "gry" + (dom ? " dom" : ""), role: "dialog", "aria-modal": "true", "aria-label": TITLES[gra] },
+      h("header", { class: "gry-top" }, x, h("div", { class: "gry-score" }, num, h("small", { text: UNITS[gra] }), time), liveEl, pauseBtn, snd), stage);
     document.body.append(root);
     g2 = cv.getContext("2d");
-    ui = { root, num, live: liveEl, pauseBtn, hint, stage, layer: sheet };
+    ui = { root, num, live: liveEl, pauseBtn, hint, stage, layer: sheet, time };
   }
   function close(silent) {
     if (state === "off") return;
     if (inRound()) endRound(true);
-    stopLoop(); clearInterval(qTimer);
+    stopLoop(); clearInterval(qTimer); G?.stop?.();
     state = "off";
     document.removeEventListener("keydown", onKey);
     document.removeEventListener("visibilitychange", onVis);
@@ -346,11 +439,11 @@
   }
   function askClose() {
     if (!inRound()) return close();
-    const was = state; if (state === "gra") pause();
+    const was = state; if (state === "gra" && !G.dom) pause();
     A.modal((done) => [
       h("h3", { text: "Przerwać rundę?" }),
       h("div", { class: "row", style: "justify-content:flex-end" },
-        h("button", { type: "button", class: "btn", onclick: () => { done(); if (was === "gra") resume(); } }, "Graj dalej"),
+        h("button", { type: "button", class: "btn", onclick: () => { done(); if (was === "gra" && !G.dom) resume(); } }, "Graj dalej"),
         h("button", { type: "button", class: "btn primary", onclick: () => { done(); close(); } }, "Zakończ rundę")),
     ]);
   }
@@ -365,21 +458,43 @@
   async function newRun(gra, sid) {
     ui.layer.replaceChildren(h("div", { class: "gry-load" }, h("p", { text: "Ładowanie…" })));
     run = { gra, sid, id: null, seed: 0, t0: 0, revives: 0, asked: [], wrong: [], okN: 0, pkt: 0, pktOk: 0, pktZero: 0, xp: 0, offline: false, ended: false, qs: [], tasks: [], H: 0, colors: colors() };
+    G.stop?.();
+    const dom = !!G.dom;
+    run.tryb = runOpts.tryb || "enpl"; run.trudnosc = runOpts.trudnosc || "sredni";
     const [st, qs, tasks] = await Promise.all([
       A.rp?.start ? A.rp.start(gra, sid).catch(() => ({ ok: false, code: "offline" })) : { ok: false, code: "offline" },
-      A.questions(sid, 6).catch(() => []), A.tasks(sid, 3).catch(() => []),
+      dom ? A.pairs(sid, 10, run.tryb).catch(() => []) : A.questions(sid, 6).catch(() => []), dom ? [] : A.tasks(sid, 3).catch(() => []),
     ]);
     if (state === "off") return;
     if (!st.ok && st.code === "no_access") return lock();
     if (!st.ok && st.code === "too_many_runs") { A.toast("Na dziś wystarczy grania. Wróć jutro albo zrób Powtórki."); return close(); }
     if (st.ok) { run.id = st.run; run.seed = st.seed; } else { run.offline = true; run.seed = Date.now() | 0; if (st.code === "offline") A.toast("Brak połączenia. Grasz dalej, ale punkty rankingu się nie zapiszą."); }
     run.qs = qs; run.tasks = tasks; run.rnd = mulberry32(run.seed);
+    if (dom) return mountDom(qs);
     ui.layer.replaceChildren();
     fit(); run.H = view.H;
     G.init({ W: view.W, H: view.H, rnd: run.rnd, cfg: GRY_CFG[gra], colors: run.colors, subjectColors: run.colors.subjects });
     run.t0 = performance.now();
     state = "gra"; hintSync(); paint(1); startLoop();
     ui.stage.focus?.();
+  }
+  // Gra w DOM (Pary): plansza w warstwie nad pustym canvasem, bez pętli i bez Drugiej szansy.
+  function mountDom(pairs) {
+    if (pairs.length < 6) { A.toast("Za mało pojęć do tej gry. Wybierz inny przedmiot albo Mix."); return close(); }
+    ui.num.textContent = "0"; ui.time.textContent = "0:00";
+    const box = h("div", { class: "pk-host" });
+    ui.layer.replaceChildren(box);
+    const m = G.mount({ pairs, tryb: run.tryb, trudnosc: run.trudnosc, rnd: run.rnd, box, cb: {
+      onStart: () => { run.started = true; },
+      onMatch: (k) => { ui.num.textContent = k; ui.live.textContent = `${k}/${run.n}`; run.xp += A.xp?.(1) || 0; },
+      onMiss: () => {},
+      onTime: (t) => { ui.time.textContent = t; },
+      onEnd: () => endRound(false),
+    } });
+    run.n = m.n; run.trudnosc = m.trudnosc;
+    run.t0 = performance.now();
+    state = "gra";
+    box.querySelector(".pk")?.focus();
   }
   function lock() {
     state = "blokada";
@@ -510,22 +625,37 @@
   let resEl = null;
   function endRound(quiet) {
     if (run.ended) return; run.ended = true;
-    stopLoop(); clearInterval(qTimer);
-    const wynik = G.score(), czasMs = Math.round(performance.now() - run.t0);
-    const recKey = "bm-gry-rekord:" + run.gra, prev = +ls.get(recKey) || 0;
-    run.wynik = wynik; run.rekord = Math.max(prev, wynik); run.nowy = wynik > prev && wynik > 0;
-    if (run.nowy) ls.set(recKey, String(wynik));
+    stopLoop(); clearInterval(qTimer); G.stop?.();
+    const wynik = G.score(), czasMs = G.dom ? G.timeMs() : Math.round(performance.now() - run.t0), bledy = G.errors?.() || 0;
+    run.wynik = wynik;
+    if (G.dom) {
+      // Pary: rekord = cała plansza z najmniejszą liczbą pomyłek, przy remisie krótszy czas (osobno dla przedmiotu i planszy).
+      run.bledy = bledy; run.czasMs = czasMs;
+      const full = wynik === run.n, recKey = `bm-gry-rekord:pary:${run.sid || "mix"}:${run.trudnosc}`;
+      let prev = null; try { prev = JSON.parse(ls.get(recKey) || "null"); } catch {}
+      run.nowy = full && (!prev || bledy < prev.b || (bledy === prev.b && czasMs < prev.t));
+      if (run.nowy) ls.set(recKey, JSON.stringify({ b: bledy, t: czasMs }));
+      run.rekordPary = run.nowy ? { b: bledy, t: czasMs } : prev;
+      if (full && !bledy) run.xp += A.xp?.(5) || 0;
+      const keys = [...new Set(G.wrongPairs().map((p) => p.key).filter(Boolean))];
+      if (keys.length) { try { A.srsAdd?.(keys); } catch {} }
+    } else {
+      const recKey = "bm-gry-rekord:" + run.gra, prev = +ls.get(recKey) || 0;
+      run.rekord = Math.max(prev, wynik); run.nowy = wynik > prev && wynik > 0;
+      if (run.nowy) ls.set(recKey, String(wynik));
+    }
     run.koniec = null;
     if (run.id && A.rp) {
       run.pending = (run.pending || 0) + 1;
-      A.rp.koniec({ run: run.id, wynik, czasMs }).then((r) => { run.koniec = r; if (r?.ok) run.pkt += r.pkt || 0; }).catch(() => {}).finally(() => { run.pending--; resSync(); });
+      A.rp.koniec({ run: run.id, wynik, czasMs, bledy }).then((r) => { run.koniec = r; if (r?.ok) run.pkt += r.pkt || 0; }).catch(() => {}).finally(() => { run.pending--; resSync(); });
     }
     if (quiet) return;
     state = "wynik";
-    cv.classList.remove("blur");
+    cv?.classList.remove("blur");
     showResult();
   }
   function showResult() {
+    if (G.dom) return showResultPary();
     const r = run;
     const wrongFirst = r.wrong[0];
     const stat = (v, l) => h("div", { class: "gry-stat" }, h("b", { class: "num", text: v }), h("span", { text: l }));
@@ -542,6 +672,29 @@
       h("div", { class: "row gry-acts" },
         h("button", { type: "button", class: "btn primary", onclick: () => { const { gra, sid } = run; newRun(gra, sid); } }, "Jeszcze raz"),
         r.wrong.length && r.wrong.some((q) => q.options) ? h("button", { type: "button", class: "btn", onclick: () => { const qs = r.wrong.filter((q) => q.options); close(true); A.replayWrong?.(qs); } }, T(`Powtórz pomylone (${r.wrong.filter((q) => q.options).length})`)) : null,
+        h("button", { type: "button", class: "btn ghost", onclick: () => close() }, "Wróć")));
+    ui.layer.replaceChildren(box);
+    box.querySelector(".btn.primary")?.focus();
+    if (r.nowy && !REDUCED()) A.confetti?.(40);
+    resSync();
+  }
+  function showResultPary() {
+    const r = run, mm = G.mmss, wrong = G.wrongPairs();
+    const stat = (v, l) => h("div", { class: "gry-stat" }, h("b", { class: "num", text: v }), h("span", { text: l }));
+    const pktEl = h("b", { class: "num", text: r.offline ? "–" : "…" });
+    resEl = { pkt: pktEl, note: h("p", { class: "gry-note muted", hidden: true }) };
+    const best = r.rekordPary;
+    const box = h("div", { class: "gry-res", role: "document" },
+      r.nowy ? h("p", { class: "gry-rec", text: "🏆 " + T("Nowy rekord!") }) : null,
+      h("p", { class: "sk-bignum gry-big" }, h("b", { class: "num", text: r.wynik })),
+      h("p", { class: "muted gry-unit" }, h("span", { text: `${r.wynik} ${A.plural(r.wynik, "para", "pary", "par")}` }), " · ", h("span", { text: `${r.bledy} ${A.plural(r.bledy, "pomyłka", "pomyłki", "pomyłek")}` }), " · ", h("span", { text: mm(r.czasMs) })),
+      best && !r.nowy ? h("p", { class: "muted gry-unit", text: T(`Najlepiej: ${best.b} ${A.plural(best.b, "pomyłka", "pomyłki", "pomyłek")} · ${mm(best.t)}`) }) : null,
+      r.offline ? h("p", { class: "gry-note muted", text: "Punkty rankingu się nie zapisały" }) : null,
+      h("div", { class: "gry-stats" }, stat(`${r.wynik}/${r.n}`, "par"), h("div", { class: "gry-stat" }, pktEl, h("span", { text: "pkt rankingu" })), stat(`+${r.xp} ⚡`, "XP")),
+      resEl.note,
+      h("div", { class: "row gry-acts" },
+        h("button", { type: "button", class: "btn primary", onclick: () => { const { gra, sid } = run; newRun(gra, sid); } }, "Jeszcze raz"),
+        wrong.length >= 4 ? h("button", { type: "button", class: "btn", onclick: () => { const sid = run.sid; close(true); A.practiceWords?.(wrong.map((p) => ({ t: p.a, d: p.b })), sid); } }, "Ćwicz pomylone słówka") : null,
         h("button", { type: "button", class: "btn ghost", onclick: () => close() }, "Wróć")));
     ui.layer.replaceChildren(box);
     box.querySelector(".btn.primary")?.focus();

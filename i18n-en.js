@@ -1,6 +1,38 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+/* Gry: etap 3 – Pary (2026-10-28) */
+"Pary": "Pairs",
+"Dopasuj pojęcia EN–PL i definicje.": "Match EN–PL terms and definitions.",
+"Tryb:": "Mode:",
+"Definicje": "Definitions",
+"Plansza:": "Board:",
+"Łatwa": "Easy",
+"Średnia": "Medium",
+"Trudna": "Hard",
+"Łatwa {0}": "Easy {0}",
+"Średnia {0}": "Medium {0}",
+"Trudna {0}": "Hard {0}",
+"Zaczynamy": "Let's go",
+"za mało pojęć": "not enough terms",
+"{0}: za mało pojęć": "{0}: not enough terms",
+"par": "pairs",
+"pomyłek": "mistakes",
+"Ćwicz pomylone słówka": "Practise missed terms",
+"Karta {0}, zakryta": "Card {0}, face down",
+"Karta {0}: {1}": "Card {0}: {1}",
+"Karta {0}: {1}, dopasowana": "Card {0}: {1}, matched",
+"dopasowana": "matched",
+"Pary ze słowniczka": "Pairs from the glossary",
+"🃏 Pary ze słowniczka": "🃏 Pairs from the glossary",
+"Najlepiej: {0} {1} · {2}": "Best: {0} {1} · {2}",
+"Tryb": "Mode",
+"Plansza": "Board",
+"ok. 1–2 min": "approx. 1–2 min",
+"ładuję pojęcia…": "loading terms…",
+"Za mało pytań do Fruń w tym wyborze. Wybierz inny przedmiot albo Mix.": "Not enough questions for Fly in this choice. Pick another subject or Mix.",
+"Za mało pojęć do tej gry. Wybierz inny przedmiot albo Mix.": "Not enough terms for this game. Pick another subject or Mix.",
+"Ładuję pojęcia…": "Loading terms…",
 /* Gry i ranking: etap 2 (2026-10-28) */
 "Ranking kierunku": "Programme ranking",
 "Tydzień": "Week",
@@ -2923,6 +2955,14 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "wszystkie kategorie": "all categories"
 },
 "plural": {
+"para": [
+"pair",
+"pairs"
+],
+"pomyłka": [
+"mistake",
+"mistakes"
+],
 "dobra odpowiedź": [
 "correct answer",
 "correct answers"
