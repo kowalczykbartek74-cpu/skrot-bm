@@ -1,4 +1,4 @@
-// Skrót BM: gry Fruń, Pary, Przejdź (docs/gry/SPEC.md). Ładowane przy pierwszym wejściu w grę; wszystko z index.html
+// Skrót BM: gry Fruń, Pary, Przejdź, Drabina (docs/gry/SPEC.md, SPEC-2.md). Ładowane przy pierwszym wejściu w grę; wszystko z index.html
 // przychodzi w GRY_API (open(gra, { api })), w demo z gry-demo.js. Punkty rankingu liczy tylko baza (window.skrot.rp).
 (() => {
 "use strict";
@@ -26,6 +26,7 @@ const GRY_CFG = {
     gateEvery: 25,                          // co 25 rzędów bramka z pytaniem
   },
   pary: { sizes: { latwy: [4, 3], sredni: [4, 4], trudny: [5, 4] }, flipBackMs: 900, explainMs: 1500 },
+  drabina: { n: 12, progi: [4, 8], sec: [30, 45], noteSec: 15 }, // SPEC-2 4.1; progi = nauka_gry2_cfg().drabina_progi
 };
 
 // Losowość tylko z seeda rundy (z bazy), nigdy Math.random(): rundę da się odtworzyć.
@@ -241,22 +242,25 @@ const PARY = (() => {
   }
   const game = {
     id: "pary", title: "Pary", dom: true,
-    // ctx = { pairs, tryb, trudnosc, rnd, box, cb }
+    // gra DOM (SPEC-2 4.6): sama mówi, jakiej treści potrzebuje i kiedy jej wystarczy
+    load: (A, sid, run) => A.pairs(sid, 10, run.tryb),
+    enough: (c) => ((c?.length || 0) >= 6 ? true : "Za mało pojęć do tej gry. Wybierz inny przedmiot albo Mix."),
+    // ctx = { content (pary), rnd, box, cb, run (tryb, trudnosc), A }
     mount(ctx) {
-      const narrow = (window.innerWidth || 400) < 400;
-      let k = Math.max(0, ORDER.indexOf(ctx.trudnosc));
-      while (k > 0 && ctx.pairs.length < GRID[ORDER[k]][0][0] * GRID[ORDER[k]][0][1] / 2) k--; // za mało par → plansza o rozmiar mniejsza
+      const narrow = (window.innerWidth || 400) < 400, all = ctx.content, tryb = ctx.run.tryb;
+      let k = Math.max(0, ORDER.indexOf(ctx.run.trudnosc));
+      while (k > 0 && all.length < GRID[ORDER[k]][0][0] * GRID[ORDER[k]][0][1] / 2) k--; // za mało par → plansza o rozmiar mniejsza
       const trud = ORDER[k], [cols, rows] = GRID[trud][narrow ? 1 : 0], n = (cols * rows) / 2;
-      const pairs = ctx.pairs.slice(0, n);
+      const pairs = all.slice(0, n);
       const cards = shuffled(pairs.flatMap((p, pid) => [{ pid, side: "a", text: p.a }, { pid, side: "b", text: p.b }]), ctx.rnd);
-      X = { pairs, cards, n, cols, rows, trud, tryb: ctx.tryb, open: [], matched: 0, bledy: 0, wrong: [], lock: false, done: false, t0: 0, t1: 0, cb: ctx.cb, focus: 0 };
+      X = { pairs, cards, n, cols, rows, trud, tryb, open: [], matched: 0, bledy: 0, wrong: [], lock: false, done: false, t0: 0, t1: 0, cb: ctx.cb, focus: 0 };
       X.els = cards.map((c, i) => h("button", { type: "button", class: "pk pk-" + c.side, tabindex: i ? "-1" : "0", onclick: () => { focusCard(i); flip(i); }, onkeydown: (e) => onKey(e, i) },
         h("span", { class: "pk-in", "aria-hidden": "true" },
           h("span", { class: "pk-back" }, h("i", { class: "pk-leaf" })),
           h("span", { class: "pk-front", translate: "no", lang: c.side === "a" ? "en" : null }, h("span", { text: c.text })))));
       X.info = h("p", { class: "pk-info", translate: "no", "aria-live": "polite" });
       const board = h("div", { class: "pk-board", role: "grid", "aria-label": T("Pary"), style: `--cols:${cols};--rows:${rows}` }, X.els);
-      ctx.box.replaceChildren(h("div", { class: "pk-wrap" + (ctx.tryb === "def" ? " def" : "") }, board, X.info));
+      ctx.box.replaceChildren(h("div", { class: "pk-wrap" + (tryb === "def" ? " def" : "") }, board, X.info));
       X.els.forEach((_, i) => paintCard(i));
       return { n, trudnosc: trud };
     },
@@ -273,11 +277,11 @@ const PARY = (() => {
 })();
 
 const GAMES = { frun: FRUN, pary: PARY };
-// Przejdź w osobnym pliku (gry-przejdz.js), ładowanym przy pierwszym wejściu; ta sama wersja ?v= co gry.js.
-const LAZY = { przejdz: "gry-przejdz.js" }, VER = (typeof document !== "undefined" && document.currentScript?.src.split("v=")[1]) || "1";
+// Przejdź i Drabina w osobnych plikach, ładowanych przy pierwszym wejściu; ta sama wersja ?v= co gry.js.
+const LAZY = { przejdz: "gry-przejdz.js", drabina: "gry-drabina.js" }, VER = (typeof document !== "undefined" && document.currentScript?.src.split("v=")[1]) || "1";
 const loadGame = (gra) => new Promise((ok, err) => { const s = document.createElement("script"); s.src = `${LAZY[gra]}?v=${VER}`; s.onload = ok; s.onerror = err; document.head.append(s); });
-const UNITS = { frun: "kolumn", pary: "par", przejdz: "rzędów" };
-const TITLES = { frun: "Fruń", pary: "Pary", przejdz: "Przejdź" };
+const UNITS = { frun: "kolumn", pary: "par", przejdz: "rzędów", drabina: "szczebli" };
+const TITLES = { frun: "Fruń", pary: "Pary", przejdz: "Przejdź", drabina: "Drabina" };
 
 // =====================================================================
 // RDZEŃ: nakładka, pętla, pauza, dźwięk, Druga szansa, ekran wyniku
@@ -376,7 +380,7 @@ function onKey(e) {
   if (state === "off") return;
   const k = e.key;
   if (state === "pytanie") return qKey(e);
-  if (G?.dom) { if (k === "Escape" && !document.querySelector("#layer .scrim")) { e.preventDefault(); askClose(); } return; }
+  if (G?.dom) { if (document.querySelector("#layer .scrim")) return; if (k === "Escape") { e.preventDefault(); askClose(); } else if (state === "gra") G.key?.(e); return; }
   if (k === "Escape" || k === "p" || k === "P") { e.preventDefault(); if (state === "gra") pause(); else if (state === "pauza" && k !== "Escape") resume(); else if (state === "pauza") askClose(); return; }
   if (state === "wynik" || state === "blokada" || state === "load") return;
   if (G?.swipe) {
@@ -485,9 +489,10 @@ async function newRun(gra, sid) {
   G.stop?.();
   const dom = !!G.dom;
   run.tryb = runOpts.tryb || "enpl"; run.trudnosc = runOpts.trudnosc || "sredni";
-  const [st, qs, tasks] = await Promise.all([
-    A.rp?.start ? A.rp.start(gra, sid).catch(() => ({ ok: false, code: "offline" })) : { ok: false, code: "offline" },
-    dom ? A.pairs(sid, 10, run.tryb).catch(() => []) : A.questions(sid, gra === "przejdz" ? 10 : 6).catch(() => []), dom ? [] : A.tasks(sid, 3).catch(() => []),
+  const startP = A.rp?.start ? A.rp.start(gra, sid).catch(() => ({ ok: false, code: "offline" })) : Promise.resolve({ ok: false, code: "offline" });
+  run.seedP = startP.then((x) => (x?.ok ? x.seed : null)); // gra DOM może czekać na seed rundy (Drabina: remisy łatwości)
+  const [st, qs, tasks] = await Promise.all([startP,
+    dom ? Promise.resolve().then(() => G.load(A, sid, run)).catch(() => null) : A.questions(sid, gra === "przejdz" ? 10 : 6).catch(() => []), dom ? [] : A.tasks(sid, 3).catch(() => []),
   ]);
   if (state === "off") return;
   if (!st.ok && st.code === "no_access") return lock();
@@ -503,20 +508,25 @@ async function newRun(gra, sid) {
   state = "gra"; hintSync(); paint(1); startLoop();
   ui.stage.focus?.();
 }
-// gra w DOM (Pary): plansza w warstwie, bez pętli
-function mountDom(pairs) {
-  if (pairs.length < 6) { A.toast("Za mało pojęć do tej gry. Wybierz inny przedmiot albo Mix."); return close(); }
+// gra w DOM (Pary, Drabina): treść z G.load, plansza w warstwie, bez pętli
+function mountDom(content) {
+  const enough = G.enough(content);
+  if (enough !== true) { A.toast(enough); return close(); }
   ui.num.textContent = "0"; ui.time.textContent = "0:00";
   const box = h("div", { class: "pk-host" });
   ui.layer.replaceChildren(box);
-  const m = G.mount({ pairs, tryb: run.tryb, trudnosc: run.trudnosc, rnd: run.rnd, box, cb: {
+  const score = (k) => { ui.num.textContent = k; ui.live.textContent = `${k}/${run.n}`; };
+  const m = G.mount({ content, rnd: run.rnd, box, run, A, cb: {
     onStart: () => { run.started = true; },
-    onMatch: (k) => { ui.num.textContent = k; ui.live.textContent = `${k}/${run.n}`; run.xp += A.xp?.(1) || 0; },
+    onScore: score,
+    onMatch: (k) => { score(k); run.xp += A.xp?.(1) || 0; },
     onMiss: () => {},
     onTime: (t) => { ui.time.textContent = t; },
     onEnd: () => endRound(false),
+    track: (p) => rpTrack(p),
   } });
-  run.n = m.n; run.trudnosc = m.trudnosc;
+  run.n = m.n; if (m.trudnosc) run.trudnosc = m.trudnosc;
+  ui.time.hidden = !!m.noTime;
   run.t0 = performance.now();
   state = "gra";
   box.querySelector(".pk")?.focus();
@@ -621,10 +631,8 @@ function result(ok, timeout) {
   const it = Q.item, q = it.q;
   // w tle: punkty rankingu (gra nigdy nie czeka na bazę)
   if (!timeout && run.id && A.rp) {
-    const p = it.kind === "abcd" ? A.rp.odp({ mid: q.materialId, idx: q.index, wybor: Q.picked, zrodlo: "gra", run: run.id })
-      : A.rp.zadanie({ mid: q.mid, wid: q.wid, j: q.j, wynik: A.parseNum(Q.picked), zrodlo: "gra", run: run.id });
-    run.pending = (run.pending || 0) + 1;
-    p.then((r) => { if (r?.ok) { run.pkt += r.pkt || 0; if (r.poprawna) { if (r.pkt) run.pktOk++; else run.pktZero++; } } }).catch(() => {}).finally(() => { run.pending--; resSync(); });
+    rpTrack(it.kind === "abcd" ? A.rp.odp({ mid: q.materialId, idx: q.index, wybor: Q.picked, zrodlo: "gra", run: run.id })
+      : A.rp.zadanie({ mid: q.mid, wid: q.wid, j: q.j, wynik: A.parseNum(Q.picked), zrodlo: "gra", run: run.id }));
   }
   if (Q.opts) Q.opts.forEach((b, k) => { b.disabled = true; const oi = Q.order[k]; if (oi === q.correct) b.classList.add("right"); else if (oi === Q.picked) b.classList.add("wrong"); });
   if (Q.inp) Q.inp.disabled = true;
@@ -649,6 +657,11 @@ function result(ok, timeout) {
   Q.foot.replaceChildren(why ? h("p", { class: "gry-why", translate: "no", text: why }) : null, cta);
   cta.focus();
 }
+// odpowiedź wysłana w tle (rp.odp / rp.zadanie): punkty do ekranu wyniku, gdy wróci
+function rpTrack(p) {
+  const r0 = run; r0.pending = (r0.pending || 0) + 1;
+  Promise.resolve(p).then((r) => { if (r?.ok) { r0.pkt += r.pkt || 0; if (r.poprawna) { if (r.pkt) r0.pktOk++; else r0.pktZero++; } } }).catch(() => {}).finally(() => { r0.pending--; if (r0 === run) resSync(); });
+}
 function back() {
   cv.classList.remove("blur");
   const s = ui.layer.firstChild; if (s) { s.classList.remove("on"); setTimeout(() => s.remove(), REDUCED() ? 0 : 240); }
@@ -661,9 +674,9 @@ let resEl = null;
 function endRound(quiet) {
   if (run.ended) return; run.ended = true;
   stopLoop(); clearInterval(qTimer); G.stop?.();
-  const wynik = G.score(), czasMs = G.dom ? G.timeMs() : Math.round(performance.now() - run.t0), bledy = G.errors?.() || 0;
+  const P = G === PARY, wynik = G.score(), czasMs = G.timeMs ? G.timeMs() : Math.round(performance.now() - run.t0), bledy = G.errors?.() || 0;
   run.wynik = wynik;
-  if (G.dom) {
+  if (P) {
     // rekord Par: cała plansza, najmniej pomyłek, potem czas (osobno na przedmiot i planszę)
     run.bledy = bledy; run.czasMs = czasMs;
     const full = wynik === run.n, recKey = `bm-gry-rekord:pary:${run.sid || "mix"}:${run.trudnosc}`;
@@ -679,7 +692,7 @@ function endRound(quiet) {
     run.rekord = Math.max(prev, wynik); run.nowy = wynik > prev && wynik > 0;
     if (run.nowy) ls.set(recKey, String(wynik));
   }
-  try { A.result?.({ gra: run.gra, wynik, bledy, trudnosc: run.trudnosc, full: G.dom ? wynik === run.n : true, ozyw: run.ozyw || 0 }); } catch {}
+  try { A.result?.({ gra: run.gra, wynik, bledy, trudnosc: run.trudnosc, full: P ? wynik === run.n : true, ozyw: run.ozyw || 0 }); } catch {}
   run.koniec = null;
   if (run.id && A.rp) {
     run.pending = (run.pending || 0) + 1;
@@ -692,7 +705,7 @@ function endRound(quiet) {
 }
 // Ekran wyniku (wspólny); Pary pokazują pary, pomyłki i czas zamiast „dobrze”.
 function showResult() {
-  const r = run, P = !!G.dom, wrong = P ? G.wrongPairs() : r.wrong, wq = P ? [] : wrong.filter((q) => q.options), w0 = wrong[0], mm = G.mmss;
+  const r = run, P = G === PARY, wrong = P ? G.wrongPairs() : r.wrong, wq = P ? [] : wrong.filter((q) => q.options), w0 = wrong[0], mm = G.mmss;
   const stat = (v, l) => h("div", { class: "gry-stat" }, h("b", { class: "num", text: v }), h("span", { text: l }));
   const pktEl = h("b", { class: "num", text: r.offline ? "–" : "…" }), pl = (n, a, b, c) => `${n} ${A.plural(n, a, b, c)}`;
   resEl = { pkt: pktEl, note: h("p", { class: "gry-note muted", hidden: true }) };
@@ -730,5 +743,5 @@ function resSync() {
   resEl.note.textContent = limit ? T("Dzisiejszy limit punktów z gier wyczerpany – nauka dalej się liczy w Powtórkach i quizach.") : "";
 }
 
-window.SKROT_GRY = { open, add: (id, make) => { GAMES[id] = make({ GRY_CFG, clamp, mulberry32, GAME_SFX, BUZZ, REDUCED }); }, cfg: GRY_CFG, close: () => close(true), _state: () => ({ state, run, score: G?.score?.() }), _dbg: () => (state === "off" ? null : G?.debug?.()), _gen: (seed, n) => GAMES.przejdz?._gen(seed, n), _set: (o) => G?.debugSet?.(o), _row: (r) => G?.debugRow?.(r) };
+window.SKROT_GRY = { open, add: (id, make) => { GAMES[id] = make({ GRY_CFG, clamp, mulberry32, shuffled, GAME_SFX, BUZZ, REDUCED }); }, cfg: GRY_CFG, close: () => close(true), _state: () => ({ state, run, score: G?.score?.() }), _dbg: () => (state === "off" ? null : G?.debug?.()), _gen: (seed, n) => GAMES.przejdz?._gen(seed, n), _set: (o) => G?.debugSet?.(o), _row: (r) => G?.debugRow?.(r) };
 })();

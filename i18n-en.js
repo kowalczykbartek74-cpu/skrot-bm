@@ -2,6 +2,26 @@
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
 "Do #{0} brakuje Ci {1} pkt": "{1} pts to #{0}",
+/* Gry 2: etap 8 – Drabina (docs/gry/SPEC-2.md 4.7, 2026-10-28) */
+"Drabina": "Ladder",
+"12 pytań coraz trudniejszych. Zapytaj rok, gdy nie wiesz.": "12 questions, each harder. Ask your year when you're stuck.",
+"Szczebel {0} z 12": "Step {0} of 12",
+"szczebli": "steps",
+"Zatrzymaj się (zabierasz {0})": "Stop here (keep {0})",
+"Zła odpowiedź = spadasz na {0}": "Wrong answer = you drop to {0}",
+"Szczebel {0} zabezpieczony": "Step {0} secured",
+"Cała Drabina! 🏆": "The whole Ladder! 🏆",
+"Wyżej →": "Up →",
+"Zapytaj rok": "Ask your year",
+"{0} osób z roku": "{0} people from your year",
+"{0} osoby z roku": "{0} people from your year",
+"{0} osoba z roku": "{0} person from your year",
+"Rok jeszcze za mało odpowiadał na to pytanie": "Not enough of your year has answered this yet",
+"{0}% roku odpowiada dobrze": "{0}% of your year gets this right",
+"Za mało pytań do Drabiny. Wybierz inny przedmiot albo Mix.": "Not enough questions for the Ladder. Pick another subject or Mix.",
+"Koła ratunkowe": "Lifelines",
+"Rekordy tygodnia (Drabina)": "This week's records (Ladder)",
+"ok. 4–6 min": "approx. 4–6 min",
 /* Gry 2: etap 7 – Hasło dnia (docs/gry/SPEC-2.md 5.6, 2026-10-28) */
 "Hasło dnia": "Word of the day",
 "Hasło dnia #{0}": "Word of the day #{0}",

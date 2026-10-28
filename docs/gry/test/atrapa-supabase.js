@@ -7,6 +7,7 @@
 //   v15 (docs/gry/SPEC-2.md, sekcja 3): mock-rok = "malo" (za_malo) · mock-haslo-slowo (domyślnie "Revenue"; "" = no_words)
 //     · mock-haslo-seria · mock-haslo-stat = "1" · mock-boss = "trwa" (domyślnie) | "pokonany" | "malo" (pokonany, 4 moje ciosy)
 //     | "uciekl" | "dwa" (trwa + pokonany) | "brak"; stan Hasła dnia przeżywa przeładowanie (localStorage mock-haslo-stan)
+//     · Drabina (etap 8): mock-trud = "liniowo" (proc 95 → 20 w kolejności kluczy, bez braków) · mock-pf = "1" (pytania m2 mają 2 opcje)
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
   const ls = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
@@ -24,7 +25,7 @@
       m3: { subjectId: "prawo", title: "Źródła prawa", quizCount: 6, flashcardCount: 4, createdAt: now - 3e6, v: 2, source: "sylabus" },
     },
     materialContent: {
-      m1: { v: 2, summary: "PKB to wartość dóbr finalnych.", quiz: quiz(14, "PKB"), flashcards: cards(8, "PKB"),
+      m1: { v: 2, summary: "PKB to wartość dóbr finalnych.", tldr: "PKB mierzy wartość dóbr i usług finalnych wytworzonych w kraju. Drugie zdanie streszczenia.", quiz: quiz(14, "PKB"), flashcards: cards(8, "PKB"),
         worked: [{ id: "w1", title: "Inflacja", similar: [{ task: "Ceny wzrosły ze 100 do 105. Ile % wynosi inflacja?", result: 5, unit: "%" }, { task: "PKB realny: 200 przy deflatorze 1,25. Ile wynosi PKB nominalny?", result: 250 }] }] },
       m2: { v: 2, summary: "Bank centralny ustala stopy.", quiz: quiz(12, "NBP"), flashcards: cards(6, "NBP") },
       m3: { v: 2, summary: "Konstytucja jest najwyższym prawem.", quiz: quiz(6, "Prawo"), flashcards: cards(4, "Prawo") },
@@ -33,6 +34,7 @@
     myMaterials: { my1: { subjectId: "makroekonomia", title: "Moje notatki", createdAt: now - 1e6, created_by: UID } },
     myContent: { my1: { v: 2, summary: "Moje.", quiz: quiz(5, "Moje"), flashcards: cards(3, "Moje") } },
   };
+  if (ls("mock-pf", "") === "1") DOCS.materialContent.m2.quiz.forEach((q, i) => { q.options = ["Prawda", "Fałsz"]; q.correct = i % 2; });
   // postęp przeżywa przeładowanie strony (jak w prawdziwej bazie)
   try { DOCS.progress = JSON.parse(localStorage.getItem("mock-progress") || "{}"); } catch {}
   const saveProg = () => { try { localStorage.setItem("mock-progress", JSON.stringify(DOCS.progress)); } catch {} };
@@ -68,8 +70,8 @@
     nauka_rp_lekcja: (a) => (paid ? { ok: true, pkt: daj("l:" + a.p_lid, 30, "lekcje") } : { ok: false, code: "no_access" }),
     nauka_gra_koniec: (a) => {
       const r = RP.runs[a.p_run]; if (!r) return { ok: false, code: "bad_run" }; if (r.done) return { ok: false, code: "already_finished" };
-      r.done = true; const s = (Date.now() - r.t) / 1000; const max = r.gra === "frun" ? Math.ceil(s * 1.1) + 3 : r.gra === "przejdz" ? Math.ceil(s * 5) + 5 : 10;
-      const status = a.p_wynik > max ? "podejrzana" : "ok"; const raw = r.gra === "frun" ? Math.floor(a.p_wynik / 2) : r.gra === "przejdz" ? Math.floor(a.p_wynik / 5) : 2 * a.p_wynik;
+      r.done = true; const s = (Date.now() - r.t) / 1000; const max = r.gra === "frun" ? Math.ceil(s * 1.1) + 3 : r.gra === "przejdz" ? Math.ceil(s * 5) + 5 : r.gra === "drabina" ? 12 : 10;
+      const status = a.p_wynik > max ? "podejrzana" : "ok"; const raw = r.gra === "frun" ? Math.floor(a.p_wynik / 2) : r.gra === "przejdz" ? Math.floor(a.p_wynik / 5) : r.gra === "drabina" ? [0, 5, 10, 20][[0, 4, 8, 12].filter((x) => a.p_wynik >= x).length - 1] : 2 * a.p_wynik;
       const pkt = status === "ok" ? daj("r:" + a.p_run, Math.min(20, raw), "gry") : 0;
       const rek = Math.max(0, ...Object.values(RP.runs).filter((x) => x !== r && x.gra === r.gra && x.ok).map((x) => x.wynik));
       r.ok = status === "ok"; r.wynik = a.p_wynik;
@@ -130,7 +132,8 @@
   const V15FN = {
     nauka_pyt_trudnosc: (a) => {
       const k = a.p_klucze || []; if (k.length > 80) return { ok: false, code: "too_many" };
-      const pyt = {}; for (const x of k) { const h = hash(x); if (h % 7 === 0) continue; pyt[x] = { n: 5 + (h % 36), proc: 20 + (h % 76) }; } // co 7. pytanie: za mało danych
+      const lin = ls("mock-trud", "") === "liniowo";
+      const pyt = {}; k.forEach((x, i) => { const h = hash(x); if (lin) { pyt[x] = { n: 10, proc: Math.round(95 - (75 * i) / Math.max(1, k.length - 1)) }; return; } if (h % 7 === 0) return; pyt[x] = { n: 5 + (h % 36), proc: 20 + (h % 76) }; }); // co 7. pytanie: za mało danych
       return { ok: true, pyt }; },
     nauka_pyt_rok: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
