@@ -98,3 +98,20 @@ Włączany w Więcej (`html[data-theme="bow"]`, `localStorage skrot-theme = "bow
 Kontrast: biały na `#A8325D` 6,4:1, `#7A2445` na `#FBE7EC` 8,2:1, `#5A2E3C` na tle 10,7:1.
 
 Wzory (własne SVG w zmiennych `--bow-*` na `:root`): kokardki z tiulu i serduszka w tle, koronkowy brzeg pod górnym paskiem, bukiet (storczyk, lilia, kwiat wiśni) w konturze w prawym górnym rogu, koronkowa serwetka w lewym dolnym i w karcie „Teraz zrób to”. Tytuły ekranów kursywą Playfair Display (wczytywana tylko przy tym motywie) z wstążką i kokardką. W rogu kokardka 🎀 z dobrym słowem, bez śladu za kursorem.
+
+## Motyw „Nenufary” (nagroda za poziom 7)
+
+Włączany w Więcej (`html[data-theme="lilia"]`, `localStorage skrot-theme = "lilia"`). Do poziomu `LILIA_LEVEL` (7, czyli 2100 XP) wiersz jest zablokowany i pokazuje, ile XP brakuje; starosta ma go zawsze. `pinkTheme.enforce()` wyłącza go po wczytaniu postępów, jeśli poziom jest za niski. Przy awansie na poziom 7 pokazuje się okno „Odblokowano motyw Nenufary”.
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--paper` | `#FAF8FE` | tło strony |
+| `--green-100` | `#EFE8FA` | miękki fiolet: tła, chipy |
+| `--green-600` | `#6A3DAE` | główny fiolet, przyciski |
+| `--green-900` | `#3A1D6B` | tekst na jasnym fiolecie |
+| `--lime-400` | `#E58BC9` | lotosowy róż (akcenty, falka) |
+| `--teal-600` | `#4A58B0` | barwinek |
+| `--sun` | `#E9C97A` | ciepła poświata zachodu |
+| `--ink` / `--muted` | `#170D29` / `#3B2E57` | tekst główny i pomocniczy |
+
+Wzory (własne SVG): liście lilii i kwiat lotosu zamiast kratki, „malowane” plamy nieba w tle, zawirowanie nieba w prawym górnym rogu, kręgi na wodzie przy stopce, pasek u góry w kolorach zmierzchu. W rogu lotos 🪷 ze spokojnym słowem, bez śladu za kursorem.
