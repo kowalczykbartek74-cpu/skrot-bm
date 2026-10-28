@@ -33,15 +33,18 @@
   try { DOCS.progress = JSON.parse(localStorage.getItem("mock-progress") || "{}"); } catch {}
   const saveProg = () => { try { localStorage.setItem("mock-progress", JSON.stringify(DOCS.progress)); } catch {} };
   // ---------- stan v13 (uproszczona baza punktów) ----------
-  const RP = { pkt: {}, rows: [], runs: {}, profil: { nick: null, w_rankingu: false } };
+  const RP = { pkt: {}, rows: [], runs: {}, profil: { nick: ls("mock-nick", null), w_rankingu: ls("mock-vis", "0") === "1" }, adminNicks: [{ user_id: "u1", nick: "Łoś Ania", w_rankingu: true, email: "a@x.pl" }, { user_id: "u2", nick: "Brzydki", w_rankingu: true, email: "b@x.pl" }] };
   const dzis = () => new Date().toISOString().slice(0, 10);
   const daj = (klucz, n, pula) => { const k = dzis() + "|" + klucz; if (RP.pkt[k] != null) return 0; const lim = { gry: 150, quiz: 300, powtorki: 20, lekcje: 150 }[pula] ?? 1e9;
     const used = RP.rows.filter((r) => r.d === dzis() && r.pula === pula).reduce((a, r) => a + r.n, 0); const dam = Math.max(0, Math.min(n, lim - used)); if (!dam) return 0;
     RP.pkt[k] = dam; RP.rows.push({ d: dzis(), pula, n: dam, klucz }); return dam; };
   const paid = KONTO === "platne" || KONTO === "starosta";
   const V13FN = {
-    nauka_profil_moj: () => ({ ok: true, ...RP.profil, kierunek: "BM", rocznik: 2026, grupa: "C111", nick_zmiana_od: null }),
-    nauka_profil_ustaw: (a) => { if (a.p_nick != null) RP.profil.nick = a.p_nick; if (a.p_w_rankingu != null) RP.profil.w_rankingu = a.p_w_rankingu; return V13FN.nauka_profil_moj(); },
+    nauka_profil_moj: () => ({ ok: true, ...RP.profil, kierunek: "BM", rocznik: 2026, grupa: "C111", nick_zmiana_od: RP.profil.zm || null }),
+    nauka_profil_ustaw: (a) => {
+      if (a.p_nick != null) { const n = a.p_nick.trim(); if (n.length < 3 || n.length > 20) return { ok: false, code: "nick_dlugosc" }; if (/zaj/i.test(n)) return { ok: false, code: "nick_zajety" }; if (/admin|kurw/i.test(n)) return { ok: false, code: "nick_zastrzezony" }; RP.profil.nick = n; }
+      if (a.p_w_rankingu != null) { if (a.p_w_rankingu && !RP.profil.nick) return { ok: false, code: "nick_brak" }; RP.profil.w_rankingu = a.p_w_rankingu; }
+      return V13FN.nauka_profil_moj(); },
     nauka_gra_start: (a) => { if (!paid) return { ok: false, code: "no_access" }; const run = crypto.randomUUID(); RP.runs[run] = { gra: a.p_gra, t: Date.now(), q: 0, done: false }; return { ok: true, run, seed: 12345 }; },
     nauka_rp_odpowiedz: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
@@ -68,13 +71,34 @@
       r.ok = status === "ok"; r.wynik = a.p_wynik;
       return { ok: true, status, pkt, rekord: Math.max(rek, r.ok ? a.p_wynik : 0), nowy_rekord: r.ok && a.p_wynik > rek, pkt_runda: pkt };
     },
-    nauka_ranking: (a) => ({ ok: true, zakres: a.p_zakres || "tydzien", od: dzis(), do: dzis(), n: 3,
-      top: [{ miejsce: 1, nick: "Łoś Ania", pkt: 240, ja: false }, { miejsce: 2, nick: "Cela", pkt: 180, ja: false }, { miejsce: 3, nick: RP.profil.nick || "Ty", pkt: 90, ja: true }],
-      sasiedzi: [], ja: { pkt: 90, widoczny: RP.profil.w_rankingu, w_grupie: true, miejsce: 3, z: 3 } }),
-    nauka_rekordy: (a) => ({ ok: true, gra: a.p_gra, top: [{ nick: "Łoś Ania", wynik: 40, ja: false }, { nick: "Cela", wynik: 31, ja: false }], moj_tydzien: null, moj_rekord: null }),
-    nauka_kierunek_stat: () => ({ ok: true, tydzien: dzis(), aktywni: 12, przedmioty: [], trudne: [] }),
-    nauka_admin_gry: () => ({ ok: true, aktywni_tydzien: 12, widoczni: 5, rundy_tydzien: { frun: 30 }, podejrzane: [], pseudonimy: [] }),
-    nauka_admin_nick_usun: () => ({ ok: true }),
+    // Scenariusze rankingu: localStorage mock-rank = "top" (domyślnie, 3 osoby) | "daleko" (41 osób, ja #14, remis na #4) | "pusto".
+    nauka_ranking: (a) => {
+      if (!paid) return { ok: false, code: "no_access" };
+      const sc = ls("mock-rank", "top"), vis = RP.profil.w_rankingu, nick = RP.profil.nick || "?";
+      const od = "2026-10-26", base = { ok: true, zakres: a.p_zakres || "tydzien", od: a.p_zakres === "semestr" ? "2026-10-01" : od, do: a.p_zakres === "semestr" ? dzis() : "2026-11-01", grupa: a.p_grupa, sid: a.p_sid };
+      if (a.p_grupa && a.p_grupa !== "C111") return { ...base, n: 2, top: [{ miejsce: 1, nick: "Kuba_Z", pkt: 300, ja: false }, { miejsce: 2, nick: "Ola.B", pkt: 120, ja: false }], sasiedzi: [], ja: { pkt: 90, widoczny: vis, w_grupie: false, miejsce: null, z: null } };
+      if (sc === "pusto") return { ...base, n: 0, top: [], sasiedzi: [], ja: { pkt: 0, widoczny: vis, w_grupie: true, miejsce: null, z: 0 } };
+      if (sc === "daleko") {
+        const ludzie = Array.from({ length: 41 }, (_, i) => ({ nick: "Osoba " + (i + 1), pkt: 610 - i * 20 }));
+        ludzie[4].pkt = ludzie[3].pkt; // remis
+        ludzie[13] = { nick, pkt: ludzie[13].pkt, ja: true };
+        const lista = ludzie.filter((x) => vis || !x.ja);
+        let m = 0; const z = lista.map((x, i) => ({ miejsce: i && x.pkt === lista[i - 1].pkt ? m : (m = i + 1), nick: x.nick, pkt: x.pkt, ja: !!x.ja }));
+        const me = vis ? z.find((x) => x.ja) : null, lp = me ? z.indexOf(me) : -1;
+        return { ...base, n: z.length, top: z.slice(0, 10), sasiedzi: lp > 9 ? z.slice(lp - 2, lp + 3) : [], ja: { pkt: ludzie[13].pkt, widoczny: vis, w_grupie: true, miejsce: vis ? me.miejsce : 14, z: vis ? z.length : z.length + 1 } };
+      }
+      const top = [{ miejsce: 1, nick: "Łoś Ania", pkt: 240, ja: false }, { miejsce: 2, nick: "Cela", pkt: 180, ja: false }];
+      if (vis) top.push({ miejsce: 3, nick, pkt: 90, ja: true });
+      return { ...base, n: top.length, top, sasiedzi: [], ja: { pkt: 90, widoczny: vis, w_grupie: true, miejsce: 3, z: vis ? 3 : 3 } };
+    },
+    nauka_rekordy: (a) => ({ ok: true, gra: a.p_gra, top: [{ nick: "Łoś Ania", wynik: 40, ja: false }, { nick: "Cela", wynik: 31, ja: false }], moj_tydzien: 27, moj_rekord: 31 }),
+    nauka_kierunek_stat: () => (ls("mock-stat", "0") === "1"
+      ? { ok: true, tydzien: "2026-10-26", aktywni: 37, przedmioty: [{ sid: "prawo", proc: 72, proc_poprz: 65, osob: 12, odp: 300, moj_proc: 80, lepiej_niz: 61 }, { sid: "makroekonomia", proc: 54, proc_poprz: null, osob: 9, odp: 200, moj_proc: 48, lepiej_niz: null }], trudne: [{ mid: "m1", sid: "makroekonomia", proc: 41, odp: 40 }, { mid: "nie-ma", sid: "prawo", proc: 30, odp: 25 }] }
+      : { ok: true, tydzien: "2026-10-26", aktywni: 3, przedmioty: [], trudne: [] }),
+    nauka_admin_gry: () => (KONTO === "starosta" ? { ok: true, aktywni_tydzien: 12, widoczni: 5, rundy_tydzien: { frun: 30 },
+      podejrzane: [{ run: "r1", email: "x@x.pl", nick: "Cwaniak", gra: "frun", wynik: 500, czas_s: 1, powod: "wynik 500 > możliwe 5 w 1s", start: new Date().toISOString() }],
+      pseudonimy: RP.adminNicks } : { ok: false, code: "not_admin" }),
+    nauka_admin_nick_usun: (a) => { RP.adminNicks = RP.adminNicks.filter((x) => x.user_id !== a.p_user); return { ok: true }; },
   };
   const BASE = {
     nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid ? "2027-07-11" : null, plan: paid ? "rok" : null }),
