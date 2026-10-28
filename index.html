@@ -2264,7 +2264,7 @@ html.calm .uni-spark { display: none; }
 <div id="layer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
-<script src="skrot-supabase.js?v=20261028-en2"></script>
+<script src="skrot-supabase.js?v=20261028-akt1"></script>
 <script>
 (() => {
   "use strict";
@@ -7263,6 +7263,7 @@ ${written}`;
             row("upload", "Wgraj materiał", "prezentacja z Teams dla całego roku", () => go({ view: "upload" })),
             row("flag", "Ogłoszenie", "krótka wiadomość na ekranie Dziś", openAnnounce),
             row("flag", "Zgłoszenia błędów", null, () => go({ view: "reports" }), { badge: S.reports.length || 0 }),
+            sk.openAdminActivity ? row("user", "Aktywność", "kto jest teraz na stronie, logowania, wizyty", () => sk.openAdminActivity()) : null,
             sk.openAdminAccounts ? row("user", "Konta i urządzenia", "podejrzane konta, ostrzeżenia, blokady", () => sk.openAdminAccounts()) : null,
             row("spark", "Panel AI", "brakujący prosty język i „Dlaczego?”", () => go({ view: "ai" }), { badge: S.aiMissing || 0 })) : null) : null),
     ];

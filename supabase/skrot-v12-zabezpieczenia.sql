@@ -1,4 +1,4 @@
--- Skrót BM v11: zabezpieczenia (28.10.2026).
+-- Skrót BM v12: zabezpieczenia (28.10.2026).
 -- Wklej w Supabase → SQL Editor → Run. Można uruchamiać wielokrotnie.
 --
 -- 1) Funkcje pomocnicze bez dostępu z zewnątrz.

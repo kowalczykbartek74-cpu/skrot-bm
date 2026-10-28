@@ -61,6 +61,7 @@
     try {
       const { data } = await sb.auth.getSession();
       const session = data?.session;
+      const viaLink = location.hash.includes("access_token");
       if (location.hash.includes("access_token") || location.hash.includes("error_description") || linkError) history.replaceState(null, "", location.pathname + location.search);
       if (!session) { skrot.state = "out"; return; }
       skrot.uid = session.user.id;
@@ -69,6 +70,7 @@
       token = session.access_token;
       await refreshMe();
       skrot.state = "in";
+      logLogin(viaLink ? "link" : null);
     } catch { skrot.state = "error"; }
   })().finally(() => { changed(); afterReady(); });
 
@@ -94,10 +96,36 @@
     if (event === "SIGNED_OUT" && skrot.state === "in") location.reload();
   });
 
+  // ---------- aktywność dla panelu starosty (supabase/skrot-v11-aktywnosc.sql) ----------
+  // Sposób logowania zapisujemy tuż przed nim; po przeładowaniu strony (już z sesją) trafia do historii logowań.
+  const LOGIN_KEY = "skrot-login-m";
+  const markLogin = (m) => ls.set(LOGIN_KEY, m ? m + "|" + Date.now() : null);
+  function logLogin(viaLink) {
+    const raw = ls.get(LOGIN_KEY) || "";
+    const [m, t] = raw.split("|");
+    const metoda = viaLink || (m && Date.now() - Number(t) < 15 * 60e3 ? m : null);
+    if (raw) markLogin(null);
+    if (!metoda) return;
+    sb.rpc("nauka_zalogowano", { p_metoda: metoda, p_nazwa: DEVICE_NAME }).then(() => {}, () => {});
+  }
+  // Obecność: każda zalogowana karta na wierzchu daje znać co 45 s (to widzi starosta w „Aktywność”).
+  let presenceTimer = null;
+  function presence() {
+    if (document.visibilityState !== "visible" || skrot.state !== "in") return;
+    sb.rpc("nauka_obecny", { p_nazwa: DEVICE_NAME }).then(() => {}, () => {});
+  }
+  function startPresence() {
+    if (presenceTimer || !sb || skrot.state !== "in") return;
+    presence();
+    presenceTimer = setInterval(presence, 45000);
+    document.addEventListener("visibilitychange", presence);
+  }
+
   skrot.logout = async () => { try { await sb?.auth.signOut(); } catch {} location.reload(); };
   skrot.loginPassword = async (email, password) => {
+    markLogin("haslo");
     const { error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (error) { markLogin(null); throw error; }
   };
   skrot.sendLink = async (email) => {
     const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + "/", shouldCreateUser: true } });
@@ -328,8 +356,9 @@
         if (!/^\d{6}$/.test(token)) return bad("Wpisz 6-cyfrowy kod z maila.");
         codeBtn.disabled = true;
         try {
+          markLogin("kod");
           const { error } = await sb.auth.verifyOtp({ email, token, type: "email" });
-          if (error) throw error;
+          if (error) { markLogin(null); throw error; }
           pending.clear();
           ls.set("skrot-offer-pass", "1");
           // Zwykle przeładowuje już onAuthStateChange (SIGNED_IN); to tylko zapas.
@@ -677,6 +706,7 @@
     }
     // Zalogowany albo baza nieosiągalna: pokazujemy aplikację.
     document.documentElement.classList.remove("needlogin");
+    startPresence();
     if (skrot.state === "in" && !skrot.admin && skrot.paidAccount) {
       if (skrot.device && ["zajete", "limit", "zablokowane"].includes(skrot.device.stan)) { showGate(); return; }
       if (skrot.paid) { startHeartbeat(); watermark(); }
@@ -887,6 +917,117 @@
     const { data, error } = await sb.rpc("nauka_admin_konta");
     if (error) body.replaceChildren(el("p", { text: /function|does not exist|schema cache|Could not find/i.test(error.message || "") ? "Najpierw uruchom supabase/skrot-v8-urzadzenia.sql w Supabase." : "Nie udało się wczytać kont." }), el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
     else { all = data || []; draw(); }
+  };
+
+  // Panel starosty: kto jest teraz na stronie, kto kiedy się logował i kiedy był (supabase/skrot-v11-aktywnosc.sql).
+  skrot.openAdminActivity = async () => {
+    if (!skrot.admin) return;
+    const layer = document.getElementById("layer") || document.body;
+    const body = el("div", { style: "display:grid;gap:12px" }, el("p", { class: "muted", text: "Wczytuję…" }));
+    let timer = null;
+    const close = () => { clearInterval(timer); scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Aktywność", translate: "no", "data-noi18n": "", style: "max-width:760px;max-height:88vh;overflow:auto" }, body));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+
+    let d = null, tab = "teraz", q = "", loadedAt = null;
+    const TZ = { timeZone: "Europe/Warsaw" };
+    const fmt = (iso) => {
+      if (!iso) return "—";
+      const t = new Date(iso);
+      if (isNaN(t)) return "—";
+      const day = (x) => x.toLocaleDateString("pl-PL", TZ);
+      const now = new Date(), y = new Date(Date.now() - 864e5);
+      const hm = t.toLocaleTimeString("pl-PL", { ...TZ, hour: "2-digit", minute: "2-digit" });
+      if (day(t) === day(now)) return `dziś ${hm}`;
+      if (day(t) === day(y)) return `wczoraj ${hm}`;
+      return `${t.toLocaleDateString("pl-PL", { ...TZ, day: "numeric", month: "short", year: t.getFullYear() === now.getFullYear() ? undefined : "numeric" })} ${hm}`;
+    };
+    const dur = (a, b) => {
+      const m = Math.max(0, Math.round((new Date(b) - new Date(a)) / 60e3));
+      return m < 1 ? "< 1 min" : m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${m % 60} min`;
+    };
+    const METODA = { kod: "kod z maila", haslo: "hasło", link: "link z maila" };
+    const chip = (t, strong) => el("span", { style: `font-size:.74rem;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;${strong ? "background:var(--accent,#1F8A4C);color:#fff" : "background:var(--accent-soft,#EAF5EE);color:var(--accent-text,#0E5A30)"}`, text: t });
+    const dot = () => el("span", { "aria-hidden": "true", style: "display:inline-block;width:9px;height:9px;border-radius:50%;background:#1F8A4C;box-shadow:0 0 0 3px rgba(31,138,76,.18)" });
+    const match = (r) => !q || (r.email || "").includes(q);
+    const rowBox = (...kids) => el("div", { style: "display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line,#BFCEC5);border-radius:12px;background:var(--surface,#fff)" }, ...kids);
+    const who = (email, sub) => el("span", { style: "display:grid;gap:2px;min-width:0;flex:1 1 220px" },
+      el("b", { style: "overflow-wrap:anywhere", text: email || "(bez adresu)" }), sub ? el("small", { class: "muted", text: sub }) : null);
+    const empty = (t) => el("p", { class: "muted", style: "margin:0", text: t });
+
+    function list() {
+      if (tab === "teraz") {
+        const on = (d.online || []).filter(match);
+        if (!on.length) return [empty(q ? "Nikt z tym adresem nie jest teraz na stronie." : "Teraz nikogo nie ma na stronie (nikt zalogowany w ostatnich 2 minutach).")];
+        return on.map((o) => rowBox(el("span", { style: "display:flex;gap:10px;align-items:center;min-width:0;flex:1 1 220px" }, dot(), who(o.email, o.nazwa || "Urządzenie")),
+          el("small", { class: "muted", text: `na stronie od ${fmt(o.od)} · ${dur(o.od, d.teraz)}` })));
+      }
+      if (tab === "logowania") {
+        const ls2 = (d.logowania || []).filter(match);
+        if (!ls2.length) return [empty(q ? "Brak logowań tego adresu." : "Brak zapisanych logowań. Historia zbiera się od wdrożenia tej wersji; ostatnie logowanie sprzed niej widać w zakładce „Konta”.")];
+        return ls2.map((l) => rowBox(who(l.email, [l.nazwa, METODA[l.metoda]].filter(Boolean).join(" · ")), el("small", { style: "font-weight:700", text: fmt(l.at) })));
+      }
+      if (tab === "wizyty") {
+        const ws = (d.wizyty || []).filter(match);
+        if (!ws.length) return [empty(q ? "Brak wizyt tego adresu." : "Brak zapisanych wizyt.")];
+        return ws.map((w) => rowBox(who(w.email, w.nazwa || "Urządzenie"), el("small", { class: "muted", text: `${fmt(w.od)} · ${dur(w.od, w.koniec)}` })));
+      }
+      if (!d.konta) return [empty("Lista kont jest niedostępna (baza nie pozwala czytać Supabase Auth). Reszta panelu działa.")];
+      const online = new Set((d.online || []).map((o) => o.user_id));
+      const ks = d.konta.filter(match);
+      if (!ks.length) return [empty("Brak kont.")];
+      return ks.map((k) => rowBox(
+        el("span", { style: "display:grid;gap:4px;min-width:0;flex:1 1 220px" },
+          el("span", { style: "display:flex;gap:6px;align-items:center;flex-wrap:wrap" }, online.has(k.user_id) ? dot() : null, el("b", { style: "overflow-wrap:anywhere", text: k.email || k.user_id }),
+            k.admin ? chip("starosta") : k.platny ? chip("dostęp", true) : chip("bez dostępu")),
+          el("small", { class: "muted", text: `konto od ${fmt(k.od)}` })),
+        el("small", { style: "display:grid;gap:2px" },
+          el("span", {}, "ostatnie logowanie: ", el("b", { text: fmt(k.logowanie) })),
+          el("span", { class: "muted", text: `ostatnio na stronie: ${online.has(k.user_id) ? "teraz" : fmt(k.ostatnio)}` }))));
+    }
+
+    function draw() {
+      const nOn = (d.online || []).length;
+      const tabs = [["teraz", `Teraz (${nOn})`], ["logowania", "Logowania"], ["wizyty", "Wizyty"], ["konta", `Konta${d.konta ? ` (${d.konta.length})` : ""}`]];
+      const search = el("input", { class: "input", type: "search", placeholder: "Szukaj po e-mailu", value: q, "aria-label": "Szukaj po e-mailu", style: "flex:1 1 200px" });
+      search.addEventListener("input", () => { q = search.value.trim().toLowerCase(); const keep = search.selectionStart; draw(); const s2 = body.querySelector("input[type=search]"); s2?.focus(); try { s2?.setSelectionRange(keep, keep); } catch {} });
+      const stat = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 14px;border-radius:12px;background:var(--accent-soft,#EAF5EE);min-width:120px;flex:1" },
+        el("b", { style: "font-size:1.5rem;line-height:1;color:var(--accent-text,#0E5A30)", text: String(n ?? 0) }), el("small", { style: "font-weight:700", text: t }));
+      body.replaceChildren(
+        el("div", { style: "display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap" },
+          el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Aktywność" }),
+          el("small", { class: "muted", text: `odświeża się co 30 s · ${loadedAt ? loadedAt.toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : ""}` })),
+        el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, stat(nOn, "na stronie teraz"), stat(d.dzis, "osób dziś"), stat(d.tydzien, "osób w 7 dni")),
+        el("div", { style: "display:flex;gap:8px;flex-wrap:wrap;align-items:center" },
+          el("div", { class: "seg", role: "group", "aria-label": "Widok" }, ...tabs.map(([k, t]) => el("button", { type: "button", "aria-pressed": String(tab === k), onclick: () => { tab = k; draw(); } }, t))),
+          search),
+        ...list(),
+        el("p", { class: "muted", style: "margin:0;font-size:.85rem", text: "Widać tylko zalogowanych. „Na stronie teraz” = karta otwarta na wierzchu w ostatnich 2 minutach. Nowa wizyta zaczyna się po 30 minutach przerwy. Historia jest trzymana 12 miesięcy." }),
+        el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+    }
+
+    async function load(first) {
+      const { data, error } = await sb.rpc("nauka_admin_aktywnosc");
+      if (!scrim.isConnected) return;
+      if (error) {
+        if (!first) return;
+        clearInterval(timer);
+        body.replaceChildren(
+          el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Aktywność" }),
+          el("p", { text: /function|does not exist|schema cache|Could not find/i.test(error.message || "") ? "Najpierw uruchom supabase/skrot-v11-aktywnosc.sql w Supabase → SQL Editor." : "Nie udało się wczytać aktywności. Spróbuj za chwilę." }),
+          el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+        return;
+      }
+      d = data || {}; loadedAt = new Date();
+      // Nie przerysowujemy, gdy ktoś właśnie pisze w wyszukiwarce.
+      if (!first && document.activeElement?.matches?.("input[type=search]") && body.contains(document.activeElement)) return;
+      draw();
+    }
+    await load(true);
+    timer = setInterval(() => { if (document.visibilityState === "visible") load(false); }, 30000);
   };
 
   skrot.isUni = (e) => UNI.test(e || "");
