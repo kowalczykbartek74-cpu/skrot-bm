@@ -2699,7 +2699,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
 <div id="layer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
-<script src="skrot-supabase.js?v=20261028-sklep"></script><script src="terminy.js?v=20261028-terminy"></script>
+<script src="skrot-supabase.js?v=20261028-rp"></script><script src="terminy.js?v=20261028-terminy"></script>
 <script>
 (() => {
   "use strict";
@@ -4174,6 +4174,14 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   }
 
   const PAID = () => !!window.skrot?.paid;
+  // Punkty rankingu (🏆, SQL v13): tylko materiały roku (nie „Moje materiały”) i tylko z pełnym dostępem.
+  // Odpowiedź sprawdza i punkty przyznaje baza; tu tylko wysyłamy, bez czekania i bez wpływu na ekran.
+  const rpYear = (mid) => { const m = mid != null && materialById(mid); return !!m && !isMine(m); };
+  const rpSend = (fn, ...a) => { if (!PAID()) return; try { window.skrot?.[fn]?.(...a); } catch {} };
+  // Pytanie quizu z materialContent.quiz; i = indeks na ekranie, do bazy idzie indeks z oryginalnej kolejności.
+  const rpQuiz = (q, i) => { if (q && Number.isInteger(q.index) && rpYear(q.materialId)) rpSend("rpOdpowiedz", q.materialId, q.index, origOpt(q, i)); };
+  const rpCard = (key) => { const k = String(key || ""); if (k.startsWith("g:") || rpYear(k.split(":")[0])) rpSend("rpPowtorka", k); };
+  const rpLesson = (m) => { if (isLesson(m) && rpYear(m.id)) rpSend("rpLekcja", m.id); };
   function siteFoot() {
     return h("footer", { class: "sitefoot" },
       h("span", { text: "© Skrót BM" }),
@@ -5992,7 +6000,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
         const patch = { mastery }, before = subjectPts(m.subjectId).pts;
         if (ok) patch.done = { ...(S.progress.done || {}), [m.id]: Date.now() };
         saveProgress(patch);
-        if (ok) ptsMilestone(m.subjectId, before);
+        if (ok) { ptsMilestone(m.subjectId, before); rpLesson(m); }
         if (!ok) { const cards = S.content[m.id]?.flashcards || []; const added = srsAdd(cards.map((c) => cardKey(m.id, c))); if (added) toast("Fiszki z tej lekcji czekają w „Dziś do powtórki”."); }
       };
       const hookPick = st.ans.hook;
@@ -6663,6 +6671,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
         if (LP.st.ans[card.id] != null) return;
         const good = orig === card.correct;
         if (card.check && !card.again) LP.st.checks[card.id] = good;
+        if (card.rp && !card.again) card.rp(orig);
         lpAward(good ? (card.again ? lpXv("mcRetry") : card.exit ? lpXv("exit") : lpXv("mc")) : 0, { graded: true, ok: good, at: btn });
         let retryNote = false;
         if (!good && card.retry && !card.again && LP.src.retry !== false) { const ex = LP.st.extra[LP.st.bite] || (LP.st.extra[LP.st.bite] = []); if (!ex.some((x) => x.of === card.id)) { ex.push({ of: card.id, at: LP.st.idx + 3 }); retryNote = true; } }
@@ -6844,6 +6853,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
         if (LP.st.ans[card.id] != null) return;
         const top = LP.el.stage.querySelector(".lp-sw.top"); if (top && g !== 1) top.classList.add(g ? "lp-fly-r" : "lp-fly-l");
         try { srsGrade(card.key, g); } catch {}
+        rpCard(card.key);
         lpAward(g >= 2 ? lpXv("rvGood") : g === 1 ? lpXv("rvHard") : 0, { graded: true, ok: g > 0, at: btn || LP.el.cta });
         if (g === 0 && !card.again && LP.src.retry !== false) { const ex = LP.st.extra[LP.st.bite] || (LP.st.extra[LP.st.bite] = []); if (!ex.some((x) => x.of === card.id)) ex.push({ of: card.id, at: lpCards().length }); }
         LP.st.ans[card.id] = g; lpSave();
@@ -6970,6 +6980,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
     const patch = { mastery: { ...(S.progress.mastery || {}), [m.id]: { ok, score: okN, total: X.length, at: Date.now(), weak } }, lp: { ...(S.progress.lp || {}), [m.id]: { ...(prev || {}), stars: Math.max(stars, prev?.stars || 0), last: stars, at: Date.now(), ...(ok ? { xpL: true } : {}) } } };
     if (ok) patch.done = { ...(S.progress.done || {}), [m.id]: Date.now() };
     saveProgress(patch);
+    if (ok && X.length) rpLesson(m);
     if (!ok) { const added = srsAdd((LP.c.flashcards || []).map((c) => cardKey(m.id, c))); if (added) toast("Fiszki z tej lekcji czekają w „Dziś do powtórki”."); }
   }
 
@@ -7244,7 +7255,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   function quizCard(q, i, N) {
     const w = q.materialId != null ? S.why[q.materialId]?.items?.[q.index] : null;
     // fixed: odpowiedzi zależne od kolejności („wszystkie powyższe”) zostają na miejscu, jak w shuffleOpts.
-    return { id: "q" + i, type: "mc", q: q.q, options: q.options || [], correct: q.correct, retry: true, fixed: (() => { const x = { ...q, perm: undefined }; return shuffleOpts(x) === x ? true : undefined; })(),
+    return { id: "q" + i, type: "mc", q: q.q, options: q.options || [], correct: q.correct, retry: true, rp: (orig) => rpQuiz(q, orig), fixed: (() => { const x = { ...q, perm: undefined }; return shuffleOpts(x) === x ? true : undefined; })(),
       why: lpFirstSentence(w?.why || q.explanation || ""), not: w?.not || null, label: `Pytanie ${i + 1} z ${N}`,
       // „Dlaczego?” w kolejności odpowiedzi z ekranu (litery jak na karcie); perm prowadzi z powrotem do oryginału.
       help: () => { const card = lpCur(), order = lpOrder(card), a = LP.st.ans[card.id];
@@ -7536,7 +7547,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
       h("div", { class: "opts" }, q.options.map((o, i) => h("button", {
         type: "button", disabled: answered ? true : null,
         class: "opt" + (answered && i === q.correct ? " right" : "") + (answered && i === st.picked && i !== q.correct ? " wrong" : ""),
-        onclick: () => { st.picked = i; if (i === q.correct) st.score++; else st.missed.push(q); render(); },
+        onclick: () => { st.picked = i; if (i === q.correct) st.score++; else st.missed.push(q); rpQuiz(q, i); render(); },
       }, h("span", { class: "k", text: "ABCD"[i] }), h("span", { text: o })))),
       answered ? h("div", { class: "stack" },
         whyBlock(q, st.picked),
@@ -10180,6 +10191,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     const R = S.route.rv; if (!R?.cards || !R.flipped) return;
     const card = R.cards[R.pos];
     srsGrade(card.key, g);
+    rpCard(card.key);
     if (g === 0 && !R.seen.has(card.key)) { R.cards.push(card); R.again++; }
     R.seen.add(card.key);
     if (g > 0) R.done++;
@@ -10597,6 +10609,7 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
       const r = numMatch(z.val, s);
       if (r == null) { z.ok = "bad-input"; render(); return; }
       z.ok = r; if (r) exRecord(key, true, z.hints > 0 || z.open);
+      if (!z.open && rpYear(m.id)) rpSend("rpZadanie", m.id, w.id, j, parseNum(z.val));
       render();
     };
     const input = numeric ? h("input", { class: "input wk-in num", id: "sim-" + key, inputmode: "decimal", autocomplete: "off", value: z.val, placeholder: "wynik" + (s.unit ? ` (${s.unit})` : ""), "aria-label": `Wynik zadania ${j + 1}`,

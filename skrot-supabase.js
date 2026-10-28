@@ -275,6 +275,21 @@
   };
   // Po zapytaniu, które dało punkty rankingu (pkt > 0): monety przelicza baza, my tylko odświeżamy stan po 3 s.
   skrot.sklepPozniej = () => { clearTimeout(sklepTimer); sklepTimer = setTimeout(() => skrot.sklepStan(), 3000); };
+  // Punkty rankingu (v13). Odpowiedź sprawdza i punkty przyznaje tylko baza; tu wysyłamy i zapominamy.
+  // Bez konta, bez pełnego dostępu, bez SQL v13 albo przy błędzie sieci nic się nie dzieje (strona działa jak dotąd).
+  let rpBrak = false;
+  const rp = (fn, args) => {
+    if (rpBrak || skrot.state !== "in" || !skrot.paid) return;
+    sb.rpc(fn, args).then(({ data, error }) => {
+      if (error) { if (rpcErr(error).code === "no_sql") rpBrak = true; return; }
+      if (data?.pkt > 0) skrot.sklepPozniej();
+    }, () => {});
+  };
+  // wybor = indeks odpowiedzi w KOLEJNOŚCI Z BAZY (przed tasowaniem), tylko pytania quizu z materialContent.
+  skrot.rpOdpowiedz = (mid, idx, wybor) => rp("nauka_rp_odpowiedz", { p_mid: mid, p_idx: idx, p_wybor: wybor, p_zrodlo: "quiz" });
+  skrot.rpZadanie = (mid, wid, j, wynik) => rp("nauka_rp_zadanie", { p_mid: mid, p_wid: String(wid), p_j: j, p_wynik: wynik, p_zrodlo: "quiz" });
+  skrot.rpPowtorka = (klucz) => rp("nauka_rp_powtorka", { p_klucz: klucz });
+  skrot.rpLekcja = (lid) => rp("nauka_rp_lekcja", { p_lid: lid });
   skrot.sklepKup = async (item) => {
     await ready;
     const { data, error } = await sb.rpc("nauka_sklep_kup", { p_item: item });
