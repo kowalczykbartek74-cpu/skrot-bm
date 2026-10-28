@@ -1,10 +1,12 @@
-// SPEC 10.3: każda linijka z tabel tekstów (5.6, 6.3, 7.6, 8.4, 9.5) ma parę w i18n-en.js.
+// SPEC 10.3: każda linijka z tabel tekstów (SPEC.md 5.6, 6.3, 7.6, 8.4, 9.5; SPEC-2.md 5.6 Hasło dnia) ma parę w i18n-en.js.
 import fs from "fs";
-const spec = fs.readFileSync(new URL("../SPEC.md", import.meta.url), "utf8").split("\n");
-let sec = null; const want = [];
-for (const l of spec) {
-  const m = l.match(/^#+ (\d+\.\d+) /); if (m) sec = m[1];
-  if (["5.6", "6.3", "7.6", "8.4", "9.5"].includes(sec) && l.startsWith("| ") && !l.startsWith("| PL ")) want.push([sec, ...l.split(" | ").map((x) => x.replace(/^\| ?| ?\|$/g, ""))]);
+const want = [];
+for (const [plik, sekcje] of [["SPEC.md", ["5.6", "6.3", "7.6", "8.4", "9.5"]], ["SPEC-2.md", ["5.6"]]]) {
+  let sec = null;
+  for (const l of fs.readFileSync(new URL("../" + plik, import.meta.url), "utf8").split("\n")) {
+    const m = l.match(/^#+ (\d+\.\d+) /); if (m) sec = m[1];
+    if (sekcje.includes(sec) && l.startsWith("| ") && !l.startsWith("| PL ") && !/^\| -/.test(l)) want.push([plik + " " + sec, ...l.split(" | ").map((x) => x.replace(/^\| ?| ?\|$/g, ""))]);
+  }
 }
 const dict = {}; const ctx = { window: { SKROT_I18N: { load: (o) => Object.assign(dict, o.exact) } } };
 new Function("window", fs.readFileSync(new URL("../../../i18n-en.js", import.meta.url), "utf8"))(ctx.window);

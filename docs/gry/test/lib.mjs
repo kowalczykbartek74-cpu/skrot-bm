@@ -8,8 +8,8 @@ export const BASE = "http://127.0.0.1:8765/";
 export const OUT = process.env.OUT || "/tmp/gry-shots";
 fs.mkdirSync(OUT, { recursive: true });
 const ATRAPA = fs.readFileSync(DIR + "atrapa-supabase.js", "utf8");
-export async function page(browser, { konto = "platne", v13 = "1", lang = "pl", w = 390, h = 844, ls = {} } = {}) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+export async function page(browser, { konto = "platne", v13 = "1", lang = "pl", w = 390, h = 844, ls = {}, ctx: more = {} } = {}) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, ...more });
   await ctx.route(/supabase-js@[\d.]+\/dist\/umd\/supabase\.min\.js/, (r) => r.fulfill({ contentType: "text/javascript", body: ATRAPA }));
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => (/supabase-js/.test(r.request().url()) ? r.fallback() : r.abort()));
   await ctx.route(BASE + "index.html*", async (r) => { const res = await r.fetch(); let b = await res.text(); b = b.replace(/(<script src="https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase[^"]*")\s+integrity="[^"]*"/, "$1"); r.fulfill({ response: res, body: b }); });
