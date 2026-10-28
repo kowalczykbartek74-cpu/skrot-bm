@@ -7274,6 +7274,12 @@ ${written}`;
   }
 
   // ================= WIĘCEJ: rzadziej używane rzeczy, konto i tryb starosty =================
+  // Logowanie z aplikacji: bez połączenia z bazą (stan „error”/„loading”) okno logowania nie zadziała, więc przeładowujemy stronę.
+  function signIn() {
+    const sk = window.skrot || {};
+    if (sk.sb && sk.openLogin && sk.state !== "loading") sk.openLogin();
+    else location.reload();
+  }
   function openAccount() {
     const sk = window.skrot || {};
     modal((close) => [
@@ -7292,9 +7298,9 @@ ${written}`;
         return h("div", { class: "row", style: "align-items:flex-end" }, h("label", { class: "field", for: "acc-name", style: "flex:1 1 180px" }, "Jak mamy się do Ciebie zwracać?", inp), h("button", { type: "button", class: "btn small", onclick: save }, "Zapisz imię"));
       })() : null,
       h("div", { class: "row" },
-        !PAID() && ["in", "out"].includes(sk.state) ? h("button", { type: "button", class: "btn primary", onclick: () => { close(); sk.buy?.(); } }, "Kup dostęp") : null,
+        sk.state !== "in" ? h("button", { type: "button", class: "btn primary", onclick: () => { close(); signIn(); } }, "Zaloguj się") : null,
+        !PAID() && ["in", "out"].includes(sk.state) ? h("button", { type: "button", class: sk.state === "in" ? "btn primary" : "btn", onclick: () => { close(); sk.buy?.(); } }, "Kup dostęp") : null,
         PAID() && sk.plan === "miesiac" && sk.manage ? h("button", { type: "button", class: "btn", onclick: () => sk.manage() }, "Zarządzaj subskrypcją") : null,
-        sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: () => { close(); sk.openLogin?.(); } }, "Zaloguj się") : null,
         sk.state === "in" ? h("button", { type: "button", class: "btn ghost", onclick: () => sk.logout?.() }, "Wyloguj") : null,
         h("button", { type: "button", class: "btn ghost", onclick: () => { close(); openHelp(); } }, "Pomoc"),
         h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")),
@@ -7371,7 +7377,7 @@ ${written}`;
           row("help", "Pomoc i kontakt", "płatność, logowanie, błędy · skrotbm@outlook.com", openHelp),
           row("help", "Przewodnik po stronie", `${GUIDE.length} rozdziałów z ćwiczeniami · ukończone ${guideDoneN()}/${GUIDE.length}`, () => go({ view: "guide" })),
           row("map", "Szybki przegląd ekranów", "1 minuta, podświetla zakładki", () => startTour(QUICK, QUICK_OPTS())),
-          sk.state === "in" ? row("out", "Wyloguj", null, () => sk.logout?.()) : sk.state === "out" ? row("in", "Zaloguj się", "kodem z maila albo hasłem", () => sk.openLogin?.()) : null,
+          sk.state === "in" ? row("out", "Wyloguj", null, () => sk.logout?.()) : row("in", "Zaloguj się", "kodem z maila albo hasłem", signIn),
         ], "ty"),
         S.isStarosta ? h("section", { class: "panel more-group staro" },
           h("div", { class: "panel-head" }, h("h2", { text: "Tryb starosty" }),
