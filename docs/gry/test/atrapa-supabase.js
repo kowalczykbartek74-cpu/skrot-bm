@@ -45,7 +45,7 @@
       if (a.p_nick != null) { const n = a.p_nick.trim(); if (n.length < 3 || n.length > 20) return { ok: false, code: "nick_dlugosc" }; if (/zaj/i.test(n)) return { ok: false, code: "nick_zajety" }; if (/admin|kurw/i.test(n)) return { ok: false, code: "nick_zastrzezony" }; RP.profil.nick = n; }
       if (a.p_w_rankingu != null) { if (a.p_w_rankingu && !RP.profil.nick) return { ok: false, code: "nick_brak" }; RP.profil.w_rankingu = a.p_w_rankingu; }
       return V13FN.nauka_profil_moj(); },
-    nauka_gra_start: (a) => { if (!paid) return { ok: false, code: "no_access" }; const run = crypto.randomUUID(); RP.runs[run] = { gra: a.p_gra, t: Date.now(), q: 0, done: false }; return { ok: true, run, seed: 12345 }; },
+    nauka_gra_start: (a) => { if (!paid) return { ok: false, code: "no_access" }; const run = crypto.randomUUID(); RP.runs[run] = { gra: a.p_gra, t: Date.now(), q: 0, done: false }; return { ok: true, run, seed: +ls("mock-seed", "12345") }; },
     nauka_rp_odpowiedz: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
       const q = DOCS.materialContent[a.p_mid]?.quiz?.[a.p_idx]; if (!q) return { ok: false, code: "no_question" };

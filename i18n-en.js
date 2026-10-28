@@ -1,6 +1,19 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+/* Gry: etap 4 – Przejdź (2026-10-28) */
+"Przejdź": "Cross",
+"Przejdź przez Cukrową.": "Cross Cukrowa Street.",
+"Dotknij, żeby iść": "Tap to walk",
+"Potrącił Cię samochód": "Hit by a car",
+"Tramwaj!": "Tram!",
+"Wpadłeś do Odry": "You fell into the Oder",
+"Kłoda odpłynęła za daleko": "The log drifted too far",
+"Spóźniłeś się na zajęcia": "You were late for class",
+"Bramka · pytanie za punkty": "Gate · question for points",
+"rzędów": "rows",
+"Pomiń pytanie": "Skip the question",
+"ok. 2–3 min": "approx. 2–3 min",
 /* Gry: etap 3 – Pary (2026-10-28) */
 "Pary": "Pairs",
 "Dopasuj pojęcia EN–PL i definicje.": "Match EN–PL terms and definitions.",

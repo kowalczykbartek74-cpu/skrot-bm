@@ -275,8 +275,266 @@
     return game;
   })();
 
-  const GAMES = { frun: FRUN, pary: PARY };
-  const UNITS = { frun: "kolumn", pary: "par" };
+  // =====================================================================
+  // PRZEJDŹ: student z plecakiem idzie w górę przez trawnik, ulicę, tory i Odrę (SPEC 9). Widok z góry, canvas.
+  // =====================================================================
+  const PRZEJDZ = (() => {
+    const C = GRY_CFG.przejdz, CELL = C.cell, COLS = C.cols, HOP_GAP = 0.2; // min. 200 ms między skokami = max 5 rzędów/s (granica w SQL)
+    const AHEAD = 20, BEHIND = 12, SPAN = 13 * CELL; // pas ruchu zawija się co 13 kratek (szerzej niż ekran)
+    // ---------- generator rzędów (SPEC 9.2): czysta funkcja seeda, bez rysowania ----------
+    function makeGen(rnd) {
+      const rows = [];
+      let group = null, left = 0, lastKind = null, lastRoadDir = 0, reach = new Array(COLS).fill(true);
+      const pick = (d) => {
+        const p = d >= 2 ? { trawa: 0.25, ulica: 0.45, tory: 0.1, rzeka: 0.2 } : { trawa: 0.3, ulica: 0.4, tory: 0.1, rzeka: 0.2 };
+        if (lastKind === "rzeka") p.rzeka = 0; if (lastKind === "tory") p.tory = 0;
+        const sum = p.trawa + p.ulica + p.tory + p.rzeka; let x = rnd() * sum;
+        for (const k of ["trawa", "ulica", "tory", "rzeka"]) { x -= p[k]; if (x < 0) return k; }
+        return "trawa";
+      };
+      const count = (k) => ({ trawa: 1 + Math.floor(rnd() * 2), ulica: 1 + Math.floor(rnd() * 4), tory: 1, rzeka: 1 + Math.floor(rnd() * 3) })[k];
+      // Pojazdy / kłody rozłożone na pasie długości SPAN z odstępami w kratkach.
+      function lane(n, lenMin, lenMax, gapMin, gapMax) {
+        const items = []; let x = Math.floor(rnd() * 3) * CELL;
+        for (let i = 0; i < n; i++) {
+          const len = (lenMin + Math.floor(rnd() * (lenMax - lenMin + 1))) * CELL;
+          if (x + len > SPAN - gapMin * CELL) break;
+          items.push({ x: x - 2 * CELL, len }); x += len + (gapMin + Math.floor(rnd() * (gapMax - gapMin + 1))) * CELL;
+        }
+        if (!items.length) items.push({ x: 0, len: lenMin * CELL });
+        return items;
+      }
+      function gen(r) {
+        const d = Math.floor(r / 20);
+        let kind;
+        if (r < 4) kind = "trawa";
+        else if (r % C.gateEvery === 0) kind = "bramka";
+        else { if (!left) { group = pick(d); left = count(group); lastKind = group; } kind = group; left--; }
+        const row = { r, kind, trees: new Array(COLS).fill(false), items: null, dir: 1, speed: 0, tram: null, gate: false };
+        if (kind === "trawa" && r >= 4) {
+          const n = Math.floor(rnd() * 5); // 0–4 drzew/ławek → zawsze ≥ 5 wolnych pól
+          for (let i = 0; i < n; i++) row.trees[Math.floor(rnd() * COLS)] = true;
+        }
+        if (kind === "ulica") {
+          row.dir = lastRoadDir && rows[r - 1]?.kind === "ulica" ? -lastRoadDir : rnd() < 0.5 ? -1 : 1; lastRoadDir = row.dir;
+          row.speed = Math.min(C.carSpeed0 + C.carSpeedStep * d, C.carSpeedMax);
+          row.items = lane(1 + Math.floor(rnd() * 3), 1, 2, 2, 5);
+        } else lastRoadDir = 0;
+        if (kind === "rzeka") {
+          row.dir = rnd() < 0.5 ? -1 : 1; row.speed = Math.min(C.logSpeed0 + C.logSpeedStep * d, 100);
+          row.items = lane(2 + Math.floor(rnd() * 2), C.logLen[0], C.logLen[1], 1, 3);
+        }
+        if (kind === "tory") row.tram = { next: C.tramEvery[0] + rnd() * (C.tramEvery[1] - C.tramEvery[0]), x: 0, on: false, dir: rnd() < 0.5 ? -1 : 1 };
+        // Przejezdność (BFS w przód): z osiągalnych pól poprzedniego rzędu krok w górę, potem w bok po wolnych polach.
+        const solid = kind === "trawa" || kind === "bramka";
+        if (!solid) reach = reach.some(Boolean) ? new Array(COLS).fill(true) : reach;
+        else {
+          const flood = () => { const m = row.trees.map((t, c) => !t && reach[c]); for (let k = 0; k < COLS; k++) for (let c = 0; c < COLS; c++) if (!row.trees[c] && !m[c] && (m[c - 1] || m[c + 1])) m[c] = true; return m; };
+          let m = flood();
+          while (!m.some(Boolean)) { // brak drogi: usuń drzewo najbliżej osiągalnego pola poniżej
+            let best = -1; for (let c = 0; c < COLS; c++) if (row.trees[c] && reach[c] && (best < 0 || Math.abs(c - 4) < Math.abs(best - 4))) best = c;
+            if (best < 0) { row.trees.fill(false); } else row.trees[best] = false;
+            m = flood();
+          }
+          reach = m;
+        }
+        rows[r] = row;
+        return row;
+      }
+      return { row: (r) => rows[r] || (() => { for (let k = rows.length; k <= r; k++) gen(k); return rows[r]; })(), rows, drop: (r) => { rows[r] = undefined; } };
+    }
+    // ---------- stan rundy ----------
+    let W, H, rnd, col, subj, gen;
+    let st, pr, px, hop, hopT, lastHop, queued, far, cam, auto, tDie, death, invuln, freeze, gateQ, nudge, onLog, started, hops = 0;
+    const hopO = { r0: 0, r1: 0, x0: 0, x1: 0 };
+    const rowAt = (r) => (r < 0 ? null : gen.row(r));
+    const solid = (row) => row && (row.kind === "trawa" || row.kind === "bramka");
+    const colOf = (x) => clamp(Math.round((x - CELL / 2) / CELL), 0, COLS - 1);
+    const colX = (c) => c * CELL + CELL / 2;
+    const wrap = (x) => { x = (x + 2 * CELL) % SPAN; if (x < 0) x += SPAN; return x - 2 * CELL; };
+    const curRow = () => (hop ? (hopT > 0.5 ? hopO.r1 : hopO.r0) : pr);
+    const yOf = (rowF) => H - (rowF + 1 - cam) * CELL; // górna krawędź rzędu na ekranie
+    function logUnder(row, x) { for (const it of row.items) { const a = wrap(it.x); if ((x >= a && x <= a + it.len) || (x >= a - SPAN && x <= a - SPAN + it.len)) return true; } return false; }
+    function tryMove(dir) {
+      const now = performance.now() / 1000;
+      if (hop || now - lastHop < HOP_GAP) { queued = dir; return; }
+      let r1 = pr, x1 = px;
+      if (dir === "up") r1 = pr + 1; else if (dir === "down") r1 = pr - 1; else x1 = px + (dir === "left" ? -CELL : CELL);
+      if (r1 < 0) { nudge = 0.12; return; }
+      const row = rowAt(r1), here = rowAt(pr);
+      if (r1 !== pr && row.kind !== "rzeka") x1 = colX(colOf(px));          // z rzeki na ląd: do najbliższej kolumny
+      if (r1 === pr && here.kind !== "rzeka" && (x1 < 0 || x1 > W)) { nudge = 0.12; return; } // poza boczną krawędź
+      if (solid(row) && row.trees[colOf(x1)]) { nudge = 0.12; return; }      // drzewo / ławka
+      hop = true; hopT = 0; lastHop = now; hops++; Object.assign(hopO, { r0: pr, r1, x0: px, x1 });
+      if (!started) started = true;
+      GAME_SFX("hop");
+    }
+    function land() {
+      hop = false; pr = hopO.r1; px = hopO.x1;
+      const row = rowAt(pr);
+      if (pr > far) { far = pr; if (far >= C.autoScrollFrom) auto = true; }
+      if (row.kind === "rzeka") { onLog = logUnder(row, px); if (!onLog && invuln <= 0) return die("Wpadłeś do Odry"); }
+      else onLog = false;
+      if (row.kind === "bramka" && !row.gate) { row.gate = true; gateQ = true; }
+      if (queued) { const q = queued; queued = null; tryMove(q); }
+    }
+    function die(t) { if (st === "smierc") return; st = "smierc"; death = t; tDie = 0; hop = false; GAME_SFX("hit"); BUZZ(false); }
+    // pojazdy, tramwaje i kłody
+    function moveLanes(dt) {
+      const lo = Math.max(0, Math.floor(cam) - 2), hi = Math.floor(cam + H / CELL) + 2;
+      for (let r = lo; r <= hi; r++) {
+        const row = rowAt(r);
+        if (row.items) for (const it of row.items) it.x = wrap(it.x + row.dir * row.speed * dt);
+        if (row.tram) {
+          const t = row.tram;
+          if (!t.on) { t.next -= dt; if (t.next <= 0) { t.on = true; t.x = t.dir > 0 ? -(W + 200) : W; } }
+          else { t.x += t.dir * C.tramSpeed * dt; if (t.x > W + 10 || t.x < -(W + 210)) { t.on = false; t.next = C.tramEvery[0] + rnd() * (C.tramEvery[1] - C.tramEvery[0]); } }
+        }
+      }
+    }
+    function hits() {
+      if (invuln > 0) return;
+      const row = rowAt(curRow()); if (!row) return;
+      const x = hop ? hopO.x0 + (hopO.x1 - hopO.x0) * hopT : px, a = x - CELL / 2 + 6, b = x + CELL / 2 - 6;
+      if (row.kind === "ulica") for (const it of row.items) { const s = wrap(it.x); if ((b > s && a < s + it.len) || (b > s - SPAN && a < s - SPAN + it.len)) return die("Potrącił Cię samochód"); }
+      if (row.tram?.on && b > row.tram.x && a < row.tram.x + W + 200) return die("Tramwaj!");
+    }
+    const game = {
+      id: "przejdz", title: "Przejdź", revive: true, swipe: true,
+      init(ctx) {
+        W = ctx.W; H = ctx.H; rnd = ctx.rnd; col = ctx.colors; subj = ctx.subjectColors.length ? ctx.subjectColors : [col.shelf];
+        gen = makeGen(rnd);
+        st = "gotowy"; pr = 0; px = colX(4); hop = false; hopT = 0; lastHop = -1; queued = null; far = 0; auto = false; tDie = 0; death = "";
+        invuln = 0; freeze = 0; gateQ = false; nudge = 0; onLog = false; started = false;
+        cam = pr + 0.5 - (0.3 * H) / CELL;
+        for (let r = 0; r < AHEAD; r++) gen.row(r);
+      },
+      hint() { return st === "gotowy" ? (started ? "Dotknij, żeby grać dalej" : "Dotknij, żeby iść") : ""; },
+      update(dt, input) {
+        const dir = input.left ? "left" : input.right ? "right" : input.down ? "down" : input.up || input.tap ? "up" : null;
+        if (st === "smierc") { tDie += dt; return; }
+        if (st === "gotowy") { if (freeze > 0) freeze = Math.max(0, freeze - dt); else moveLanes(dt); if (!dir) return; st = "gra"; } // ruch na ulicy widać już przed startem
+        if (nudge > 0) nudge = Math.max(0, nudge - dt);
+        if (freeze > 0) freeze = Math.max(0, freeze - dt); else { if (invuln > 0) invuln = Math.max(0, invuln - dt); moveLanes(dt); }
+        if (dir) tryMove(dir);
+        else if (queued && !hop && performance.now() / 1000 - lastHop >= HOP_GAP) { const q = queued; queued = null; tryMove(q); }
+        const row = rowAt(pr);
+        // jazda na kłodzie (także w trakcie skoku w bok po tej samej rzece)
+        if (row.kind === "rzeka" && (onLog || (hop && hopO.r0 === hopO.r1)) && freeze <= 0) {
+          const v = row.dir * row.speed * dt; px += v; if (hop) { hopO.x0 += v; hopO.x1 += v; }
+          if (px < 0 || px > W) return die("Kłoda odpłynęła za daleko");
+        }
+        if (hop) { hopT += dt / (C.hopMs / 1000); if (hopT >= 1) land(); }
+        if (st === "smierc") return;
+        if (!hop && row.kind === "rzeka" && rowAt(pr).kind === "rzeka" && !onLog && invuln <= 0) return die("Wpadłeś do Odry");
+        hits();
+        if (st === "smierc") return;
+        // kamera: gracz na 70% wysokości od góry; od rzędu 10 ekran sam jedzie (po pierwszym ruchu)
+        const target = pr + 0.5 - (0.3 * H) / CELL;
+        if (target > cam) cam += (target - cam) * 0.15;
+        if (auto && freeze <= 0) cam += C.autoScroll * dt;
+        if (pr + 0.5 < cam) return die("Spóźniłeś się na zajęcia");
+        // rzędy 20 do przodu, stare za kamerą usuwamy
+        gen.row(far + AHEAD);
+        const old = Math.floor(cam) - BEHIND; if (old > 0) gen.drop(old);
+      },
+      draw(g) {
+        const top = Math.floor(cam + H / CELL) + 1, bot = Math.floor(cam) - 1;
+        g.fillStyle = col.bg; g.fillRect(0, 0, W, H);
+        for (let r = bot; r <= top; r++) drawRow(g, r < 0 ? START : rowAt(r), yOf(r), r); // pod startem: trawnik kampusu (tylko rysunek)
+        // gracz
+        const t = hop ? hopT : 0, x = hop ? hopO.x0 + (hopO.x1 - hopO.x0) * t : px, rf = hop ? hopO.r0 + (hopO.r1 - hopO.r0) * t : pr;
+        const lift = hop && !REDUCED() ? Math.sin(Math.PI * t) * 6 : 0, shake = nudge > 0 && !REDUCED() ? Math.sin(nudge * 80) * 2 : 0;
+        const y = yOf(rf) + CELL / 2 - lift;
+        let a = 1; if ((invuln > 0 || freeze > 0) && st !== "smierc") a = 0.6;
+        drawStudent(g, x + shake, y, st === "smierc" && !REDUCED() ? Math.min(1, tDie / 0.5) : 0, a, death === "Wpadłeś do Odry");
+      },
+      shake: () => 0,
+      score: () => far,
+      dead: () => st === "smierc" && tDie >= 0.5,
+      deathText: () => death,
+      revive() {
+        // najbliższy rząd trawy na lub poniżej miejsca śmierci, wolna kolumna najbliżej środka
+        let r = curRow(); while (r > 0 && (!rowAt(r) || !solid(rowAt(r)))) r--;
+        const row = rowAt(r); let c = 4; for (const k of [4, 3, 5, 2, 6, 1, 7, 0, 8]) if (!row.trees[k]) { c = k; break; }
+        pr = r; px = colX(c); hop = false; queued = null; onLog = false; tDie = 0; death = "";
+        cam = pr + 0.5 - (0.3 * H) / CELL; auto = false; freeze = 2; invuln = GRY_CFG.revive.invulnSec; st = "gotowy";
+        // pojazdy z rzędu wskrzeszenia i najbliższych nie mogą stać na graczu (2 s postoju + 2 s nietykalności)
+      },
+      wantsQuestion() { if (!gateQ) return false; gateQ = false; return true; },
+      // Tylko do testów (docs/gry/test): ustawienie gracza („land” = jak po skoku) i podgląd rzędu.
+      debugSet(o) { if (o.pr != null) { pr = o.pr; far = Math.max(far, o.far ?? o.pr); gen.row(pr + AHEAD); } if (o.px != null) px = o.px; cam = o.cam ?? (o.pr != null ? pr + 0.5 - (0.3 * H) / CELL : cam); if (o.auto != null) auto = o.auto; if (o.invuln != null) invuln = o.invuln; if (o.freeze != null) freeze = o.freeze;
+        st = "gra"; hop = false; started = true; if (o.land) { Object.assign(hopO, { r0: pr, r1: pr, x0: px, x1: px }); land(); } },
+      debugRow: (r) => { const x = rowAt(r); return x && { kind: x.kind, dir: x.dir, speed: x.speed, trees: x.trees.slice(), items: x.items && x.items.map((i) => ({ x: wrap(i.x), len: i.len })), tram: x.tram && { ...x.tram } }; },
+      debug: () => ({ st, pr, px, far, cam, hop, freeze, invuln, auto, death, hops, onLog, rows: Array.from({ length: 6 }, (_, k) => { const x = rowAt(pr + k - 1); return x ? { r: x.r, kind: x.kind, trees: x.trees.map(Number).join("") } : null; }) }),
+      _gen(seed, n) { const g = makeGen(mulberry32(seed)); for (let r = 0; r < n; r++) g.row(r); return g.rows.map((x) => ({ kind: x.kind, trees: x.trees.slice(), items: x.items ? x.items.map((i) => ({ x: i.x, len: i.len })) : null, dir: x.dir, speed: x.speed })); },
+    };
+    // ---------- rysowanie (SPEC 9.4): płaskie kształty w palecie strony ----------
+    const START = { r: -1, kind: "trawa", trees: new Array(COLS).fill(false) };
+    function drawRow(g, row, y, r) {
+      if (!row) return;
+      const k = row.kind;
+      if (k === "trawa" || k === "bramka") {
+        g.fillStyle = col.grass; g.fillRect(0, y, W, CELL);
+        g.fillStyle = col.grass2; for (let c = (r & 1); c < COLS; c += 2) g.fillRect(c * CELL, y, CELL, CELL);
+        for (let c = 0; c < COLS; c++) if (row.trees[c]) {
+          g.fillStyle = "rgba(14,90,48,.18)"; g.beginPath(); g.ellipse(colX(c) + 3, y + CELL / 2 + 4, 15, 12, 0, 0, Math.PI * 2); g.fill();
+          g.fillStyle = col.tree; g.strokeStyle = "#0E5A30"; g.lineWidth = 2; g.beginPath(); g.arc(colX(c), y + CELL / 2, 15, 0, Math.PI * 2); g.fill(); g.stroke();
+        }
+        if (k === "bramka") {
+          g.fillStyle = col.lime; g.fillRect(0, y + 12, W, 16);
+          g.fillStyle = "#0E3B22"; g.font = "800 14px system-ui, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+          for (let c = 1; c < COLS; c += 3) g.fillText("? " + row.r, colX(c), y + CELL / 2 + 1);
+        }
+      } else if (k === "ulica") {
+        g.fillStyle = "#5B6660"; g.fillRect(0, y, W, CELL);
+        g.fillStyle = "rgba(255,255,255,.75)"; for (let x = 6; x < W; x += 30) g.fillRect(x, y - 1, 16, 2);
+        for (const it of row.items) for (let off = 0; off > -2 * SPAN; off -= SPAN) {
+          const x = wrap(it.x) + off; if (x > W || x + it.len < 0) continue;
+          g.fillStyle = subj[(row.r + Math.round(it.len)) % subj.length]; roundRect(g, x + 3, y + 6, it.len - 6, CELL - 12, 7); g.fill();
+          g.fillStyle = "rgba(255,255,255,.55)"; g.fillRect(row.dir > 0 ? x + it.len - 14 : x + 7, y + 10, 6, CELL - 20); // szyba z przodu
+        }
+      } else if (k === "tory") {
+        g.fillStyle = "#C9CFCB"; g.fillRect(0, y, W, CELL);
+        g.fillStyle = "#8C948F"; for (let x = 4; x < W; x += 16) g.fillRect(x, y + 6, 6, CELL - 12);
+        g.fillStyle = "#5B6660"; g.fillRect(0, y + 11, W, 3); g.fillRect(0, y + CELL - 14, W, 3);
+        const t = row.tram, warn = !t.on && t.next < C.tramWarn;
+        g.fillStyle = "#333"; g.fillRect(2, y + 2, 10, 10);
+        g.fillStyle = warn && (REDUCED() || Math.floor(t.next * 6) % 2) ? "#E5484D" : "#6B1F22"; g.beginPath(); g.arc(7, y + 7, 4, 0, Math.PI * 2); g.fill();
+        if (t.on) {
+          g.fillStyle = "#F2D24B"; roundRect(g, t.x, y + 3, W + 200, CELL - 6, 8); g.fill();
+          g.fillStyle = "#FFF6D6"; for (let x = t.x + 14; x < t.x + W + 190; x += 34) g.fillRect(x, y + 9, 22, CELL - 18);
+        }
+      } else if (k === "rzeka") {
+        g.fillStyle = col.bg; g.fillRect(0, y, W, CELL);
+        g.fillStyle = col.river; g.fillRect(0, y, W, CELL);
+        g.strokeStyle = "rgba(255,255,255,.45)"; g.lineWidth = 1.5; g.beginPath();
+        const ph = REDUCED() ? 0 : (row.r * 13) % 30;
+        for (let x = -ph; x < W; x += 30) { g.moveTo(x, y + 20); g.quadraticCurveTo(x + 7, y + 15, x + 14, y + 20); }
+        g.stroke();
+        for (const it of row.items) for (let off = 0; off > -2 * SPAN; off -= SPAN) {
+          const x = wrap(it.x) + off; if (x > W || x + it.len < 0) continue;
+          g.fillStyle = "#8B5A2B"; roundRect(g, x + 2, y + 7, it.len - 4, CELL - 14, 9); g.fill();
+          g.fillStyle = "#A9743E"; g.fillRect(x + 8, y + 15, it.len - 16, 3);
+        }
+      }
+    }
+    function roundRect(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+    function drawStudent(g, x, y, squash, alpha, splash) {
+      g.save(); g.globalAlpha = alpha; g.translate(x, y);
+      if (squash) { if (splash) { g.strokeStyle = "rgba(255,255,255,.8)"; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 6 + squash * 14, 0, Math.PI * 2); g.stroke(); g.globalAlpha = alpha * (1 - squash); } else g.scale(1 + squash * 0.4, 1 - squash * 0.6); }
+      g.fillStyle = "rgba(5,10,7,.18)"; g.beginPath(); g.ellipse(2, 4, 13, 11, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = col.lime; g.strokeStyle = "#0E3B22"; g.lineWidth = 1.5; roundRect(g, -10, 2, 20, 13, 4); g.fill(); g.stroke(); // plecak
+      g.fillStyle = "#1A7F45"; roundRect(g, -12, -6, 24, 12, 6); g.fill(); g.stroke();                                        // ramiona
+      g.fillStyle = "#F1C9A5"; g.beginPath(); g.arc(0, -4, 7.5, 0, Math.PI * 2); g.fill(); g.stroke();                      // głowa
+      g.fillStyle = "#4A3222"; g.beginPath(); g.arc(0, -2, 7.5, 0, Math.PI); g.fill();                                      // włosy (z góry)
+      g.restore();
+    }
+    return game;
+  })();
+
+  const GAMES = { frun: FRUN, pary: PARY, przejdz: PRZEJDZ };
+  const UNITS = { frun: "kolumn", pary: "par", przejdz: "rzędów" };
   const TITLES = { frun: "Fruń", pary: "Pary", przejdz: "Przejdź" };
 
   // =====================================================================
@@ -333,7 +591,7 @@
       G.update(GRY_CFG.step, input);
       input.tap = input.left = input.right = input.up = input.down = false;
       acc -= GRY_CFG.step; n++;
-      if (G.dead()) break;
+      if (G.dead() || gateNow()) break;
     }
     if (n >= GRY_CFG.maxSteps) acc = 0;
     paint(acc / GRY_CFG.step);
@@ -342,6 +600,7 @@
     if (t - live > 1000) { live = t; ui.live.textContent = `${sc} ${T(UNITS[run.gra])}`; }
     hintSync();
     if (G.dead()) return died();
+    if (run.gate) return askGate();
     raf = requestAnimationFrame(loop);
   }
   function paint(alpha) {
@@ -355,12 +614,22 @@
     G.draw(g2, alpha);
     g2.restore();
   }
+  // Przejdź: wejście na bramkę = pytanie bez śmierci (SPEC 9.3).
+  const gateNow = () => (G.wantsQuestion?.() ? (run.gate = true) : false);
   function startLoop() { if (raf) return; last = performance.now(); acc = 0; raf = requestAnimationFrame(loop); }
   function stopLoop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
   function hintSync() { const t = state === "pauza" ? "Pauza – dotknij, żeby grać dalej" : state === "gra" ? G.hint() : ""; if (ui.hint.dataset.t !== t) { ui.hint.dataset.t = t; ui.hint.textContent = t; ui.hint.hidden = !t; } }
 
   // ---------- sterowanie ----------
   function tap() { if (state === "pauza") return resume(); if (state === "gra") { input.tap = true; run.started = true; } }
+  function move(dir) { if (state === "pauza") return resume(); if (state === "gra") { input[dir] = true; run.started = true; } }
+  // Swipe (Przejdź): ruch palca ≥ 24 px = kierunek, krótki tap = do przodu.
+  let sw0 = null;
+  function swipeEnd(e) {
+    if (!sw0) return; const dx = e.clientX - sw0.x, dy = e.clientY - sw0.y; sw0 = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return move("up");
+    move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : dy > 0 ? "down" : "up");
+  }
   function onKey(e) {
     if (state === "off") return;
     const k = e.key;
@@ -368,6 +637,11 @@
     if (G?.dom) { if (k === "Escape" && !document.querySelector("#layer .scrim")) { e.preventDefault(); askClose(); } return; }
     if (k === "Escape" || k === "p" || k === "P") { e.preventDefault(); if (state === "gra") pause(); else if (state === "pauza" && k !== "Escape") resume(); else if (state === "pauza") askClose(); return; }
     if (state === "wynik" || state === "blokada" || state === "load") return;
+    if (G?.swipe) {
+      const dir = { ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right", ArrowDown: "down", s: "down", S: "down", ArrowUp: "up", w: "up", W: "up", " ": "up" }[k];
+      if (dir) { if (e.target?.closest?.("button") && k !== " ") return; e.preventDefault(); move(dir); }
+      return;
+    }
     if (k === " " || k === "ArrowUp" || k === "w" || k === "W" || k === "Enter") { if (e.target?.closest?.("button") && k !== " ") return; e.preventDefault(); tap(); }
   }
   function pause() { if (state !== "gra") return; state = "pauza"; stopLoop(); hintSync(); ui.pauseBtn.setAttribute("aria-pressed", "true"); }
@@ -412,7 +686,9 @@
     const hint = h("div", { class: "gry-hint", hidden: true, "aria-live": "polite" });
     const sheet = h("div", { class: "gry-layer" });
     const dom = !!GAMES[gra].dom;
-    const stage = h("div", { class: "gry-stage", onpointerdown: (e) => { if (dom || e.target.closest("button, a, input, .gry-sheet, .gry-res, .gry-load")) return; e.preventDefault(); tap(); } }, cv, hint, sheet);
+    const swipe = !!GAMES[gra].swipe;
+    const stage = h("div", { class: "gry-stage", onpointerdown: (e) => { if (dom || e.target.closest("button, a, input, .gry-sheet, .gry-res, .gry-load")) return; e.preventDefault(); if (swipe) { if (state === "pauza") return resume(); sw0 = { x: e.clientX, y: e.clientY }; } else tap(); },
+      onpointerup: (e) => { if (swipe) swipeEnd(e); }, onpointercancel: () => { sw0 = null; } }, cv, hint, sheet);
     const time = h("span", { class: "gry-time-txt num", hidden: !dom, text: "0:00" });
     if (dom) pauseBtn.hidden = true;
     const root = h("div", { class: "gry" + (dom ? " dom" : ""), role: "dialog", "aria-modal": "true", "aria-label": TITLES[gra] },
@@ -453,7 +729,13 @@
     const c = (n, d) => A.css?.(n) || d;
     const sub = (A.subjects?.() || []).map((s) => s.color).filter(Boolean);
     return { bg: c("--green-50", "#F5F8F6"), grid: "rgba(26,127,69,.07)", shelf: c("--green-600", "#1A7F45"), shelfIn: c("--green-900", "#0E3B22"), dark: c("--green-700", "#15703C"),
-      ground: c("--green-200", "#CFE8D8"), dash: "rgba(255,255,255,.7)", far: c("--green-100", "#E3F1E8"), accent: c("--accent", "#1A7F45"), subjects: sub };
+      ground: c("--green-200", "#CFE8D8"), dash: "rgba(255,255,255,.7)", far: c("--green-100", "#E3F1E8"), accent: c("--accent", "#1A7F45"), subjects: sub,
+      grass: c("--green-100", "#E3F1E8"), grass2: "rgba(255,255,255,.35)", tree: c("--green-400", "#4CAF72"), lime: c("--lime-400", "#B7DB4A"), river: alpha(c("--teal-600", "#0F6E6E"), 0.5) };
+  }
+  // „#0F6E6E” + 0.5 → „rgba(15,110,110,0.5)” (rzeka w 50%, SPEC 9.4)
+  function alpha(hex, a) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(String(hex).trim()); if (!m) return hex;
+    const n = parseInt(m[1], 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`;
   }
   async function newRun(gra, sid) {
     ui.layer.replaceChildren(h("div", { class: "gry-load" }, h("p", { text: "Ładowanie…" })));
@@ -463,7 +745,7 @@
     run.tryb = runOpts.tryb || "enpl"; run.trudnosc = runOpts.trudnosc || "sredni";
     const [st, qs, tasks] = await Promise.all([
       A.rp?.start ? A.rp.start(gra, sid).catch(() => ({ ok: false, code: "offline" })) : { ok: false, code: "offline" },
-      dom ? A.pairs(sid, 10, run.tryb).catch(() => []) : A.questions(sid, 6).catch(() => []), dom ? [] : A.tasks(sid, 3).catch(() => []),
+      dom ? A.pairs(sid, 10, run.tryb).catch(() => []) : A.questions(sid, gra === "przejdz" ? 10 : 6).catch(() => []), dom ? [] : A.tasks(sid, 3).catch(() => []),
     ]);
     if (state === "off") return;
     if (!st.ok && st.code === "no_access") return lock();
@@ -506,6 +788,7 @@
   }
   function died() {
     stopLoop();
+    run.death = G.deathText?.() || "";
     if (run.revives < GRY_CFG.revive.max && G.revive) {
       const q = pickQuestion(run.revives);
       if (q) { run.revives++; return ask(q); }
@@ -513,6 +796,13 @@
     endRound(false);
   }
   // Pytanie do Drugiej szansy: 1. śmierć ABCD, 2. zadanie liczbowe (gdy brak – ABCD z innego materiału, „Trudniejsze pytanie”).
+  function askGate() {
+    run.gate = false; stopLoop();
+    const used = new Set(run.asked.map((x) => x.key));
+    const q = run.qs.find((x) => !used.has("q:" + x.materialId + ":" + x.index));
+    if (!q || run.asked.length >= GRY_CFG.runQuestionsMax) { state = "gra"; return startLoop(); } // brak pytań: idziemy dalej
+    ask({ kind: "abcd", q, key: "q:" + q.materialId + ":" + q.index, gate: true });
+  }
   function pickQuestion(i) {
     const used = new Set(run.asked.map((x) => x.key));
     const abcd = run.qs.filter((q) => !used.has("q:" + q.materialId + ":" + q.index));
@@ -533,7 +823,7 @@
     const secs = item.kind === "zadanie" ? GRY_CFG.revive.taskSec : GRY_CFG.revive.abcdSec;
     Q = { item, secs, left: secs, t0: performance.now(), done: false, opts: null };
     const bar = h("i"), timeTxt = h("span", { class: "vh", "aria-live": "polite" });
-    const head = item.n === 1 ? "Druga szansa · 1/2" : "Ostatnia szansa · 2/2";
+    const head = item.gate ? "Bramka · pytanie za punkty" : item.n === 1 ? "Druga szansa · 1/2" : "Ostatnia szansa · 2/2";
     const subj = A.subjects().find((s) => s.id === (item.q.sid || A.subjectOf?.(item.q.materialId ?? item.q.mid)));
     const verdict = h("div", { class: "gry-verdict", "aria-live": "assertive" });
     let body;
@@ -547,10 +837,11 @@
       Q.inp = inp;
       body = [h("p", { class: "gry-q", translate: "no", text: item.q.task }), h("div", { class: "row" }, inp, h("button", { type: "button", class: "btn primary", onclick: () => checkTask() }, "Sprawdź"))];
     }
-    Q.foot = h("div", { class: "gry-foot" }, h("button", { type: "button", class: "link", onclick: () => { if (!Q.done) { Q.done = true; clearInterval(qTimer); endRound(false); } } }, "Zakończ rundę"));
+    Q.foot = h("div", { class: "gry-foot" }, h("button", { type: "button", class: "link", onclick: () => { if (!Q.done) { Q.done = true; clearInterval(qTimer); if (item.gate) back(); else endRound(false); } } }, item.gate ? "Pomiń pytanie" : "Zakończ rundę"));
     Q.bar = bar; Q.verdict = verdict; Q.timeTxt = timeTxt;
     const sheet = h("div", { class: "gry-sheet", role: "dialog", "aria-modal": "true", "aria-label": head },
       h("div", { class: "gry-time", "aria-hidden": "true" }, bar), timeTxt,
+      !item.gate && G.deathText?.() ? h("p", { class: "gry-death", text: G.deathText() }) : null,
       h("div", { class: "gry-qhead" }, h("span", { class: "eyebrow", text: head }), item.harder ? h("span", { class: "chip sun", text: "Trudniejsze pytanie" }) : null, subj ? h("span", { class: "sk-chip chip", text: subj.name }) : null),
       ...body, verdict, Q.foot);
     ui.layer.replaceChildren(sheet);
@@ -608,7 +899,8 @@
       const corr = it.kind === "abcd" ? "ABCD"[Q.order.indexOf(q.correct)] : A.fmtNum(q.result) + (q.unit ? " " + q.unit : "");
       Q.verdict.className = "gry-verdict bad";
       Q.verdict.textContent = (timeout ? T("Czas minął.") + " " : "") + T(`To nie to. Poprawna: ${corr}.`);
-      cta = h("button", { type: "button", class: "btn primary", onclick: () => endRound(false) }, "Zobacz wynik");
+      cta = it.gate ? h("button", { type: "button", class: "btn primary", onclick: () => back() }, "Graj dalej")
+        : h("button", { type: "button", class: "btn primary", onclick: () => endRound(false) }, "Zobacz wynik");
     }
     Q.cta = cta;
     Q.foot.replaceChildren(why ? h("p", { class: "gry-why", translate: "no", text: why }) : null, cta);
@@ -617,7 +909,7 @@
   function back() {
     cv.classList.remove("blur");
     const s = ui.layer.firstChild; if (s) { s.classList.remove("on"); setTimeout(() => s.remove(), REDUCED() ? 0 : 240); }
-    G.revive(); Q = null;
+    if (!Q?.item?.gate) G.revive(); Q = null;
     state = "gra"; hintSync(); paint(1); startLoop();
   }
 
@@ -665,6 +957,7 @@
       r.nowy ? h("p", { class: "gry-rec", text: "🏆 " + T("Nowy rekord!") }) : null,
       h("p", { class: "sk-bignum gry-big" }, h("b", { class: "num", text: r.wynik })),
       h("p", { class: "muted gry-unit", text: `${T(UNITS[r.gra])} · ${T(`rekord ${r.rekord}`)}` }),
+      r.death ? h("p", { class: "gry-death", text: r.death }) : null,
       r.offline ? h("p", { class: "gry-note muted", text: "Punkty rankingu się nie zapisały" }) : null,
       h("div", { class: "gry-stats" }, stat(`${r.okN}/${r.asked.length}`, "dobrze"), h("div", { class: "gry-stat" }, pktEl, h("span", { text: "pkt rankingu" })), stat(`+${r.xp} ⚡`, "XP")),
       resEl.note,
@@ -711,5 +1004,5 @@
     resEl.note.textContent = limit ? T("Dzisiejszy limit punktów z gier wyczerpany – nauka dalej się liczy w Powtórkach i quizach.") : "";
   }
 
-  window.SKROT_GRY = { open, cfg: GRY_CFG, close: () => close(true), _state: () => ({ state, run, score: G?.score?.() }), _dbg: () => (state === "off" ? null : G?.debug?.()) };
+  window.SKROT_GRY = { open, cfg: GRY_CFG, close: () => close(true), _state: () => ({ state, run, score: G?.score?.() }), _dbg: () => (state === "off" ? null : G?.debug?.()), _gen: (seed, n) => PRZEJDZ._gen(seed, n), _set: (o) => G?.debugSet?.(o), _row: (r) => G?.debugRow?.(r) };
 })();
