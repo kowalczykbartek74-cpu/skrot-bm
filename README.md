@@ -10,7 +10,7 @@ Pięć zakładek, każda odpowiada na jedno pytanie ucznia (plan: „Skrót BM: 
 - **Dziś** – krótki ekran: karta „Teraz zrób to” z jednym przyciskiem (kolejność: zaliczenie ≤ 7 dni → zadanie ≤ 2 dni → fiszki do powtórki → nowy materiał → ostatnio otwarty), zajęcia dziś lub jutro i najbliższy termin. „Twój postęp” i „Nowe od ostatniej wizyty” są zwinięte (`homeFold`, stan otwarcia w `bm-fold:*`).
 - **Przedmioty** – wyszukiwarka (przedmioty, materiały, pojęcia, terminy; skrót `/`) i siatka przedmiotów. Przedmiot ma zawsze 3 zakładki: **Ucz się · Ćwicz · Zaliczenie**. Materiał to 3 kroki: **Przeczytaj (Normalnie | Prościej) · Fiszki · Quiz**.
 - **Powtórki** – ile fiszek dziś, przycisk Zacznij, pod spodem mapa postępów.
-- **Terminy** – jedna lista „co i na kiedy” (zadania z Teams, terminy roku, daty zaliczeń) z przełącznikiem Lista | Kalendarz.
+- **Terminy** – jedna lista „co i na kiedy” (zadania z Teams, terminy roku, daty zaliczeń) jako oś czasu: karta „Najbliższe”, chipsy rodzaju (zapamiętane w `skrot-termcat`), sekcje Po terminie / Ten tydzień / Następny tydzień / miesiące / Bez daty (dalsze niż 2 miesiące zwinięte), szczegóły w wysuwanym okienku, odhaczanie z „Cofnij”. Rzadsze akcje (kalendarz w telefonie, widok kalendarza, Zrobione) są w menu ⋯. Na komputerze (≥ 1024 px) dwie kolumny z mini-kalendarzem miesiąca. Logika bez DOM w `terminy.js` (strefa Europe/Warsaw, tydzień od poniedziałku, filtr grupy i labu, scalanie tego samego terminu wpisanego dla kilku grup w jedną kartę z tagami); testy: `node --test tests/*.test.js`. Starosta ma przełącznik Moja grupa | Cały rok (`skrot-termscope`). Zrzuty przed/po: `docs/terminy/`.
   Kolokwia i egzaminy mają pole **part** (`W` / `CW` / `LAB`, w oknie terminu „Część przedmiotu”): po nim „Przygotuj się” wybiera datę właściwej części. Stare wpisy bez pola dopasowuje słowo w tytule („wykład”, „ćwicz”, „lab”), potem data z opisu zaliczenia (`ZAL`). Terminy sprzed dołączenia osoby (`progress.joined`) trafiają do zwiniętej sekcji „Minione”, a nie „po terminie”.
 - **Więcej** – Nauka, Studia, Ty oraz przełącznik **Tryb starosty** (widoczny tylko dla starosty; wyłączony = widok studenta z pełnym dostępem).
 
@@ -158,7 +158,7 @@ npx supabase login
 npx supabase link --project-ref zkyxujkdrovfzpasocmv
 npx supabase functions deploy kalendarz --no-verify-jwt
 ```
-Potem w aplikacji: Terminy → „Do kalendarza w telefonie”. Każda osoba z dostępem dostaje swój link; grupę bierze z „Twoja grupa”. Po wygaśnięciu dostępu w kalendarzu zostają same zajęcia.
+Potem w aplikacji: Terminy → ⋯ → „Dodaj do kalendarza w telefonie”. Każda osoba z dostępem dostaje swój link; grupę bierze z „Twoja grupa”. Po wygaśnięciu dostępu w kalendarzu zostają same zajęcia.
 
 ## Funkcja AI (jednorazowo)
 W terminalu, w folderze tego repozytorium:
