@@ -80,3 +80,78 @@ Jedna: **Plus Jakarta Sans** (Google Fonts), wagi 400–800.
 | `og.png` | logo na kratce (1200×630) | podgląd linku na Messengerze, WhatsAppie, FB |
 
 Źródło: grafiki z Higgsfield (24.10.2026), wycięte na przezroczyste tło.
+
+## Motyw „Kokardka” (nagroda za poziom 5)
+
+Włączany w Więcej (`html[data-theme="bow"]`, `localStorage skrot-theme = "bow"`). Do poziomu `BOW_LEVEL` (5, czyli 1000 XP) wiersz jest zablokowany i pokazuje, ile XP brakuje; starosta ma go zawsze. Po wczytaniu postępów `pinkTheme.enforce()` wyłącza Kokardkę, jeśli poziom jest za niski. Przy awansie na poziom 5 pokazuje się okno „Odblokowano motyw Kokardka”.
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--paper` | `#FFF9F8` | kremowe tło strony |
+| `--green-100` | `#FBE7EC` | pudrowy róż: miękkie tła, chipy |
+| `--green-200` / `--line` | `#F3C9D5` / `#EBC7D2` | obramowania |
+| `--green-400` | `#E58BA6` | akcenty bez tekstu |
+| `--green-600` | `#A8325D` | główny kolor, przyciski (satynowy gradient) |
+| `--green-900` | `#7A2445` | tekst na różowym tle |
+| `--ink` / `--muted` | `#2A1219` / `#5A2E3C` | tekst główny i pomocniczy |
+
+Kontrast: biały na `#A8325D` 6,4:1, `#7A2445` na `#FBE7EC` 8,2:1, `#5A2E3C` na tle 10,7:1.
+
+Wzory (własne SVG w zmiennych `--bow-*` na `:root`): kokardki z tiulu i serduszka w tle, koronkowy brzeg pod górnym paskiem, bukiet (storczyk, lilia, kwiat wiśni) w konturze w prawym górnym rogu, koronkowa serwetka w lewym dolnym i w karcie „Teraz zrób to”. Tytuły ekranów kursywą Playfair Display (wczytywana tylko przy tym motywie) z wstążką i kokardką. W rogu kokardka 🎀 z dobrym słowem, bez śladu za kursorem.
+
+## Motyw „Nenufary” (nagroda za poziom 7)
+
+Włączany w Więcej (`html[data-theme="lilia"]`, `localStorage skrot-theme = "lilia"`). Do poziomu `LILIA_LEVEL` (7, czyli 2100 XP) wiersz jest zablokowany i pokazuje, ile XP brakuje; starosta ma go zawsze. `pinkTheme.enforce()` wyłącza go po wczytaniu postępów, jeśli poziom jest za niski. Przy awansie na poziom 7 pokazuje się okno „Odblokowano motyw Nenufary”.
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--paper` | `#FAF8FE` | tło strony |
+| `--green-100` | `#EFE8FA` | miękki fiolet: tła, chipy |
+| `--green-600` | `#6A3DAE` | główny fiolet, przyciski |
+| `--green-900` | `#3A1D6B` | tekst na jasnym fiolecie |
+| `--lime-400` | `#E58BC9` | lotosowy róż (akcenty, falka) |
+| `--teal-600` | `#4A58B0` | barwinek |
+| `--sun` | `#E9C97A` | ciepła poświata zachodu |
+| `--ink` / `--muted` | `#170D29` / `#3B2E57` | tekst główny i pomocniczy |
+
+Wzory (własne SVG): liście lilii i kwiat lotosu zamiast kratki, „malowane” plamy nieba w tle, zawirowanie nieba w prawym górnym rogu, kręgi na wodzie przy stopce, pasek u góry w kolorach zmierzchu. W rogu lotos 🪷 ze spokojnym słowem, bez śladu za kursorem.
+
+## Motyw „Łąka” (nagroda za poziom 5)
+
+Włączany w Więcej → Ty, odblokowuje się na poziomie 5 „Ogarnięty” (1000 XP); próg to stała `MEADOW_LV` w `index.html`.
+Na podstawie zdjęć: złota godzina, mgła z promieniami słońca, owce na wzgórzach, dmuchawce.
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--paper` | `#F8F4E7` | ciepłe tło (mgła o zachodzie) |
+| `--surface` | `#FFFDF7` | karty |
+| `--accent` | `#3F6B22` | mech: przyciski, aktywne elementy (biały tekst 6,3:1) |
+| `--lime-400` | `#D2A93E` | złoto: paski postępu, kreski |
+| `--ink` / `--muted` | `#16200F` / `#3A4530` | tekst (15:1 i 9:1 na tle) |
+
+Wzór: dmuchawce i źdźbła w tle zamiast kratki, promienie słońca z prawego górnego rogu zamiast słojów, wzgórza z dwiema owcami przyklejone na dole ekranu, kępka trawy pod tytułami. Owca w rogu (klik = dobre słowo i dmuchawce), kilka dmuchawców powoli przelatuje przez ekran. „Mniej animacji” wyłącza cały ruch.
+
+## Motyw „Nocny rejs” (nagroda za poziom 8)
+
+Odblokowuje się po zdobyciu **poziomu 8 (Strateg, 2800 XP)** — stała `SEA_LEVEL` w `index.html`. Raz odblokowany zostaje na zawsze. Starosta widzi go zawsze. Włącza się w **Więcej**; przed odblokowaniem w tym miejscu jest kłódka z brakującym XP, a w oknie „Poziomy i rangi” przy poziomie 8 widać nagrodę. W chwili zdobycia poziomu wyskakuje okno „Odblokowano motyw Nocny rejs” z przyciskiem „Włącz teraz”.
+
+Inspiracja: nocne morze, kremowo-złote żagle w świetle, księżyc nad horyzontem, mgła.
+
+| Rola | Kolor |
+|---|---|
+| tło strony (niebo nocy) | `#070D18` → `#04080F` |
+| karty | `#0E1828` |
+| wciśnięte tła | `#0A1322` |
+| linie | `#2A3B56` |
+| tekst główny (kremowy żagiel) | `#F3EADB` |
+| tekst pomocniczy | `#BAC4D3` |
+| akcent: złoto żagla | `#E2B66E` (najechanie `#F0C886`) |
+| tekst na złotym przycisku | `#0A1220` |
+| światło księżyca (błękit) | `#6F9CC9` |
+| dobrze / uwaga / źle | `#8BD5B0` / `#FFBE7A` / `#FF9A90` |
+
+Wszystkie pary tekst/tło mają kontrast ≥ 7,9:1.
+
+Wzory: delikatne linie fal zamiast kratki, złota poświata w prawym górnym rogu zamiast słojów, mgła w lewym dolnym rogu, na dole ekranu horyzont z falami, księżycem z odbiciem i małą złotą żaglówką, która powoli przepływa (zatrzymuje się przy „Mniej animacji”).
+
+Jak działa: zmienne w `html[data-theme="sea"]` + skrypt `seaTheme`, który w kolorach wpisanych na sztywno odwraca jasność (białe tła → granat, czarny tekst → krem), a zielenie zamienia na złoto. Reguły z `data-theme=` w selektorze skrypt pomija, więc kolory samego motywu się nie psują.

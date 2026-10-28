@@ -27,11 +27,12 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 - Teksty z CSS (`content: "…"`) mają osobne reguły `html[lang="en"] …`.
 - Zostają po polsku: wersja „Prościej · PL” i wyjaśnienia „Dlaczego?” (tak powstają w bazie), polskie odpowiedniki w słowniczku EN–PL, nazwiska, polskie tytuły lektur oraz to, co wpisujesz ręcznie (ogłoszenia, nazwy terminów). Regulamin i polityka prywatności są tylko po polsku.
 - Definicje pojęć z sylabusa mają pole `defEn` w `sylabus-pojecia.json`.
+- **Teksty wpisane ręcznie** (tytuły i opisy terminów, zadania z Teams, ogłoszenia) tłumaczy AI w przeglądarce starosty (`enSync` w `index.html`, kilka sekund po wczytaniu strony i po każdej zmianie) i zapisuje w `meta/en` jako `{ t: { "polski tekst": "English text" } }`. W trybie EN strona podaje je do `SKROT_I18N.user()`. Gdy tekst jest tylko częścią napisu („Ogłoszenie: …”, „… · za 3 dni”), `i18n.js` podmienia go w całości, a resztę tłumaczy słownikiem, więc nie tnie go już na pojedyncze słowa. Nowy termin dostaje tłumaczenie, gdy starosta następnym razem otworzy stronę. Bez SQL: `meta` czytają osoby z dostępem, zapisuje starosta.
 
 ## Jak to działa
 - `index.html` – cała aplikacja (jedna strona). Plan zajęć pobiera z `https://plan.skrotbm.pl/plan.json`.
 - `skrot-supabase.js` – baza, logowanie mailem i zakup dostępu (Supabase + Stripe Payment Link).
-- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`) i funkcje serwerowe:
+- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`) i funkcje serwerowe:
   - `functions/stripe-webhook` – po płatności w Stripe (konto live „skrotbm”, endpoint „skrotbm-supabase”) wpisuje dostęp (sekret `STRIPE_WEBHOOK_SECRET`, bez weryfikacji JWT),
   - `functions/kalendarz` – osobisty kalendarz do telefonu (zajęcia + zaliczenia + zadania) pod tajnym linkiem; reguły w `skrot-kalendarz.sql`, wdrażanie z `--no-verify-jwt`,
   - `functions/claude` – AI (sekret `ANTHROPIC_API_KEY`): starosta bez limitu, osoby z pełnym dostępem tylko do „Moich materiałów”, z biletem i limitem plików. Prosty język i „Dlaczego?” materiałów roku powstają z góry.
@@ -42,7 +43,8 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 Bez zalogowania strona pokazuje tylko osobny ekran logowania (`#login` w `index.html`). Na komputerze (od 900 px) po lewej jest zielony panel z hasłem strony i trzema korzyściami, po prawej formularz; na telefonie tylko logo i formularz. Kod z maila albo hasło, regulamin, prywatność, kontakt i przełącznik EN/PL. Aplikacja pojawia się dopiero po zalogowaniu.
 - Skrypt w `<head>` sprawdza, czy w przeglądarce jest sesja Supabase (`sb-zkyxujkdrovfzpasocmv-auth-token`); jeśli nie, od razu dodaje klasę `needlogin`, więc aplikacja nie miga.
 - `skrot-supabase.js` (`showLoginPage`) wypełnia ekran tym samym logowaniem co okno (`openLogin` z `page: true`). Komunikaty po płatności, po nieważnym linku i pole na kod po przeładowaniu działają jak wcześniej, tylko na tym ekranie.
-- Kod dostępu przed startem (`#gate`) jest nadal pierwszy; ekran logowania pokazuje się po nim.
+- Strona jest otwarta (bez kodu dostępu przed startem, bez `noindex`), od 27.10.2026. Pierwszy ekran to logowanie.
+- Przed płatnością okno „Zanim zapłacisz”: akceptacja regulaminu i zgoda na natychmiastowe dostarczenie Treści (utrata prawa odstąpienia, regulamin § 5). Bez obu ptaszków nie da się przejść do Stripe. Zgoda trafia do tabeli `nauka_zgody` przez `nauka_zgoda()` (`supabase/skrot-v10-zgody.sql`, uruchom raz w SQL Editor); gdy zapis się nie uda, zakup idzie dalej, a ślad zostaje w `localStorage["skrot-zgoda"]`. Treść zgody i `CONSENT_V` w `skrot-supabase.js` zmieniaj razem z regulaminem.
 - Gdy baza jest nieosiągalna, strona pokazuje aplikację (stan offline), żeby nikt nie utknął.
 
 ## Hasło do logowania (opcjonalne)
@@ -52,6 +54,11 @@ Bez zalogowania strona pokazuje tylko osobny ekran logowania (`#login` w `index.
 - Zapomniane hasło = zaloguj się kodem i ustaw nowe. Konto bez hasła loguje się tylko kodem.
 - Dzielenie się hasłem nic nie daje: dalej działa limit 3 urządzeń i jedna aktywna sesja (`skrot-v8-urzadzenia.sql`).
 - Supabase → Authentication → Sign In / Providers → Email musi być włączony (jest, bo działa kod); hasło nie wymaga dodatkowych ustawień.
+
+## Aktywność dla starosty (`skrot-v11-aktywnosc.sql`)
+- Więcej → Tryb starosty → **Aktywność**: kto jest teraz na stronie (sygnał z karty w ostatnich 2 min), historia logowań (kod / hasło / link, urządzenie, godzina), wizyty (początek i długość; nowa wizyta po 30 min przerwy) i wszystkie konta z datą ostatniego logowania z Supabase Auth i ostatnią obecnością. Panel odświeża się co 30 s, ma wyszukiwarkę po e-mailu.
+- Każda zalogowana karta na wierzchu woła `nauka_obecny()` co 45 s; po udanym logowaniu strona raz woła `nauka_zalogowano()`. Historia trzymana 12 miesięcy (sprzątają ją same funkcje), opisana w polityce prywatności.
+- **Wdrożenie**: uruchom `skrot-v11-aktywnosc.sql` w SQL Editor. Strona działa też bez niego (panel poprosi o uruchomienie pliku).
 
 ## Jedno konto = jedna osoba (`skrot-v8-urzadzenia.sql`)
 - **Do 3 urządzeń** na konto. Każda przeglądarka ma losowe ID (`skrot-device` w localStorage), które `skrot-supabase.js` wysyła w nagłówku `x-skrot-device` przy każdym zapytaniu. Baza daje pełny dostęp (`nauka_platny()`) tylko urządzeniu z listy, więc pilnują tego wszystkie reguły tabel, bez zmian w nich. Urządzenie nieużywane 60 dni wypada z listy samo.
@@ -132,7 +139,7 @@ Stare widoki zostają pod „Pokaż jako listę” / „Klasyczny widok”. Tre�
 
 Combo (🔥 x5/x10, +5 XP) działa wszędzie poza próbnym testem.
 
-**Testy wyglądu (lokalnie).** Bramka sprawdza `localStorage["skrot-gate"]` (hash `H` z `<head>`). Przy przemianie każdy etap był sprawdzany w Playwright na atrapie `skrot-supabase.js` (dane w pamięci, nic nie idzie do bazy): zrzut `getComputedStyle` przed/po, brak poziomego przewijania na 375/360/1280 px, EN bez polskich napisów, zero błędów konsoli i test regresji lekcji (ta sama trasa kart, XP, gwiazdki i wznowienie co przed zmianą).
+**Testy wyglądu (lokalnie).** Przy przemianie każdy etap był sprawdzany w Playwright na atrapie `skrot-supabase.js` (dane w pamięci, nic nie idzie do bazy): zrzut `getComputedStyle` przed/po, brak poziomego przewijania na 375/360/1280 px, EN bez polskich napisów, zero błędów konsoli i test regresji lekcji (ta sama trasa kart, XP, gwiazdki i wznowienie co przed zmianą).
 
 ## Jak powstają materiały z prezentacji (system v2)
 Slajdy prowadzących służą tylko jako mapa tematów. Po wgraniu pliku:
