@@ -80,3 +80,18 @@ Jedna: **Plus Jakarta Sans** (Google Fonts), wagi 400–800.
 | `og.png` | logo na kratce (1200×630) | podgląd linku na Messengerze, WhatsAppie, FB |
 
 Źródło: grafiki z Higgsfield (24.10.2026), wycięte na przezroczyste tło.
+
+## Motyw „Łąka” (nagroda za poziom 5)
+
+Włączany w Więcej → Ty, odblokowuje się na poziomie 5 „Ogarnięty” (1000 XP); próg to stała `MEADOW_LV` w `index.html`.
+Na podstawie zdjęć: złota godzina, mgła z promieniami słońca, owce na wzgórzach, dmuchawce.
+
+| Zmienna | Kolor | Do czego |
+|---|---|---|
+| `--paper` | `#F8F4E7` | ciepłe tło (mgła o zachodzie) |
+| `--surface` | `#FFFDF7` | karty |
+| `--accent` | `#3F6B22` | mech: przyciski, aktywne elementy (biały tekst 6,3:1) |
+| `--lime-400` | `#D2A93E` | złoto: paski postępu, kreski |
+| `--ink` / `--muted` | `#16200F` / `#3A4530` | tekst (15:1 i 9:1 na tle) |
+
+Wzór: dmuchawce i źdźbła w tle zamiast kratki, promienie słońca z prawego górnego rogu zamiast słojów, wzgórza z dwiema owcami przyklejone na dole ekranu, kępka trawy pod tytułami. Owca w rogu (klik = dobre słowo i dmuchawce), kilka dmuchawców powoli przelatuje przez ekran. „Mniej animacji” wyłącza cały ruch.
