@@ -253,7 +253,7 @@
   skrot.mojeStart = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_start"); if (error) throw rpcErr(error); return data; };
   skrot.list = async (col) => { await ready; const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col); if (error) throw error; return data; };
 
-  // ---------- Gry i ranking (skrot-v13-gry.sql) ----------
+  // ---------- Gry i ranking (skrot-v13-gry.sql, skrot-v15-gry2.sql) ----------
   // Każda funkcja zwraca obiekt z bazy ({ ok: true, … } albo { ok: false, code }).
   // Brak bazy v13 → { ok: false, code: "not_enabled" }; brak sieci → { ok: false, code: "offline" }.
   const rpCall = async (fn, args) => {
@@ -282,6 +282,14 @@
     stat:     ()                       => rpCall("nauka_kierunek_stat"),
     admin:    ()                       => rpCall("nauka_admin_gry"),
     nickUsun: (userId)                 => rpCall("nauka_admin_nick_usun", { p_user: userId }),
+    // v15 (docs/gry/SPEC-2.md): Drabina, Hasło dnia, Boss przed kolokwium. Bez v15 w bazie → not_enabled.
+    trudnosc: (klucze)                 => rpCall("nauka_pyt_trudnosc", { p_klucze: klucze }),          // ["<mid>:<idx>", …] max 80
+    rok:      (mid, idx)               => rpCall("nauka_pyt_rok", { p_mid: mid, p_idx: idx }),
+    haslo:    ()                       => rpCall("nauka_haslo_dzis"),
+    hasloProba: (slowo)                => rpCall("nauka_haslo_proba", { p_proba: slowo }),
+    bossy:    ()                       => rpCall("nauka_bossy"),
+    bossOdbierz: (id)                  => rpCall("nauka_boss_odbierz", { p_id: id }),
+    bossAdmin: (id, { hp = null, ukryty = null } = {}) => rpCall("nauka_admin_boss", { p_id: id, p_hp: hp, p_ukryty: ukryty }),
   };
 
   // ---------- AI przez funkcję serwerową (supabase/functions/claude) ----------

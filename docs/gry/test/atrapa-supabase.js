@@ -1,12 +1,16 @@
 // Atrapa supabase-js do testów gier i rankingu (Playwright). Podmienia window.supabase.createClient:
-// sesja, tabela nauka_docs w pamięci i funkcje RPC (także v13) bez sieci. Nigdy nie trafia na stronę.
+// sesja, tabela nauka_docs w pamięci i funkcje RPC (v13 i v15) bez sieci. Nigdy nie trafia na stronę.
 // Ustawienia przez localStorage przed załadowaniem strony:
 //   mock-konto = "platne" | "darmowe" | "starosta" | "brak" (niezalogowany)
 //   mock-v13   = "1" (SQL v13 uruchomiony) | "0" (funkcji nie ma → PGRST202)
+//   mock-v15   = "1" (SQL v15 uruchomiony, domyślnie) | "0" (funkcji v15 nie ma → not_enabled); bez v13 nie ma też v15
+//   v15 (docs/gry/SPEC-2.md, sekcja 3): mock-rok = "malo" (za_malo) · mock-haslo-slowo (domyślnie "Revenue"; "" = no_words)
+//     · mock-haslo-seria · mock-haslo-stat = "1" · mock-boss = "trwa" (domyślnie) | "pokonany" | "malo" (pokonany, 4 moje ciosy)
+//     | "uciekl" | "dwa" (trwa + pokonany) | "brak"; stan Hasła dnia przeżywa przeładowanie (localStorage mock-haslo-stan)
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
   const ls = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
-  const KONTO = ls("mock-konto", "platne"), V13 = ls("mock-v13", "1") === "1";
+  const KONTO = ls("mock-konto", "platne"), V13 = ls("mock-v13", "1") === "1", V15 = V13 && ls("mock-v15", "1") === "1";
   const UID = "00000000-0000-4000-8000-000000000001", EMAIL = KONTO === "starosta" ? "starosta@x.pl" : "student@x.pl";
   const now = Date.now();
   const quiz = (n, tag) => Array.from({ length: n }, (_, i) => ({
@@ -100,6 +104,73 @@
       pseudonimy: RP.adminNicks } : { ok: false, code: "not_admin" }),
     nauka_admin_nick_usun: (a) => { RP.adminNicks = RP.adminNicks.filter((x) => x.user_id !== a.p_user); return { ok: true }; },
   };
+  // ---------- v15: Drabina, Hasło dnia, Boss (kształty odpowiedzi z docs/gry/SPEC-2.md, sekcja 3) ----------
+  const hash = (t) => Math.imul([...String(t)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7), 2654435761) >>> 0;
+  const plusDni = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+  const wzor = (slowo, proba) => { // 2 = dobre miejsce, 1 = gdzie indziej, 0 = brak (jak nauka_haslo_wzor)
+    const w = Array(slowo.length).fill(0), zost = [];
+    for (let i = 0; i < slowo.length; i++) { if (proba[i] === slowo[i]) w[i] = 2; else zost.push(slowo[i]); }
+    for (let i = 0; i < slowo.length; i++) if (!w[i]) { const j = zost.indexOf(proba[i]); if (j >= 0) { w[i] = 1; zost.splice(j, 1); } }
+    return w.join(""); };
+  const HASLO = { term: ls("mock-haslo-slowo", "Revenue"), pl: "przychód", def: "Revenue is the total income a firm earns from sales.", mid: "m1", sid: "makroekonomia" };
+  const hasloStan = () => { let g = null; try { g = JSON.parse(localStorage.getItem("mock-haslo-stan") || "null"); } catch {} return g && g.dzien === dzis() ? g : { dzien: dzis(), proby: [], wzory: [], wynik: null, pkt: 0 }; };
+  const hasloZapisz = (g) => { try { localStorage.setItem("mock-haslo-stan", JSON.stringify(g)); } catch {} };
+  const bossBaza = () => {
+    const sc = ls("mock-boss", "trwa"), top = (moje) => [{ nick: "Łoś Ania", ciosy: 38, ja: false }, { nick: "Cela", ciosy: 25, ja: false }, ...(RP.profil.nick && moje ? [{ nick: RP.profil.nick, ciosy: moje, ja: true }] : [])];
+    const trwa = { id: "d-kol-makro", sid: "makroekonomia", typ: "kolokwium", tytul: "Kolokwium 1", termin: plusDni(5), start: plusDni(-2), grupy: [], hp: 300, zadane: 112, osob: 9, moje: 14, stan: "trwa", pokonany_at: null };
+    const pok = { id: "d-kol-prawo", sid: "prawo", typ: "kolokwium", tytul: "Kolokwium z prawa", termin: plusDni(2), start: plusDni(-5), grupy: ["C111"], hp: 150, zadane: 163, osob: 11, moje: sc === "malo" ? 4 : 22, stan: "pokonany", pokonany_at: new Date(Date.now() - 36e5).toISOString() };
+    const ucie = { id: "d-egz-makro", sid: "makroekonomia", typ: "egzamin", tytul: "Egzamin", termin: plusDni(-1), start: plusDni(-8), grupy: [], hp: 400, zadane: 280, osob: 14, moje: 31, stan: "uciekl", pokonany_at: null };
+    const lista = { trwa: [trwa], pokonany: [pok], malo: [pok], uciekl: [ucie], dwa: [trwa, pok], brak: [] }[sc] || [trwa];
+    return lista.map((b) => ({ ...b, top: top(b.moje) }));
+  };
+  const BOSS = { odebrane: {}, zmiany: {} };
+  const bossyTeraz = () => bossBaza().map((b) => ({ ...b, ...BOSS.zmiany[b.id] })).filter((b) => !b.ukryty).map(({ ukryty, ...b }) => {
+    const odebrane = !!BOSS.odebrane[b.id];
+    return { ...b, odebrane, mozna_odebrac: b.stan === "pokonany" && b.moje >= 10 && !odebrane }; });
+  const V15FN = {
+    nauka_pyt_trudnosc: (a) => {
+      const k = a.p_klucze || []; if (k.length > 80) return { ok: false, code: "too_many" };
+      const pyt = {}; for (const x of k) { const h = hash(x); if (h % 7 === 0) continue; pyt[x] = { n: 5 + (h % 36), proc: 20 + (h % 76) }; } // co 7. pytanie: za mało danych
+      return { ok: true, pyt }; },
+    nauka_pyt_rok: (a) => {
+      if (!paid) return { ok: false, code: "no_access" };
+      const q = DOCS.materialContent[a.p_mid]?.quiz?.[a.p_idx]; if (!q || (q.options || []).length < 2) return { ok: false, code: "no_question" };
+      if (ls("mock-rok", "") === "malo") return { ok: true, n: 3, za_malo: true };
+      const rozklad = q.options.map((_, i) => (i === q.correct ? 14 : 2 + ((hash(a.p_mid + a.p_idx) + i) % 5)));
+      return { ok: true, n: rozklad.reduce((s, x) => s + x, 0), za_malo: false, rozklad }; },
+    nauka_haslo_dzis: () => {
+      if (!HASLO.term) return { ok: false, code: "no_words" };
+      const g = hasloStan(), kon = g.wynik != null, slowo = HASLO.term.toUpperCase();
+      const seria = +ls("mock-haslo-seria", "0") + (g.wynik > 0 ? 1 : 0);
+      return { ok: true, dzien: dzis(), nr: +ls("mock-haslo-nr", "1"), dlugosc: slowo.length, sid: HASLO.sid, max: 6, proby: g.proby, wzory: g.wzory,
+        podpowiedz: g.proby.length >= 3 ? HASLO.def.replace(new RegExp(HASLO.term, "gi"), "_".repeat(slowo.length)) : null,
+        koniec: kon, wynik: g.wynik, pkt: g.pkt, seria, slowo: kon ? HASLO.term : null, pl: kon ? HASLO.pl : null, def: kon ? HASLO.def : null, mid: kon ? HASLO.mid : null,
+        stat: kon && ls("mock-haslo-stat", "0") === "1" ? { grali: 12, zgadli: 9, rozklad: [3, 0, 1, 2, 3, 2, 1] } : null }; },
+    nauka_haslo_proba: (a) => {
+      if (!HASLO.term) return { ok: false, code: "no_words" };
+      const slowo = HASLO.term.toUpperCase(), p = String(a.p_proba ?? "").trim().toUpperCase();
+      if (!/^[A-Z]+$/.test(p)) return { ok: false, code: "bad_letters" };
+      if (p.length !== slowo.length) return { ok: false, code: "bad_length" };
+      const g = hasloStan(); if (g.wynik != null) return { ok: false, code: "finished" }; if (g.proby.includes(p)) return { ok: false, code: "repeated" };
+      const w = wzor(slowo, p), n = g.proby.length + 1; g.proby.push(p); g.wzory.push(w);
+      if (p === slowo) { g.wynik = n; g.pkt = paid ? daj("h:" + dzis(), [0, 20, 20, 15, 12, 10, 8][n], "haslo") : 0; } else if (n >= 6) g.wynik = 0;
+      hasloZapisz(g);
+      return { ok: true, wzor: w, proba: n, koniec: g.wynik != null, wynik: g.wynik, pkt: g.pkt }; },
+    nauka_bossy: () => ({ ok: true, min_ciosow: 10, pkt: 50, bossy: bossyTeraz() }),
+    nauka_boss_odbierz: (a) => {
+      if (!paid) return { ok: false, code: "no_access" };
+      const b = bossyTeraz().find((x) => x.id === a.p_id); if (!b) return { ok: false, code: "no_boss" };
+      if (b.stan !== "pokonany") return { ok: false, code: "not_defeated" };
+      if (b.odebrane) return { ok: false, code: "already" };
+      if (b.moje < 10) return { ok: false, code: "too_few", moje: b.moje, trzeba: 10 };
+      BOSS.odebrane[b.id] = true; return { ok: true, pkt: daj("b:" + b.id, 50, "boss") }; },
+    nauka_admin_boss: (a) => {
+      if (KONTO !== "starosta") return { ok: false, code: "not_admin" };
+      if (a.p_hp != null && (a.p_hp < 10 || a.p_hp > 100000)) return { ok: false, code: "bad_hp" };
+      if (!bossBaza().some((b) => b.id === a.p_id)) return { ok: false };
+      const z = (BOSS.zmiany[a.p_id] ||= {}); if (a.p_hp != null) z.hp = a.p_hp; if (a.p_ukryty != null) z.ukryty = a.p_ukryty;
+      return { ok: true }; },
+  };
   const BASE = {
     nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid ? "2027-07-11" : null, plan: paid ? "rok" : null }),
     nauka_ping: () => ({ stan: "ok" }),
@@ -108,7 +179,9 @@
   const rpc = async (fn, args = {}) => {
     await new Promise((r) => setTimeout(r, 30));
     let out;
-    if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : { data: null, error: { code: "PGRST202", message: `Could not find the function public.${fn} in the schema cache` } };
+    const brak = { data: null, error: { code: "PGRST202", message: `Could not find the function public.${fn} in the schema cache` } };
+    if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;
+    else if (V15FN[fn]) out = V15 ? { data: V15FN[fn](args), error: null } : brak;
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;
