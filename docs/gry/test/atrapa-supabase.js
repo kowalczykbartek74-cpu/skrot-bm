@@ -8,10 +8,14 @@
 //     · mock-haslo-seria · mock-haslo-stat = "1" · mock-boss = "trwa" (domyślnie) | "pokonany" | "malo" (pokonany, 4 moje ciosy)
 //     | "uciekl" | "dwa" (trwa + pokonany) | "brak" | "slaby" (trwa, < 25% życia); dobra odpowiedź z przedmiotu bossa = cios (moje/zadane rosną); stan Hasła dnia przeżywa przeładowanie (localStorage mock-haslo-stan)
 //     · Drabina (etap 8): mock-trud = "liniowo" (proc 95 → 20 w kolejności kluczy, bez braków) · mock-pf = "1" (pytania m2 mają 2 opcje)
+//   v14 (monety, Zadania dnia, Sklep): mock-v14 = "1" (domyślnie) | "0" (brak funkcji → no_sql) · mock-saldo (monety na start, domyślnie 0)
+//     · mock-misje = "odp10,gra1,haslo1" (dzienne, po przecinku) · mock-misja-tydz = "tyd_d5" · monety z nauki = suma pkt dnia / 10 (jak trigger)
+//   v16 (okres próbny): mock-konto = "proba" (trwa, pełny dostęp) | "proba-koniec" (minął) · "darmowe" może go włączyć (nauka_proba_start
+//     przełącza mock-konto na "proba") · mock-proba-do (ISO, koniec trwającego) · mock-proba-blad = "wykorzystany" | "urzadzenie"
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
   const ls = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
-  const KONTO = ls("mock-konto", "platne"), V13 = ls("mock-v13", "1") === "1", V15 = V13 && ls("mock-v15", "1") === "1";
+  const KONTO = ls("mock-konto", "platne"), V13 = ls("mock-v13", "1") === "1", V15 = V13 && ls("mock-v15", "1") === "1", V14 = V13 && ls("mock-v14", "1") === "1";
   const UID = "00000000-0000-4000-8000-000000000001", EMAIL = KONTO === "starosta" ? "starosta@x.pl" : "student@x.pl";
   const now = Date.now();
   const quiz = (n, tag) => Array.from({ length: n }, (_, i) => ({
@@ -43,8 +47,12 @@
   const dzis = () => new Date().toISOString().slice(0, 10);
   const daj = (klucz, n, pula) => { const k = dzis() + "|" + klucz; if (RP.pkt[k] != null) return 0; const lim = { gry: 150, quiz: 300, powtorki: 20, lekcje: 150 }[pula] ?? 1e9;
     const used = RP.rows.filter((r) => r.d === dzis() && r.pula === pula).reduce((a, r) => a + r.n, 0); const dam = Math.max(0, Math.min(n, lim - used)); if (!dam) return 0;
-    RP.pkt[k] = dam; RP.rows.push({ d: dzis(), pula, n: dam, klucz }); return dam; };
-  const paid = KONTO === "platne" || KONTO === "starosta";
+    RP.pkt[k] = dam; RP.rows.push({ d: dzis(), pula, n: dam, klucz }); saveRp(); return dam; };
+  // mock-rp-trwale = "1": punkty dnia przeżywają przeładowanie (monety i Zadania dnia liczą się z nich)
+  const TRWALE = ls("mock-rp-trwale", "0") === "1";
+  const saveRp = () => { if (TRWALE) try { localStorage.setItem("mock-rp", JSON.stringify({ pkt: RP.pkt, rows: RP.rows })); } catch {} };
+  if (TRWALE) try { const o = JSON.parse(localStorage.getItem("mock-rp") || "null"); if (o) { RP.pkt = o.pkt || {}; RP.rows = (o.rows || []).filter((r) => r.d === dzis()); } } catch {}
+  const PROBA = KONTO === "proba", paid = KONTO === "platne" || KONTO === "starosta" || PROBA;
   const V13FN = {
     nauka_profil_moj: () => ({ ok: true, ...RP.profil, kierunek: "BM", rocznik: 2026, grupa: "C111", nick_zmiana_od: RP.profil.zm || null }),
     nauka_profil_ustaw: (a) => {
@@ -179,8 +187,68 @@
       const z = (BOSS.zmiany[a.p_id] ||= {}); if (a.p_hp != null) z.hp = a.p_hp; if (a.p_ukryty != null) z.ukryty = a.p_ukryty;
       return { ok: true }; },
   };
+  // ---------- v14: monety, Zadania dnia, Sklep (stan w localStorage mock-mon) ----------
+  const MON = (() => { try { return JSON.parse(localStorage.getItem("mock-mon") || "null"); } catch { return null; } })() || { start: +ls("mock-saldo", "0"), ksiega: [], pos: [] };
+  const monZapisz = () => { try { localStorage.setItem("mock-mon", JSON.stringify(MON)); } catch {} };
+  const KATALOG = [{ id: "motyw:bow", typ: "motyw", theme: "bow", cena: 350, poziom: 5, pl: "Kokardka", en: "Bow" }, { id: "motyw:meadow", typ: "motyw", theme: "meadow", cena: 350, poziom: 5, pl: "Łąka", en: "Meadow" },
+    { id: "motyw:lilia", typ: "motyw", theme: "lilia", cena: 600, poziom: 7, pl: "Nenufary", en: "Water Lilies" }, { id: "motyw:sea", typ: "motyw", theme: "sea", cena: 800, poziom: 8, pl: "Nocny rejs", en: "Night Sail" }];
+  const PULA = { odp10: ["q:", 10, 8, "Odpowiedz dobrze na 10 pytań", "Answer 10 questions correctly"], odp25: ["q:", 25, 15, "Odpowiedz dobrze na 25 pytań", "Answer 25 questions correctly"],
+    zad2: ["z:", 2, 10, "Rozwiąż 2 zadania liczbowe", "Solve 2 numeric problems"], pow10: ["p:", 10, 6, "Zrób 10 powtórek fiszek", "Do 10 flashcard reviews"], lek1: ["l:", 1, 10, "Skończ jedną lekcję", "Finish one lesson"],
+    gra1: ["r:", 1, 5, "Zagraj jedną rundę gry", "Play one game round"], haslo1: ["h:", 1, 5, "Rozwiąż Hasło dnia", "Solve the Word of the Day"], pkt60: [null, 60, 8, "Zbierz dziś 60 pkt", "Earn 60 points today"],
+    tyd_l5: ["l:", 5, 40, "Skończ 5 lekcji w tym tygodniu", "Finish 5 lessons this week"], tyd_d5: ["dni", 5, 50, "Ucz się 5 dni w tym tygodniu", "Study on 5 days this week"] };
+  const pktDzis = () => RP.rows.filter((r) => r.d === dzis()).reduce((a, r) => a + r.n, 0);
+  const monNauka = () => Math.floor(pktDzis() / 10);
+  const saldo = () => MON.start + monNauka() + MON.ksiega.reduce((a, w) => a + w.delta, 0);
+  const postep = (id) => { const [pre, ile] = PULA[id]; const v = pre === null ? pktDzis() : pre === "dni" ? (pktDzis() > 0 ? 1 : 0) : RP.rows.filter((r) => r.d === dzis() && r.klucz.startsWith(pre)).length; return Math.min(v, ile); };
+  const misjeDzis = () => ls("mock-misje", "odp10,gra1,haslo1").split(",").map((id) => [id, "dzien"]).concat([[ls("mock-misja-tydz", "tyd_d5"), "tydzien"]]);
+  const V14FN = {
+    nauka_sklep_stan: () => ({ ok: true, saldo: saldo(), dzis_nauka: monNauka(), dzis_max: 64, kurs_pkt: 10, mozna: paid, posiadane: MON.pos, katalog: KATALOG,
+      zarobione_lacznie: saldo() + MON.ksiega.filter((w) => w.delta < 0).reduce((a, w) => a - w.delta, 0), wydane_lacznie: MON.ksiega.filter((w) => w.zrodlo === "zakup").reduce((a, w) => a - w.delta, 0) }),
+    nauka_sklep_kup: (a) => {
+      const it = KATALOG.find((x) => x.id === a.p_item); if (!it) return { ok: false, code: "no_item" };
+      if (MON.pos.includes(it.id)) return { ok: false, code: "owned", saldo: saldo() };
+      if (saldo() < it.cena) return { ok: false, code: "no_coins", brakuje: it.cena - saldo(), saldo: saldo() };
+      MON.pos.push(it.id); MON.ksiega.push({ delta: -it.cena, zrodlo: "zakup", klucz: "zakup:" + it.id, opis: "Zakup: " + it.pl, dzien: dzis() }); monZapisz();
+      return { ok: true, item: it.id, saldo: saldo() }; },
+    nauka_misje: () => {
+      const end = new Date(); end.setHours(24, 0, 0, 0);
+      return { ok: true, dzien: dzis(), zablokowane: !paid, teraz: new Date().toISOString(), misje: misjeDzis().map(([id, okres]) => { const [, ile, nagroda, pl, en] = PULA[id];
+        return { id, okres, opis_pl: pl, opis_en: en, ile, postep: paid ? postep(id) : 0, nagroda, odebrana: MON.ksiega.some((w) => w.klucz === "misja:" + id + ":" + dzis()), zablokowane: !paid,
+          do_kiedy: okres === "tydzien" ? new Date(Date.now() + 4 * 864e5).toISOString() : end.toISOString() }; }) }; },
+    nauka_misja_odbierz: (a) => {
+      if (!paid) return { ok: false, code: "no_access" };
+      const m = misjeDzis().find(([id]) => id === a.p_id); if (!m) return { ok: false, code: "not_today" };
+      const [, ile, nagroda, pl] = PULA[m[0]]; if (postep(m[0]) < ile) return { ok: false, code: "not_done" };
+      const klucz = "misja:" + m[0] + ":" + dzis(); if (MON.ksiega.some((w) => w.klucz === klucz)) return { ok: false, code: "already", saldo: saldo() };
+      MON.ksiega.push({ delta: nagroda, zrodlo: "misja", klucz, opis: (m[1] === "tydzien" ? "Zadanie tygodnia: " : "Zadanie dnia: ") + pl, dzien: dzis() }); monZapisz();
+      return { ok: true, id: m[0], nagroda, saldo: saldo() }; },
+    nauka_monety_historia: () => ({ ok: true, wpisy: [...(monNauka() ? [{ dzien: dzis(), delta: monNauka(), zrodlo: "nauka", klucz: "nauka:" + dzis(), opis: `Nauka: ${pktDzis()} pkt` }] : []), ...MON.ksiega.slice().reverse()] }),
+    nauka_admin_monety_stat: () => (KONTO === "starosta" ? { ok: true, dzien: dzis(), tydzien: "2026-10-26", dzis_max: 64, konta: [
+      { user_id: "u1", email: "a@x.pl", dzis: 41, tydzien: 180, saldo: 520, posiadane: ["motyw:bow"] },
+      { user_id: "u2", email: "b@x.pl", dzis: 64, tydzien: 64, saldo: 64, posiadane: [] },
+      { user_id: UID, email: EMAIL, dzis: monNauka(), tydzien: monNauka(), saldo: saldo(), posiadane: MON.pos }] } : { ok: false, code: "not_admin" }),
+    nauka_admin_monety: (a) => (KONTO === "starosta" ? (a.p_user === UID && (MON.ksiega.push({ delta: a.p_delta, zrodlo: "admin", klucz: "admin:" + Date.now(), opis: "Od starosty: " + a.p_powod, dzien: dzis() }), monZapisz()), { ok: true, saldo: saldo() }) : { ok: false, code: "not_admin" }),
+    nauka_admin_daj_item: () => (KONTO === "starosta" ? { ok: true, juz: false } : { ok: false, code: "not_admin" }),
+  };
+  // aktywność dla panelu starosty (v11) – tylko tyle, żeby dało się otworzyć zakładkę Monety
+  const AKT = { nauka_admin_aktywnosc: () => (KONTO === "starosta" ? { online: [], logowania: [], wizyty: [], konta: [
+    { user_id: "u1", email: "a@x.pl", od: "2026-10-01T10:00:00Z", logowanie: new Date().toISOString(), ostatnio: new Date().toISOString(), platny: true },
+    { user_id: "u2", email: "b@x.pl", od: "2026-10-02T10:00:00Z", logowanie: new Date().toISOString(), ostatnio: new Date().toISOString(), platny: false }] } : null) };
+  // ---------- v16: okres próbny ----------
+  const probaDo = ls("mock-proba-do", "") || new Date(Date.now() + 2 * 864e5 + 5 * 36e5).toISOString();
+  const V16FN = {
+    nauka_proba_start: () => {
+      const e = ls("mock-proba-blad", ""); if (e) return { error: { message: e } };
+      if (paid && !PROBA) return { error: { message: "ma_dostep" } };
+      if (KONTO !== "darmowe") return { error: { message: "wykorzystany" } };
+      const d = new Date(Date.now() + 3 * 864e5).toISOString();
+      try { localStorage.setItem("mock-konto", "proba"); localStorage.setItem("mock-proba-do", d); } catch {}
+      return { data: { do_kiedy: d } }; },
+  };
   const BASE = {
-    nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid ? "2027-07-11" : null, plan: paid ? "rok" : null }),
+    ...AKT,
+    nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid && !PROBA ? "2027-07-11" : null, plan: paid && !PROBA ? "rok" : null,
+      proba_do: PROBA ? probaDo : null, proba_mozna: KONTO === "darmowe", proba_dni: 3 }),
     nauka_ping: () => ({ stan: "ok" }),
   };
   window.__rpc = [];
@@ -190,6 +258,8 @@
     const brak = { data: null, error: { code: "PGRST202", message: `Could not find the function public.${fn} in the schema cache` } };
     if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;
     else if (V15FN[fn]) out = V15 ? { data: V15FN[fn](args), error: null } : brak;
+    else if (V14FN[fn]) out = V14 ? { data: V14FN[fn](args), error: null } : brak;
+    else if (V16FN[fn]) { const r = V16FN[fn](args); out = { data: r.data ?? null, error: r.error ?? null }; }
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;
