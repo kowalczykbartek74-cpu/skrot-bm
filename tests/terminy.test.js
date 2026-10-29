@@ -111,3 +111,10 @@ test("monthCounts: tylko bieżący miesiąc od dziś, bez zrobionych", () => {
   const c = T.monthCounts([it("2026-10-30"), it("2026-10-29", { kind: "zadanie" }), it("2026-10-29", { kind: "zadanie", done: true }), it("2026-10-27"), it("2026-11-02"), it(null)], "2026-10-28", cat);
   assert.deepEqual(c, { zal: 1, zad: 1 });
 });
+
+test("nextDaysCounts: 30 dni od dziś, także w następnym miesiącu, bez zrobionych", () => {
+  const cat = (k) => (k === "zadanie" ? "zad" : "zal");
+  const mk = (date, o = {}) => ({ kind: "kolokwium", date, done: false, ...o });
+  const c = T.nextDaysCounts([mk("2026-11-23"), mk("2026-10-29", { kind: "zadanie" }), mk("2026-11-27"), mk("2026-11-28"), mk("2026-10-28"), mk("2026-11-01", { done: true }), mk(null)], "2026-10-29", cat, 30);
+  assert.deepEqual(c, { zal: 2, zad: 1 });
+});

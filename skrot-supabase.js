@@ -773,8 +773,18 @@
     document.addEventListener("keydown", onKey);
     setTimeout(() => terms.focus(), 30);
   };
+  // Porównanie planów liczone z dzisiejszej daty: ile miesięcy zostało do końca planu „do końca 2. semestru”
+  // i ile kosztowałby ten czas w planie miesięcznym. „Najtaniej” dostaje ten plan, który naprawdę wychodzi taniej.
+  const PLAN_END = "2027-07-11", PRICE_ROK = 199, PRICE_MIES = 35;
+  const planCompare = (now = new Date()) => {
+    const days = Math.max(0, Math.ceil((Date.parse(PLAN_END + "T23:59:59+02:00") - now.getTime()) / 864e5));
+    const months = Math.max(1, Math.ceil(days / 30.44));
+    return { months, monthlyTotal: months * PRICE_MIES, yearCheaper: PRICE_ROK < months * PRICE_MIES };
+  };
+  skrot.planCompare = planCompare;
   // Wybór planu: rok jednorazowo albo co miesiąc.
   const choosePlan = () => {
+    const cmp = planCompare();
     const layer = document.getElementById("layer") || document.body;
     const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
@@ -793,8 +803,8 @@
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Wybierz plan" },
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wybierz plan" }),
         el("p", { class: "muted", style: "margin:0", text: `Dostęp przypiszemy do ${skrot.email}.` }),
-        card("rok", "Do końca 2. semestru", CONFIG.plans.rok.price, ["Jednorazowo, od dnia zakupu do 11 lipca 2027 (koniec sesji letniej, ok. 8 miesięcy).", "BLIK, karta, Apple Pay albo Google Pay. Nic się samo nie odnawia."], "Najtaniej"),
-        card("miesiac", "Co miesiąc", CONFIG.plans.miesiac.price, ["Odnawia się co miesiąc. Anulujesz w każdej chwili, dostęp działa do końca opłaconego miesiąca.", "Płatność kartą (także Apple Pay i Google Pay)."]),
+        card("rok", "Do końca 2. semestru", CONFIG.plans.rok.price, [`Jednorazowo, od dziś do 11 lipca 2027 (koniec sesji letniej). Zostało ok. ${cmp.months} ${cmp.months === 1 ? "miesiąc" : cmp.months < 5 ? "miesiące" : "miesięcy"}, a co miesiąc wyszłoby ok. ${cmp.monthlyTotal} zł.`, "BLIK, karta, Apple Pay albo Google Pay. Nic się samo nie odnawia."], cmp.yearCheaper ? "Najtaniej" : null),
+        card("miesiac", "Co miesiąc", CONFIG.plans.miesiac.price, ["Odnawia się co miesiąc. Anulujesz w każdej chwili, dostęp działa do końca opłaconego miesiąca.", "Płatność kartą (także Apple Pay i Google Pay)."], cmp.yearCheaper ? null : "Najtaniej"),
         el("p", { class: "foot-note", style: "margin:0" }, "Płatność przez Stripe. ", el("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", el("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")),
         el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))));
     layer.append(scrim);

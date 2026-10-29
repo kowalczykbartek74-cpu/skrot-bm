@@ -103,6 +103,16 @@
     });
     return c;
   }
+  // Ile zaliczeń i zadań przypada od dziś przez kolejne `days` dni (domyślnie 30), bez zrobionych.
+  // Zastępuje licznik „w tym miesiącu”, który pod koniec miesiąca pokazywał 0 mimo bliskiego kolokwium.
+  function nextDaysCounts(items, today, catOf, days) {
+    var c = {}, end = addDays(today, (days || 30) - 1);
+    items.forEach(function (x) {
+      if (!x.date || x.done || x.date < today || x.date > end) return;
+      var id = catOf(x.kind); c[id] = (c[id] || 0) + 1;
+    });
+    return c;
+  }
 
-  return { TZ: TZ, zoneKey: zoneKey, zoneMinutes: zoneMinutes, diffDays: diffDays, addDays: addDays, weekday: weekday, bucketOf: bucketOf, groupByTime: groupByTime, sortItems: sortItems, forMe: forMe, mergeDupes: mergeDupes, urgency: urgency, minutesLeft: minutesLeft, monthCounts: monthCounts };
+  return { TZ: TZ, zoneKey: zoneKey, zoneMinutes: zoneMinutes, diffDays: diffDays, addDays: addDays, weekday: weekday, bucketOf: bucketOf, groupByTime: groupByTime, sortItems: sortItems, forMe: forMe, mergeDupes: mergeDupes, urgency: urgency, minutesLeft: minutesLeft, monthCounts: monthCounts, nextDaysCounts: nextDaysCounts };
 });
