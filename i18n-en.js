@@ -14,6 +14,15 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wyślij kod i zacznij": "Send the code and start",
 "Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo.": "Enter your email (your university one is best) and we’ll send you a 6-digit code. Once you enter it, you get full access to everything right away. No card and no payment, and your account is created automatically.",
 "Mam już konto: zwykłe logowanie": "I already have an account: normal login",
+/* Ekran logowania: cena po okresie próbnym, akceptacja regulaminu, opis na telefonie (2026-10-29) */
+"Potem, jeśli zechcesz: 199 zł jednorazowo (do 11 lipca 2027) albo 35 zł miesięcznie. Po okresie próbnym nic nie pobieramy samo.": "After that, if you want: 199 zł one-off (until 11 July 2027) or 35 zł a month. Nothing is charged automatically when the trial ends.",
+"Zakładając konto, akceptujesz": "By creating an account, you accept the",
+"regulamin": "terms of service",
+"oraz": "and the",
+"politykę prywatności": "privacy policy",
+"Skróty, fiszki i quizy do każdego przedmiotu": "Summaries, flashcards and quizzes for every subject",
+"Próbne testy przed kolokwium": "Mock tests before each test",
+"Terminy zaliczeń Twojej grupy": "Your group's exam dates",
 "3 dni za darmo: pełny dostęp, bez karty": "3 days free: full access, no card",
 /* Przewodnik: gry, Hasło dnia, Boss, ranking, monety, okres próbny (2026-10-29) */
 "Zadania dnia i motywy za monety": "Daily tasks and themes for coins",

@@ -190,6 +190,8 @@
       var a = el.getAttribute(ATTRS[i]);
       if (a) { var t = tr(a, 0); if (t !== a) el.setAttribute(ATTRS[i], t); }
     }
+    // Linki do regulaminu i polityki prywatności prowadzą w trybie EN do tłumaczeń (wiążąca jest wersja polska).
+    if (el.tagName === "A") { var h = el.getAttribute("href"); if (h && /^(\.\/)?(regulamin|prywatnosc)\.html(#.*)?$/.test(h)) el.setAttribute("href", h.replace(".html", "-en.html")); }
     if (el.tagName === "INPUT" && /^(button|submit|reset)$/i.test(el.type) && el.value) { var tv = tr(el.value, 0); if (tv !== el.value) el.value = tv; }
   }
   function walk(root) {

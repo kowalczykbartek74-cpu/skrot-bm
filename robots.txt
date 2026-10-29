@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://skrotbm.pl/sitemap.xml

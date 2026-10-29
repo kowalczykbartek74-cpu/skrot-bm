@@ -59,8 +59,11 @@
   const ready = (async () => {
     if (!sb) return;
     try {
-      const { data } = await sb.auth.getSession();
+      const { data, error: sessErr } = await sb.auth.getSession();
       const session = data?.session;
+      // Stara, nieważna sesja w przeglądarce (np. „Invalid Refresh Token”): czyścimy ją po cichu,
+      // żeby przy następnym wejściu ekran logowania pokazał się od razu, a w konsoli nie było błędów.
+      if (!session && sessErr) { try { await sb.auth.signOut({ scope: "local" }); } catch {} }
       const viaLink = location.hash.includes("access_token");
       if (location.hash.includes("access_token") || location.hash.includes("error_description") || linkError) history.replaceState(null, "", location.pathname + location.search);
       if (!session) { skrot.state = "out"; return; }
@@ -445,8 +448,17 @@
     const trialCard = () => (page && !reason && !trialOn()) ? el("div", { class: "lg-trial" },
       el("p", { class: "lg-trial-t", text: `${trialDays()} dni za darmo` }),
       el("p", { class: "lg-trial-p", text: "Pełny dostęp do wszystkiego: materiały, fiszki, quizy i gry. Bez karty i bez płatności." }),
+      // Ceny jak w CONFIG.plans i regulaminie § 4; przy zmianie cen popraw też ten tekst i i18n-en.js.
+      el("p", { class: "lg-trial-price", text: "Potem, jeśli zechcesz: 199 zł jednorazowo (do 11 lipca 2027) albo 35 zł miesięcznie. Po okresie próbnym nic nie pobieramy samo." }),
       el("button", { type: "button", class: "btn primary", onclick: () => { ls.set("skrot-trial", "1"); emailStep(); } }, `Wypróbuj za darmo przez ${trialDays()} dni`)) : null;
     const orLogin = () => (page && !reason && !trialOn()) ? el("p", { class: "lg-or", text: "Masz już konto?" }) : null;
+    // Konto zakłada się samo przy pierwszym kodzie, więc pod formularzem mówimy, na jakich zasadach (regulamin § 3 ust. 1).
+    const legalHref = (f) => f + (window.SKROT_LANG === "en" ? "-en" : "") + ".html";
+    const termsNote = () => page ? el("p", { class: "lg-terms" },
+      "Zakładając konto, akceptujesz",
+      " ", el("a", { href: legalHref("regulamin"), target: "_blank", rel: "noopener" }, "regulamin"),
+      " ", "oraz", " ",
+      el("a", { href: legalHref("prywatnosc"), target: "_blank", rel: "noopener" }, "politykę prywatności"), ".") : null;
 
     const codeStep = (email, justSent) => {
       inCode = true;
@@ -569,6 +581,7 @@
         el("p", { class: "muted", style: "margin:0", text: trial ? "Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo." : reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
         trial ? null : modeSwitch("kod"),
         form,
+        termsNote(),
         p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
         trial ? el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("skrot-trial", null); emailStep(); } }, "Mam już konto: zwykłe logowanie") : null,
         closeBtn(),
@@ -710,7 +723,7 @@
   // (utrata prawa odstąpienia, art. 38 ust. 1 pkt 13 ustawy o prawach konsumenta, regulamin § 5).
   // Zgodę zapisuje baza (nauka_zgoda, supabase/skrot-v10-zgody.sql) z datą, kontem i e-mailem.
   // Treść zgody to dowód: zmieniasz ją tylko razem z regulaminem i z nową CONSENT_V.
-  const CONSENT_V = "2026-10-27";
+  const CONSENT_V = "2026-10-29";
   const CONSENT_TERMS = "Znam i akceptuję Regulamin oraz Politykę prywatności.";
   const CONSENT_NOW = "Chcę, żeby dostęp do Treści zaczął działać od razu po zapłacie, przed upływem 14 dni na odstąpienie od umowy. Wiem, że przez to tracę prawo odstąpienia od umowy.";
   const recordConsent = async (plan) => {
