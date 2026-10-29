@@ -275,8 +275,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Sprawdź słowo": "Check the word",
 "Usuń literę": "Delete letter",
 "Klawiatura": "Keyboard",
-/* Gry: etap 5 – demo i odznaki (2026-10-28) */
-"Zagraj w demo (1 min) →": "Play the demo (1 min) →",
+/* Gry: etap 5 – odznaki (2026-10-28) */
 "W pełnej wersji pytania są z Twoich przedmiotów, a punkty liczą się do rankingu roku.": "In the full version the questions come from your subjects and points count towards your year's ranking.",
 "Zaloguj się albo kup dostęp": "Log in or buy access",
 "Odznaki": "Badges",
