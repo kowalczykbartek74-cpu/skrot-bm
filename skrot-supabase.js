@@ -434,6 +434,14 @@
     const closeBtn = () => page ? null : el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij");
     const onKey = (e) => { if (e.key === "Escape") close(); };
     const body = el("div", { style: "display:grid;gap:12px" });
+    // Okres próbny z ekranu logowania: gość klika „Wypróbuj…”, loguje się kodem, a afterReady sam włącza próbę (znacznik skrot-trial).
+    const trialDays = () => skrot.trialDays || 3;
+    const trialOn = () => !!ls.get("skrot-trial");
+    const trialCard = () => (page && !reason && !trialOn()) ? el("div", { class: "lg-trial" },
+      el("p", { class: "lg-trial-t", text: `${trialDays()} dni za darmo` }),
+      el("p", { class: "lg-trial-p", text: "Pełny dostęp do wszystkiego: materiały, fiszki, quizy i gry. Bez karty i bez płatności." }),
+      el("button", { type: "button", class: "btn primary", onclick: () => { ls.set("skrot-trial", "1"); emailStep(); } }, `Wypróbuj za darmo przez ${trialDays()} dni`)) : null;
+    const orLogin = () => (page && !reason && !trialOn()) ? el("p", { class: "lg-or", text: "Masz już konto?" }) : null;
 
     const codeStep = (email, justSent) => {
       inCode = true;
@@ -463,13 +471,15 @@
         codeErr, codeBtn);
       // Po wpisaniu albo wklejeniu 6 cyfr logujemy od razu.
       code.addEventListener("input", () => { const d = code.value.replace(/\D+/g, "").slice(0, 6); if (d !== code.value) code.value = d; if (d.length === 6 && !codeBtn.disabled) codeForm.requestSubmit(); });
-      body.replaceChildren(
+      body.replaceChildren(...[
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wpisz kod z maila" }),
         el("p", { style: "margin:0" }, justSent ? "Wysłaliśmy 6-cyfrowy kod na " : "Kod wysłaliśmy na ", el("b", { text: email }), ". Mail może przyjść z opóźnieniem, zajrzyj też do spamu. Kod jest ważny przez godzinę."),
+        trialOn() ? el("p", { class: "lg-trial-note", text: `Po wpisaniu kodu od razu włączy się ${trialDays()} dni pełnego dostępu za darmo.` }) : null,
         codeForm,
         el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
           el("button", { type: "button", class: "btn", onclick: () => { if (page) return emailStep(); close(); skrot.openLogin(reason); } }, page ? "Wyślij nowy kod albo zmień e-mail" : "Wyślij nowy kod"),
-          closeBtn()));
+          closeBtn()),
+      ].filter(Boolean));
       setTimeout(() => code.focus(), 30);
     };
 
@@ -505,6 +515,8 @@
         el("label", { for: "skrot-login-pass", style: "display:grid;gap:6px;font-weight:700" }, "Hasło", pass),
         err, btn);
       body.replaceChildren(...[
+        trialCard(),
+        orLogin(),
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
         reason ? el("p", { class: "muted", style: "margin:0", text: reason }) : null,
         modeSwitch("haslo"),
@@ -542,15 +554,20 @@
         el("label", { for: "skrot-login-email", style: "display:grid;gap:6px;font-weight:700" }, "E-mail", input),
         err, btn);
       const p = pending.get();
-      body.replaceChildren(
-        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
-        el("p", { class: "muted", style: "margin:0", text: reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
-        modeSwitch("kod"),
+      // Tryb „okres próbny”: ten sam formularz, ale nagłówek mówi, co się stanie po wpisaniu kodu.
+      const trial = page && trialOn();
+      if (trial) btn.textContent = "Wyślij kod i zacznij";
+      body.replaceChildren(...[
+        trial ? null : trialCard(),
+        trial ? null : orLogin(),
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: trial ? `${trialDays()} dni za darmo` : "Zaloguj się" }),
+        el("p", { class: "muted", style: "margin:0", text: trial ? "Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo." : reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
+        trial ? null : modeSwitch("kod"),
         form,
-        ...[
-          p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
-          closeBtn(),
-        ].filter(Boolean));
+        p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
+        trial ? el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("skrot-trial", null); emailStep(); } }, "Mam już konto: zwykłe logowanie") : null,
+        closeBtn(),
+      ].filter(Boolean));
       setTimeout(() => input.focus(), 30);
     };
 
@@ -822,6 +839,13 @@
   }
   async function afterReady() {
     // Bez sesji: tylko ekran logowania (powód i pole na kod, jeśli kod już poszedł).
+    // Link promocyjny skrotbm.pl/?proba=1: od razu tryb „3 dni za darmo” (bez sesji) albo start próby (po zalogowaniu).
+    const q = new URLSearchParams(location.search);
+    if (q.has("proba")) {
+      q.delete("proba");
+      history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
+      if (skrot.state === "out" || (skrot.state === "in" && !skrot.paid)) ls.set("skrot-trial", "1");
+    }
     if (skrot.state === "out") {
       const params = new URLSearchParams(location.search);
       const p = pending.get();

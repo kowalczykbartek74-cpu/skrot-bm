@@ -1,6 +1,15 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+/* Okres próbny na ekranie logowania (2026-10-29) */
+"{0} dni za darmo": "{0} days free",
+"Pełny dostęp do wszystkiego: materiały, fiszki, quizy i gry. Bez karty i bez płatności.": "Full access to everything: materials, flashcards, quizzes and games. No card and no payment.",
+"Masz już konto?": "Already have an account?",
+"Po wpisaniu kodu od razu włączy się {0} dni pełnego dostępu za darmo.": "Once you enter the code, {0} days of free full access start right away.",
+"Wyślij kod i zacznij": "Send the code and start",
+"Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo.": "Enter your email (your university one is best) and we’ll send you a 6-digit code. Once you enter it, you get full access to everything right away. No card and no payment, and your account is created automatically.",
+"Mam już konto: zwykłe logowanie": "I already have an account: normal login",
+"3 dni za darmo: pełny dostęp, bez karty": "3 days free: full access, no card",
 /* Przewodnik: gry, Hasło dnia, Boss, ranking, monety, okres próbny (2026-10-29) */
 "Zadania dnia i motywy za monety": "Daily tasks and themes for coins",
 "pseudonim, widoczność i miejsce w tygodniu": "nickname, visibility and your place this week",
