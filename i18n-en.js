@@ -1,6 +1,11 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+/* Panel starosty: brakujące etykiety (2026-10-29) */
+"Aktywność": "Activity",
+"kto jest teraz na stronie, logowania, wizyty": "who is on the site now, sign-ins, visits",
+"Konta i urządzenia": "Accounts and devices",
+"podejrzane konta, ostrzeżenia, blokady": "suspicious accounts, warnings, blocks",
 /* Okres próbny na ekranie logowania (2026-10-29) */
 "{0} dni za darmo": "{0} days free",
 "Pełny dostęp do wszystkiego: materiały, fiszki, quizy i gry. Bez karty i bez płatności.": "Full access to everything: materials, flashcards, quizzes and games. No card and no payment.",

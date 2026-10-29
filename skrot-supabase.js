@@ -113,10 +113,15 @@
     sb.rpc("nauka_zalogowano", { p_metoda: metoda, p_nazwa: DEVICE_NAME }).then(() => {}, () => {});
   }
   // Obecność: każda zalogowana karta na wierzchu daje znać co 45 s (to widzi starosta w „Aktywność”).
-  let presenceTimer = null;
+  let presenceTimer = null, presenceOff = false;
   function presence() {
-    if (document.visibilityState !== "visible" || skrot.state !== "in") return;
-    sb.rpc("nauka_obecny", { p_nazwa: DEVICE_NAME }).then(() => {}, () => {});
+    if (presenceOff || document.visibilityState !== "visible" || skrot.state !== "in") return;
+    sb.rpc("nauka_obecny", { p_nazwa: DEVICE_NAME }).then(({ error }) => {
+      // Bez funkcji w bazie (skrot-v11-aktywnosc.sql) nie pytamy co 45 s w kółko: wyłączamy do przeładowania strony.
+      if (error && /function|does not exist|schema cache|Could not find/i.test(error.message || "")) {
+        presenceOff = true; clearInterval(presenceTimer);
+      }
+    }, () => {});
   }
   function startPresence() {
     if (presenceTimer || !sb || skrot.state !== "in") return;
@@ -1094,7 +1099,7 @@
     const loadMon = async () => {
       const { data, error } = await sb.rpc("nauka_admin_monety_stat");
       mon = error ? { ok: false, noSql: /function|does not exist|schema cache|Could not find/i.test(error.message || "") } : data || { ok: false };
-      if (scrim.isConnected) draw();
+      if (scrim.isConnected && d) draw();
     };
     const monOf = (uid) => (mon?.konta || []).find((k) => k.user_id === uid);
     const giveCoins = async (uid, email) => {
@@ -1222,6 +1227,7 @@
       draw();
     }
     await load(true);
+    if (!d) return; // panel pokazuje prośbę o SQL albo błąd; bez danych nie rysujemy reszty
     loadMon();
     timer = setInterval(() => { if (document.visibilityState === "visible") load(false); }, 30000);
   };
