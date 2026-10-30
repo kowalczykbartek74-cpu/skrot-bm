@@ -127,7 +127,8 @@ const BASE_LS = { "mock-haslo-nr": "12", "mock-haslo-seria": "2", "mock-haslo-st
   await p.waitForTimeout(1600);
   const card = p.locator(".hd-home");
   ok("Dziś: karta sk-row-big „Hasło dnia #12 – 7 liter, Makroekonomia” z chipem „nowe”", (await card.count()) === 1 && /Hasło dnia #12/.test(await card.textContent()) && /7 liter · Makroekonomia/.test(await card.textContent()) && (await card.locator(".chip").textContent()) === "nowe" && (await card.getAttribute("class")).includes("sk-row-big"));
-  ok("Dziś: karta nad przewodnikiem/grami (góra listy)", await card.evaluate((e) => { const n = document.querySelector(".g-strip, .gry-home"); return !n || !!(e.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING); }));
+  // Od 30.10.2026: Hasło dnia i gra są w rzędzie „Na luzie”, pod zajęciami i najbliższym terminem; Hasło pierwsze w rzędzie.
+  ok("Dziś: karta w „Na luzie” pod zajęciami, przed grą", await card.evaluate((e) => { const row = e.closest(".fun-row"), hub = document.querySelector(".home-hub"), g = document.querySelector(".gry-home"); return !!row && (!hub || !!(hub.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING)) && (!g || !!(e.compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING)); }));
   await shot(p, "e7-dzis-390-pl");
   await card.click(); await p.waitForTimeout(400);
   ok("karta → #/haslo", (await p.evaluate(() => location.hash)) === "#/haslo");

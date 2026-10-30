@@ -1,6 +1,20 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Na luzie": "Just for fun",
+"Wyjaśnienie": "Explanation",
+"Około {0} min.": "About {0} min.",
+"Temat umiesz, gdy zdasz bilet wyjścia z lekcji albo dobrze idą Ci quiz i fiszki. Jasna część paska to tematy zaczęte.": "You know a topic once you pass the lesson's exit ticket or do well in its quiz and flashcards. The light part of the bar shows topics you've started.",
+"Fiszki wracają same, zanim zdążysz je zapomnieć: po 1, 3, 7, 14 i 30 dniach.": "Flashcards come back on their own before you forget them: after 1, 3, 7, 14 and 30 days.",
+"kolor = jak Ci idzie": "colour = how you're doing",
+"Najbliższe 7 dni": "Next 7 days",
+"Miesiąc": "Month",
+"Widok kalendarza": "Calendar view",
+"Nic tego dnia.": "Nothing that day.",
+"Dziś · {0}": "Today · {0}",
+"Jutro · {0}": "Tomorrow · {0}",
+"· Twój wpis": "· Your entry",
+"· odwołane": "· cancelled",
 /* Panel starosty: brakujące etykiety (2026-10-29) */
 "Aktywność": "Activity",
 "kto jest teraz na stronie, logowania, wizyty": "who is on the site now, sign-ins, visits",
