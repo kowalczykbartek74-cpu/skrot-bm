@@ -2,7 +2,8 @@
 // Kontrola treści: przechodzi po wszystkich materiałach (kolekcja materialContent w nauka_docs)
 // i krzyczy, gdy treść da na ekranie surowy markdown albo urwany wzór:
 //   - nieparzysta liczba „**” (np. „**intangible goods” bez zamknięcia),
-//   - „\(” bez „\)” albo „\[” bez „\]” (MathJax tego nie narysuje, student widzi surowy LaTeX).
+//   - „\(” bez „\)” albo „\[” bez „\]” (MathJax tego nie narysuje, student widzi surowy LaTeX),
+//   - definicje pojęć w jednym materiale raz po polsku, raz po angielsku.
 // Gotowe ekrany sprawdza strona: rawMarkupCheck() po każdym render() (błąd w konsoli), a starosta może
 // w konsoli przeglądarki wpisać skrotSprawdzTeksty(): strona otworzy po kolei każdy materiał (opracowanie,
 // lekcja jako tekst, fiszki, quiz, zadania) i wypisze ekrany, na których zostało „**”.
@@ -57,10 +58,19 @@ function problems(s) {
   return out;
 }
 
+// Definicje pojęć w jednym materiale mają być w jednym języku (ten sam test co defLang w index.html).
+const PL_HINT = /[ąćęłńóśźż]|\b(jest|się|oraz|które|który|która|czyli|albo|gdy|lub|przez|dla|na przykład)\b/i;
+function mixedLang(data) {
+  const defs = (data.concepts || []).map((x) => x.definition).filter(Boolean);
+  const pl = defs.filter((d) => PL_HINT.test(d)).length;
+  return pl && pl < defs.length ? `  concepts: ${pl} z ${defs.length} definicji po polsku, reszta po angielsku` : null;
+}
+
 const rows = await load();
 let bad = 0, mats = 0;
 for (const { id, data } of rows) {
   const hits = [];
+  const ml = mixedLang(data); if (ml) hits.push(ml);
   for (const [path, s] of strings(data, "")) for (const p of problems(s)) hits.push(`  ${path}: ${p} · „${s.slice(0, 90).replace(/\s+/g, " ")}${s.length > 90 ? "…" : ""}”`);
   if (hits.length) { mats++; bad += hits.length; console.log(`✗ ${id} (${hits.length})`); console.log(hits.join("\n")); }
 }

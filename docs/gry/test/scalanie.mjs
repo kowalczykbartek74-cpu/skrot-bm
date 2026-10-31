@@ -63,7 +63,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const tag = String(w);
   const p = await page(b, { w, h: hgt, ls: { "mock-misje": "odp10,gra1,haslo1", "mock-misja-tydz": "tyd_d5" } });
   await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
-  ok(`${tag} Dziś: saldo 0 pod powitaniem`, /🪙 0 monet/.test(await txt(p, ".greet-badges")), await txt(p, ".greet-badges"));
+  ok(`${tag} Dziś: pod powitaniem tylko XP i seria (monety są w sklepie)`, /XP/.test(await txt(p, ".greet-badges")) && !/monet/.test(await txt(p, ".greet-badges")), await txt(p, ".greet-badges"));
   // Hasło dnia w prawdziwym widoku
   await hashGo(p, "#/haslo", 1500);
   await p.keyboard.type("revenue", { delay: 30 }); await p.keyboard.press("Enter"); await p.waitForTimeout(2500);
@@ -85,7 +85,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const kon = await p.evaluate(() => window.skrot.rp.koniec({ run: window.__run, wynik: 4, czasMs: 50 }));
   ok(`${tag} Drabina: koniec rundy z pkt`, kon?.pkt > 0, kon);
   await hashGo(p, "#/", 3800);
-  ok(`${tag} Dziś: odznaka monet pokazuje 12`, /🪙 12 monet/.test(await txt(p, ".greet-badges")), await txt(p, ".greet-badges"));
+  ok(`${tag} Dziś: bez odznaki monet`, !/monet/.test(await txt(p, ".greet-badges")), await txt(p, ".greet-badges"));
   // Sklep: Zadania dnia
   await hashGo(p, "#/shop", 1500);
   const mis = await p.locator(".shop-mission").allInnerTexts();
@@ -95,7 +95,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   ok(`${tag} gra1 (Drabina) 1/1 z „Odbierz +5 🪙”`, mt.some((x) => x.includes("Zagraj jedną rundę gry") && x.includes("1/1") && x.includes("Odbierz +5 🪙")), mt);
   ok(`${tag} haslo1 1/1 z „Odbierz +5 🪙”`, mt.some((x) => x.includes("Rozwiąż Hasło dnia") && x.includes("1/1") && x.includes("Odbierz +5 🪙")), mt);
   const hero = await txt(p, ".shop-hero");
-  ok(`${tag} Sklep: „Dziś z nauki: 12/64”`, hero.includes("Dziś z nauki: 12/64"), hero);
+  ok(`${tag} Sklep: „Monety z nauki dziś: 12 z 64”`, hero.includes("Monety z nauki dziś: 12 z 64"), hero);
   await p.evaluate(() => { const d = document.querySelector(".shop-how"); if (d) d.open = true; });
   ok(`${tag} Sklep: opis monet z Hasłem dnia i Bossem, limit 64`, (await txt(p, ".shop-how")).includes("Hasło dnia i pokonany Boss przed kolokwium.") && (await txt(p, ".shop-how")).includes("najwyżej 64 dziennie z nauki"), await txt(p, ".shop-how"));
   await p.evaluate(() => scrollTo(0, 0)); await shot(p, `sklep-zadania-${tag}`, w === 1280);

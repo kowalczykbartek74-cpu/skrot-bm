@@ -154,11 +154,27 @@
       const m = String(path).match(/^data\/users\/([^/]+)$/);
       return m ? { col: "progress", fixedId: m[1] } : { col: String(path) };
     };
+    // Odświeżanie bez pobierania wszystkiego od nowa: najpierw jedno małe zapytanie o znacznik kolekcji
+    // (liczba wierszy + najnowsze updated_at, trigger nauka_przed_zapisem ustawia je przy każdym zapisie).
+    // Całość (np. materials, ~150 wierszy z danymi) idzie tylko wtedy, gdy znacznik się zmienił.
+    const colCache = new Map();
+    async function fetchColCached(col) {
+      if (!KNOWN.has(col)) return [];
+      const hit = colCache.get(col);
+      if (hit) {
+        const { data, count, error } = await sb.from(TABLE).select("updated_at", { count: "exact" }).eq("kolekcja", col).order("updated_at", { ascending: false }).limit(1);
+        if (!error && `${count}|${data?.[0]?.updated_at || ""}` === hit.sig) return hit.rows;
+      }
+      const rows = await fetchCol(col);
+      const sig = rows.length ? `${rows.length}|${rows.reduce((m, r) => (r.updated_at > m ? r.updated_at : m), "")}` : "0|";
+      colCache.set(col, { sig, rows });
+      return rows;
+    }
     async function fetchCol(col) {
       if (!KNOWN.has(col)) return [];
       let all = [];
       for (let from = 0; ; from += 1000) {
-        const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col).range(from, from + 999);
+        const { data, error } = await sb.from(TABLE).select("id,data,updated_at").eq("kolekcja", col).range(from, from + 999);
         if (error) throw error;
         all = all.concat(data || []);
         if (!data || data.length < 1000) break;
@@ -207,7 +223,7 @@
         orderBy: (field, dir = "asc") => query(col, { ...opts, field, dir }),
         limit: (n) => query(col, { ...opts, lim: n }),
         async get() {
-          let docs = (await fetchCol(col)).map(toDoc);
+          let docs = (await fetchColCached(col)).map(toDoc);
           if (opts.field) docs.sort((a, b) => {
             const x = a.data()[opts.field], y = b.data()[opts.field];
             const c = x == null ? -1 : y == null ? 1 : x < y ? -1 : x > y ? 1 : 0;
@@ -226,8 +242,11 @@
     }
     let timer = null;
     function refresh() { clearTimeout(timer); timer = setTimeout(() => subs.forEach((s) => s.run()), 150); }
-    setInterval(() => { if (document.visibilityState === "visible") refresh(); }, 60000);
-    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") refresh(); });
+    // Co 2 minuty (i po powrocie do karty, ale nie częściej niż raz na minutę) sprawdzamy znaczniki; dane idą tylko przy zmianie.
+    let lastAuto = Date.now();
+    const auto = (min) => { if (document.visibilityState === "visible" && Date.now() - lastAuto >= min) { lastAuto = Date.now(); refresh(); } };
+    setInterval(() => auto(110000), 120000);
+    document.addEventListener("visibilitychange", () => auto(60000));
     return {
       collection,
       doc: (path) => { const i = path.lastIndexOf("/"); const { col, fixedId } = split(path.slice(0, i)); return ref(col, fixedId || path.slice(i + 1)); },
@@ -470,7 +489,7 @@
       el("p", { class: "lg-trial-p", text: "Pełny dostęp do wszystkiego: materiały, fiszki, quizy i gry. Bez karty i bez płatności." }),
       // Ceny jak w CONFIG.plans i regulaminie § 4; przy zmianie cen popraw też ten tekst i i18n-en.js.
       el("p", { class: "lg-trial-price", text: "Potem, jeśli zechcesz: 199 zł jednorazowo (do 11 lipca 2027) albo 35 zł miesięcznie. Po okresie próbnym nic nie pobieramy samo." }),
-      el("button", { type: "button", class: "btn primary", onclick: () => { ls.set("skrot-trial", "1"); emailStep(); } }, `Wypróbuj za darmo przez ${trialDays()} dni`)) : null;
+      el("button", { type: "button", class: "btn primary", onclick: () => { ls.set("skrot-trial", "1"); emailStep(); } }, `Zacznij ${trialDays()} dni za darmo`)) : null;
     const orLogin = () => (page && !reason && !trialOn()) ? el("p", { class: "lg-or", text: "Masz już konto?" }) : null;
     // Konto zakłada się samo przy pierwszym kodzie, więc pod formularzem mówimy, na jakich zasadach (regulamin § 3 ust. 1).
     const legalHref = (f) => f + (window.SKROT_LANG === "en" ? "-en" : "") + ".html";

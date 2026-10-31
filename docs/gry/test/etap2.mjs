@@ -74,25 +74,28 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   await go(p, "ranking");
   ok("brak statystyk → komunikat", (await p.getByText("Za mało danych w tym tygodniu.", { exact: false }).count()) === 1);
   ok("mało osób: bez „lepiej niż”", !/Lepiej niż/.test(await p.locator(".rk-me").innerText()));
+  // Ustawienia pseudonimu są na ekranie Rankingu (jedno miejsce rankingu, Więcej ma tylko wiersz „Ranking kierunku”).
+  ok("Ranking → przycisk ustawień z opisem", /Bartek B · widoczny/.test(await p.locator("button", { hasText: "Pseudonim:" }).innerText()));
   await go(p, "more");
-  ok("Więcej → wiersz ustawień z opisem", /Bartek B · widoczny/.test(await p.locator(".more-row", { hasText: "Ranking: pseudonim i widoczność" }).innerText()));
-  ok("Więcej → „Ranking kierunku” z miejscem", /#3 w tym tygodniu/.test(await p.locator(".more-row", { hasText: "Ranking kierunku" }).innerText()));
-  await p.locator(".more-row", { hasText: "Ranking: pseudonim i widoczność" }).click(); await p.waitForTimeout(500);
+  ok("Więcej → „Ranking kierunku” ze stanem (miejsce od 5 osób, inaczej punkty)", /#3 w tym tygodniu|90 pkt w tym tygodniu/.test(await p.locator(".more-row", { hasText: "Ranking kierunku" }).innerText()), await p.locator(".more-row", { hasText: "Ranking kierunku" }).innerText());
+  await go(p, "ranking");
+  await p.locator("button", { hasText: "Pseudonim:" }).click(); await p.waitForTimeout(500);
   ok("okno ustawień: pseudonim, „zmiana raz na 7 dni”, przełącznik", (await p.locator("#rk-set-nick").inputValue()) === "Bartek B" && (await p.getByText("zmiana raz na 7 dni").count()) === 1 && (await p.locator('.modal [role="switch"]').getAttribute("aria-checked")) === "true");
   await shot(p, "e2-ustawienia");
   await p.locator('.modal [role="switch"]').click(); await p.locator(".modal").getByRole("button", { name: "Zapisz" }).click(); await p.waitForTimeout(500);
   const u = await calls(p, "nauka_profil_ustaw");
   ok("ustawienia: ukrycie zapisane (bez zmiany pseudonimu)", u.length === 1 && u[0].p_w_rankingu === false && u[0].p_nick === null, u);
-  ok("Więcej: opis „ukryty”", /Bartek B · ukryty/.test(await p.locator(".more-row", { hasText: "Ranking: pseudonim i widoczność" }).innerText()));
+  ok("Ranking: opis „ukryty”", /Bartek B · ukryty/.test(await p.locator("button", { hasText: "Pseudonim:" }).innerText()));
   await p.context().close();
   const q = await page(b, { ls: { "mock-nick": "Bartek B", "mock-vis": "1" } });
   await go(q, "home", 1200);
-  ok("Dziś: brak zapytania przed 3 s", (await calls(q, "nauka_ranking")).length === 0);
+  ok("Dziś: brak zapytania o ranking (jest tylko w Więcej)", (await calls(q, "nauka_ranking")).length === 0);
   await q.waitForTimeout(3300);
-  ok("Dziś: linia z miejscem", (await q.getByText("🏆 #3 na kierunku w tym tygodniu · 90 pkt →").count()) === 1);
+  ok("Dziś: bez linii rankingu", (await q.getByText(/na kierunku w tym tygodniu/).count()) === 0);
+  await go(q, "more"); await q.waitForTimeout(3300);
   await shot(q, "e2-dzis");
-  for (let i = 0; i < 3; i++) { await q.evaluate(() => window.dispatchEvent(new Event("resize"))); await q.locator(".navbtn[data-key=home]").click(); await q.waitForTimeout(200); }
-  ok("Dziś: ranking pobrany raz na sesję", (await calls(q, "nauka_ranking")).length === 1);
+  for (let i = 0; i < 3; i++) { await q.evaluate(() => window.dispatchEvent(new Event("resize"))); await go(q, "home", 200); await go(q, "more", 200); }
+  ok("Więcej: ranking pobrany raz na sesję", (await calls(q, "nauka_ranking")).length === 1);
   await go(q, "gry");
   await q.waitForTimeout(400);
   ok("Graj: rekordy tygodnia", /Rekordy tygodnia \(Fruń\)/.test(await q.locator(".gry-rek").innerText().catch(() => "")) && /Ty: 27/.test(await q.locator(".gry-rek").innerText().catch(() => "")));
