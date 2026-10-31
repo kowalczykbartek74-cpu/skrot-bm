@@ -1,6 +1,37 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Data szacowana": "Estimated date",
+"data szacowana": "estimated date",
+"Data szacowana: prowadzący jej jeszcze nie ogłosił. Pokazujemy ostatnie zajęcia z planu albo okres sesji. Sprawdź u prowadzącego.": "Estimated date: the lecturer hasn't announced it yet. We show the last class from the timetable or the exam period. Check with the lecturer.",
+"prowadzący jeszcze nie podał daty": "the lecturer hasn't given a date yet",
+"Wcześniej, ale data szacowana:": "Earlier, but the date is estimated:",
+"Szacowane terminy": "Estimated dates",
+"Tych dat prowadzący jeszcze nie ogłosili. Pokazujemy ostatnie zajęcia z planu albo okres sesji, żeby było wiadomo, kiedy mniej więcej się uczyć. Gdy data zostanie ogłoszona, termin przejdzie wyżej.": "The lecturers haven't announced these dates yet. We show the last class from the timetable or the exam period, so you roughly know when to study. Once a date is announced, it moves up.",
+"Minione": "Past",
+"Kolokwia i egzaminy, które już były, oraz terminy sprzed Twojego dołączenia. Nie liczą się do „po terminie”.": "Tests and exams that have already happened, and deadlines from before you joined. They don't count as overdue.",
+"Żółty znaczek „Data szacowana” oznacza, że prowadzący jeszcze nie podał daty. Takie terminy są w osobnej sekcji „Szacowane terminy”.": "The yellow “Estimated date” badge means the lecturer hasn't given a date yet. Such dates are in a separate “Estimated dates” section.",
+"Odhaczasz tylko zadania do oddania. Kolokwium i egzamin znikają z listy same, gdy minie ich data.": "You only tick off assignments. Tests and exams leave the list on their own once their date has passed.",
+"Terminy dla całego roku wpisuje starosta, a zadania z Teams dochodzą same. Żółty znaczek „Data szacowana” oznacza, że prowadzący jeszcze nie podał daty: takie terminy są w osobnej sekcji.": "Deadlines for the whole year are entered by the class rep, and Teams assignments arrive on their own. The yellow “Estimated date” badge means the lecturer hasn't given a date yet: such dates are in a separate section.",
+"{0} {1} (szacunkowo)": "{0} {1} (estimated)",
+"{0} · data szacowana": "{0} · estimated date",
+"{0}: {1}, {2} (data szacowana, jeszcze nieogłoszona).": "{0}: {1}, {2} (estimated date, not announced yet).",
+"Około {0} min. {1} {2} po {3} {4}.": "About {0} min. {1} {2} of {3} {4}.",
+"Około {0} min. {1} {2} po {3} {4}. Fiszki wracają wtedy, gdy zaczynasz je zapominać.": "About {0} min. {1} {2} of {3} {4}. Flashcards come back just when you start to forget them.",
+"Fiszki wracają same, zanim zdążysz je zapomnieć: po 1, 3, 7, 14, 30 i 60 dniach.": "Flashcards come back on their own before you forget them: after 1, 3, 7, 14, 30 and 60 days.",
+"Fiszki wracają same, zanim je zapomnisz: po 1, 3, 7, 14, 30 i 60 dniach. Tu też są gry z pytaniami z przedmiotu i mapa tego, co już umiesz.": "Flashcards come back by themselves before you forget them: after 1, 3, 7, 14, 30 and 60 days. Here you'll also find games with questions from your subjects and a map of what you already know.",
+"na zielono: {0} z {1} materiałów": "green: {0} of {1} materials",
+"na zielono: {0} z {1} materiału": "green: {0} of {1} material",
+"{0} {1} = {2} {3} + {4} {5} z zajęć": "{0} {1} = {2} {3} + {4} {5} from classes",
+"Mapa: {0} {1} z całego przedmiotu. Licznik „umiesz” na ekranie Dziś bierze tylko {2} {3} do najbliższego zaliczenia.": "Map: {0} {1} from the whole subject. The “you know” counter on the Today screen only counts {2} {3} for the nearest exam.",
+"Mapa: {0} {1} ze wszystkich przedmiotów. Licznik „umiesz” na ekranie Dziś bierze tylko {2} {3} do najbliższego zaliczenia.": "Map: {0} {1} across all subjects. The “you know” counter on the Today screen only counts {2} {3} for the nearest exams.",
+"ok. {0} min (+{1} min dla chętnych)": "approx. {0} min (+{1} min optional)",
+"Lekcja {0} · dział {1}: {2} · sylabus: {3} · ok. {4} min (+{5} min dla chętnych)": "Lesson {0} · unit {1}: {2} · syllabus: {3} · approx. {4} min (+{5} min optional)",
+"Lekcja {0} · dział {1}: {2} · podręcznik, rozdz. {3} · ok. {4} min (+{5} min dla chętnych)": "Lesson {0} · unit {1}: {2} · textbook, ch. {3} · approx. {4} min (+{5} min optional)",
+"sylabus: {0} · ok. {1} min (+{2} min dla chętnych) · {3} {4} w quizie": "syllabus: {0} · approx. {1} min (+{2} min optional) · {3} {4} in the quiz",
+"rozdz. {0} · ok. {1} min (+{2} min dla chętnych) · {3} {4} w quizie": "ch. {0} · approx. {1} min (+{2} min optional) · {3} {4} in the quiz",
+"{0} {1} · ok. {2} min (+{3} min dla chętnych)": "{0} {1} · approx. {2} min (+{3} min optional)",
+"Uwaga: {0}× surowe „**” na tym ekranie (szczegóły w konsoli).": "Warning: {0}× raw “**” on this screen (details in the console).",
 "Imię i nazwisko": "Full name",
 "np. Anna Nowak": "e.g. Anna Nowak",
 "Żebym wiedział, komu wypłacić. Widzi to tylko osoba wypłacająca, nie kupujący.": "So I know who to pay. Only the person paying out sees it, not the buyers.",
@@ -3503,6 +3534,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "wszystkie kategorie": "all categories"
 },
 "plural": {
+"seria": ["round", "rounds"],
+"karcie": ["card", "cards"],
 "para": [
 "pair",
 "pairs"

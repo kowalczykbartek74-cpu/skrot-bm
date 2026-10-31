@@ -394,12 +394,16 @@ function pause() { if (state !== "gra") return; state = "pauza"; stopLoop(); hin
 function resume() { if (state !== "pauza") return; state = "gra"; ui.pauseBtn.setAttribute("aria-pressed", "false"); hintSync(); startLoop(); }
 const onVis = () => { if (document.visibilityState === "hidden" && !G?.dom) pause(); };
 const onResize = () => { if (G?.dom) return; fit(); if (state !== "gra" && G && run) paint(1); };
-// Wstecz w telefonie = ✕
+// Gra ma własny adres (#/gra/frun). Wstecz w telefonie = ✕; ręczna zmiana adresu (np. na #/) zamyka nakładkę.
+const gameHash = () => "#/gra/" + (curGra || "");
 const onPop = (e) => {
   if (state === "off") return;
+  if (!e.state && !location.hash.startsWith("#/gra/")) return close(true); // nowy adres wpisany ręcznie: strona sama pokaże ekran
   e.stopImmediatePropagation();
-  if (inRound()) { try { history.pushState({ gry: 1 }, ""); } catch {} askClose(); } else close(true);
+  if (inRound()) { try { history.pushState({ gry: 1 }, "", gameHash()); } catch {} askClose(); } else close(true);
 };
+const onHash = () => { if (state !== "off" && !location.hash.startsWith("#/gra/")) close(true); };
+let curGra = null;
 // runda trwa od pierwszego dotknięcia (wcześniej ✕ zamyka bez pytania)
 const inRound = () => run && run.started && !run.ended && (state === "gra" || state === "pauza" || state === "pytanie");
 
@@ -417,7 +421,9 @@ async function open(gra, opts = {}) {
   document.addEventListener("visibilitychange", onVis);
   addEventListener("resize", onResize);
   addEventListener("popstate", onPop, true);
-  try { history.pushState({ gry: 1 }, ""); } catch {}
+  addEventListener("hashchange", onHash);
+  curGra = gra;
+  try { if (location.hash !== gameHash()) history.pushState({ gry: 1 }, "", gameHash()); else history.replaceState({ gry: 1 }, "", gameHash()); } catch {}
   runOpts = { tryb: opts.tryb, trudnosc: opts.trudnosc };
   await newRun(gra, opts.sid ?? null);
 }
@@ -453,6 +459,7 @@ function close(silent) {
   document.removeEventListener("visibilitychange", onVis);
   removeEventListener("resize", onResize);
   removeEventListener("popstate", onPop, true);
+  removeEventListener("hashchange", onHash);
   ui?.root.remove(); ui = null; cv = g2 = null;
   document.documentElement.classList.remove("lp-lock");
   // przejście dalej (quiz, materiał) zostawia nasz wpis w historii: back() zamknąłby nowo otwarty odtwarzacz
@@ -462,10 +469,11 @@ function close(silent) {
 function askClose() {
   if (!inRound()) return close();
   const was = state; if (state === "gra" && !G.dom) pause();
+  if (was === "pytanie") qPause();
   A.modal((done) => [
     h("h3", { text: "Przerwać rundę?" }),
     h("div", { class: "row", style: "justify-content:flex-end" },
-      h("button", { type: "button", class: "btn", onclick: () => { done(); if (was === "gra" && !G.dom) resume(); } }, "Graj dalej"),
+      h("button", { type: "button", class: "btn", onclick: () => { done(); if (was === "gra" && !G.dom) resume(); if (was === "pytanie") qResume(); } }, "Graj dalej"),
       h("button", { type: "button", class: "btn primary", onclick: () => { done(); close(); } }, "Zakończ rundę")),
   ]);
 }
@@ -600,18 +608,24 @@ function ask(item) {
   ui.layer.replaceChildren(sheet);
   requestAnimationFrame(() => sheet.classList.add("on"));
   (Q.opts?.[0] || Q.inp)?.focus();
-  let lastSpoken = secs;
+  Q.spoken = secs;
+  qTick();
+}
+// Licznik pytania. Okno „Przerwać rundę?” go zatrzymuje (qPause), „Graj dalej” wznawia od tego samego miejsca.
+function qTick() {
   clearInterval(qTimer);
   qTimer = setInterval(() => {
     if (Q.done) return clearInterval(qTimer);
     Q.left = Math.max(0, Q.secs - (performance.now() - Q.t0) / 1000);
     const f = Q.left / Q.secs;
-    bar.style.width = (f * 100).toFixed(1) + "%";
-    bar.className = f <= 0.1 ? "red" : f <= 0.25 ? "amber" : "";
-    if (Math.ceil(Q.left) % 5 === 0 && Math.ceil(Q.left) !== lastSpoken) { lastSpoken = Math.ceil(Q.left); timeTxt.textContent = `${lastSpoken} s`; }
+    Q.bar.style.width = (f * 100).toFixed(1) + "%";
+    Q.bar.className = f <= 0.1 ? "red" : f <= 0.25 ? "amber" : "";
+    if (Math.ceil(Q.left) % 5 === 0 && Math.ceil(Q.left) !== Q.spoken) { Q.spoken = Math.ceil(Q.left); Q.timeTxt.textContent = `${Q.spoken} s`; }
     if (Q.left <= 0) { clearInterval(qTimer); result(false, true); }
   }, 100);
 }
+function qPause() { if (!Q || Q.done || Q.pausedAt) return; Q.pausedAt = performance.now(); clearInterval(qTimer); }
+function qResume() { if (!Q || Q.done || !Q.pausedAt || state !== "pytanie") return; Q.t0 += performance.now() - Q.pausedAt; Q.pausedAt = 0; qTick(); }
 function qKey(e) {
   if (!Q || Q.done) { if (e.key === "Enter" && Q?.cta && document.activeElement !== Q.cta) { e.preventDefault(); Q.cta.click(); } return; }
   if (Q.item.kind !== "abcd") return;
