@@ -3897,15 +3897,43 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   }
 
   // ---- MathJax (SVG output, no external fonts), loaded only when maths is on screen
-  let mjPromise = null;
+  // Wzory są rysowane wszędzie, także w grach, oknach i treściach podmienianych bez render(): pilnuje tego obserwator niżej.
+  // AI czasem zapisuje LaTeX z podwójnym ukośnikiem („\\(\\frac{3}{2}\\)”) i wtedy MathJax pokazuje surowy tekst,
+  // więc przed rysowaniem zamieniamy „\\” przed poleceniem albo nawiasem na jeden „\”.
+  let mjPromise = null, mjQueue = Promise.resolve(), mjFrame = 0;
+  const mjRoots = new Set();
+  const MJ_RX = /\\\(|\\\[/, MJ_DOUBLE = /\\\\(?=[A-Za-z()[\]{}])/g;
+  function texFix(root) {
+    const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      if (!n.data.includes("\\\\") || n.parentElement?.closest("script, style, textarea, mjx-container")) continue;
+      const t = n.data.replace(MJ_DOUBLE, "\\");
+      if (t !== n.data) n.data = t;
+    }
+  }
+  function mjFlush() {
+    mjFrame = 0;
+    const roots = [...mjRoots].filter((r) => r.isConnected && MJ_RX.test(r.textContent)); mjRoots.clear();
+    const top = roots.filter((r) => !roots.some((o) => o !== r && o.contains(r)));
+    if (top.length) mjQueue = mjQueue.then(() => mjPromise).then(() => window.MathJax.typesetPromise(top.filter((r) => r.isConnected))).catch(() => {});
+  }
   function typeset(root) {
-    if (!root || !/\\\(|\\\[/.test(root.textContent)) return;
+    if (!root || !MJ_RX.test(root.textContent)) return;
+    texFix(root);
+    mjRoots.add(root);
+    if (!mjFrame) mjFrame = requestAnimationFrame(mjFlush);
     if (!mjPromise) {
       window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] }, svg: { fontCache: "global" }, startup: { typeset: false } };
       mjPromise = new Promise((res, rej) => { const s = document.createElement("script"); s.integrity = "sha384-4kE/rQ11E8xT9QgrCBTyvenkuPfQo8rXYQvJZuMgxyPOoUfpatjQPlgdv6V5yhUK"; s.crossOrigin = "anonymous"; s.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg-full.js"; s.onload = () => (window.MathJax.startup?.promise || Promise.resolve()).then(res, rej); s.onerror = () => { mjPromise = null; rej(new Error("mathjax")); }; document.head.append(s); });
     }
-    mjPromise.then(() => window.MathJax.typesetPromise([root])).catch(() => {});
   }
+  new MutationObserver((list) => {
+    for (const m of list) {
+      const el = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+      if (!el || el.closest("mjx-container, textarea, script, style, #login")) continue;
+      if (m.type === "characterData" || [...m.addedNodes].some((n) => MJ_RX.test(n.textContent || ""))) typeset(el);
+    }
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
   const best = (key) => S.progress?.quiz?.[key];
   const canManage = (doc) => S.canEdit || (S.uid && doc?.createdBy === S.uid);
   const who = (id) => S.names[id] || "";
