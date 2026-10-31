@@ -7,7 +7,7 @@ import { PGlite } from "@electric-sql/pglite";
 
 import fs from "fs";
 const R = new URL("../", import.meta.url).pathname;
-const order = ["test/stub.sql","nauka.sql","skrot.sql","skrot-platnosci.sql","skrot-darmowe.sql","skrot-v2.sql","skrot-v3.sql","skrot-v4-moje.sql","skrot-v5.sql","skrot-v6.sql","skrot-v7-subskrypcja.sql","skrot-kalendarz.sql","skrot-v8-urzadzenia.sql","skrot-v9-limit-moje.sql","skrot-v10-zgody.sql","skrot-v11-aktywnosc.sql","skrot-v12-zabezpieczenia.sql","skrot-v13-gry.sql","skrot-v13-gry.sql","skrot-v15-gry2.sql","skrot-v15-gry2.sql","skrot-v14-monety.sql","skrot-v14-monety.sql","skrot-v16-proba.sql","skrot-v16-proba.sql","skrot-v17-polecenia.sql","skrot-v17-polecenia.sql","test/v13.sql","test/v15.sql","test/v14.sql","test/v16.sql","test/v17.sql"];
+const order = ["test/stub.sql","nauka.sql","skrot.sql","skrot-platnosci.sql","skrot-darmowe.sql","skrot-v2.sql","skrot-v3.sql","skrot-v4-moje.sql","skrot-v5.sql","skrot-v6.sql","skrot-v7-subskrypcja.sql","skrot-kalendarz.sql","skrot-v8-urzadzenia.sql","skrot-v9-limit-moje.sql","skrot-v10-zgody.sql","skrot-v11-aktywnosc.sql","skrot-v12-zabezpieczenia.sql","skrot-v13-gry.sql","skrot-v13-gry.sql","skrot-v15-gry2.sql","skrot-v15-gry2.sql","skrot-v14-monety.sql","skrot-v14-monety.sql","skrot-v16-proba.sql","skrot-v16-proba.sql","skrot-v17-polecenia.sql","skrot-v17-polecenia.sql","test/v13.sql","test/v15.sql","test/v14.sql","test/v16.sql","test/v17.sql","skrot-v18-imie-polecajacego.sql","skrot-v18-imie-polecajacego.sql","test/v18.sql"];
 const db = new PGlite();
 // PGlite nie ma pgcrypto: zamienniki dwóch funkcji, których używają migracje
 await db.exec(`create schema if not exists extensions;

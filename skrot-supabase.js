@@ -273,7 +273,7 @@
   skrot.polecLink = (kod) => "https://skrotbm.pl/?kod=" + encodeURIComponent(kod);
   const polecRpc = async (fn, args) => { await ready; const { data, error } = await sb.rpc(fn, args); if (error) throw rpcErr(error); return data; };
   skrot.polecMoj = () => polecRpc("nauka_polec_moj");
-  skrot.polecUstaw = (kod) => polecRpc("nauka_polec_ustaw", { p_kod: kod });
+  skrot.polecUstaw = (kod, imie) => polecRpc("nauka_polec_ustaw", { p_kod: kod, p_imie: imie || null });
   skrot.polecWyplata = (txt) => polecRpc("nauka_polec_wyplata", { p_txt: txt });
   try {
     const q = new URLSearchParams(location.search), k = polecNorm(q.get("kod"));
@@ -1188,14 +1188,14 @@
     };
     const tile = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--accent-soft,#EAF5EE)" }, el("b", { style: "font-size:1.25rem", text: n }), el("small", { class: "muted", text: t }));
     const person = (o) => el("div", { style: `display:grid;gap:6px;padding:12px 14px;border-radius:12px;background:var(--surface,#fff);border:${o.do_wyplaty_gr > 0 ? "2px solid var(--accent,#1A7F45)" : "1px solid var(--line,#BFCEC5)"}` },
-      el("div", { style: "display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" }, el("b", { translate: "no", text: o.kod }), el("span", { class: "muted", style: "overflow-wrap:anywhere", text: o.email })),
+      el("div", { style: "display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" }, el("b", { text: o.imie || "(bez imienia)" }), el("span", { translate: "no", style: "font-weight:700", text: o.kod }), el("span", { class: "muted", style: "overflow-wrap:anywhere", text: o.email })),
       el("small", { text: `Polecone: ${o.polecone} · czeka: ${zl(o.czeka_gr)} · do wypłaty: ${zl(o.do_wyplaty_gr)} · wypłacone: ${zl(o.wyplacone_gr)}` }),
       el("small", {}, "Dane do wypłaty: ", o.wyplata ? el("b", { style: "overflow-wrap:anywhere", text: o.wyplata }) : el("span", { class: "muted", text: "nie podano (poproś o numer do BLIK albo konto)" })),
       el("div", { style: "display:flex;gap:6px;flex-wrap:wrap" },
         o.do_wyplaty_gr > 0 ? el("button", { type: "button", class: "btn small primary", onclick: () => paid(o) }, `Wypłacone ${zl(o.do_wyplaty_gr)}`) : null,
         el("button", { type: "button", class: "btn small ghost", onclick: () => delCode(o) }, "Usuń kod")));
     const entry = (p) => el("div", { style: "display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--line,#BFCEC5)" },
-      el("small", { style: "overflow-wrap:anywhere" }, el("b", { translate: "no", text: p.kod }), ` · ${p.kupujacy} · ${plDate(p.kiedy)} · ${STAN[p.stan] || p.stan}${p.powod ? " · " + p.powod : ""}`),
+      el("small", { style: "overflow-wrap:anywhere" }, el("b", { translate: "no", text: p.kod }), p.imie ? ` (${p.imie})` : "", ` · kupił(a): ${p.kupujacy} · ${plDate(p.kiedy)} · ${STAN[p.stan] || p.stan}${p.powod ? " · " + p.powod : ""}`),
       p.stan === "czeka" || p.stan === "do_wyplaty" ? el("button", { type: "button", class: "btn small ghost", onclick: () => cancel(p) }, "Anuluj") : null);
     function draw() {
       const os = d.osoby || [], ps = d.polecenia || [];

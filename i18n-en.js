@@ -1,6 +1,12 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Imię i nazwisko": "Full name",
+"np. Anna Nowak": "e.g. Anna Nowak",
+"Żebym wiedział, komu wypłacić. Widzi to tylko osoba wypłacająca, nie kupujący.": "So I know who to pay. Only the person paying out sees it, not the buyers.",
+"Wpisz imię i nazwisko (np. Anna Nowak).": "Enter your first and last name (e.g. Anna Nowak).",
+"Uzupełnij imię i nazwisko": "Add your full name",
+"Bez tego nie wiem, komu wypłacić pieniądze za polecenia.": "Without it I don't know who to pay for referrals.",
 "np. BLIK 600 100 200": "e.g. BLIK 600 100 200",
 "Polecaj i zarabiaj": "Refer & earn",
 "30 zł za każdą osobę, która kupi dostęp z Twoim kodem": "30 zł for everyone who buys access with your code",

@@ -9982,7 +9982,7 @@ ${written}`;
   // płaci tyle samo, a właścicielowi kodu należy się 30 zł po 14 dniach. Wypłaca starosta (BLIK / przelew).
   // Wszystko liczy baza (supabase/skrot-v17-polecenia.sql, skrot-supabase.js → skrot.polec*).
   // =====================================================================
-  const POLEC = { d: undefined, busy: false, msg: null, edit: false, draft: null, pay: null };
+  const POLEC = { d: undefined, busy: false, msg: null, edit: false, draft: null, pay: null, imie: null };
   const zlotych = (gr) => fmtN(Math.round((gr || 0) / 100)) + " zł";
   function polecLoad() {
     const sk = window.skrot;
@@ -9991,13 +9991,14 @@ ${written}`;
     sk.polecMoj().then((d) => { POLEC.d = d || { ok: false }; }, (e) => { POLEC.d = { ok: false, code: e?.code || "error" }; })
       .finally(() => { POLEC.busy = false; if (S.route.view === "polec") render(); });
   }
-  const POLEC_ERR = { zly_kod: "Kod: 4–16 liter lub cyfr, bez spacji.", zajety: "Ten kod jest już zajęty. Wybierz inny.", zarezerwowany: "Tego kodu nie można użyć. Wybierz inny.", brak_dostepu: "Kod założysz z opłaconym dostępem.", zle_dane: "Wpisz numer telefonu do BLIK albo numer konta (3–120 znaków).", brak_kodu: "Najpierw załóż kod." };
-  async function polecSaveCode(raw) {
-    const sk = window.skrot, kod = sk.polecNorm(raw);
+  const POLEC_ERR = { zly_kod: "Kod: 4–16 liter lub cyfr, bez spacji.", zajety: "Ten kod jest już zajęty. Wybierz inny.", zarezerwowany: "Tego kodu nie można użyć. Wybierz inny.", brak_dostepu: "Kod założysz z opłaconym dostępem.", zle_imie: "Wpisz imię i nazwisko (np. Anna Nowak).", zle_dane: "Wpisz numer telefonu do BLIK albo numer konta (3–120 znaków).", brak_kodu: "Najpierw załóż kod." };
+  async function polecSaveCode(raw, imieRaw) {
+    const sk = window.skrot, kod = sk.polecNorm(raw), imie = String(imieRaw ?? "").trim().replace(/\s+/g, " ");
+    if (imieRaw != null && !/^\S+\s+\S+/.test(imie)) { POLEC.msg = POLEC_ERR.zle_imie; render(); return; }
     if (!/^[A-Z0-9]{4,16}$/.test(kod)) { POLEC.msg = POLEC_ERR.zly_kod; render(); return; }
-    let r; try { r = await sk.polecUstaw(kod); } catch (e) { r = { ok: false, code: e?.code }; }
+    let r; try { r = await sk.polecUstaw(kod, imie || null); } catch (e) { r = { ok: false, code: e?.code }; }
     if (!r?.ok) { POLEC.msg = POLEC_ERR[r?.code] || "Nie udało się zapisać kodu. Spróbuj za chwilę."; render(); return; }
-    POLEC.msg = null; POLEC.edit = false; POLEC.draft = null; toast(`Twój kod: ${r.kod}`); polecLoad();
+    POLEC.msg = null; POLEC.edit = false; POLEC.draft = null; POLEC.imie = null; toast(`Twój kod: ${r.kod}`); polecLoad();
   }
   async function polecSavePay(raw) {
     let r; try { r = await window.skrot.polecWyplata(raw); } catch (e) { r = { ok: false, code: e?.code }; }
@@ -10033,20 +10034,30 @@ ${written}`;
     const msg = POLEC.msg ? h("p", { class: "notice err", role: "alert", style: "margin:0", text: POLEC.msg }) : null;
     if (!d.kod || POLEC.edit) {
       const suggest = POLEC.draft ?? (d.kod || sk.polecNorm((sk.email || "").split("@")[0].replace(/[._-]\w*$/, "")).slice(0, 10));
+      const nameIn = h("input", { class: "input", id: "polec-imie", maxlength: "80", autocomplete: "name", value: POLEC.imie ?? (d.imie || ""), placeholder: "np. Anna Nowak", "aria-label": "Imię i nazwisko", oninput: (e) => { POLEC.imie = e.target.value; } });
+      const save = () => polecSaveCode($("polec-kod").value, $("polec-imie").value);
       const inp = h("input", { class: "input", id: "polec-kod", maxlength: "20", autocomplete: "off", autocapitalize: "characters", spellcheck: "false", value: suggest, "aria-label": "Twój kod", oninput: (e) => { POLEC.draft = e.target.value; },
-        onkeydown: (e) => { if (e.key === "Enter") polecSaveCode(e.target.value); } });
+        onkeydown: (e) => { if (e.key === "Enter") save(); } });
       return [back, head, h("section", { class: "panel sk-panel" },
         h("h2", { text: d.kod ? "Zmień kod" : "Załóż swój kod" }),
         h("p", { class: "muted", style: "margin:0", text: d.kod ? "Stary kod przestanie działać. Polecenia, które już masz, zostają." : "4–16 liter lub cyfr, np. imię albo ksywka. Łatwy do przepisania z wiadomości." }),
-        inp, msg,
+        h("label", { style: "display:grid;gap:6px" }, h("b", { text: "Imię i nazwisko" }), nameIn, h("small", { class: "muted", text: "Żebym wiedział, komu wypłacić. Widzi to tylko osoba wypłacająca, nie kupujący." })),
+        h("label", { style: "display:grid;gap:6px" }, h("b", { text: "Twój kod" }), inp),
+        msg,
         h("div", { class: "row" },
-          h("button", { type: "button", class: "btn primary", onclick: () => polecSaveCode($("polec-kod").value) }, d.kod ? "Zapisz kod" : "Załóż kod"),
+          h("button", { type: "button", class: "btn primary", onclick: save }, d.kod ? "Zapisz kod" : "Załóż kod"),
           d.kod ? h("button", { type: "button", class: "btn ghost", onclick: () => { POLEC.edit = false; POLEC.msg = null; POLEC.draft = null; render(); } }, "Anuluj") : null)), how];
     }
     const link = sk.polecLink(d.kod);
     const STAN = { czeka: ["czeka", "muted"], do_wyplaty: ["do wypłaty", ""], wyplacone: ["wypłacone ✓", ""], anulowane: ["anulowane (zwrot)", "muted"] };
     const payVal = POLEC.pay ?? (d.wyplata || "");
-    return [back, head,
+    const needName = !d.imie ? h("section", { class: "panel sk-panel", style: "border:2px solid var(--accent)" },
+      h("h2", { text: "Uzupełnij imię i nazwisko" }),
+      h("p", { class: "muted", style: "margin:0", text: "Bez tego nie wiem, komu wypłacić pieniądze za polecenia." }),
+      h("input", { class: "input", id: "polec-imie", maxlength: "80", autocomplete: "name", value: POLEC.imie ?? "", placeholder: "np. Anna Nowak", "aria-label": "Imię i nazwisko", oninput: (e) => { POLEC.imie = e.target.value; } }),
+      msg,
+      h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => polecSaveCode(d.kod, $("polec-imie").value) }, "Zapisz"))) : null;
+    return [back, head, needName,
       h("section", { class: "sk-hero" },
         h("span", { class: "eyebrow", text: "Twój kod" }),
         h("div", { class: "row", style: "justify-content:space-between" },
