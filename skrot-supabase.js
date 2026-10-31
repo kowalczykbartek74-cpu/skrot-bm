@@ -263,6 +263,26 @@
   };
   skrot.mojeStan = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_stan"); if (error) throw rpcErr(error); return data; };
   skrot.mojeStart = async () => { await ready; const { data, error } = await sb.rpc("nauka_moje_start"); if (error) throw rpcErr(error); return data; };
+  // ---------- kody polecające (supabase/skrot-v17-polecenia.sql) ----------
+  // Kod zakłada osoba z opłaconym dostępem; kto wpisze go przy zakupie planu 199 zł, daje właścicielowi 30 zł (po 14 dniach).
+  // Kod z linku skrotbm.pl/?kod=KOD pamiętamy 30 dni (POLEC_LS) i wpisujemy w okno „Zanim zapłacisz”.
+  const POLEC_LS = "skrot-kod";
+  const polecNorm = (t) => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/gi, "l").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  skrot.polecNorm = polecNorm;
+  skrot.polecZapamietany = () => { try { const p = JSON.parse(ls.get(POLEC_LS) || "null"); return p && p.kod && Date.now() - p.t < 30 * 864e5 ? p.kod : ""; } catch { return ""; } };
+  skrot.polecLink = (kod) => "https://skrotbm.pl/?kod=" + encodeURIComponent(kod);
+  const polecRpc = async (fn, args) => { await ready; const { data, error } = await sb.rpc(fn, args); if (error) throw rpcErr(error); return data; };
+  skrot.polecMoj = () => polecRpc("nauka_polec_moj");
+  skrot.polecUstaw = (kod) => polecRpc("nauka_polec_ustaw", { p_kod: kod });
+  skrot.polecWyplata = (txt) => polecRpc("nauka_polec_wyplata", { p_txt: txt });
+  try {
+    const q = new URLSearchParams(location.search), k = polecNorm(q.get("kod"));
+    if (q.has("kod")) {
+      if (/^[A-Z0-9]{4,16}$/.test(k)) ls.set(POLEC_LS, JSON.stringify({ kod: k, t: Date.now() }));
+      q.delete("kod");
+      history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
+    }
+  } catch {}
   // ---------- monety, Zadania dnia i Sklep (supabase/skrot-v14-monety.sql) ----------
   // Saldo, zakupy i misje liczy tylko baza; tu tylko pamiętamy ostatni stan i dajemy znać stronie zdarzeniem „skrot:sklep”.
   // sklep.ok = stan z bazy; sklep.err = "no_sql" (v14 jeszcze nie uruchomione, więc nikt nic nie kupił) albo inny błąd.
@@ -723,7 +743,7 @@
   // (utrata prawa odstąpienia, art. 38 ust. 1 pkt 13 ustawy o prawach konsumenta, regulamin § 5).
   // Zgodę zapisuje baza (nauka_zgoda, supabase/skrot-v10-zgody.sql) z datą, kontem i e-mailem.
   // Treść zgody to dowód: zmieniasz ją tylko razem z regulaminem i z nową CONSENT_V.
-  const CONSENT_V = "2026-10-29";
+  const CONSENT_V = "2026-10-31";
   const CONSENT_TERMS = "Znam i akceptuję Regulamin oraz Politykę prywatności.";
   const CONSENT_NOW = "Chcę, żeby dostęp do Treści zaczął działać od razu po zapłacie, przed upływem 14 dni na odstąpienie od umowy. Wiem, że przez to tracę prawo odstąpienia od umowy.";
   const recordConsent = async (plan) => {
@@ -751,13 +771,35 @@
     const terms = box(), now = box();
     const pay = el("button", { type: "button", class: "btn primary", disabled: "" }, `Przejdź do płatności (${cfg.price})`);
     const sync = () => { pay.disabled = !(terms.checked && now.checked); };
+    // Kod polecający: tylko plan jednorazowy (199 zł). Cena się nie zmienia; nagrodę dostaje właściciel kodu.
+    const KOD_ERR = { brak: "Nie ma takiego kodu. Sprawdź pisownię albo zostaw pole puste.", wlasny: "To Twój własny kod. Własnym kodem nie można polecić samego siebie.",
+      juz_polecony: "Na tym koncie kod polecający był już użyty. Możesz zapłacić bez kodu.", nieaktywny: "Ten kod już nie działa. Możesz zapłacić bez kodu." };
+    const kodIn = plan === "rok" ? el("input", { class: "input", id: "skrot-ref-code", autocomplete: "off", autocapitalize: "characters", spellcheck: "false", maxlength: "24", placeholder: "np. BARTEK", value: skrot.polecZapamietany() || null, oninput: () => { kodMsg.hidden = true; } }) : null;
+    const kodMsg = el("p", { class: "notice err", role: "alert", style: "margin:0;font-size:.9rem", hidden: "" });
+    const kodBox = kodIn ? el("label", { style: "display:grid;gap:6px;font-size:.95rem" },
+      el("span", { style: "display:flex;gap:6px;align-items:baseline;flex-wrap:wrap" }, el("b", { text: "Kod polecający" }), el("span", { class: "muted", text: "(nieobowiązkowy)" })),
+      kodIn, kodMsg,
+      el("small", { class: "muted", text: "Masz kod od znajomego z roku? Wpisz go. Cena się nie zmienia." })) : null;
     pay.addEventListener("click", async () => {
       if (!(terms.checked && now.checked)) return;
       pay.disabled = true;
+      let kod = kodIn ? polecNorm(kodIn.value) : "";
+      if (kod) {
+        pay.textContent = "Sprawdzam kod…";
+        let r = null;
+        try { r = await polecRpc("nauka_polec_sprawdz", { p_kod: kod }); } catch (e) { r = e?.code === "no_sql" ? { ok: false, code: "off" } : { ok: false, code: "error" }; }
+        if (r?.code === "off") kod = "";
+        else if (!r?.ok) {
+          kodMsg.textContent = KOD_ERR[r?.code] || "Nie udało się sprawdzić kodu. Spróbuj za chwilę albo zostaw pole puste.";
+          kodMsg.hidden = false; kodIn.focus();
+          pay.textContent = `Przejdź do płatności (${cfg.price})`; sync();
+          return;
+        } else kod = r.kod || kod;
+      }
       pay.textContent = "Przechodzę do płatności…";
       await recordConsent(plan);
       const u = new URL(link);
-      u.searchParams.set("client_reference_id", skrot.uid);
+      u.searchParams.set("client_reference_id", kod ? `${skrot.uid}__${kod}` : skrot.uid);
       u.searchParams.set("prefilled_email", skrot.email);
       location.href = u.toString();
     });
@@ -767,6 +809,7 @@
         el("p", { class: "muted", style: "margin:0", text: plan === "rok" ? "Plan do końca 2. semestru, płatność jednorazowa." : "Plan miesięczny, odnawia się co miesiąc do anulowania." }),
         row(terms, "Znam i akceptuję ", el("a", { class: "link", href: "regulamin.html", target: "_blank", rel: "noopener" }, "Regulamin"), " oraz ", el("a", { class: "link", href: "prywatnosc.html", target: "_blank", rel: "noopener" }, "Politykę prywatności"), "."),
         row(now, CONSENT_NOW),
+        kodBox,
         el("p", { class: "foot-note", style: "margin:0", text: "Zaznaczenie zgody zapisujemy razem z datą i adresem e-mail konta." }),
         el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, pay, el("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"))));
     layer.append(scrim);
@@ -1101,6 +1144,78 @@
     const { data, error } = await sb.rpc("nauka_admin_konta");
     if (error) body.replaceChildren(el("p", { text: /function|does not exist|schema cache|Could not find/i.test(error.message || "") ? "Najpierw uruchom supabase/skrot-v8-urzadzenia.sql w Supabase." : "Nie udało się wczytać kont." }), el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
     else { all = data || []; draw(); }
+  };
+
+  // Panel starosty: kody polecające. Kto ma kod, ile komu się należy, wypłaty (supabase/skrot-v17-polecenia.sql).
+  // Wypłacasz ręcznie (BLIK / przelew na dane podane przez studenta), potem „Wypłacone” oznacza wszystko, co było do wypłaty.
+  skrot.openAdminReferrals = async () => {
+    if (!skrot.admin) return;
+    const layer = document.getElementById("layer") || document.body;
+    const body = el("div", { style: "display:grid;gap:12px" }, el("p", { class: "muted", text: "Wczytuję…" }));
+    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Kody polecające", style: "max-width:720px;max-height:88vh;overflow:auto" }, body));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+    const zl = (gr) => (Math.round(gr || 0) / 100).toFixed(0) + " zł";
+    const STAN = { czeka: "czeka 14 dni", do_wyplaty: "do wypłaty", wyplacone: "wypłacone", anulowane: "anulowane" };
+    let d = { osoby: [], polecenia: [] }, showAll = false;
+    const load = async () => {
+      const { data, error } = await sb.rpc("nauka_admin_polecenia");
+      if (error) { body.replaceChildren(el("p", { text: /function|does not exist|schema cache|Could not find/i.test(error.message || "") ? "Najpierw uruchom supabase/skrot-v17-polecenia.sql w Supabase → SQL Editor." : "Nie udało się wczytać kodów." }), el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))); return; }
+      d = data || d; draw();
+    };
+    const paid = async (o) => {
+      if (!confirm(`Oznaczyć jako wypłacone ${zl(o.do_wyplaty_gr)} dla ${o.email}? Zrób to dopiero po wysłaniu pieniędzy.`)) return;
+      const { data, error } = await sb.rpc("nauka_admin_polec_wyplac", { p_user: o.user_id });
+      if (error) return alert("Nie udało się: " + error.message);
+      alert(`Oznaczono jako wypłacone: ${zl(data?.wyplacone_gr)}.`); load();
+    };
+    const cancel = async (p) => {
+      const why = prompt(`Anulować nagrodę za zakup ${p.kupujacy}? Wpisz powód:`, "Podejrzane polecenie");
+      if (why == null) return;
+      const { error } = await sb.rpc("nauka_admin_polec_anuluj", { p_id: p.id, p_powod: why });
+      if (error) return alert("Nie udało się: " + error.message);
+      load();
+    };
+    const delCode = async (o) => {
+      if (!confirm(`Usunąć kod ${o.kod} (${o.email})? Dotychczasowe polecenia zostaną, nowe zakupy z tym kodem przestaną się liczyć.`)) return;
+      const { error } = await sb.rpc("nauka_admin_kod_usun", { p_user: o.user_id });
+      if (error) return alert("Nie udało się: " + error.message);
+      load();
+    };
+    const tile = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--accent-soft,#EAF5EE)" }, el("b", { style: "font-size:1.25rem", text: n }), el("small", { class: "muted", text: t }));
+    const person = (o) => el("div", { style: `display:grid;gap:6px;padding:12px 14px;border-radius:12px;background:var(--surface,#fff);border:${o.do_wyplaty_gr > 0 ? "2px solid var(--accent,#1A7F45)" : "1px solid var(--line,#BFCEC5)"}` },
+      el("div", { style: "display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" }, el("b", { translate: "no", text: o.kod }), el("span", { class: "muted", style: "overflow-wrap:anywhere", text: o.email })),
+      el("small", { text: `Polecone: ${o.polecone} · czeka: ${zl(o.czeka_gr)} · do wypłaty: ${zl(o.do_wyplaty_gr)} · wypłacone: ${zl(o.wyplacone_gr)}` }),
+      el("small", {}, "Dane do wypłaty: ", o.wyplata ? el("b", { style: "overflow-wrap:anywhere", text: o.wyplata }) : el("span", { class: "muted", text: "nie podano (poproś o numer do BLIK albo konto)" })),
+      el("div", { style: "display:flex;gap:6px;flex-wrap:wrap" },
+        o.do_wyplaty_gr > 0 ? el("button", { type: "button", class: "btn small primary", onclick: () => paid(o) }, `Wypłacone ${zl(o.do_wyplaty_gr)}`) : null,
+        el("button", { type: "button", class: "btn small ghost", onclick: () => delCode(o) }, "Usuń kod")));
+    const entry = (p) => el("div", { style: "display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--line,#BFCEC5)" },
+      el("small", { style: "overflow-wrap:anywhere" }, el("b", { translate: "no", text: p.kod }), ` · ${p.kupujacy} · ${plDate(p.kiedy)} · ${STAN[p.stan] || p.stan}${p.powod ? " · " + p.powod : ""}`),
+      p.stan === "czeka" || p.stan === "do_wyplaty" ? el("button", { type: "button", class: "btn small ghost", onclick: () => cancel(p) }, "Anuluj") : null);
+    function draw() {
+      const os = d.osoby || [], ps = d.polecenia || [];
+      const sum = (k) => os.reduce((a, o) => a + (o[k] || 0), 0);
+      const pay = os.filter((o) => o.do_wyplaty_gr > 0);
+      const shown = showAll ? os : os.filter((o) => o.polecone > 0);
+      body.replaceChildren(
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Kody polecające" }),
+        el("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "30 zł za każdy zakup planu 199 zł z kodem. Nagroda czeka 14 dni (na wypadek zwrotu), potem jest do wypłaty. Wyślij pieniądze BLIK-iem albo przelewem i kliknij „Wypłacone”." }),
+        el("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px" },
+          tile(String(os.length), "kodów"), tile(String(ps.filter((p) => p.stan !== "anulowane").length), "poleconych zakupów"),
+          tile(zl(sum("do_wyplaty_gr")), "do wypłaty teraz"), tile(zl(sum("czeka_gr")), "czeka 14 dni"), tile(zl(sum("wyplacone_gr")), "wypłacone")),
+        pay.length ? el("h3", { style: "margin:4px 0 0", text: `Do wypłaty (${pay.length})` }) : el("p", { style: "margin:0", text: "Teraz nikomu nic się nie należy." }),
+        ...pay.map(person),
+        el("h3", { style: "margin:4px 0 0", text: "Wszyscy z kodem" }),
+        os.length ? el("label", { style: "display:flex;gap:8px;align-items:center" }, el("input", { type: "checkbox", checked: showAll ? "" : null, onchange: (e) => { showAll = e.target.checked; draw(); } }), `Pokaż też kody bez poleceń (${os.filter((o) => !o.polecone).length})`) : el("p", { class: "muted", style: "margin:0", text: "Nikt jeszcze nie założył kodu." }),
+        ...shown.filter((o) => !(o.do_wyplaty_gr > 0)).map(person),
+        ps.length ? el("details", {}, el("summary", { style: "cursor:pointer;font-weight:700", text: `Wszystkie polecenia (${ps.length})` }), ...ps.map(entry)) : null,
+        el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
+    }
+    load();
   };
 
   // Panel starosty: kto jest teraz na stronie, kto kiedy się logował i kiedy był (supabase/skrot-v11-aktywnosc.sql).
