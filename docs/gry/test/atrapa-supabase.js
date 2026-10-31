@@ -1,6 +1,7 @@
 // Atrapa supabase-js do testów gier i rankingu (Playwright). Podmienia window.supabase.createClient:
 // sesja, tabela nauka_docs w pamięci i funkcje RPC (v13 i v15) bez sieci. Nigdy nie trafia na stronę.
 // Ustawienia przez localStorage przed załadowaniem strony:
+//   mock-docs  = JSON { kolekcja: { id: dane } } dokładany do bazy w pamięci
 //   mock-konto = "platne" | "darmowe" | "starosta" | "brak" (niezalogowany)
 //   mock-v13   = "1" (SQL v13 uruchomiony) | "0" (funkcji nie ma → PGRST202)
 //   mock-v15   = "1" (SQL v15 uruchomiony, domyślnie) | "0" (funkcji v15 nie ma → not_enabled); bez v13 nie ma też v15
@@ -38,6 +39,8 @@
     myMaterials: { my1: { subjectId: "makroekonomia", title: "Moje notatki", createdAt: now - 1e6, created_by: UID } },
     myContent: { my1: { v: 2, summary: "Moje.", quiz: quiz(5, "Moje"), flashcards: cards(3, "Moje") } },
   };
+  // mock-docs = JSON { kolekcja: { id: dane } }: dodatkowe dokumenty (np. materiały do testu „Dorób pytania”)
+  try { const x = JSON.parse(ls("mock-docs", "null")); if (x) for (const [k, v] of Object.entries(x)) Object.assign((DOCS[k] ||= {}), v); } catch {}
   if (ls("mock-pf", "") === "1") DOCS.materialContent.m2.quiz.forEach((q, i) => { q.options = ["Prawda", "Fałsz"]; q.correct = i % 2; });
   // postęp przeżywa przeładowanie strony (jak w prawdziwej bazie)
   try { DOCS.progress = JSON.parse(localStorage.getItem("mock-progress") || "{}"); } catch {}

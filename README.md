@@ -207,6 +207,17 @@ Powstają przy wgrywaniu materiału, a brakujące uzupełnia starosta w **Panelu
 - **Uzupełnij brakujące** – przez funkcję `claude` na serwerze,
 - **Pobierz paczkę / Wgraj gotowe wyjaśnienia** – bez serwera: paczkę JSON wrzucasz do czatu z Claude, a plik wynikowy wgrywasz z powrotem.
 
+## Dorób pytania (+10)
+Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z zaznaczonych przedmiotów (domyślnie Analiza matematyczna, Ekonomia biznesu, Podstawy zarządzania, Zarządzanie zasobami ludzkimi) dostaje 10 nowych pytań quizu, więc z 10 robi się 20, oraz „Dlaczego?” do nich. Panel pokazuje, ile materiałów i pytań zostanie dorobionych, ma pasek postępu i „Zatrzymaj po bieżącym”; ponowny Start pomija materiały, które już mają 20 pytań (`materials.quizPlus = { base, why }` pamięta, ile było przed dorobieniem i czy „Dlaczego?” jest gotowe).
+- AI dostaje tylko nasze opracowanie (`materialContent`: tematy, pojęcia, „o co chodzi / po co / co zapamiętać”) i listę istniejących pytań z prośbą, żeby ich nie powtarzać ani nie przeformułowywać. Tekstu slajdów nigdy.
+- Nowe pytania: ten sam format (`q`, `options`, `correct`, `explanation`, `slide`/`slides`, gdy materiał ich używa, `ep`, gdy stare pytania mają kody efektów), 4 opcje albo prawda/fałsz (najwyżej 3 na materiał), po wszystkich tematach, więcej „zastosuj / co się stanie, gdy / który przykład pasuje” niż definicji; w Analizie część z krótkim liczeniem (dystraktory = typowe błędy).
+- Kontrola podobieństwa: to samo porównanie ciągów 7 słów co przy slajdach (`overlapCheck`), tu między pytaniami, plus porównanie słów dla krótkich pytań i przeformułowań (`mqTooSimilar`). Odrzucone pytania AI dorabia jeszcze najwyżej 2 razy.
+- `quizWhy/<id>` dostaje wpisy pod nowymi indeksami (10–19); stare wpisy zostają bez zmian. `quizCount` w `materials/<id>` jest aktualizowany (quiz z przedmiotu, próg gier `GRY_MIN_Q`). „Moje materiały” i inne przedmioty nie są ruszane.
+
+**Zasada: pytania quizu tylko dopisujemy na koniec tablicy `quiz`.** Nigdy nie zmieniamy kolejności ani treści starych pytań i ich nie usuwamy: indeks pytania (`mid` + `idx`) jest w `nauka_odp`, `quizWhy`, `bm-gry-zle`, `bm-q-seen` i w punktach rankingu, więc przesunięcie zepsułoby postęp i ranking.
+
+**Najpierw niewidziane.** Quiz z całego przedmiotu (`subjectQuizQs`) i gry (`gryQuestions`) zamiast czystego losowania dają najpierw pytania, których ta osoba jeszcze nie widziała, potem widziane najdawniej. Widziane = odpowiedź w quizie albo w grze, zapisane w `localStorage["bm-q-seen"]` = `{ "mid:idx": dzień }` (max 2000 wpisów, najstarsze wypadają; `qSeen`, `qFreshFirst`). Kolejność w grach: pomylone → niewidziane z zakresu najbliższego zaliczenia → niewidziane reszta → widziane od najdawniej. Bez zmian w SQL i w punktach. Test: `docs/gry/test/pytania-plus.mjs`.
+
 ## Kalendarz w telefonie (jednorazowo)
 1. Supabase → SQL Editor: wklej `supabase/skrot-kalendarz.sql` → Run.
 2. W terminalu, w folderze tego repozytorium:
