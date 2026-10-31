@@ -8,7 +8,11 @@
 //     Po anulowaniu w portalu klienta nowe faktury nie przychodzą, więc dostęp sam wygasa po opłaconym miesiącu.
 // Wymaga sekretu STRIPE_WEBHOOK_SECRET (Supabase → Edge Functions → Secrets).
 // Przy wdrażaniu wyłącz „Verify JWT” — Stripe nie wysyła tokenu Supabase.
-// Zdarzenia w Stripe: checkout.session.completed, checkout.session.async_payment_succeeded, invoice.paid.
+// Zdarzenia w Stripe: checkout.session.completed, checkout.session.async_payment_succeeded, invoice.paid,
+// a od kodów polecających (supabase/skrot-v17-polecenia.sql) także charge.refunded i charge.dispute.created.
+// Kod polecający: strona dokleja go do client_reference_id jako „<id konta>__KOD”. Po opłaceniu planu 199 zł
+// zapisujemy polecenie (nauka_polec_zapisz); zwrot całej kwoty albo spór anuluje niewypłaconą nagrodę (nauka_polec_cofnij).
+// Błąd przy kodzie nigdy nie blokuje wpisania dostępu.
 import Stripe from "npm:stripe@16.12.0";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -69,6 +73,18 @@ Deno.serve(async (req) => {
 
   const db = createClient(Deno.env.get("SUPABASE_URL")!, serverKey());
 
+  // ---------- zwrot albo spór: nagroda za polecenie przepada (jeśli jeszcze niewypłacona) ----------
+  if (event.type === "charge.refunded" || event.type === "charge.dispute.created") {
+    // deno-lint-ignore no-explicit-any
+    const o = event.data.object as any;
+    if (event.type === "charge.refunded" && !o.refunded) return json(200, { ignored: "częściowy zwrot" });
+    const pi = typeof o.payment_intent === "string" ? o.payment_intent : o.payment_intent?.id ?? null;
+    if (!pi) return json(200, { ignored: "brak payment_intent" });
+    const { data, error } = await db.rpc("nauka_polec_cofnij", { p_payment: pi, p_powod: event.type === "charge.refunded" ? "Zwrot w Stripe" : "Spór (chargeback) w Stripe" });
+    if (error) return json(500, { error: error.message });
+    return json(200, { ok: true, polecenie: data });
+  }
+
   // ---------- kolejny opłacony miesiąc subskrypcji ----------
   if (event.type === "invoice.paid") {
     // deno-lint-ignore no-explicit-any
@@ -103,16 +119,33 @@ Deno.serve(async (req) => {
   // Ten sam e-mail co przy logowaniu na stronie (client_reference_id = id konta), a gdy go brak — e-mail z płatności.
   let userId: string | null = null;
   let email = (s.customer_details?.email || s.customer_email || "").toLowerCase();
-  const ref = s.client_reference_id || "";
+  const [ref = "", refKod = ""] = (s.client_reference_id || "").split("__");
   if (/^[0-9a-f-]{36}$/i.test(ref)) {
     const { data } = await db.auth.admin.getUserById(ref);
     if (data?.user) { userId = data.user.id; email = (data.user.email || email).toLowerCase(); }
   }
   if (!email) return json(200, { error: "Brak e-maila w płatności.", session: s.id });
 
+  // Kod polecający (tylko plan jednorazowy): zapis nagrody dla właściciela kodu. Baza sprawdza kod, kwotę, samopolecenie
+  // i jest idempotentna po id sesji, więc wołamy ją także przy ponowionym webhooku (wtedy odzyskuje zgubione polecenie).
+  // Kwota zawsze w PLN: przy przeliczeniu waluty (Adaptive Pricing) bierzemy kwotę w walucie źródłowej.
+  const polec = async () => {
+    if (s.mode !== "payment" || !/^[A-Z0-9]{4,16}$/i.test(refKod)) return null;
+    // deno-lint-ignore no-explicit-any
+    const cc = (s as any).currency_conversion;
+    const pln = cc?.source_currency === "pln" ? cc.amount_total : s.currency === "pln" ? s.amount_total : 0;
+    const pi = typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id ?? null;
+    const { data, error: pe } = await db.rpc("nauka_polec_zapisz", { p_kod: refKod, p_sesja: s.id, p_email: email, p_uid: userId, p_kwota_gr: pln ?? 0, p_payment: pi });
+    // Brak funkcji (v17 jeszcze nie w bazie) nie blokuje; prawdziwy błąd bazy = 500, żeby Stripe ponowił.
+    if (pe && !/function|does not exist|schema cache|Could not find/i.test(pe.message || "")) throw new Error(pe.message);
+    return pe ? { error: pe.message } : data;
+  };
+
   // Ta sama płatność drugi raz (Stripe ponawia webhooki) nie przedłuża dostępu.
   const { data: dup } = await db.from("nauka_dostep").select("email").eq("stripe_session", s.id).maybeSingle();
-  if (dup) return json(200, { duplicate: s.id });
+  if (dup) {
+    try { return json(200, { duplicate: s.id, polecenie: await polec() }); } catch (e) { return json(500, { error: String((e as Error).message) }); }
+  }
 
   const { data: cur } = await db.from("nauka_dostep").select("do_kiedy").eq("email", email).maybeSingle();
   const today = todayUTC();
@@ -136,5 +169,8 @@ Deno.serve(async (req) => {
     email, do_kiedy: doKiedy, zrodlo: "stripe", user_id: userId, stripe_session: s.id, plan: "rok", kwota_gr: s.amount_total ?? null,
   }, { onConflict: "email" });
   if (error) return json(500, { error: error.message });
-  return json(200, { ok: true, email, do_kiedy: doKiedy, plan: "rok" });
+
+  let polecenie: unknown = null;
+  try { polecenie = await polec(); } catch (e) { return json(500, { error: String((e as Error).message) }); }
+  return json(200, { ok: true, email, do_kiedy: doKiedy, plan: "rok", polecenie });
 });
