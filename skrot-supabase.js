@@ -790,6 +790,7 @@
         try { r = await polecRpc("nauka_polec_sprawdz", { p_kod: kod }); } catch (e) { r = e?.code === "no_sql" ? { ok: false, code: "off" } : { ok: false, code: "error" }; }
         if (r?.code === "off") kod = "";
         else if (!r?.ok) {
+          if (["brak", "nieaktywny"].includes(r?.code) && kod === skrot.polecZapamietany()) ls.set(POLEC_LS, null);
           kodMsg.textContent = KOD_ERR[r?.code] || "Nie udało się sprawdzić kodu. Spróbuj za chwilę albo zostaw pole puste.";
           kodMsg.hidden = false; kodIn.focus();
           pay.textContent = `Przejdź do płatności (${cfg.price})`; sync();

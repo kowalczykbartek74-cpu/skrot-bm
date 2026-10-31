@@ -5,7 +5,7 @@
 -- „skrotbm-supabase” zdarzenia charge.refunded i charge.dispute.created (zwrot albo spór anuluje nagrodę).
 --
 -- Zasady:
---   • Kod może założyć tylko osoba z OPŁACONYM dostępem (sam okres próbny nie wystarcza) albo starosta.
+--   • Kod może założyć tylko osoba z dostępem OPŁACONYM przez Stripe (sam okres próbny ani dostęp dany ręcznie nie wystarcza) albo starosta.
 --   • Kupujący wpisuje kod w oknie „Zanim zapłacisz” (albo przychodzi z linku skrotbm.pl/?kod=KOD). Strona dokleja go
 --     do client_reference_id w linku Stripe („<id konta>__KOD”), a webhook po opłaceniu woła nauka_polec_zapisz.
 --   • Liczy się tylko jednorazowy plan 199 zł (tryb „payment”, kwota ≥ min_kwota_gr). Plan miesięczny nie.
@@ -66,12 +66,12 @@ revoke all on public.nauka_polecenia from anon, authenticated;
 -- =====================================================================
 -- 3) Pomocnicze
 -- =====================================================================
--- Czy ta osoba może mieć kod: starosta albo opłacony dostęp (bez samego okresu próbnego).
+-- Czy ta osoba może mieć kod: starosta albo dostęp opłacony przez Stripe (bez okresu próbnego i dostępu dawanego ręcznie).
 create or replace function public.nauka_polec_mozna() returns boolean
 language sql stable security definer set search_path = '' as $$
   select public.nauka_admin()
       or exists (select 1 from public.nauka_dostep d
-                 where d.do_kiedy >= current_date
+                 where d.do_kiedy >= current_date and d.zrodlo like 'stripe%'
                    and (d.email = public.nauka_email() or d.user_id = auth.uid()))
 $$;
 
@@ -80,7 +80,7 @@ create or replace function public.nauka_polec_mozna_uid(p_user uuid, p_email tex
 language sql stable security definer set search_path = '' as $$
   select exists (select 1 from public.nauka_admini a where a.email = p_email)
       or exists (select 1 from public.nauka_dostep d
-                 where d.do_kiedy >= current_date and (d.user_id = p_user or d.email = p_email))
+                 where d.do_kiedy >= current_date and d.zrodlo like 'stripe%' and (d.user_id = p_user or d.email = p_email))
 $$;
 
 -- Stan polecenia do pokazania: czeka | do_wyplaty | wyplacone | anulowane.
@@ -255,7 +255,7 @@ begin
     'polecenia', coalesce((select jsonb_agg(jsonb_build_object(
         'id', p.id, 'kod', p.kod, 'polecajacy', p.polecajacy, 'kupujacy', p.kupujacy_email,
         'kwota_gr', p.kwota_gr, 'nagroda_gr', p.nagroda_gr, 'stan', public.nauka_polec_stan(p), 'powod', p.powod,
-        'kiedy', p.created_at, 'wyplacone_at', p.wyplacone_at) order by p.created_at desc)
+        'kiedy', (p.created_at at time zone 'Europe/Warsaw')::date, 'wyplacone_at', (p.wyplacone_at at time zone 'Europe/Warsaw')::date) order by p.created_at desc)
       from public.nauka_polecenia p), '[]'::jsonb)
   );
 end $$;

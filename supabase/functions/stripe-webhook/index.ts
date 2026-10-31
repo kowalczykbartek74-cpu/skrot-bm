@@ -126,9 +126,26 @@ Deno.serve(async (req) => {
   }
   if (!email) return json(200, { error: "Brak e-maila w płatności.", session: s.id });
 
+  // Kod polecający (tylko plan jednorazowy): zapis nagrody dla właściciela kodu. Baza sprawdza kod, kwotę, samopolecenie
+  // i jest idempotentna po id sesji, więc wołamy ją także przy ponowionym webhooku (wtedy odzyskuje zgubione polecenie).
+  // Kwota zawsze w PLN: przy przeliczeniu waluty (Adaptive Pricing) bierzemy kwotę w walucie źródłowej.
+  const polec = async () => {
+    if (s.mode !== "payment" || !/^[A-Z0-9]{4,16}$/i.test(refKod)) return null;
+    // deno-lint-ignore no-explicit-any
+    const cc = (s as any).currency_conversion;
+    const pln = cc?.source_currency === "pln" ? cc.amount_total : s.currency === "pln" ? s.amount_total : 0;
+    const pi = typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id ?? null;
+    const { data, error: pe } = await db.rpc("nauka_polec_zapisz", { p_kod: refKod, p_sesja: s.id, p_email: email, p_uid: userId, p_kwota_gr: pln ?? 0, p_payment: pi });
+    // Brak funkcji (v17 jeszcze nie w bazie) nie blokuje; prawdziwy błąd bazy = 500, żeby Stripe ponowił.
+    if (pe && !/function|does not exist|schema cache|Could not find/i.test(pe.message || "")) throw new Error(pe.message);
+    return pe ? { error: pe.message } : data;
+  };
+
   // Ta sama płatność drugi raz (Stripe ponawia webhooki) nie przedłuża dostępu.
   const { data: dup } = await db.from("nauka_dostep").select("email").eq("stripe_session", s.id).maybeSingle();
-  if (dup) return json(200, { duplicate: s.id });
+  if (dup) {
+    try { return json(200, { duplicate: s.id, polecenie: await polec() }); } catch (e) { return json(500, { error: String((e as Error).message) }); }
+  }
 
   const { data: cur } = await db.from("nauka_dostep").select("do_kiedy").eq("email", email).maybeSingle();
   const today = todayUTC();
@@ -153,12 +170,7 @@ Deno.serve(async (req) => {
   }, { onConflict: "email" });
   if (error) return json(500, { error: error.message });
 
-  // Kod polecający (tylko plan jednorazowy): zapis nagrody dla właściciela kodu. Baza sprawdza kod, kwotę i samopolecenie.
   let polecenie: unknown = null;
-  if (/^[A-Z0-9]{4,16}$/i.test(refKod)) {
-    const pi = typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id ?? null;
-    const { data, error: pe } = await db.rpc("nauka_polec_zapisz", { p_kod: refKod, p_sesja: s.id, p_email: email, p_uid: userId, p_kwota_gr: s.amount_total ?? 0, p_payment: pi });
-    polecenie = pe ? { error: pe.message } : data;
-  }
+  try { polecenie = await polec(); } catch (e) { return json(500, { error: String((e as Error).message) }); }
   return json(200, { ok: true, email, do_kiedy: doKiedy, plan: "rok", polecenie });
 });

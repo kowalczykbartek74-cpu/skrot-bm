@@ -17,6 +17,9 @@ do $$ begin
   perform test.chk('K1a bez dostępu: brak_dostepu', public.nauka_polec_ustaw('KUPIEC')->>'code' = 'brak_dostepu', null);
   perform test.chk('K1b bez dostępu: mozna = false', not (public.nauka_polec_moj()->>'mozna')::boolean, public.nauka_polec_moj());
 end $$;
+reset role; insert into public.nauka_dostep (email, do_kiedy, zrodlo) values ('kup3@x.pl', current_date + 30, 'reczny');
+select test.jako('kup3@x.pl'); set role authenticated;
+do $$ begin perform test.chk('K1d dostęp dany ręcznie nie wystarcza', public.nauka_polec_ustaw('RECZNY')->>'code' = 'brak_dostepu', null); end $$;
 reset role; select test.jako('proba@x.pl'); set role authenticated;
 do $$ begin
   perform test.chk('K1c sama próba nie wystarcza', public.nauka_polec_ustaw('PROBA1')->>'code' = 'brak_dostepu', null);
