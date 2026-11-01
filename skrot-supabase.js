@@ -1253,7 +1253,7 @@
 
     let d = null, tab = "teraz", q = "", loadedAt = null, mon = null;
     // Monety (supabase/skrot-v14-monety.sql): dziś / tydzień / saldo na osobę, ręczne dodanie / odjęcie i motyw w prezencie.
-    const KATALOG = [["motyw:pink", "Jednorożec"], ["motyw:bow", "Kokardka"], ["motyw:meadow", "Łąka"], ["motyw:lilia", "Nenufary"], ["motyw:sea", "Nocny rejs"]];
+    const KATALOG = [["motyw:pink", "Jednorożec"], ["motyw:bow", "Kokardka"], ["motyw:meadow", "Łąka"], ["motyw:lilia", "Nenufary"], ["motyw:sea", "Nocny rejs"], ["motyw:noc", "Nokturn"]];
     const loadMon = async () => {
       const { data, error } = await sb.rpc("nauka_admin_monety_stat");
       mon = error ? { ok: false, noSql: /function|does not exist|schema cache|Could not find/i.test(error.message || "") } : data || { ok: false };
