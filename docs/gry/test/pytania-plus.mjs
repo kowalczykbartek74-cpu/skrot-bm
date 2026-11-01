@@ -61,7 +61,10 @@ await p.goto(BASE + "index.html#/ai"); await p.waitForTimeout(2500);
 const sec = p.locator("section.panel", { has: p.locator("h2", { hasText: "Dorób pytania (+10)" }) });
 ok("sekcja „Dorób pytania (+10)” w Panelu AI", await sec.count() === 1, await p.locator("main").innerText().catch(() => ""));
 const boxes = await sec.locator("label").allInnerTexts();
-ok("domyślnie zaznaczone 4 przedmioty", (await sec.locator("input[type=checkbox]:checked").count()) === 4, boxes);
+ok("domyślnie zaznaczone wszystkie przedmioty z materiałami (6)", (await sec.locator("input[type=checkbox]").count()) === 6 && (await sec.locator("input[type=checkbox]:checked").count()) === 6, boxes);
+ok("podgląd przy wszystkich: 6 materiałów (z makro i prawem)", (await sec.locator(".chip").allInnerTexts()).some((c) => /do dorobienia: 6/.test(c)), await sec.locator(".chip").allInnerTexts());
+// test odznaczania: Makroekonomia i Prawo zostają nietknięte
+for (const n of ["Makroekonomia", "Prawo"]) { await sec.locator("label", { hasText: n }).locator("input").uncheck(); await p.waitForTimeout(150); }
 const chips = await sec.locator(".chip").allInnerTexts();
 ok("podgląd: 3 materiały, ok. 30 pytań (pełny pominięty)", chips.some((c) => /do dorobienia: 3/.test(c)) && chips.some((c) => /ok\. 30/.test(c)), chips);
 await shot(p, "pp-panel-przed");

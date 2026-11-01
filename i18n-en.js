@@ -2661,6 +2661,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "{0} {1}, wspólne ze slajdami {2}%{3}": "{0} {1}, shared with slides {2}%{3}",
 "za dużo wspólnych fragmentów ze slajdami ({0}%), stara wersja została; spróbuj jeszcze raz": "too many fragments shared with the slides ({0}%), the old version stayed; try again",
 "Dorób pytania (+10)": "Add questions (+10)",
+"Odznacz wszystkie": "Deselect all",
+"Zaznacz wszystkie": "Select all",
 "Każdy materiał wybranych przedmiotów dostaje 10 nowych, trudniejszych pytań quizu (z 10 robi się 20) i „Dlaczego?” do nich. AI widzi tylko nasze opracowanie i istniejące pytania, nie slajdy. Nowe pytania są dopisywane na koniec, więc postęp, punkty i ranking się nie zmieniają. Możesz przerwać i wrócić: gotowe materiały są pomijane.": "Every material of the selected subjects gets 10 new, harder quiz questions (10 becomes 20) and “Why?” explanations for them. The AI only sees our own notes and the existing questions, never the slides. New questions are added at the end, so progress, points and the ranking stay as they are. You can stop and come back: finished materials are skipped.",
 "materiały do dorobienia: {0}": "materials to extend: {0}",
 "nowe pytania: ok. {0}": "new questions: approx. {0}",

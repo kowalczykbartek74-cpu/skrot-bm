@@ -11068,13 +11068,12 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
         h("span", { class: "muted", style: "font-size:.86rem", text: "ok. 1–2 minuty na materiał" })) : null,
       MIG.log.length ? h("ul", { class: "pipeline" }, MIG.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null);
   }
-  // ---- Dorób pytania (+10): drugie 10 pytań quizu do każdego materiału roku z wybranych przedmiotów.
+  // ---- Dorób pytania (+10): drugie 10 pytań quizu do każdego materiału roku z wybranych przedmiotów (domyślnie wszystkich).
   // AI dostaje tylko nasze opracowanie (tematy, pojęcia) i listę istniejących pytań, nigdy tekstu slajdów.
   // Pytania tylko DOPISUJEMY na koniec content.quiz: indeksy (mid + idx) są w nauka_odp, quizWhy, bm-gry-zle, bm-q-seen
   // i w punktach, więc stare pytania nie zmieniają ani miejsca, ani treści. materials.quizPlus = { base, why } pamięta,
   // ile pytań było przed dorobieniem i czy „Dlaczego?” do nowych jest gotowe; dzięki temu wznowienie niczego nie dubluje.
   const MQ_ADD = 10, MQ_TARGET = 20, MQ_TF_MAX = 3;
-  const MQ_DEF = ["analiza-matematyczna", "ekonomia-biznesu", "podstawy-zarzadzania", "zarzadzanie-zasobami-ludzkimi"];
   const MQ = { busy: false, stop: false, log: [], sids: null, done: 0, total: 0 };
   // Ile nowych pytań brakuje materiałowi: bez quizPlus pomijamy materiały bez quizu i te, które mają już ≥ 20 pytań
   // (brak quizCount sprawdzamy dopiero w treści). Materiał z pytaniami, ale bez „Dlaczego?” do nowych, też jest do zrobienia.
@@ -11102,7 +11101,8 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     });
   }
   function mqPrompt(m, c, need, tfLeft, cap, have) {
-    const math = m.subjectId === "analiza-matematyczna";
+    // Liczenie: Analiza matematyczna i każdy materiał z rozwiązanymi zadaniami (wzory, procenty, koszty itp.).
+    const math = m.subjectId === "analiza-matematyczna" || (m.workedCount || 0) > 0 || !!c.worked?.length;
     const useEp = (c.quiz || []).some((q) => Array.isArray(q.ep) && q.ep.length) && sylOf(m.subjectId)?.out.length;
     const tf = (c.quiz || []).find((q) => (q.options || []).length === 2)?.options || ["True", "False"];
     return `Based ONLY on the study material below, write ${need} NEW quiz questions for first-year Business Management students at the University of Szczecin. Subject: ${genSubj(m)}. Students who practise a lot already know the EXISTING QUESTIONS by heart, so the new ones must test the material in new ways and be a bit harder.
@@ -11113,7 +11113,7 @@ Rules:
 - 4 options, exactly one correct; "correct" is its 0-based index; vary its position; distractors are plausible typical mistakes but clearly wrong.${tfLeft ? ` Up to ${tfLeft} questions may instead be statements with exactly 2 options ${JSON.stringify(tf)}.` : " No true/false questions."}
 - Same language, style and length as the EXISTING QUESTIONS; "explanation" = why the answer is right, plain words, 1-2 sentences.
 - Do not repeat the existing questions or their rephrasings, and do not test the same fact in the same way.${math ? `
-- About half of the questions need a short calculation (1-3 steps, simple numbers): the correct result is one of the options and the other options are results of typical mistakes (wrong sign, forgotten chain rule, wrong order of operations, wrong limit). Write maths as LaTeX inside \\\\( ... \\\\) (inline only).` : ""}${useEp ? bankEps(m.subjectId).replace("Tag every open question, task and case question", "Tag every question") : ""}
+- ${m.subjectId === "analiza-matematyczna" ? "About half of the questions" : "Where the material has formulas or numbers, 2-4 questions"} need a short calculation (1-3 steps, simple numbers): the correct result is one of the options and the other options are results of typical mistakes (wrong sign, forgotten chain rule, wrong order of operations, wrong limit). Write maths as LaTeX inside \\\\( ... \\\\) (inline only).` : ""}${useEp ? bankEps(m.subjectId).replace("Tag every open question, task and case question", "Tag every question") : ""}
 Reply with only one JSON object: {"quiz": [{"q": "question", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "…", "i": 0${useEp ? ', "ep": ["…"]' : ""}}]}
 EXISTING QUESTIONS (do not repeat these questions or their rephrasings):
 ${JSON.stringify(have.map((q) => ({ q: q.q, answer: q.options?.[q.correct] }))).slice(0, 30000)}
@@ -11128,7 +11128,6 @@ ${mqStudy(c)}`;
     const fresh = [], perTopic = {}; let rejected = 0;
     const cap = Math.max(2, Math.ceil(MQ_ADD / nT) + 1);
     for (let t = 0; t < 3 && c.quiz.length + fresh.length < goal; t++) {
-      if (MQ.stop && t) break;
       const need = goal - c.quiz.length - fresh.length, tfLeft = MQ_TF_MAX - fresh.filter((q) => q.options.length === 2).length;
       const r = await S.sample.json(mqPrompt(m, c, need + (t ? 1 : 2), Math.max(0, tfLeft), cap, [...c.quiz, ...fresh]), { modelTier: "default" });
       for (const x of Array.isArray(r?.quiz) ? r.quiz : []) {
@@ -11207,8 +11206,9 @@ ${mqStudy(c)}`;
     MQ.busy = false; render();
   }
   function moreQSection() {
-    if (!MQ.sids) MQ.sids = new Set(MQ_DEF.filter((id) => subjectById(id)));
     const subs = SUBJECTS.filter((s) => S.materials.some((m) => m.subjectId === s.id && !isMine(m) && (m.quizCount ?? 1) > 0));
+    if (!MQ.sids) MQ.sids = new Set(subs.map((s) => s.id));
+    const all = subs.every((s) => MQ.sids.has(s.id));
     const plan = mqPlan(MQ.sids), newQ = plan.reduce((a, m) => a + mqNewQ(m), 0);
     const toggle = (id, on) => { if (on) MQ.sids.add(id); else MQ.sids.delete(id); render(); };
     return h("section", { class: "panel" },
@@ -11216,7 +11216,8 @@ ${mqStudy(c)}`;
       h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "Każdy materiał wybranych przedmiotów dostaje 10 nowych, trudniejszych pytań quizu (z 10 robi się 20) i „Dlaczego?” do nich. AI widzi tylko nasze opracowanie i istniejące pytania, nie slajdy. Nowe pytania są dopisywane na koniec, więc postęp, punkty i ranking się nie zmieniają. Możesz przerwać i wrócić: gotowe materiały są pomijane." }),
       h("div", { class: "row", style: "flex-wrap:wrap;gap:6px 16px" }, subs.map((s) => h("label", { class: "row", style: "gap:6px;font-size:.92rem" },
         h("input", { type: "checkbox", style: "accent-color:var(--accent)", checked: MQ.sids.has(s.id) ? true : null, disabled: MQ.busy ? true : null, onchange: (e) => toggle(s.id, e.target.checked) }),
-        h("span", { text: `${s.pl} (${mqPlan(new Set([s.id])).length})` })))),
+        h("span", { text: `${s.pl} (${mqPlan(new Set([s.id])).length})` }))),
+        subs.length > 1 ? h("button", { type: "button", class: "link", disabled: MQ.busy ? true : null, onclick: () => { MQ.sids = new Set(all ? [] : subs.map((s) => s.id)); render(); } }, all ? "Odznacz wszystkie" : "Zaznacz wszystkie") : null),
       h("div", { class: "row" },
         h("span", { class: "chip " + (plan.length ? "sun" : "good"), text: `materiały do dorobienia: ${plan.length}` }),
         newQ ? h("span", { class: "chip", text: `nowe pytania: ok. ${newQ}` }) : null),
