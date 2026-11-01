@@ -3795,6 +3795,11 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wyjaśnienia Stasia": "Stan's explanations",
 "AI pisze raz wyjaśnienie tematu z 3 ukrytymi błędami. Studenci widzą tylko gotowe tematy.": "The AI writes an explanation of the topic once, with 3 hidden mistakes. Students only see ready topics.",
 "Postęp wyjaśnień Stasia": "Progress of Stan's explanations",
+"Szef kazał mi wytłumaczyć temat z przedmiotu": "The boss told me to explain a topic from",
+". Zrobiłem {0} {1}. Znajdziesz je?": ". I made {0} {1}. Can you find them?",
+"Popraw Stasia →": "Correct Stan →",
+"Inne tematy ({0})": "Other topics ({0})",
+"ok. 3 min": "about 3 min",
 "Kim jest Stażysta Staś?": "Who is Intern Stan?",
 "To nowy stażysta, który tłumaczy temat z sylabusa, ale robi 2–3 błędy. Wejdź w Więcej → Stażysta Staś (albo w przedmiot → 🤓 Popraw Stasia), kliknij zdania, które są złe, sprawdź i wybierz poprawkę. Za każdy znaleziony błąd i każdą dobrą poprawkę dostajesz punkt.": "He's a new intern who explains a syllabus topic but makes 2–3 mistakes. Go to More → Intern Stan (or a subject → 🤓 Correct Stan), click the sentences that are wrong, check and pick the correction. You get a point for every mistake you find and every right correction."
 },

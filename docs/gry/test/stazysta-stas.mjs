@@ -36,6 +36,12 @@ ok("zapis: meta/stas + treści, n = 3", Object.keys(docs).length === ile + 1 && 
 // ---- student
 const meta = {}; for (const [k, v] of Object.entries(docs)) meta[k.slice(5)] = v;
 const p = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify({ meta }) } });
+await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
+const kart = p.locator(".stas-card");
+ok("Dziś: karta Stasia", (await kart.count()) === 1 && /Analiza matematyczna/.test(await kart.innerText()) && /Zrobiłem 3 błędy/.test(await kart.innerText()), await p.locator("main").innerText());
+await shot(p, "stas-dzis");
+await kart.getByRole("button", { name: "Popraw Stasia →" }).click(); await p.waitForTimeout(1000);
+ok("karta otwiera ćwiczenie", /#\/stasx\//.test(p.url()) && (await p.locator(".stas-s[role=button]").count()) === 10, p.url());
 await p.goto(BASE + "index.html#/more"); await p.waitForTimeout(2000);
 ok("Więcej: wpis Stażysta Staś", (await p.getByText("Stażysta Staś").count()) >= 1, "");
 await p.getByText("Stażysta Staś").first().click(); await p.waitForTimeout(800);
@@ -75,6 +81,8 @@ ok("perfekcyjnie: 6/6, Staś 😎", /Wynik: 6\/6/.test(await p.locator(".stas-su
 await p.getByRole("button", { name: "Gotowe ✓" }).click(); await p.waitForTimeout(600);
 ok("po Gotowe: lista tematów z 6/6 pkt", /#\/stas\/analiza-matematyczna/.test(p.url()) && (await p.locator(".po-row .chip", { hasText: "6/6 pkt" }).count()) === 1, p.url());
 ok("zapis bm-stas-done", await p.evaluate(() => Object.values(JSON.parse(localStorage.getItem("bm-stas-done"))).some((r) => r.f === 3 && r.x === 3 && r.n === 3)), "");
+await p.goto(BASE + "index.html#/"); await p.waitForTimeout(1500);
+ok("Dziś: po poprawieniu karta znika", (await p.locator(".stas-card").count()) === 0, "");
 await p.goto(BASE + "index.html#/subject/analiza-matematyczna"); await p.waitForTimeout(1500);
 ok("przedmiot: przycisk 🤓 Popraw Stasia", (await p.getByRole("button", { name: "🤓 Popraw Stasia" }).count()) === 1, "");
 await p.goto(BASE + "index.html#/subject/mikroekonomia"); await p.waitForTimeout(1200);
@@ -89,6 +97,10 @@ ok("bez poziomego przewijania", await p.evaluate(() => document.documentElement.
 const e = await page(b, { konto: "platne", lang: "en", ls: { "mock-docs": JSON.stringify({ meta }) } });
 await e.goto(BASE + "index.html#/stasx/" + Object.keys(docs["meta/stas"].items)[0]); await e.waitForTimeout(2500);
 const enTxt = await e.locator("main").innerText();
+await e.goto(BASE + "index.html#/"); await e.waitForTimeout(2000);
+const enHome = await e.locator(".stas-card").innerText().catch(() => "");
+ok("EN: karta Dziś", /Correct Stan/.test(enHome) && /I made 3 mistakes/.test(enHome) && !/Szef/.test(enHome), enHome);
+await e.goto(BASE + "index.html#/stasx/" + Object.keys(docs["meta/stas"].items)[0]); await e.waitForTimeout(2000);
 ok("EN: przetłumaczone", /Intern Stan/.test(enTxt) && /The boss says I made 3 mistakes/.test(enTxt) && !/Szef mówi/.test(enTxt), enTxt.slice(0, 600));
 await shot(e, "stas-en");
 // bez dostępu
