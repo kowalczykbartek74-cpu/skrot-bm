@@ -1712,6 +1712,17 @@ body::before { opacity: .8; }
 .lmistake .wrong { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 55%, transparent); }
 .lmistake .right { color: var(--good); }
 .lsimple { background: var(--sunk); border-radius: 12px; padding: 10px 14px; }
+/* „Jeszcze prościej” (Analiza): wyjaśnienie da się kliknąć */
+.ez-tap { cursor: pointer; transition: box-shadow .15s ease; }
+.ez-tap:hover { box-shadow: 0 0 0 2px var(--accent-soft); }
+.ez-chip { justify-self: start; align-self: start; display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; padding: 6px 12px; border: 1px dashed var(--accent); border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); font: inherit; font-size: .86rem; font-weight: 700; cursor: pointer; }
+.ez-chip:hover { background: var(--surface); }
+p.tldr .ez-chip { display: flex; margin-top: 8px; }
+.ez-body { display: grid; gap: 8px; }
+.ez-body p { margin: 0; line-height: 1.6; font-size: 1.04rem; }
+.ez-ex { gap: 6px; }
+.ez-ex p { font-size: 1rem; }
+.lp-text .ez-ex > b { background: none; }
 .lsimple summary { cursor: pointer; font-weight: 700; color: var(--accent-hover); }
 .lsimple[open] summary { margin-bottom: 8px; }
 .lvis { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
@@ -6028,7 +6039,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
         await S.db.doc("materialSources/" + id).set({ slides });
         await ref.set({ v: 2, source: "sylabus", subjectId: sid, title: r.title || `${s.pl}: mapa przedmiotu z sylabusa`, fileName: "Sylabus BM 2026/27", fileType: "sylabus", slideCount: slides.length, createdAt: Date.now(), topicCount: ct.topics.length, noteCount: ct.notes.length, conceptCount: ct.concepts.length, flashcardCount: ct.flashcards.length, quizCount: ct.quiz.length, lang: "en", overlap: r.check?.pct ?? 0 });
         S.content[id] = ct;
-        for (const m of old) await Promise.all(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})));
+        for (const m of old) await Promise.all([...["materials", "materialContent", "materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})), S.db.doc("materialSimple/" + m.id + "~ez").delete().catch(() => {})]);
         const mat = { id, subjectId: sid, title: r.title };
         await Promise.allSettled([buildSimple(mat, ct), buildWhy(mat, ct)]);
         glossaryRebuild(sid).catch(() => {});
@@ -6542,7 +6553,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
           const fid = folderOf(m).id; await deleteMine(m); go({ view: "myFolder", id: fid });
         }) }, "Usuń")
         : canManage(m) ? h("button", { type: "button", class: "btn small ghost danger", onclick: () => confirmBox("Usunąć ten materiał dla całego roku?", async () => {
-          await Promise.all(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})));
+          await Promise.all([...["materials", "materialContent", "materialSources", "materialSimple", "quizWhy"].map((col) => S.db.doc(col + "/" + m.id).delete().catch(() => {})), S.db.doc("materialSimple/" + m.id + "~ez").delete().catch(() => {})]);
           go({ view: "subject", id: m.subjectId });
         }) }, "Usuń") : null),
       m.basis ? h("p", { class: "foot-note", text: m.basis }) : null);
@@ -6601,18 +6612,19 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   function studyPanel(m, c, used = new Set()) {
     // AI czasem dopisuje **pogrubienia** – w opracowaniu ich nie pokazujemy jako gwiazdek.
     const tf = (t) => termify(noItalic(String(t || "").replace(/\*\*/g, "")), c.concepts, used);
-    if (!c.topics?.length) return h("div", { class: "stack" }, h("p", { class: "tldr" }, tf(c.tldr)));
+    ezWant(m);
+    if (!c.topics?.length) return h("div", { class: "stack" }, ezTap(m, ezTldr(c), h("p", { class: "tldr" }, tf(c.tldr))));
     return h("div", { class: "stack study" },
-      h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "O co chodzi" }), h("p", { class: "tldr" }, tf(c.tldr))),
+      ezTap(m, ezTldr(c), h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "O co chodzi" }), h("p", { class: "tldr" }, tf(c.tldr)))),
       c.purpose ? h("section", { class: "stack", style: "gap:6px" }, h("span", { class: "eyebrow", text: "Po co to jest" }), h("p", {}, inline(c.purpose))) : null,
-      h("div", { class: "stack" }, c.topics.filter((t) => t.summary).map((t, k) => h("section", { class: "topic" },
+      h("div", { class: "stack" }, c.topics.filter((t) => t.summary).map((t, k) => ezTap(m, ezTopic(t), h("section", { class: "topic" },
         h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start" },
           h("h3", {}, h("span", { class: "n num", text: k + 1 }), h("span", { text: t.t })),
           slideRef(m.id, t)),
         h("p", {}, tf(t.summary)),
         t.why ? h("p", { class: "why-line" }, h("b", { text: "Po co: " }), inline(t.why)) : null,
         t.remember?.length ? h("div", { class: "rem-box" }, h("b", { text: "Zapamiętaj" }), h("ul", {}, t.remember.map((r) => h("li", {}, inline(r))))) : null,
-        t.example ? h("div", { class: "ex-box" }, h("b", { text: "Przykład" }), h("p", {}, inline(t.example))) : null))),
+        t.example ? h("div", { class: "ex-box" }, h("b", { text: "Przykład" }), h("p", {}, inline(t.example))) : null)))),
       h("p", { class: "foot-note", text: isMine(m) ? `Opracowanie Skrótu BM z Twojego pliku (${m.fileName}). Plik posłużył tylko jako lista tematów, więc układ i przykłady są nowe. Odsyłacz przy temacie pokazuje, gdzie w pliku jest ten temat.` : `Opracowanie własne Skrótu BM. Prezentacja z Teams (${m.fileName}) posłużyła tylko jako lista tematów, więc układ i przykłady są nasze. Odsyłacz przy temacie pokazuje, na których slajdach prowadzący o nim mówi: tam znajdziesz szczegóły z wykładu.` }));
   }
   function lessonPanel(m, L) {
@@ -6620,7 +6632,8 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
     const i = ls.findIndex((x) => x.id === m.id);
     const prev = ls[i - 1], next = ls[i + 1];
     const done = !!S.progress?.done?.[m.id];
-    const sections = (L.sections || []).map((sec, k) => h("section", { class: "lsec" },
+    ezWant(m);
+    const sections = (L.sections || []).map((sec, k) => ezTap(m, ezSec(sec), h("section", { class: "lsec" },
       h("h2", {}, h("span", { class: "n", text: k + 1 }), h("span", { text: String(sec.h).replace(/^\s*\d+[.)]\s*/, "") })),
       rich(sec.body),
       sec.example ? h("div", { class: "example" },
@@ -6628,7 +6641,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
         h("div", { class: "ex-task" }, inline(sec.example.task)),
         sec.example.steps?.length ? h("ol", {}, sec.example.steps.map((st) => h("li", {}, inline(st)))) : null,
         sec.example.answer ? h("div", { class: "ans" }, h("b", { text: "Wynik: " }), inline(sec.example.answer)) : null) : null,
-      sec.tip ? h("div", { class: "tip" }, h("b", { text: "Uwaga: " }), inline(sec.tip)) : null));
+      sec.tip ? h("div", { class: "tip" }, h("b", { text: "Uwaga: " }), inline(sec.tip)) : null)));
     return h("div", { class: "lesson" },
       h("p", { class: "lesson-intro" }, inline(L.intro)),
       sections,
@@ -6735,6 +6748,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
     const shown = all ? N : Math.min(st.pos, N); // ile sekcji widać (0 = tylko wstęp)
     const finishedSecs = shown >= N;
     const mast = S.progress?.mastery?.[m.id];
+    ezWant(m);
     const reveal = (k) => { st.pos = Math.max(st.pos, k); lnSave(st); render(); scrollToId(k <= N ? `lsec-${k - 1}` : "lpractice"); };
     const checksOk = secs.filter((s, k) => s.check && st.ans["c" + k] === s.check.correct).length;
     const checksDone = secs.filter((s, k) => s.check && st.ans["c" + k] != null).length;
@@ -6764,7 +6778,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
       const exSteps = sec.example?.steps || [], exKey = "e" + k, nShown = all ? exSteps.length : (st.steps[exKey] ?? 0);
       const exAll = nShown >= exSteps.length;
       const wrongCheck = sec.check && st.ans["c" + k] != null && st.ans["c" + k] !== sec.check.correct;
-      return h("section", { class: "lsec", id: `lsec-${k}` },
+      return ezTap(m, ezSec(sec), h("section", { class: "lsec", id: `lsec-${k}` },
         h("h2", {}, h("span", { class: "n", text: k + 1 }), h("span", { text: String(sec.h).replace(/^\s*\d+[.)]\s*/, "") })),
         sec.intuition ? h("div", { class: "lintu" }, h("span", { class: "eyebrow", text: "Najpierw intuicja" }), h("p", {}, inline(sec.intuition))) : null,
         rich(sec.body),
@@ -6791,7 +6805,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
         !all && k === shown - 1 ? h("div", { class: "step-next" },
           sec.check && st.ans["c" + k] == null ? h("span", { class: "muted", style: "font-size:.88rem", text: "Odpowiedz na pytanie kontrolne, żeby iść dalej." }) : null,
           h("button", { type: "button", class: "btn primary", disabled: sec.check && st.ans["c" + k] == null ? true : null, onclick: () => reveal(k + 2) },
-            k + 1 < N ? `Dalej: część ${k + 2} z ${N} →` : "Dalej: ćwiczenia →")) : null);
+            k + 1 < N ? `Dalej: część ${k + 2} z ${N} →` : "Dalej: ćwiczenia →")) : null));
     });
     const start = !all && shown === 0 ? h("div", { class: "step-next" }, h("button", { type: "button", class: "btn primary sk-cta", onclick: () => reveal(1) }, `Zaczynamy: część 1 z ${N} →`)) : null;
 
@@ -7234,7 +7248,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
     if (src.kind !== "lesson") { try { if (JSON.parse(ls.get(src.stateKey) || "null")?.finished) localStorage.removeItem(src.stateKey); } catch {} }
     const deck = src.build();
     if (!deck.bites.length) { toast(src.empty || "Tu nie ma jeszcze kart."); return false; }
-    LP.src = src; LP.m = src.m || null; LP.c = src.c || null; LP.deck = deck; LP.st = lpLoad(src.stateKey, deck);
+    LP.src = src; LP.m = src.m || null; LP.c = src.c || null; if (LP.m) ezWant(LP.m); LP.deck = deck; LP.st = lpLoad(src.stateKey, deck);
     // Część zaczynana od nowa dostaje świeże statystyki (inaczej stare bs.closed blokuje zapis XP z powtórki).
     if (bi != null && bi !== LP.st.bite) { LP.st.bite = Math.max(0, Math.min(bi, deck.bites.length - 1)); LP.st.idx = 0; LP.st.extra[LP.st.bite] = []; delete LP.st.bs[LP.st.bite]; }
     if (LP.st.done[deck.bites[LP.st.bite].id] && LP.st.idx >= lpCards().length) { LP.st.idx = 0; delete LP.st.bs[LP.st.bite]; }
@@ -7354,7 +7368,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
     LP.el.cta.disabled = !!out.cta?.disabled;
     LP.el.cta.hidden = !!out.cta?.hidden;
     const simple = card.sec != null ? LP.deck.simple[card.sec] : "";
-    LP.el.help.hidden = !simple && !(card.help && lpIsDone(card) && !lpRetryLater(card));
+    LP.el.help.hidden = !simple && !lpEz(card) && !(card.help && lpIsDone(card) && !lpRetryLater(card));
     LP.el.help.classList.toggle("lp-hint", !!LP.fx?.hint);
     return node;
   }
@@ -7453,12 +7467,17 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   function lpIdle() { clearTimeout(LP.idle); LP.el.cta.classList.remove("nudge"); if (LP.el.cta.disabled || LP.el.cta.hidden) return; LP.idle = setTimeout(() => { if (LP.open && !LP.el.cta.disabled) { LP.el.cta.classList.remove("nudge"); void LP.el.cta.offsetWidth; LP.el.cta.classList.add("nudge"); } }, 7000); }
 
   // ---------- „Nie łapię”: prosty język po polsku ----------
+  // „Jeszcze prościej” (Analiza) dla części lekcji, z której jest karta: najpierw ono, stare „Prościej” zwinięte pod spodem.
+  const lpEz = (card) => (card?.sec != null ? ezItem(LP.m, ezSec(LP.c?.lesson?.sections?.[card.sec])) : null);
   function lpSheetOpen() {
     const card = lpCur(); const txt = card?.sec != null ? LP.deck.simple[card.sec] : "";
+    const ez = lpEz(card);
     // Karta z własnym wyjaśnieniem (quiz: „Dlaczego?”) pokazuje je po odpowiedzi.
-    const help = !txt && card?.help && lpIsDone(card) && !lpRetryLater(card) ? card.help() : null;
-    if (!txt && !help) return;
-    LP.el.sheet.replaceChildren(h("div", { class: "grab", "aria-hidden": "true" }), h("span", { class: "eyebrow", text: help ? "Dlaczego?" : "Prościej, po polsku" }), help || h("div", { class: "lp-text" }, h("p", {}, inline(txt))), h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam"));
+    const help = !txt && !ez && card?.help && lpIsDone(card) && !lpRetryLater(card) ? card.help() : null;
+    if (!txt && !ez && !help) return;
+    const body = ez ? h("div", { class: "lp-text" }, ezBody(ez), txt ? h("details", { class: "lsimple" }, h("summary", { text: "Inne wyjaśnienie" }), h("p", {}, inline(txt))) : null)
+      : help || h("div", { class: "lp-text" }, h("p", {}, inline(txt)));
+    LP.el.sheet.replaceChildren(h("div", { class: "grab", "aria-hidden": "true" }), h("span", { class: "eyebrow", text: help ? "Dlaczego?" : ez ? "Jeszcze prościej · po polsku" : "Prościej, po polsku" }), body, h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam"));
     LP.el.sheet.setAttribute("aria-label", help ? "Dlaczego?" : "Prościej, po polsku");
     LP.el.sheet.classList.add("on"); LP.el.scrim.classList.add("on"); LP.el.help.classList.remove("lp-hint");
     typeset(LP.el.sheet); LP.el.sheet.querySelector("button")?.focus();
@@ -10816,6 +10835,48 @@ Tablica "not" ma tyle elementów, ile opcji ma pytanie. Zrób wpis dla każdego 
     return doc;
   }
 
+  // ---- „Jeszcze prościej” (Analiza matematyczna): każde wyjaśnienie (o co chodzi, temat, część lekcji, przykład z rozwiązaniem)
+  // da się kliknąć i dostać DUŻO prostszą wersję po polsku z łatwym przykładem na małych liczbach. Powstaje z góry w Panelu AI
+  // (starosta) i leży w osobnym dokumencie materialSimple/<id>~ez = { items: { klucz: { t, ex } }, at }, żeby „Prościej · PL”
+  // i paczki go nie nadpisywały. Klucz = rodzaj bloku + skrót jego tekstu: gdy opracowanie się zmieni, stare wyjaśnienie
+  // przestaje pasować (nie pokazujemy nieaktualnego), a Panel AI dorabia nowe.
+  const EZ_SUBJ = new Set(["analiza-matematyczna"]);
+  const ezOn = (m) => !!m && EZ_SUBJ.has(m.subjectId) && !isMine(m);
+  const ezS = (v) => (v == null ? "" : typeof v === "string" ? v : JSON.stringify(v));
+  const ezBlock = (kind, label, parts) => { const text = parts.map(ezS).filter(Boolean).join("\n"); return text.trim() ? { k: kind + ":" + hashStr(text), label: String(label || "").replace(/^\s*\d+[.)]\s*/, ""), text } : null; };
+  const ezTldr = (c) => ezBlock("o", "O co chodzi", [c.tldr, c.purpose]);
+  const ezTopic = (t) => (t ? ezBlock("t", t.t, [t.summary, t.why, t.remember, t.example]) : null);
+  const ezSec = (s) => (s ? ezBlock("s", s.h, [s.intuition, s.body, s.example, s.mistake, s.tip]) : null);
+  const ezWorked = (w, i) => (w ? ezBlock("w", `Przykład ${i + 1}`, [w.task, (w.steps || []).map((x) => [x.do, x.result, x.why]), w.answer]) : null);
+  const ezBlocks = (c) => [c.topics?.length || c.tldr ? ezTldr(c) : null, ...(c.topics || []).filter((t) => t.summary).map(ezTopic),
+    ...(c.lesson?.sections || []).map(ezSec), ...(c.worked || []).map(ezWorked)].filter(Boolean);
+  S.ez = {};
+  function ezWant(m) {
+    if (!ezOn(m) || m.id in S.ez) return;
+    S.ez[m.id] = null;
+    S.db.doc("materialSimple/" + m.id + "~ez").get().then((snap) => { S.ez[m.id] = snap.exists ? snap.data() : null; if (S.ez[m.id]) render(); }).catch(() => {});
+  }
+  const ezItem = (m, b) => (ezOn(m) && b ? S.ez[m.id]?.items?.[b.k] || null : null);
+  const ezParas = (s) => String(s || "").split(/\n+/).map((p) => p.trim()).filter(Boolean).map((p) => h("p", {}, inline(p)));
+  const ezBody = (it) => h("div", { class: "ez-body", translate: "no" }, ...ezParas(it.t),
+    it.ex ? h("div", { class: "ex-box ez-ex" }, h("b", { text: "Łatwy przykład" }), ...ezParas(it.ex)) : null);
+  function ezShow(b, it) {
+    modal((close) => [h("span", { class: "eyebrow", text: "Jeszcze prościej · po polsku" }), h("h3", { text: b.label }), ezBody(it),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: close }, "Jasne, łapię"))], "ez-modal");
+  }
+  // Blok z gotowym wyjaśnieniem: kliknięcie w tekst (poza przyciskami, pojęciami i odsłanianymi krokami) albo w przycisk pod spodem.
+  function ezTap(m, b, el) {
+    const it = ezItem(m, b);
+    if (!it || !el) return el;
+    el.classList.add("ez-tap");
+    el.addEventListener("click", (e) => {
+      if (e.target.closest("button, a, input, select, textarea, label, details, .term-link") || String(getSelection?.() || "")) return;
+      ezShow(b, it);
+    });
+    el.append(h("button", { type: "button", class: "ez-chip", onclick: () => ezShow(b, it) }, "💡 Nie łapię – wytłumacz prościej"));
+    return el;
+  }
+
   // Przykładowa lekcja dla gościa (ekran logowania): OWI 1 w wersji „Prościej · PL”, bez logowania.
   // Baza pokazuje ten jeden dokument każdemu (supabase/skrot-v19-pokaz.sql).
   const PREVIEW_ID = "owi-01-principles";
@@ -11229,6 +11290,73 @@ ${mqStudy(c)}`;
         h("span", { class: "muted", style: "font-size:.86rem", text: `${MQ.done} z ${MQ.total}${MQ.busy ? "" : " · gotowe"}` })) : null,
       MQ.log.length ? h("ul", { class: "pipeline" }, MQ.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null);
   }
+  // ---- „Jeszcze prościej” (Analiza): wyjaśnienie do każdego bloku materiału (opis przy ezBlocks). Wznowienie dorabia tylko
+  // brakujące bloki; bloki, których tekst się zmienił, dostają nowe wyjaśnienie, a stare wypada.
+  const EZ = { busy: false, stop: false, log: [], done: 0, total: 0 };
+  const EZ_PART = 8;
+  const EZ_RULES = `Jesteś cierpliwym korepetytorem z matematyki dla studentów 1. roku Business Management, którzy boją się matmy i nie rozumieją wykładu. Dla każdego bloku z listy BLOKI napisz DUŻO prostsze wyjaśnienie po polsku niż w materiale, tak żeby zrozumiał je 12-latek, oraz łatwy przykład.
+Zasady:
+- "t": 2-4 krótkie zdania (do ok. 12 słów każde), zero żargonu. Zacznij od sedna: co to jest albo co tu robimy, potem po co. Trudne słowo zastąp obrazkiem z życia (kieszonkowe, pizza, sklepik, telefon, bilety do kina, raty za rower). Angielski termin daj w nawiasie przy pierwszym użyciu, bo egzamin jest po angielsku. W "t" bez wzorów i symboli.
+- "ex": łatwy przykład na małych, okrągłych liczbach (np. 2, 3, 5, 10, 100), policzony krok po kroku: każdy krok w osobnej linii (oddzielaj znakiem nowej linii), ostatnia linia zaczyna się od "Wynik:". Wzory tylko proste, w LaTeX w \\( ... \\). Gdy w bloku nie ma czego liczyć, daj przykład z życia w 2-3 zdaniach.
+- Nie upraszczaj do nieprawdy i nie dodawaj faktów spoza bloku. Policz każdy rachunek dwa razy. Pisz w drugiej osobie.
+Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "ex": "..."}]}. Zrób wpis dla każdego bloku.`;
+  const ezPlan = () => S.materials.filter((m) => ezOn(m));
+  async function ezOne(m, line) {
+    const [cs, es] = await Promise.all([S.db.doc("materialContent/" + m.id).get(), S.db.doc("materialSimple/" + m.id + "~ez").get()]);
+    const c = cs.exists ? cs.data() : null;
+    if (!c) throw { code: "no_content" };
+    const blocks = ezBlocks(c), keep = new Set(blocks.map((b) => b.k));
+    const items = Object.fromEntries(Object.entries((es.exists ? es.data() : null)?.items || {}).filter(([k]) => keep.has(k)));
+    const todo = blocks.filter((b) => !items[b.k]);
+    let made = 0;
+    for (let i = 0; i < todo.length && !EZ.stop; i += EZ_PART) {
+      const part = todo.slice(i, i + EZ_PART), want = new Set(part.map((b) => b.k));
+      line.detail = `wyjaśnienia ${made + 1}–${Math.min(todo.length, made + part.length)} z ${todo.length}…`; render();
+      const r = await S.sample.json(`${EZ_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nPRZEDMIOT: ${subjectById(m.subjectId)?.pl || ""}\nMATERIAŁ: ${m.title || m.fileName}\nBLOKI:\n${JSON.stringify(part.map((b) => ({ k: b.k, tytul: b.label, tekst: b.text.slice(0, 6000) })))}`, { modelTier: "default" });
+      for (const x of Array.isArray(r?.items) ? r.items : []) {
+        const k = txt(x?.k, 80), t = txt(x?.t, 1500);
+        if (want.has(k) && t && !items[k]) { items[k] = { t, ex: txt(x?.ex, 2000) }; made++; }
+      }
+      const doc = { items, at: Date.now() };
+      await S.db.doc("materialSimple/" + m.id + "~ez").set(doc); S.ez[m.id] = doc;
+    }
+    const left = blocks.filter((b) => !items[b.k]).length;
+    return [`${blocks.length - left} z ${blocks.length} ${plural(blocks.length, "wyjaśnienia", "wyjaśnień", "wyjaśnień")}`, made ? `dodano ${made}` : "nic nowego", left ? `brak ${left}, uruchom jeszcze raz` : null].join(" · ");
+  }
+  async function ezRun() {
+    if (EZ.busy || MQ.busy || AI.busy || MIG.busy) return;
+    if (!S.sample) { toast("Funkcja AI jest dostępna tylko po zalogowaniu jako starosta."); return; }
+    const plan = ezPlan();
+    if (!plan.length) { toast("Brak materiałów z Analizy matematycznej."); return; }
+    EZ.busy = true; EZ.stop = false; EZ.log = []; EZ.done = 0; EZ.total = plan.length; render();
+    for (const m of plan) {
+      if (EZ.stop) break;
+      const line = { title: m.title || m.fileName, state: "run", detail: "" }; EZ.log.push(line); render();
+      try { line.detail = await ezOne(m, line); line.state = /brak \d/.test(line.detail) ? "warn" : "ok"; }
+      catch (e) {
+        line.state = "err"; line.detail = e?.code === "no_content" ? "materiał nie ma opracowania" : sampleError(e);
+        if (["not_deployed", "no_function", "no_key", "not_granted"].includes(e?.code)) { EZ.stop = true; toast(line.detail); }
+      }
+      EZ.done++; render();
+    }
+    EZ.busy = false; render();
+  }
+  function easySection() {
+    const plan = ezPlan();
+    if (!plan.length) return null;
+    return h("section", { class: "panel" },
+      h("h2", { text: "Jeszcze prościej (Analiza)" }),
+      h("p", { class: "muted", style: "font-size:.92rem;max-width:64ch", text: "W Analizie matematycznej każde wyjaśnienie (o co chodzi, temat, część lekcji, przykład z rozwiązaniem) da się kliknąć: student dostaje dużo prostszą wersję po polsku i łatwy przykład policzony krok po kroku. Tu je generujesz. Gotowe bloki są pomijane, więc możesz przerwać i wrócić; po zmianie opracowania uruchom jeszcze raz." }),
+      h("div", { class: "row" },
+        h("span", { class: "chip", text: `materiały: ${plan.length}` }),
+        h("button", { type: "button", class: "btn primary", disabled: EZ.busy || MQ.busy || AI.busy || MIG.busy ? true : null, onclick: ezRun }, EZ.busy ? "Generuję…" : `Start (${plan.length})`),
+        EZ.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { EZ.stop = true; render(); } }, EZ.stop ? "Zatrzymuję po bieżącym…" : "Zatrzymaj po bieżącym") : null,
+        h("span", { class: "muted", style: "font-size:.86rem", text: "ok. 1–2 minuty na materiał" })),
+      EZ.total ? h("div", { class: "stack", style: "gap:4px" },
+        h("progress", { max: String(EZ.total), value: String(EZ.done), style: "width:100%;accent-color:var(--accent)", "aria-label": "Postęp wyjaśnień" }),
+        h("span", { class: "muted", style: "font-size:.86rem", text: `${EZ.done} z ${EZ.total}${EZ.busy ? "" : " · gotowe"}` })) : null,
+      EZ.log.length ? h("ul", { class: "pipeline" }, EZ.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null);
+  }
   function viewAi() {
     const head = h("section", { class: "stack" }, backLink(), h("span", { class: "eyebrow", text: "Panel starosty" }), h("h1", { text: "Panel AI" }),
       h("p", { class: "muted", style: "max-width:64ch", text: "Prosty język i „Dlaczego?” przy quizach powstają z góry dla każdego materiału. Studenci tylko je czytają. Tu widzisz, czego brakuje, i uzupełniasz to jednym kliknięciem." }));
@@ -11238,7 +11366,7 @@ ${mqStudy(c)}`;
     const noSimple = S.materials.filter((m) => !AI.status.simple.has(m.id)).length;
     const noWhy = S.materials.filter((m) => aiNeedsWhy(m) && !AI.status.why.has(m.id)).length;
     const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: (e) => { const f = e.target.files[0]; if (f) aiImport(f); e.target.value = ""; } });
-    return [head, migrateSection(), moreQSection(), genSection(), sylMatSection(), glossarySection(), hintSection(),
+    return [head, migrateSection(), moreQSection(), easySection(), genSection(), sylMatSection(), glossarySection(), hintSection(),
       h("section", { class: "panel" },
         h("div", { class: "row" },
           h("span", { class: "chip " + (noSimple ? "sun" : "good"), text: `prosty język: brak ${noSimple}` }),
@@ -13053,10 +13181,11 @@ ${mqStudy(c)}`;
     const all = st.shown >= steps.length;
     const doneCount = (j) => S.progress?.ex?.[`${m.id}:${w.id}:${j}`]?.[0];
     const u = xplUse(m, c);
+    ezWant(m);
     return h("div", { class: "stack worked" },
       W.length > 1 ? h("div", { class: "gl-chips" }, W.map((x, i) => h("button", { type: "button", class: "fchip", "aria-pressed": String(i === st.i), onclick: () => { S.route.wk = { i, shown: 0, sim: {} }; render(); } },
         `Przykład ${i + 1}`, (x.similar || []).every((_, j) => S.progress?.ex?.[`${m.id}:${x.id}:${j}`]?.[0]) && x.similar?.length ? " ✓" : ""))) : null,
-      h("section", { class: "example wk-ex" },
+      ezTap(m, ezWorked(w, st.i), h("section", { class: "example wk-ex" },
         h("div", { class: "row", style: "justify-content:space-between;align-items:flex-start" }, h("span", { class: "eyebrow", text: "Przykład z rozwiązaniem" }), slideRef(m.id, w)),
         h("div", { class: "wk-task" }, inlineX(w.task, u)),
         steps.length ? h("ol", { class: "wk-steps" }, steps.slice(0, st.shown).map((x) => h("li", {},
@@ -13067,7 +13196,7 @@ ${mqStudy(c)}`;
         h("div", { class: "row" },
           !all ? h("button", { type: "button", class: "btn primary small", onclick: () => { st.shown++; render(); } }, st.shown ? "Następny krok" : "Pokaż pierwszy krok") : null,
           !all && steps.length > 1 ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = steps.length; render(); } }, "Pokaż całe rozwiązanie") : null,
-          all && st.shown ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = 0; render(); } }, "Jeszcze raz od początku") : null)),
+          all && st.shown ? h("button", { type: "button", class: "btn ghost small", onclick: () => { st.shown = 0; render(); } }, "Jeszcze raz od początku") : null))),
       w.similar?.length ? h("section", { class: "stack" },
         h("h3", { text: "Teraz Ty" }),
         h("p", { class: "muted", style: "font-size:.92rem", text: "Te same kroki, inne liczby. Wpisz wynik; podpowiedź i kolejne kroki odsłaniasz tylko wtedy, gdy utkniesz." }),

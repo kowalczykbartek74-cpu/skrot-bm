@@ -218,6 +218,13 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 
 **Najpierw niewidziane.** Quiz z całego przedmiotu (`subjectQuizQs`) i gry (`gryQuestions`) zamiast czystego losowania dają najpierw pytania, których ta osoba jeszcze nie widziała, potem widziane najdawniej. Widziane = odpowiedź w quizie albo w grze, zapisane w `localStorage["bm-q-seen"]` = `{ "mid:idx": dzień }` (max 2000 wpisów, najstarsze wypadają; `qSeen`, `qFreshFirst`). Kolejność w grach: pomylone → niewidziane z zakresu najbliższego zaliczenia → niewidziane reszta → widziane od najdawniej. Bez zmian w SQL i w punktach. Test: `docs/gry/test/pytania-plus.mjs`.
 
+## Jeszcze prościej (Analiza matematyczna)
+W Analizie matematycznej każde wyjaśnienie da się kliknąć: „O co chodzi”, każdy temat opracowania, każda część lekcji (widok tekstowy i karty, przycisk „🤔 Nie łapię”) i każdy przykład w „Zadaniach krok po kroku”. Kliknięcie w tekst albo w przycisk „💡 Nie łapię – wytłumacz prościej” otwiera okno z DUŻO prostszą wersją po polsku (2–4 krótkie zdania, obrazki z życia, angielski termin w nawiasie) i łatwym przykładem na małych liczbach, policzonym krok po kroku.
+- Powstaje z góry w **Panelu AI → Jeszcze prościej (Analiza)** (tylko starosta, funkcja `claude`, ok. 1–2 min na materiał). Gotowe bloki są pomijane, więc można przerwać i wrócić. Bez wygenerowania przyciski się nie pokazują.
+- Zapis: osobny dokument `materialSimple/<id>~ez` = `{ items: { klucz: { t, ex } }, at }`, żeby „Prościej · PL” i paczki go nie nadpisywały. Klucz = rodzaj bloku (`o` o co chodzi, `t` temat, `s` część lekcji, `w` przykład) + skrót tekstu bloku (`ezBlocks` w `index.html`): po zmianie opracowania stare wyjaśnienie przestaje pasować i znika, a ponowny Start w Panelu AI robi nowe. Bez SQL.
+- Inne przedmioty: dopisz id do `EZ_SUBJ`. Materiały oznaczone jako darmowe nie pokazują tej wersji osobom bez dostępu (reguła `nauka_darmowy` patrzy na id materiału).
+- Test: `docs/gry/test/jeszcze-prosciej.mjs`, Playwright na atrapie (Panel AI generuje, bloki klikalne w opracowaniu, lekcji i zadaniach, inne przedmioty bez zmian).
+
 ## Kalendarz w telefonie (jednorazowo)
 1. Supabase → SQL Editor: wklej `supabase/skrot-kalendarz.sql` → Run.
 2. W terminalu, w folderze tego repozytorium:
