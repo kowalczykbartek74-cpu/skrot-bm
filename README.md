@@ -226,6 +226,13 @@ Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klika
 - **Zapis bez SQL:** `meta/po` = spis `{ items: { id: { sid, k, t, syl, d, at } } }`, treść w `meta/po~<id>`. Kolekcję `meta` czytają osoby z dostępem, zapisuje starosta. Treść jest po polsku i ma `translate="no"` (jak „Prościej · PL”).
 - Test: `docs/gry/test/po-zajeciach.mjs` (Playwright na atrapie, zegar ustawiony na piątek 6.11.2026).
 
+## Stażysta Staś, który się myli
+Staś, nowy stażysta, tłumaczy temat z sylabusa (9–12 zdań po polsku z angielskimi terminami), ale 3 zdania są merytorycznie złe. Student ma tyle „czerwonych długopisów”, ile jest błędów, klika zdania, które uważa za złe, i naciska „Sprawdź”. Trafione błędy poprawia, wybierając jedną z 3 wersji (dobra poprawka + 2 błędne), przegapione od razu widzi z poprawką i wyjaśnieniem. Wynik: znalezione błędy (minus zaznaczone dobre zdania) + dobre poprawki, maks. 2 × liczba błędów. Uczy przez efekt nauczyciela: poprawiając kogoś, rozumiesz głębiej.
+- **Wejścia:** Więcej → „Stażysta Staś” (`#/stas`, `#/stas/<przedmiot>`, ćwiczenie `#/stasx/<id>`), przycisk „🤓 Popraw Stasia” w okładce przedmiotu (gdy są gotowe wyjaśnienia), pytanie w FAQ przewodnika. Wyniki (najlepszy): `localStorage["bm-stas-done"]`. Pełna wersja (paywall jak w „Po zajęciach”).
+- **Starosta** (w `#/stas/<przedmiot>`): „Przygotuj brakujące z sylabusa” (gotowe pomija, można zatrzymać), „Zrób wyjaśnienie Stasia” / „Zrób od nowa” przy każdym temacie. AI (`S.sample`, funkcja `claude`) generuje raz, studenci tylko klikają: bez kosztów AI na żywo. `stasClean` odrzuca odpowiedź z mniej niż 6 zdaniami albo innym niż 2–4 błędami.
+- **Zapis bez SQL:** `meta/stas` = spis `{ items: { id: { sid, k, t, n, at } } }`, treść w `meta/stas~<id>` = `{ title, sentences: [{ text, isWrong, fix, alts, why }], at }`. Id jak w „Po zajęciach” (`<sid>~<forma>~<skrót tematu>`).
+- Test: `docs/gry/test/stazysta-stas.mjs` (Playwright na atrapie, 34 sprawdzenia).
+
 ## Jeszcze prościej (Analiza matematyczna)
 W Analizie matematycznej każde wyjaśnienie da się kliknąć: „O co chodzi”, każdy temat opracowania, każda część lekcji (widok tekstowy i karty, przycisk „🤔 Nie łapię”) i każdy przykład w „Zadaniach krok po kroku”. Kliknięcie w tekst albo w przycisk „💡 Nie łapię – wytłumacz prościej” otwiera okno z DUŻO prostszą wersją po polsku (2–4 krótkie zdania, obrazki z życia, angielski termin w nawiasie) i łatwym przykładem na małych liczbach, policzonym krok po kroku.
 - Powstaje z góry w **Panelu AI → Jeszcze prościej (Analiza)** (tylko starosta, funkcja `claude`, ok. 1–2 min na materiał). Gotowe bloki są pomijane, więc można przerwać i wrócić. Bez wygenerowania przyciski się nie pokazują.

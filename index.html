@@ -3344,6 +3344,29 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
 .po-why.ok b { color: var(--good); }
 .po-why.bad b { color: var(--bad); }
 .po-nav { margin-top: 14px; }
+/* Stażysta Staś */
+.stas-hero { display: flex; align-items: flex-start; gap: 12px; }
+.stas-face { flex: none; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: var(--lime-100); border: 2px solid var(--accent); font-size: 1.7rem; line-height: 1; }
+.stas-bubble { position: relative; margin: 4px 0 0; padding: 10px 14px; border-radius: 4px 14px 14px 14px; background: var(--surface); border: 1px solid var(--line); line-height: 1.5; }
+.stas-text { display: block; line-height: 1.9; }
+.stas-s { padding: 2px 3px; border-radius: 6px; box-decoration-break: clone; -webkit-box-decoration-break: clone; transition: background .15s; }
+.stas-s[role=button] { cursor: pointer; }
+.stas-s[role=button]:hover { background: var(--accent-soft); }
+.stas-s[role=button]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.stas-s.flag { background: var(--bad-soft); text-decoration: underline wavy var(--bad); text-underline-offset: 4px; }
+.stas-s.hit { background: var(--good-soft); text-decoration: underline wavy var(--good); text-underline-offset: 4px; }
+.stas-s.miss { background: var(--bad-soft); text-decoration: underline wavy var(--bad); text-underline-offset: 4px; }
+.stas-s.false { color: var(--muted); text-decoration: line-through; }
+.stas-bar { align-items: center; }
+.stas-pens { display: inline-flex; align-items: center; gap: 2px; }
+.stas-pens i { font-style: normal; font-size: 1.2rem; color: var(--line); }
+.stas-pens i.on { color: var(--bad); }
+.stas-fixes { margin-top: 12px; gap: 10px; }
+.stas-fix { display: grid; gap: 8px; padding: 14px 16px; border: 1px solid var(--line); border-left: 5px solid var(--good); border-radius: var(--r); background: var(--surface); }
+.stas-fix.is-miss { border-left-color: var(--bad); }
+.stas-was, .stas-right { margin: 0; }
+.stas-was { color: var(--muted); }
+.stas-sum h2 { margin: 0; }
 @media (max-width: 600px) { .po-terms { grid-template-columns: 1fr; } .po-terms dd { margin-bottom: 6px; } .po-dot { width: 18px; } }
 </style>
 
@@ -4129,7 +4152,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
   // Sześć zakładek (na telefonie „Więcej” jest w lewym górnym rogu, na dole zostaje pięć), każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
   const NAV_ITEMS = [["home", "Dziś"], ["materials", "Przedmioty"], ["review", "Powtórki"], ["terms", "Terminy"], ["calendar", "Kalendarz"], ["more", "Więcej"]];
   const NAV_OF = {
-    home: "home", boss: "home", po: "home", po5: "home",
+    home: "home", boss: "home", po: "home", po5: "home", stas: "more", stasx: "more",
     materials: "materials", subject: "materials", material: "materials", subjectQuiz: "materials", exam: "materials", cheat: "materials", upload: "materials",
     review: "review", progress: "review",
     terms: "terms",
@@ -4187,7 +4210,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
     renderNav();
     const v = S.route.view;
     $("main").dataset.view = v || "home";
-    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, reading: viewReading, compare: viewCompare, guide: viewGuide }[v];
+    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, stas: viewStas, stasx: viewStasX, reading: viewReading, compare: viewCompare, guide: viewGuide }[v];
     if (!fn) {
       // Nieznany adres (np. literówka w linku): mówimy o tym zamiast po cichu pokazywać Dziś.
       if (v && v !== "home") { toast("Nie ma takiej strony. Pokazuję ekran Dziś."); S.route = { view: "home" }; try { history.replaceState({ view: "home" }, "", "#/"); } catch {} }
@@ -6272,6 +6295,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
   function viewSubject() {
     const s = subjectById(S.route.id);
     if (!s) return [backLink({ view: "materials" }), h("p", { class: "muted", text: "Nie ma takiego przedmiotu." })];
+    if (!STAS.idx) stasLoad();
     const tab = SUBJ_TABS.some(([k]) => k === S.route.tab) ? S.route.tab : "ucz";
     const people = Object.entries(s.people).map(([k, set]) => h("span", {}, KIND[k] + ": ", h("b", { text: [...set].join(", ") })));
     let nextClass = null;
@@ -6282,6 +6306,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
       h("h1", { text: s.pl }),
       s.en && !EN ? h("p", { class: "en", text: s.en }) : null,
       poHasSubj(s.id) ? h("button", { type: "button", class: "btn small po-cover-btn", onclick: () => go({ view: "po", id: s.id }) }, "⚡ Po zajęciach w 5 minut") : null,
+      stasHasSubj(s.id) ? h("button", { type: "button", class: "btn small po-cover-btn", onclick: () => go({ view: "stas", id: s.id }) }, "🤓 Popraw Stasia") : null,
       nextClass ? h("p", { style: "font-size:.92rem" }, "Najbliższe zajęcia: ", h("b", { text: `${fmtKey(nextClass.k)}, ${clsStart(nextClass.c)}` }), ` · ${KIND[nextClass.c.k].toLowerCase()} · ${nextClass.c.r || ""}`) : null,
       // Prowadzący i prawdopodobny temat są zwinięte, żeby zakładki przedmiotu były wyżej na telefonie.
       h("details", { class: "cover-more" }, h("summary", { text: topic ? "Prowadzący i temat zajęć" : "Prowadzący" }),
@@ -6459,7 +6484,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
   }
 
   function backLink(to) {
-    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { gry: "Graj", materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki", guide: "Przewodnik", po: "Po zajęciach" }[to?.view] || "Dziś";
+    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { gry: "Graj", materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki", guide: "Przewodnik", po: "Po zajęciach", stas: "Stażysta Staś" }[to?.view] || "Dziś";
     return h("div", {}, h("button", { type: "button", class: "back", onclick: () => go(to || { view: "home" }) }, h("span", { "aria-hidden": "true", text: "←" }), label));
   }
   // Krótka instrukcja ekranu: jedno zdanie na wierzchu, reszta pod „?”.
@@ -10439,6 +10464,242 @@ Format JSON: {"title": "krótki polski tytuł zajęć", "lead": "...", "parts": 
     });
   }
 
+  // ================= Stażysta Staś, który się myli =================
+  // Staś, nowy stażysta, tłumaczy temat z sylabusa, ale w jego wyjaśnieniu są 2–3 ukryte błędy. Student klika zdania,
+  // które są złe (ma tyle czerwonych długopisów, ile jest błędów), sprawdza i wybiera poprawkę. Poprawianie kogoś uczy
+  // głębiej niż samo czytanie. Wyjaśnienia robi raz starosta przez AI (S.sample), studenci tylko klikają: bez AI na żywo.
+  // Zapis bez nowego SQL, w kolekcji meta (czytają osoby z dostępem, zapisuje starosta):
+  //   meta/stas = { items: { <id>: { sid, k, t, n, at } } } – spis (n = liczba błędów),
+  //   meta/stas~<id> = { title, sentences: [{ text, isWrong, fix, alts: [], why }], at } – treść.
+  // Id tematu jak w „Po zajęciach”: <sid>~<forma>~<skrót tematu>. Wyniki pamięta bm-stas-done = { id: { f, x, n, d } }.
+  const STAS = { idx: null, loading: false, c: {}, busy: false, stop: false, log: [], done: 0, total: 0, openId: null, flags: new Set(), checked: false, pick: {}, ord: {} };
+  const stasDone = { get: () => { try { return JSON.parse(ls.get("bm-stas-done") || "{}") || {}; } catch { return {}; } }, set(id, r) { const o = this.get(); o[id] = { ...r, d: todayKey() }; ls.set("bm-stas-done", JSON.stringify(o)); } };
+  function stasLoad(force) {
+    if (!S.db || STAS.loading || (STAS.idx && !force)) return;
+    STAS.loading = true;
+    S.db.doc("meta/stas").get().then((snap) => { STAS.idx = (snap.exists && snap.data()?.items) || {}; })
+      .catch(() => { STAS.idx = STAS.idx || {}; })
+      .finally(() => { STAS.loading = false; if (["stas", "stasx", "subject"].includes(S.route.view)) render(); });
+  }
+  const stasOf = (sid) => Object.entries(STAS.idx || {}).map(([id, x]) => ({ id, ...x })).filter((x) => x.sid === sid);
+  // Na okładce przedmiotu: studentom tylko gdy coś jest gotowe, staroście zawsze, gdy są tematy w sylabusie.
+  const stasHasSubj = (sid) => stasOf(sid).length > 0 || (poStarosta() && poSylTopics(sid).length > 0);
+  const STAS_HELLO = "Cześć, jestem Staś! Pierwszy dzień na stażu i szef kazał mi wytłumaczyć temat. Tylko… chyba coś pomieszałem. Znajdziesz moje błędy?";
+  const stasFace = (mood) => h("span", { class: "stas-face", "aria-hidden": "true", text: mood === "ok" ? "😎" : mood === "oops" ? "😅" : "🤓" });
+
+  // Ekran #/stas: wybór przedmiotu; #/stas/<przedmiot>: tematy do poprawienia.
+  function viewStas() {
+    const sid = S.route.id, s = sid ? subjectById(sid) : null;
+    if (!STAS.idx) stasLoad();
+    if (sid && !s) return [backLink({ view: "stas" }), h("p", { class: "muted", text: "Nie ma takiego przedmiotu." })];
+    return s ? stasSubject(s) : stasSubjects();
+  }
+  function stasHero(text) {
+    return h("div", { class: "stas-hero" }, stasFace(), h("p", { class: "stas-bubble", text }));
+  }
+  function stasSubjects() {
+    const done = stasDone.get();
+    const subs = SUBJECTS.filter((s) => stasHasSubj(s.id));
+    return [backLink({ view: "more" }),
+      h("section", { class: "stack" }, h("h1", { class: "ptitle", text: "Stażysta Staś" }),
+        leadHelp("Staś tłumaczy temat, ale robi 2–3 błędy. Kliknij zdania, które są złe, i wybierz poprawkę.", "Kiedy poprawiasz kogoś innego, musisz naprawdę rozumieć temat, więc uczysz się głębiej niż przy samym czytaniu. Jedno wyjaśnienie to ok. 3 minuty.")),
+      stasHero(STAS_HELLO),
+      !PAID() ? paywallCard("Stażysta Staś jest w pełnej wersji") : null,
+      !STAS.idx ? h("p", { class: "muted", text: "Ładuję…" }) : null,
+      h("div", { class: "po-subjects" }, subs.map((s) => {
+        const its = stasOf(s.id), fixed = its.filter((x) => done[x.id]).length;
+        return h("button", { type: "button", class: "po-subj", style: `--c:${s.color}`, onclick: () => go({ view: "stas", id: s.id }) },
+          h("i", { class: "dot", style: `--c:${s.color}` }),
+          h("span", { class: "po-subj-txt" }, h("b", { text: s.pl }),
+            h("small", { class: "muted", text: its.length ? `do poprawienia: ${its.length}${fixed ? ` · poprawione: ${fixed}` : ""}` : "jeszcze bez wyjaśnień" })),
+          h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
+      })),
+      STAS.idx && !subs.length ? h("p", { class: "muted", text: "Staś jeszcze nic nie przygotował. Zajrzyj później." }) : null];
+  }
+  function stasSubject(s) {
+    const done = stasDone.get(), star = poStarosta();
+    const ready = stasOf(s.id).sort((a, b) => (a.at || 0) - (b.at || 0));
+    const topics = poSylTopics(s.id);
+    const row = (it, tp) => {
+      const r = it && done[it.id];
+      return h("div", { class: "po-row" + (it ? "" : " is-none") },
+        h(it ? "button" : "div", { type: it ? "button" : null, class: "po-open", onclick: it ? () => go({ view: "stasx", id: it.id }) : null },
+          h("span", { class: "po-ic", "aria-hidden": "true", text: r ? (r.f === r.n && r.x === r.n ? "★" : "✓") : it ? "🤓" : "·" }),
+          h("span", { class: "po-txt" }, h("span", { lang: "en", text: tp?.t || it?.t || "" }), h("small", { class: "muted", text: poKindLabel(tp?.k || it?.k) })),
+          r ? h("span", { class: "chip " + (r.f === r.n && r.x === r.n ? "good" : "plain"), text: `${r.f + r.x}/${r.n * 2} pkt` })
+            : h("span", { class: "chip plain", text: it ? `${it.n || 3} błędy` : "jeszcze nie ma" })),
+        star ? h("div", { class: "row po-tools" },
+          h("button", { type: "button", class: "btn small ghost", disabled: STAS.busy ? true : null, onclick: () => stasMakeOne(s, tp || { k: it.k, t: it.t }) }, it ? "Zrób od nowa" : "Zrób wyjaśnienie Stasia")) : null);
+    };
+    // Student widzi tylko gotowe tematy, starosta wszystkie z sylabusa (z przyciskami).
+    const rows = star ? topics.map((tp) => row(STAS.idx?.[poSylId(s.id, tp.k, tp.t)] ? { id: poSylId(s.id, tp.k, tp.t), ...STAS.idx[poSylId(s.id, tp.k, tp.t)] } : null, tp))
+      : ready.map((it) => row(it, null));
+    return [backLink({ view: "stas" }),
+      h("section", { class: "cover", style: `--c:${s.color}` }, h("span", { class: `pat pat-${s.pat}`, "aria-hidden": "true" }),
+        h("span", { class: "eyebrow", text: "🤓 Stażysta Staś" }), h("h1", { text: s.pl }),
+        h("p", { style: "font-size:.92rem", text: "Wybierz temat i popraw Stasia. Za każdy znaleziony błąd i każdą dobrą poprawkę dostajesz punkt." })),
+      !PAID() ? paywallCard("Stażysta Staś jest w pełnej wersji") : null,
+      star ? stasAdminPanel(s) : null,
+      !STAS.idx ? h("p", { class: "muted", text: "Ładuję…" }) : rows.length ? h("section", { class: "panel sk-panel" }, h("h2", { text: "Tematy" }), h("div", { class: "po-list" }, rows))
+        : h("p", { class: "muted", text: "Staś jeszcze nie przygotował wyjaśnień z tego przedmiotu." })];
+  }
+
+  // Ćwiczenie #/stasx/<id>: zaznacz złe zdania, sprawdź, wybierz poprawki.
+  function viewStasX() {
+    const id = S.route.id, it = STAS.idx?.[id], s = subjectById(it?.sid || String(id).split("~")[0]);
+    const head = backLink(s ? { view: "stas", id: s.id } : { view: "stas" });
+    if (!PAID()) return [head, paywallCard("Stażysta Staś jest w pełnej wersji")];
+    if (!STAS.idx) { stasLoad(); return [head, h("p", { class: "muted", text: "Ładuję…" })]; }
+    if (!it) return [head, h("p", { class: "notice", text: "Tego wyjaśnienia już nie ma." })];
+    const c = STAS.c[id];
+    if (c === undefined) {
+      STAS.c[id] = null;
+      S.db.doc("meta/stas~" + id).get().then((snap) => { STAS.c[id] = snap.exists ? snap.data() : false; }).catch(() => { STAS.c[id] = false; }).finally(() => { if (S.route.view === "stasx") render(); });
+      return [head, h("p", { class: "muted", text: "Ładuję…" })];
+    }
+    if (c === null) return [head, h("p", { class: "muted", text: "Ładuję…" })];
+    if (!c?.sentences?.length) return [head, h("p", { class: "notice", text: "Nie udało się wczytać wyjaśnienia. Spróbuj za chwilę." })];
+    if (STAS.openId !== id) stasReset(id, c);
+    const ss = c.sentences, wrong = ss.map((x, i) => (x.isWrong ? i : -1)).filter((i) => i >= 0), n = wrong.length;
+    const flags = STAS.flags, checked = STAS.checked, left = n - flags.size;
+    const toggle = (i) => { if (checked) return; if (flags.has(i)) flags.delete(i); else if (flags.size < n) flags.add(i); else { toast(`Masz tylko ${n} czerwone długopisy. Odznacz któreś zdanie.`); return; } render(); };
+    const sent = (x, i) => {
+      const f = flags.has(i), cls = ["stas-s"];
+      if (!checked && f) cls.push("flag");
+      if (checked) cls.push(x.isWrong ? (f ? "hit" : "miss") : f ? "false" : "");
+      return [h("span", { class: cls.join(" "), role: checked ? null : "button", tabindex: checked ? null : "0", "aria-pressed": checked ? null : String(f), translate: "no",
+        onclick: () => toggle(i), onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(i); } } }, inline(x.text)), " "];
+    };
+    const found = wrong.filter((i) => flags.has(i)).length, falseN = [...flags].filter((i) => !ss[i].isWrong).length;
+    const fixedN = wrong.filter((i) => flags.has(i) && STAS.pick[i] === 0).length;
+    const allPicked = wrong.filter((i) => flags.has(i)).every((i) => STAS.pick[i] != null);
+    const mood = !checked ? null : found === n && falseN === 0 ? "ok" : "oops";
+    const bubble = !checked ? (left > 0 ? `Szef mówi, że zrobiłem ${n} ${plural(n, "błąd", "błędy", "błędów")}. Kliknij zdania, które są złe.` : "Tyle samo zaznaczeń, ile błędów. Sprawdzamy?")
+      : found === n ? (falseN ? "Wszystkie moje błędy znalezione, ale jedno dobre zdanie też oberwało." : "Wszystkie znalezione! Teraz powiedz mi, jak powinno być.")
+      : found ? `Znalazłeś ${found} z ${n}. Resztę pokazuję na czerwono.` : "Ups, żadnego nie trafiłeś. Popatrz, gdzie się pomyliłem.";
+    // Karty poprawek: po sprawdzeniu, dla każdego błędu po kolei (trafiony: wybierasz poprawkę; przegapiony: od razu odpowiedź).
+    const fixCard = (i, no) => {
+      const x = ss[i], hit = flags.has(i), p = STAS.pick[i], opts = STAS.ord[i] || [0];
+      return h("div", { class: "stas-fix " + (hit ? "is-hit" : "is-miss") },
+        h("span", { class: "eyebrow", text: hit ? `Błąd ${no} · znaleziony ✓` : `Błąd ${no} · przegapiony` }),
+        h("p", { class: "stas-was", translate: "no" }, h("s", {}, inline(x.text))),
+        hit ? [h("p", { class: "po-qq", text: "Jak powinno być?" }),
+          h("div", { class: "po-opts", translate: "no" }, opts.map((oi) => h("button", { type: "button", class: "po-opt" + (p != null ? (oi === 0 ? " ok" : oi === p ? " bad" : "") : ""), disabled: p != null ? true : null,
+            onclick: () => { STAS.pick[i] = oi; render(); } }, inline(oi === 0 ? x.fix : x.alts[oi - 1]))))] : null,
+        !hit || p != null ? [
+          !hit ? h("p", { class: "stas-right", translate: "no" }, h("b", { text: "Powinno być: " }), inline(x.fix)) : null,
+          h("p", { class: "po-why " + (!hit ? "" : p === 0 ? "ok" : "bad") }, hit ? h("b", { text: p === 0 ? "Dobrze! " : "Nie ta poprawka. " }) : null, h("span", { translate: "no" }, inline(x.why || "")))] : null);
+    };
+    const finish = () => {
+      const prev = stasDone.get()[id], r = { f: found - falseN > 0 ? found - falseN : 0, x: fixedN, n };
+      if (!prev || r.f + r.x >= prev.f + prev.x) stasDone.set(id, r);
+      if (r.f === n && r.x === n && !(prev && prev.f === n && prev.x === n)) lpConfetti(24);
+      toast(`Staś dziękuje! ${r.f + r.x}/${n * 2} pkt.`);
+      STAS.openId = null; // następne wejście to nowe podejście
+      go(s ? { view: "stas", id: s.id } : { view: "stas" });
+    };
+    return [head,
+      h("section", { class: "po-head", style: `--c:${s?.color || "var(--accent)"}` },
+        h("span", { class: "eyebrow", text: `🤓 Stażysta Staś · ${s?.pl || ""}` }),
+        h("h1", { translate: "no", text: c.title || it.t }),
+        h("p", { class: "po-lead" }, h("span", { lang: "en", text: it.t }))),
+      h("div", { class: "stas-hero" }, stasFace(mood), h("p", { class: "stas-bubble", "aria-live": "polite", text: bubble })),
+      h("article", { class: "po-part stas-text" + (checked ? " is-checked" : "") }, ss.map(sent)),
+      !checked ? h("div", { class: "row po-nav stas-bar" },
+        h("span", { class: "stas-pens", "aria-label": `Zostało długopisów: ${left}` }, Array.from({ length: n }, (_, i) => h("i", { class: i < left ? "on" : "", "aria-hidden": "true", text: "✎" })),
+          h("span", { class: "muted", style: "font-size:.86rem", text: ` zaznaczone ${flags.size} z ${n}` })),
+        h("button", { type: "button", class: "btn primary", style: "margin-left:auto", disabled: flags.size ? null : true, onclick: () => { STAS.checked = true; render(); } }, "Sprawdź ✓")) : null,
+      checked ? h("section", { class: "stack stas-fixes" },
+        h("div", { class: "row stas-legend" }, h("span", { class: "chip good", text: `znalezione: ${found}/${n}` }), falseN ? h("span", { class: "chip plain", text: `dobre zdania zaznaczone: ${falseN}` }) : null),
+        falseN ? h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Szare zdania były dobre. Za każde takie zaznaczenie odejmujemy punkt za znalezione błędy." }) : null,
+        wrong.map((i, k) => fixCard(i, k + 1)),
+        allPicked ? h("div", { class: "panel sk-panel stas-sum" },
+          h("h2", { text: `Wynik: ${Math.max(0, found - falseN) + fixedN}/${n * 2} pkt` }),
+          h("p", { class: "muted", style: "margin:0", text: `Znalezione błędy: ${Math.max(0, found - falseN)}/${n} · dobre poprawki: ${fixedN}/${n}` }),
+          h("div", { class: "row" },
+            h("button", { type: "button", class: "btn ghost", onclick: () => { stasReset(id, c); render(); window.scrollTo({ top: 0 }); } }, "Jeszcze raz"),
+            h("button", { type: "button", class: "btn primary", style: "margin-left:auto", onclick: finish }, "Gotowe ✓"))) : null) : null,
+      poStarosta() ? h("p", { class: "muted", style: "font-size:.84rem", text: `Starosta: zrobione ${new Date(c.at || it.at || Date.now()).toLocaleDateString("pl-PL")}.` }) : null];
+  }
+  function stasReset(id, c) {
+    STAS.openId = id; STAS.flags = new Set(); STAS.checked = false; STAS.pick = {}; STAS.ord = {};
+    // Kolejność odpowiedzi losowana raz na podejście (0 = dobra poprawka).
+    (c.sentences || []).forEach((x, i) => { if (x.isWrong) STAS.ord[i] = [0, ...(x.alts || []).map((_, j) => j + 1)].sort(() => Math.random() - 0.5); });
+  }
+
+  // ---- Starosta: wyjaśnienia Stasia przez AI (S.sample), jak „Po zajęciach”.
+  const STAS_RULES = `Piszesz ćwiczenie „Stażysta Staś, który się myli” dla studentów 1. roku Business Management (Uniwersytet Szczeciński, zajęcia po angielsku). Staś to nowy, sympatyczny stażysta, który tłumaczy koledze temat zajęć, ale robi w wyjaśnieniu błędy. Student ma je znaleźć i poprawić.
+Zasady:
+- Pisz po polsku, prosto, jak student do studenta. Angielski termin dawaj w nawiasie przy pierwszym użyciu, bo zaliczenie jest po angielsku.
+- "sentences": 9-12 zdań, które razem są spójnym wyjaśnieniem tematu (definicja, jak to działa, przykład, po co to jest). Każde zdanie to osobny element, krótkie (do 30 słów), bez list i nagłówków.
+- Dokładnie 3 zdania mają "isWrong": true. Błąd ma być merytoryczny i wiarygodny: typowe pomylenie pojęć, odwrócona zależność, zły kierunek zmiany, zła liczba w rachunku, pomylony przykład. Nie literówki, nie absurdy, nie słowa „nie” dopisane na siłę. Błędy rozłóż po tekście (nie pierwsze zdanie). Reszta zdań musi być w 100% prawdziwa.
+- Dla złego zdania: "fix" = to samo zdanie poprawione (zmień jak najmniej), "alts" = 2 inne wersje tego zdania, które wyglądają jak poprawka, ale dalej są błędne, "why" = 1-2 zdania, dlaczego oryginał jest zły i jak zapamiętać poprawnie.
+- Dla dobrego zdania: tylko "text" i "isWrong": false.
+- Wzory tylko w LaTeX w \\( ... \\). Policz każdy rachunek dwa razy.
+- "title": krótki polski tytuł tematu.
+Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {"text": "...", "isWrong": true, "fix": "...", "alts": ["...", "..."], "why": "..."}]}`;
+  function stasClean(r) {
+    const ss = (Array.isArray(r?.sentences) ? r.sentences : []).map((x) => {
+      const text = txt(x?.text, 400), isWrong = x?.isWrong === true;
+      if (!isWrong) return { text, isWrong: false };
+      const fix = txt(x?.fix, 400), alts = (Array.isArray(x?.alts) ? x.alts : []).map((a) => txt(a, 400)).filter((a) => a && a !== fix && a !== text).slice(0, 2);
+      return { text, isWrong: true, fix, alts, why: txt(x?.why, 600) };
+    }).filter((x) => x.text && (!x.isWrong || (x.fix && x.fix !== x.text && x.alts.length))).slice(0, 16);
+    const n = ss.filter((x) => x.isWrong).length;
+    if (ss.length < 6 || n < 2 || n > 4) throw { code: "bad_ai" };
+    return { title: txt(r?.title, 140), sentences: ss };
+  }
+  async function stasGenerate(s, { k, t }) {
+    const syl = sylOf(s.id);
+    const ctx = syl ? `\nCELE PRZEDMIOTU: ${(syl.goals || []).join(" ").slice(0, 800)}\nEFEKTY: ${(syl.out || []).map((o) => o.t).join("; ").slice(0, 1200)}` : "";
+    const r = await S.sample.json(`${STAS_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nPRZEDMIOT: ${s.pl}${s.en ? ` (${s.en})` : ""}\nFORMA ZAJĘĆ: ${poKindLabel(k)}\nTEMAT: ${t}${ctx}`, { modelTier: "default" });
+    return { ...stasClean(r), at: Date.now() };
+  }
+  async function stasSave(id, meta, doc) {
+    await S.db.doc("meta/stas~" + id).set(doc);
+    const snap = await S.db.doc("meta/stas").get().catch(() => null);
+    const items = { ...((snap?.exists && snap.data()?.items) || STAS.idx || {}), [id]: { ...meta, n: doc.sentences.filter((x) => x.isWrong).length, at: doc.at } };
+    await S.db.doc("meta/stas").set({ items, updatedAt: Date.now() });
+    STAS.idx = items; STAS.c[id] = doc; if (STAS.openId === id) STAS.openId = null;
+  }
+  async function stasMakeOne(s, tp) {
+    if (STAS.busy) return;
+    STAS.busy = true; render(); toast("Staś pisze wyjaśnienie… (ok. 1 minuty)");
+    try { await stasSave(poSylId(s.id, tp.k, tp.t), { sid: s.id, k: tp.k, t: tp.t }, await stasGenerate(s, tp)); toast("Wyjaśnienie Stasia gotowe."); }
+    catch (e) { toast(e?.code === "bad_ai" ? "AI zwróciło złe ćwiczenie (za mało zdań albo błędów). Spróbuj jeszcze raz." : sampleError(e)); }
+    STAS.busy = false; render();
+  }
+  async function stasRunAll(s) {
+    if (STAS.busy) return;
+    const todo = poSylTopics(s.id).filter((tp) => !STAS.idx?.[poSylId(s.id, tp.k, tp.t)]);
+    if (!todo.length) { toast("Wszystkie tematy mają już wyjaśnienia Stasia."); return; }
+    STAS.busy = true; STAS.stop = false; STAS.log = []; STAS.done = 0; STAS.total = todo.length; render();
+    for (const tp of todo) {
+      if (STAS.stop) break;
+      const line = { title: tp.t, state: "run", detail: "" }; STAS.log.push(line); render();
+      try { await stasSave(poSylId(s.id, tp.k, tp.t), { sid: s.id, k: tp.k, t: tp.t }, await stasGenerate(s, tp)); line.state = "ok"; line.detail = "gotowe"; }
+      catch (e) {
+        line.state = "err"; line.detail = e?.code === "bad_ai" ? "złe ćwiczenie od AI" : sampleError(e);
+        if (["not_deployed", "no_function", "no_key", "not_granted"].includes(e?.code)) { STAS.stop = true; toast(line.detail); }
+      }
+      STAS.done++; render();
+    }
+    STAS.busy = false; render();
+  }
+  function stasAdminPanel(s) {
+    const missing = poSylTopics(s.id).filter((tp) => !STAS.idx?.[poSylId(s.id, tp.k, tp.t)]).length;
+    return h("section", { class: "panel sk-panel stas-admin" },
+      h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: "Starosta" }), h("h2", { text: "Wyjaśnienia Stasia" })),
+      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "AI pisze raz wyjaśnienie tematu z 3 ukrytymi błędami. Studenci widzą tylko gotowe tematy." }),
+      h("div", { class: "row" },
+        missing ? h("button", { type: "button", class: "btn primary", disabled: STAS.busy ? true : null, onclick: () => stasRunAll(s) }, STAS.busy && STAS.total ? "Robię…" : `Przygotuj brakujące z sylabusa (${missing})`) : h("span", { class: "chip good", text: "wszystkie tematy z sylabusa gotowe" }),
+        STAS.busy && STAS.total ? h("button", { type: "button", class: "btn ghost", onclick: () => { STAS.stop = true; render(); } }, STAS.stop ? "Zatrzymuję po bieżącym…" : "Zatrzymaj po bieżącym") : null),
+      STAS.total ? h("div", { class: "stack", style: "gap:4px" },
+        h("progress", { max: String(STAS.total), value: String(STAS.done), style: "width:100%;accent-color:var(--accent)", "aria-label": "Postęp wyjaśnień Stasia" }),
+        h("span", { class: "muted", style: "font-size:.86rem", text: `${STAS.done} z ${STAS.total}${STAS.busy ? "" : " · gotowe"}` })) : null,
+      STAS.log.length ? h("ul", { class: "pipeline" }, STAS.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { lang: "en", text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null);
+  }
+
   function viewMore() {
     const sk = window.skrot || {};
     const groupLabel = S.group ? `${S.group}${S.sub ? " · lab " + S.sub : ""}` : "nie wybrano";
@@ -10458,6 +10719,7 @@ Format JSON: {"title": "krótki polski tytuł zajęć", "lead": "...", "parts": 
         group("Nauka", [
           row("spark", "Graj i powtarzaj", "Fruń, Pary, Przejdź", () => go({ view: "gry" })),
           row("clock", "Po zajęciach w 5 minut", "co było na zajęciach, wytłumaczone w 5 minut", () => go({ view: "po" })),
+          row("t_zad", "Stażysta Staś", "znajdź błędy w jego wyjaśnieniu i popraw je", () => go({ view: "stas" })),
           hdMoreRow(row),
           PAID() ? row("flag", "Ranking kierunku", rankLabel(), () => go({ view: "ranking" })) : null,
           row("upload", "Moje materiały", "Twoje pliki opracowane jak materiały roku", () => go({ view: "mine" })),
@@ -12504,6 +12766,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const FAQ = [
       ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu. Możesz też raz wypróbować wszystko za darmo przez 3 dni.`],
       ["Nie byłem na wykładzie. Co teraz?", "Wejdź w Więcej → Po zajęciach w 5 minut (albo w przedmiot → ⚡ Po zajęciach w 5 minut), wybierz, o czym były zajęcia, i przeczytaj 5 krótkich kroków. W dniu zajęć, po ich końcu, podsumowanie pojawia się też samo na ekranie Dziś."],
+      ["Kim jest Stażysta Staś?", "To nowy stażysta, który tłumaczy temat z sylabusa, ale robi 2–3 błędy. Wejdź w Więcej → Stażysta Staś (albo w przedmiot → 🤓 Popraw Stasia), kliknij zdania, które są złe, sprawdź i wybierz poprawkę. Za każdy znaleziony błąd i każdą dobrą poprawkę dostajesz punkt."],
       ["Skąd biorę monety?", "Za dobre odpowiedzi w quizach, Powtórkach, lekcjach i grach (10 punktów rankingu = 1 moneta) i za Zadania dnia. Wydajesz je w Więcej → Sklep i monety na motywy."],
       ["Czy inni widzą moje imię w rankingu?", "Nie. W rankingu widać tylko pseudonim i punkty. Możesz się też całkiem ukryć: Więcej → Ranking kierunku → Pseudonim i widoczność."],
       ["Skąd są materiały?", "Prezentacje prowadzących z Teams służą tylko jako lista tematów. Opracowanie, przykłady, fiszki i quizy piszemy od nowa, a przy temacie zostaje odsyłacz do slajdów."],
