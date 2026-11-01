@@ -4,7 +4,7 @@ import fs from "fs";
 const require = createRequire(process.env.PW_FROM || process.env.HOME + "/matura-app/package.json");
 export const { chromium } = require("playwright");
 const DIR = new URL("./", import.meta.url).pathname;
-export const BASE = "http://127.0.0.1:8765/";
+export const BASE = process.env.BASE || "http://127.0.0.1:8765/";
 export const OUT = process.env.OUT || "/tmp/gry-shots";
 fs.mkdirSync(OUT, { recursive: true });
 const ATRAPA = fs.readFileSync(DIR + "atrapa-supabase.js", "utf8");

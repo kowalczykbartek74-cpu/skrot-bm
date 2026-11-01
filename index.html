@@ -3370,6 +3370,47 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
 .stas-card { border-left: 5px solid var(--c, var(--accent)); }
 .stas-card .stas-bubble { margin: 0; }
 @media (max-width: 600px) { .po-terms { grid-template-columns: 1fr; } .po-terms dd { margin-bottom: 6px; } .po-dot { width: 18px; } }
+/* Lekcja na przejazd (#/jazda) */
+.jz-setup { display: grid; gap: 14px; }
+.jz-mins { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.jz-min { display: grid; justify-items: center; gap: 0; padding: 10px 4px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; }
+.jz-min b { font-size: 1.35rem; line-height: 1.1; }
+.jz-min span { font-size: .78rem; color: var(--muted); }
+.jz-min.on, .jz-mode.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.jz-modes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.jz-mode { display: grid; gap: 2px; text-align: left; padding: 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; }
+.jz-mode span { font-size: .82rem; }
+.jz-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.jz-prog { width: 100%; }
+.jz-item { min-height: 46vh; display: grid; align-content: start; gap: 12px; padding: 20px 18px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); touch-action: pan-y; }
+.jz-item.lesson { border-top: 4px solid var(--accent); }
+.jz-q { font-size: 1.3rem; font-weight: 700; line-height: 1.35; }
+.jz-a { font-size: 1.12rem; padding: 12px 14px; border-radius: 12px; background: var(--accent-soft); }
+.jz-reveal { justify-self: start; }
+.jz-text { font-size: 1.08rem; }
+.jz-tip { padding: 10px 12px; border-radius: 12px; background: var(--sun-soft); }
+.jz-thumb { position: sticky; bottom: calc(var(--tabbar-h) + 10px); display: grid; grid-template-columns: 1fr 1.4fr 1.4fr; gap: 8px; }
+.jz-thumb:has(> :nth-child(2):last-child) { grid-template-columns: 1fr 1fr; }
+.jz-thumb .btn { min-height: 56px; font-size: 1.05rem; border-radius: 14px; }
+.jz-rate { gap: 6px; align-items: center; }
+.jz-done { text-align: center; justify-items: center; }
+/* 10 minut przed snem (#/noc): ciepła, przyciemniona paleta i większe litery */
+.noc-card { background: linear-gradient(135deg, #2a1c0e, #3a2712); border-color: #5a3f1e; color: #f6e3c4; }
+.noc-card .muted, .noc-card .eyebrow { color: #e2c89d; }
+.noc-card .chip { background: #4a3218; color: #ffd28a; border-color: #6b4a22; }
+.noc-card .btn.primary { background: #f0a83a; border-color: #f0a83a; color: #2a1a08; }
+body.night { --paper: #17110a; --surface: #21180e; --sunk: #2a1f12; --ink: #f6e3c4; --ink-2: #f0dab4; --muted: #d6bb92; --line: #4a3622;
+  --accent: #f0a83a; --accent-hover: #ffbb55; --accent-ink: #2a1a08; --accent-soft: #3a2914; --accent-text: #ffd28a; --accent-strong: #ffd28a;
+  --mint-100: #2a1f12; --lime-100: #2e2213; --green-200: #4a3622; --grid: transparent; --sun-soft: #3a2914;
+  --good: #e8c26a; --good-soft: #3a3014; --bad: #ff9b7a; --bad-soft: #3d1f16; --shadow: none; --mixk: #FFFFFF; --mixw: #000000;
+  color-scheme: dark; background-color: #17110a; background-image: none; font-size: 18px; }
+body.night main .noc-box { display: grid; gap: 16px; padding: 22px 18px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+.noc-q { font-size: 1.3rem; font-weight: 700; line-height: 1.4; }
+.noc-a { font-size: 1.15rem; padding: 12px 14px; border-radius: 12px; background: var(--accent-soft); }
+.noc-end { text-align: center; justify-items: center; }
+.noc-moon { font-size: 3.2rem; line-height: 1; filter: drop-shadow(0 0 18px rgba(240, 168, 58, .45)); }
+body.night .po-opt { font-size: 1.05rem; padding: 12px 14px; }
+@media (max-width: 600px) { .jz-mins { grid-template-columns: repeat(4, minmax(0, 1fr)); } .jz-modes { grid-template-columns: 1fr; } }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -4154,7 +4195,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
   // Sześć zakładek (na telefonie „Więcej” jest w lewym górnym rogu, na dole zostaje pięć), każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
   const NAV_ITEMS = [["home", "Dziś"], ["materials", "Przedmioty"], ["review", "Powtórki"], ["terms", "Terminy"], ["calendar", "Kalendarz"], ["more", "Więcej"]];
   const NAV_OF = {
-    home: "home", boss: "home", po: "home", po5: "home", stas: "more", stasx: "more",
+    home: "home", boss: "home", po: "home", po5: "home", stas: "more", stasx: "more", jazda: "home", noc: "home",
     materials: "materials", subject: "materials", material: "materials", subjectQuiz: "materials", exam: "materials", cheat: "materials", upload: "materials",
     review: "review", progress: "review",
     terms: "terms",
@@ -4212,7 +4253,10 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
     renderNav();
     const v = S.route.view;
     $("main").dataset.view = v || "home";
-    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, stas: viewStas, stasx: viewStasX, reading: viewReading, compare: viewCompare, guide: viewGuide }[v];
+    // Przed snem: ciepły, przyciemniony wygląd tylko na tym ekranie. Wyjście z przejazdu ucisza czytanie.
+    document.body.classList.toggle("night", v === "noc");
+    if (v !== "jazda" && JZ.st?.playing) jzStop();
+    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, jazda: viewJazda, noc: viewNoc, stas: viewStas, stasx: viewStasX, reading: viewReading, compare: viewCompare, guide: viewGuide }[v];
     if (!fn) {
       // Nieznany adres (np. literówka w linku): mówimy o tym zamiast po cichu pokazywać Dziś.
       if (v && v !== "home") { toast("Nie ma takiej strony. Pokazuję ekran Dziś."); S.route = { view: "home" }; try { history.replaceState({ view: "home" }, "", "#/"); } catch {} }
@@ -5205,7 +5249,9 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
       // Krótki ekran: „Teraz zrób to”, zajęcia dziś lub jutro, najbliższy termin. Postęp i nowości są zwinięte na dole.
       // W dniu zajęć, po ich końcu: „Po zajęciach w 5 minut” na samej górze (powód, żeby wejść).
+      nocHomeCard(),
       needGroup() ? null : poHomeCard(),
+      needGroup() ? null : jzHomeCard(),
       needGroup() ? null : bsHomeCard(),
       needGroup() ? groupStep() : nowCard(),
       needGroup() ? null : guideStrip(),
@@ -8305,7 +8351,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
   // Zła odpowiedź w grze: fiszki tego materiału (najwyżej 5) do Powtórek, pytanie na listę pomylonych.
   function gryOnWrong(q) {
     const mid = q?.materialId; if (mid == null) return;
-    if (q.index != null) gryWrong.add(mid + ":" + q.index);
+    if (q.index != null) { gryWrong.add(mid + ":" + q.index); dayMiss.add("q:" + mid + ":" + q.index); }
     const c = S.content[mid];
     if (c?.flashcards?.length) srsAdd(c.flashcards.slice(0, 5).map((f) => cardKey(mid, f)));
   }
@@ -9307,6 +9353,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
         const q = card?.type === "mc" && /^q\d+$/.test(card.id) ? qs[+card.id.slice(1)] : null;
         if (!q || q.materialId == null || r?.pick == null || isMine(materialById(q.materialId))) return;
         qSeen.add(q.materialId, q.index);
+        if (r.pick !== card.correct) dayMiss.add("q:" + q.materialId + ":" + q.index);
         if (sent.has(card.id)) return;
         sent.add(card.id); rpSend("odp", { mid: q.materialId, idx: q.index, wybor: r.pick, zrodlo: "quiz" });
       },
@@ -10745,6 +10792,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
           row("spark", "Graj i powtarzaj", "Fruń, Pary, Przejdź", () => go({ view: "gry" })),
           row("clock", "Po zajęciach w 5 minut", "co było na zajęciach, wytłumaczone w 5 minut", () => go({ view: "po" })),
           row("t_zad", "Stażysta Staś", "znajdź błędy w jego wyjaśnieniu i popraw je", () => go({ view: "stas" })),
+          row("calendar", "Lekcja na przejazd", "fiszki i mikrolekcje na tyle minut, ile jedziesz", () => go({ view: "jazda" })),
+          row("review", "10 minut przed snem", "tylko dzisiejsze błędy, bez nowego materiału", () => go({ view: "noc" })),
           hdMoreRow(row),
           PAID() ? row("flag", "Ranking kierunku", rankLabel(), () => go({ view: "ranking" })) : null,
           row("upload", "Moje materiały", "Twoje pliki opracowane jak materiały roku", () => go({ view: "mine" })),
@@ -12792,6 +12841,8 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu. Możesz też raz wypróbować wszystko za darmo przez 3 dni.`],
       ["Nie byłem na wykładzie. Co teraz?", "Wejdź w Więcej → Po zajęciach w 5 minut (albo w przedmiot → ⚡ Po zajęciach w 5 minut), wybierz, o czym były zajęcia, i przeczytaj 5 krótkich kroków. W dniu zajęć, po ich końcu, podsumowanie pojawia się też samo na ekranie Dziś."],
       ["Kim jest Stażysta Staś?", "To nowy stażysta, który tłumaczy temat z sylabusa, ale robi 2–3 błędy. Wejdź w Więcej → Stażysta Staś (albo w przedmiot → 🤓 Popraw Stasia), kliknij zdania, które są złe, sprawdź i wybierz poprawkę. Za każdy znaleziony błąd i każdą dobrą poprawkę dostajesz punkt."],
+      ["Jadę 20 minut tramwajem. Da się wtedy coś zrobić?", "Tak: Więcej → Lekcja na przejazd. Wybierasz, ile jedziesz, a strona układa fiszki z „Dziś do powtórki” i krótkie mikrolekcje z jednego przedmiotu (najbliższe zajęcia) dokładnie na ten czas. Możesz słuchać (czyta na głos) albo przewijać kciukiem. Do dwóch godzin przed zajęciami karta pojawia się też sama na ekranie Dziś."],
+      ["Co to jest „10 minut przed snem”?", "Po 21:30 na ekranie Dziś pojawia się karta z dzisiejszymi błędami: fiszkami, przy których było „Nie pamiętam”, i złymi odpowiedziami z quizów i gier. Bez nowego materiału, w ciemnym, ciepłym wyglądzie i większymi literami. O każdej porze znajdziesz to w Więcej → 10 minut przed snem."],
       ["Skąd biorę monety?", "Za dobre odpowiedzi w quizach, Powtórkach, lekcjach i grach (10 punktów rankingu = 1 moneta) i za Zadania dnia. Wydajesz je w Więcej → Sklep i monety na motywy."],
       ["Czy inni widzą moje imię w rankingu?", "Nie. W rankingu widać tylko pseudonim i punkty. Możesz się też całkiem ukryć: Więcej → Ranking kierunku → Pseudonim i widoczność."],
       ["Skąd są materiały?", "Prezentacje prowadzących z Teams służą tylko jako lista tematów. Opracowanie, przykłady, fiszki i quizy piszemy od nowa, a przy temacie zostaje odsyłacz do slajdów."],
@@ -13252,6 +13303,266 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     return studyMats(sid).filter((m) => !out.has(m.id) && !extra.has(m.id));
   };
 
+  // ================= Na przejazd (#/jazda) i Przed snem (#/noc) =================
+  // Na przejazd: wybierasz, ile jedziesz (np. 18 min), a strona układa playlistę z jednego przedmiotu (najbliższe zajęcia):
+  // najpierw fiszki z „Dziś do powtórki”, potem mikrolekcje (jedna część lekcji). Każdy element ma durationSec,
+  // dobór jest zachłanny, aż suma będzie blisko wybranego czasu. Tryb „Słuchaj” czyta wszystko głosem przeglądarki,
+  // „Przewijaj” to karty pod kciuk (przesunięcie palcem albo duże przyciski na dole).
+  // Przed snem: po 21:30 karta na Dziś, a w środku tylko dzisiejsze błędy (fiszki „Nie pamiętam” i złe odpowiedzi
+  // w quizach i grach), bez nowego materiału, w ciepłym, przyciemnionym wyglądzie (body.night).
+  const JZ = { st: null, tok: 0, tm: 0 };
+  const JZ_MINS = [5, 10, 15, 18, 20, 25, 30, 40];
+  // Mikrolekcje z przejazdów, które już były: { "mid:k": dzień }, najpierw idą te jeszcze niesłuchane.
+  const jzSeen = { get() { try { return JSON.parse(ls.get("bm-jazda-seen") || "{}") || {}; } catch { return {}; } },
+    add(k) { const o = this.get(); o[k] = dayN(); const e = Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, 400); ls.set("bm-jazda-seen", JSON.stringify(Object.fromEntries(e))); } };
+  const jzClean = (s) => String(s || "").replace(/\*\*|\*/g, "").replace(/\\\(|\\\)|\\\[|\\\]/g, "").replace(/\\[a-z]+/gi, " ").replace(/\s+/g, " ").trim();
+  // ~2,4 słowa na sekundę czytania na głos + chwila na myślenie.
+  const jzSecs = (t, extra = 0) => Math.max(8, Math.round(jzClean(t).split(" ").filter(Boolean).length / 2.4) + extra);
+  const jzLang = (t) => (/[ąćęłńśźż]/i.test(t) || /\b(jest|się|nie|oraz|czyli|który|która|które|albo|żeby|to)\b/i.test(t) ? "pl-PL" : "en-GB");
+  const jzStart = (e) => (e.time ? e.time[0] : SLOTS[e.s][0]);
+  // Przedmiot najbliższych zajęć, które się jeszcze nie zaczęły (dziś, potem jutro), inaczej najbliższe zaliczenie.
+  function jzNext() {
+    if (!needGroup()) {
+      const now = new Date(), nowMin = now.getHours() * 60 + now.getMinutes();
+      for (const [k, today] of [[todayKey(), true], [dkey(addDays(now, 1)), false]]) {
+        const list = classesDz(k, S.group, S.sub).filter((e) => !e.off && (!today || hm(jzStart(e)) > nowMin)).sort((a, b) => hm(jzStart(a)) - hm(jzStart(b)));
+        for (const e of list) { const sid = slug(e.pl); if (subjectById(sid)) return { sid, e, today, min: today ? hm(jzStart(e)) - nowMin : null }; }
+      }
+    }
+    const ex = SUBJECTS.map((s) => ({ sid: s.id, x: nextExam(s.id) })).filter((x) => x.x).sort((a, b) => a.x.date.localeCompare(b.x.date))[0];
+    return ex ? { sid: ex.sid } : SUBJECTS[0] ? { sid: SUBJECTS[0].id } : null;
+  }
+  async function jzBuild(sid, mins) {
+    const T = mins * 60, { due, fresh } = srsDue(sid), keys = [...due, ...fresh];
+    const lessons = lessonsOf(sid).filter(readable), files = filesOf(sid).filter(readable);
+    const fromKeys = [...new Set(keys.filter((k) => !k.startsWith("g:")).map((k) => k.split(":")[0]))].map(materialById).filter((m) => m && readable(m));
+    const mats = [...new Set([...fromKeys, ...lessons.slice(0, 14), ...(lessons.length ? [] : files.slice(0, 8))])];
+    const [pairs] = await Promise.all([loadContents(mats), keys.some((k) => k.startsWith("g:")) ? loadGlossary().catch(() => null) : null]);
+    const byId = new Map(pairs.map(([m, c]) => [m.id, c]));
+    const cards = resolveCards(keys, pairs).cards.map((c) => ({ t: "card", key: c.key, q: c.q, a: c.a, label: c.label, durationSec: jzSecs(c.q + " " + c.a, 6) }));
+    const seen = jzSeen.get(), micro = [];
+    for (const m of lessons) (byId.get(m.id)?.lesson?.sections || []).forEach((sec, k) => {
+      const text = sec.intuition || firstSentence(sec.body, 420);
+      if (!text) return;
+      micro.push({ t: "lesson", id: m.id + ":" + k, title: lpH(sec.h), lead: m.title || "", text, tip: sec.tip || "", durationSec: jzSecs([sec.h, text, sec.tip].join(" "), 4) });
+    });
+    if (!micro.length) for (const m of files) (byId.get(m.id)?.concepts || []).forEach((x, k) => {
+      if (!x.term || !x.definition) return;
+      micro.push({ t: "lesson", id: m.id + ":c" + k, title: x.term, lead: x.pl || m.title || "", text: firstSentence(x.definition, 320), tip: "", durationSec: jzSecs(x.term + " " + x.definition, 3) });
+    });
+    // Niesłuchane najpierw, w kolejności lekcji; słuchane od najdawniej.
+    micro.sort((a, b) => (seen[a.id] ?? -1) - (seen[b.id] ?? -1));
+    // Zachłannie: fiszki „Dziś do powtórki” mają pierwszeństwo, ale najwyżej 60% czasu, żeby został jeden temat do posłuchania.
+    // Potem mikrolekcje, a resztę czasu znowu fiszki. Margines ±20 s.
+    let sum = 0;
+    const take = (list, cap, out) => { for (const x of list) { if (x.used || sum + x.durationSec > cap + 20) continue; x.used = true; out.push(x); sum += x.durationSec; if (sum >= cap - 20) break; } };
+    const pc = [], pl = [];
+    take(cards, micro.length ? T * 0.6 : T, pc);
+    take(micro, T, pl);
+    take(cards, T, pc);
+    // Kolejność: mikrolekcja, potem do 3 fiszek, i tak na zmianę.
+    const items = [];
+    while (pl.length || pc.length) { if (pl.length) items.push(pl.shift()); items.push(...pc.splice(0, 3)); }
+    return { items, total: sum, dueN: keys.length };
+  }
+  function jzStop() { JZ.tok++; clearTimeout(JZ.tm); try { speechSynthesis.cancel(); } catch {} if (JZ.st) JZ.st.playing = false; }
+  // Czyta po kolei części (tekst albo { pause: ms }), potem woła onEnd. Stary odczyt (tok) nic już nie robi.
+  function jzSay(parts, onEnd) {
+    jzStop();
+    const tok = JZ.tok, ss = window.speechSynthesis;
+    if (!ss || !window.SpeechSynthesisUtterance) { toast("Ta przeglądarka nie umie czytać na głos. Przełącz na Przewijaj."); return; }
+    JZ.st.playing = true;
+    const voices = ss.getVoices();
+    let i = 0;
+    const next = () => {
+      if (tok !== JZ.tok) return;
+      if (i >= parts.length) { JZ.st.playing = false; onEnd?.(); return; }
+      const p = parts[i++];
+      if (!p) return next();
+      if (p.pause) { JZ.tm = setTimeout(next, p.pause); return; }
+      const u = new SpeechSynthesisUtterance(jzClean(p)), lang = jzLang(p);
+      u.lang = lang; u.rate = JZ.st.rate || 1;
+      const v = voices.find((x) => x.lang === lang) || voices.find((x) => x.lang?.startsWith(lang.slice(0, 2)));
+      if (v) u.voice = v;
+      u.onend = next; u.onerror = next;
+      ss.speak(u);
+    };
+    next();
+  }
+  function jzPlayCur() {
+    const J = JZ.st; if (!J || J.mode !== "audio") return;
+    const it = J.items[J.pos];
+    if (!it) return jzStop();
+    const parts = it.t === "card" ? [it.q, { pause: 3500 }, it.a, { pause: 900 }] : [it.title, { pause: 400 }, it.text, it.tip ? { pause: 400 } : null, it.tip, { pause: 900 }];
+    jzSay(parts, () => { J.rev = true; jzGo(1, true); });
+  }
+  function jzGo(d, auto) {
+    const J = JZ.st; if (!J) return;
+    const it = J.items[J.pos];
+    if (d > 0 && it) { J.heard.add(J.pos); if (it.t === "lesson") jzSeen.add(it.id); }
+    J.pos = Math.max(0, Math.min(J.items.length, J.pos + d)); J.rev = false;
+    if (J.pos >= J.items.length) { jzStop(); if (!J.doneAt) { J.doneAt = Date.now(); lpConfetti(24); } }
+    render();
+    if (J.mode === "audio" && J.pos < J.items.length && (auto || J.playing !== false)) jzPlayCur();
+  }
+  function jzGrade(ok) {
+    const J = JZ.st, it = J?.items[J.pos]; if (!it || it.t !== "card") return;
+    srsGrade(it.key, ok ? 2 : 0); rpSend("powtorka", it.key);
+    J.graded[J.pos] = ok; jzGo(1);
+  }
+  async function jzBegin(sid, mins, mode) {
+    ls.set("bm-jazda-min", String(mins)); ls.set("bm-jazda-tryb", mode);
+    JZ.st = { loading: true, sid, mins, mode, rate: +(ls.get("bm-jazda-tempo") || 1) || 1 };
+    // iOS pozwala mówić tylko po kliknięciu: pusty odczyt od razu odblokowuje głos.
+    if (mode === "audio") try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(" ")); } catch {}
+    render();
+    let r;
+    try { r = await jzBuild(sid, mins); } catch { r = { items: [], total: 0 }; }
+    if (JZ.st?.sid !== sid || S.route.view !== "jazda") return;
+    JZ.st = { ...JZ.st, loading: false, ...r, pos: 0, rev: false, heard: new Set(), graded: {}, playing: false };
+    render();
+    if (r.items.length && r.total < mins * 60 - 60) toast(`Z tego przedmiotu starczyło na ok. ${Math.max(1, Math.round(r.total / 60))} min.`);
+    if (mode === "audio" && r.items.length) jzPlayCur();
+  }
+  function jzHomeCard() {
+    if (!S.ready || S.noDb || needGroup()) return null;
+    const nx = jzNext(); if (!nx?.today || nx.min == null || nx.min < 5 || nx.min > 120) return null;
+    const s = subjectById(nx.sid);
+    return h("section", { class: "panel sk-panel jz-card", style: `--c:${s?.color || "var(--accent)"}`, "aria-label": "Lekcja na przejazd" },
+      h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: "🚋 Jedziesz na zajęcia?" }), h("span", { class: "chip sun num", text: `za ${nx.min} min` })),
+      h("h2", { text: s?.pl || nx.e.pl }),
+      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Fiszki z „Dziś do powtórki” i krótkie mikrolekcje z tego przedmiotu, dokładnie na tyle minut, ile jedziesz. Do słuchania albo przewijania kciukiem." }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "jazda" }) }, "Ułóż mi przejazd →")));
+  }
+  function viewJazda() {
+    const J = JZ.st;
+    const head = (sub) => h("section", { class: "stack" }, backLink({ view: "home" }), h("span", { class: "eyebrow", text: "🚋 Lekcja na przejazd" }), h("h1", { class: "ptitle", text: sub }));
+    if (J?.loading) return [head("Układam playlistę…"), h("p", { class: "muted", text: "Zbieram fiszki i mikrolekcje." })];
+    if (!J || J.setup) {
+      const nx = jzNext(), saved = +(ls.get("bm-jazda-min") || 18) || 18;
+      const F = JZ.form = JZ.form || { sid: nx?.sid || "", mins: saved, mode: ls.get("bm-jazda-tryb") || "tap" };
+      if (!F.sid || !subjectById(F.sid)) F.sid = nx?.sid || SUBJECTS[0]?.id || "";
+      const td = F.sid ? srsToday(F.sid) : { n: 0 };
+      const pick = (k, v) => { F[k] = v; render(); };
+      return [head("Ile jedziesz?"),
+        h("p", { class: "muted", text: "Dojedziesz na zajęcia z jednym tematem w głowie. Wybierz, ile trwa dojazd, a ułożymy fiszki i mikrolekcje dokładnie na ten czas." }),
+        h("section", { class: "panel jz-setup" },
+          h("div", { class: "jz-mins", role: "group", "aria-label": "Czas przejazdu" }, JZ_MINS.map((m) => h("button", { type: "button", class: "jz-min" + (F.mins === m ? " on" : ""), "aria-pressed": F.mins === m ? "true" : "false", onclick: () => pick("mins", m) }, h("b", { class: "num", text: m }), h("span", { text: "min" })))),
+          h("label", { class: "field" }, "Przedmiot",
+            h("select", { class: "input", onchange: (e) => pick("sid", e.target.value) }, SUBJECTS.map((s) => h("option", { value: s.id, selected: s.id === F.sid ? "" : null, text: s.pl + (nx?.sid === s.id && nx.e ? (nx.today ? " (najbliższe zajęcia dziś)" : " (zajęcia jutro)") : "") })))),
+          h("p", { class: "muted num", style: "margin:0;font-size:.9rem", text: td.n ? `Z tego przedmiotu czeka ${td.n} ${plural(td.n, "fiszka", "fiszki", "fiszek")} do powtórki. Pójdą jako pierwsze.` : "Z tego przedmiotu nic dziś nie czeka w powtórkach, więc będą głównie mikrolekcje." }),
+          h("div", { class: "jz-modes", role: "group", "aria-label": "Jak chcesz się uczyć" },
+            [["tap", "👆 Przewijaj", "karty pod kciuk"], ["audio", "🎧 Słuchaj", "czyta na głos, sam przechodzi dalej"]].map(([k, t, d]) => h("button", { type: "button", class: "jz-mode" + (F.mode === k ? " on" : ""), "aria-pressed": F.mode === k ? "true" : "false", onclick: () => pick("mode", k) }, h("b", { text: t }), h("span", { class: "muted", text: d })))),
+          h("button", { type: "button", class: "btn primary sk-start", disabled: F.sid ? null : true, onclick: () => jzBegin(F.sid, F.mins, F.mode) }, `Ruszamy (${F.mins} min) →`)),
+        F.mode === "audio" ? h("p", { class: "muted", style: "font-size:.86rem", text: "Słuchawki w uszy. Telefon czyta głosem przeglądarki, więc nie blokuj ekranu w trakcie." }) : null];
+    }
+    const s = subjectById(J.sid);
+    if (!J.items.length) return [head(s?.pl || "Przejazd"), h("div", { class: "empty small", text: "Nie ma jeszcze nic do ułożenia z tego przedmiotu (brak lekcji i fiszek, które możesz otworzyć). Wybierz inny przedmiot." }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => { JZ.st = { setup: true }; render(); } }, "Zmień przedmiot"))];
+    if (J.pos >= J.items.length) {
+      const nc = J.items.filter((x) => x.t === "card").length, nl = J.items.length - nc, ok = Object.values(J.graded).filter(Boolean).length;
+      return [head("Dojechane! 🚋"), h("section", { class: "sk-hero jz-done" },
+        h("p", { class: "big", text: `Temat w głowie: ${s?.pl || ""}.` }),
+        h("p", { class: "num", text: `${nl} ${plural(nl, "mikrolekcja", "mikrolekcje", "mikrolekcji")} · ${nc} ${plural(nc, "fiszka", "fiszki", "fiszek")}` + (Object.keys(J.graded).length ? ` · pamiętasz ${ok} z ${Object.keys(J.graded).length}` : "") }),
+        h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { JZ.st = null; go({ view: "home" }); } }, "Na ekran Dziś"), h("button", { type: "button", class: "btn", onclick: () => { JZ.st = { setup: true }; render(); } }, "Jeszcze jeden przejazd")))];
+    }
+    const it = J.items[J.pos], left = J.items.slice(J.pos).reduce((a, x) => a + x.durationSec, 0), pct = 100 * (1 - left / Math.max(1, J.total));
+    let sx = null;
+    const card = h("div", { class: "jz-item " + it.t, ontouchstart: (e) => { sx = e.touches[0].clientX; }, ontouchend: (e) => { if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; sx = null; if (Math.abs(dx) > 60) jzGo(dx < 0 ? 1 : -1); } },
+      it.t === "card"
+        ? [h("span", { class: "eyebrow", text: "Fiszka · Dziś do powtórki" }), h("p", { class: "jz-q", text: it.q }),
+          J.rev || J.mode === "audio" ? h("p", { class: "jz-a", text: it.a }) : h("button", { type: "button", class: "btn jz-reveal", onclick: () => { J.rev = true; render(); } }, "Pokaż odpowiedź"),
+          h("p", { class: "muted", style: "font-size:.82rem", text: it.label || "" })]
+        : [h("span", { class: "eyebrow", text: "Mikrolekcja" + (it.lead ? " · " + it.lead : "") }), h("h2", { class: "jz-t", text: it.title }), rich(it.text, "jz-text"), it.tip ? h("p", { class: "jz-tip" }, h("b", { text: "Zapamiętaj: " }), inline(it.tip)) : null]);
+    const grade = it.t === "card" && J.rev && J.mode !== "audio";
+    return [h("section", { class: "jz-bar" },
+        h("button", { type: "button", class: "back", onclick: () => { jzStop(); JZ.st = { setup: true }; render(); } }, h("span", { "aria-hidden": "true", text: "←" }), "Zakończ"),
+        h("span", { class: "num muted", text: `${J.pos + 1}/${J.items.length} · zostało ok. ${Math.max(1, Math.round(left / 60))} min` })),
+      h("div", { class: "progress jz-prog", "aria-hidden": "true" }, h("i", { style: `width:${pct}%` })),
+      card,
+      h("div", { class: "jz-thumb" },
+        grade ? [h("button", { type: "button", class: "btn rv-again", onclick: () => jzGrade(false) }, "Nie pamiętam"), h("button", { type: "button", class: "btn rv-good", onclick: () => jzGrade(true) }, "Pamiętam")]
+          : [h("button", { type: "button", class: "btn", "aria-label": "Poprzednie", disabled: J.pos ? null : true, onclick: () => jzGo(-1) }, "◀"),
+            J.mode === "audio" ? h("button", { type: "button", class: "btn", onclick: () => { if (J.playing) { jzStop(); render(); } else { jzPlayCur(); render(); } } }, J.playing ? "⏸ Pauza" : "▶ Czytaj")
+              : h("span", { class: "muted", style: "font-size:.82rem;align-self:center", text: TOUCH ? "przesuń palcem" : "" }),
+            h("button", { type: "button", class: "btn primary", "aria-label": "Dalej", onclick: () => jzGo(1) }, "Dalej ▶")]),
+      J.mode === "audio" ? h("div", { class: "row jz-rate" }, h("span", { class: "muted", text: "Tempo:" }), [0.9, 1, 1.2, 1.4].map((r) => h("button", { type: "button", class: "chip" + (J.rate === r ? " good" : ""), onclick: () => { J.rate = r; ls.set("bm-jazda-tempo", String(r)); if (J.playing) jzPlayCur(); render(); } }, r + "×"))) : null];
+  }
+
+  // Dzisiejsze błędy: { klucz: dzień }, klucz "f:<fiszka>" albo "q:<mid>:<idx>" (pytanie z quizu lub gry), max 300.
+  const dayMiss = { get() { try { return JSON.parse(ls.get("bm-bledy") || "{}") || {}; } catch { return {}; } },
+    add(k) { const o = this.get(); delete o[k]; o[k] = dayN(); const e = Object.entries(o); ls.set("bm-bledy", JSON.stringify(Object.fromEntries(e.slice(-300)))); },
+    today() { const t = dayN(); return Object.entries(this.get()).filter(([, d]) => d === t).map(([k]) => k); } };
+  const NOC_MAX = 15;
+  const nocTime = (d = new Date()) => { const m = d.getHours() * 60 + d.getMinutes(); return m >= 21 * 60 + 30 || m < 4 * 60; };
+  const NOC = { st: null };
+  function nocHomeCard() {
+    if (!S.ready || !nocTime()) return null;
+    const n = dayMiss.today().length; if (!n) return null;
+    const k = Math.min(n, NOC_MAX);
+    return h("section", { class: "panel noc-card", "aria-label": "10 minut przed snem" },
+      h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: "🌙 10 minut przed snem" }), h("span", { class: "chip num", text: `${k} ${plural(k, "błąd", "błędy", "błędów")}` })),
+      h("h2", { text: "Powtórz dzisiejsze błędy" }),
+      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Bez nowego materiału. Powtórka tuż przed snem pomaga mózgowi utrwalić to, co było dziś do nauki." }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "noc" }) }, "Zaczynamy 🌙")));
+  }
+  async function nocLoad() {
+    const keys = dayMiss.today().reverse().slice(0, NOC_MAX);
+    const fk = keys.filter((k) => k.startsWith("f:")).map((k) => k.slice(2)), qk = keys.filter((k) => k.startsWith("q:")).map((k) => k.slice(2).split(":"));
+    const mats = [...new Set([...fk.filter((k) => !k.startsWith("g:")).map((k) => k.split(":")[0]), ...qk.map(([mid]) => mid)])].map(materialById).filter((m) => m && readable(m));
+    const [pairs] = await Promise.all([loadContents(mats), fk.some((k) => k.startsWith("g:")) ? loadGlossary().catch(() => null) : null]);
+    await Promise.all([...new Set(qk.map(([mid]) => mid))].map((mid) => getWhy(mid).catch(() => null)));
+    const byId = new Map(pairs.map(([m, c]) => [m.id, c]));
+    const cards = new Map(resolveCards(fk, pairs).cards.map((c) => [c.key, c]));
+    const items = [];
+    for (const k of keys) {
+      if (k.startsWith("f:")) { const c = cards.get(k.slice(2)); if (c) items.push({ t: "card", q: c.q, a: c.a, label: c.label }); continue; }
+      const [mid, idx] = k.slice(2).split(":"), q = byId.get(mid)?.quiz?.[+idx];
+      if (q?.q && q.options?.length) items.push({ t: "q", q: q.q, options: q.options, correct: q.correct, why: lpFirstSentence(S.why[mid]?.items?.[+idx]?.why || q.explanation || ""), label: materialById(mid)?.title || "" });
+    }
+    return items;
+  }
+  function viewNoc() {
+    const N = NOC.st;
+    const head = h("section", { class: "stack" }, backLink({ view: "home" }), h("span", { class: "eyebrow", text: "🌙 10 minut przed snem" }));
+    if (!N || N.day !== dayN()) {
+      NOC.st = { loading: true, day: dayN() };
+      nocLoad().then((items) => { NOC.st = { day: dayN(), items, pos: -1, rev: false, pick: null, ok: 0 }; if (S.route.view === "noc") render(); })
+        .catch(() => { NOC.st = { day: dayN(), items: [], pos: -1 }; if (S.route.view === "noc") render(); });
+      return [head, h("p", { class: "muted", text: "Zbieram dzisiejsze błędy…" })];
+    }
+    if (N.loading) return [head, h("p", { class: "muted", text: "Zbieram dzisiejsze błędy…" })];
+    const again = () => { NOC.st = null; render(); };
+    if (!N.items.length) return [head, h("section", { class: "noc-box" }, h("h1", { text: "Dziś bez błędów do powtórki" }), h("p", { text: "Nie było dziś „Nie pamiętam” ani złych odpowiedzi. Śpij spokojnie 😴" }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "home" }) }, "Dobranoc"))) ];
+    const n = N.items.length;
+    if (N.pos < 0) return [head, h("section", { class: "noc-box" },
+      h("h1", { text: "Tylko dzisiejsze błędy" }),
+      h("p", { class: "num", text: `${n} ${plural(n, "rzecz", "rzeczy", "rzeczy")} do powtórki, około ${Math.max(2, Math.round(n * 0.6))} min. Nic nowego.` }),
+      h("p", { class: "muted", text: "Powtórka tuż przed snem pomaga mózgowi utrwalić to, co było dziś do nauki. Potem odłóż telefon." }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { N.pos = 0; render(); } }, "Zaczynamy 🌙")))];
+    if (N.pos >= n) return [h("section", { class: "noc-box noc-end" },
+      h("p", { class: "noc-moon", "aria-hidden": "true", text: "🌙" }),
+      h("h1", { text: "Dobranoc, mózg pracuje dalej 😴" }),
+      h("p", { class: "num", text: `Powtórzone: ${n}. Od razu dobrze: ${N.ok}.` }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { NOC.st = null; go({ view: "home" }); } }, "Dobranoc"), h("button", { type: "button", class: "btn ghost", onclick: again }, "Jeszcze raz")))];
+    const it = N.items[N.pos], next = () => { N.pos++; N.rev = false; N.pick = null; render(); };
+    const body = it.t === "card"
+      ? [h("span", { class: "eyebrow", text: "Fiszka · " + (it.label || "") }), h("p", { class: "noc-q", text: it.q }),
+        N.rev ? h("p", { class: "noc-a", text: it.a }) : null,
+        h("div", { class: "row" }, N.rev
+          ? [h("button", { type: "button", class: "btn", onclick: next }, "Jeszcze nie"), h("button", { type: "button", class: "btn primary", onclick: () => { N.ok++; next(); } }, "Pamiętam ✓")]
+          : h("button", { type: "button", class: "btn primary", onclick: () => { N.rev = true; render(); } }, "Pokaż odpowiedź"))]
+      : [h("span", { class: "eyebrow", text: "Pytanie · " + (it.label || "") }), h("p", { class: "noc-q" }, inline(it.q)),
+        h("div", { class: "po-opts" }, it.options.map((o, i) => h("button", { type: "button", class: "po-opt" + (N.pick == null ? "" : i === it.correct ? " ok" : i === N.pick ? " bad" : ""), disabled: N.pick == null ? null : true,
+          onclick: () => { N.pick = i; if (i === it.correct) N.ok++; render(); } }, inline(o)))),
+        N.pick != null ? h("p", { class: "po-why " + (N.pick === it.correct ? "ok" : "bad") }, h("b", { text: N.pick === it.correct ? "Dobrze. " : "Tym razem nie. " }), it.why ? inline(it.why) : null) : null,
+        N.pick != null ? h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: next }, "Dalej")) : null];
+    return [head, h("div", { class: "progress", "aria-hidden": "true" }, h("i", { style: `width:${(100 * N.pos) / n}%` })),
+      h("p", { class: "muted num", style: "font-size:.86rem", text: `${N.pos + 1} z ${n}` }),
+      h("section", { class: "noc-box" }, body)];
+  }
+
   // ================= powtórki rozłożone w czasie (pudełka Leitnera) =================
   const NEW_PER_DAY = 20;
   const cardKey = (mid, card) => mid + ":" + hashStr(card.q);
@@ -13263,6 +13574,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const cur = all[key];
     let box = cur?.[0] || 0;
     box = g === 0 ? 1 : g === 1 ? Math.max(1, box) : Math.min(6, box + (g === 3 ? 2 : 1));
+    if (g === 0) dayMiss.add("f:" + key);
     let due = g === 0 ? t + 1 : t + (g === 1 ? Math.max(1, Math.round(SRS_DAYS[box] / 2)) : SRS_DAYS[box]);
     // Przed zaliczeniem z tego przedmiotu każda karta wraca przynajmniej raz.
     const sid = keySubject(key), nx = sid && nextExam(sid);
