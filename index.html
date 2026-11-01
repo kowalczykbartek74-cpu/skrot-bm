@@ -3294,6 +3294,57 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
 .cls .dz a { color: inherit; font-weight: 700; }
 .cal .day .cnt.off { color: #B42318; font-weight: 700; }
 .dz-sum { margin: 0; font-size: .88rem; color: #B42318; font-weight: 600; }
+/* Po zajęciach w 5 minut */
+.po-card { border-left: 5px solid var(--c, var(--accent)); }
+.po-card h2 { margin: 0; }
+.po-topic { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.po-link { font-size: .84rem; grid-column: 2; justify-self: start; text-align: left; }
+.po-cover-btn { justify-self: start; margin: 4px 0; }
+.po-subjects { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.po-subj { display: flex; align-items: center; gap: 10px; padding: 14px; border: 1px solid var(--line); border-left: 5px solid var(--c); border-radius: var(--r); background: var(--surface); color: var(--ink); text-align: left; cursor: pointer; font: inherit; }
+.po-subj:hover { border-color: var(--c); }
+.po-subj-txt { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.po-subj-txt small { font-size: .82rem; }
+.po-list { display: grid; gap: 6px; }
+.po-row { display: grid; gap: 6px; }
+.po-open { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); text-align: left; font: inherit; }
+button.po-open { cursor: pointer; }
+button.po-open:hover { border-color: var(--accent); background: var(--accent-soft); }
+.po-row.is-none .po-open { background: var(--sunk); opacity: .8; }
+.po-ic { width: 26px; height: 26px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-weight: 800; }
+.po-txt { display: grid; gap: 2px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.po-txt small { font-size: .8rem; }
+.po-tools { gap: 6px; padding-left: 36px; }
+.po-head { display: grid; gap: 8px; padding: 18px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--c); }
+.po-head h1 { margin: 0; font-size: clamp(1.3rem, 4vw, 1.8rem); overflow-wrap: anywhere; }
+.po-lead { margin: 0; color: var(--muted); }
+.po-meta { justify-content: space-between; }
+.po-dots { display: flex; gap: 6px; }
+.po-dots .po-dot { width: 26px; height: 8px; min-height: 0; padding: 0; border: 0; border-radius: 99px; background: var(--line); box-shadow: none; cursor: pointer; }
+.po-dots .po-dot.done { background: var(--green-400); }
+.po-dots .po-dot.cur { background: var(--accent); }
+.po-part { display: grid; gap: 10px; padding: 20px 18px; margin-top: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); font-size: 1.04rem; line-height: 1.6; }
+.po-part h2, .po-part h3 { margin: 4px 0 0; }
+.po-ex { padding: 12px 14px; border-radius: 12px; background: var(--lime-100); color: var(--ink); }
+.po-ex .rich p { margin: 4px 0 0; }
+.po-key { margin: 0; padding-left: 22px; display: grid; gap: 6px; font-weight: 600; }
+.po-terms { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 14px; margin: 0; }
+.po-terms dt { font-weight: 700; }
+.po-terms dd { margin: 0; color: var(--muted); }
+.po-quiz { display: grid; gap: 14px; }
+.po-q { display: grid; gap: 8px; }
+.po-qq { margin: 0; font-weight: 600; }
+.po-opts { display: grid; gap: 6px; }
+.po-opt { text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.po-opt:hover:not([disabled]) { border-color: var(--accent); }
+.po-opt.ok { border-color: var(--good); background: var(--good-soft); }
+.po-opt.bad { border-color: var(--bad); background: var(--bad-soft); }
+.po-opt[disabled] { cursor: default; }
+.po-why { margin: 0; font-size: .92rem; }
+.po-why.ok b { color: var(--good); }
+.po-why.bad b { color: var(--bad); }
+.po-nav { margin-top: 14px; }
+@media (max-width: 600px) { .po-terms { grid-template-columns: 1fr; } .po-terms dd { margin-bottom: 6px; } .po-dot { width: 18px; } }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -4041,6 +4092,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   // ================= nav =================
   // Ikony: proste kreski, jeden styl w całej apce (kolor dziedziczą z tekstu).
   const ICON_PATHS = {
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
     gift: '<rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5v7.5h14v-7.5M12 8.5V20"/><path d="M12 8.5C10.5 5 7 4.5 7 6.8 7 8.5 9.5 8.5 12 8.5zM12 8.5c1.5-3.5 5-4 5-1.7 0 1.7-2.5 1.7-5 1.7z"/>',
     t_zal: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
     t_zad: '<path d="M14.5 4.5l5 5L9 20H4v-5z"/><path d="m12.5 6.5 5 5"/>',
@@ -4077,7 +4129,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   // Sześć zakładek (na telefonie „Więcej” jest w lewym górnym rogu, na dole zostaje pięć), każda odpowiada na jedno pytanie ucznia. Każda funkcja ma w nich jeden dom.
   const NAV_ITEMS = [["home", "Dziś"], ["materials", "Przedmioty"], ["review", "Powtórki"], ["terms", "Terminy"], ["calendar", "Kalendarz"], ["more", "Więcej"]];
   const NAV_OF = {
-    home: "home", boss: "home",
+    home: "home", boss: "home", po: "home", po5: "home",
     materials: "materials", subject: "materials", material: "materials", subjectQuiz: "materials", exam: "materials", cheat: "materials", upload: "materials",
     review: "review", progress: "review",
     terms: "terms",
@@ -4135,7 +4187,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
     renderNav();
     const v = S.route.view;
     $("main").dataset.view = v || "home";
-    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, reading: viewReading, compare: viewCompare, guide: viewGuide }[v];
+    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, reading: viewReading, compare: viewCompare, guide: viewGuide }[v];
     if (!fn) {
       // Nieznany adres (np. literówka w linku): mówimy o tym zamiast po cichu pokazywać Dziś.
       if (v && v !== "home") { toast("Nie ma takiej strony. Pokazuję ekran Dziś."); S.route = { view: "home" }; try { history.replaceState({ view: "home" }, "", "#/"); } catch {} }
@@ -4854,6 +4906,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
         h("span", { class: "where" }, [e.r, e.p].filter(Boolean).join(" · "), e.n ? " · " + e.n : "", fresh && !e.off ? [" ", h("span", { class: "chip sun", style: "margin-left:2px", text: "nowy materiał" })] : null),
         dz && (dz.text || dz.post) ? h("span", { class: "dz " + dz.cls }, dz.text, dz.post ? [dz.text ? " " : "", h("a", { href: dz.post.url, target: "_blank", rel: "noopener", text: "Komunikat dziekanatu ↗" })] : null) : null,
         k && e.s != null && !e.off ? topicLine(sid, e.k, k, e.s) : null,
+        poClassLink(e, k),
         h("span", { class: "kind" }, h("span", { class: "kind-tag k-" + e.k, title: KIND[e.k], text: KIND_SHORT[e.k] + (e.g ? " " + e.g : "") })),
       );
     }));
@@ -5126,6 +5179,8 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
       annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
       // Krótki ekran: „Teraz zrób to”, zajęcia dziś lub jutro, najbliższy termin. Postęp i nowości są zwinięte na dole.
+      // W dniu zajęć, po ich końcu: „Po zajęciach w 5 minut” na samej górze (powód, żeby wejść).
+      needGroup() ? null : poHomeCard(),
       needGroup() ? null : bsHomeCard(),
       needGroup() ? groupStep() : nowCard(),
       needGroup() ? null : guideStrip(),
@@ -6226,6 +6281,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
       h("span", { class: `pat pat-${s.pat}`, "aria-hidden": "true" }),
       h("h1", { text: s.pl }),
       s.en && !EN ? h("p", { class: "en", text: s.en }) : null,
+      poHasSubj(s.id) ? h("button", { type: "button", class: "btn small po-cover-btn", onclick: () => go({ view: "po", id: s.id }) }, "⚡ Po zajęciach w 5 minut") : null,
       nextClass ? h("p", { style: "font-size:.92rem" }, "Najbliższe zajęcia: ", h("b", { text: `${fmtKey(nextClass.k)}, ${clsStart(nextClass.c)}` }), ` · ${KIND[nextClass.c.k].toLowerCase()} · ${nextClass.c.r || ""}`) : null,
       // Prowadzący i prawdopodobny temat są zwinięte, żeby zakładki przedmiotu były wyżej na telefonie.
       h("details", { class: "cover-more" }, h("summary", { text: topic ? "Prowadzący i temat zajęć" : "Prowadzący" }),
@@ -6403,7 +6459,7 @@ html[data-theme="bow"] .uni-mascot .uni-bubble { border-color: #F3C9D5; color: #
   }
 
   function backLink(to) {
-    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { gry: "Graj", materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki", guide: "Przewodnik" }[to?.view] || "Dziś";
+    const label = to?.view === "subject" ? (subjectById(to.id)?.pl || "Przedmiot") : to?.view === "myFolder" ? (folderById(to.id)?.name || "Moje materiały") : { gry: "Graj", materials: "Przedmioty", program: "Program studiów", grading: "Zasady zaliczeń", compare: "Porównanie", more: "Więcej", mine: "Moje materiały", terms: "Terminy", review: "Powtórki", guide: "Przewodnik", po: "Po zajęciach" }[to?.view] || "Dziś";
     return h("div", {}, h("button", { type: "button", class: "back", onclick: () => go(to || { view: "home" }) }, h("span", { "aria-hidden": "true", text: "←" }), label));
   }
   // Krótka instrukcja ekranu: jedno zdanie na wierzchu, reszta pod „?”.
@@ -10064,6 +10120,325 @@ ${written}`;
   function openAnnounce() {
     modal((close) => [h("h3", { text: "Ogłoszenie dla roku" }), h("p", { class: "muted", text: "Pokaże się na ekranie Dziś przez 7 dni." }), announceForm(close), h("div", { class: "row" }, h("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))]);
   }
+  // ================= Po zajęciach w 5 minut =================
+  // Krótkie podsumowanie zajęć: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie)
+  // dostajesz wyjaśnienie, 3 rzeczy do zapamiętania, pojęcia EN–PL i 3 pytania na sprawdzenie.
+  // Zapis bez nowego SQL, w kolekcji meta (czytają osoby z dostępem, zapisuje starosta):
+  //   meta/po = { items: { <id>: { sid, k, t, syl, d, at } } } – spis podsumowań,
+  //   meta/po~<id> = { title, lead, parts: [{ h, t, ex }], key: [], terms: [{ en, pl }], quiz: [{ q, options, correct, why }], at } – treść.
+  // Podsumowanie tematu z sylabusa (syl) ma id <sid>~<forma>~<skrót tematu> i pokazuje się samo w dniu zajęć, na których
+  // według szacunku z sylabusa (topicAt) był ten temat. Podsumowanie „z zajęć” (z notatkami starosty) ma datę d i ma pierwszeństwo.
+  // Na ekranie Dziś karta pojawia się po końcu zajęć (dziś i wczoraj), przeczytane pamięta bm-po-seen = { id: dzień }.
+  const PO = { idx: null, loading: false, c: {}, busy: false, stop: false, log: [], done: 0, total: 0, step: 0, ans: {} };
+  const PO_FORMS = ["W", "CW"];
+  // Treść podsumowań jest po polsku (jak „Prościej · PL”), więc słownik EN jej nie rusza.
+  const noTr = (el) => { el.setAttribute("translate", "no"); return el; };
+  const poHash = (s) => { let x = 5381; for (const ch of String(s)) x = ((x * 33) ^ ch.codePointAt(0)) >>> 0; return x.toString(36); };
+  const poSylId = (sid, k, t) => `${sid}~${k}~${poHash(t)}`;
+  const poSeen = { get: () => { try { return JSON.parse(ls.get("bm-po-seen") || "{}") || {}; } catch { return {}; } }, set(id) { const o = this.get(); o[id] = todayKey(); ls.set("bm-po-seen", JSON.stringify(o)); } };
+  function poLoad(force) {
+    if (!S.db || PO.loading || (PO.idx && !force)) return;
+    PO.loading = true;
+    S.db.doc("meta/po").get().then((snap) => { PO.idx = (snap.exists && snap.data()?.items) || {}; })
+      .catch(() => { PO.idx = PO.idx || {}; })
+      .finally(() => { PO.loading = false; if (["po", "po5", "home", "subject", undefined, ""].includes(S.route.view)) render(); });
+  }
+  const poItems = () => Object.entries(PO.idx || {}).map(([id, x]) => ({ id, ...x }));
+  const poOf = (sid) => poItems().filter((x) => x.sid === sid);
+  const poSylTopics = (sid) => PO_FORMS.flatMap((k) => (sylOf(sid)?.topics?.[k] || []).map((t) => ({ k, t: t.t.replace(/\.$/, "") })))
+    // Ćwiczenia często mają te same tematy co wykład: zostawiamy jeden wpis.
+    .filter((x, i, a) => a.findIndex((y) => y.t.toLowerCase() === x.t.toLowerCase()) === i);
+  const poHasSubj = (sid) => poSylTopics(sid).length > 0 || poOf(sid).length > 0;
+  const poKindLabel = (k) => (k === "CW" ? "ćwiczenia" : "wykład");
+  // Podsumowanie do konkretnych zajęć: najpierw to „z zajęć” z tą datą, potem temat z sylabusa według szacunku.
+  function poForClass(sid, e, k) {
+    const its = poOf(sid);
+    const dated = its.filter((x) => x.d === k && (!x.k || x.k === e.k)).sort((a, b) => (b.at || 0) - (a.at || 0));
+    if (dated.length) return { it: dated[0], topics: [dated[0].t] };
+    const est = e.s != null ? topicAt(sid, e.k, k, e.s) : null;
+    if (!est) return null;
+    const hit = est.topics.map((t) => its.find((x) => x.syl && x.t.toLowerCase() === t.toLowerCase())).filter(Boolean);
+    return hit.length ? { it: hit.find((x) => !poSeen.get()[x.id]) || hit[0], topics: est.topics, est } : { it: null, topics: est.topics, est };
+  }
+  // Zajęcia dziś (po ich końcu) i wczoraj, do których jest gotowe podsumowanie.
+  function poRecent() {
+    if (needGroup() || !PO.idx) return [];
+    const now = new Date(), nowMin = now.getHours() * 60 + now.getMinutes(), out = [], seenIds = new Set();
+    for (const [k, when] of [[todayKey(), "dziś"], [dkey(addDays(now, -1)), "wczoraj"]]) {
+      for (const e of classesDz(k, S.group, S.sub)) {
+        if (e.off || (when === "dziś" && hm(clsEnd(e)) > nowMin)) continue;
+        const sid = slug(e.pl), r = subjectById(sid) ? poForClass(sid, e, k) : null;
+        if (!r?.it || seenIds.has(r.it.id)) continue;
+        seenIds.add(r.it.id); out.push({ ...r, sid, e, k, when });
+      }
+    }
+    return out;
+  }
+  function poHomeCard() {
+    if (!S.ready || S.noDb || needGroup()) return null;
+    if (!PO.idx) { poLoad(); return null; }
+    const list = poRecent(); if (!list.length) return null;
+    const seen = poSeen.get(), first = list.find((x) => !seen[x.it.id]) || list[0], s = subjectById(first.sid), done = !!seen[first.it.id];
+    return h("section", { class: "panel sk-panel po-card", style: `--c:${s?.color || "var(--accent)"}`, "aria-label": "Po zajęciach w 5 minut" },
+      h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: "⚡ Po zajęciach w 5 minut" }), h("span", { class: "chip " + (done ? "good" : "sun"), text: done ? "✓ przeczytane" : first.when })),
+      h("h2", {}, h("span", { text: s?.pl || first.e.pl }), h("span", { class: "muted", text: ` · ${poKindLabel(first.e.k)}` })),
+      h("p", { class: "po-topic" }, h("span", { class: "muted", text: "Temat: " }), h("span", { lang: first.it.syl ? "en" : null, translate: first.it.syl ? null : "no", text: first.it.t })),
+      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Nie było Cię albo coś umknęło? Wytłumaczymy to w 5 minut." }),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "po5", id: first.it.id }) }, done ? "Jeszcze raz (5 min)" : "Tłumacz mi to (5 min) →"),
+        list.length > 1 ? h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "po" }) }, `Inne zajęcia (${list.length - 1})`) : null));
+  }
+  // Link przy zajęciach na liście „Dziś masz…”, gdy zajęcia już się skończyły i jest podsumowanie.
+  function poClassLink(e, k) {
+    if (!PO.idx || e.off || !k) return null;
+    const now = new Date(), sid = slug(e.pl);
+    if (k > todayKey() || (k === todayKey() && hm(clsEnd(e)) > now.getHours() * 60 + now.getMinutes())) return null;
+    const r = subjectById(sid) ? poForClass(sid, e, k) : null;
+    return r?.it ? h("button", { type: "button", class: "link po-link", onclick: () => go({ view: "po5", id: r.it.id }) }, "⚡ Co było? 5 min →") : null;
+  }
+
+  // Ekran #/po: wybór przedmiotu; #/po/<przedmiot>: wybór, o czym były zajęcia.
+  function viewPo() {
+    const sid = S.route.id, s = sid ? subjectById(sid) : null;
+    if (!PO.idx) poLoad();
+    if (sid && !s) return [backLink({ view: "po" }), h("p", { class: "muted", text: "Nie ma takiego przedmiotu." })];
+    return s ? poSubject(s) : poSubjects();
+  }
+  function poSubjects() {
+    const subs = SUBJECTS.filter((s) => poHasSubj(s.id));
+    const recent = poRecent(), seen = poSeen.get();
+    // Najpierw przedmioty, które miałeś ostatnio (dziś, wczoraj), potem reszta po kolei.
+    const lastOf = (sid) => { const ms = PO_FORMS.flatMap((k) => meetingsOf(sid, k)).map((m) => m.d).filter((d) => d <= todayKey()).sort(); return ms[ms.length - 1] || ""; };
+    subs.sort((a, b) => lastOf(b.id).localeCompare(lastOf(a.id)));
+    return [backLink({ view: "home" }),
+      h("section", { class: "stack" }, h("h1", { class: "ptitle", text: "Po zajęciach w 5 minut" }),
+        leadHelp("Kliknij przedmiot, wybierz, o czym były zajęcia, a wytłumaczymy Ci to w 5 minut.", "W dniu zajęć podsumowanie pojawia się samo na ekranie Dziś, gdy zajęcia się skończą. Temat zajęć bierzemy od starosty albo z sylabusa (kolejne zajęcia = kolejne tematy).")),
+      !PAID() ? paywallCard("Podsumowania zajęć są w pełnej wersji") : null,
+      recent.length ? h("section", { class: "panel sk-panel" }, h("h2", { text: "Z ostatnich zajęć" }),
+        h("div", { class: "po-list" }, recent.map((x) => poRow(x.it, `${subjectById(x.sid)?.pl || x.e.pl} · ${x.when}, ${poKindLabel(x.e.k)}`, seen)))) : null,
+      !PO.idx ? h("p", { class: "muted", text: "Ładuję…" }) : null,
+      h("div", { class: "po-subjects" }, subs.map((s) => {
+        const ready = poOf(s.id).length, last = lastOf(s.id);
+        return h("button", { type: "button", class: "po-subj", style: `--c:${s.color}`, onclick: () => go({ view: "po", id: s.id }) },
+          h("i", { class: "dot", style: `--c:${s.color}` }),
+          h("span", { class: "po-subj-txt" }, h("b", { text: s.pl }),
+            h("small", { class: "muted", text: [last ? `ostatnio ${last === todayKey() ? "dziś" : fmtKey(last)}` : "", ready ? `gotowe: ${ready}` : "jeszcze bez podsumowań"].filter(Boolean).join(" · ") })),
+          h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
+      })),
+      !subs.length ? h("p", { class: "muted", text: "Brak przedmiotów z tematami w sylabusie." }) : null];
+  }
+  function poRow(it, sub, seen, extra) {
+    const ok = !!it?.id, done = ok && !!(seen || poSeen.get())[it.id];
+    return h("div", { class: "po-row" + (ok ? "" : " is-none") },
+      h(ok ? "button" : "div", { type: ok ? "button" : null, class: "po-open", onclick: ok ? () => go({ view: "po5", id: it.id }) : null },
+        h("span", { class: "po-ic", "aria-hidden": "true", text: done ? "✓" : ok ? "⚡" : "·" }),
+        h("span", { class: "po-txt" }, h("span", { lang: it?.syl || (!it && extra?.en) ? "en" : null, translate: it && !it.syl ? "no" : null, text: it?.t || extra?.t || "" }), sub ? h("small", { class: "muted", text: sub }) : null),
+        ok ? h("span", { class: "chip " + (done ? "good" : "plain"), text: done ? "przeczytane" : "5 min" }) : h("span", { class: "chip plain", text: "jeszcze nie ma" })),
+      extra?.tools || null);
+  }
+  function poSubject(s) {
+    const seen = poSeen.get(), its = poOf(s.id), today = todayKey();
+    // Ostatnie zajęcia tej grupy z tego przedmiotu (do dziś), od najnowszych: data, forma i temat.
+    const past = PO_FORMS.flatMap((k) => meetingsOf(s.id, k).map((m) => ({ ...m, k }))).filter((m) => m.d <= today).sort((a, b) => b.d.localeCompare(a.d) || b.s - a.s).slice(0, 4);
+    const pastRows = past.map((m) => {
+      const r = poForClass(s.id, { k: m.k, s: m.s }, m.d);
+      const when = m.d === today ? "dziś" : fmtKey(m.d);
+      if (r?.it) return poRow(r.it, `${when} · ${poKindLabel(m.k)}${r.est && !r.it.d ? " · temat wg sylabusa" : ""}`, seen);
+      return poRow(null, `${when} · ${poKindLabel(m.k)}${r?.est ? " · temat wg sylabusa" : ""}`, seen, { t: r?.topics?.join(" · ") || "Temat nieznany", en: true });
+    });
+    const sylTopics = poSylTopics(s.id);
+    const custom = its.filter((x) => !x.syl).sort((a, b) => (b.d || "").localeCompare(a.d || "") || (b.at || 0) - (a.at || 0));
+    const tools = (it, topic) => poStarosta() ? h("div", { class: "row po-tools" },
+      h("button", { type: "button", class: "btn small ghost", disabled: PO.busy ? true : null, onclick: () => poMakeOne(s, topic, it) }, it ? "Zrób od nowa" : "Zrób podsumowanie"),
+      it && !it.syl ? h("button", { type: "button", class: "btn small ghost danger", disabled: PO.busy ? true : null, onclick: () => poDelete(it) }, "Usuń") : null) : null;
+    return [backLink({ view: "po" }),
+      h("section", { class: "cover", style: `--c:${s.color}` }, h("span", { class: `pat pat-${s.pat}`, "aria-hidden": "true" }),
+        h("span", { class: "eyebrow", text: "⚡ Po zajęciach w 5 minut" }), h("h1", { text: s.pl }),
+        h("p", { style: "font-size:.92rem", text: "O czym były zajęcia? Wybierz temat, a wytłumaczymy go w 5 minut." })),
+      !PAID() ? paywallCard("Podsumowania zajęć są w pełnej wersji") : null,
+      poStarosta() ? poAdminPanel(s) : null,
+      past.length ? h("section", { class: "panel sk-panel" }, h("h2", { text: "Twoje ostatnie zajęcia" }), h("div", { class: "po-list" }, pastRows)) : null,
+      custom.length ? h("section", { class: "panel sk-panel" }, h("h2", { text: "Od starosty, z zajęć" }),
+        h("div", { class: "po-list" }, custom.map((it) => poRow(it, [it.d ? (it.d === today ? "dziś" : fmtKey(it.d)) : "", it.k ? poKindLabel(it.k) : ""].filter(Boolean).join(" · "), seen, { tools: tools(it, { k: it.k, t: it.t }) })))) : null,
+      sylTopics.length ? h("section", { class: "panel sk-panel" }, h("h2", { text: "Wszystkie tematy z sylabusa" }),
+        h("div", { class: "po-list" }, sylTopics.map((tp) => { const it = PO.idx?.[poSylId(s.id, tp.k, tp.t)]; return poRow(it ? { id: poSylId(s.id, tp.k, tp.t), ...it } : null, poKindLabel(tp.k), seen, { t: tp.t, en: true, tools: tools(it ? { id: poSylId(s.id, tp.k, tp.t), ...it } : null, tp) }); }))) : null,
+      !PO.idx ? h("p", { class: "muted", text: "Ładuję…" }) : null];
+  }
+
+  // Czytnik #/po5/<id>: 5 kroków po ok. minucie, na końcu „Zapamiętaj”, pojęcia i 3 pytania.
+  function viewPo5() {
+    const id = S.route.id, it = PO.idx?.[id], s = subjectById(it?.sid || String(id).split("~")[0]);
+    const head = backLink(s ? { view: "po", id: s.id } : { view: "po" });
+    if (!PAID()) return [head, paywallCard("Podsumowania zajęć są w pełnej wersji")];
+    if (!PO.idx) { poLoad(); return [head, h("p", { class: "muted", text: "Ładuję…" })]; }
+    if (!it) return [head, h("p", { class: "notice", text: "Tego podsumowania już nie ma." })];
+    const c = PO.c[id];
+    if (c === undefined) {
+      PO.c[id] = null;
+      S.db.doc("meta/po~" + id).get().then((snap) => { PO.c[id] = snap.exists ? snap.data() : false; }).catch(() => { PO.c[id] = false; }).finally(() => { if (S.route.view === "po5") render(); });
+      return [head, h("p", { class: "muted", text: "Ładuję…" })];
+    }
+    if (c === null) return [head, h("p", { class: "muted", text: "Ładuję…" })];
+    if (!c) return [head, h("p", { class: "notice", text: "Nie udało się wczytać podsumowania. Spróbuj za chwilę." })];
+    if (PO.openId !== id) { PO.openId = id; PO.step = 0; PO.ans = {}; }
+    const parts = c.parts || [], N = parts.length + 1, step = Math.min(PO.step, N - 1), last = step === N - 1;
+    const minsLeft = Math.max(0, Math.round(((N - 1 - step) / (N - 1 || 1)) * 5));
+    const setStep = (n) => { PO.step = Math.max(0, Math.min(N - 1, n)); render(); window.scrollTo({ top: 0 }); };
+    const dots = h("div", { class: "po-dots", role: "progressbar", "aria-valuemin": "1", "aria-valuemax": String(N), "aria-valuenow": String(step + 1), "aria-label": "Postęp podsumowania" },
+      Array.from({ length: N }, (_, i) => h("button", { type: "button", class: "po-dot" + (i < step ? " done" : i === step ? " cur" : ""), "aria-label": `Krok ${i + 1}`, onclick: () => setStep(i) })));
+    const body = !last ? (() => { const p = parts[step]; return h("article", { class: "po-part" },
+      h("span", { class: "eyebrow num", text: `${step + 1} / ${N - 1} · ok. 1 min` }),
+      h("h2", { translate: "no", text: p.h }), noTr(rich(p.t)),
+      p.ex ? h("div", { class: "po-ex" }, h("b", { text: "Przykład" }), noTr(rich(p.ex))) : null); })()
+      : h("article", { class: "po-part" },
+        h("span", { class: "eyebrow", text: "Na koniec" }),
+        c.key?.length ? [h("h2", { text: "Zapamiętaj" }), h("ol", { class: "po-key", translate: "no" }, c.key.map((k) => h("li", {}, inline(k))))] : null,
+        c.terms?.length ? [h("h3", { text: "Pojęcia (EN – PL)" }), h("dl", { class: "po-terms" }, c.terms.flatMap((t) => [h("dt", { lang: "en", text: t.en }), h("dd", { translate: "no", text: t.pl })]))] : null,
+        c.quiz?.length ? [h("h3", { text: "Sprawdź się (3 pytania)" }), h("div", { class: "po-quiz" }, c.quiz.map((q, qi) => {
+          const a = PO.ans[qi];
+          return h("div", { class: "po-q" }, h("p", { class: "po-qq", translate: "no" }, inline(q.q)),
+            h("div", { class: "po-opts", translate: "no" }, q.options.map((o, oi) => h("button", { type: "button", class: "po-opt" + (a != null ? (oi === q.correct ? " ok" : oi === a ? " bad" : "") : ""), disabled: a != null ? true : null, onclick: () => { PO.ans[qi] = oi; render(); } }, inline(o)))),
+            a != null ? h("p", { class: "po-why " + (a === q.correct ? "ok" : "bad") }, h("b", { text: a === q.correct ? "Dobrze! " : "Nie tym razem. " }), h("span", { translate: "no" }, inline(q.why || ""))) : null);
+        }))] : null);
+    const score = c.quiz?.length && Object.keys(PO.ans).length === c.quiz.length ? c.quiz.filter((q, i) => PO.ans[i] === q.correct).length : null;
+    return [head,
+      h("section", { class: "po-head", style: `--c:${s?.color || "var(--accent)"}` },
+        h("span", { class: "eyebrow", text: `⚡ ${s?.pl || ""} · ${it.d ? (it.d === todayKey() ? "zajęcia dziś" : "zajęcia " + fmtKey(it.d)) : poKindLabel(it.k)}` }),
+        h("h1", { translate: "no", text: c.title || it.t }),
+        c.lead ? h("p", { class: "po-lead", translate: "no", text: c.lead }) : null,
+        h("div", { class: "row po-meta" }, dots, h("span", { class: "muted num", style: "font-size:.86rem", text: last ? "ostatni krok" : `zostało ok. ${minsLeft} min` }))),
+      body,
+      h("div", { class: "row po-nav" },
+        step > 0 ? h("button", { type: "button", class: "btn ghost", onclick: () => setStep(step - 1) }, "← Wstecz") : null,
+        !last ? h("button", { type: "button", class: "btn primary", style: "margin-left:auto", onclick: () => setStep(step + 1) }, step === N - 2 ? "Podsumowanie →" : "Dalej →")
+          : h("button", { type: "button", class: "btn primary", style: "margin-left:auto", onclick: () => { const first = !poSeen.get()[id]; poSeen.set(id); if (first) lpConfetti(18); toast(score != null ? `Gotowe! Pytania: ${score}/${c.quiz.length}.` : "Gotowe! Wiesz, co było na zajęciach."); go(s ? { view: "po", id: s.id } : { view: "home" }); } }, "Gotowe ✓")),
+      poStarosta() ? h("p", { class: "muted", style: "font-size:.84rem", text: `Starosta: zrobione ${new Date(c.at || it.at || Date.now()).toLocaleDateString("pl-PL")}${it.d ? " · z notatek z zajęć" : " · z tematu sylabusa"}.` }) : null];
+  }
+
+  // ---- Starosta: robienie podsumowań przez AI (S.sample). AI dostaje temat, cele i efekty z sylabusa,
+  // nasze opracowanie wybranego materiału (bez tekstu slajdów) i notatki starosty z zajęć, jeśli są.
+  const poStarosta = () => !!(S.canEdit && S.sample);
+  const PO_RULES = `Jesteś studentem, który był na zajęciach i tłumaczy koledze z 1. roku Business Management (Uniwersytet Szczeciński, zajęcia po angielsku), co na nich było. Kolega nie był na zajęciach albo nie słuchał i ma 5 minut.
+Zasady:
+- Pisz po polsku, prosto, w drugiej osobie, bez lania wody. Angielski termin dawaj w nawiasie przy pierwszym użyciu, bo zaliczenie jest po angielsku.
+- "parts": dokładnie 5 części, każda na ok. 1 minutę czytania (90-140 słów). Kolejno: o co chodziło na zajęciach i po co to jest; potem 3 najważniejsze rzeczy z tematu (każda osobno); na końcu jak to się łączy i na co uważać na kolokwium/egzaminie. Każda część ma krótki nagłówek "h", tekst "t" (akapity oddzielaj pustą linią, punkty zaczynaj od "- ", ważne słowa w **pogrubieniu**) i krótki przykład "ex" z życia albo z biznesu (może być pusty, gdy nie pasuje).
+- Wzory tylko w LaTeX w \\( ... \\). Policz każdy rachunek dwa razy.
+- Nie wymyślaj, co powiedział prowadzący. Jeśli są NOTATKI Z ZAJĘĆ, oprzyj się na nich (to one mówią, co było), a resztę uzupełnij wiedzą z tematu. Bez notatek pisz o temacie z sylabusa i nie udawaj, że cytujesz zajęcia.
+- "lead": jedno zdanie, o czym były zajęcia. "key": 3 krótkie rzeczy do zapamiętania. "terms": 4-6 pojęć {"en", "pl"}. "quiz": 3 pytania sprawdzające zrozumienie (nie definicje na pamięć), każde 4 odpowiedzi, "correct" = indeks dobrej (0-3), "why" = 1-2 zdania wyjaśnienia.
+Format JSON: {"title": "krótki polski tytuł zajęć", "lead": "...", "parts": [{"h": "...", "t": "...", "ex": "..."}], "key": ["...", "...", "..."], "terms": [{"en": "...", "pl": "..."}], "quiz": [{"q": "...", "options": ["...", "...", "...", "..."], "correct": 0, "why": "..."}]}`;
+  function poClean(r) {
+    const parts = (Array.isArray(r?.parts) ? r.parts : []).map((p) => ({ h: txt(p?.h, 120), t: txt(p?.t, 2500), ex: txt(p?.ex, 1200) })).filter((p) => p.h && p.t).slice(0, 6);
+    const quiz = (Array.isArray(r?.quiz) ? r.quiz : []).map((q) => ({ q: txt(q?.q, 400), options: (Array.isArray(q?.options) ? q.options : []).map((o) => txt(o, 200)).filter(Boolean).slice(0, 4), correct: Number(q?.correct), why: txt(q?.why, 600) }))
+      .filter((q) => q.q && q.options.length >= 2 && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length).slice(0, 3);
+    if (parts.length < 3) throw { code: "bad_ai" };
+    return { title: txt(r?.title, 140), lead: txt(r?.lead, 300), parts, quiz,
+      key: (Array.isArray(r?.key) ? r.key : []).map((k) => txt(k, 240)).filter(Boolean).slice(0, 4),
+      terms: (Array.isArray(r?.terms) ? r.terms : []).map((t) => ({ en: txt(t?.en, 80), pl: txt(t?.pl, 120) })).filter((t) => t.en && t.pl).slice(0, 8) };
+  }
+  async function poGenerate(s, { k, t, notes, mid }) {
+    const syl = sylOf(s.id);
+    let mat = "";
+    if (mid) { try { const m = materialById(mid), c = await getContent(mid); if (c) mat = `\nMATERIAŁ „${m?.title || m?.fileName || ""}” (nasze opracowanie):\n` + ezBlocks(c).map((b) => `${b.label}: ${b.text}`).join("\n").slice(0, 12000); } catch {} }
+    const ctx = syl ? `\nCELE PRZEDMIOTU: ${(syl.goals || []).join(" ").slice(0, 800)}\nEFEKTY: ${(syl.out || []).map((o) => o.t).join("; ").slice(0, 1200)}\nWSZYSTKIE TEMATY (${poKindLabel(k)}): ${(syl.topics?.[k] || []).map((x) => x.t).join(" | ").slice(0, 1500)}` : "";
+    const r = await S.sample.json(`${PO_RULES}\nOdpowiedz wyłącznie jednym obiektem JSON w tym formacie.\nPRZEDMIOT: ${s.pl}${s.en ? ` (${s.en})` : ""}\nFORMA ZAJĘĆ: ${poKindLabel(k)}\nTEMAT ZAJĘĆ: ${t}${ctx}${notes ? `\nNOTATKI Z ZAJĘĆ (od starosty):\n${notes.slice(0, 6000)}` : ""}${mat}`, { modelTier: "default" });
+    return { ...poClean(r), at: Date.now() };
+  }
+  async function poSave(id, meta, doc) {
+    await S.db.doc("meta/po~" + id).set(doc);
+    const snap = await S.db.doc("meta/po").get().catch(() => null);
+    const items = { ...((snap?.exists && snap.data()?.items) || PO.idx || {}), [id]: { ...meta, at: doc.at } };
+    await S.db.doc("meta/po").set({ items, updatedAt: Date.now() });
+    PO.idx = items; PO.c[id] = doc;
+  }
+  async function poMakeOne(s, topic, it) {
+    if (PO.busy) return;
+    const id = it?.id || poSylId(s.id, topic.k, topic.t);
+    PO.busy = true; render(); toast("Robię podsumowanie… (ok. 1 minuty)");
+    try {
+      const doc = await poGenerate(s, { k: topic.k || "W", t: topic.t });
+      await poSave(id, it && !it.syl ? { sid: it.sid, k: it.k, t: it.t, syl: false, d: it.d || null } : { sid: s.id, k: topic.k, t: topic.t, syl: true, d: null }, doc);
+      toast("Podsumowanie gotowe.");
+    } catch (e) { toast(e?.code === "bad_ai" ? "AI zwróciło za krótkie podsumowanie. Spróbuj jeszcze raz." : sampleError(e)); }
+    PO.busy = false; render();
+  }
+  async function poDelete(it) {
+    if (!confirm(`Usunąć podsumowanie „${it.t}”?`)) return;
+    try {
+      await S.db.doc("meta/po~" + it.id).delete().catch(() => {});
+      const items = { ...(PO.idx || {}) }; delete items[it.id];
+      await S.db.doc("meta/po").set({ items, updatedAt: Date.now() }); PO.idx = items; toast("Usunięto podsumowanie."); render();
+    } catch { toast("Nie udało się usunąć."); }
+  }
+  // Wszystkie brakujące tematy z sylabusa w jednym przedmiocie (można zatrzymać i wrócić; gotowe są pomijane).
+  async function poRunAll(s) {
+    if (PO.busy) return;
+    const todo = poSylTopics(s.id).filter((tp) => !PO.idx?.[poSylId(s.id, tp.k, tp.t)]);
+    if (!todo.length) { toast("Wszystkie tematy mają już podsumowania."); return; }
+    PO.busy = true; PO.stop = false; PO.log = []; PO.done = 0; PO.total = todo.length; render();
+    for (const tp of todo) {
+      if (PO.stop) break;
+      const line = { title: tp.t, state: "run", detail: "" }; PO.log.push(line); render();
+      try { await poSave(poSylId(s.id, tp.k, tp.t), { sid: s.id, k: tp.k, t: tp.t, syl: true, d: null }, await poGenerate(s, tp)); line.state = "ok"; line.detail = "gotowe"; }
+      catch (e) {
+        line.state = "err"; line.detail = e?.code === "bad_ai" ? "za krótka odpowiedź AI" : sampleError(e);
+        if (["not_deployed", "no_function", "no_key", "not_granted"].includes(e?.code)) { PO.stop = true; toast(line.detail); }
+      }
+      PO.done++; render();
+    }
+    PO.busy = false; render();
+  }
+  function poAdminPanel(s) {
+    const missing = poSylTopics(s.id).filter((tp) => !PO.idx?.[poSylId(s.id, tp.k, tp.t)]).length;
+    return h("section", { class: "panel sk-panel po-admin" },
+      h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: "Starosta" }), h("h2", { text: "Podsumowania zajęć" })),
+      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "W dniu zajęć studenci zobaczą podsumowanie tematu z sylabusa. Jeśli wiesz, co naprawdę było, dodaj podsumowanie z zajęć: ma pierwszeństwo." }),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", disabled: PO.busy ? true : null, onclick: () => poAddModal(s) }, "+ Dodaj z dzisiejszych zajęć"),
+        missing ? h("button", { type: "button", class: "btn", disabled: PO.busy ? true : null, onclick: () => poRunAll(s) }, PO.busy && PO.total ? "Robię…" : `Przygotuj brakujące z sylabusa (${missing})`) : h("span", { class: "chip good", text: "wszystkie tematy z sylabusa gotowe" }),
+        PO.busy && PO.total ? h("button", { type: "button", class: "btn ghost", onclick: () => { PO.stop = true; render(); } }, PO.stop ? "Zatrzymuję po bieżącym…" : "Zatrzymaj po bieżącym") : null),
+      PO.total ? h("div", { class: "stack", style: "gap:4px" },
+        h("progress", { max: String(PO.total), value: String(PO.done), style: "width:100%;accent-color:var(--accent)", "aria-label": "Postęp podsumowań" }),
+        h("span", { class: "muted", style: "font-size:.86rem", text: `${PO.done} z ${PO.total}${PO.busy ? "" : " · gotowe"}` })) : null,
+      PO.log.length ? h("ul", { class: "pipeline" }, PO.log.map((l) => h("li", {}, h("span", { class: "sdot " + l.state }), h("span", {}, h("span", { lang: "en", text: l.title }), l.detail ? h("span", { class: "muted", style: "font-size:.86rem", text: " · " + l.detail }) : null)))) : null);
+  }
+  function poAddModal(s) {
+    const today = todayKey();
+    const cls = classesDz(today, S.group, S.sub).find((e) => slug(e.pl) === s.id && !e.off);
+    const est = cls?.s != null ? topicAt(s.id, cls.k, today, cls.s) : null;
+    const topics = poSylTopics(s.id);
+    modal((close) => {
+      const date = h("input", { type: "date", value: today, required: true });
+      const form = h("select", {}, PO_FORMS.map((k) => h("option", { value: k, selected: (cls?.k || "W") === k ? true : null }, cap1(poKindLabel(k)))));
+      const pick = h("select", {}, h("option", { value: "" }, "Własny temat (wpisz niżej)"), topics.map((tp) => h("option", { value: tp.t, selected: est?.topics?.[0]?.toLowerCase() === tp.t.toLowerCase() ? true : null }, tp.t)));
+      const own = h("input", { type: "text", maxlength: "140", placeholder: "np. Elastyczność popytu – przykłady z ćwiczeń" });
+      const notes = h("textarea", { rows: "6", maxlength: "6000", placeholder: "Co było na zajęciach: hasła z tablicy, przykłady prowadzącego, co ma być na kolokwium. Może być w punktach." });
+      const mats = materialsOf(s.id);
+      const mat = mats.length ? h("select", {}, h("option", { value: "" }, "Bez materiału"), mats.map((m) => h("option", { value: m.id }, m.title || m.fileName))) : null;
+      const status = h("p", { class: "muted", style: "margin:0", "aria-live": "polite" });
+      const btn = h("button", { type: "submit", class: "btn primary" }, "Zrób i opublikuj");
+      return h("form", { class: "stack", onsubmit: async (e) => {
+        e.preventDefault();
+        const t = own.value.trim() || pick.value;
+        if (!t) { status.textContent = "Wybierz temat z sylabusa albo wpisz własny."; return; }
+        btn.disabled = true; status.textContent = "Robię podsumowanie… (ok. 1 minuty)";
+        try {
+          const id = `${s.id}~x~${Date.now().toString(36)}`;
+          const doc = await poGenerate(s, { k: form.value, t, notes: notes.value.trim(), mid: mat?.value || "" });
+          await poSave(id, { sid: s.id, k: form.value, t, syl: false, d: date.value || today }, doc);
+          close(); toast("Opublikowano. Studenci zobaczą je na ekranie Dziś po zajęciach."); render();
+        } catch (err) { btn.disabled = false; status.textContent = err?.code === "bad_ai" ? "AI zwróciło za krótkie podsumowanie. Spróbuj jeszcze raz." : sampleError(err); }
+      } },
+        h("h2", { text: `Podsumowanie zajęć: ${s.pl}` }),
+        h("div", { class: "row" }, h("label", { class: "stack", style: "gap:4px" }, h("span", { text: "Data zajęć" }), date), h("label", { class: "stack", style: "gap:4px" }, h("span", { text: "Forma" }), form)),
+        h("label", { class: "stack", style: "gap:4px" }, h("span", { text: "Temat z sylabusa" }), pick),
+        h("label", { class: "stack", style: "gap:4px" }, h("span", { text: "albo własny temat" }), own),
+        h("label", { class: "stack", style: "gap:4px" }, h("span", { text: "Notatki z zajęć (opcjonalnie, ale z nimi jest dokładniej)" }), notes),
+        mat ? h("label", { class: "stack", style: "gap:4px" }, h("span", { text: "Na podstawie materiału (opcjonalnie)" }), mat) : null,
+        status,
+        h("div", { class: "row" }, btn, h("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj")));
+    });
+  }
+
   function viewMore() {
     const sk = window.skrot || {};
     const groupLabel = S.group ? `${S.group}${S.sub ? " · lab " + S.sub : ""}` : "nie wybrano";
@@ -10082,6 +10457,7 @@ ${written}`;
       h("div", { class: "more-grid" },
         group("Nauka", [
           row("spark", "Graj i powtarzaj", "Fruń, Pary, Przejdź", () => go({ view: "gry" })),
+          row("clock", "Po zajęciach w 5 minut", "co było na zajęciach, wytłumaczone w 5 minut", () => go({ view: "po" })),
           hdMoreRow(row),
           PAID() ? row("flag", "Ranking kierunku", rankLabel(), () => go({ view: "ranking" })) : null,
           row("upload", "Moje materiały", "Twoje pliki opracowane jak materiały roku", () => go({ view: "mine" })),
@@ -12127,6 +12503,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const sk = window.skrot || {};
     const FAQ = [
       ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu. Możesz też raz wypróbować wszystko za darmo przez 3 dni.`],
+      ["Nie byłem na wykładzie. Co teraz?", "Wejdź w Więcej → Po zajęciach w 5 minut (albo w przedmiot → ⚡ Po zajęciach w 5 minut), wybierz, o czym były zajęcia, i przeczytaj 5 krótkich kroków. W dniu zajęć, po ich końcu, podsumowanie pojawia się też samo na ekranie Dziś."],
       ["Skąd biorę monety?", "Za dobre odpowiedzi w quizach, Powtórkach, lekcjach i grach (10 punktów rankingu = 1 moneta) i za Zadania dnia. Wydajesz je w Więcej → Sklep i monety na motywy."],
       ["Czy inni widzą moje imię w rankingu?", "Nie. W rankingu widać tylko pseudonim i punkty. Możesz się też całkiem ukryć: Więcej → Ranking kierunku → Pseudonim i widoczność."],
       ["Skąd są materiały?", "Prezentacje prowadzących z Teams służą tylko jako lista tematów. Opracowanie, przykłady, fiszki i quizy piszemy od nowa, a przy temacie zostaje odsyłacz do slajdów."],
