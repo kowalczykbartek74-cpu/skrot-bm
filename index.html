@@ -3346,7 +3346,45 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
 .po-nav { margin-top: 14px; }
 /* Stażysta Staś */
 .stas-hero { display: flex; align-items: flex-start; gap: 12px; }
-.stas-face { flex: none; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: var(--lime-100); border: 2px solid var(--accent); font-size: 1.7rem; line-height: 1; }
+.stas-face { flex: none; width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--accent); overflow: hidden; }
+.stas-face svg { display: block; width: 100%; height: 100%; }
+.stas-face .sf-bg { fill: var(--lime-100); }
+.stas-face path, .stas-face circle, .stas-face rect, .stas-face ellipse { stroke: #22302A; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.stas-face .sf-bg, .stas-face .sf-blush, .stas-face .sf-spark, .stas-face .sf-teeth { stroke: none; }
+.stas-face .sf-skin { fill: #F7D3B5; }
+.stas-face .sf-hair { fill: #7A4A28; }
+.stas-face .sf-shirt { fill: #fff; }
+.stas-face .sf-collar { fill: #fff; stroke-width: 1.6; }
+.stas-face .sf-tie { fill: var(--accent); }
+.stas-face .sf-lan { fill: none; stroke: #E8A33D; stroke-width: 2.6; }
+.stas-face .sf-badge { fill: #fff; stroke-width: 1.6; }
+.stas-face .sf-badge-l { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+.stas-face .sf-blush { fill: #F29C9C; opacity: .45; }
+.stas-face .sf-freck { fill: none; stroke: #B9764B; stroke-width: 1.8; }
+.stas-face .sf-eyes circle { fill: #22302A; stroke: none; }
+.stas-face .sf-brow, .stas-face .sf-line { fill: none; stroke-width: 2.4; }
+.stas-face .sf-brow { stroke: #5A341B; }
+.stas-face .sf-grin { fill: #8E2F38; }
+.stas-face .sf-teeth { fill: #fff; }
+.stas-face .sf-spark { fill: #F5B82E; }
+.stas-face .sf-drop { fill: #8FD0F4; stroke-width: 1.4; }
+.stas-face .sf-pen { fill: #F5B82E; stroke-width: 1.6; }
+.stas-face .sf-glass circle { fill: rgba(255,255,255,.28); stroke-width: 2.4; }
+.stas-face .sf-glass path { fill: none; stroke-width: 2.4; }
+.stas-face .sf-eyes { transform-box: fill-box; transform-origin: center; animation: sf-blink 4.6s infinite; }
+.stas-face .sf-bob { animation: sf-bob 3.2s ease-in-out infinite; }
+.stas-face[data-mood=ok] .sf-bob { animation: sf-hop .5s cubic-bezier(.3,1.6,.5,1) 2; }
+.stas-face[data-mood=ok] .sf-spark { transform-box: fill-box; transform-origin: center; animation: sf-twinkle 1.4s ease-in-out infinite; }
+.stas-face[data-mood=oops] .sf-bob { animation: sf-shake .45s ease-in-out 2; }
+@keyframes sf-blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+@keyframes sf-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(1.5px); } }
+@keyframes sf-hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
+@keyframes sf-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2.5px); } 75% { transform: translateX(2.5px); } }
+@keyframes sf-twinkle { 0%, 100% { transform: scale(1) rotate(0); opacity: 1; } 50% { transform: scale(.6) rotate(20deg); opacity: .6; } }
+@media (prefers-reduced-motion: reduce) { .stas-face *, .stas-face .sf-bob { animation: none !important; } }
+.stas-hero.big .stas-face { width: 88px; height: 88px; }
+.stas-hero.big .stas-bubble { margin-top: 14px; }
+@media (max-width: 600px) { .stas-hero.big .stas-face { width: 72px; height: 72px; } .stas-hero.big .stas-bubble { margin-top: 8px; } }
 .stas-bubble { position: relative; margin: 4px 0 0; padding: 10px 14px; border-radius: 4px 14px 14px 14px; background: var(--surface); border: 1px solid var(--line); line-height: 1.5; }
 .stas-text { display: block; line-height: 1.9; }
 .stas-s { padding: 2px 3px; border-radius: 6px; box-decoration-break: clone; -webkit-box-decoration-break: clone; transition: background .15s; }
@@ -10535,7 +10573,23 @@ Format JSON: {"title": "krótki polski tytuł zajęć", "lead": "...", "parts": 
   // Na okładce przedmiotu: studentom tylko gdy coś jest gotowe, staroście zawsze, gdy są tematy w sylabusie.
   const stasHasSubj = (sid) => stasOf(sid).length > 0 || (poStarosta() && poSylTopics(sid).length > 0);
   const STAS_HELLO = "Cześć, jestem Staś! Pierwszy dzień na stażu i szef kazał mi wytłumaczyć temat. Tylko… chyba coś pomieszałem. Znajdziesz moje błędy?";
-  const stasFace = (mood) => h("span", { class: "stas-face", "aria-hidden": "true", text: mood === "ok" ? "😎" : mood === "oops" ? "😅" : "🤓" });
+  // Staś jako postać: czupryna, okulary, krzywy krawat, identyfikator stażysty. Miny: hi (domyślna), think (zaznaczasz), ok (wszystko znalezione), oops (coś przegapione).
+  const STAS_MOOD = {
+    hi: `<path class="sf-brow" d="M34 39q6-3 11-1M55 38.5q5-2 11 1"/><g class="sf-eyes"><circle cx="41" cy="49" r="2.7"/><circle cx="59" cy="49" r="2.7"/></g><path class="sf-line" d="M43 60q7 6 14 0"/>`,
+    think: `<path class="sf-brow" d="M34 37.5q6-3 11-1M55 39q5-1 11 1"/><g class="sf-eyes"><circle cx="39" cy="47" r="2.7"/><circle cx="57" cy="47" r="2.7"/></g><path class="sf-line" d="M46 61q4 2 9-1"/><path class="sf-pen" d="M70 72l14-20 4 3-14 20-5 2z"/>`,
+    ok: `<path class="sf-brow" d="M34 38q6-4 11-2M55 36q5-2 11 2"/><path class="sf-line" d="M37 50q4-5 8 0M55 50q4-5 8 0"/><path class="sf-grin" d="M41 58q9 1 18 0q-1 10-9 10t-9-10z"/><path class="sf-teeth" d="M43 59h14v2.5q-7 1-14 0z"/><path class="sf-spark" d="M80 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM18 28l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z"/>`,
+    oops: `<path class="sf-brow" d="M34 38q6 1 11-2M55 36q5 2 11 2"/><g class="sf-eyes"><circle cx="42" cy="50" r="2.4"/><circle cx="60" cy="50" r="2.4"/></g><path class="sf-line" d="M42 61q2.5-2.5 5 0t5 0t5 0"/><path class="sf-drop" d="M75 32q-5 7 0 9.5q5-2.5 0-9.5z"/>`,
+  };
+  const stasFace = (mood) => {
+    const m = STAS_MOOD[mood] ? mood : "hi", el = h("span", { class: "stas-face", "aria-hidden": "true", "data-mood": m });
+    el.innerHTML = `<svg viewBox="0 0 100 100"><g><circle class="sf-bg" cx="50" cy="50" r="50"/>`
+      + `<g class="sf-bob"><path class="sf-shirt" d="M10 104c2-16 16-25 40-25s38 9 40 25z"/><path class="sf-lan" d="M37 80l-8 9M63 80l-4 10"/><rect class="sf-badge" x="21" y="86" width="15" height="11" rx="2" transform="rotate(12 28 91)"/><path class="sf-badge-l" d="M25 90h7M25 93h5" transform="rotate(12 28 91)"/><path class="sf-collar" d="M40 79l10 8 10-8-3-4-7 5-7-5z"/><path class="sf-tie" d="M48 87l-3 14h9l-2-14z" transform="rotate(-9 50 92)"/>`
+      + `<rect class="sf-skin" x="44" y="66" width="12" height="14" rx="4"/><circle class="sf-skin" cx="28" cy="49" r="5"/><circle class="sf-skin" cx="72" cy="49" r="5"/><ellipse class="sf-skin" cx="50" cy="47" rx="22" ry="24"/>`
+      + `<path class="sf-hair" d="M27 40c-3-16 9-25 24-24 15-1 26 8 22 24-4-5-9-8-14-8 1 2 1 3 0 5-4-4-11-6-17-5 1 1 1 3 0 4-5-2-10 0-15 4z"/><path class="sf-hair" d="M49 19c-3-6 1-11 7-12-2 3-1 7 2 10z"/>`
+      + `<circle class="sf-blush" cx="35" cy="58" r="4"/><circle class="sf-blush" cx="65" cy="58" r="4"/><path class="sf-freck" d="M33 55h.1M37 56h.1M63 56h.1M67 55h.1"/>`
+      + STAS_MOOD[m] + `<g class="sf-glass"><circle cx="41" cy="49" r="8.5"/><circle cx="59" cy="49" r="8.5"/><path d="M49.5 48q.5-2 1 0M32.5 47l-4-1M67.5 47l4-1"/></g></g></g></svg>`;
+    return el;
+  };
 
   // Karta na ekranie Dziś: jeden temat Stasia do poprawienia. Najpierw z przedmiotów, które masz dziś, potem inny co dzień.
   // Znika, gdy dziś już poprawiłeś Stasia albo wszystko jest poprawione.
@@ -10645,7 +10699,7 @@ Format JSON: {"title": "krótki polski tytuł zajęć", "lead": "...", "parts": 
     const found = wrong.filter((i) => flags.has(i)).length, falseN = [...flags].filter((i) => !ss[i].isWrong).length;
     const fixedN = wrong.filter((i) => flags.has(i) && STAS.pick[i] === 0).length;
     const allPicked = wrong.filter((i) => flags.has(i)).every((i) => STAS.pick[i] != null);
-    const mood = !checked ? null : found === n && falseN === 0 ? "ok" : "oops";
+    const mood = !checked ? (flags.size ? "think" : null) : found === n && falseN === 0 ? "ok" : "oops";
     const bubble = !checked ? (left > 0 ? `Szef mówi, że zrobiłem ${n} ${plural(n, "błąd", "błędy", "błędów")}. Kliknij zdania, które są złe.` : "Tyle samo zaznaczeń, ile błędów. Sprawdzamy?")
       : found === n ? (falseN ? "Wszystkie moje błędy znalezione, ale jedno dobre zdanie też oberwało." : "Wszystkie znalezione! Teraz powiedz mi, jak powinno być.")
       : found ? `Znalazłeś ${found} z ${n}. Resztę pokazuję na czerwono.` : "Ups, żadnego nie trafiłeś. Popatrz, gdzie się pomyliłem.";
@@ -10675,7 +10729,7 @@ Format JSON: {"title": "krótki polski tytuł zajęć", "lead": "...", "parts": 
         h("span", { class: "eyebrow", text: `🤓 Stażysta Staś · ${s?.pl || ""}` }),
         h("h1", { translate: "no", text: c.title || it.t }),
         h("p", { class: "po-lead" }, h("span", { lang: "en", text: it.t }))),
-      h("div", { class: "stas-hero" }, stasFace(mood), h("p", { class: "stas-bubble", "aria-live": "polite", text: bubble })),
+      h("div", { class: "stas-hero big" }, stasFace(mood), h("p", { class: "stas-bubble", "aria-live": "polite", text: bubble })),
       h("article", { class: "po-part stas-text" + (checked ? " is-checked" : "") }, ss.map(sent)),
       !checked ? h("div", { class: "row po-nav stas-bar" },
         h("span", { class: "stas-pens", "aria-label": `Zostało długopisów: ${left}` }, Array.from({ length: n }, (_, i) => h("i", { class: i < left ? "on" : "", "aria-hidden": "true", text: "✎" })),

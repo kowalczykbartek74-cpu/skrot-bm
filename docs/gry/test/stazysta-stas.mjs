@@ -1,5 +1,5 @@
 // „Stażysta Staś” na atrapie: starosta robi wyjaśnienia z błędami (AI na niby), student zaznacza złe zdania i wybiera poprawki.
-import { chromium, page, BASE, shot } from "./lib.mjs";
+import { chromium, page, BASE, shot, OUT } from "./lib.mjs";
 const b = await chromium.launch();
 const wyniki = []; const ok = (n, w, i) => wyniki.push([w ? "✓" : "✗", n, w ? "" : JSON.stringify(i)?.slice(0, 600)]);
 const prompty = [];
@@ -39,7 +39,7 @@ const p = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify({ m
 await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
 const kart = p.locator(".stas-card");
 ok("Dziś: karta Stasia", (await kart.count()) === 1 && /Analiza matematyczna/.test(await kart.innerText()) && /Zrobiłem 3 błędy/.test(await kart.innerText()), await p.locator("main").innerText());
-await shot(p, "stas-dzis");
+await shot(p, "stas-dzis"); await kart.screenshot({ path: OUT + "/stas-karta.png" });
 await kart.getByRole("button", { name: "Popraw Stasia →" }).click(); await p.waitForTimeout(1000);
 ok("karta otwiera ćwiczenie", /#\/stasx\//.test(p.url()) && (await p.locator(".stas-s[role=button]").count()) === 10, p.url());
 await p.goto(BASE + "index.html#/more"); await p.waitForTimeout(2000);
@@ -59,10 +59,12 @@ await S_(2).click(); await S_(5).click(); await S_(0).click(); await S_(3).click
 ok("limit długopisów: 3", (await p.locator(".stas-s.flag").count()) === 3 && !(await S_(3).getAttribute("class")).includes("flag"), "");
 await S_(0).click(); await S_(0).click(); // odznacz i zaznacz ponownie
 ok("odznaczanie działa", (await p.locator(".stas-s.flag").count()) === 3, "");
-await shot(p, "stas-zaznaczone");
+ok("Staś: postać SVG, mina think przy zaznaczaniu", (await p.locator(".stas-face svg .sf-glass").count()) === 1 && (await p.locator(".stas-face").getAttribute("data-mood")) === "think", "");
+await shot(p, "stas-zaznaczone"); await p.locator(".stas-hero").screenshot({ path: OUT + "/stas-mina.png" });
 await p.getByRole("button", { name: "Sprawdź ✓" }).click(); await p.waitForTimeout(300);
 ok("po sprawdzeniu: 2 trafione, 1 przegapione, 1 fałszywe", (await p.locator(".stas-s.hit").count()) === 2 && (await p.locator(".stas-s.miss").count()) === 1 && (await p.locator(".stas-s.false").count()) === 1, "");
 ok("karty poprawek: 3 (2 do wyboru, 1 z odpowiedzią)", (await p.locator(".stas-fix").count()) === 3 && (await p.locator(".stas-fix.is-hit .po-opt").count()) === 6 && /Poprawione zdanie 9/.test(await p.locator(".stas-fix.is-miss").innerText()), "");
+ok("Staś: mina oops po przegapieniu", (await p.locator(".stas-face").getAttribute("data-mood")) === "oops", "");
 ok("brak wyniku przed wyborem poprawek", (await p.locator(".stas-sum").count()) === 0, "");
 // dobra poprawka w 1. karcie, zła w 2.
 await p.locator(".stas-fix.is-hit").nth(0).getByRole("button", { name: "Poprawione zdanie 3." }).click();
@@ -77,7 +79,7 @@ ok("Jeszcze raz: czyści", (await p.locator(".stas-s.flag, .stas-fix").count()) 
 for (const i of [2, 5, 8]) await S_(i).click();
 await p.getByRole("button", { name: "Sprawdź ✓" }).click(); await p.waitForTimeout(200);
 for (const n of [3, 6, 9]) await p.getByRole("button", { name: `Poprawione zdanie ${n}.` }).click();
-ok("perfekcyjnie: 6/6, Staś 😎", /Wynik: 6\/6/.test(await p.locator(".stas-sum").innerText()) && (await p.locator(".stas-face").first().innerText()) === "😎", "");
+ok("perfekcyjnie: 6/6, Staś 😎", /Wynik: 6\/6/.test(await p.locator(".stas-sum").innerText()) && (await p.locator(".stas-face").first().getAttribute("data-mood")) === "ok", "");
 await p.getByRole("button", { name: "Gotowe ✓" }).click(); await p.waitForTimeout(600);
 ok("po Gotowe: lista tematów z 6/6 pkt", /#\/stas\/analiza-matematyczna/.test(p.url()) && (await p.locator(".po-row .chip", { hasText: "6/6 pkt" }).count()) === 1, p.url());
 ok("zapis bm-stas-done", await p.evaluate(() => Object.values(JSON.parse(localStorage.getItem("bm-stas-done"))).some((r) => r.f === 3 && r.x === 3 && r.n === 3)), "");
