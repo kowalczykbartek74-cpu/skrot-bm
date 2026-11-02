@@ -1,6 +1,18 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"🧩 Rozróżnij pojęcia": "🧩 Tell the concepts apart",
+"To zadanie ma błąd w szablonie. Zgłoś je, a my poprawimy.": "This task has an error in its template. Report it and we will fix it.",
+"Wpisz liczbę (przecinek albo kropka).": "Type a number (comma or dot).",
+"Twój wynik": "Your result",
+"Twój wynik w {0}": "Your result in {0}",
+"Nie tym razem. Wynik: {0}.": "Not this time. Result: {0}.",
+"🔁 Za chwilę to samo zadanie wróci z nowymi liczbami.": "🔁 The same task will come back soon with new numbers.",
+"🔁 Jeszcze raz, nowe liczby": "🔁 Once more, new numbers",
+"🔁 Powtórka · zadanie": "🔁 Review · task",
+"🔢 Policz": "🔢 Calculate",
+"🔢 Zadanie": "🔢 Task",
+"Pokaż więcej": "Show more",
 "Odpowiadasz:": "You are answering:",
 "Pewny": "Sure",
 "Zgaduję": "Guessing",

@@ -17,11 +17,21 @@ const lesson = { v2: true,
 // Lekcja bez pogrubień i bez fiszek ≥ 3: same karty czytania i pytania (łatwo przejść w teście).
 const plain = (t) => ({ v2: true, sections: [{ h: "1. " + t, intuition: "Intuicja " + t, body: "Plain text about " + t + " without bold terms.", check: mc(t + " check") }],
   exit: [mc(t + " exit 1", 0), mc(t + " exit 2", 0), mc(t + " exit 3", 0)] });
+// Lekcja v4: atomy z conf, szablony gen, długie „Prościej”, „Wyjaśnij” z kluczem.
+const longSimple = Array.from({ length: 12 }, (_, i) => `Zdanie numer ${i + 1} tłumaczy koszt prosto i spokojnie.`).join(" ");
+const v4L = { v2: true, v: 4, type: "quant",
+  atoms: [{ id: "a1", t: "Explicit cost", pl: "koszt jawny", d: "Money actually paid out", q: "What is an explicit cost?", a: "Money actually paid", conf: ["a2"] },
+    { id: "a2", t: "Implicit cost", pl: "koszt ukryty", d: "Value of your own resources used, no payment", q: "What is an implicit cost?", a: "Value of own resources", conf: ["a1"] }],
+  sections: [{ h: "1. Koszty", intuition: "Kino czy praca?", body: "Plain text about costs without bold terms.", simple: longSimple, check: mc("V4 check") }],
+  gen: [{ id: "g1", task: "You can earn {a} zł or {b} zł. A ticket costs {c} zł. What is the opportunity cost?", vars: { a: [40, 90, 10], b: [50, 120, 10], c: [20, 60, 5] }, answer: "max(a, b) + c", unit: "zł", tol: 0, why: "Best alternative given up + money paid." },
+    { id: "g2", task: "Bad {a}", vars: { a: [1, 2, 1] }, answer: "alert(a)" }],
+  recap: { prompt: "Explain opportunity cost.", keys: ["best alternative", "given up", "money paid"], model: "..." },
+  exit: [mc("V4 exit 1", 0), mc("V4 exit 2", 0), mc("V4 exit 3", 0)] };
 const fl = [1, 2, 3, 4].map((i) => ({ q: `Fiszka ${i}?`, a: `Odp ${i}` }));
 const docs = {
-  materials: { L4: { subjectId: "makroekonomia", kind: "lesson", order: 3, unit: 1, unitTitle: "Podstawy", title: "Popyt", quizCount: 0, flashcardCount: 2, createdAt: NOW - 7e6, v: 2, source: "sylabus" },
+  materials: { L3: { subjectId: "makroekonomia", kind: "lesson", order: 5, unit: 1, unitTitle: "Podstawy", title: "Koszty v4", quizCount: 0, flashcardCount: 0, createdAt: NOW - 5e6, v: 2, source: "sylabus" }, L4: { subjectId: "makroekonomia", kind: "lesson", order: 3, unit: 1, unitTitle: "Podstawy", title: "Popyt", quizCount: 0, flashcardCount: 2, createdAt: NOW - 7e6, v: 2, source: "sylabus" },
     L5: { subjectId: "makroekonomia", kind: "lesson", order: 4, unit: 1, unitTitle: "Podstawy", title: "Podaż", quizCount: 0, flashcardCount: 2, createdAt: NOW - 6e6, v: 2, source: "sylabus" }, L2: { subjectId: "makroekonomia", kind: "lesson", order: 2, unit: 1, unitTitle: "Podstawy", title: "PPF", quizCount: 0, flashcardCount: 4, createdAt: NOW - 8e6, v: 2, source: "sylabus" }, L1: { subjectId: "makroekonomia", kind: "lesson", order: 1, unit: 1, unitTitle: "Podstawy", title: "Koszt alternatywny", quizCount: 0, flashcardCount: 4, createdAt: NOW - 9e6, v: 2, source: "sylabus" } },
-  materialContent: { L4: { v: 2, lesson: plain("L4"), flashcards: fl.slice(0, 2).map((f) => ({ q: "L4 " + f.q, a: f.a })), concepts: [], quiz: [] },
+  materialContent: { L3: { v: 2, lesson: v4L, flashcards: [], concepts: [], quiz: [] }, L4: { v: 2, lesson: plain("L4"), flashcards: fl.slice(0, 2).map((f) => ({ q: "L4 " + f.q, a: f.a })), concepts: [], quiz: [] },
     L5: { v: 2, lesson: plain("L5"), flashcards: [], concepts: [], quiz: [] }, L2: { v: 2, lesson: { ...lesson, exit: [mc("L2 exit 1", 0), mc("L2 exit 2", 1), mc("L2 exit 3", 0)] }, flashcards: fl.map((f) => ({ q: "L2 " + f.q, a: f.a })), concepts: [], quiz: [] }, L1: { v: 2, lesson, flashcards: fl, concepts: [{ term: "Opportunity cost", pl: "koszt alternatywny", definition: "Value of the best alternative given up." }], quiz: [] } },
 };
 const prog = { mastery: { L1: { ok: true, score: 3, total: 3, at: NOW - DAY, weak: [] } }, done: { L1: NOW - DAY }, lp: { L1: { stars: 3, last: 3, xpL: true, b: [4, 4] } } };
@@ -145,6 +155,68 @@ await P.locator(".lp-start").click(); await P.waitForTimeout(900);
 const t5 = await P.locator(".lp-card").getAttribute("data-type");
 ok("L5 (parzysta, bez własnego hook): bez haczyka", t5 !== "hook", t5);
 await P.locator(".lp-x").click(); await P.waitForTimeout(400);
+
+// 7. etap C: lekcja v4 (L3, parzysta: bez haczyka)
+const warns = []; P.on("console", (m) => { if (m.type() === "warning") warns.push(m.text()); });
+await P.evaluate(() => { location.hash = "#/material/L3"; }); await P.waitForTimeout(1500);
+await P.locator(".lp-start").click(); await P.waitForTimeout(900);
+const t3 = []; let numSeen = [], sheet = "", distTxt = ""; guard = 0;
+const solve = (task) => { const [a, b, c] = (task.match(/\d+/g) || []).map(Number); return Math.max(a, b) + c; };
+while (guard++ < 40) {
+  const card = P.locator(".lp-card");
+  if (!(await card.count())) { const d = P.locator(".lp-done-screen"); if (await d.count() && !/Lekcja (zrobiona|przerobiona)/.test(await d.innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
+  const type = await card.getAttribute("data-type"), txt = await card.innerText(); t3.push(type);
+  if (type === "read" && !sheet) { await P.locator(".lp-help").click(); await P.waitForTimeout(400); sheet = await P.locator(".lp-sheet").innerText(); await shot(P, "v4-prosciej"); await P.locator(".lp-sheet .btn.primary").click(); await P.waitForTimeout(300); }
+  if (type === "mc") {
+    if (/Which concept fits/.test(txt) && !distTxt) distTxt = txt;
+    const opts = card.locator(".lp-opts .opt"); let pick = 0;
+    for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (/Which concept/.test(txt) ? (/Money actually/.test(txt) ? /Explicit cost/ : /Implicit cost/).test(t) : /OK /.test(t)) { pick = i; break; } }
+    await opts.nth(pick).click(); await P.waitForTimeout(350);
+  } else if (type === "num") {
+    const task = await card.locator(".q").innerText(); numSeen.push(task);
+    await card.locator("input.lp-num").fill(numSeen.length === 1 ? "1" : String(solve(task)).replace(".", ","));
+    await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
+    if (numSeen.length === 1) { ok("num: zła odpowiedź pokazuje wynik i drugą szansę", /Wynik: \d+ zł/.test(await card.innerText()) && /nowymi liczbami/.test(await card.innerText()), await card.innerText()); await shot(P, "v4-num-zle"); }
+  } else if (type === "recap") {
+    await card.locator("textarea").fill("Coś tam."); await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
+  }
+  await P.locator(".lp-cta").click(); await P.waitForTimeout(450);
+}
+ok("C6: długie „Prościej” skrócone + „Pokaż więcej”", /Pokaż więcej/.test(sheet) && !/Zdanie numer 12/.test(sheet), sheet);
+ok("C3: pytanie rozróżniające w treningu (opcje: Explicit/Implicit), bez drugiej szansy", /Which concept fits: (Money actually paid out|Value of your own)/.test(distTxt) && /Explicit cost/.test(distTxt) && /Implicit cost/.test(distTxt) && !/DRUGA SZANSA/i.test(distTxt), distTxt);
+ok("C4: num dwa razy (druga szansa z nowymi liczbami)", numSeen.length === 2 && numSeen[0] !== numSeen[1], numSeen);
+ok("C4: zły szablon pominięty z console.warn", warns.some((w) => /L3: szablon gen g2 pominięty/.test(w)) && t3.filter((x) => x === "num").length === 2, { warns, t3 });
+await P.locator(".lp-x").click(); await P.waitForTimeout(500);
+pr = await progOf();
+const aq = "L3:" + hashStr("What is an explicit cost?");
+ok("srs: d:, n: i fiszki z atomów; recap < 1/2 → fiszki jutro w pudełku 1", pr.srs["d:L3:a1"]?.[0] === 0 && pr.srs["d:L3:a2"] && pr.srs["n:L3:g1"] && !pr.srs["n:L3:g2"] && pr.srs[aq]?.[0] === 1, { d: pr.srs["d:L3:a1"], n: pr.srs["n:L3:g1"], a: pr.srs[aq] });
+await P.evaluate(() => { location.hash = "#/material/L3"; }); await P.waitForTimeout(800);
+await P.getByRole("button", { name: /Fiszki/ }).first().click().catch(() => {}); await P.waitForTimeout(600);
+
+// 8. następny dzień: rozróżnianie i zadanie liczbowe wracają w Powtórkach
+await P.clock.setFixedTime(new Date(NOW + DAY));
+await P.goto(BASE + "index.html#/review"); await P.waitForTimeout(2500);
+const modalTxt = await P.locator("#layer .modal").innerText().catch(() => "");
+if (modalTxt) { console.log("okno po starcie:", modalTxt.slice(0, 120)); await P.keyboard.press("Escape"); await P.waitForTimeout(300); }
+await P.getByRole("button", { name: /Zaczynamy/ }).click(); await P.waitForTimeout(1500);
+let rvTypes = [], rvNum = "", rvDist = ""; guard = 0;
+while (guard++ < 60) {
+  const card = P.locator(".lp-card"); if (!(await card.count())) { const d = P.locator(".lp-done-screen"); if (await d.count() && !/Zrobione/.test(await d.innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
+  const type = await card.getAttribute("data-type"), txt = await card.innerText(); rvTypes.push(type);
+  if (type === "rvmc") {
+    if (/Which concept fits/.test(txt)) rvDist = txt;
+    const opts = card.locator(".lp-opts .opt"), m = /Which concept fits: (.*)\?/.exec(txt); let pick = 0;
+    for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (m ? (/Money actually/.test(m[1]) ? /Explicit/.test(t) : /Implicit/.test(t)) : /OK /.test(t)) { pick = i; break; } }
+    await opts.nth(pick).click(); await P.waitForTimeout(300); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
+  } else if (type === "num") {
+    rvNum = await card.locator(".q").innerText();
+    await card.locator("input.lp-num").fill(String(solve(rvNum))); await P.locator(".lp-cta").click(); await P.waitForTimeout(300);
+    if (!/Dobrze/.test(await card.innerText())) rvTypes.push("NUM-ZLE:" + await card.innerText());
+    await shot(P, "v4-rv-num"); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
+  } else if (type === "grade4") { await P.locator(".lp-cta").click(); await P.waitForTimeout(250); await P.getByRole("button", { name: /Pamiętam/ }).first().click(); await P.waitForTimeout(600); }
+  else break;
+}
+ok("Powtórki: rozróżnianie (d:) i zadanie liczbowe (n:) wracają", /Which concept fits/.test(rvDist) && /You can earn/.test(rvNum) && !rvTypes.some((t) => /NUM-ZLE/.test(t)), { rvTypes, rvNum, rvDist });
 
 ok("bez błędów w konsoli", P.errors.length === 0, P.errors);
 for (const [w, n, i] of wyniki) console.log(w, n, i);
