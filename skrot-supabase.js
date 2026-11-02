@@ -351,6 +351,7 @@
   // ---------- Gry i ranking (skrot-v13-gry.sql, skrot-v15-gry2.sql) ----------
   // Każda funkcja zwraca obiekt z bazy ({ ok: true, … } albo { ok: false, code }).
   // Brak bazy v13 → { ok: false, code: "not_enabled" }; brak sieci → { ok: false, code: "offline" }.
+  let rpV22 = null; // czy baza ma nauka_rp_powtorka z pomiarem (v22)
   const rpCall = async (fn, args) => {
     await ready;
     if (!sb) return { ok: false, code: "offline" };
@@ -373,7 +374,15 @@
     start:    (gra, sid = null)        => rpCall("nauka_gra_start", { p_gra: gra, p_sid: sid }),
     odp:      ({ mid, idx, wybor, zrodlo, run = null }) => rpCall("nauka_rp_odpowiedz", { p_mid: mid, p_idx: idx, p_wybor: wybor, p_zrodlo: zrodlo, p_run: run }),
     zadanie:  ({ mid, wid, j, wynik, zrodlo, run = null }) => rpCall("nauka_rp_zadanie", { p_mid: mid, p_wid: String(wid), p_j: j, p_wynik: wynik, p_zrodlo: zrodlo, p_run: run }),
-    powtorka: (klucz)                  => rpCall("nauka_rp_powtorka", { p_klucz: klucz }),
+    // m = { ok, first, ageDays } (v22, pomiar). Bez v22 w bazie wracamy do wersji z samym kluczem.
+    powtorka: async (klucz, m) => {
+      if (m && rpV22 !== false) {
+        const r = await rpCall("nauka_rp_powtorka", { p_klucz: klucz, p_ok: !!m.ok, p_first: m.first !== false, p_wiek: Number.isFinite(m.ageDays) ? m.ageDays : null });
+        if (r?.code !== "not_enabled") { rpV22 = true; return r; }
+        rpV22 = false;
+      }
+      return rpCall("nauka_rp_powtorka", { p_klucz: klucz });
+    },
     lekcja:   (lid)                    => rpCall("nauka_rp_lekcja", { p_lid: lid }),
     koniec:   ({ run, wynik, czasMs, bledy = 0 }) => rpCall("nauka_gra_koniec", { p_run: run, p_wynik: wynik, p_czas_ms: czasMs, p_bledy: bledy }),
     ranking:  ({ zakres = "tydzien", grupa = null, sid = null } = {}) => rpCall("nauka_ranking", { p_zakres: zakres, p_grupa: grupa, p_sid: sid }),
