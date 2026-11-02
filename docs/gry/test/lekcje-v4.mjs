@@ -14,10 +14,15 @@ const lesson = { v2: true,
   ],
   exit: [mc("Exit 1", 0), mc("Exit 2", 1), mc("Exit 3", 0)],
 };
+// Lekcja bez pogrubień i bez fiszek ≥ 3: same karty czytania i pytania (łatwo przejść w teście).
+const plain = (t) => ({ v2: true, sections: [{ h: "1. " + t, intuition: "Intuicja " + t, body: "Plain text about " + t + " without bold terms.", check: mc(t + " check") }],
+  exit: [mc(t + " exit 1", 0), mc(t + " exit 2", 0), mc(t + " exit 3", 0)] });
 const fl = [1, 2, 3, 4].map((i) => ({ q: `Fiszka ${i}?`, a: `Odp ${i}` }));
 const docs = {
-  materials: { L2: { subjectId: "makroekonomia", kind: "lesson", order: 2, unit: 1, unitTitle: "Podstawy", title: "PPF", quizCount: 0, flashcardCount: 4, createdAt: NOW - 8e6, v: 2, source: "sylabus" }, L1: { subjectId: "makroekonomia", kind: "lesson", order: 1, unit: 1, unitTitle: "Podstawy", title: "Koszt alternatywny", quizCount: 0, flashcardCount: 4, createdAt: NOW - 9e6, v: 2, source: "sylabus" } },
-  materialContent: { L2: { v: 2, lesson: { ...lesson, exit: [mc("L2 exit 1", 0), mc("L2 exit 2", 1), mc("L2 exit 3", 0)] }, flashcards: fl.map((f) => ({ q: "L2 " + f.q, a: f.a })), concepts: [], quiz: [] }, L1: { v: 2, lesson, flashcards: fl, concepts: [{ term: "Opportunity cost", pl: "koszt alternatywny", definition: "Value of the best alternative given up." }], quiz: [] } },
+  materials: { L4: { subjectId: "makroekonomia", kind: "lesson", order: 3, unit: 1, unitTitle: "Podstawy", title: "Popyt", quizCount: 0, flashcardCount: 2, createdAt: NOW - 7e6, v: 2, source: "sylabus" },
+    L5: { subjectId: "makroekonomia", kind: "lesson", order: 4, unit: 1, unitTitle: "Podstawy", title: "Podaż", quizCount: 0, flashcardCount: 2, createdAt: NOW - 6e6, v: 2, source: "sylabus" }, L2: { subjectId: "makroekonomia", kind: "lesson", order: 2, unit: 1, unitTitle: "Podstawy", title: "PPF", quizCount: 0, flashcardCount: 4, createdAt: NOW - 8e6, v: 2, source: "sylabus" }, L1: { subjectId: "makroekonomia", kind: "lesson", order: 1, unit: 1, unitTitle: "Podstawy", title: "Koszt alternatywny", quizCount: 0, flashcardCount: 4, createdAt: NOW - 9e6, v: 2, source: "sylabus" } },
+  materialContent: { L4: { v: 2, lesson: plain("L4"), flashcards: fl.slice(0, 2).map((f) => ({ q: "L4 " + f.q, a: f.a })), concepts: [], quiz: [] },
+    L5: { v: 2, lesson: plain("L5"), flashcards: [], concepts: [], quiz: [] }, L2: { v: 2, lesson: { ...lesson, exit: [mc("L2 exit 1", 0), mc("L2 exit 2", 1), mc("L2 exit 3", 0)] }, flashcards: fl.map((f) => ({ q: "L2 " + f.q, a: f.a })), concepts: [], quiz: [] }, L1: { v: 2, lesson, flashcards: fl, concepts: [{ term: "Opportunity cost", pl: "koszt alternatywny", definition: "Value of the best alternative given up." }], quiz: [] } },
 };
 const prog = { mastery: { L1: { ok: true, score: 3, total: 3, at: NOW - DAY, weak: [] } }, done: { L1: NOW - DAY }, lp: { L1: { stars: 3, last: 3, xpL: true, b: [4, 4] } } };
 const P = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: prog }) } });
@@ -107,6 +112,39 @@ const today = pr.srs[l2q[0]]?.[1] - 1;
 ok("bilet zdany: pytania i fiszki od jutra, zła z biletu w pudełku 1", pr.mastery?.L2?.ok && pr.srs[l2q[3]]?.[0] === 1 && pr.srs[l2q[3]][1] === today + 1 && [0, 1, 2, 4].every((i) => pr.srs[l2q[i]]?.[0] === 0 && pr.srs[l2q[i]][1] === today + 1) && fl.every((f) => pr.srs["L2:" + hashStr("L2 " + f.q)]?.[0] === 0), { m: pr.mastery?.L2, s: l2q.map((k) => pr.srs[k]) });
 await P.evaluate(() => { location.hash = "#/review"; }); await P.waitForTimeout(800);
 ok("nowe karty z lekcji nie czekają dziś", /Na dziś koniec/.test(await P.locator(".rv-hero").innerText()), await P.locator(".rv-hero").innerText());
+
+// 6. etap B: L4 (nieparzysta) ma haczyk z biletu, rozgrzewkę z poprzedniej lekcji (L2), „Zgaduję” wysyła pytanie do pudełka 1,
+// a ekran końca porównuje haczyk z wynikiem biletu. L5 (parzysta, A/B) jest bez haczyka.
+await P.evaluate(() => { location.hash = "#/material/L4"; }); await P.waitForTimeout(1500);
+await P.locator(".lp-start").click(); await P.waitForTimeout(900);
+const types = []; let warmTxt = "", confShot = false; guard = 0;
+while (guard++ < 40) {
+  const card = P.locator(".lp-card"); if (!(await card.count())) { if (await P.locator(".lp-done-screen").count() && !/Lekcja (zrobiona|przerobiona)/.test(await P.locator(".lp-done-screen").innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
+  const type = await card.getAttribute("data-type"), txt = await card.innerText(); types.push(type);
+  if (/rozgrzewka/i.test(txt)) warmTxt += txt + "\n";
+  if (type === "hook" || type === "mc") {
+    if (/L4 exit 3/.test(txt)) { await card.getByRole("button", { name: "Zgaduję" }).click(); await P.waitForTimeout(250); if (!confShot) { confShot = true; await shot(P, "v4-zgaduje"); } }
+    const opts = card.locator(".lp-opts .opt"); let pick = 0;
+    for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (type === "hook" ? /Zła/.test(t) : /OK /.test(t)) { pick = i; break; } }
+    await opts.nth(pick).click(); await P.waitForTimeout(350);
+  } else if (type === "grade4") { await P.locator(".lp-cta").click(); await P.waitForTimeout(250); await P.getByRole("button", { name: /Pamiętam/ }).first().click(); await P.waitForTimeout(600); continue; }
+  await P.locator(".lp-cta").click(); await P.waitForTimeout(450);
+}
+const fin4 = await P.locator(".lp-done-screen").innerText().catch(() => "");
+await shot(P, "v4-przed-po");
+ok("L4: pierwsza karta to haczyk z biletu", types[0] === "hook", types);
+ok("L4: rozgrzewka z pytaniem z poprzedniej lekcji (L2)", /Check 1|Check 2|L2 exit/.test(warmTxt), warmTxt);
+ok("L4: brak „Wracamy do zagadki” (haczyk z biletu)", !types.includes("reveal"), types);
+ok("L4: przed i po", /Na początku: haczyk ✗\. Teraz: 3 z 3 ✓/.test(fin4), fin4);
+await P.locator(".lp-x").click(); await P.waitForTimeout(500);
+pr = await progOf();
+const k3 = "q:L4:" + hashStr("L4 exit 3"), k1 = "q:L4:" + hashStr("L4 exit 1");
+ok("zgadnięte i poprawne → pudełko 1 jak błędne; pewne → nowe od jutra", pr.srs[k3]?.[0] === 1 && pr.srs[k1]?.[0] === 0, { k3: pr.srs[k3], k1: pr.srs[k1] });
+await P.evaluate(() => { location.hash = "#/material/L5"; }); await P.waitForTimeout(1500);
+await P.locator(".lp-start").click(); await P.waitForTimeout(900);
+const t5 = await P.locator(".lp-card").getAttribute("data-type");
+ok("L5 (parzysta, bez własnego hook): bez haczyka", t5 !== "hook", t5);
+await P.locator(".lp-x").click(); await P.waitForTimeout(400);
 
 ok("bez błędów w konsoli", P.errors.length === 0, P.errors);
 for (const [w, n, i] of wyniki) console.log(w, n, i);

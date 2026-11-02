@@ -1,6 +1,13 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Odpowiadasz:": "You are answering:",
+"Pewny": "Sure",
+"Zgaduję": "Guessing",
+"Jak pewna jest Twoja odpowiedź?": "How sure are you of your answer?",
+"Na początku: haczyk {0}. Teraz: {1} z {2} ✓": "At the start: hook {0}. Now: {1} of {2} ✓",
+"Na początku: haczyk {0}. Teraz: {1} z {2}": "At the start: hook {0}. Now: {1} of {2}",
+"🔥 Rozgrzewka · powtórka": "🔥 Warm-up · review",
 ". Im lepiej pamiętasz, tym później wraca: po 1, 3, 7, 14, 30 i 60 dniach. Przed zaliczeniem z przedmiotu każda fiszka wraca przynajmniej raz. Po lekcji wracają też jej": ". The better you remember, the later it comes back: after 1, 3, 7, 14, 30 and 60 days. Before the subject’s exam, every card comes back at least once. After a lesson, its",
 "pytania": "questions",
 ": zła odpowiedź wraca jeszcze w tej samej sesji, aż będzie dobra. Lekcja jest": " come back too: a wrong answer returns in the same session until you get it right. A lesson is",
