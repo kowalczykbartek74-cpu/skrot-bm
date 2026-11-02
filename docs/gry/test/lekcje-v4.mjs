@@ -35,8 +35,11 @@ const docs = {
     L5: { v: 2, lesson: plain("L5"), flashcards: [], concepts: [], quiz: [] }, L2: { v: 2, lesson: { ...lesson, exit: [mc("L2 exit 1", 0), mc("L2 exit 2", 1), mc("L2 exit 3", 0)] }, flashcards: fl.map((f) => ({ q: "L2 " + f.q, a: f.a })), concepts: [], quiz: [] }, L1: { v: 2, lesson, flashcards: fl, concepts: [{ term: "Opportunity cost", pl: "koszt alternatywny", definition: "Value of the best alternative given up." }], quiz: [] } },
 };
 const prog = { mastery: { L1: { ok: true, score: 3, total: 3, at: NOW - DAY, weak: [] } }, done: { L1: NOW - DAY }, lp: { L1: { stars: 3, last: 3, xpL: true, b: [4, 4] } } };
-const P = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: prog }) } });
+const P = await page(b, { w: +process.env.W || 390, h: +process.env.H || 844, konto: "platne", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: prog }) } });
 await P.clock.setFixedTime(new Date(NOW));
+// Lista kontrolna (10.1): bez poziomego przewijania na każdym zrzucie.
+const over = [];
+const shot0 = shot; const shotX = async (p, n) => { const o = await p.evaluate(() => [document.documentElement.scrollWidth, innerWidth]); if (o[0] > o[1] + 1) over.push(n + ":" + o.join(">")); return shot0(p, n); };
 const progOf = async () => (await P.waitForTimeout(2800), P.evaluate((uid) => JSON.parse(localStorage.getItem("mock-progress") || "{}")[uid] || {}, UID));
 
 // 1. migracja v4seed: zdana lekcja wrzuca fiszki i pytania do srs, komunikat na Dziś
@@ -46,7 +49,7 @@ const qk = [...lesson.sections.map((s) => s.check), ...lesson.exit].map((q) => "
 const fk = fl.map((f) => "L1:" + hashStr(f.q));
 ok("v4seed: 4 fiszki + 5 pytań w srs", pr.v4seed === 1 && [...qk, ...fk].every((k) => Array.isArray(pr.srs?.[k])), pr);
 ok("komunikat o zmianie punktów na Dziś", /Zmieniliśmy punkty/.test(await P.locator("main").innerText()), (await P.locator("main").innerText()).slice(0, 400));
-await shot(P, "v4-dzis");
+await shotX(P, "v4-dzis");
 await P.getByRole("button", { name: "Jasne", exact: true }).click(); await P.waitForTimeout(400);
 ok("komunikat znika po „Jasne”", !/Zmieniliśmy punkty/.test(await P.locator("main").innerText()) && (await progOf()).v4msg === 1, "");
 
@@ -70,8 +73,8 @@ while (guard++ < 30) {
     let pick = -1;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (!wrongDone ? /Zła/.test(t) : /OK /.test(t)) { pick = i; break; } }
     await opts.nth(pick).click(); await P.waitForTimeout(350);
-    if (!wrongDone) { wrongDone = true; const fb = await card.innerText(); ok("zła odpowiedź: why + „Czemu nie” + wróci", /Bo B\./.test(fb) && /Czemu nie/.test(fb) && /wróci jeszcze w tej sesji/.test(fb), fb); await shot(P, "v4-rvmc-zle"); }
-    else if (!shotMc) { shotMc = true; await shot(P, "v4-rvmc-dobrze"); }
+    if (!wrongDone) { wrongDone = true; const fb = await card.innerText(); ok("zła odpowiedź: why + „Czemu nie” + wróci", /Bo B\./.test(fb) && /Czemu nie/.test(fb) && /wróci jeszcze w tej sesji/.test(fb), fb); await shotX(P, "v4-rvmc-zle"); }
+    else if (!shotMc) { shotMc = true; await shotX(P, "v4-rvmc-dobrze"); }
     await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
   } else if (type === "grade4") {
     seen.fl++;
@@ -82,7 +85,7 @@ while (guard++ < 30) {
 const doneTxt = await P.locator(".lp-done-screen").innerText().catch(() => "");
 ok("w sesji: 5 pytań, 4 fiszki, 1 powrót", seen.mc === 5 && seen.fl === 4 && seen.again === 1, seen);
 ok("ekran końca: poprawione + awans Utrwalone", /wszystkie poprawione/.test(doneTxt) && /Utrwalone ✓✓ \+10/.test(doneTxt), doneTxt);
-await shot(P, "v4-rv-koniec");
+await shotX(P, "v4-rv-koniec");
 pr = await progOf();
 const t = Math.round((NOW - new Date("2026-01-01T00:00:00+01:00").getTime()) / DAY);
 ok("lv: jeden dzień", Array.isArray(pr.lv?.L1) && pr.lv.L1.length === 1, pr.lv);
@@ -93,7 +96,7 @@ await P.locator(".lp-cta").click(); await P.waitForTimeout(600);
 // 4. mapa kursu: 80% i ✓✓
 await P.evaluate(() => { location.hash = "#/subject/makroekonomia"; }); await P.waitForTimeout(1500);
 ok("mapa kursu: 80% i ✓✓", /80%/.test(await P.locator(".sk-course").innerText()) && (await P.locator(".sk-node .sk-dot").first().innerText()) === "✓✓", await P.locator(".sk-course").innerText().catch(() => ""));
-await shot(P, "v4-mapa");
+await shotX(P, "v4-mapa");
 // ten sam dzień drugi raz: nic się nie zmienia
 await P.evaluate(() => { location.hash = "#/review"; }); await P.waitForTimeout(800);
 ok("na dziś koniec", /Na dziś koniec/.test(await P.locator(".rv-hero").innerText()), await P.locator(".rv-hero").innerText());
@@ -113,7 +116,7 @@ while (guard++ < 15) {
   }
   await P.locator(".lp-cta").click(); await P.waitForTimeout(450);
 }
-await shot(P, "v4-bilet-koniec");
+await shotX(P, "v4-bilet-koniec");
 const finTxt = await P.locator(".lp-done-screen").innerText().catch(() => "");
 await P.locator(".lp-x").click(); await P.waitForTimeout(500);
 pr = await progOf();
@@ -133,7 +136,7 @@ while (guard++ < 40) {
   const type = await card.getAttribute("data-type"), txt = await card.innerText(); types.push(type);
   if (/rozgrzewka/i.test(txt)) warmTxt += txt + "\n";
   if (type === "hook" || type === "mc") {
-    if (/L4 exit 3/.test(txt)) { await card.getByRole("button", { name: "Zgaduję" }).click(); await P.waitForTimeout(250); if (!confShot) { confShot = true; await shot(P, "v4-zgaduje"); } }
+    if (/L4 exit 3/.test(txt)) { await card.getByRole("button", { name: "Zgaduję" }).click(); await P.waitForTimeout(250); if (!confShot) { confShot = true; await shotX(P, "v4-zgaduje"); } }
     const opts = card.locator(".lp-opts .opt"); let pick = 0;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (type === "hook" ? /Zła/.test(t) : /OK /.test(t)) { pick = i; break; } }
     await opts.nth(pick).click(); await P.waitForTimeout(350);
@@ -141,7 +144,7 @@ while (guard++ < 40) {
   await P.locator(".lp-cta").click(); await P.waitForTimeout(450);
 }
 const fin4 = await P.locator(".lp-done-screen").innerText().catch(() => "");
-await shot(P, "v4-przed-po");
+await shotX(P, "v4-przed-po");
 ok("L4: pierwsza karta to haczyk z biletu", types[0] === "hook", types);
 ok("L4: rozgrzewka z pytaniem z poprzedniej lekcji (L2)", /Check 1|Check 2|L2 exit/.test(warmTxt), warmTxt);
 ok("L4: brak „Wracamy do zagadki” (haczyk z biletu)", !types.includes("reveal"), types);
@@ -166,7 +169,7 @@ while (guard++ < 40) {
   const card = P.locator(".lp-card");
   if (!(await card.count())) { const d = P.locator(".lp-done-screen"); if (await d.count() && !/Lekcja (zrobiona|przerobiona)/.test(await d.innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
   const type = await card.getAttribute("data-type"), txt = await card.innerText(); t3.push(type);
-  if (type === "read" && !sheet) { await P.locator(".lp-help").click(); await P.waitForTimeout(400); sheet = await P.locator(".lp-sheet").innerText(); await shot(P, "v4-prosciej"); await P.locator(".lp-sheet .btn.primary").click(); await P.waitForTimeout(300); }
+  if (type === "read" && !sheet) { await P.locator(".lp-help").click(); await P.waitForTimeout(400); sheet = await P.locator(".lp-sheet").innerText(); await shotX(P, "v4-prosciej"); await P.locator(".lp-sheet .btn.primary").click(); await P.waitForTimeout(300); }
   if (type === "mc") {
     if (/Which concept fits/.test(txt) && !distTxt) distTxt = txt;
     const opts = card.locator(".lp-opts .opt"); let pick = 0;
@@ -176,7 +179,7 @@ while (guard++ < 40) {
     const task = await card.locator(".q").innerText(); numSeen.push(task);
     await card.locator("input.lp-num").fill(numSeen.length === 1 ? "1" : String(solve(task)).replace(".", ","));
     await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
-    if (numSeen.length === 1) { ok("num: zła odpowiedź pokazuje wynik i drugą szansę", /Wynik: \d+ zł/.test(await card.innerText()) && /nowymi liczbami/.test(await card.innerText()), await card.innerText()); await shot(P, "v4-num-zle"); }
+    if (numSeen.length === 1) { ok("num: zła odpowiedź pokazuje wynik i drugą szansę", /Wynik: \d+ zł/.test(await card.innerText()) && /nowymi liczbami/.test(await card.innerText()), await card.innerText()); await shotX(P, "v4-num-zle"); }
   } else if (type === "recap") {
     await card.locator("textarea").fill("Coś tam."); await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
   }
@@ -212,12 +215,13 @@ while (guard++ < 60) {
     rvNum = await card.locator(".q").innerText();
     await card.locator("input.lp-num").fill(String(solve(rvNum))); await P.locator(".lp-cta").click(); await P.waitForTimeout(300);
     if (!/Dobrze/.test(await card.innerText())) rvTypes.push("NUM-ZLE:" + await card.innerText());
-    await shot(P, "v4-rv-num"); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
+    await shotX(P, "v4-rv-num"); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
   } else if (type === "grade4") { await P.locator(".lp-cta").click(); await P.waitForTimeout(250); await P.getByRole("button", { name: /Pamiętam/ }).first().click(); await P.waitForTimeout(600); }
   else break;
 }
 ok("Powtórki: rozróżnianie (d:) i zadanie liczbowe (n:) wracają", /Which concept fits/.test(rvDist) && /You can earn/.test(rvNum) && !rvTypes.some((t) => /NUM-ZLE/.test(t)), { rvTypes, rvNum, rvDist });
 
+ok("bez poziomego przewijania", over.length === 0, over);
 ok("bez błędów w konsoli", P.errors.length === 0, P.errors);
 for (const [w, n, i] of wyniki) console.log(w, n, i);
 console.log(`${wyniki.filter((x) => x[0] === "✓").length}/${wyniki.length}`);
