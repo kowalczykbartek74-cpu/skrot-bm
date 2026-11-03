@@ -1,6 +1,15 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Kolekcja sezonowa": "Seasonal collection",
+"Sezon zakończony": "Season over",
+"Do kupienia do {0}. Kupione rzeczy zostają u Ciebie na zawsze.": "On sale until {0}. Anything you buy stays yours for good.",
+"Te rzeczy masz na zawsze. Nowe kolekcje pojawią się w kolejnych sezonach.": "These are yours for good. New collections will come in later seasons.",
+"Trwa sezon": "Season on now",
+"na motywy strony i wygląd: ramkę awatara, kolor nicku, tytuł, skórki w grach, fiszki, a także na zamrożenie serii. Każdy motyw obejrzysz przed zakupem przyciskiem": "on site themes and looks: an avatar frame, nickname colour, title, game skins and flashcards, and on streak freezes. You can try any theme before buying it with the",
+"Sklep to tylko wygląd: nic z niego nie daje punktów ani lepszych wyników. Motyw możesz też dostać za darmo, gdy dojdziesz do jego poziomu. Monety zbierasz z pełnym dostępem.": "The shop is looks only: nothing in it gives points or better results. You can also get a theme for free when you reach its level. You earn coins with full access.",
+"Co kupię w sklepie poza motywami?": "What can I buy in the shop besides themes?",
+"Tylko wygląd: ramki awatara, kolor nicku i tytuł w rankingu, miejsca w gablocie odznak, skórki i tła w grach, wygląd fiszek, efekt po quizie, ciche dźwięki dobrej odpowiedzi i kolor płomienia serii. Nic z tego nie daje punktów rankingu, XP ani lepszych wyników. Wyjątek to zamrożenie serii: gdy opuścisz jeden dzień, chroni Twoją serię (bez punktów i XP za ten dzień). Możesz mieć najwyżej 2 naraz.": "Looks only: avatar frames, a nickname colour and title in the ranking, badge showcase slots, game skins and backgrounds, flashcard looks, a quiz finish effect, soft correct-answer sounds and a streak flame colour. None of it gives ranking points, XP or better results. The exception is the streak freeze: if you miss one day, it protects your streak (no points or XP for that day). You can hold up to 2.",
 "Graj dźwięk przy dobrej odpowiedzi": "Play a sound for correct answers",
 "Włączone: gra założona paczka": "On: plays your equipped pack",
 "Wyłączone (domyślnie)": "Off (default)",

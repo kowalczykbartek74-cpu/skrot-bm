@@ -3624,8 +3624,14 @@ button.kgab-slot { cursor: pointer; }
 .kpv-art { display: block; width: 100%; max-width: 220px; }
 .kpv-art svg, .kpv-art canvas { display: block; width: 100%; height: auto; border-radius: 10px; }
 .kpv-part .kpv-art { width: 56px; }
-.ksez-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
-.ksez-head h3 { margin: 0; }
+.ksez-hero { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; align-items: center; padding: 14px; border-radius: 14px; border: 1.5px solid var(--green-200); background: linear-gradient(135deg, var(--green-50), var(--surface)); }
+.ksez-hero > .chip { grid-column: 2; justify-self: start; }
+@media (min-width: 560px) { .ksez-hero { grid-template-columns: auto minmax(0, 1fr) auto; } .ksez-hero > .chip { grid-column: auto; justify-self: end; } }
+.ksez-hero.is-off { border-style: dashed; }
+.ksez-ico { font-size: 2rem; line-height: 1; }
+.ksez-txt { display: grid; gap: 2px; min-width: 0; }
+.ksez-txt h3, .ksez-txt p { margin: 0; }
+.ktab-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime-400); box-shadow: 0 0 0 2px var(--surface); }
 /* potwierdzenie zakupu */
 .kbuy { display: grid; gap: 8px; justify-items: center; text-align: center; }
 .kbuy h2 { margin: 0; }
@@ -11944,7 +11950,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     const tab = ([k, t, ic]) => h("button", { type: "button", role: "tab", id: "ktab-" + k, class: "kshop-tab", "aria-selected": String(k === cur), "aria-controls": "kpanel", tabindex: k === cur ? "0" : "-1",
       onclick: () => { SHOP.tab = k; ls.set("bm-shop-tab", k); render(); requestAnimationFrame(() => $("ktab-" + k)?.focus()); },
       onkeydown: (e) => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; e.preventDefault(); const i = tabs.findIndex((x) => x[0] === cur), n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length][0]; SHOP.tab = n; ls.set("bm-shop-tab", n); render(); requestAnimationFrame(() => $("ktab-" + n)?.focus()); } },
-      h("span", { "aria-hidden": "true", text: ic }), h("span", { text: t }));
+      h("span", { "aria-hidden": "true", text: ic }), h("span", { text: t }),
+      k === "sezon" && kat.some((x) => x.sezon && kSezonOtwarty(x.sezon)) ? h("i", { class: "ktab-dot", title: "Trwa sezon" }) : null);
     let body;
     if (cur === "motywy") body = [h("p", { class: "muted kshop-intro", text: "Za darmo od poziomu albo wcześniej za monety." }), h("div", { class: "shop-grid" }, THEME_SHOP.map(shopThemeCard))];
     else if (cur === "sezon") body = kSezonBody(kat.filter((x) => x.sezon));
@@ -12075,13 +12082,21 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
         h("button", { type: "button", class: "btn primary", onclick: () => { close(); kZaloz(it.slot, it.id); } }, "Załóż teraz"),
         h("button", { type: "button", class: "btn", onclick: close }, "Później")))], "kbuy-modal");
   }
-  // Sezonowe: ile czasu zostało (pełne okno w kolejnym etapie).
+  // Sezonowe: kolekcje z oknem czasowym (daty w nauka_sezony() w SQL). Kupione zostają na zawsze, także po sezonie.
+  const kDataTxt = (iso) => { const [y, m, d] = String(iso).split("-"); return `${+d}.${m}.${y}`; };
   function kSezonBody(items) {
     const keys = [...new Set(items.map((x) => x.sezon))];
     return keys.map((k) => {
       const s = kSezon(k) || {}, open = kSezonOtwarty(k), list = items.filter((x) => x.sezon === k && (open || kOwned(x)));
+      const name = EN ? s.en || s.pl || k : s.pl || k;
       return h("div", { class: "kshop-group" },
-        h("div", { class: "ksez-head" }, h("h3", { translate: "no", text: EN ? s.en || s.pl || k : s.pl || k }), open ? kSezonLeft(s) : h("span", { class: "chip plain", text: "Zakończony" })),
+        h("div", { class: "ksez-hero" + (open ? "" : " is-off") },
+          h("span", { class: "ksez-ico", "aria-hidden": "true", text: "❄️" }),
+          h("div", { class: "ksez-txt" },
+            h("span", { class: "eyebrow", text: open ? "Kolekcja sezonowa" : "Sezon zakończony" }),
+            h("h3", { translate: "no", text: name }),
+            h("p", { class: "muted", text: open ? `Do kupienia do ${kDataTxt(s.do)}. Kupione rzeczy zostają u Ciebie na zawsze.` : "Te rzeczy masz na zawsze. Nowe kolekcje pojawią się w kolejnych sezonach." })),
+          open ? kSezonLeft(s) : null),
         h("div", { class: "kshop-grid" }, list.map(kCard)));
     });
   }
@@ -13587,7 +13602,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     ] },
     { id: "nagrody", ic: "flag", title: "Ranking, monety i sklep", gain: "Wiesz, za co dostajesz punkty i monety, jak wygląda ranking i jak kupić motyw.", slides: [
       { t: "Ranking kierunku", p: "Za każdą dobrą odpowiedź w quizie, zadaniu, Powtórkach, lekcji i grze dostajesz <b>punkty rankingu</b>. Ranking pokazuje tydzień albo semestr, cały rok albo jedną grupę i jeden przedmiot.", tip: "W rankingu widać tylko Twój <b>pseudonim</b>. Możesz się ukryć w <b>Więcej → Ranking: pseudonim i widoczność</b>.", try: "Przełącz grupę dwa razy", demo: demoRank },
-      { t: "Monety i Zadania dnia", p: "Każde 10 punktów rankingu to <b>1 moneta 🪙</b>. Dodatkowe monety dają <b>Zadania dnia</b> (te same dla całego roku) i Zadanie tygodnia. Monety wydajesz w <b>Sklepie</b> na motywy strony. Każdy motyw obejrzysz przed zakupem przyciskiem <b>Podgląd</b>.", tip: "Motyw możesz też dostać za darmo, gdy dojdziesz do jego poziomu. Monety zbierasz z pełnym dostępem.", try: "Odbierz nagrodę i kup motyw", demo: demoCoins },
+      { t: "Monety i Zadania dnia", p: "Każde 10 punktów rankingu to <b>1 moneta 🪙</b>. Dodatkowe monety dają <b>Zadania dnia</b> (te same dla całego roku) i Zadanie tygodnia. Monety wydajesz w <b>Sklepie</b> na motywy strony i wygląd: ramkę awatara, kolor nicku, tytuł, skórki w grach, fiszki, a także na zamrożenie serii. Każdy motyw obejrzysz przed zakupem przyciskiem <b>Podgląd</b>.", tip: "Sklep to tylko wygląd: nic z niego nie daje punktów ani lepszych wyników. Motyw możesz też dostać za darmo, gdy dojdziesz do jego poziomu. Monety zbierasz z pełnym dostępem.", try: "Odbierz nagrodę i kup motyw", demo: demoCoins },
     ], tour: [
       { go: { view: "ranking" }, sel: ".rk-ctrls, .paywall", title: "Tydzień, semestr i grupa", text: "Zmień zakres, grupę albo przedmiot, a ranking przeliczy się od razu." },
       { go: { view: "shop" }, sel: "#shop-misje, .sk-panel", title: "Zadania dnia", text: "Zrób zadanie, a potem kliknij Odbierz, żeby dostać monety." },
@@ -13668,6 +13683,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       h("dl", { class: "g-keys" }, [["/", "wyszukiwarka, z każdego ekranu"], ["Spacja", "odwraca fiszkę w Powtórkach"], ["1 2 3 4", "ocena fiszki: nie pamiętam … łatwe"], ["← →", "karty w przewodniku"], ["Esc", "zamyka okno"]].map(([k, t]) => [h("dt", {}, ...k.split(" ").map((x) => h("kbd", { class: "kbd", text: x }))), h("dd", { text: t })])));
     const sk = window.skrot || {};
     const FAQ = [
+      ["Co kupię w sklepie poza motywami?", "Tylko wygląd: ramki awatara, kolor nicku i tytuł w rankingu, miejsca w gablocie odznak, skórki i tła w grach, wygląd fiszek, efekt po quizie, ciche dźwięki dobrej odpowiedzi i kolor płomienia serii. Nic z tego nie daje punktów rankingu, XP ani lepszych wyników. Wyjątek to zamrożenie serii: gdy opuścisz jeden dzień, chroni Twoją serię (bez punktów i XP za ten dzień). Możesz mieć najwyżej 2 naraz."],
       ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu. Możesz też raz wypróbować wszystko za darmo przez 3 dni.`],
       ["Nie byłem na wykładzie. Co teraz?", "Wejdź w Więcej → Po zajęciach w 5 minut (albo w przedmiot → ⚡ Po zajęciach w 5 minut), wybierz, o czym były zajęcia, i przeczytaj 5 krótkich kroków. W dniu zajęć, po ich końcu, podsumowanie pojawia się też samo na ekranie Dziś."],
       ["Kim jest Stażysta Staś?", "To nowy stażysta, który tłumaczy temat z sylabusa, ale robi 2–3 błędy. Wejdź w Więcej → Stażysta Staś (albo w przedmiot → 🤓 Popraw Stasia), kliknij zdania, które są złe, sprawdź i wybierz poprawkę. Za każdy znaleziony błąd i każdą dobrą poprawkę dostajesz punkt."],

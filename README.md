@@ -309,7 +309,15 @@ Dopóki tego nie zrobisz, strona pokazuje studentom „nie jest jeszcze włączo
 - Zakładanie `nauka_sklep_zaloz(p_slot, p_item)` (null = zdejmij) – tylko posiadane, jeden przedmiot na slot. Gablota `nauka_gablota_ustaw(p_odznaki)` – tylko zdobyte odznaki, 1 miejsce + kupione. Zamrożenie `nauka_zamrozenie_uzyj()` chroni wczoraj, gdy wczoraj nie było nauki. Wygląd innych w rankingu: `nauka_wyglad(p_nicki)` (osobno od `nauka_ranking`).
 - Poziom, odznaki i tytuły za osiągnięcia (`tytul:pogromca:<przedmiot>`) baza czyta z dokumentu postępu (`nauka_docs`, kolekcja `progress`) – tym samym wzorem co strona (próg poziomu n = 50·n·(n−1)).
 - Sezony: `nauka_sezony()` na górze pliku (daty po czasie warszawskim, obie włącznie). Zmiana dat = edycja i ponowne uruchomienie. Kupione przedmioty sezonowe zostają na zawsze.
-- **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v24-kosmetyki.sql` → Run (po v22). Można uruchomić ponownie. Nie uruchamiaj potem starego v14 (odtworzyłby jednoargumentowe `nauka_sklep_kup`). Testy: `supabase/test/v24.sql` (w `pglite.mjs`).
+- Strona (`index.html`, sekcja „PRZEDMIOTY KOSMETYCZNE”; grafiki w `kosmetyki.js`, `window.SKROT_KOSM`):
+  - Sklep `#/shop`: zakładki Motywy / Profil / Gry / Nauka / Zestawy / Sezonowe (`kShopTabs`), karty z podglądem na żywo (Twój nick i awatar), „od poziomu X” z kłódką, Posiadasz / Załóż / Założone, potwierdzenie z ceną i saldem po zakupie (`kBuy`), dymek „−N 🪙” i odliczanie salda (`kSpent`).
+  - Ranking: awatar z ramką (pierwsza litera nicku), kolor nicku, tytuł (kupiony = szara pigułka, za osiągnięcie = obrys i 🏅); klik w osobę = profil z gablotą (`kProfilShow`). Więcej: karta „Twój profil” z gablotą (`kProfilCard`, `kGablotaEdit`).
+  - Gry: `GRY_API.kosm()` → skórka (`SKROT_KOSM.SIDE` we Fruń, `TOP` w Przejdź) i tło (`SKY`, `BOARD_COL`, `rowDecor`); kolizje bez zmian.
+  - Nauka: klasa `kf-<wygląd>` na odtwarzaczu (fiszki), `kEffect()` zamiast konfetti na końcu quizu, `kSound()` w `lpBuzz(true)` (tylko z założoną paczką i przełącznikiem `bm-dzwieki`, domyślnie wyłączone), `kFlame()` zamiast 🔥, `streakNext()` z zamrożeniem.
+  - Tytuły „Pogromca …” (`kTytulySprawdz`): wszystkie lekcje przedmiotu zrobione → `progress.tytuly`. Odznaka „Mistrz Skrótu BM” z testu przewodnika trafia do `progress.odznaki` (gablota).
+- Kolory nicku, grafik i fiszek są zapisane jako zmienne CSS / atrybuty `rgb(r g b)` (ze spacjami), żeby silniki motywów (Jednorożec, Łąka, Nocny rejs, Nokturn) ich nie przemalowywały. Kontrast ≥ 4,5:1 sprawdza `docs/kosmetyki/test/kontrast.mjs` (8 motywów, jasny i ciemny tryb).
+- Testy przeglądarkowe: `docs/kosmetyki/test/etap2.mjs` … `etap5.mjs` i `kontrast.mjs` (atrapa: `mock-v24 = "1"`, katalog wczytywany z tego pliku SQL przez `docs/gry/test/lib.mjs`).
+- **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v24-kosmetyki.sql` → Run (po v22). Można uruchomić ponownie. Nie uruchamiaj potem starego v14 (odtworzyłby jednoargumentowe `nauka_sklep_kup`). Testy: `supabase/test/v24.sql` (w `pglite.mjs`). Bez v24 w bazie sklep pokazuje tylko motywy, jak dotąd.
 ## Okres próbny (`skrot-v16-proba.sql`, dawniej v9-proba)
 
 - Student raz włącza **3 dni pełnego dostępu za darmo**, bez karty: przycisk „Wypróbuj za darmo przez 3 dni” w paskach zakupu, kłódkach i w „Konto i dostęp”. Niezalogowany najpierw się loguje, potem okres próbny włącza się sam.
