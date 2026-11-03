@@ -395,6 +395,30 @@
     bossAdmin: (id, { hp = null, ukryty = null } = {}) => rpCall("nauka_admin_boss", { p_id: id, p_hp: hp, p_ukryty: ukryty }),
   };
 
+  // ---------- ocena pytań otwartych w próbnym teście (supabase/functions/grade-open, SQL v24) ----------
+  // body = { run, items: [{ id, question, modelAnswer, rubric:[{t,p}], studentAnswer, lang }] } → { results: { id: { items, missing, tip } } }.
+  // Błąd (limit, timeout, brak funkcji) rzuca wyjątek z code; strona wtedy przechodzi na samoocenę.
+  skrot.gradeOpen = async (body, ms = 60000) => {
+    await ready;
+    const fail = (code, message) => Object.assign(new Error(message), { code });
+    if (!sb || skrot.state !== "in") throw fail("not_signed_in", "Zaloguj się, żeby AI oceniło test.");
+    const { data } = await sb.auth.getSession();
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+    let res;
+    try {
+      res = await fetch(CONFIG.url + "/functions/v1/grade-open", {
+        method: "POST", signal: ctl.signal,
+        headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + data?.session?.access_token, "x-skrot-device": DEVICE },
+        body: JSON.stringify(body),
+      });
+    } catch (e) { throw fail(e?.name === "AbortError" ? "timeout" : "no_function", "AI nie odpowiedziało na czas."); }
+    finally { clearTimeout(t); }
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.results) throw fail(out.code || (res.status === 404 ? "not_deployed" : "error"), out.message || "AI nie oceniło testu.");
+    return out;
+  };
+  skrot.gradeAppeal = async (run, item, dane) => { await ready; const { data, error } = await sb.rpc("nauka_ocena_odwolanie", { p_run: run, p_item: item, p_dane: dane }); if (error) throw rpcErr(error); return data; };
+
   // ---------- AI przez funkcję serwerową (supabase/functions/claude) ----------
   function makeSample() {
     const fail = (code, message) => Object.assign(new Error(message), { code });

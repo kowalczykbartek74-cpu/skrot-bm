@@ -1,0 +1,72 @@
+{
+  "ochrona-wlasnosci-intelektualnej": [
+    {
+      "key": "owi-1-essay-and-photocopies",
+      "topic": "Permitted personal and public use of works and plagiarism",
+      "ep": ["EP3", "EP1"],
+      "text": "Ola, a first-year student, writes a 12-page essay for her marketing class. She copies three paragraphs (about one page) from a blog article by a well-known marketer into her essay, changes a few words, and gives no quotation marks and no source. She also photocopies one chapter of a textbook she bought and gives copies to five close friends from her study group, so they can prepare for the exam together. The lecturer finds the copied paragraphs with anti-plagiarism software.",
+      "sub": [
+        {
+          "q": "Is Ola's use of the blog paragraphs a lawful quotation? Explain.",
+          "answer": "No. Under Art. 29(1) of the Polish Act on Copyright and Related Rights, fragments of a disseminated work may be quoted in one's own independent work only to the extent justified by the purpose of the quotation (explanation, critical analysis, teaching, polemic), and Art. 34 requires naming the author and the source. Ola gave no source and no quotation marks and presented the text as her own; changing a few words does not create her own work. This is not a quotation but plagiarism (appropriation of authorship).",
+          "rubric": [
+            { "t": "Problem: whether copying the paragraphs falls under the right of quotation", "p": 1 },
+            { "t": "Rule: Art. 29 (fragments, justified purpose such as explanation or analysis) and Art. 34 (author and source must be named)", "p": 2 },
+            { "t": "Application: no source, no quotation marks, text presented as her own; small word changes do not make it her work", "p": 2 },
+            { "t": "Conclusion: not a lawful quotation, it is plagiarism", "p": 1 }
+          ]
+        },
+        {
+          "q": "May Ola lawfully give the photocopied chapter to her five friends? Explain.",
+          "answer": "Yes, most likely. Art. 23 allows free personal use of a disseminated work without the author's permission. Personal use covers single copies used by a circle of people in a personal relationship, including family and social (friendship) ties. Five close friends preparing together are such a circle, and the copies are few and not for profit. It would not be allowed to copy the chapter for the whole year group, to sell it or to put it online.",
+          "rubric": [
+            { "t": "Problem: whether sharing copies is permitted personal use", "p": 1 },
+            { "t": "Rule: Art. 23, personal use of a disseminated work by a circle of people in a personal (e.g. social) relationship, single copies", "p": 2 },
+            { "t": "Application: close friends, a few copies, non-commercial, study purpose", "p": 2 },
+            { "t": "Conclusion: permitted; it would not be permitted for a wide or anonymous group or for profit", "p": 1 }
+          ]
+        },
+        {
+          "q": "What legal consequences can Ola face for the copied paragraphs?",
+          "answer": "Civil: the author may claim protection of moral rights under Art. 78 (stop the infringement, remove its effects, e.g. a statement, and compensation or a payment to a social cause) and, for economic rights, remedies under Art. 79. Criminal: Art. 115(1) punishes appropriating authorship of another person's work with a fine, restriction of liberty or up to 3 years' imprisonment. At the university she can also face disciplinary proceedings for plagiarism and fail the essay.",
+          "rubric": [
+            { "t": "Problem: liability for appropriating authorship", "p": 1 },
+            { "t": "Rule: civil remedies (Art. 78 moral rights, Art. 79 economic rights) and criminal liability under Art. 115(1)", "p": 2 },
+            { "t": "Application: Ola presented another author's text as her own in a work she handed in", "p": 2 },
+            { "t": "Conclusion: civil claims, possible criminal liability and university disciplinary proceedings", "p": 1 }
+          ]
+        }
+      ]
+    }
+  ],
+  "prawo": [
+    {
+      "key": "prawo-1-coffee-roastery",
+      "topic": "Foundations of commercial Law and of company law.",
+      "ep": ["EP2", "EP1"],
+      "text": "Adam and Ewa want to open a small coffee roastery together. Adam has 20,000 PLN in savings and owns a flat; Ewa has 5,000 PLN and wants to run the business day to day. A friend advises them to register a general partnership (spółka jawna) \"because it is the simplest\". They worry that if the roastery fails, they could lose their private property. Two years later the business owes a supplier 150,000 PLN and its own assets are worth about 20,000 PLN.",
+      "sub": [
+        {
+          "q": "If they had registered a general partnership, could the supplier recover the debt from Adam's flat? Explain.",
+          "answer": "Yes. Under Art. 22 § 2 of the Polish Commercial Companies Code each partner of a general partnership is liable for the partnership's obligations with all their assets, without limit, jointly and severally with the other partners and the partnership. This liability is subsidiary (Art. 31 § 1): the creditor may enforce against a partner's personal assets only when enforcement against the partnership's assets proves ineffective. The roastery's 20,000 PLN will not cover 150,000 PLN, so the supplier can then enforce against Adam's flat.",
+          "rubric": [
+            { "t": "Problem: personal liability of partners for the partnership's debts", "p": 1 },
+            { "t": "Rule: Art. 22 § 2 (unlimited, joint and several liability of partners) and Art. 31 § 1 (subsidiary: partnership first)", "p": 2 },
+            { "t": "Application: partnership assets (20,000 PLN) are not enough for 150,000 PLN, so enforcement against the partnership is ineffective", "p": 2 },
+            { "t": "Conclusion: yes, the supplier can reach Adam's flat after unsuccessful enforcement against the partnership", "p": 1 }
+          ]
+        },
+        {
+          "q": "Which legal form would better protect their private property, and is this protection absolute? Explain.",
+          "answer": "A limited liability company (sp. z o.o.). It is a separate legal person that is liable with its own assets, and its shareholders are not liable for its obligations (Art. 151 § 4); the minimum share capital is 5,000 PLN. The protection is not absolute: members of the management board are jointly and severally liable for the company's debts if enforcement against the company is ineffective (Art. 299), unless they show, for example, that a bankruptcy petition was filed in due time. Adam as a shareholder only would be protected; Ewa, if she sits on the management board, could be personally liable.",
+          "rubric": [
+            { "t": "Problem: choosing a form that limits the owners' personal liability", "p": 1 },
+            { "t": "Rule: sp. z o.o. as a separate legal person, shareholders not liable (Art. 151 § 4); board members' liability (Art. 299)", "p": 2 },
+            { "t": "Application: Adam as shareholder protected; Ewa as a board member at risk if the company's assets are insufficient and no timely bankruptcy petition", "p": 2 },
+            { "t": "Conclusion: sp. z o.o. protects better, but not absolutely", "p": 1 }
+          ]
+        }
+      ]
+    }
+  ]
+}
