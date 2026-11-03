@@ -391,6 +391,42 @@
     bossAdmin: (id, { hp = null, ukryty = null } = {}) => rpCall("nauka_admin_boss", { p_id: id, p_hp: hp, p_ukryty: ukryty }),
   };
 
+  // ---------- Profil nauki (v22, Zdawalni docs/plan-profil-nauki.md L7) ----------
+  // Zdarzenia nauki czekają w przeglądarce (bm-learn-q, max 300) i idą paczkami co 20 s, przy ukryciu karty i po
+  // powrocie sieci. Baza sama ustawia konto, odrzuca nieznane typy, pomija duplikaty i przy wyłączonym
+  // „Ucz się na moich danych” zapisuje tylko to, co potrzebne do działania. Bez v22 w bazie → not_enabled i cisza.
+  const LQ = "bm-learn-q";
+  const lqRead = () => { try { return JSON.parse(localStorage.getItem(LQ) || "[]"); } catch { return []; } };
+  const lqWrite = (q) => { try { localStorage.setItem(LQ, JSON.stringify(q.slice(-300))); } catch {} };
+  let lqSending = false, lqOff = false;
+  async function lqFlush() {
+    if (lqSending || lqOff || !skrot.uid || navigator.onLine === false) return;
+    const batch = lqRead().slice(0, 50);
+    if (!batch.length) return;
+    lqSending = true;
+    try {
+      const r = await rpCall("nauka_zdarzenia_zapisz", { p_zdarzenia: batch });
+      if (r.ok) { const sent = new Set(batch.map((e) => e.id)); lqWrite(lqRead().filter((e) => !sent.has(e.id))); }
+      else if (r.code === "not_enabled") lqOff = true;
+    } finally { lqSending = false; }
+  }
+  setInterval(lqFlush, 20000);
+  addEventListener("online", lqFlush);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") lqFlush(); });
+  const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
+  skrot.learn = {
+    track(typ, dane = {}) {
+      try { const q = lqRead(); q.push({ id: uuid(), typ, kiedy: new Date().toISOString(), dane }); lqWrite(q); if (q.length >= 25) lqFlush(); } catch {}
+    },
+    flush: lqFlush,
+    profil:      ()                    => rpCall("nauka_profil_nauki"),
+    zapiszTest:  ({ deklaracje, startowe, odpowiedzi }) => rpCall("nauka_profil_nauki_test", { p_deklaracje: deklaracje, p_startowe: startowe, p_odpowiedzi: odpowiedzi }),
+    zmien:       (deklaracje)          => rpCall("nauka_profil_nauki_zmien", { p_deklaracje: deklaracje }),
+    wlacz:       (on)                  => rpCall("nauka_profil_nauki_wlacz", { p_wlaczone: !!on }),
+    odNowa:      ()                    => rpCall("nauka_profil_nauki_od_nowa"),
+    usunDane:    ()                    => rpCall("nauka_zdarzenia_usun"),
+  };
+
   // ---------- AI przez funkcję serwerową (supabase/functions/claude) ----------
   function makeSample() {
     const fail = (code, message) => Object.assign(new Error(message), { code });

@@ -13,6 +13,7 @@
 //     · mock-misje = "odp10,gra1,haslo1" (dzienne, po przecinku) · mock-misja-tydz = "tyd_d5" · monety z nauki = suma pkt dnia / 10 (jak trigger)
 //   v16 (okres próbny): mock-konto = "proba" (trwa, pełny dostęp) | "proba-koniec" (minął) · "darmowe" może go włączyć (nauka_proba_start
 //     przełącza mock-konto na "proba") · mock-proba-do (ISO, koniec trwającego) · mock-proba-blad = "wykorzystany" | "urzadzenie"
+//   v22 (Profil nauki): mock-v22 = "1" (domyślnie) | "0" (brak funkcji → not_enabled) · stan profilu w localStorage mock-profil
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
   const ls = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
@@ -248,6 +249,20 @@
       try { localStorage.setItem("mock-konto", "proba"); localStorage.setItem("mock-proba-do", d); } catch {}
       return { data: { do_kiedy: d } }; },
   };
+  // ---------- v22: Profil nauki (zdarzenia i profil) ----------
+  const V22 = ls("mock-v22", "1") === "1";
+  const prof = () => { try { return JSON.parse(localStorage.getItem("mock-profil") || "null"); } catch { return null; } };
+  const profSet = (p) => { try { localStorage.setItem("mock-profil", JSON.stringify(p)); } catch {} return p; };
+  const V22FN = {
+    nauka_zdarzenia_zapisz: (a) => ({ ok: true, n: (a.p_zdarzenia || []).length }),
+    nauka_profil_nauki: () => ({ ok: true, profil: prof() }),
+    nauka_profil_nauki_test: (a) => (a.p_deklaracje && "stress" in a.p_deklaracje ? { ok: false, code: "bad_input" }
+      : (profSet({ ...(prof() || { wlaczone: true }), deklaracje: a.p_deklaracje, startowe: a.p_startowe, z_danych: {}, test_at: new Date().toISOString() }), { ok: true })),
+    nauka_profil_nauki_zmien: (a) => (profSet({ ...(prof() || {}), deklaracje: { ...(prof()?.deklaracje || {}), ...a.p_deklaracje } }), { ok: true }),
+    nauka_profil_nauki_wlacz: (a) => (profSet({ ...(prof() || {}), wlaczone: !!a.p_wlaczone }), { ok: true, wlaczone: !!a.p_wlaczone }),
+    nauka_profil_nauki_od_nowa: () => (profSet({ ...(prof() || {}), z_danych: {} }), { ok: true }),
+    nauka_zdarzenia_usun: () => ({ ok: true, n: 0 }),
+  };
   const BASE = {
     ...AKT,
     nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid && !PROBA ? "2027-07-11" : null, plan: paid && !PROBA ? "rok" : null,
@@ -263,6 +278,7 @@
     else if (V15FN[fn]) out = V15 ? { data: V15FN[fn](args), error: null } : brak;
     else if (V14FN[fn]) out = V14 ? { data: V14FN[fn](args), error: null } : brak;
     else if (V16FN[fn]) { const r = V16FN[fn](args); out = { data: r.data ?? null, error: r.error ?? null }; }
+    else if (V22FN[fn]) out = V22 ? { data: V22FN[fn](args), error: null } : brak;
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;
