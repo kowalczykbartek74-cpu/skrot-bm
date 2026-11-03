@@ -39,7 +39,7 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 ## Jak to działa
 - `index.html` – cała aplikacja (jedna strona). Plan zajęć pobiera z `https://plan.skrotbm.pl/plan.json`.
 - `skrot-supabase.js` – baza, logowanie mailem i zakup dostępu (Supabase + Stripe Payment Link).
-- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`, `skrot-v12-zabezpieczenia.sql`, `skrot-v13-gry.sql`, `skrot-v15-gry2.sql`, `skrot-v14-monety.sql`, `skrot-v16-proba.sql`, `skrot-v17-polecenia.sql`, `skrot-v18-imie-polecajacego.sql`, `skrot-v19-pokaz.sql`, `skrot-v20-jednorozec.sql`, `skrot-v21-nokturn.sql`, `skrot-v22-monety-widoczne.sql` – v14 i v16 celowo po v15, bo tak trafiają na produkcję) i funkcje serwerowe:
+- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`, `skrot-v12-zabezpieczenia.sql`, `skrot-v13-gry.sql`, `skrot-v15-gry2.sql`, `skrot-v14-monety.sql`, `skrot-v16-proba.sql`, `skrot-v17-polecenia.sql`, `skrot-v18-imie-polecajacego.sql`, `skrot-v19-pokaz.sql`, `skrot-v20-jednorozec.sql`, `skrot-v21-nokturn.sql`, `skrot-v22-monety-widoczne.sql`, `skrot-v24-kosmetyki.sql` – v14 i v16 celowo po v15, bo tak trafiają na produkcję) i funkcje serwerowe:
   - `functions/stripe-webhook` – po płatności w Stripe (konto live „skrotbm”, endpoint „skrotbm-supabase”) wpisuje dostęp (sekret `STRIPE_WEBHOOK_SECRET`, bez weryfikacji JWT),
   - `functions/kalendarz` – osobisty kalendarz do telefonu (zajęcia + zaliczenia + zadania) pod tajnym linkiem; reguły w `skrot-kalendarz.sql`, wdrażanie z `--no-verify-jwt`,
   - `functions/claude` – AI (sekret `ANTHROPIC_API_KEY`): starosta bez limitu, osoby z pełnym dostępem tylko do „Moich materiałów”, z biletem i limitem plików. Prosty język i „Dlaczego?” materiałów roku powstają z góry.
@@ -300,6 +300,16 @@ Dopóki tego nie zrobisz, strona pokazuje studentom „nie jest jeszcze włączo
 - Testy: `supabase/test/v22.sql` (W1–W3) w `node supabase/test/pglite.mjs`; UI `node docs/gry/test/poziomy.mjs` (atrapa: `mock-v22`).
 - **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v22-monety-widoczne.sql` → Run (po v21). Zmienia tylko `nauka_sklep_stan()` (dodaje `dzis_pkt`). Można uruchomić ponownie.
 
+
+## Przedmioty kosmetyczne (`skrot-v24-kosmetyki.sql`)
+
+- Jeden katalog w bazie (`nauka_sklep_katalog()`): motywy jak dotąd + ramki awatara, kolory nicku, tytuły, gablota odznak, skórki i tła gier, wygląd fiszek, efekty quizu, dźwięki, kolor płomienia, zamrożenie serii, zestawy i kolekcja sezonowa. Pola: `id, kat, slot, pl, en, opis_pl, opis_en, cena, min_poziom, tylko_za_poziom, sezon, wyglad, czesci, wymaga, max`.
+- Wszystko to wyłącznie wygląd: nic nie zmienia punktów rankingu, XP ani wyników. Zamrożenie serii chroni tylko serię dni w przeglądarce i nie tworzy wpisów w `nauka_rp`.
+- Zakup `nauka_sklep_kup(p_item, p_req)`: jedna transakcja pod blokadą na osobę (saldo, poziom, okno sezonu, posiadanie, `wymaga`), cena tylko z katalogu. Zestaw kosztuje najwyżej tyle, ile brakujące części osobno. Zamrożenie wymaga `p_req` (to samo `p_req` drugi raz = bez opłaty), najwyżej 2 naraz.
+- Zakładanie `nauka_sklep_zaloz(p_slot, p_item)` (null = zdejmij) – tylko posiadane, jeden przedmiot na slot. Gablota `nauka_gablota_ustaw(p_odznaki)` – tylko zdobyte odznaki, 1 miejsce + kupione. Zamrożenie `nauka_zamrozenie_uzyj()` chroni wczoraj, gdy wczoraj nie było nauki. Wygląd innych w rankingu: `nauka_wyglad(p_nicki)` (osobno od `nauka_ranking`).
+- Poziom, odznaki i tytuły za osiągnięcia (`tytul:pogromca:<przedmiot>`) baza czyta z dokumentu postępu (`nauka_docs`, kolekcja `progress`) – tym samym wzorem co strona (próg poziomu n = 50·n·(n−1)).
+- Sezony: `nauka_sezony()` na górze pliku (daty po czasie warszawskim, obie włącznie). Zmiana dat = edycja i ponowne uruchomienie. Kupione przedmioty sezonowe zostają na zawsze.
+- **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v24-kosmetyki.sql` → Run (po v22). Można uruchomić ponownie. Nie uruchamiaj potem starego v14 (odtworzyłby jednoargumentowe `nauka_sklep_kup`). Testy: `supabase/test/v24.sql` (w `pglite.mjs`).
 ## Okres próbny (`skrot-v16-proba.sql`, dawniej v9-proba)
 
 - Student raz włącza **3 dni pełnego dostępu za darmo**, bez karty: przycisk „Wypróbuj za darmo przez 3 dni” w paskach zakupu, kłódkach i w „Konto i dostęp”. Niezalogowany najpierw się loguje, potem okres próbny włącza się sam.

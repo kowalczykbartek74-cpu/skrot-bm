@@ -305,7 +305,7 @@
   // ---------- monety, Zadania dnia i Sklep (supabase/skrot-v14-monety.sql) ----------
   // Saldo, zakupy i misje liczy tylko baza; tu tylko pamiętamy ostatni stan i dajemy znać stronie zdarzeniem „skrot:sklep”.
   // sklep.ok = stan z bazy; sklep.err = "no_sql" (v14 jeszcze nie uruchomione, więc nikt nic nie kupił) albo inny błąd.
-  skrot.sklep = { saldo: 0, posiadane: new Set(), katalog: [], loaded: false, ok: false, err: null };
+  skrot.sklep = { saldo: 0, posiadane: new Set(), katalog: [], zalozone: {}, gablota: { miejsca: 1, odznaki: [] }, zamrozenia: { ma: 0, max: 2, dni: [] }, tytuly: [], sezony: {}, loaded: false, ok: false, err: null };
   const sklepEvt = () => window.dispatchEvent(new CustomEvent("skrot:sklep"));
   let sklepAt = 0, sklepBusy = null, sklepTimer = 0;
   skrot.sklepStan = async () => {
@@ -328,12 +328,56 @@
   // Seria odpowiedzi w quizie/grze = jedno odświeżenie (timer liczy się od ostatniej). Stronę zdarzenie „skrot:pkt”
   // informuje od razu (pokazuje „+1 🪙”, gdy dzisiejsze pkt przekroczą kolejną dziesiątkę; saldo potwierdza baza).
   skrot.sklepPozniej = () => { if (skrot.state !== "in") return; clearTimeout(sklepTimer); sklepTimer = setTimeout(() => skrot.sklepStan(), 1500); };
-  skrot.sklepKup = async (item) => {
+  // Cenę zawsze bierze baza z katalogu. req = identyfikator żądania dla przedmiotów „na sztuki” (zamrożenie serii, v24):
+  // ponowne wysłanie tego samego req (podwójne kliknięcie, powtórka po błędzie sieci) nie pobiera monet drugi raz.
+  skrot.sklepKup = async (item, req = null) => {
     await ready;
-    const { data, error } = await sb.rpc("nauka_sklep_kup", { p_item: item });
+    const { data, error } = await sb.rpc("nauka_sklep_kup", req ? { p_item: item, p_req: req } : { p_item: item });
     if (error) throw rpcErr(error);
     if (data?.ok || data?.code === "owned") await skrot.sklepStan();
     return data;
+  };
+  // ---------- przedmioty kosmetyczne (supabase/skrot-v24-kosmetyki.sql) ----------
+  // Zakładanie (item null = zdejmij), gablota odznak, zamrożenie serii i wygląd innych osób w rankingu.
+  // Bez v24 w bazie: { ok: false, code: "not_enabled" } (strona pokazuje wtedy tylko motywy, jak dotąd).
+  const kosmCall = async (fn, args) => {
+    await ready;
+    if (!sb || skrot.state !== "in") return { ok: false, code: "not_logged_in" };
+    try {
+      const { data, error } = await sb.rpc(fn, args || {});
+      if (error) return { ok: false, code: error.code === "PGRST202" || /does not exist/i.test(error.message || "") ? "not_enabled" : error.code || "error" };
+      return data || { ok: false, code: "empty" };
+    } catch { return { ok: false, code: "offline" }; }
+  };
+  skrot.sklepZaloz = async (slot, item = null) => {
+    const r = await kosmCall("nauka_sklep_zaloz", { p_slot: slot, p_item: item });
+    if (r.ok) { const z = { ...(skrot.sklep.zalozone || {}) }; if (item) z[slot] = item; else delete z[slot]; skrot.sklep.zalozone = z; wygladCache.clear(); sklepEvt(); }
+    return r;
+  };
+  skrot.gablotaUstaw = async (odznaki) => {
+    const r = await kosmCall("nauka_gablota_ustaw", { p_odznaki: odznaki });
+    if (r.ok) { skrot.sklep.gablota = { ...(skrot.sklep.gablota || {}), odznaki: r.odznaki, miejsca: r.miejsca }; wygladCache.clear(); sklepEvt(); }
+    return r;
+  };
+  skrot.zamrozenieUzyj = async () => {
+    const r = await kosmCall("nauka_zamrozenie_uzyj");
+    if (r.ok) await skrot.sklepStan();
+    return r;
+  };
+  // Wygląd osób z rankingu po nickach; pamiętamy 60 s, żeby przełączanie zakładek rankingu nie pytało bazy co chwilę.
+  const wygladCache = new Map();
+  skrot.wyglad = async (nicki) => {
+    const want = [...new Set((nicki || []).filter(Boolean))].slice(0, 60), now = Date.now();
+    const miss = want.filter((n) => !(wygladCache.get(n)?.t > now - 60e3));
+    if (miss.length) {
+      const r = await kosmCall("nauka_wyglad", { p_nicki: miss });
+      if (!r.ok) return { ok: false, code: r.code, osoby: {} };
+      for (const n of miss) wygladCache.set(n, { t: now, v: r.osoby?.[n] || null });
+      if (r.ja) skrot.sklep.wyglad = r.ja;
+    }
+    const osoby = {};
+    for (const n of want) { const v = wygladCache.get(n)?.v; if (v) osoby[n] = v; }
+    return { ok: true, osoby };
   };
   skrot.misje = async () => { await ready; const { data, error } = await sb.rpc("nauka_misje"); if (error) throw rpcErr(error); return data; };
   skrot.misjaOdbierz = async (id) => {
