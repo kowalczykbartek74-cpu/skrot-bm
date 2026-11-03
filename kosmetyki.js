@@ -265,6 +265,72 @@
     return cv;
   }
 
+  // Duży podgląd w sklepie (okno „Podgląd”): ruchoma scena Fruń albo Przejdź z tą skórką / tym tłem.
+  // Animacja kończy się sama, gdy canvas zniknie ze strony; still = jedna nieruchoma klatka („Mniej animacji”).
+  const DEF_COL = { ground: "#CFE8D8", dash: "rgba(255,255,255,.75)", bg: "#EAF6EF", grass: "#D3EDC4", grass2: "rgba(255,255,255,.38)", tree: "#4CAF72", river: "rgba(31,143,163,.55)" };
+  const rrect = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
+  function sceneFrun(g, w, h, tlo, skin, t) {
+    const base = h - 24, sc = t * 70, c = BOARD_COL[tlo] || DEF_COL;
+    if (tlo && SKY[tlo]) SKY[tlo](g, w, base, sc, t);
+    else { g.fillStyle = "#F2F8F4"; g.fillRect(0, 0, w, base); g.strokeStyle = "rgba(26,127,69,.08)"; g.beginPath(); const o = sc % 18; for (let x = -o; x < w; x += 18) { g.moveTo(x, 0); g.lineTo(x, base); } for (let y = 0; y < base; y += 18) { g.moveTo(0, y); g.lineTo(w, y); } g.stroke(); }
+    g.fillStyle = c.ground; g.fillRect(0, base, w, h - base);
+    g.fillStyle = c.dash; const od = sc % 34; for (let x = -od; x < w; x += 34) g.fillRect(x, base + 9, 18, 3);
+    const P = 170, n = Math.ceil(w / P) + 2, k0 = Math.floor(sc / P);
+    for (let k = k0; k < k0 + n; k++) { const x = k * P - sc + w * 0.75, gy = base * (0.36 + 0.28 * prand(k + 40)), gap = 84;
+      g.fillStyle = "#1A7F45"; rrect(g, x, -8, 34, gy - gap / 2 + 8, 6); g.fill(); rrect(g, x, gy + gap / 2, 34, base - gy - gap / 2, 6); g.fill();
+      g.fillStyle = "rgba(255,255,255,.18)"; g.fillRect(x + 6, 0, 5, gy - gap / 2 - 4); g.fillRect(x + 6, gy + gap / 2 + 4, 5, base - gy - gap / 2 - 8); }
+    const y = base * 0.5 + Math.sin(t * 2.4) * base * 0.12;
+    g.save(); g.translate(w * 0.3, y); g.rotate(-Math.cos(t * 2.4) * 0.22); g.scale(1.7, 1.7); (SIDE[skin] || SIDE.lisc)(g, t); g.restore();
+  }
+  // Przejdź z góry: trawa, ulica z autami, trawa z drzewami, rzeka z kłodą; postać skacze rząd po rzędzie w górę.
+  function scenePrzejdz(g, w, h, tlo, skin, t) {
+    const C = 36, rows = Math.ceil(h / C), c = BOARD_COL[tlo] || DEF_COL, kinds = ["rzeka", "trawa", "ulica", "trawa", "ulica", "trawa"];
+    g.fillStyle = c.bg; g.fillRect(0, 0, w, h);
+    for (let r = 0; r < rows; r++) {
+      const k = kinds[r] || "trawa", y = h - (rows - r) * C;
+      if (k === "trawa") {
+        g.fillStyle = c.grass; g.fillRect(0, y, w, C); g.fillStyle = c.grass2; for (let x = (r & 1) * C; x < w; x += 2 * C) g.fillRect(x, y, C, C);
+        const trees = Array.from({ length: Math.ceil(w / C) }, (_, i) => r !== rows - 1 && prand(r * 13 + i) < 0.22 && Math.abs(i * C + C / 2 - w / 2) > C);
+        if (tlo) rowDecor(g, tlo, "trawa", y, w, C, r, trees);
+        trees.forEach((on, i) => { if (!on) return; const x = i * C + C / 2; g.fillStyle = c.tree; g.strokeStyle = "#0E5A30"; g.lineWidth = 2; g.beginPath(); g.arc(x, y + C / 2, 14, 0, TAU); g.fill(); g.stroke(); if (tlo) treeTop(g, tlo, x, y + C / 2); });
+      } else if (k === "ulica") {
+        g.fillStyle = "#5B6660"; g.fillRect(0, y, w, C);
+        g.fillStyle = "rgba(255,255,255,.75)"; for (let x = 6; x < w; x += 30) g.fillRect(x, y - 1, 16, 2);
+        const dir = r % 4 === 2 ? 1 : -1, sp = 46 + r * 6, span = w + 120;
+        for (let i = 0; i < 2; i++) { const x = ((((dir * t * sp + i * span / 2 + r * 70) % span) + span) % span) - 60;
+          g.fillStyle = ["#2F6FBF", "#E98A5A", "#8C6BC8"][(r + i) % 3]; rrect(g, x + 3, y + 6, 54, C - 12, 7); g.fill();
+          g.fillStyle = "rgba(255,255,255,.55)"; g.fillRect(dir > 0 ? x + 43 : x + 7, y + 10, 6, C - 20); }
+      } else {
+        g.fillStyle = c.river; g.fillRect(0, y, w, C);
+        g.strokeStyle = "rgba(255,255,255,.45)"; g.lineWidth = 1.5; g.beginPath(); const ph = (t * 12) % 30; for (let x = -ph; x < w; x += 30) { g.moveTo(x, y + 20); g.quadraticCurveTo(x + 7, y + 15, x + 14, y + 20); } g.stroke();
+        const x = ((t * 30) % (w + 120)) - 100; g.fillStyle = "#8B5A2B"; rrect(g, x, y + 7, 96, C - 14, 9); g.fill(); g.fillStyle = "#A9743E"; g.fillRect(x + 6, y + 15, 84, 3);
+      }
+    }
+    // skok co 0,8 s o rząd w górę (bez wchodzenia do rzeki), potem od nowa
+    const hops = rows - 2, p = (t / 0.8) % (hops + 1), step = Math.min(hops, Math.floor(p)), f = Math.min(1, (p - Math.floor(p)) / 0.35);
+    const lift = step < hops ? f : 0, row = rows - 1 - step - (step < hops ? f : 0), py = h - (rows - row) * C + C / 2;
+    g.save(); g.translate(w / 2, py); g.scale(1 + Math.sin(lift * Math.PI) * 0.12, 1 + Math.sin(lift * Math.PI) * 0.12);
+    g.fillStyle = "rgba(5,10,7,.18)"; g.beginPath(); g.ellipse(2, 4, 13, 11, 0, 0, TAU); g.fill();
+    if (TOP[skin]) TOP[skin](g, t);
+    else { g.strokeStyle = "#0E3B22"; g.lineWidth = 1.5; g.fillStyle = "#B7DB4A"; rrect(g, -10, 2, 20, 13, 4); g.fill(); g.stroke();
+      g.fillStyle = "#1A7F45"; rrect(g, -12, -6, 24, 12, 6); g.fill(); g.stroke(); g.fillStyle = "#F1C9A5"; g.beginPath(); g.arc(0, -4, 7.5, 0, TAU); g.fill(); g.stroke();
+      g.fillStyle = "#4A3222"; g.beginPath(); g.arc(0, -2, 7.5, 0, Math.PI); g.fill(); }
+    g.restore();
+  }
+  function scene(it, mode = "frun", size = [320, 180], still = false) {
+    const [w, h] = size, dpr = Math.min(2, window.devicePixelRatio || 1);
+    const cv = document.createElement("canvas"); cv.width = w * dpr; cv.height = h * dpr; cv.className = "kpv-cv"; cv.setAttribute("aria-hidden", "true");
+    const g = cv.getContext("2d"), tlo = it.wyglad?.t, skin = it.wyglad?.s, draw = mode === "przejdz" ? scenePrzejdz : sceneFrun;
+    const t0 = performance.now();
+    const frame = (now, first) => {
+      if (!first && !cv.isConnected) return;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h); draw(g, w, h, tlo, skin, still ? 0.6 : (now - t0) / 1000);
+      if (!still) requestAnimationFrame((n) => frame(n));
+    };
+    frame(t0, true);
+    return cv;
+  }
+
   // =====================================================================
   // NAUKA: płomień serii, dźwięki dobrej odpowiedzi (syntezator przeglądarki, cicho) i podglądy efektów.
   // =====================================================================
@@ -302,7 +368,7 @@
     AV_FILL, avFill, avLetter, avatarSvg, FRAMES, keep,
     SIDE, TOP, SKY, BOARD_COL, rowDecor, treeTop,
     // podgląd w sklepie: Node (canvas) albo napis SVG; null = strona pokaże ikonę
-    flameSvg, sound,
+    flameSvg, sound, scene, EFFECT_PV: (e) => EFFECT_PV[e]?.() || null,
     preview: (it) => { const w = it.wyglad || {};
       if (w.s || w.t) return previewCanvas(it);
       if (w.e && EFFECT_PV[w.e]) return EFFECT_PV[w.e]();
