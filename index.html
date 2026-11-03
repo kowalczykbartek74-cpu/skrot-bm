@@ -3574,8 +3574,8 @@ html[data-theme="sea"], html[data-theme="noc"], html[data-green="dark"]:not([dat
 .kgab-slot { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 3px 10px 3px 6px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; font-size: .8rem; font-weight: 700; }
 .kgab-slot .ic { font-size: 1.05rem; line-height: 1; }
 button.kgab-slot { cursor: pointer; }
-.kgab-slot.empty { border-style: dashed; color: var(--muted); padding: 3px 12px; }
-.kgab-slot.lock { border-style: dashed; color: var(--muted); background: transparent; }
+.kgab-slot.is-empty { border-style: dashed; color: var(--muted); padding: 3px 12px; }
+.kgab-slot.is-lock { border-style: dashed; color: var(--muted); background: transparent; }
 .kgab-slot.on { border-color: var(--green-200); background: var(--green-50); }
 .kgab-pick { display: grid; gap: 6px; margin: 4px 0; }
 .kgab-opt { display: grid; grid-template-columns: 32px minmax(0, 1fr) 20px; gap: 10px; align-items: center; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
@@ -3637,6 +3637,40 @@ button.kgab-slot { cursor: pointer; }
 .kbuy .row { justify-content: center; }
 .gain-spend { background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); }
 #shop-saldo b.spend { color: var(--accent-strong); transition: color .3s; }
+/* wygląd fiszek (v24): kolory w zmiennych (zapis rgb ze spacjami – motywy ich nie przemalowują), tekst ≥ 4,5:1 */
+:is(.lp, .kpv-card).kf-papier { --kf-bg: rgb(255 253 246); --kf-bg2: rgb(250 244 224); --kf-ink: rgb(28 40 33); --kf-sub: rgb(86 76 50); --kf-line: rgb(150 190 225 / .45); --kf-edge: rgb(226 216 186); }
+:is(.lp, .kpv-card).kf-kreda { --kf-bg: rgb(36 70 55); --kf-bg2: rgb(30 60 47); --kf-ink: rgb(247 244 234); --kf-sub: rgb(206 229 215); --kf-line: rgb(255 255 255 / .05); --kf-edge: rgb(122 90 56); }
+:is(.lp, .kpv-card).kf-nocny { --kf-bg: rgb(20 28 43); --kf-bg2: rgb(25 36 60); --kf-ink: rgb(234 239 248); --kf-sub: rgb(176 199 236); --kf-line: rgb(170 204 245 / .06); --kf-edge: rgb(50 68 102); }
+:is(.lp, .kpv-card)[class*="kf-"] .lp-sw .face, .kpv-card[class*="kf-"] .face { background: var(--kf-bg); color: var(--kf-ink); border-color: var(--kf-edge); }
+:is(.lp, .kpv-card)[class*="kf-"] .lp-sw .face.back, .kpv-card[class*="kf-"] .face.back { background-color: var(--kf-bg2); }
+:is(.lp, .kpv-card)[class*="kf-"] .face.back span:not(.eyebrow) { color: var(--kf-ink); }   /* .back span (przycisk „wróć”) barwi na zielono */
+:is(.lp, .kpv-card)[class*="kf-"] .face .eyebrow, :is(.lp, .kpv-card)[class*="kf-"] .face .muted { color: var(--kf-sub); }
+:is(.lp, .kpv-card).kf-papier .face { background-image: linear-gradient(var(--kf-line) 1px, transparent 1px), linear-gradient(90deg, var(--kf-line) 1px, transparent 1px); background-size: 20px 20px; }
+:is(.lp, .kpv-card).kf-kreda .face { border-width: 5px; background-image: radial-gradient(ellipse at 22% 18%, rgb(255 255 255 / .07), transparent 46%), radial-gradient(ellipse at 80% 85%, rgb(255 255 255 / .05), transparent 40%); letter-spacing: .01em; }
+:is(.lp, .kpv-card).kf-nocny .face { background-image: radial-gradient(rgb(170 204 245 / .16) 1px, transparent 1.4px); background-size: 26px 26px; }
+.kpv-card { width: 100%; max-width: 200px; }
+.kpv-card .face { display: grid; gap: 2px; padding: 12px 10px; border-radius: 12px; border: 1.5px solid var(--green-200); background: var(--surface); text-align: center; font-weight: 700; font-size: .92rem; }
+.kpv-card .face .eyebrow { font-size: .66rem; }
+/* efekt po quizie (v24) zamiast konfetti */
+.kfx { position: fixed; inset: 0; pointer-events: none; z-index: 95; overflow: hidden; }
+.lp > .kfx { position: absolute; z-index: 1; }
+.kfx i { position: absolute; display: block; }
+.kfx-liscie i { width: 15px; height: 9px; border-radius: 0 100% 0 100%; background: var(--kfx-c, rgb(76 175 114)); animation: kfx-fall 2.9s cubic-bezier(.3, .5, .5, 1) both; }
+.kfx-liscie i:nth-child(3n) { --kfx-c: rgb(26 127 69); } .kfx-liscie i:nth-child(3n + 1) { --kfx-c: rgb(183 219 74); }
+.kfx-snieg i { width: 8px; height: 8px; border-radius: 50%; background: rgb(255 255 255); box-shadow: 0 0 0 1.5px rgb(143 193 227 / .9); animation: kfx-fall 3s linear both; }
+@keyframes kfx-fall { 0% { transform: translate(0, 0) rotate(var(--r)) scale(var(--s)); opacity: 0; } 8% { opacity: 1; } 100% { transform: translate(var(--dx), 108vh) rotate(calc(var(--r) + 420deg)) scale(var(--s)); opacity: .85; } }
+.kfx-iskry i { width: 18px; height: 18px; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); background: var(--kfx-c, rgb(246 211 101)); animation: kfx-spark 1.2s ease-out both; }
+.kfx-iskry i:nth-child(3n) { --kfx-c: rgb(183 219 74); } .kfx-iskry i:nth-child(3n + 1) { --kfx-c: rgb(233 194 90); }
+@keyframes kfx-spark { 0% { transform: scale(0) rotate(0); opacity: 0; } 40% { transform: scale(calc(var(--s) * 1.3)) rotate(45deg); opacity: 1; } 100% { transform: scale(0) rotate(90deg); opacity: 0; } }
+.kfx-wave { left: -25%; width: 150%; height: 70%; top: 100%; border-radius: 50% 50% 0 0 / 24% 24% 0 0; background: rgb(47 158 143 / .28); animation: kfx-wave 2s cubic-bezier(.4, 0, .2, 1) both; }
+.kfx-wave2 { background: rgb(111 195 184 / .24); animation-delay: .2s; }
+@keyframes kfx-wave { 0% { transform: translateY(0); } 55% { transform: translateY(-120%); opacity: 1; } 100% { transform: translateY(-240%); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .kfx { display: none !important; } }
+html.calm .kfx { display: none !important; }
+/* płomień serii w kolorze ze sklepu */
+.kflame { display: inline-block; width: 1em; height: 1.08em; vertical-align: -.16em; }
+.kflame svg { display: block; width: 100%; height: 100%; }
+.ksnd-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -7391,7 +7425,7 @@ button.kgab-slot { cursor: pointer; }
             li("Zadania dnia i tygodnia", "5–50 🪙")),
           h("p", { class: "muted", text: "Każde pytanie daje monetę raz dziennie, a z samej nauki najwyżej 64 🪙 dziennie. Monety liczy baza, nie przeglądarka, więc zbierasz je z pełnym dostępem." })),
         h("section", {},
-          h("h3", {}, h("span", { "aria-hidden": "true", text: "🔥 " }), h("span", { text: "Seria" })),
+          h("h3", {}, kFlame(), " ", h("span", { text: "Seria" })),
           h("p", { class: "muted", text: "Każdy dzień, w którym zdobędziesz choć 1 XP, przedłuża serię. Jeden dzień przerwy zaczyna ją od nowa." }))),
       h("div", { class: "row" },
         h("button", { type: "button", class: "btn primary", onclick: close }, "Jasne"),
@@ -7418,7 +7452,7 @@ button.kgab-slot { cursor: pointer; }
     const chips = [
       compact ? null : h("span", { class: "xp-chip", title: "XP łącznie: za każdą część lekcji, odpowiedź i powtórkę" }, h("span", { "aria-hidden": "true", text: "⚡" }), h("b", { class: "num", text: fmtN(xp) }), h("span", { text: " XP" })),
       coinChip(),
-      h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, h("span", { "aria-hidden": "true", text: "🔥" }), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) }))];
+      h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) }))];
     return h("div", { class: "xp-line rk-line" + (compact ? " rk-compact" : "") + (cls ? " " + cls : "") }, rank, h("span", { class: "rk-chips" }, chips));
   }
 
@@ -7641,7 +7675,7 @@ button.kgab-slot { cursor: pointer; }
         h("p", { class: "muted", style: "margin:0", text: allDone ? "Możesz powtórzyć dowolną część albo poprawić wynik biletu wyjścia." : "Jedna część to 2–4 minuty. Po każdej możesz zrobić przerwę, postęp się zapisuje." }),
         ptsLessonBox(m, deck, st),
         lpLevelBar(lpXpTotal()),
-        h("div", { class: "row" }, ring, streakN() ? h("span", { class: "lp-goal", text: `🔥 ${streakN()} ${plural(streakN(), "dzień", "dni", "dni")} z rzędu` }) : null),
+        h("div", { class: "row" }, ring, streakN() ? h("span", { class: "lp-goal" }, kFlame(), h("span", { text: ` ${streakN()} ${plural(streakN(), "dzień", "dni", "dni")} z rzędu` })) : null),
         h("button", { type: "button", class: "btn primary lp-start", onclick: () => lpOpen(m, c, resumeI >= 0 ? resumeI : 0) },
           allDone ? "Powtórz od początku" : started ? `Kontynuuj: ${deck.bites[resumeI]?.title || ""}` : "Zaczynamy →")),
       h("ol", { class: "lp-path", "aria-label": "Części lekcji" }, deck.bites.map((b, i) => {
@@ -7702,7 +7736,7 @@ button.kgab-slot { cursor: pointer; }
     // src.onX: własne zamknięcie (egzamin pyta „Przerwać test?”); src.decorTop: zmiany w górnym pasku (zegar zamiast XP).
     el.head = h("header", { class: "lp-top" }, h("button", { type: "button", class: "lp-x", "aria-label": src.closeLabel || "Zamknij (postęp się zapisze)", onclick: () => (src.onX ? src.onX() : lpClose()) }, "✕"), el.bar, el.combo, el.coin, el.xp);
     src.decorTop?.(el);
-    el.root = h("div", { class: "lp", role: "dialog", "aria-modal": "true", "aria-label": src.label || src.title || "" },
+    el.root = h("div", { class: ("lp " + kFiszkiCls()).trim(), role: "dialog", "aria-modal": "true", "aria-label": src.label || src.title || "" },
       el.head,
       el.stage,
       h("footer", { class: "lp-bottom" }, el.help, el.cta),
@@ -7870,7 +7904,7 @@ button.kgab-slot { cursor: pointer; }
     document.body.append(f); setTimeout(() => f.remove(), 1000);
   }
   function lpBanner(text) { const b = h("div", { class: "lp-banner", role: "status", text }); document.body.append(b); setTimeout(() => b.remove(), 1700); }
-  function lpBuzz(ok) { try { if (!lpReduced() && navigator.vibrate) navigator.vibrate(ok ? 12 : [30, 40, 30]); } catch {} }
+  function lpBuzz(ok) { try { if (!lpReduced() && navigator.vibrate) navigator.vibrate(ok ? 12 : [30, 40, 30]); } catch {} if (ok) kSound(); }
   function lpConfetti(n = 46) {
     if (lpReduced()) return;
     const cs = ["#1A7F45", "#4CAF72", "#B7DB4A", "#2E9E8F", "#0E5A30", "#CFE8D8"], box = h("div", { class: "lp-confetti", "aria-hidden": "true" });
@@ -7882,7 +7916,7 @@ button.kgab-slot { cursor: pointer; }
     if (!(n > 0)) return;
     const t = dayN(), x = S.progress?.xp || {};
     const patch = { xp: { t: (x.t || 0) + n, d: t, n: (x.d === t ? x.n || 0 : 0) + n } };
-    const sk = S.progress?.streak; if (sk?.d !== t) patch.streak = { d: t, n: sk?.d === t - 1 ? (sk.n || 0) + 1 : 1 };
+    const sn = streakNext(t); if (sn) patch.streak = sn;
     const before = lpLevel(x.t || 0), after = lpLevel(patch.xp.t);
     progSoon(patch);
     // Poza odtwarzaczem i grą „+N XP” pokazuje dymek (w odtwarzaczu XP lata przy każdej karcie, gra ma własny licznik).
@@ -8295,7 +8329,9 @@ button.kgab-slot { cursor: pointer; }
         const les = lessonPts(LP.m).pts, sub = subjectPts(LP.m.subjectId).pts;
         bs.ptsL = les - LP.pts.les; bs.ptsS = sub - LP.pts.sub0; ptsMilestone(LP.m.subjectId, LP.pts.sub); LP.pts.les = les; LP.pts.sub = sub;
       }
-      setTimeout(() => { lpConfetti(b.kind === "final" ? 46 : 18); }, 250);
+      // Koniec quizu (ostatnia część): efekt ze sklepu zamiast konfetti, jeśli jest założony (v24).
+      const quizEnd = LP.src.kind === "quiz" && !bites.some((x, i) => i > bi && x.kind !== "final" && !st.done[x.id]);
+      setTimeout(() => { if (!(quizEnd && kEffect())) lpConfetti(b.kind === "final" ? 46 : 18); }, 250);
     }
     LP.el.xp.textContent = "⚡ " + st.xp; LP.el.help.hidden = true;
     const sec = Math.max(1, Math.round((Date.now() - (bs.t0 || Date.now())) / 1000));
@@ -11781,8 +11817,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       const b = odznaka(shown[i]);
       if (i < g.miejsca) slots.push(b
         ? h(interactive ? "button" : "span", { type: interactive ? "button" : null, class: "kgab-slot on", title: b[3], onclick: interactive ? kGablotaEdit : null }, h("span", { class: "ic", "aria-hidden": "true", text: b[1] }), h("small", { text: b[2] }))
-        : h(interactive ? "button" : "span", { type: interactive ? "button" : null, class: "kgab-slot empty", onclick: interactive ? kGablotaEdit : null, "aria-label": "Wybierz odznakę do gabloty" }, h("span", { class: "ic", "aria-hidden": "true", text: "+" })));
-      else slots.push(h(interactive ? "button" : "span", { type: interactive ? "button" : null, class: "kgab-slot lock", onclick: interactive ? () => kShopGo("profil", "gablota:" + (i + 1)) : null, "aria-label": `${i + 1}. miejsce w gablocie: w sklepie` },
+        : h(interactive ? "button" : "span", { type: interactive ? "button" : null, class: "kgab-slot is-empty", onclick: interactive ? kGablotaEdit : null, "aria-label": "Wybierz odznakę do gabloty" }, h("span", { class: "ic", "aria-hidden": "true", text: "+" })));
+      else slots.push(h(interactive ? "button" : "span", { type: interactive ? "button" : null, class: "kgab-slot is-lock", onclick: interactive ? () => kShopGo("profil", "gablota:" + (i + 1)) : null, "aria-label": `${i + 1}. miejsce w gablocie: w sklepie` },
         h("span", { class: "ic", "aria-hidden": "true", text: "🔒" }), h("small", { text: `${i + 1}. miejsce` })));
     }
     return h("div", { class: "kgab", role: "group", "aria-label": "Gablota odznak" }, slots);
@@ -11838,6 +11874,54 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       h("button", { type: "button", class: "btn small kprof-btn", onclick: () => kShopGo("profil") }, "Zmień wygląd"));
   }
 
+  // ---------- nauka: wygląd fiszek, efekt po quizie, dźwięki, płomień serii, zamrożenie serii (etap 4) ----------
+  const kEq = (slot, key) => (kosmOn() ? kWyg(kZal(slot), key) : null);
+  // Wygląd fiszek: klasa na odtwarzaczu (.lp.kf-papier / kf-kreda / kf-nocny). Kolory w CSS, tekst zawsze ≥ 4,5:1.
+  const kFiszkiCls = () => { const f = kEq("fiszki", "f"); return f ? "kf-" + f : ""; };
+  // Efekt po ukończeniu quizu zamiast konfetti. false = brak założonego efektu (strona pokaże zwykłe konfetti).
+  function kEffect() {
+    const e = kEq("efekt", "e"); if (!e) return false;
+    if (lpReduced()) return true;
+    const box = h("div", { class: "kfx kfx-" + e, "aria-hidden": "true" });
+    const n = { liscie: 26, iskry: 22, fala: 1, snieg: 40 }[e] || 20;
+    if (e === "fala") box.append(h("i", { class: "kfx-wave" }), h("i", { class: "kfx-wave kfx-wave2" }));
+    else for (let i = 0; i < n; i++) box.append(h("i", { style: `left:${(i * 37 + 7) % 100}%;top:${e === "iskry" ? 8 + ((i * 53) % 80) : -6}%;animation-delay:${((i * 7) % 12) * 0.09}s;--dx:${((i * 53) % 90) - 45}px;--r:${(i * 97) % 360}deg;--s:${0.7 + ((i * 31) % 6) / 10}` }));
+    (LP.open && LP.el?.root?.isConnected ? LP.el.root : document.body).append(box); setTimeout(() => box.remove(), 3200);
+    return true;
+  }
+  // Dźwięk dobrej odpowiedzi: tylko z założoną paczką i włączonym przełącznikiem (domyślnie wyciszone).
+  const kSoundOn = () => ls.get("bm-dzwieki") === "1";
+  function kSound(id) { const d = id || kEq("dzwieki", "d"); if (d && (id || kSoundOn())) KOSM?.sound?.(d); }
+  // Płomień serii: emoji albo płomień w kolorze ze sklepu.
+  function kFlame() {
+    const p = kEq("plomien", "p");
+    if (!p || !KOSM?.flameSvg) return h("span", { "aria-hidden": "true", text: "🔥" });
+    const el = h("span", { class: "kflame", "aria-hidden": "true" }); el.innerHTML = KOSM.flameSvg(p); return el;
+  }
+  // Zamrożenie serii: dzień (numer dayN) na datę, jak w bazie.
+  const kDayKey = (n) => dkey(new Date(2026, 0, 1 + n));
+  const kFrozen = (n) => (kSk().zamrozenia?.dni || []).includes(kDayKey(n));
+  // Seria po dzisiejszej nauce. Jeden opuszczony dzień (wczoraj) chroni zamrożenie: baza zaznacza wczoraj jako chroniony,
+  // seria rośnie o dzisiejszy dzień. Zamrożony dzień nie daje XP, punktów rankingu ani monet.
+  function streakNext(t) {
+    const sk = S.progress?.streak;
+    if (sk?.d === t) return null;
+    if (sk?.d === t - 1) return { d: t, n: (sk.n || 0) + 1 };
+    if (sk?.d === t - 2 && sk.n > 0 && (kFrozen(t - 1) || (kSk().zamrozenia?.ma || 0) > 0)) {
+      if (!kFrozen(t - 1)) kFreezeUse(t, sk);
+      return { d: t, n: (sk.n || 0) + 1 };
+    }
+    return { d: t, n: 1 };
+  }
+  function kFreezeUse(t, before) {
+    window.skrot?.zamrozenieUzyj?.().then((r) => {
+      if (r?.ok) { if (!r.juz) setTimeout(() => lpBanner(`🧊 Zamrożenie uratowało serię: ${before.n + 1} ${plural(before.n + 1, "dzień", "dni", "dni")} z rzędu`), 600); return; }
+      if (r?.code === "none" && S.progress?.streak?.d === t) progSoon({ streak: { d: t, n: 1 } });   // zamrożenia jednak nie było
+    });
+  }
+  // Seria widoczna dziś: także gdy wczoraj jest chroniony albo czeka zamrożenie, które użyje się przy dzisiejszej nauce.
+  function kStreakAlive(st, t) { return st.d === t || st.d === t - 1 || (st.d === t - 2 && st.n > 0 && (kFrozen(t - 1) || (kSk().zamrozenia?.ma || 0) > 0)); }
+
   // ---------- sklep: zakładki i karty przedmiotów ----------
   const K_TABS = [["motywy", "Motywy", "🎨"], ["profil", "Profil", "🙂"], ["gry", "Gry", "🎮"], ["nauka", "Nauka", "📚"], ["zestawy", "Zestawy", "🎁"], ["sezon", "Sezonowe", "❄️"]];
   const K_GROUPS = {
@@ -11865,11 +11949,18 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     if (cur === "motywy") body = [h("p", { class: "muted kshop-intro", text: "Za darmo od poziomu albo wcześniej za monety." }), h("div", { class: "shop-grid" }, THEME_SHOP.map(shopThemeCard))];
     else if (cur === "sezon") body = kSezonBody(kat.filter((x) => x.sezon));
     else if (cur === "zestawy") body = [h("p", { class: "muted kshop-intro", text: "Kilka rzeczy w jednym, taniej niż osobno. Płacisz tylko za części, których jeszcze nie masz." }), h("div", { class: "kshop-grid" }, kat.filter((x) => x.kat === "zestawy" && !x.sezon).map(kCard))];
-    else body = (K_GROUPS[cur] || []).map(([g, title]) => { const items = kat.filter((x) => x.kat === cur && !x.sezon && kGroupOf(x) === g); return items.length ? h("div", { class: "kshop-group" }, h("h3", { text: title }), h("div", { class: "kshop-grid" }, items.map(kCard))) : null; });
+    else body = (K_GROUPS[cur] || []).map(([g, title]) => { const items = kat.filter((x) => x.kat === cur && !x.sezon && kGroupOf(x) === g); return items.length ? h("div", { class: "kshop-group" }, h("h3", { text: title }), g === "dzwieki" ? kSoundSwitch() : null, h("div", { class: "kshop-grid" }, items.map(kCard))) : null; });
     return h("section", { class: "panel sk-panel kshop", id: "shop-kat" },
       h("div", { class: "panel-head" }, h("h2", { text: "Wygląd" }), h("span", { class: "muted", text: "tylko wygląd: nie zmienia punktów ani wyników" })),
       h("div", { class: "kshop-tabs", role: "tablist", "aria-label": "Kategorie sklepu" }, tabs.map(tab)),
       h("div", { role: "tabpanel", id: "kpanel", class: "kshop-panel", "aria-labelledby": "ktab-" + cur }, body));
+  }
+  // Dźwięki są domyślnie wyciszone: grają dopiero z założoną paczką i włączonym przełącznikiem.
+  function kSoundSwitch() {
+    const on = kSoundOn();
+    return h("button", { type: "button", class: "mi ksnd-row", role: "switch", "aria-checked": String(on), onclick: () => { ls.set("bm-dzwieki", on ? "" : "1"); render(); } },
+      h("span", { class: "more-txt" }, h("span", { text: "Graj dźwięk przy dobrej odpowiedzi" }), h("small", { class: "muted", text: on ? "Włączone: gra założona paczka" : "Wyłączone (domyślnie)" })),
+      h("span", { class: "switch", "aria-hidden": "true", "aria-checked": String(on) }, h("i")));
   }
   const kBtn = (label, fn, cls = "") => h("button", { type: "button", class: ("btn " + cls).trim(), onclick: fn }, label);
   function kCard(it) {
@@ -11886,6 +11977,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     } else if (own) {
       chip = h("span", { class: "chip" + (on ? "" : " plain"), text: on ? "Założone" : "Posiadasz" });
       if (slot) act.push(on ? kBtn("Zdejmij", () => kZaloz(slot, null)) : kBtn("Załóż", () => kZaloz(slot, it.id), "primary"));
+      if (slot === "dzwieki") act.push(kBtn("▶ Posłuchaj", () => kSound(kWyg(it.id, "d"))));
       else if (it.czesci) note = "Masz wszystkie części zestawu.";
       else if (it.id.startsWith("gablota:")) act.push(kBtn("Wybierz odznaki", kGablotaEdit));
     } else if (it.tylko_za_poziom) { lock = `od poziomu ${it.tylko_za_poziom}`; note = `Tylko za poziom ${it.tylko_za_poziom} (${lvName(it.tylko_za_poziom)}). Nie da się jej kupić. Brakuje ${fmtN(Math.max(0, lpLevelAt(it.tylko_za_poziom) - lpXpTotal()))} XP.`; }
@@ -11896,6 +11988,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     else if (it.wymaga && !kOwned(kosmItem(it.wymaga))) note = `Najpierw kup: ${kName(kosmItem(it.wymaga))}.`;
     else if (coins() >= price) act.push(kBtn(`Kup za ${fmtN(price)} 🪙`, () => kBuy(it), "primary"));
     else act.push(h("button", { type: "button", class: "btn", disabled: true }, `Brakuje ${fmtN(price - coins())} 🪙`));
+    if (!own && slot === "dzwieki") act.push(kBtn("▶ Posłuchaj", () => kSound(kWyg(it.id, "d"))));
     const full = it.czesci ? it.czesci.map(kosmItem).filter(Boolean).reduce((a, x) => a + (x.cena || 0), 0) : 0;
     return h("article", { class: "kcard" + (on ? " is-on" : "") + (own ? " is-own" : ""), id: "shop-" + it.id.replace(/:/g, "-") },
       h("div", { class: "kcard-pv" }, kPreview(it), lock ? h("span", { class: "kcard-lock" }, h("span", { "aria-hidden": "true", text: "🔒 " }), h("span", { text: lock })) : null),
@@ -11919,6 +12012,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   function kPreviewMini(it) {
     const g = kGroupOf(it), nick = kMyNick() || (EN ? "You" : "Ty");
     if (g === "ramka") return kAvatar(nick, it.id, 44);
+    if (g === "fiszki") return h("div", { class: "kpv-card kf-" + kWyg(it.id, "f") }, h("div", { class: "face" }, h("span", { class: "eyebrow", text: "Pojęcie" }), h("span", { text: "Inflacja" })));
     if (KOSM?.preview) { const el = h("span", { class: "kpv-art kpv-" + g, "aria-hidden": "true" }); const art = KOSM.preview(it); if (art) { if (art instanceof Node) el.append(art); else el.innerHTML = art; return el; } }
     return h("span", { class: "kpv-ico", "aria-hidden": "true", text: { skorka: "🐑", tlo: "🌄", fiszki: "🗂️", efekt: "✨", dzwieki: "🔔", plomien: "🔥", zamrozenie: "🧊" }[g] || "🎁" });
   }
@@ -14318,8 +14412,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     if (nx) { const ed = dayN(nx.date); if (ed - 1 > t && due >= ed) due = ed - 1; }
     const patch = { srs: { ...all, [key]: [box, due] } };
     if (!cur || cur[0] === 0) { const sn = S.progress?.srsNew; patch.srsNew = { d: t, n: (sn?.d === t ? sn.n : 0) + 1 }; }
-    const st = S.progress?.streak;
-    if (st?.d !== t) patch.streak = { d: t, n: st?.d === t - 1 ? (st.n || 0) + 1 : 1 };
+    const sn = streakNext(t); if (sn) patch.streak = sn;
     progSoon(patch);
   }
   function srsAdd(keys) {
@@ -14355,7 +14448,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     return { ...d, n, mins: Math.max(1, Math.round(n / 3)), series: ch.n, size: ch.size };
   }
   const srsTodayTxt = (td) => `Około ${td.mins} min.` + (td.series > 1 ? ` ${td.series} ${plural(td.series, "seria", "serie", "serii")} po ${td.size} ${plural(td.size, "karcie", "karty", "kart")}.` : "");
-  const streakN = () => { const st = S.progress?.streak, t = dayN(); return st && (st.d === t || st.d === t - 1) ? st.n || 0 : 0; };
+  const streakN = () => { const st = S.progress?.streak, t = dayN(); return st && kStreakAlive(st, t) ? st.n || 0 : 0; };
 
   // Wszystkie fiszki z przedmiotu do powtórek (tylko te, które ta osoba może otworzyć).
   async function addSubjectToReview(sid) {
@@ -14415,7 +14508,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
         n ? null : has ? null : h("p", { class: "muted", style: "margin:0", text: "Przejrzyj fiszki w dowolnym materiale albo dodaj cały przedmiot (zakładka Ćwicz). Wrócą tutaj w dobrym momencie." }),
         n ? h("button", { type: "button", class: "btn primary sk-start", disabled: S.route.rvLoading ? true : null, onclick: () => reviewStart(sid) }, S.route.rvLoading ? "Zbieram karty…" : "Zaczynamy →") : null,
         !n && !has ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot")) : null,
-        h("div", { class: "rv-meta" }, skGoal(), sk ? h("span", { class: "sk-goal", title: "Dni z rzędu z nauką", text: `🔥 ${sk} ${plural(sk, "dzień", "dni", "dni")} z rzędu` }) : null,
+        h("div", { class: "rv-meta" }, skGoal(), sk ? h("span", { class: "sk-goal", title: "Dni z rzędu z nauką" }, kFlame(), h("span", { text: ` ${sk} ${plural(sk, "dzień", "dni", "dni")} z rzędu` })) : null,
           n ? h("button", { type: "button", class: "link rv-classic", onclick: () => { S.route = { ...S.route, start: true }; render(); } }, "Klasyczny widok") : null)),
       s ? null : gryReviewStrip(),
       hintPanel(!n),

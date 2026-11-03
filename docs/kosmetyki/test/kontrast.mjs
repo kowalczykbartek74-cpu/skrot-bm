@@ -31,6 +31,16 @@ for (const [name, extra] of MOTYWY) {
     const me = document.querySelector(".rk-row.me .ktl");
     out.push(["tytuł kupiony", cr(parse(getComputedStyle(me).color), bgOf(me))]);
     me.classList.add("ktl-a"); out.push(["tytuł za osiągnięcie", cr(parse(getComputedStyle(me).color), bgOf(me))]); me.classList.remove("ktl-a");
+    // wygląd fiszek: tekst i nadtytuł na przedniej i tylnej stronie (te same zmienne co w odtwarzaczu)
+    for (const f of ["papier", "kreda", "nocny"]) for (const back of [false, true]) {
+      const card = document.createElement("div"); card.className = "kpv-card kf-" + f;
+      card.innerHTML = `<div class="face${back ? " back" : ""}"><span class="eyebrow">Pojęcie</span><span class="tx">Inflacja</span></div>`;
+      document.body.append(card);
+      const face = card.querySelector(".face"), bg = bgOf(face);
+      out.push([`fiszki ${f}${back ? " (tył)" : ""}: tekst`, cr(parse(getComputedStyle(card.querySelector(".tx")).color), bg)]);
+      out.push([`fiszki ${f}${back ? " (tył)" : ""}: nadtytuł`, cr(parse(getComputedStyle(card.querySelector(".eyebrow")).color), bg)]);
+      card.remove();
+    }
     // litera awatara na jego tle
     for (const av of document.querySelectorAll(".kav")) { const l = av.querySelector(".kav-l"), f = av.querySelector("svg circle").getAttribute("fill"); out.push(["litera awatara " + f, cr(parse(getComputedStyle(l).color), parse(f.replace(/^#/, "")) )]); }
     return out;

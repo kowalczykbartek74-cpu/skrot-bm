@@ -54,8 +54,8 @@ const LS = { "mock-v24": "1", "mock-saldo": "3000", "mock-progress": prog(), "mo
   await p.keyboard.press("Escape");
   // Więcej: Twój profil i gablota
   await p.goto(BASE + "index.html#/more"); await p.waitForSelector(".kprof");
-  t("Więcej: karta profilu z ramką i 2 miejscami + 1 zamkniętym", await p.$eval(".kprof", (e) => e.querySelectorAll(".kgab-slot.empty").length === 2 && e.querySelectorAll(".kgab-slot.lock").length === 1));
-  await p.click(".kprof .kgab-slot.empty"); await p.waitForSelector(".kgab-pick");
+  t("Więcej: karta profilu z ramką i 2 miejscami + 1 zamkniętym", await p.$eval(".kprof", (e) => e.querySelectorAll(".kgab-slot.is-empty").length === 2 && e.querySelectorAll(".kgab-slot.is-lock").length === 1));
+  await p.click(".kprof .kgab-slot.is-empty"); await p.waitForSelector(".kgab-pick");
   t("gablota: 3 zdobyte odznaki do wyboru", (await p.$$(".kgab-opt")).length === 3);
   await p.click(".kgab-opt:has-text('Pierwszy lot')"); await p.click(".kgab-opt:has-text('Mistrz Skrótu BM')");
   await p.click(".kgab-opt:has-text('Bez pomyłki')");

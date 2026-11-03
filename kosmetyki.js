@@ -264,10 +264,51 @@
     g.save(); g.translate(w * 0.36, base * 0.52); g.scale(1.5, 1.5); (SIDE[skin] || SIDE.lisc)(g, 0); g.restore();
     return cv;
   }
+
+  // =====================================================================
+  // NAUKA: płomień serii, dźwięki dobrej odpowiedzi (syntezator przeglądarki, cicho) i podglądy efektów.
+  // =====================================================================
+  const FLAME = { zielony: ["#2E9E5B", "#C8E66A"], niebieski: ["#2F6FBF", "#9FD3F7"], zloty: ["#D9930F", "#FFE38A"] };
+  const flameSvg = (id) => { const [o, i] = FLAME[id] || ["#E8590C", "#FFD43B"];
+    return keep(`<svg viewBox="0 0 24 26" aria-hidden="true" focusable="false"><path d="M12 1.5c1.2 3.6 5.6 6.4 5.6 12.1A5.6 5.6 0 0 1 12 24.5a5.9 5.9 0 0 1-6.1-5.9c0-3 1.6-4.9 3.3-6.4-.2 1.9.5 3.2 1.6 3.9C10.2 11 11.3 6.3 12 1.5z" fill="${o}"/><path d="M12.4 12.5c.8 2.1 3 3.4 3 6.2a3.3 3.3 0 0 1-6.6.2c0-1.6.9-2.6 1.8-3.4 0 1 .4 1.6.9 2 .1-1.8.4-3.4.9-5z" fill="${i}"/></svg>`); };
+  let AC = null;
+  function sound(id) {
+    try {
+      AC ||= new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === "suspended") AC.resume();
+      const t0 = AC.currentTime + 0.01;
+      const tone = (type, f0, f1, at, dur, vol) => {
+        const o = AC.createOscillator(), g = AC.createGain(); o.type = type;
+        o.frequency.setValueAtTime(f0, t0 + at); if (f1) o.frequency.exponentialRampToValueAtTime(f1, t0 + at + dur);
+        g.gain.setValueAtTime(0.0001, t0 + at); g.gain.exponentialRampToValueAtTime(vol, t0 + at + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + dur);
+        o.connect(g); g.connect(AC.destination); o.start(t0 + at); o.stop(t0 + at + dur + 0.02);
+      };
+      if (id === "krople") { tone("sine", 1400, 620, 0, 0.12, 0.09); tone("sine", 1900, 900, 0.09, 0.1, 0.06); }
+      else if (id === "dzwonki") { tone("triangle", 1318.5, 0, 0, 0.5, 0.06); tone("sine", 1975.5, 0, 0.07, 0.45, 0.035); }
+      else if (id === "drewno") { tone("triangle", 820, 560, 0, 0.07, 0.12); tone("sine", 410, 300, 0, 0.09, 0.07); }
+    } catch {}
+  }
+  const PV_BOX = (inner) => keep(`<svg viewBox="0 0 120 64" aria-hidden="true" focusable="false">${inner}</svg>`);
+  const EFFECT_PV = {
+    liscie: () => PV_BOX([[18, 12, 30], [44, 30, -20], [70, 10, 60], [92, 34, 15], [30, 46, -40], [60, 50, 80], [100, 14, -10]].map(([x, y, r], i) => `<ellipse cx="${x}" cy="${y}" rx="8" ry="4.2" fill="${["#4CAF72", "#1A7F45", "#B7DB4A"][i % 3]}" transform="rotate(${r} ${x} ${y})"/>`).join("")),
+    iskry: () => PV_BOX([[22, 18, 9], [58, 32, 13], [94, 16, 8], [40, 50, 6], [86, 48, 10]].map(([x, y, r], i) => `<path d="M${x} ${y - r}L${x + r * 0.24} ${y - r * 0.24}L${x + r} ${y}L${x + r * 0.24} ${y + r * 0.24}L${x} ${y + r}L${x - r * 0.24} ${y + r * 0.24}L${x - r} ${y}L${x - r * 0.24} ${y - r * 0.24}Z" fill="${["#F6D365", "#B7DB4A", "#E9C25A"][i % 3]}"/>`).join("")),
+    fala: () => PV_BOX(`<path d="M0 34 Q15 22 30 34 T60 34 T90 34 T120 34 V64 H0Z" fill="#2E9E8F" fill-opacity=".45"/><path d="M0 44 Q15 34 30 44 T60 44 T90 44 T120 44 V64 H0Z" fill="#6FC3B8" fill-opacity=".55"/>`),
+    snieg: () => PV_BOX([[14, 10], [34, 26], [52, 8], [70, 40], [88, 20], [106, 46], [24, 50], [62, 22], [96, 6]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${2.4 + (i % 3)}" fill="#FFFFFF" stroke="#8EC1E3" stroke-width="1.4"/>`).join("")),
+  };
+  const SOUND_PV = PV_BOX(`<path d="M42 24h8l12-10v36L50 40h-8z" fill="#1A7F45"/><path d="M68 22c4 4 4 16 0 20M74 16c8 7 8 25 0 32" fill="none" stroke="#4CAF72" stroke-width="3" stroke-linecap="round"/>`);
+  const FREEZE_PV = PV_BOX(`<rect x="40" y="6" width="40" height="52" rx="10" fill="#DCEEFA" stroke="#8EC1E3" stroke-width="2"/><path d="M47 14l8 6M73 14l-6 5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>` +
+    `<path d="M60 18c.9 2.8 4.4 5 4.4 9.5a4.4 4.4 0 0 1-4.4 4.4 4.6 4.6 0 0 1-4.8-4.6c0-2.4 1.3-3.9 2.6-5-.2 1.5.4 2.5 1.2 3.1C59.1 22.5 59.5 21.6 60 18z" fill="#E8590C" transform="translate(-24 -16) scale(1.4)"/>`);
   window.SKROT_KOSM = {
     AV_FILL, avFill, avLetter, avatarSvg, FRAMES, keep,
     SIDE, TOP, SKY, BOARD_COL, rowDecor, treeTop,
     // podgląd w sklepie: Node (canvas) albo napis SVG; null = strona pokaże ikonę
-    preview: (it) => (it.wyglad?.s || it.wyglad?.t ? previewCanvas(it) : null),
+    flameSvg, sound,
+    preview: (it) => { const w = it.wyglad || {};
+      if (w.s || w.t) return previewCanvas(it);
+      if (w.e && EFFECT_PV[w.e]) return EFFECT_PV[w.e]();
+      if (w.p) return PV_BOX(`<g transform="translate(44 4) scale(2.2)">${flameSvg(w.p).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g>`);
+      if (w.d) return SOUND_PV;
+      if (it.id === "zamrozenie") return FREEZE_PV;
+      return null; },
   };
 })();

@@ -1,6 +1,11 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Graj dźwięk przy dobrej odpowiedzi": "Play a sound for correct answers",
+"Włączone: gra założona paczka": "On: plays your equipped pack",
+"Wyłączone (domyślnie)": "Off (default)",
+"▶ Posłuchaj": "▶ Listen",
+"🧊 Zamrożenie uratowało serię: {0} z rzędu": "🧊 A streak freeze saved your streak: {0} in a row",
 "Wygląd": "Looks",
 "tylko wygląd: nie zmienia punktów ani wyników": "looks only: doesn’t change points or results",
 "Kategorie sklepu": "Shop categories",
