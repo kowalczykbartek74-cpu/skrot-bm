@@ -3,37 +3,351 @@
     {
       "key": "owi-1-essay-and-photocopies",
       "topic": "Permitted personal and public use of works and plagiarism",
-      "ep": ["EP3", "EP1"],
+      "ep": [
+        "EP3",
+        "EP1"
+      ],
       "text": "Ola, a first-year student, writes a 12-page essay for her marketing class. She copies three paragraphs (about one page) from a blog article by a well-known marketer into her essay, changes a few words, and gives no quotation marks and no source. She also photocopies one chapter of a textbook she bought and gives copies to five close friends from her study group, so they can prepare for the exam together. The lecturer finds the copied paragraphs with anti-plagiarism software.",
       "sub": [
         {
           "q": "Is Ola's use of the blog paragraphs a lawful quotation? Explain.",
           "answer": "No. Under Art. 29(1) of the Polish Act on Copyright and Related Rights, fragments of a disseminated work may be quoted in one's own independent work only to the extent justified by the purpose of the quotation (explanation, critical analysis, teaching, polemic), and Art. 34 requires naming the author and the source. Ola gave no source and no quotation marks and presented the text as her own; changing a few words does not create her own work. This is not a quotation but plagiarism (appropriation of authorship).",
           "rubric": [
-            { "t": "Problem: whether copying the paragraphs falls under the right of quotation", "p": 1 },
-            { "t": "Rule: Art. 29 (fragments, justified purpose such as explanation or analysis) and Art. 34 (author and source must be named)", "p": 2 },
-            { "t": "Application: no source, no quotation marks, text presented as her own; small word changes do not make it her work", "p": 2 },
-            { "t": "Conclusion: not a lawful quotation, it is plagiarism", "p": 1 }
+            {
+              "t": "Problem: whether copying the paragraphs falls under the right of quotation",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 29 (fragments, justified purpose such as explanation or analysis) and Art. 34 (author and source must be named)",
+              "p": 2
+            },
+            {
+              "t": "Application: no source, no quotation marks, text presented as her own; small word changes do not make it her work",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: not a lawful quotation, it is plagiarism",
+              "p": 1
+            }
           ]
         },
         {
           "q": "May Ola lawfully give the photocopied chapter to her five friends? Explain.",
           "answer": "Yes, most likely. Art. 23 allows free personal use of a disseminated work without the author's permission. Personal use covers single copies used by a circle of people in a personal relationship, including family and social (friendship) ties. Five close friends preparing together are such a circle, and the copies are few and not for profit. It would not be allowed to copy the chapter for the whole year group, to sell it or to put it online.",
           "rubric": [
-            { "t": "Problem: whether sharing copies is permitted personal use", "p": 1 },
-            { "t": "Rule: Art. 23, personal use of a disseminated work by a circle of people in a personal (e.g. social) relationship, single copies", "p": 2 },
-            { "t": "Application: close friends, a few copies, non-commercial, study purpose", "p": 2 },
-            { "t": "Conclusion: permitted; it would not be permitted for a wide or anonymous group or for profit", "p": 1 }
+            {
+              "t": "Problem: whether sharing copies is permitted personal use",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 23, personal use of a disseminated work by a circle of people in a personal (e.g. social) relationship, single copies",
+              "p": 2
+            },
+            {
+              "t": "Application: close friends, a few copies, non-commercial, study purpose",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: permitted; it would not be permitted for a wide or anonymous group or for profit",
+              "p": 1
+            }
           ]
         },
         {
           "q": "What legal consequences can Ola face for the copied paragraphs?",
           "answer": "Civil: the author may claim protection of moral rights under Art. 78 (stop the infringement, remove its effects, e.g. a statement, and compensation or a payment to a social cause) and, for economic rights, remedies under Art. 79. Criminal: Art. 115(1) punishes appropriating authorship of another person's work with a fine, restriction of liberty or up to 3 years' imprisonment. At the university she can also face disciplinary proceedings for plagiarism and fail the essay.",
           "rubric": [
-            { "t": "Problem: liability for appropriating authorship", "p": 1 },
-            { "t": "Rule: civil remedies (Art. 78 moral rights, Art. 79 economic rights) and criminal liability under Art. 115(1)", "p": 2 },
-            { "t": "Application: Ola presented another author's text as her own in a work she handed in", "p": 2 },
-            { "t": "Conclusion: civil claims, possible criminal liability and university disciplinary proceedings", "p": 1 }
+            {
+              "t": "Problem: liability for appropriating authorship",
+              "p": 1
+            },
+            {
+              "t": "Rule: civil remedies (Art. 78 moral rights, Art. 79 economic rights) and criminal liability under Art. 115(1)",
+              "p": 2
+            },
+            {
+              "t": "Application: Ola presented another author's text as her own in a work she handed in",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: civil claims, possible criminal liability and university disciplinary proceedings",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "owi-2-flatmate-app-idea",
+      "topic": "Basic principles of intellectual property law.",
+      "ep": [
+        "EP3",
+        "EP1"
+      ],
+      "text": "Kuba presents his idea for a mobile app that matches students looking for flatmates at a student start-up event. He also hands out his own 20-page business plan describing the market, prices and marketing in detail. Three months later another team launches an app built on the same idea, with its own code, name and design. A fourth team copies whole chapters of Kuba's business plan word for word into its pitch deck. Kuba never registered anything.",
+      "sub": [
+        {
+          "q": "Can Kuba stop the other team's app on the basis of copyright in his idea? Explain.",
+          "answer": "No. Under Art. 1(1) of the Polish Act on Copyright and Related Rights a work is any manifestation of creative activity of an individual character, established in any form. Art. 1(2¹) excludes discoveries, ideas, procedures, methods and principles of operation and mathematical concepts. The other team took only the idea and expressed it in its own code, name and design, so it did not copy any protected expression of Kuba.",
+          "rubric": [
+            {
+              "t": "Problem: whether an idea for an app is protected by copyright",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 1(1) defines a work as an individual, creative manifestation established in any form; Art. 1(2¹) excludes ideas, procedures and methods",
+              "p": 2
+            },
+            {
+              "t": "Application: the other team used only the concept and wrote its own code, name and design; no expression was copied",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: no, copyright does not protect the idea itself",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "Is the copied business plan protected even though Kuba never registered it? What follows for the fourth team?",
+          "answer": "Yes, most likely. A detailed business plan written in Kuba's own words can be a work of individual, creative character (a literary work). Under Art. 1(4) the author enjoys protection regardless of any formalities, such as registration; protection arises once the work is established. Copying whole chapters word for word reproduces the protected expression, so the fourth team infringes Kuba's economic rights (Art. 17) and, if it presents the text as its own, his authorship (Art. 16).",
+          "rubric": [
+            {
+              "t": "Problem: protection of the business plan without registration",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 1(1) creative work of individual character; Art. 1(4) protection without any formalities; Art. 17 economic rights",
+              "p": 2
+            },
+            {
+              "t": "Application: a 20-page plan in Kuba's own words is creative expression; the fourth team copied whole chapters word for word",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: protected; the fourth team infringed Kuba's copyright",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "owi-3-designer-logo",
+      "topic": "Author's personal and property rights.",
+      "ep": [
+        "EP3",
+        "EP1"
+      ],
+      "text": "Marta works full-time as a graphic designer in a marketing agency. As part of her duties she designs a logo for the agency's client, a chain of bakeries. Her boss accepts the design and sells it to the client. Later the agency publishes the logo in its online portfolio as \"created by our team\", without Marta's name, and tells her that by signing her employment contract she \"sold all rights to her designs, including the right to be named\".",
+      "sub": [
+        {
+          "q": "Who holds the economic rights to the logo: Marta or the agency? Explain.",
+          "answer": "The agency. Under Art. 12(1) of the Polish Copyright Act, if a work is created by an employee as a result of performing duties under the employment relationship, the employer acquires the economic rights when it accepts the work, within the limits resulting from the purpose of the employment contract and the parties' common intention, unless the law or the contract provides otherwise. Marta designed the logo as part of her job and the boss accepted it, so the agency acquired the economic rights and could sell them to the client.",
+          "rubric": [
+            {
+              "t": "Problem: ownership of economic rights to an employee's work",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 12(1): employer acquires economic rights to a work created in performing employment duties upon acceptance, unless the contract says otherwise",
+              "p": 2
+            },
+            {
+              "t": "Application: the logo was part of Marta's duties and her boss accepted it",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the agency holds the economic rights (and could transfer them to the client)",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "Is the agency right that Marta gave up her right to be named as the author?",
+          "answer": "No. Moral rights under Art. 16 protect the author's bond with the work and are unlimited in time, cannot be waived or transferred. They include the right to authorship and to have the work marked with the author's name or pseudonym or to make it available anonymously. The employment contract could transfer only economic rights. Marta remains the author and may demand to be named, and under Art. 78 she may demand that the infringement stop and its effects be removed.",
+          "rubric": [
+            {
+              "t": "Problem: whether moral rights can be transferred by an employment contract",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 16: moral rights (authorship, being named, integrity) are unlimited in time, non-transferable and cannot be waived; Art. 78 remedies",
+              "p": 2
+            },
+            {
+              "t": "Application: the contract could transfer only economic rights; the agency removed Marta's name",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: Marta keeps the right to be named; the agency is wrong",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "owi-4-concert-video",
+      "topic": "Protection of copyright and related rights.",
+      "ep": [
+        "EP3",
+        "EP1"
+      ],
+      "text": "Piotr films a whole two-hour concert of a popular Polish band with his phone. He uploads the full recording to his YouTube channel, which earns money from adverts, and the video gets 400,000 views. Neither the band members, who perform their own songs, nor the music publisher gave him permission. The band's manager wants to act.",
+      "sub": [
+        {
+          "q": "Whose rights did Piotr infringe? Explain.",
+          "answer": "Two groups. The authors of the songs (composers and lyricists) hold copyright; recording and making the songs available online are fields of exploitation that need their consent (Art. 17 and Art. 50). The band members as performers hold related rights to their performance (Art. 85–86): fixing the performance and making the recording available to the public require their consent. Piotr had no permission, and personal use does not cover publishing on a public, monetised channel.",
+          "rubric": [
+            {
+              "t": "Problem: whose rights are affected by publishing a concert recording",
+              "p": 1
+            },
+            {
+              "t": "Rule: copyright of the authors (Art. 17, fields of exploitation in Art. 50) and related rights of performers (Art. 85–86: fixing and making available need consent)",
+              "p": 2
+            },
+            {
+              "t": "Application: Piotr recorded and published the full concert online without any consent; a public monetised channel is not personal use",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: he infringed the authors' copyright and the performers' related rights",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "What can the rightholders demand from Piotr?",
+          "answer": "Under Art. 79(1), whose remedies also protect performers' related rights, they can demand that he stop the infringement (remove the video), remove its effects, and either compensation for damage under general rules or payment of a sum equal to twice the appropriate remuneration for a licence; they can also demand surrender of the benefits he obtained, e.g. advertising revenue. Unauthorised dissemination of another person's work or performance is also a crime under Art. 116.",
+          "rubric": [
+            {
+              "t": "Problem: remedies for infringement",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 79(1): stop the infringement, remove its effects, damages or twice the appropriate licence fee, surrender of benefits; criminal liability under Art. 116",
+              "p": 2
+            },
+            {
+              "t": "Application: the video is still online and earned advertising money",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: they can demand removal, payment and surrender of ad revenue; criminal liability is possible",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "owi-5-bike-lock-patent",
+      "topic": "Selected aspects of industrial property law.",
+      "ep": [
+        "EP3",
+        "EP2"
+      ],
+      "text": "Zosia, an engineering student, invents a new type of bike lock that opens with a fingerprint and cannot be cut with standard tools. In March she shows a working prototype at a university student fair and posts a video explaining how it works on Instagram. In November she files a patent application with the Polish Patent Office. She also wants to sell the lock under the name \"IronLoop\".",
+      "sub": [
+        {
+          "q": "Can Zosia still get a patent for the lock? Explain.",
+          "answer": "Probably not. Under Art. 24 of the Polish Industrial Property Law a patent is granted for an invention that is new, involves an inventive step and is industrially applicable. Under Art. 25 an invention is new if it is not part of the state of the art, i.e. everything made available to the public before the filing (priority) date, including the inventor's own disclosure. Polish law has no general grace period; only narrow exceptions apply (e.g. display at an officially recognised international exhibition). A student fair and an Instagram video are ordinary public disclosures, so the lock lacked novelty when she filed.",
+          "rubric": [
+            {
+              "t": "Problem: novelty of an invention disclosed before filing",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 24 (novelty, inventive step, industrial application) and Art. 25 (state of the art includes everything made public before the filing date, also by the inventor)",
+              "p": 2
+            },
+            {
+              "t": "Application: Zosia showed the prototype and published a video in March, eight months before filing; a student fair is not a recognised international exhibition",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the invention is no longer new; a patent will most likely be refused",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "How can she protect the name \"IronLoop\"?",
+          "answer": "By registering it as a trademark with the Polish Patent Office (or as an EU trade mark at EUIPO). A trademark is a sign capable of distinguishing the goods of one undertaking from those of others; \"IronLoop\" is an invented word, not descriptive, so it is distinctive. Registration gives an exclusive right to use the mark for the listed goods (bike locks) for 10 years from filing, renewable for further 10-year periods.",
+          "rubric": [
+            {
+              "t": "Problem: protecting a product name",
+              "p": 1
+            },
+            {
+              "t": "Rule: trademark: a sign able to distinguish goods; registration at the Patent Office gives an exclusive right for 10 years, renewable",
+              "p": 2
+            },
+            {
+              "t": "Application: \"IronLoop\" is an invented, non-descriptive word for bike locks",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: she should register \"IronLoop\" as a trademark",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "owi-6-film-in-class",
+      "topic": "Permitted personal and public use of works and plagiarism",
+      "ep": [
+        "EP3",
+        "EP1"
+      ],
+      "text": "During a lecture on business ethics, a university lecturer shows two five-minute fragments of a well-known film to illustrate a case of corporate fraud and then discusses them with the students. A week later the student union organises a screening of the whole film in the university hall, sells tickets to anyone for 15 PLN and advertises the event on Facebook. Neither the lecturer nor the union asked the film producer for permission.",
+      "sub": [
+        {
+          "q": "Was the lecturer allowed to show the fragments without permission? Explain.",
+          "answer": "Yes. Art. 27 of the Polish Copyright Act allows educational institutions and universities to use disseminated works, in original or in translation, for the purposes of illustrating teaching content, to the extent justified by that purpose. Showing short fragments of a released film during a lecture and discussing them is such use and does not require the producer's consent.",
+          "rubric": [
+            {
+              "t": "Problem: whether showing film fragments in class needs permission",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 27: permitted public use of disseminated works by universities to illustrate teaching, within the justified extent",
+              "p": 2
+            },
+            {
+              "t": "Application: two short fragments of a released film were used to illustrate a lecture topic",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: permitted; no consent was needed",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "Was the student union's paid screening permitted use? Explain.",
+          "answer": "No. Permitted use is an exception and is interpreted narrowly; Art. 27 covers illustrating teaching, not public entertainment events. A screening of the whole film for anyone who buys a ticket is a public performance done for profit. It is not personal use either (Art. 23), because the audience is not a circle of people in a personal relationship. The union needed a licence from the rightholder, so the screening infringed copyright.",
+          "rubric": [
+            {
+              "t": "Problem: whether a paid public screening falls under permitted use",
+              "p": 1
+            },
+            {
+              "t": "Rule: permitted use is a narrow exception; Art. 27 covers teaching only, Art. 23 covers a personal circle only; other public use needs a licence",
+              "p": 2
+            },
+            {
+              "t": "Application: the whole film was shown to anyone with a ticket, for money, as an event",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: not permitted; the union needed a licence",
+              "p": 1
+            }
           ]
         }
       ]
@@ -43,27 +357,329 @@
     {
       "key": "prawo-1-coffee-roastery",
       "topic": "Foundations of commercial Law and of company law.",
-      "ep": ["EP2", "EP1"],
+      "ep": [
+        "EP2",
+        "EP1"
+      ],
       "text": "Adam and Ewa want to open a small coffee roastery together. Adam has 20,000 PLN in savings and owns a flat; Ewa has 5,000 PLN and wants to run the business day to day. A friend advises them to register a general partnership (spółka jawna) \"because it is the simplest\". They worry that if the roastery fails, they could lose their private property. Two years later the business owes a supplier 150,000 PLN and its own assets are worth about 20,000 PLN.",
       "sub": [
         {
           "q": "If they had registered a general partnership, could the supplier recover the debt from Adam's flat? Explain.",
           "answer": "Yes. Under Art. 22 § 2 of the Polish Commercial Companies Code each partner of a general partnership is liable for the partnership's obligations with all their assets, without limit, jointly and severally with the other partners and the partnership. This liability is subsidiary (Art. 31 § 1): the creditor may enforce against a partner's personal assets only when enforcement against the partnership's assets proves ineffective. The roastery's 20,000 PLN will not cover 150,000 PLN, so the supplier can then enforce against Adam's flat.",
           "rubric": [
-            { "t": "Problem: personal liability of partners for the partnership's debts", "p": 1 },
-            { "t": "Rule: Art. 22 § 2 (unlimited, joint and several liability of partners) and Art. 31 § 1 (subsidiary: partnership first)", "p": 2 },
-            { "t": "Application: partnership assets (20,000 PLN) are not enough for 150,000 PLN, so enforcement against the partnership is ineffective", "p": 2 },
-            { "t": "Conclusion: yes, the supplier can reach Adam's flat after unsuccessful enforcement against the partnership", "p": 1 }
+            {
+              "t": "Problem: personal liability of partners for the partnership's debts",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 22 § 2 (unlimited, joint and several liability of partners) and Art. 31 § 1 (subsidiary: partnership first)",
+              "p": 2
+            },
+            {
+              "t": "Application: partnership assets (20,000 PLN) are not enough for 150,000 PLN, so enforcement against the partnership is ineffective",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: yes, the supplier can reach Adam's flat after unsuccessful enforcement against the partnership",
+              "p": 1
+            }
           ]
         },
         {
           "q": "Which legal form would better protect their private property, and is this protection absolute? Explain.",
           "answer": "A limited liability company (sp. z o.o.). It is a separate legal person that is liable with its own assets, and its shareholders are not liable for its obligations (Art. 151 § 4); the minimum share capital is 5,000 PLN. The protection is not absolute: members of the management board are jointly and severally liable for the company's debts if enforcement against the company is ineffective (Art. 299), unless they show, for example, that a bankruptcy petition was filed in due time. Adam as a shareholder only would be protected; Ewa, if she sits on the management board, could be personally liable.",
           "rubric": [
-            { "t": "Problem: choosing a form that limits the owners' personal liability", "p": 1 },
-            { "t": "Rule: sp. z o.o. as a separate legal person, shareholders not liable (Art. 151 § 4); board members' liability (Art. 299)", "p": 2 },
-            { "t": "Application: Adam as shareholder protected; Ewa as a board member at risk if the company's assets are insufficient and no timely bankruptcy petition", "p": 2 },
-            { "t": "Conclusion: sp. z o.o. protects better, but not absolutely", "p": 1 }
+            {
+              "t": "Problem: choosing a form that limits the owners' personal liability",
+              "p": 1
+            },
+            {
+              "t": "Rule: sp. z o.o. as a separate legal person, shareholders not liable (Art. 151 § 4); board members' liability (Art. 299)",
+              "p": 2
+            },
+            {
+              "t": "Application: Adam as shareholder protected; Ewa as a board member at risk if the company's assets are insufficient and no timely bankruptcy petition",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: sp. z o.o. protects better, but not absolutely",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "prawo-2-regulation-vs-statute",
+      "topic": "Legal Norms and Legal Orders",
+      "ep": [
+        "EP2",
+        "EP1"
+      ],
+      "text": "A Polish statute on food trade authorises the minister of agriculture to issue a regulation on how food labels must look. Using this regulation, the minister also introduces a new annual fee of 2,000 PLN for every shop selling organic food, which the statute does not mention. A small organic shop in Szczecin receives a demand to pay the fee and refuses.",
+      "sub": [
+        {
+          "q": "Was the minister allowed to introduce the fee in a regulation? Explain.",
+          "answer": "No. Under Art. 87 of the Polish Constitution regulations are a source of universally binding law below statutes. Under Art. 92 a regulation may be issued only on the basis of a specific authorisation in a statute and for the purpose of implementing that statute. Here the statute authorised rules on labels only, so a new fee goes beyond the authorisation. Public charges must moreover be set in a statute (Art. 217). The higher-ranking act prevails (lex superior derogat legi inferiori).",
+          "rubric": [
+            {
+              "t": "Problem: whether a regulation can introduce an obligation not provided by the statute",
+              "p": 1
+            },
+            {
+              "t": "Rule: hierarchy of sources (Art. 87), regulation only on the basis of and to implement a statute (Art. 92), lex superior",
+              "p": 2
+            },
+            {
+              "t": "Application: the statute authorised label rules only; the fee has no statutory basis",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: no; the fee provision is unlawful",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "What can the shop do?",
+          "answer": "It can refuse to pay and, if the demand is enforced, challenge it in court. Courts and administrative courts are bound by the Constitution and statutes (Art. 178), so in an individual case they may refuse to apply a regulation that is inconsistent with a statute. The Constitutional Tribunal may also declare the regulation non-compliant with the statute (Art. 188(3)), which would remove it from the legal system.",
+          "rubric": [
+            {
+              "t": "Problem: legal protection against an unlawful regulation",
+              "p": 1
+            },
+            {
+              "t": "Rule: courts are bound by the Constitution and statutes (Art. 178) and may refuse to apply an inconsistent regulation; Constitutional Tribunal reviews regulations against statutes (Art. 188(3))",
+              "p": 2
+            },
+            {
+              "t": "Application: the fee comes only from the regulation, which goes beyond the statute",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the shop can challenge the demand in court; the Tribunal can strike down the provision",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "prawo-3-common-vs-civil",
+      "topic": "Common Law and Civil Law.",
+      "ep": [
+        "EP2",
+        "EP1"
+      ],
+      "text": "A Polish furniture maker signs a supply contract with a company from England. When a dispute arises over late delivery, the English company's lawyer bases his arguments mainly on earlier judgments of English courts in similar cases. The Polish company's lawyer bases hers mainly on provisions of the Polish Civil Code. The contract does not say which country's law applies.",
+      "sub": [
+        {
+          "q": "Why do the two lawyers argue so differently? Explain the difference between the two legal traditions.",
+          "answer": "England belongs to the common law tradition, where judge-made law plays a central role: under the doctrine of precedent (stare decisis) lower courts are bound by earlier decisions of higher courts in similar cases, so lawyers argue from case law. Poland belongs to the civil law (continental) tradition, where the main source of law is written legislation, especially codes such as the Civil Code; judges apply statutes, and earlier judgments are persuasive but generally not formally binding.",
+          "rubric": [
+            {
+              "t": "Problem: why legal reasoning differs between England and Poland",
+              "p": 1
+            },
+            {
+              "t": "Rule: common law: precedent and stare decisis, case law as a source of law; civil law: codified statutes as the main source, judgments generally not binding",
+              "p": 2
+            },
+            {
+              "t": "Application: the English lawyer cites judgments, the Polish lawyer cites the Civil Code",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the difference comes from the two traditions: binding precedent vs codes",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "How could the companies have avoided uncertainty about which law applies?",
+          "answer": "By including a choice-of-law clause. Under Art. 3 of the Rome I Regulation (EU) No 593/2008, which Polish courts apply to contractual obligations, a contract is governed by the law chosen by the parties. Without a choice, Art. 4 points to a law by default, e.g. for a sale of goods the law of the seller's habitual residence. They could also add a clause on which court (or arbitration) decides disputes.",
+          "rubric": [
+            {
+              "t": "Problem: choosing the law applicable to an international contract",
+              "p": 1
+            },
+            {
+              "t": "Rule: Rome I Regulation: freedom of choice (Art. 3), default rules without a choice (Art. 4, e.g. seller's country for sale of goods)",
+              "p": 2
+            },
+            {
+              "t": "Application: the contract contains no choice-of-law clause",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: they should have chosen the applicable law (and court) in the contract",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "prawo-4-cafe-public-private",
+      "topic": "Different branches of law belonging to public law and private law, understood on the ground of case law in a comparative perspective.",
+      "ep": [
+        "EP2",
+        "EP1"
+      ],
+      "text": "After an inspection, the sanitary inspectorate (Sanepid) issues an administrative decision fining the owner of a café in Szczecin 2,000 PLN for poor hygiene in the kitchen. In the same week a customer who got food poisoning after eating a cake in the café demands 3,000 PLN for treatment costs and lost earnings. The owner disagrees with both.",
+      "sub": [
+        {
+          "q": "Classify both legal relationships as public law or private law. Explain.",
+          "answer": "The fine is public law (administrative law): the state authority acts with imperium, in a vertical relationship of subordination, and decides unilaterally by an administrative decision in the public interest. The customer's claim is private law (civil law): two formally equal parties in a horizontal relationship; liability for damage arises from the contract or from a tort (Art. 415 of the Civil Code: whoever by their fault causes damage must repair it).",
+          "rubric": [
+            {
+              "t": "Problem: public vs private law",
+              "p": 1
+            },
+            {
+              "t": "Rule: public law: vertical relationship, authority acts unilaterally (administrative decision); private law: equal parties, liability for damage (e.g. Art. 415 Civil Code)",
+              "p": 2
+            },
+            {
+              "t": "Application: Sanepid imposed a fine by decision; the customer, an equal party, claims compensation",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the fine is administrative (public) law, the claim is civil (private) law",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "Where and how can the owner defend herself in each case?",
+          "answer": "Against the decision she can appeal to the higher administrative authority (second instance), and then file a complaint to the provincial administrative court (WSA), with a cassation appeal to the Supreme Administrative Court (NSA). In the civil case she does not have to pay voluntarily; the customer must sue her in a common (civil) court, where the customer has to prove damage, its cause and, for a tort, fault, and the owner can contest the claim.",
+          "rubric": [
+            {
+              "t": "Problem: procedure in each branch",
+              "p": 1
+            },
+            {
+              "t": "Rule: administrative procedure: appeal to the higher authority, then administrative courts (WSA, NSA); civil claim: decided by common courts, burden of proof on the claimant",
+              "p": 2
+            },
+            {
+              "t": "Application: two separate cases: a fine by decision and a damages claim",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: appeal and administrative court for the fine; civil court for the claim",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "prawo-5-juice-eu",
+      "topic": "Legal aspects concerning European Integration.",
+      "ep": [
+        "EP2",
+        "EP1"
+      ],
+      "text": "A new Polish regulation says that a drink may be sold in Poland as \"juice\" only if it contains at least 80% fruit, more than the minimum required by EU rules. A Lithuanian producer lawfully sells a drink called \"juice\" with 60% fruit in Lithuania, clearly showing the fruit content on the label. A Polish inspection orders shops to remove the drink. The producer goes to a Polish court.",
+      "sub": [
+        {
+          "q": "Does the Polish rule comply with EU law on the free movement of goods? Explain.",
+          "answer": "Probably not. Art. 34 TFEU prohibits quantitative restrictions on imports and all measures having equivalent effect, which under Dassonville include any rule capable of hindering trade between Member States. Under Cassis de Dijon (mutual recognition), goods lawfully marketed in one Member State should in principle be admitted in others. A rule can be justified by consumer protection only if it is proportionate; here clear labelling of fruit content is a less restrictive way to inform consumers, so the ban is disproportionate.",
+          "rubric": [
+            {
+              "t": "Problem: whether a national product requirement restricts free movement of goods",
+              "p": 1
+            },
+            {
+              "t": "Rule: Art. 34 TFEU and measures having equivalent effect (Dassonville), mutual recognition (Cassis de Dijon), justification only if proportionate",
+              "p": 2
+            },
+            {
+              "t": "Application: the drink is lawfully sold in Lithuania; the label already informs consumers, so a ban is not necessary",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the rule is a measure having equivalent effect and is not justified",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "What must the Polish court do with the conflicting Polish rule?",
+          "answer": "EU law has primacy over national law (Costa v ENEL) and Art. 34 TFEU has direct effect, so the producer can rely on it before a national court (Van Gend en Loos). The Polish court must disapply the conflicting national rule in the case (Simmenthal), without waiting for it to be repealed. If it has doubts about interpreting EU law, it may (and a court of last instance must) ask the CJEU for a preliminary ruling under Art. 267 TFEU.",
+          "rubric": [
+            {
+              "t": "Problem: effect of EU law in national courts",
+              "p": 1
+            },
+            {
+              "t": "Rule: primacy (Costa v ENEL), direct effect (Van Gend en Loos), duty to disapply conflicting national law (Simmenthal), preliminary reference (Art. 267 TFEU)",
+              "p": 2
+            },
+            {
+              "t": "Application: the Polish rule conflicts with Art. 34 TFEU in the producer's case",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the court should not apply the Polish rule and may refer a question to the CJEU",
+              "p": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "prawo-6-tax-by-regulation",
+      "topic": "The fundamental institutions of a state.",
+      "ep": [
+        "EP2",
+        "EP1"
+      ],
+      "text": "The Council of Ministers wants to introduce a new tax on sugary drinks quickly. A minister proposes to do it by a regulation of the Council of Ministers, \"because a statute would take months in the Sejm\". A student union argues that this would be unconstitutional and wants to explain how the tax should be introduced instead.",
+      "sub": [
+        {
+          "q": "Can the government introduce the tax by a regulation? Explain.",
+          "answer": "No. Under Art. 10 of the Polish Constitution the system is based on the separation and balance of legislative, executive and judicial power; legislative power belongs to the Sejm and the Senate. Art. 217 requires that imposing taxes, including the subjects, objects and rates of taxation, is done by statute. A regulation of the Council of Ministers is an executive act and may only implement a statute on the basis of a specific authorisation (Art. 92), so it cannot create a new tax.",
+          "rubric": [
+            {
+              "t": "Problem: which body and act may introduce a tax",
+              "p": 1
+            },
+            {
+              "t": "Rule: separation of powers (Art. 10), taxes only by statute (Art. 217), regulations only to implement statutes (Art. 92)",
+              "p": 2
+            },
+            {
+              "t": "Application: the government, an executive body, wants to create a tax without a statute",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: no; the tax requires a statute passed by Parliament",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "q": "Describe the steps of passing such a statute.",
+          "answer": "Legislative initiative belongs to deputies, the Senate, the President, the Council of Ministers and a group of 100,000 citizens (Art. 118), so the government can submit a bill. The Sejm considers it in three readings and passes it (Art. 119–120). The Senate has 30 days to accept, amend or reject it (Art. 121); the Sejm can overrule the Senate by an absolute majority. The President signs it within 21 days, may refer it to the Constitutional Tribunal or veto it (Art. 122); the Sejm can override a veto by a three-fifths majority. The statute is then published in the Journal of Laws.",
+          "rubric": [
+            {
+              "t": "Problem: the legislative procedure",
+              "p": 1
+            },
+            {
+              "t": "Rule: initiative (Art. 118), three readings in the Sejm, Senate within 30 days (Art. 121), President signs within 21 days, veto or Tribunal referral (Art. 122)",
+              "p": 2
+            },
+            {
+              "t": "Application: the Council of Ministers can submit a bill and follow this path",
+              "p": 2
+            },
+            {
+              "t": "Conclusion: the tax can be introduced only through this procedure",
+              "p": 1
+            }
           ]
         }
       ]

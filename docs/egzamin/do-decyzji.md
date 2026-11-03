@@ -2,7 +2,7 @@
 
 Gałąź `exam/przygotuj-sie`. Nic nie jest jeszcze na skrotbm.pl.
 
-## 1. Polityka prywatności (przed wdrożeniem oceny AI)
+## 1. Polityka prywatności – zatwierdzone 3.11.2026, dopisane w prywatnosc.html i prywatnosc-en.html
 
 Proponowane zdanie na końcu punktu o Anthropic w `prywatnosc.html` (lista „Korzystamy z podmiotów niezbędnych do działania Serwisu”):
 
@@ -16,11 +16,11 @@ Do rozważenia (nie dopisane): przy „Nie zgadzam się” pytanie, odpowiedź i
 
 ## 2. Kazusy
 
-Dwa do akceptacji w `docs/kazusy/kazusy.json`:
+Zatwierdzone 3.11.2026; komplet po 6 na przedmiot w `docs/kazusy/kazusy.json`. Pierwsze dwa:
 - OWI: `owi-1-essay-and-photocopies` (cytat a plagiat, użytek osobisty, skutki; EP3 + EP1, 3 podpunkty po 6 pkt),
 - Prawo: `prawo-1-coffee-roastery` (spółka jawna a sp. z o.o., odpowiedzialność wspólników i zarządu; EP2 + EP1, 2 podpunkty po 6 pkt).
 
-Po akceptacji dopiszę resztę (razem po 6 na przedmiot) w tym samym schemacie.
+Dopisane: OWI 2–6 (idea a utwór, prawa pracownika-grafika, nagranie koncertu, patent na zapięcie, film na wykładzie) i Prawo 2–6 (rozporządzenie a ustawa, common law a civil law, prawo publiczne a prywatne, swobodny przepływ towarów, podatek tylko ustawą). Wszystkie mają EP3 (OWI) albo EP2 (Prawo) i klucz problem → przepis → zastosowanie → wniosek.
 
 ## 3. Lista dubli i tematów bez sylabusa
 
@@ -37,7 +37,7 @@ Narzędzie jest w Panelu AI („Zakres a sylabus”) i w konsoli (`skrotZakresSy
 
 Puste odpowiedzi nie idą do AI. Limit 5 ocenionych testów dziennie na osobę daje najwyżej ok. 0,15 $ dziennie na osobę przy pełnych testach.
 
-## 5. Wdrożenie (po punkcie 1)
+## 5. Wdrożenie
 
 1. Supabase → SQL Editor → `supabase/skrot-v24-ocena-ai.sql` → Run.
 2. `npx supabase functions deploy grade-open` (sekret `ANTHROPIC_API_KEY` już jest).

@@ -13,7 +13,7 @@ const now = Date.now();
 const dkey = (d) => { const x = new Date(now + d * 864e5); return x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0"); };
 const quiz = (n, tag) => Array.from({ length: n }, (_, i) => ({ q: `${tag}: question ${i + 1}?`, options: ["A" + i, "B" + i, "C" + i, "D" + i], correct: i % 4, explanation: `Because ${"ABCD"[i % 4]}.` }));
 const cards = (n, tag) => Array.from({ length: n }, (_, i) => ({ q: `${tag}: term ${i + 1}`, a: `Definition ${i + 1} of ${tag}` }));
-const T = ["Basic principles of intellectual property law", "Introduction to Intellectual Property Protection", "Author's personal and property rights", "Permitted use of works and plagiarism", "Industrial property law basics"];
+const T = ["Basic principles of intellectual property law", "Introduction to Intellectual Property Protection", "Author's personal and property rights", "Permitted use of works and plagiarism", "Industrial property law basics", "Protection of copyright and related rights"];
 const DOCS = {
   materials: Object.fromEntries(T.map((t, i) => ["o" + i, { subjectId: SID, title: t, quizCount: 8, flashcardCount: 4, createdAt: now - (9 - i) * 1e6, v: 2, source: "sylabus" }])),
   materialContent: Object.fromEntries(T.map((t, i) => ["o" + i, { v: 2, tldr: t + ".", quiz: quiz(8, "T" + i), flashcards: cards(4, "T" + i) }])),
@@ -189,7 +189,9 @@ await p3.locator("input[type=file][accept*=json]").last().setInputFiles({ name: 
 await p3.waitForTimeout(600);
 for (const d of await p3.locator("details.tmpl").all()) await d.evaluate((e) => (e.open = true));
 ok("kazusy: plik wczytany, temat dopasowany do materiału", /owi-1-essay-and-photocopies/.test(await p3.locator("main").innerText()) && /Permitted use of works and plagiarism/.test(await p3.locator("main").innerText()));
-await p3.locator("button:has-text('Zapisz 1 kazus w banku')").click(); await p3.waitForTimeout(1000);
+const brak = await p3.locator("details.tmpl .chip.bad:has-text('brak materiału')").count();
+ok("kazusy: każdy z 6 kazusów OWI dopasowany do materiału", brak === 0, brak);
+await p3.locator("button:has-text('Zapisz 6 kazusów w banku')").click(); await p3.waitForTimeout(1000);
 await p3.locator("button:has-text('Sprawdź')").first().click(); await p3.waitForTimeout(600);
 const chk = await p3.locator("main").innerText();
 ok("zakres a sylabus: dubel Introduction ↔ Basic principles", /Basic principles of intellectual property law ↔ Introduction to Intellectual Property Protection|Introduction to Intellectual Property Protection ↔ Basic principles of intellectual property law/.test(chk) && !/Industrial property law basics ↔/.test(chk), chk.match(/dubel\?[^\n]*/g));
@@ -201,7 +203,7 @@ fs.writeFileSync(OUT + "/zakres-atrapa.txt", zakres);
 await p3.goto(BASE + "index.html#/exam/" + SID); await p3.waitForTimeout(2000);
 await p3.locator("button.sk-start").click(); await p3.waitForTimeout(1500);
 r = await run(p3);
-ok("pełny test OWI: kazus z banku (3 podpunkty, EP3)", r?.items.some((x) => x.type === "case" && x.sub.length === 3 && x.ep.includes("EP3")), r?.items.map((x) => x.type));
+ok("pełny test OWI: kazus z banku (2–3 podpunkty, EP3)", r?.items.some((x) => x.type === "case" && x.sub.length >= 2 && x.ep.includes("EP3")), r?.items.map((x) => x.type));
 ok("brak błędów JS (starosta)", !p3.errors.length, p3.errors);
 // ---------- 8. wersja angielska ----------
 const p4 = await page(b, { konto: "platne", lang: "en", w: 375, h: 812, ls: { "mock-docs": JSON.stringify(DOCS) } });
