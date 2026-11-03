@@ -151,7 +151,12 @@ Deno.serve(async (req) => {
   }
   clearTimeout(timer);
   if (res.status === 429 || res.status === 529) return out(503, { code: "rate_limited", message: "AI jest teraz zajęte." });
-  if (!res.ok) return out(502, { code: "upstream", message: "API Anthropic zwróciło błąd " + res.status + "." });
+  if (!res.ok) {
+    // Treść błędu API (bez klucza) do logów funkcji i odpowiedzi, żeby dało się zdiagnozować np. 400.
+    const detail = (await res.text().catch(() => "")).slice(0, 400);
+    console.error("anthropic", res.status, detail);
+    return out(502, { code: "upstream", message: "API Anthropic zwróciło błąd " + res.status + ".", detail });
+  }
 
   const msg = await res.json();
   if (msg.stop_reason === "refusal" || msg.stop_reason === "max_tokens") return out(502, { code: msg.stop_reason, message: "AI nie oceniło testu." });
