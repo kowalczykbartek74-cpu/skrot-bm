@@ -16338,7 +16338,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
   const CASES = { data: null, busy: false };
   function caseSection(sid) {
     if (!sid || !LAW_SUBJECTS.has(sid)) return null;
-    if (CASES.data === null) { CASES.data = false; fetch("docs/kazusy/kazusy.json", { cache: "no-store" }).then((r) => r.json()).then((d) => { CASES.data = d; render(); }).catch(() => {}); }
+    if (CASES.data === null) { CASES.data = false; if (/^(localhost|127\.)/.test(location.hostname)) fetch("docs/kazusy/kazusy.json", { cache: "no-store" }).then((r) => r.json()).then((d) => { CASES.data = d; render(); }).catch(() => {}); }
     const list = (CASES.data && CASES.data[sid]) || [], mats = studyMats(sid), bank = GEN.bank[sid];
     const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: async (e) => { const f = e.target.files[0]; e.target.value = ""; if (!f) return; try { CASES.data = JSON.parse(await f.text()); render(); } catch { toast("To nie jest poprawny plik z kazusami."); } } });
     // match = fragment tytułu materiału (pewne dopasowanie); bez niego materiał najbardziej podobny do tematu z sylabusa.
