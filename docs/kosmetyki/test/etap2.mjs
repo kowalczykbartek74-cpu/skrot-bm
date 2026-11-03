@@ -67,6 +67,17 @@ const LS = { "mock-v24": "1", "mock-saldo": "3000", "mock-progress": prog(), "mo
   await p.context().close();
 }
 
+// ---------- zdobyty tytuł „Pogromca Makro”: karta z „Załóż” ----------
+{
+  const p = await page(b, { ls: { ...LS, "mock-progress": prog({ tytuly: { "tytul:pogromca:makroekonomia": 5 } }) } });
+  await p.goto(BASE + "index.html#/shop"); await p.waitForSelector("#ktab-profil"); await p.click("#ktab-profil"); await p.waitForTimeout(200);
+  t("zdobyty tytuł ma własną kartę „Posiadasz” z „Załóż”", await p.$eval("#shop-tytul-pogromca-makroekonomia", (e) => /Pogromca Makro/.test(e.textContent) && /Posiadasz/.test(e.textContent)));
+  await p.click("#shop-tytul-pogromca-makroekonomia .btn.primary"); await p.waitForTimeout(500);
+  t("tytuł za osiągnięcie założony", await p.evaluate(() => window.skrot.sklep.zalozone.tytul === "tytul:pogromca:makroekonomia"));
+  t("bez błędów", !p.errors.length, p.errors);
+  await p.context().close();
+}
+
 // ---------- komputer, ciemny, EN ----------
 for (const [name, extra] of [["ciemny", { "skrot-green": "dark" }], ["morze", { "skrot-theme": "sea" }], ["en", { "skrot-green": "light" }]]) {
   const p = await page(b, { w: 1280, h: 860, lang: name === "en" ? "en" : "pl", ls: { ...LS, ...extra, "mock-mon": JSON.stringify({ start: 3000, ksiega: [], pos: ["ramka:gwiazdy", "kolor:glebia", "tytul:kawa-kolokwium"], zal: { ramka: "ramka:gwiazdy", kolor: "kolor:glebia", tytul: "tytul:kawa-kolokwium" } }) } });

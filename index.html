@@ -11956,7 +11956,11 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     if (cur === "motywy") body = [h("p", { class: "muted kshop-intro", text: "Za darmo od poziomu albo wcześniej za monety." }), h("div", { class: "shop-grid" }, THEME_SHOP.map(shopThemeCard))];
     else if (cur === "sezon") body = kSezonBody(kat.filter((x) => x.sezon));
     else if (cur === "zestawy") body = [h("p", { class: "muted kshop-intro", text: "Kilka rzeczy w jednym, taniej niż osobno. Płacisz tylko za części, których jeszcze nie masz." }), h("div", { class: "kshop-grid" }, kat.filter((x) => x.kat === "zestawy" && !x.sezon).map(kCard))];
-    else body = (K_GROUPS[cur] || []).map(([g, title]) => { const items = kat.filter((x) => x.kat === cur && !x.sezon && kGroupOf(x) === g); return items.length ? h("div", { class: "kshop-group" }, h("h3", { text: title }), g === "dzwieki" ? kSoundSwitch() : null, h("div", { class: "kshop-grid" }, items.map(kCard))) : null; });
+    else body = (K_GROUPS[cur] || []).map(([g, title]) => {
+      let items = kat.filter((x) => x.kat === cur && !x.sezon && kGroupOf(x) === g);
+      // zdobyte tytuły „Pogromca …” jako osobne karty z „Załóż”, przed opisem, jak je zdobyć
+      if (g === "tytul") { const i = items.findIndex((x) => x.osiagniecie); items.splice(Math.max(0, i), 0, ...kTytulyZdobyte().map(kosmItem).filter(Boolean)); }
+      return items.length ? h("div", { class: "kshop-group" }, h("h3", { text: title }), g === "dzwieki" ? kSoundSwitch() : null, h("div", { class: "kshop-grid" }, items.map(kCard))) : null; });
     return h("section", { class: "panel sk-panel kshop", id: "shop-kat" },
       h("div", { class: "panel-head" }, h("h2", { text: "Wygląd" }), h("span", { class: "muted", text: "tylko wygląd: nie zmienia punktów ani wyników" })),
       h("div", { class: "kshop-tabs", role: "tablist", "aria-label": "Kategorie sklepu" }, tabs.map(tab)),
