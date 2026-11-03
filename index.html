@@ -5382,10 +5382,12 @@ body.night .po-opt { font-size: 1.05rem; padding: 12px 14px; }
       // Krótki ekran: „Teraz zrób to”, zajęcia dziś lub jutro, najbliższy termin. Postęp i nowości są zwinięte na dole.
       // W dniu zajęć, po ich końcu: „Po zajęciach w 5 minut” na samej górze (powód, żeby wejść).
       nocHomeCard(),
-      needGroup() ? null : poHomeCard(),
+      needGroup() ? null : poHomeCard("top"),
       needGroup() ? null : jzHomeCard(),
       needGroup() ? null : bsHomeCard(),
       needGroup() ? groupStep() : nowCard(),
+      // Gdy nie ma świeżych zajęć: strona i tak proponuje 5-minutowe podsumowanie (przed zajęciami, nieprzeczytane, odświeżenie).
+      needGroup() ? null : poHomeCard("mid"),
       needGroup() ? null : guideStrip(),
       // Najpierw to, co dotyczy dzisiejszego dnia (zajęcia, najbliższy termin), dopiero potem gry na luzie.
       needGroup() ? null : h("div", { class: "hub home-hub" }, todayPanel(), upcomingPanel()),
@@ -10529,19 +10531,80 @@ ${written}`;
     }
     return out;
   }
-  function poHomeCard() {
+  // Propozycje „5 min” na każdą chwilę, nie tylko po zajęciach. Strona sama wybiera, co warto teraz przeczytać:
+  // nieprzeczytane z ostatnich zajęć (najświeższe najwyżej), temat najbliższych zajęć („przed zajęciami”),
+  // odświeżenie przeczytanych po co najmniej 3 dniach (powtórka w odstępach) i premia, gdy zaliczenie z przedmiotu jest blisko.
+  function poSuggest() {
+    if (needGroup() || !PO.idx || !S.group) return [];
+    const seen = poSeen.get(), today = todayKey(), now = new Date(), nowMin = now.getHours() * 60 + now.getMinutes();
+    const todayCls = classesDz(today, S.group, S.sub);
+    const started = (sid, k, slot) => !todayCls.some((c) => !c.off && slug(c.pl) === sid && c.k === k && c.s === slot && hm(clsEnd(c)) > nowMin);
+    const best = new Map(), add = (x) => { const o = best.get(x.it.id); if (!o || o.score < x.score) best.set(x.it.id, x); };
+    const dayWord = (n) => (n === 0 ? "dziś" : n === 1 ? "wczoraj" : `${n} ${plural(n, "dzień", "dni", "dni")} temu`);
+    for (const s of SUBJECTS) {
+      if (!poHasSubj(s.id)) continue;
+      const nx = nextExam(s.id), exN = nx ? daysUntil(nx.date) : null;
+      const exBonus = exN != null && exN >= 0 && exN <= 14 ? 30 - exN : 0;
+      const exWhy = exBonus ? `${cap1(partLabel(s.id, nx.part))} ${whenN(exN)}` : "";
+      for (const k of PO_FORMS) {
+        const ms = meetingsOf(s.id, k);
+        let nextDone = false;
+        for (const m of ms) {
+          const age = -daysUntil(m.d);
+          if (age > 45) continue;
+          const isPast = age > 0 || (age === 0 && started(s.id, k, m.s));
+          if (!isPast) {
+            // Najbliższe zajęcia z tego przedmiotu (dziś przed nimi albo w ciągu 2 dni): podgląd tematu.
+            if (nextDone || age < -2) continue;
+            nextDone = true;
+            const r = poForClass(s.id, { k, s: m.s }, m.d);
+            if (r?.it && !seen[r.it.id]) add({ it: r.it, sid: s.id, k, d: m.d, kind: "przed", score: 50 + exBonus,
+              why: [`Przed zajęciami ${age === 0 ? "dziś" : age === -1 ? "jutro" : "pojutrze"}`, exWhy].filter(Boolean) });
+            continue;
+          }
+          const r = poForClass(s.id, { k, s: m.s }, m.d);
+          if (!r?.it) continue;
+          const sd = seen[r.it.id];
+          if (!sd) add({ it: r.it, sid: s.id, k, d: m.d, age, kind: age <= 1 ? "swieze" : "nowe", score: 100 - age * 3 + exBonus,
+            why: [`Zajęcia ${dayWord(age)}`, "jeszcze nieprzeczytane", exWhy].filter(Boolean) });
+          else {
+            const sAge = -daysUntil(sd);
+            if (sAge < 3) continue;
+            add({ it: r.it, sid: s.id, k, d: m.d, age, kind: "odswiez", score: 35 + Math.min(sAge, 20) - age / 3 + exBonus * 1.5,
+              why: [`Przeczytane ${dayWord(sAge)}, odśwież`, exWhy].filter(Boolean) });
+          }
+        }
+      }
+    }
+    const out = [...best.values()].sort((a, b) => b.score - a.score);
+    if (out.length) return out;
+    // Nic z planu (np. przerwa w zajęciach): każde nieprzeczytane podsumowanie, potem najdawniej przeczytane.
+    return poItems().map((it) => { const sd = seen[it.id], sAge = sd ? -daysUntil(sd) : null;
+      return { it, sid: it.sid, k: it.k, kind: sd ? "odswiez" : "nowe", score: sd ? sAge : 1000, why: [sd ? `Przeczytane ${dayWord(sAge)}, odśwież` : "jeszcze nieprzeczytane"] }; })
+      .filter((x) => x.score >= 3).sort((a, b) => b.score - a.score);
+  }
+  // Karta na ekranie Dziś. Świeże zajęcia (dziś/wczoraj, nieprzeczytane) idą na samą górę (slot "top"),
+  // w pozostałych chwilach propozycja stoi pod „Teraz zrób to” (slot "mid"). „Inny temat” przełącza propozycje.
+  // Powody propozycji jako osobne kawałki tekstu, żeby słownik EN przetłumaczył każdy z nich.
+  const poWhy = (arr) => (arr || []).flatMap((w, i) => (i ? [" · ", h("span", { text: w })] : [h("span", { text: w })]));
+  function poHomeCard(slot) {
     if (!S.ready || S.noDb || needGroup()) return null;
     if (!PO.idx) { poLoad(); return null; }
-    const list = poRecent(); if (!list.length) return null;
-    const seen = poSeen.get(), first = list.find((x) => !seen[x.it.id]) || list[0], s = subjectById(first.sid), done = !!seen[first.it.id];
-    return h("section", { class: "panel sk-panel po-card", style: `--c:${s?.color || "var(--accent)"}`, "aria-label": "Po zajęciach w 5 minut" },
-      h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: "⚡ Po zajęciach w 5 minut" }), h("span", { class: "chip " + (done ? "good" : "sun"), text: done ? "✓ przeczytane" : first.when })),
-      h("h2", {}, h("span", { text: s?.pl || first.e.pl }), h("span", { class: "muted", text: ` · ${poKindLabel(first.e.k)}` })),
-      h("p", { class: "po-topic" }, h("span", { class: "muted", text: "Temat: " }), h("span", { lang: first.it.syl ? "en" : null, translate: first.it.syl ? null : "no", text: first.it.t })),
-      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Nie było Cię albo coś umknęło? Wytłumaczymy to w 5 minut." }),
+    const list = poSuggest(); if (!list.length) return null;
+    const top = list[0].kind === "swieze";
+    if ((slot === "top") !== top) return null;
+    const i = (PO.sugI || 0) % list.length, x = list[i], s = subjectById(x.sid), done = !!poSeen.get()[x.it.id];
+    const label = x.kind === "przed" ? "⚡ 5 min przed zajęciami" : x.kind === "odswiez" ? "⚡ Powtórka w 5 minut" : "⚡ Po zajęciach w 5 minut";
+    const lead = x.kind === "przed" ? "Zobacz, o czym będą zajęcia. Łatwiej wtedy nadążyć." : x.kind === "odswiez" ? "Krótkie odświeżenie po kilku dniach utrwala temat na dłużej." : "Nie było Cię albo coś umknęło? Wytłumaczymy to w 5 minut.";
+    return h("section", { class: "panel sk-panel po-card", style: `--c:${s?.color || "var(--accent)"}`, "aria-label": label.replace("⚡ ", "") },
+      h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: label }), h("span", { class: "chip " + (x.kind === "odswiez" ? "good" : "sun"), text: list.length > 1 ? `propozycja ${i + 1} z ${list.length}` : "dla Ciebie" })),
+      h("h2", {}, h("span", { text: s?.pl || "" }), x.k ? h("span", { class: "muted", text: ` · ${poKindLabel(x.k)}` }) : null),
+      h("p", { class: "po-topic" }, h("span", { class: "muted", text: "Temat: " }), h("span", { lang: x.it.syl ? "en" : null, translate: x.it.syl ? null : "no", text: x.it.t })),
+      h("p", { class: "muted", style: "margin:0;font-size:.9rem" }, h("b", {}, poWhy(x.why)), h("br"), h("span", { text: lead })),
       h("div", { class: "row" },
-        h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "po5", id: first.it.id }) }, done ? "Jeszcze raz (5 min)" : "Tłumacz mi to (5 min) →"),
-        list.length > 1 ? h("button", { type: "button", class: "btn ghost", onclick: () => go({ view: "po" }) }, `Inne zajęcia (${list.length - 1})`) : null));
+        h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "po5", id: x.it.id }) }, done ? "Odśwież (5 min) →" : "Tłumacz mi to (5 min) →"),
+        list.length > 1 ? h("button", { type: "button", class: "btn ghost", onclick: () => { PO.sugI = i + 1; render(); } }, "Inny temat ↻") : null,
+        h("button", { type: "button", class: "link", onclick: () => go({ view: "po" }) }, "Wszystkie →")));
   }
   // Link przy zajęciach na liście „Dziś masz…”, gdy zajęcia już się skończyły i jest podsumowanie.
   function poClassLink(e, k) {
@@ -10561,16 +10624,16 @@ ${written}`;
   }
   function poSubjects() {
     const subs = SUBJECTS.filter((s) => poHasSubj(s.id));
-    const recent = poRecent(), seen = poSeen.get();
+    const sug = poSuggest(), seen = poSeen.get();
     // Najpierw przedmioty, które miałeś ostatnio (dziś, wczoraj), potem reszta po kolei.
     const lastOf = (sid) => { const ms = PO_FORMS.flatMap((k) => meetingsOf(sid, k)).map((m) => m.d).filter((d) => d <= todayKey()).sort(); return ms[ms.length - 1] || ""; };
     subs.sort((a, b) => lastOf(b.id).localeCompare(lastOf(a.id)));
     return [backLink({ view: "home" }),
       h("section", { class: "stack" }, h("h1", { class: "ptitle", text: "Po zajęciach w 5 minut" }),
-        leadHelp("Kliknij przedmiot, wybierz, o czym były zajęcia, a wytłumaczymy Ci to w 5 minut.", "W dniu zajęć podsumowanie pojawia się samo na ekranie Dziś, gdy zajęcia się skończą. Temat zajęć bierzemy od starosty albo z sylabusa (kolejne zajęcia = kolejne tematy).")),
+        leadHelp("Możesz to zrobić o każdej porze: wybierz propozycję albo przedmiot i temat, a wytłumaczymy Ci go w 5 minut.", "Na ekranie Dziś zawsze czeka propozycja: po zajęciach to, co było, przed zajęciami to, co będzie, a przeczytane tematy wracają po kilku dniach do odświeżenia. Temat zajęć bierzemy od starosty albo z sylabusa (kolejne zajęcia = kolejne tematy).")),
       !PAID() ? paywallCard("Podsumowania zajęć są w pełnej wersji") : null,
-      recent.length ? h("section", { class: "panel sk-panel" }, h("h2", { text: "Z ostatnich zajęć" }),
-        h("div", { class: "po-list" }, recent.map((x) => poRow(x.it, `${subjectById(x.sid)?.pl || x.e.pl} · ${x.when}, ${poKindLabel(x.e.k)}`, seen)))) : null,
+      sug.length ? h("section", { class: "panel sk-panel" }, h("h2", { text: "Proponujemy teraz" }),
+        h("div", { class: "po-list" }, sug.slice(0, 5).map((x) => poRow(x.it, [h("span", { text: subjectById(x.sid)?.pl || "" }), x.k ? [", ", h("span", { text: poKindLabel(x.k) })] : null, " · ", poWhy(x.why)], seen)))) : null,
       !PO.idx ? h("p", { class: "muted", text: "Ładuję…" }) : null,
       h("div", { class: "po-subjects" }, subs.map((s) => {
         const ready = poOf(s.id).length, last = lastOf(s.id);
@@ -10587,7 +10650,7 @@ ${written}`;
     return h("div", { class: "po-row" + (ok ? "" : " is-none") },
       h(ok ? "button" : "div", { type: ok ? "button" : null, class: "po-open", onclick: ok ? () => go({ view: "po5", id: it.id }) : null },
         h("span", { class: "po-ic", "aria-hidden": "true", text: done ? "✓" : ok ? "⚡" : "·" }),
-        h("span", { class: "po-txt" }, h("span", { lang: it?.syl || (!it && extra?.en) ? "en" : null, translate: it && !it.syl ? "no" : null, text: it?.t || extra?.t || "" }), sub ? h("small", { class: "muted", text: sub }) : null),
+        h("span", { class: "po-txt" }, h("span", { lang: it?.syl || (!it && extra?.en) ? "en" : null, translate: it && !it.syl ? "no" : null, text: it?.t || extra?.t || "" }), sub ? (typeof sub === "string" ? h("small", { class: "muted", text: sub }) : h("small", { class: "muted" }, sub)) : null),
         ok ? h("span", { class: "chip " + (done ? "good" : "plain"), text: done ? "przeczytane" : "5 min" }) : h("span", { class: "chip plain", text: "jeszcze nie ma" })),
       extra?.tools || null);
   }
@@ -11087,7 +11150,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       h("div", { class: "more-grid" },
         group("Nauka", [
           row("spark", "Graj i powtarzaj", "Fruń, Pary, Przejdź", () => go({ view: "gry" })),
-          row("clock", "Po zajęciach w 5 minut", "co było na zajęciach, wytłumaczone w 5 minut", () => go({ view: "po" })),
+          row("clock", "Powtórka w 5 minut", "po zajęciach, przed nimi albo kiedy chcesz", () => go({ view: "po" })),
           row("t_zad", "Stażysta Staś", "znajdź błędy w jego wyjaśnieniu i popraw je", () => go({ view: "stas" })),
           row("calendar", "Lekcja na przejazd", "fiszki i mikrolekcje na tyle minut, ile jedziesz", () => go({ view: "jazda" })),
           row("review", "10 minut przed snem", "tylko dzisiejsze błędy, bez nowego materiału", () => go({ view: "noc" })),
@@ -13142,7 +13205,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const sk = window.skrot || {};
     const FAQ = [
       ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu. Możesz też raz wypróbować wszystko za darmo przez 3 dni.`],
-      ["Nie byłem na wykładzie. Co teraz?", "Wejdź w Więcej → Po zajęciach w 5 minut (albo w przedmiot → ⚡ Po zajęciach w 5 minut), wybierz, o czym były zajęcia, i przeczytaj 5 krótkich kroków. W dniu zajęć, po ich końcu, podsumowanie pojawia się też samo na ekranie Dziś."],
+      ["Nie byłem na wykładzie. Co teraz?", "Wejdź w Więcej → Powtórka w 5 minut (albo w przedmiot → ⚡ Po zajęciach w 5 minut), wybierz, o czym były zajęcia, i przeczytaj 5 krótkich kroków. Na ekranie Dziś strona sama proponuje taki temat o każdej porze: po zajęciach to, co było, przed zajęciami to, co będzie."],
       ["Kim jest Stażysta Staś?", "To nowy stażysta, który tłumaczy temat z sylabusa, ale robi 2–3 błędy. Wejdź w Więcej → Stażysta Staś (albo w przedmiot → 🤓 Popraw Stasia), kliknij zdania, które są złe, sprawdź i wybierz poprawkę. Za każdy znaleziony błąd i każdą dobrą poprawkę dostajesz punkt."],
       ["Jadę 20 minut tramwajem. Da się wtedy coś zrobić?", "Tak: Więcej → Lekcja na przejazd. Wybierasz, ile jedziesz, a strona układa fiszki z „Dziś do powtórki” i krótkie mikrolekcje z jednego przedmiotu (najbliższe zajęcia) dokładnie na ten czas. Możesz słuchać (czyta na głos) albo przewijać kciukiem. Do dwóch godzin przed zajęciami karta pojawia się też sama na ekranie Dziś."],
       ["Co to jest „10 minut przed snem”?", "Po 21:30 na ekranie Dziś pojawia się karta z dzisiejszymi błędami: fiszkami, przy których było „Nie pamiętam”, i złymi odpowiedziami z quizów i gier. Bez nowego materiału, w ciemnym, ciepłym wyglądzie i większymi literami. O każdej porze znajdziesz to w Więcej → 10 minut przed snem."],
