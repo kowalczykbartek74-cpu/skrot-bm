@@ -39,7 +39,7 @@ Puste odpowiedzi nie idą do AI. Limit 5 ocenionych testów dziennie na osobę d
 
 ## 5. Wdrożenie
 
-1. Supabase → SQL Editor → `supabase/skrot-v24-ocena-ai.sql` → Run.
+1. Supabase → SQL Editor → `supabase/skrot-v25-ocena-ai.sql` → Run.
 2. `npx supabase functions deploy grade-open` (sekret `ANTHROPIC_API_KEY` już jest).
 3. Scalenie gałęzi i publikacja (wersje `?v=20261103-egzamin` są już podbite).
 4. Panel AI → OWI i Prawo → „Kazusy do próbnych testów” → wgraj `docs/kazusy/kazusy.json` → Zapisz.

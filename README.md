@@ -39,7 +39,7 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 ## Jak to działa
 - `index.html` – cała aplikacja (jedna strona). Plan zajęć pobiera z `https://plan.skrotbm.pl/plan.json`.
 - `skrot-supabase.js` – baza, logowanie mailem i zakup dostępu (Supabase + Stripe Payment Link).
-- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`, `skrot-v12-zabezpieczenia.sql`, `skrot-v13-gry.sql`, `skrot-v15-gry2.sql`, `skrot-v14-monety.sql`, `skrot-v16-proba.sql`, `skrot-v17-polecenia.sql`, `skrot-v18-imie-polecajacego.sql`, `skrot-v19-pokaz.sql`, `skrot-v20-jednorozec.sql`, `skrot-v21-nokturn.sql`, `skrot-v22-monety-widoczne.sql` – v14 i v16 celowo po v15, bo tak trafiają na produkcję) i funkcje serwerowe:
+- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`, `skrot-v12-zabezpieczenia.sql`, `skrot-v13-gry.sql`, `skrot-v15-gry2.sql`, `skrot-v14-monety.sql`, `skrot-v16-proba.sql`, `skrot-v17-polecenia.sql`, `skrot-v18-imie-polecajacego.sql`, `skrot-v19-pokaz.sql`, `skrot-v20-jednorozec.sql`, `skrot-v21-nokturn.sql`, `skrot-v22-monety-widoczne.sql`, `skrot-v24-kosmetyki.sql` – v14 i v16 celowo po v15, bo tak trafiają na produkcję) i funkcje serwerowe:
   - `functions/stripe-webhook` – po płatności w Stripe (konto live „skrotbm”, endpoint „skrotbm-supabase”) wpisuje dostęp (sekret `STRIPE_WEBHOOK_SECRET`, bez weryfikacji JWT),
   - `functions/kalendarz` – osobisty kalendarz do telefonu (zajęcia + zaliczenia + zadania) pod tajnym linkiem; reguły w `skrot-kalendarz.sql`, wdrażanie z `--no-verify-jwt`,
   - `functions/claude` – AI (sekret `ANTHROPIC_API_KEY`): starosta bez limitu, osoby z pełnym dostępem tylko do „Moich materiałów”, z biletem i limitem plików. Prosty język i „Dlaczego?” materiałów roku powstają z góry.
@@ -270,9 +270,9 @@ Jednorazowo: Supabase → SQL Editor → wklej `supabase/skrot-v3.sql` → Run (
 - **Tryb przed kolokwium** – przycisk w przedmiocie, przy formie zaliczenia i przy terminie. Plan na dni do zaliczenia (`dayPlan`: tematy, których jeszcze nie umiesz, rozłożone równo do daty, najsłabsze najpierw; ostatnie 7 dni to powtórki i dzień przed zaliczeniem próbny test; na ekranie 3 najbliższe wiersze, reszta pod „Cały plan”; minuty dziennie liczone z planu), zakres bez dubli (stary materiał z prezentacji o tym samym co lekcja albo jej dział – `lessonTwin`, podobieństwo tytułów bez słów typu „lecture slides” – jest w zwiniętej sekcji „Dodatkowo”, poza planem i licznikiem tematów; przycisk „To osobny temat” zapisuje wyjątek w `exams[…].keep`), zakres, kluczowe tematy (starosta oznacza ★ w materiale) i próbny test z timerem: pytania z `examBank` (Panel AI → „Pytania do testów”), a gdy ich brak, z quizów, fiszek i zadań. Szablon testu (czas, próg, sekcje) w Panelu AI; domyślny wynika z formy zaliczenia w sylabusie. Pytania otwarte ocenia AI (`grade-open`, niżej), a bez niej student sam według rubryki.
 - **Ściągawki** – jedna strona A4 na materiał albo przedmiot, drukowanie przez przeglądarkę („Zapisz jako PDF”), w stopce e-mail kupującego.
 
-## „Przygotuj się” 2.0: ocena AI, testy wcześniej, plan naprawczy (`skrot-v24-ocena-ai.sql`, `functions/grade-open`)
+## „Przygotuj się” 2.0: ocena AI, testy wcześniej, plan naprawczy (`skrot-v25-ocena-ai.sql`, `functions/grade-open`)
 Jednorazowo (po zatwierdzeniu zdania w polityce prywatności):
-1. Supabase → SQL Editor → wklej `supabase/skrot-v24-ocena-ai.sql` → Run (dzienny licznik ocen i tabela odwołań).
+1. Supabase → SQL Editor → wklej `supabase/skrot-v25-ocena-ai.sql` → Run (dzienny licznik ocen i tabela odwołań).
 2. W terminalu, w folderze repozytorium: `npx supabase functions deploy grade-open` (ten sam sekret `ANTHROPIC_API_KEY` co funkcja `claude`).
 
 - **Ocena AI** – po „Oddaj test” ABCD liczy strona, a pytania otwarte, zadania i podpunkty kazusów idą jednym wywołaniem do `grade-open` (model `claude-sonnet-5-5`, odpowiedź według schematu JSON, effort `low`). Funkcja sprawdza logowanie i pełny dostęp albo okres próbny, limit 5 ocenionych testów dziennie na osobę (`DAILY_LIMIT`, ten sam test po odświeżeniu nie zjada limitu). Wynik leży w `run.ai`, więc odświeżenie nie ocenia drugi raz. Limit, błąd albo przekroczony czas (60 s) → samoocena jak wcześniej. „Nie zgadzam się” odblokowuje ręczne zaznaczanie i zapisuje odwołanie w tabeli `nauka_ocena_odwolania` (Table editor), w podejściu jest `appeal`.
@@ -282,7 +282,7 @@ Jednorazowo (po zatwierdzeniu zdania w polityce prywatności):
 - **Gotowość**: średnia ważona godzinami tematów z sylabusa (`topicWeights`, dopasowanie po słowach tytułu), ostatni pełny test 60% wyniku tematu.
 - **Kazusy**: OWI i Prawo mają domyślnie szablon 1 kazus + 3 otwarte + 10 ABCD. Treść w `docs/kazusy/kazusy.json` (nie jest publikowana), Panel AI → przedmiot → „Kazusy do próbnych testów” → „Wgraj plik z kazusami” → „Zapisz”.
 - **Panel AI**: „Lepsze klucze oceniania” (próbka 5 pytań, potem reszta po 8) i „Zakres a sylabus” (tematy bez odpowiednika i podejrzane duble, tylko lista; też `skrotZakresSylabus()` w konsoli).
-- Testy: `docs/gry/test/przygotuj-sie.mjs` (Playwright na atrapie), `supabase/test/v24.sql` (PGlite).
+- Testy: `docs/gry/test/przygotuj-sie.mjs` (Playwright na atrapie), `supabase/test/v25.sql` (PGlite).
 
 ## Moje materiały (v4): własne pliki studentów
 Każda osoba z pełnym dostępem wgrywa własny plik (PPTX, PDF, DOCX, TXT): Więcej → „Moje materiały” (albo ostatni kafelek na Przedmiotach) → „Wgraj swój materiał”. Plik przechodzi **ten sam proces co materiały roku** (mapa tematów → opracowanie bez tekstu pliku → fiszki i quiz → kontrola podobieństwa → prosty język i „Dlaczego?”), a wynik trafia do sekcji wybranej przez tę osobę. Domyślna sekcja to „Materiały”; można tworzyć nowe, zmieniać nazwy, przenosić materiały i usuwać sekcje.
@@ -314,6 +314,24 @@ Dopóki tego nie zrobisz, strona pokazuje studentom „nie jest jeszcze włączo
 - Testy: `supabase/test/v22.sql` (W1–W3) w `node supabase/test/pglite.mjs`; UI `node docs/gry/test/poziomy.mjs` (atrapa: `mock-v22`).
 - **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v22-monety-widoczne.sql` → Run (po v21). Zmienia tylko `nauka_sklep_stan()` (dodaje `dzis_pkt`). Można uruchomić ponownie.
 
+
+## Przedmioty kosmetyczne (`skrot-v24-kosmetyki.sql`)
+
+- Jeden katalog w bazie (`nauka_sklep_katalog()`): motywy jak dotąd + ramki awatara, kolory nicku, tytuły, gablota odznak, skórki i tła gier, wygląd fiszek, efekty quizu, dźwięki, kolor płomienia, zamrożenie serii, zestawy i kolekcja sezonowa. Pola: `id, kat, slot, pl, en, opis_pl, opis_en, cena, min_poziom, tylko_za_poziom, sezon, wyglad, czesci, wymaga, max`.
+- Wszystko to wyłącznie wygląd: nic nie zmienia punktów rankingu, XP ani wyników. Zamrożenie serii chroni tylko serię dni w przeglądarce i nie tworzy wpisów w `nauka_rp`.
+- Zakup `nauka_sklep_kup(p_item, p_req)`: jedna transakcja pod blokadą na osobę (saldo, poziom, okno sezonu, posiadanie, `wymaga`), cena tylko z katalogu. Zestaw kosztuje najwyżej tyle, ile brakujące części osobno. Zamrożenie wymaga `p_req` (to samo `p_req` drugi raz = bez opłaty), najwyżej 2 naraz.
+- Zakładanie `nauka_sklep_zaloz(p_slot, p_item)` (null = zdejmij) – tylko posiadane, jeden przedmiot na slot. Gablota `nauka_gablota_ustaw(p_odznaki)` – tylko zdobyte odznaki, 1 miejsce + kupione. Zamrożenie `nauka_zamrozenie_uzyj()` chroni wczoraj, gdy wczoraj nie było nauki. Wygląd innych w rankingu: `nauka_wyglad(p_nicki)` (osobno od `nauka_ranking`).
+- Poziom, odznaki i tytuły za osiągnięcia (`tytul:pogromca:<przedmiot>`) baza czyta z dokumentu postępu (`nauka_docs`, kolekcja `progress`) – tym samym wzorem co strona (próg poziomu n = 50·n·(n−1)).
+- Sezony: `nauka_sezony()` na górze pliku (daty po czasie warszawskim, obie włącznie). Zmiana dat = edycja i ponowne uruchomienie. Kupione przedmioty sezonowe zostają na zawsze.
+- Strona (`index.html`, sekcja „PRZEDMIOTY KOSMETYCZNE”; grafiki w `kosmetyki.js`, `window.SKROT_KOSM`):
+  - Sklep `#/shop`: zakładki Motywy / Profil / Gry / Nauka / Zestawy / Sezonowe (`kShopTabs`), karty z podglądem na żywo (Twój nick i awatar), „od poziomu X” z kłódką, Posiadasz / Załóż / Założone, potwierdzenie z ceną i saldem po zakupie (`kBuy`), dymek „−N 🪙” i odliczanie salda (`kSpent`).
+  - Ranking: awatar z ramką (pierwsza litera nicku), kolor nicku, tytuł (kupiony = szara pigułka, za osiągnięcie = obrys i 🏅); klik w osobę = profil z gablotą (`kProfilShow`). Więcej: karta „Twój profil” z gablotą (`kProfilCard`, `kGablotaEdit`).
+  - Gry: `GRY_API.kosm()` → skórka (`SKROT_KOSM.SIDE` we Fruń, `TOP` w Przejdź) i tło (`SKY`, `BOARD_COL`, `rowDecor`); kolizje bez zmian.
+  - Nauka: klasa `kf-<wygląd>` na odtwarzaczu (fiszki), `kEffect()` zamiast konfetti na końcu quizu, `kSound()` w `lpBuzz(true)` (tylko z założoną paczką i przełącznikiem `bm-dzwieki`, domyślnie wyłączone), `kFlame()` zamiast 🔥, `streakNext()` z zamrożeniem.
+  - Tytuły „Pogromca …” (`kTytulySprawdz`): wszystkie lekcje przedmiotu zrobione → `progress.tytuly`. Odznaka „Mistrz Skrótu BM” z testu przewodnika trafia do `progress.odznaki` (gablota).
+- Kolory nicku, grafik i fiszek są zapisane jako zmienne CSS / atrybuty `rgb(r g b)` (ze spacjami), żeby silniki motywów (Jednorożec, Łąka, Nocny rejs, Nokturn) ich nie przemalowywały. Kontrast ≥ 4,5:1 sprawdza `docs/kosmetyki/test/kontrast.mjs` (8 motywów, jasny i ciemny tryb).
+- Testy przeglądarkowe: `docs/kosmetyki/test/etap2.mjs` … `etap5.mjs` i `kontrast.mjs` (atrapa: `mock-v24 = "1"`, katalog wczytywany z tego pliku SQL przez `docs/gry/test/lib.mjs`).
+- **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v24-kosmetyki.sql` → Run (po v22). Można uruchomić ponownie. Nie uruchamiaj potem starego v14 (odtworzyłby jednoargumentowe `nauka_sklep_kup`). Testy: `supabase/test/v25.sql` (w `pglite.mjs`). Bez v24 w bazie sklep pokazuje tylko motywy, jak dotąd.
 ## Okres próbny (`skrot-v16-proba.sql`, dawniej v9-proba)
 
 - Student raz włącza **3 dni pełnego dostępu za darmo**, bez karty: przycisk „Wypróbuj za darmo przez 3 dni” w paskach zakupu, kłódkach i w „Konto i dostęp”. Niezalogowany najpierw się loguje, potem okres próbny włącza się sam.

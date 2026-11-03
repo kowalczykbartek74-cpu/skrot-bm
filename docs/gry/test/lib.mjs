@@ -7,7 +7,11 @@ const DIR = new URL("./", import.meta.url).pathname;
 export const BASE = process.env.BASE || "http://127.0.0.1:8765/";
 export const OUT = process.env.OUT || "/tmp/gry-shots";
 fs.mkdirSync(OUT, { recursive: true });
-const ATRAPA = fs.readFileSync(DIR + "atrapa-supabase.js", "utf8");
+// Katalog v24 prosto z SQL (jedno źródło prawdy): wstawiany w atrapę w miejsce /*KATALOG_V24*/null.
+const SQL24 = fs.readFileSync(DIR + "../../../supabase/skrot-v24-kosmetyki.sql", "utf8");
+const KAT24 = SQL24.match(/nauka_sklep_katalog\(\) returns jsonb[\s\S]*?select '(\[[\s\S]*?\])'::jsonb/)[1].replace(/''/g, "'");
+export const KATALOG24 = JSON.parse(KAT24);
+const ATRAPA = fs.readFileSync(DIR + "atrapa-supabase.js", "utf8").replace("/*KATALOG_V24*/null", JSON.stringify(KATALOG24));
 export async function page(browser, { konto = "platne", v13 = "1", lang = "pl", w = 390, h = 844, ls = {}, ctx: more = {} } = {}) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, ...more });
   await ctx.route(/supabase-js@[\d.]+\/dist\/umd\/supabase\.min\.js/, (r) => r.fulfill({ contentType: "text/javascript", body: ATRAPA }));

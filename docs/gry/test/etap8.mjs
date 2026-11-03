@@ -217,7 +217,8 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const now = fs.statSync(root + "gry.js").size;
   let before = null; try { before = execSync("git show gry-etap-7:gry.js", { cwd: root }).length; } catch {}
   const src = fs.readFileSync(root + "gry.js", "utf8");
-  ok("gry.js: bez kodu Drabiny (tylko LAZY/UNITS/TITLES/cfg), przyrost < 2,5 kB", !/Zapytaj rok|askYear|fifty/.test(src) && /drabina: "gry-drabina\.js"/.test(src) && (before == null || now - before < 2500), { now, before });
+  // limit 3,5 kB: + ~0,8 kB na skórki i tła ze sklepu (v24, grafiki są w kosmetyki.js, w gry.js tylko wywołania)
+  ok("gry.js: bez kodu Drabiny (tylko LAZY/UNITS/TITLES/cfg), przyrost < 3,5 kB", !/Zapytaj rok|askYear|fifty/.test(src) && /drabina: "gry-drabina\.js"/.test(src) && (before == null || now - before < 3500), { now, before });
 }
 await b.close();
 for (const w of wyniki) console.log(w.join(" "));

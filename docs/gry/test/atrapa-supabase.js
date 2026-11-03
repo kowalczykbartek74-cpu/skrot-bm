@@ -11,6 +11,7 @@
 //     · Drabina (etap 8): mock-trud = "liniowo" (proc 95 → 20 w kolejności kluczy, bez braków) · mock-pf = "1" (pytania m2 mają 2 opcje)
 //   v14 (monety, Zadania dnia, Sklep): mock-v14 = "1" (domyślnie) | "0" (brak funkcji → no_sql) · mock-saldo (monety na start, domyślnie 0)
 //     · mock-misje = "odp10,gra1,haslo1" (dzienne, po przecinku) · mock-misja-tydz = "tyd_d5" · monety z nauki = suma pkt dnia / 10 (jak trigger)
+//   v24 (przedmioty kosmetyczne): mock-v24 = "1" (domyślnie "0") · mock-wyglad = JSON wyglądu innych osób z rankingu · mock-sezony
 //   v22 (pkt dnia w stanie sklepu): mock-v22 = "1" (domyślnie, nauka_sklep_stan zwraca dzis_pkt) | "0" (bez dzis_pkt, jak przed v22)
 //   v16 (okres próbny): mock-konto = "proba" (trwa, pełny dostęp) | "proba-koniec" (minął) · "darmowe" może go włączyć (nauka_proba_start
 //     przełącza mock-konto na "proba") · mock-proba-do (ISO, koniec trwającego) · mock-proba-blad = "wykorzystany" | "urzadzenie"
@@ -207,7 +208,7 @@
   const misjeDzis = () => ls("mock-misje", "odp10,gra1,haslo1").split(",").map((id) => [id, "dzien"]).concat([[ls("mock-misja-tydz", "tyd_d5"), "tydzien"]]);
   const V14FN = {
     nauka_sklep_stan: () => ({ ok: true, saldo: saldo(), dzis_nauka: monNauka(), ...(ls("mock-v22", "1") === "1" ? { dzis_pkt: pktDzis() } : {}), dzis_max: 64, kurs_pkt: 10, mozna: paid, posiadane: MON.pos, katalog: KATALOG,
-      zarobione_lacznie: saldo() + MON.ksiega.filter((w) => w.delta < 0).reduce((a, w) => a - w.delta, 0), wydane_lacznie: MON.ksiega.filter((w) => w.zrodlo === "zakup").reduce((a, w) => a - w.delta, 0) }),
+      zarobione_lacznie: saldo() + MON.ksiega.filter((w) => w.delta < 0).reduce((a, w) => a - w.delta, 0), wydane_lacznie: MON.ksiega.filter((w) => w.zrodlo === "zakup").reduce((a, w) => a - w.delta, 0), ...stan24() }),
     nauka_sklep_kup: (a) => {
       const it = KATALOG.find((x) => x.id === a.p_item); if (!it) return { ok: false, code: "no_item" };
       if (MON.pos.includes(it.id)) return { ok: false, code: "owned", saldo: saldo() };
@@ -234,6 +235,69 @@
     nauka_admin_monety: (a) => (KONTO === "starosta" ? (a.p_user === UID && (MON.ksiega.push({ delta: a.p_delta, zrodlo: "admin", klucz: "admin:" + Date.now(), opis: "Od starosty: " + a.p_powod, dzien: dzis() }), monZapisz()), { ok: true, saldo: saldo() }) : { ok: false, code: "not_admin" }),
     nauka_admin_daj_item: () => (KONTO === "starosta" ? { ok: true, juz: false } : { ok: false, code: "not_admin" }),
   };
+  // ---------- v24: przedmioty kosmetyczne (mock-v24 = "1"; katalog z supabase/skrot-v24-kosmetyki.sql wstawia lib.mjs) ----------
+  //   mock-sezony = JSON okien sezonów (domyślnie „zima” do 2027-02-28) · stan w mock-mon (pos, zal, gab, zam)
+  const V24 = V14 && ls("mock-v24", "0") === "1";
+  const KAT24 = /*KATALOG_V24*/null || [];
+  const SEZ24 = JSON.parse(ls("mock-sezony", '{"zima":{"od":"2026-11-03","do":"2027-02-28","pl":"Sesja zimowa","en":"Winter exam session"}}'));
+  const prog24 = () => DOCS.progress?.[UID] || {};
+  const lv24 = () => { const xp = +(prog24().xp?.t || 0); return Math.max(1, Math.floor((1 + Math.sqrt(1 + xp / 12.5)) / 2)); };
+  const it24 = (id) => KAT24.find((x) => x.id === id);
+  const ma24 = (id) => { if (/^tytul:pogromca:/.test(id)) return id in (prog24().tytuly || {}); const it = it24(id); if (!it) return false;
+    if (MON.pos.includes(id)) return true; return !!it.tylko_za_poziom && lv24() >= it.tylko_za_poziom; };
+  const sez24 = (k) => { if (!k) return true; const s = SEZ24[k], d = dzis(); return !!s && d >= s.od && d <= s.do; };
+  MON.zal ||= {}; MON.gab ||= []; MON.zam ||= { reqs: [], dni: [] };
+  const zamMa = () => MON.zam.reqs.length - MON.zam.dni.length;
+  const zal24 = () => Object.fromEntries(Object.entries(MON.zal).filter(([, v]) => ma24(v)));
+  const INNI24 = JSON.parse(ls("mock-wyglad", '{"Łoś Ania":{"zalozone":{"ramka":"ramka:gwiazdy","kolor":"kolor:glebia","tytul":"tytul:nocny-marek"},"gablota":["frun10","pary0"],"poziom":9},"Cela":{"zalozone":{"ramka":"ramka:zlota","kolor":"kolor:wrzos","tytul":"tytul:pogromca:makroekonomia"},"gablota":["top10"],"poziom":11}}'));
+  const V24FN = {
+    nauka_sklep_kup: (a) => {
+      const it = it24(a.p_item); if (!it) return { ok: false, code: "no_item" };
+      if (typeof it.cena !== "number") return { ok: false, code: "not_for_sale", saldo: saldo() };
+      if (!sez24(it.sezon)) return { ok: false, code: "season", saldo: saldo() };
+      if (it.wymaga && !ma24(it.wymaga)) return { ok: false, code: "needs", wymaga: it.wymaga, saldo: saldo() };
+      if (it.id === "zamrozenie") {
+        if (!a.p_req) return { ok: false, code: "no_req" };
+        if (MON.zam.reqs.includes(a.p_req)) return { ok: true, item: it.id, juz: true, saldo: saldo(), zamrozenia: zamMa() };
+        if (zamMa() >= it.max) return { ok: false, code: "max", saldo: saldo() };
+        if (saldo() < it.cena) return { ok: false, code: "no_coins", brakuje: it.cena - saldo(), saldo: saldo() };
+        MON.zam.reqs.push(a.p_req); MON.ksiega.push({ delta: -it.cena, zrodlo: "zakup", klucz: "zakup:zamrozenie:" + a.p_req, opis: "Zakup: " + it.pl, dzien: dzis() }); monZapisz();
+        return { ok: true, item: it.id, cena: it.cena, saldo: saldo(), zamrozenia: zamMa() };
+      }
+      if (MON.pos.includes(it.id)) return { ok: false, code: "owned", saldo: saldo() };
+      let cena = it.cena, brak = null;
+      if (it.czesci) { brak = it.czesci.filter((c) => !MON.pos.includes(c)); if (!brak.length) return { ok: false, code: "owned", saldo: saldo() };
+        const mx = Math.max(0, ...brak.map((c) => it24(c).min_poziom || 0)); if (lv24() < mx) return { ok: false, code: "level", poziom: mx, saldo: saldo() };
+        cena = Math.min(it.cena, brak.reduce((x, c) => x + it24(c).cena, 0)); }
+      else if (it.min_poziom && lv24() < it.min_poziom) return { ok: false, code: "level", poziom: it.min_poziom, saldo: saldo() };
+      if (saldo() < cena) return { ok: false, code: "no_coins", brakuje: cena - saldo(), saldo: saldo() };
+      MON.pos.push(it.id); if (brak) brak.forEach((c) => MON.pos.includes(c) || MON.pos.push(c));
+      if (cena > 0) MON.ksiega.push({ delta: -cena, zrodlo: "zakup", klucz: "zakup:" + it.id, opis: "Zakup: " + it.pl, dzien: dzis() }); monZapisz();
+      return { ok: true, item: it.id, cena, saldo: saldo(), czesci: brak }; },
+    nauka_sklep_zaloz: (a) => {
+      const SL = ["ramka", "kolor", "tytul", "skorka", "tlo", "fiszki", "efekt", "dzwieki", "plomien"];
+      if (!SL.includes(a.p_slot)) return { ok: false, code: "bad_slot" };
+      if (!a.p_item) { delete MON.zal[a.p_slot]; monZapisz(); return { ok: true, slot: a.p_slot, item: null }; }
+      const it = /^tytul:pogromca:/.test(a.p_item) ? it24("tytul:pogromca") : it24(a.p_item); if (!it) return { ok: false, code: "no_item" };
+      if (it.slot !== a.p_slot) return { ok: false, code: "wrong_slot" };
+      if (!ma24(a.p_item)) return { ok: false, code: "not_owned" };
+      MON.zal[a.p_slot] = a.p_item; monZapisz(); return { ok: true, slot: a.p_slot, item: a.p_item }; },
+    nauka_gablota_ustaw: (a) => {
+      const m = 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length, lista = [...new Set(a.p_odznaki || [])];
+      if (lista.length > m) return { ok: false, code: "too_many", miejsca: m };
+      if (lista.some((x) => !(x in (prog24().odznaki || {})))) return { ok: false, code: "not_earned" };
+      MON.gab = lista; monZapisz(); return { ok: true, odznaki: lista, miejsca: m }; },
+    nauka_zamrozenie_uzyj: () => {
+      const d = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+      if (MON.zam.dni.includes(d)) return { ok: true, juz: true, dzien: d, zostalo: zamMa() };
+      if (!zamMa()) return { ok: false, code: "none" };
+      MON.zam.dni.push(d); monZapisz(); return { ok: true, dzien: d, zostalo: zamMa() }; },
+    nauka_wyglad: (a) => ({ ok: true, osoby: Object.fromEntries((a.p_nicki || []).filter((n) => INNI24[n]).map((n) => [n, INNI24[n]])),
+      ja: { zalozone: zal24(), gablota: MON.gab, poziom: lv24() } }),
+  };
+  const stan24 = () => (V24 ? { katalog: KAT24, dzis: dzis(), poziom: lv24(), zalozone: zal24(), tytuly: Object.keys(prog24().tytuly || {}),
+    gablota: { miejsca: 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length, odznaki: MON.gab },
+    zamrozenia: { ma: zamMa(), max: 2, dni: MON.zam.dni }, sezony: SEZ24 } : {});
   // aktywność dla panelu starosty (v11) – tylko tyle, żeby dało się otworzyć zakładkę Monety
   const AKT = { nauka_admin_aktywnosc: () => (KONTO === "starosta" ? { online: [], logowania: [], wizyty: [], konta: [
     { user_id: "u1", email: "a@x.pl", od: "2026-10-01T10:00:00Z", logowanie: new Date().toISOString(), ostatnio: new Date().toISOString(), platny: true },
@@ -262,6 +326,7 @@
     const brak = { data: null, error: { code: "PGRST202", message: `Could not find the function public.${fn} in the schema cache` } };
     if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;
     else if (V15FN[fn]) out = V15 ? { data: V15FN[fn](args), error: null } : brak;
+    else if (V24FN[fn] && V24) out = { data: V24FN[fn](args), error: null };
     else if (V14FN[fn]) out = V14 ? { data: V14FN[fn](args), error: null } : brak;
     else if (V16FN[fn]) { const r = V16FN[fn](args); out = { data: r.data ?? null, error: r.error ?? null }; }
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };

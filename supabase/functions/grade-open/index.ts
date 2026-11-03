@@ -1,7 +1,7 @@
 // Funkcja serwerowa „grade-open” dla Skrót BM: ocenia pytania otwarte, zadania i podpunkty kazusów z próbnego testu.
 // Jedno wywołanie = cały test (wszystkie pozycje naraz). Zwraca dla każdej pozycji punkty za elementy klucza,
 // czego brakuje i jedną wskazówkę. ABCD sprawdza strona sama, tu nie trafiają.
-// Wymaga sekretu ANTHROPIC_API_KEY (Supabase → Edge Functions → Secrets) i SQL supabase/skrot-v24-ocena-ai.sql.
+// Wymaga sekretu ANTHROPIC_API_KEY (Supabase → Edge Functions → Secrets) i SQL supabase/skrot-v25-ocena-ai.sql.
 // Wdrożenie: supabase functions deploy grade-open
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
   if (!run || !items.length) return out(400, { code: "empty", message: "Brak pytań do oceny." });
 
   const { data: lim, error: e2 } = await sb.rpc("nauka_ocena_ai_bierz", { p_run: run, p_limit: DAILY_LIMIT });
-  if (e2) return out(503, { code: "not_enabled", message: "Ocena AI nie jest jeszcze włączona (SQL v24)." });
+  if (e2) return out(503, { code: "not_enabled", message: "Ocena AI nie jest jeszcze włączona (SQL v25)." });
   if (!lim?.ok) return out(429, { code: "limit", message: `Dzienny limit oceny AI (${DAILY_LIMIT} testów) jest już wykorzystany. Limit wraca jutro.`, limit: DAILY_LIMIT });
 
   const prompt = "Grade these items. Return JSON only.\n\n" + JSON.stringify(items.map((x) => ({
