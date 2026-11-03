@@ -324,9 +324,10 @@
     })().finally(() => { sklepBusy = null; });
     return sklepBusy;
   };
-  // Po zapytaniu, które dało punkty rankingu (pkt > 0): monety przelicza baza, my tylko odświeżamy stan po 3 s.
-  // Seria odpowiedzi w quizie/grze = jedno odświeżenie (timer liczy się od ostatniej).
-  skrot.sklepPozniej = () => { if (skrot.state !== "in") return; clearTimeout(sklepTimer); sklepTimer = setTimeout(() => skrot.sklepStan(), 3000); };
+  // Po zapytaniu, które dało punkty rankingu (pkt > 0): monety przelicza baza, my tylko odświeżamy stan po 1,5 s.
+  // Seria odpowiedzi w quizie/grze = jedno odświeżenie (timer liczy się od ostatniej). Stronę zdarzenie „skrot:pkt”
+  // informuje od razu (pokazuje „+1 🪙”, gdy dzisiejsze pkt przekroczą kolejną dziesiątkę; saldo potwierdza baza).
+  skrot.sklepPozniej = () => { if (skrot.state !== "in") return; clearTimeout(sklepTimer); sklepTimer = setTimeout(() => skrot.sklepStan(), 1500); };
   skrot.sklepKup = async (item) => {
     await ready;
     const { data, error } = await sb.rpc("nauka_sklep_kup", { p_item: item });
@@ -361,7 +362,10 @@
         return { ok: false, code: error.code || "error" };
       }
       // Punkty rankingu dają monety (v14, trigger w bazie): po każdym zapytaniu, które coś przyznało, odświeżamy saldo i Zadania dnia.
-      if (data?.ok && data.pkt > 0 && RP_ZAROBEK.has(fn)) skrot.sklepPozniej?.();
+      if (data?.ok && data.pkt > 0 && RP_ZAROBEK.has(fn)) {
+        try { window.dispatchEvent(new CustomEvent("skrot:pkt", { detail: { pkt: data.pkt, fn } })); } catch {}
+        skrot.sklepPozniej?.();
+      }
       return data || { ok: false, code: "empty" };
     } catch { return { ok: false, code: "offline" }; }
   };

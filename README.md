@@ -39,7 +39,7 @@ Przełącznik **EN/PL** jest w górnym pasku, w Więcej → „Język” i na ek
 ## Jak to działa
 - `index.html` – cała aplikacja (jedna strona). Plan zajęć pobiera z `https://plan.skrotbm.pl/plan.json`.
 - `skrot-supabase.js` – baza, logowanie mailem i zakup dostępu (Supabase + Stripe Payment Link).
-- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`, `skrot-v12-zabezpieczenia.sql`, `skrot-v13-gry.sql`, `skrot-v15-gry2.sql`, `skrot-v14-monety.sql`, `skrot-v16-proba.sql`, `skrot-v17-polecenia.sql`, `skrot-v18-imie-polecajacego.sql` – v14 i v16 celowo po v15, bo tak trafiają na produkcję) i funkcje serwerowe:
+- `supabase/` – reguły bazy (uruchamiane w SQL Editor w kolejności: `nauka.sql`, `skrot.sql`, `skrot-platnosci.sql`, `skrot-darmowe.sql`, `skrot-v2.sql`, `skrot-v3.sql`, `skrot-v4-moje.sql`, `skrot-v5.sql`, `skrot-v6.sql`, `skrot-v7-subskrypcja.sql`, `skrot-v8-urzadzenia.sql`, `skrot-v9-limit-moje.sql`, `skrot-v10-zgody.sql`, `skrot-v11-aktywnosc.sql`, `skrot-v12-zabezpieczenia.sql`, `skrot-v13-gry.sql`, `skrot-v15-gry2.sql`, `skrot-v14-monety.sql`, `skrot-v16-proba.sql`, `skrot-v17-polecenia.sql`, `skrot-v18-imie-polecajacego.sql`, `skrot-v19-pokaz.sql`, `skrot-v20-jednorozec.sql`, `skrot-v21-nokturn.sql`, `skrot-v22-monety-widoczne.sql` – v14 i v16 celowo po v15, bo tak trafiają na produkcję) i funkcje serwerowe:
   - `functions/stripe-webhook` – po płatności w Stripe (konto live „skrotbm”, endpoint „skrotbm-supabase”) wpisuje dostęp (sekret `STRIPE_WEBHOOK_SECRET`, bez weryfikacji JWT),
   - `functions/kalendarz` – osobisty kalendarz do telefonu (zajęcia + zaliczenia + zadania) pod tajnym linkiem; reguły w `skrot-kalendarz.sql`, wdrażanie z `--no-verify-jwt`,
   - `functions/claude` – AI (sekret `ANTHROPIC_API_KEY`): starosta bez limitu, osoby z pełnym dostępem tylko do „Moich materiałów”, z biletem i limitem plików. Prosty język i „Dlaczego?” materiałów roku powstają z góry.
@@ -286,10 +286,19 @@ Dopóki tego nie zrobisz, strona pokazuje studentom „nie jest jeszcze włączo
 
 - Monety liczy tylko baza: trigger na `nauka_rp` zamienia punkty rankingu dnia na monety (10 pkt = 1 🪙), ze wszystkich źródeł, także Hasła dnia i Bossa z v15. Z nauki najwyżej 64 🪙 dziennie (`nauka_mon_dzis_max()`: limity v13 + Hasło dnia), nagroda za Bossa (+5 🪙) ponad to.
 - Zadania dnia (3) i tygodnia (1) z puli `nauka_misje_pula()`: także „Zagraj jedną rundę gry” (Fruń, Pary, Przejdź, Drabina) i „Rozwiąż Hasło dnia”; odpowiedzi w Drabinie i ciosy w Bossa liczą się do „Odpowiedz dobrze na N pytań”.
-- Sklep z motywami (`#/shop`, Więcej → „Sklep i monety”), saldo na Dziś pod powitaniem. Strona odświeża saldo 3 s po każdym zapytaniu, które dało punkty (`rpCall` → `skrot.sklepPozniej()` w `skrot-supabase.js`).
+- Sklep z motywami (`#/shop`, Więcej → „Sklep i monety”), saldo na Dziś pod powitaniem. Strona odświeża saldo 1,5 s po każdym zapytaniu, które dało punkty (`rpCall` → `skrot.sklepPozniej()` w `skrot-supabase.js`).
 - Starosta: Aktywność → zakładka „Monety” (dziś / tydzień / saldo), „± monety” i „Daj motyw” przy kontach.
 - Testy bazy: `supabase/test/v14.sql` (M1–M8), w `node supabase/test/pglite.mjs`.
 - **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v14-monety.sql` → Run, PO v15 (numer został z kolejności pisania). Plik można uruchomić ponownie. Bez niego Sklep pokazuje „Zadania dnia jeszcze się nie wczytują”.
+
+## Poziomy, rangi i widoczne monety (`skrot-v22-monety-widoczne.sql`)
+
+- Trzy liczby, każda do czegoś innego: **⚡ XP → poziom i ranga** (20 rang od Świeżaka do Geniusza, `LP_LEVELS`, liczy przeglądarka, daje tylko wygląd i motywy za poziom), **🪙 monety → sklep** (liczy wyłącznie baza z punktów rankingu, nigdy z XP), **🔥 seria**.
+- `lpLevelBar(xp, cls, { from })` w `index.html` rysuje je razem: odznaka rangi (ramka rośnie co 5 poziomów, `lvTier`), pasek do następnego poziomu, chipy XP / monet / serii. Wersja zwarta pod powitaniem na Dziś (`greet-badges`), pełna w Więcej („Twój poziom” + najbliższa nagroda `lvRewardLine` + ściąga `lvHowShow`), na ekranach końca w odtwarzaczu z paskiem rosnącym od XP sprzed sesji.
+- Awans (`xpFlush` → `levelUpShow`): okno „Poziom N · ranga” z motywami za ten poziom (przycisk „Włącz”), w odtwarzaczu po konfetti części, w grach dopiero po zamknięciu gry (`whenFree`).
+- Widoczne nagrody: dymki „+N XP” i „+N 🪙” (`gainPop`), w odtwarzaczu chip 🪙 w górnym pasku i „+N 🪙” przy nim. `skrot-supabase.js` wysyła zdarzenie `skrot:pkt` po każdym zapytaniu, które dało punkty; strona dolicza je do dzisiejszych pkt z bazy (`dzis_pkt` z v22) i po przekroczeniu kolejnej dziesiątki pokazuje monetę od razu (`monPkt`). Przy odświeżeniu salda baza ma ostatnie słowo (`monSync`). Bez v22 moneta pokazuje się po odświeżeniu salda.
+- Testy: `supabase/test/v22.sql` (W1–W3) w `node supabase/test/pglite.mjs`; UI `node docs/gry/test/poziomy.mjs` (atrapa: `mock-v22`).
+- **Wdrożenie**: Supabase → SQL Editor → wklej `supabase/skrot-v22-monety-widoczne.sql` → Run (po v21). Zmienia tylko `nauka_sklep_stan()` (dodaje `dzis_pkt`). Można uruchomić ponownie.
 
 ## Okres próbny (`skrot-v16-proba.sql`, dawniej v9-proba)
 

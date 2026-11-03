@@ -11,6 +11,7 @@
 //     · Drabina (etap 8): mock-trud = "liniowo" (proc 95 → 20 w kolejności kluczy, bez braków) · mock-pf = "1" (pytania m2 mają 2 opcje)
 //   v14 (monety, Zadania dnia, Sklep): mock-v14 = "1" (domyślnie) | "0" (brak funkcji → no_sql) · mock-saldo (monety na start, domyślnie 0)
 //     · mock-misje = "odp10,gra1,haslo1" (dzienne, po przecinku) · mock-misja-tydz = "tyd_d5" · monety z nauki = suma pkt dnia / 10 (jak trigger)
+//   v22 (pkt dnia w stanie sklepu): mock-v22 = "1" (domyślnie, nauka_sklep_stan zwraca dzis_pkt) | "0" (bez dzis_pkt, jak przed v22)
 //   v16 (okres próbny): mock-konto = "proba" (trwa, pełny dostęp) | "proba-koniec" (minął) · "darmowe" może go włączyć (nauka_proba_start
 //     przełącza mock-konto na "proba") · mock-proba-do (ISO, koniec trwającego) · mock-proba-blad = "wykorzystany" | "urzadzenie"
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
@@ -205,7 +206,7 @@
   const postep = (id) => { const [pre, ile] = PULA[id]; const v = pre === null ? pktDzis() : pre === "dni" ? (pktDzis() > 0 ? 1 : 0) : RP.rows.filter((r) => r.d === dzis() && r.klucz.startsWith(pre)).length; return Math.min(v, ile); };
   const misjeDzis = () => ls("mock-misje", "odp10,gra1,haslo1").split(",").map((id) => [id, "dzien"]).concat([[ls("mock-misja-tydz", "tyd_d5"), "tydzien"]]);
   const V14FN = {
-    nauka_sklep_stan: () => ({ ok: true, saldo: saldo(), dzis_nauka: monNauka(), dzis_max: 64, kurs_pkt: 10, mozna: paid, posiadane: MON.pos, katalog: KATALOG,
+    nauka_sklep_stan: () => ({ ok: true, saldo: saldo(), dzis_nauka: monNauka(), ...(ls("mock-v22", "1") === "1" ? { dzis_pkt: pktDzis() } : {}), dzis_max: 64, kurs_pkt: 10, mozna: paid, posiadane: MON.pos, katalog: KATALOG,
       zarobione_lacznie: saldo() + MON.ksiega.filter((w) => w.delta < 0).reduce((a, w) => a - w.delta, 0), wydane_lacznie: MON.ksiega.filter((w) => w.zrodlo === "zakup").reduce((a, w) => a - w.delta, 0) }),
     nauka_sklep_kup: (a) => {
       const it = KATALOG.find((x) => x.id === a.p_item); if (!it) return { ok: false, code: "no_item" };

@@ -63,7 +63,8 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const tag = String(w);
   const p = await page(b, { w, h: hgt, ls: { "mock-misje": "odp10,gra1,haslo1", "mock-misja-tydz": "tyd_d5" } });
   await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
-  ok(`${tag} Dziś: pod powitaniem tylko XP i seria (monety są w sklepie)`, /XP/.test(await txt(p, ".greet-badges")) && !/monet/.test(await txt(p, ".greet-badges")), await txt(p, ".greet-badges"));
+  // od poziomy-monety: pod powitaniem ranga (poziom z XP), monety i seria
+  ok(`${tag} Dziś: pod powitaniem ranga, monety i seria`, /Świeżak/.test(await txt(p, ".greet-badges")) && /🪙\s*0/.test(await txt(p, ".greet-badges")) && /🔥/.test(await txt(p, ".greet-badges")), await txt(p, ".greet-badges"));
   // Hasło dnia w prawdziwym widoku
   await hashGo(p, "#/haslo", 1500);
   await p.keyboard.type("revenue", { delay: 30 }); await p.keyboard.press("Enter"); await p.waitForTimeout(2500);
@@ -73,7 +74,8 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   await p.waitForTimeout(3500);
   const nStan1 = (await calls(p, "nauka_sklep_stan")).length;
   const nietkniety = await p.evaluate(() => document.getElementById("main").firstElementChild?.__znacznik === 1);
-  ok(`${tag} Hasło dnia: +20 pkt → po 3 s saldo 2 🪙 (nowe nauka_sklep_stan)`, proba?.res?.pkt === 20 && nStan1 > nStan0 && (await saldo(p)) === 2, { proba, nStan0, nStan1, s: await saldo(p) });
+  // odświeżenie salda po 1,5 s (od poziomy-monety), więc nowe nauka_sklep_stan jest już przed nStan0
+  ok(`${tag} Hasło dnia: +20 pkt → po 1,5 s saldo 2 🪙 (nowe nauka_sklep_stan)`, proba?.res?.pkt === 20 && nStan0 >= 2 && nStan1 >= nStan0 && (await saldo(p)) === 2, { proba, nStan0, nStan1, s: await saldo(p) });
   ok(`${tag} Hasło dnia: odświeżenie salda nie przebudowuje widoku gry`, nietkniety && (await p.locator(".hd-end, .hd-res, [class*='hd-'][class*='end']").count()) >= 0, nietkniety);
   // 10 dobrych odpowiedzi z quizu (pkt > 0) i jedna zła (pkt 0)
   await p.evaluate(async () => { for (let i = 0; i < 10; i++) await window.skrot.rp.odp({ mid: "m1", idx: i, wybor: i % 4, zrodlo: "quiz" }); await window.skrot.rp.odp({ mid: "m1", idx: 10, wybor: 3, zrodlo: "quiz" }); });
