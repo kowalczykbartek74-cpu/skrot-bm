@@ -3,6 +3,7 @@
     {
       "key": "owi-1-essay-and-photocopies",
       "topic": "Permitted personal and public use of works and plagiarism",
+      "match": "Permitted use of works and plagiarism",
       "ep": [
         "EP3",
         "EP1"
@@ -80,6 +81,7 @@
     {
       "key": "owi-2-flatmate-app-idea",
       "topic": "Basic principles of intellectual property law.",
+      "match": "Basic principles of intellectual property law",
       "ep": [
         "EP3",
         "EP1"
@@ -135,6 +137,7 @@
     {
       "key": "owi-3-designer-logo",
       "topic": "Author's personal and property rights.",
+      "match": "The work and the author's personal",
       "ep": [
         "EP3",
         "EP1"
@@ -190,6 +193,7 @@
     {
       "key": "owi-4-concert-video",
       "topic": "Protection of copyright and related rights.",
+      "match": "Protection of copyright and related rights",
       "ep": [
         "EP3",
         "EP1"
@@ -245,6 +249,7 @@
     {
       "key": "owi-5-bike-lock-patent",
       "topic": "Selected aspects of industrial property law.",
+      "match": "Industrial property: inventions",
       "ep": [
         "EP3",
         "EP2"
@@ -300,6 +305,7 @@
     {
       "key": "owi-6-film-in-class",
       "topic": "Permitted personal and public use of works and plagiarism",
+      "match": "Permitted use of works and plagiarism",
       "ep": [
         "EP3",
         "EP1"
@@ -357,6 +363,7 @@
     {
       "key": "prawo-1-coffee-roastery",
       "topic": "Foundations of commercial Law and of company law.",
+      "match": "Company law: partnerships and companies",
       "ep": [
         "EP2",
         "EP1"
@@ -412,6 +419,7 @@
     {
       "key": "prawo-2-regulation-vs-statute",
       "topic": "Legal Norms and Legal Orders",
+      "match": "Sources of Law in Poland",
       "ep": [
         "EP2",
         "EP1"
@@ -467,6 +475,7 @@
     {
       "key": "prawo-3-common-vs-civil",
       "topic": "Common Law and Civil Law.",
+      "match": "Common law and civil law",
       "ep": [
         "EP2",
         "EP1"
@@ -522,6 +531,7 @@
     {
       "key": "prawo-4-cafe-public-private",
       "topic": "Different branches of law belonging to public law and private law, understood on the ground of case law in a comparative perspective.",
+      "match": "Public and private law",
       "ep": [
         "EP2",
         "EP1"
@@ -577,6 +587,7 @@
     {
       "key": "prawo-5-juice-eu",
       "topic": "Legal aspects concerning European Integration.",
+      "match": "Legal aspects of European integration",
       "ep": [
         "EP2",
         "EP1"
@@ -632,6 +643,7 @@
     {
       "key": "prawo-6-tax-by-regulation",
       "topic": "The fundamental institutions of a state.",
+      "match": "The fundamental institutions of the state",
       "ep": [
         "EP2",
         "EP1"
