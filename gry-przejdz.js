@@ -70,7 +70,7 @@ window.SKROT_GRY.add("przejdz", (K) => {
       return { row: (r) => rows[r] || (() => { for (let k = rows.length; k <= r; k++) gen(k); return rows[r]; })(), rows, drop: (r) => { rows[r] = undefined; } };
     }
     // ---------- stan rundy ----------
-    let W, H, rnd, col, subj, gen;
+    let W, H, rnd, col, subj, gen, kz;
     let st, pr, px, hop, hopT, lastHop, queued, far, cam, auto, tDie, death, invuln, freeze, gateQ, nudge, onLog, started, hops = 0;
     const hopO = { r0: 0, r1: 0, x0: 0, x1: 0 };
     const rowAt = (r) => (r < 0 ? null : gen.row(r));
@@ -128,7 +128,7 @@ window.SKROT_GRY.add("przejdz", (K) => {
     const game = {
       id: "przejdz", title: "Przejdź", revive: true, swipe: true,
       init(ctx) {
-        W = ctx.W; H = ctx.H; rnd = ctx.rnd; col = ctx.colors; subj = ctx.subjectColors.length ? ctx.subjectColors : [col.shelf];
+        W = ctx.W; H = ctx.H; rnd = ctx.rnd; col = ctx.colors; subj = ctx.subjectColors.length ? ctx.subjectColors : [col.shelf]; kz = ctx.kosm || null;
         gen = makeGen(rnd);
         st = "gotowy"; pr = 0; px = colX(4); hop = false; hopT = 0; lastHop = -1; queued = null; far = 0; auto = false; tDie = 0; death = "";
         invuln = 0; freeze = 0; gateQ = false; nudge = 0; onLog = false; started = false;
@@ -201,9 +201,11 @@ window.SKROT_GRY.add("przejdz", (K) => {
       if (k === "trawa" || k === "bramka") {
         g.fillStyle = col.grass; g.fillRect(0, y, W, CELL);
         g.fillStyle = col.grass2; for (let c = (r & 1); c < COLS; c += 2) g.fillRect(c * CELL, y, CELL, CELL);
+        if (kz?.tlo) kz.art.rowDecor(g, kz.tlo, k, y, W, CELL, r, row.trees);   // tło ze sklepu (v24): kwiatki, gwiazdy
         for (let c = 0; c < COLS; c++) if (row.trees[c]) {
           g.fillStyle = "rgba(14,90,48,.18)"; g.beginPath(); g.ellipse(colX(c) + 3, y + CELL / 2 + 4, 15, 12, 0, 0, Math.PI * 2); g.fill();
           g.fillStyle = col.tree; g.strokeStyle = "#0E5A30"; g.lineWidth = 2; g.beginPath(); g.arc(colX(c), y + CELL / 2, 15, 0, Math.PI * 2); g.fill(); g.stroke();
+          if (kz?.tlo) kz.art.treeTop(g, kz.tlo, colX(c), y + CELL / 2);
         }
         if (k === "bramka") {
           g.fillStyle = col.lime; g.fillRect(0, y + 12, W, 16);
@@ -248,6 +250,8 @@ window.SKROT_GRY.add("przejdz", (K) => {
       g.save(); g.globalAlpha = alpha; g.translate(x, y);
       if (squash) { if (splash) { g.strokeStyle = "rgba(255,255,255,.8)"; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 6 + squash * 14, 0, Math.PI * 2); g.stroke(); g.globalAlpha = alpha * (1 - squash); } else g.scale(1 + squash * 0.4, 1 - squash * 0.6); }
       g.fillStyle = "rgba(5,10,7,.18)"; g.beginPath(); g.ellipse(2, 4, 13, 11, 0, 0, Math.PI * 2); g.fill();
+      const skin = kz?.skin && kz.art?.TOP?.[kz.skin];   // skórka ze sklepu (v24); kolizja ta sama co studenta
+      if (skin) { skin(g, REDUCED() ? 0 : performance.now() / 1000); g.restore(); return; }
       g.fillStyle = col.lime; g.strokeStyle = "#0E3B22"; g.lineWidth = 1.5; roundRect(g, -10, 2, 20, 13, 4); g.fill(); g.stroke(); // plecak
       g.fillStyle = "#1A7F45"; roundRect(g, -12, -6, 24, 12, 6); g.fill(); g.stroke(); // ramiona
       g.fillStyle = "#F1C9A5"; g.beginPath(); g.arc(0, -4, 7.5, 0, Math.PI * 2); g.fill(); g.stroke(); // głowa

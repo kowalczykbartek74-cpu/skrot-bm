@@ -40,7 +40,7 @@ const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { retur
 // =====================================================================
 const FRUN = (() => {
   const C = GRY_CFG.frun, POOL = 8, BOOKS = 12;
-  let W, H, rnd, col, subj;
+  let W, H, rnd, col, subj, kz;
   let st, y, py, vy, ang, score, tDie, tShake, invuln, blink, scroll, pscroll, nextX, lastGap, death;
   // kolumny z puli (bez alokacji w pętli); bc/bw = kolory i szerokości grzbietów książek
   const pipes = Array.from({ length: POOL }, () => ({ on: false, x: 0, px: 0, gy: 0, gap: 0, passed: false, bc: new Array(BOOKS).fill(0), bw: new Array(BOOKS).fill(0) }));
@@ -61,7 +61,7 @@ const FRUN = (() => {
   const game = {
     id: "frun", title: "Fruń", revive: true,
     init(ctx) {
-      W = ctx.W; H = ctx.H; rnd = ctx.rnd; col = ctx.colors; subj = ctx.subjectColors.length ? ctx.subjectColors : [col.shelf];
+      W = ctx.W; H = ctx.H; rnd = ctx.rnd; col = ctx.colors; subj = ctx.subjectColors.length ? ctx.subjectColors : [col.shelf]; kz = ctx.kosm || null;
       pipes.forEach((p) => { p.on = false; });
       st = "gotowy"; y = py = (H - C.ground) / 2; vy = 0; ang = 0; score = 0; tDie = 0; tShake = 0; invuln = 0; blink = 0; scroll = pscroll = 0; lastGap = null; death = "";
       nextX = W + 60;
@@ -102,16 +102,20 @@ const FRUN = (() => {
     },
     draw(g, a) {
       const sc = pscroll + (scroll - pscroll) * a;
-      // tło: kolor + delikatna kratka 24 j (jak tło strony)
-      g.fillStyle = col.bg; g.fillRect(0, 0, W, H);
-      g.strokeStyle = col.grid; g.lineWidth = 1; g.beginPath();
-      const off = REDUCED() ? 0 : (sc * 0.5) % 24;
-      for (let x = -off; x < W; x += 24) { g.moveTo(x, 0); g.lineTo(x, H - C.ground); }
-      for (let yy = 0; yy < H - C.ground; yy += 24) { g.moveTo(0, yy); g.lineTo(W, yy); }
-      g.stroke();
-      // budynek przy Cukrowej (paralaksa 0,2×)
-      const bx = REDUCED() ? 0 : -((sc * 0.2) % 420);
-      for (let k = 0; k < 3; k++) drawBuilding(g, bx + k * 420, H - C.ground);
+      const sky = kz?.tlo && kz.art?.SKY?.[kz.tlo];
+      if (sky) sky(g, W, H - C.ground, REDUCED() ? 0 : sc, REDUCED() ? 0 : performance.now() / 1000);   // tło ze sklepu (v24)
+      else {
+        // tło: kolor + delikatna kratka 24 j (jak tło strony)
+        g.fillStyle = col.bg; g.fillRect(0, 0, W, H);
+        g.strokeStyle = col.grid; g.lineWidth = 1; g.beginPath();
+        const off = REDUCED() ? 0 : (sc * 0.5) % 24;
+        for (let x = -off; x < W; x += 24) { g.moveTo(x, 0); g.lineTo(x, H - C.ground); }
+        for (let yy = 0; yy < H - C.ground; yy += 24) { g.moveTo(0, yy); g.lineTo(W, yy); }
+        g.stroke();
+        // budynek przy Cukrowej (paralaksa 0,2×)
+        const bx = REDUCED() ? 0 : -((sc * 0.2) % 420);
+        for (let k = 0; k < 3; k++) drawBuilding(g, bx + k * 420, H - C.ground);
+      }
       // półki z książkami
       for (const p of pipes) if (p.on) {
         const x = p.px + (p.x - p.px) * a, top = p.gy - p.gap / 2, bot = p.gy + p.gap / 2;
@@ -176,6 +180,8 @@ const FRUN = (() => {
   function drawLeaf(g, x, y, a, alpha, ring) {
     g.save(); g.translate(x, y); g.rotate(a); g.globalAlpha = alpha;
     if (ring) { g.strokeStyle = col.accent; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 19, 0, Math.PI * 2); g.stroke(); }
+    const skin = kz?.skin && kz.art?.SIDE?.[kz.skin];   // skórka ze sklepu (v24); kolizja ta sama co listka
+    if (skin) { skin(g, REDUCED() ? 0 : performance.now() / 1000); g.restore(); return; }
     g.fillStyle = "#1A7F45"; g.strokeStyle = "#0E5A30"; g.lineWidth = 1.5;
     g.beginPath(); g.moveTo(-15, 2); g.bezierCurveTo(-10, -13, 8, -15, 16, -2); g.bezierCurveTo(8, 11, -8, 12, -15, 2); g.closePath(); g.fill(); g.stroke();
     g.fillStyle = "#4CAF72"; g.beginPath(); g.moveTo(-15, 2); g.bezierCurveTo(-8, -6, 6, -9, 16, -2); g.bezierCurveTo(6, -2, -6, 0, -15, 2); g.closePath(); g.fill();
@@ -479,12 +485,14 @@ function askClose() {
 }
 
 // ---------- runda ----------
-function colors() {
+function colors(kz) {
   const c = (n, d) => A.css?.(n) || d;
   const sub = (A.subjects?.() || []).map((s) => s.color).filter(Boolean);
   return { bg: c("--green-50", "#F5F8F6"), grid: "rgba(26,127,69,.07)", shelf: c("--green-600", "#1A7F45"), shelfIn: c("--green-900", "#0E3B22"), dark: c("--green-700", "#15703C"),
     ground: c("--green-200", "#CFE8D8"), dash: "rgba(255,255,255,.7)", far: c("--green-100", "#E3F1E8"), accent: c("--accent", "#1A7F45"), subjects: sub,
-    grass: c("--green-100", "#E3F1E8"), grass2: "rgba(255,255,255,.35)", tree: c("--green-400", "#4CAF72"), lime: c("--lime-400", "#B7DB4A"), river: alpha(c("--teal-600", "#0F6E6E"), 0.5) };
+    grass: c("--green-100", "#E3F1E8"), grass2: "rgba(255,255,255,.35)", tree: c("--green-400", "#4CAF72"), lime: c("--lime-400", "#B7DB4A"), river: alpha(c("--teal-600", "#0F6E6E"), 0.5),
+    // tło planszy ze sklepu (v24) nadpisuje kolory z motywu strony
+    ...((kz?.tlo && kz.art?.BOARD_COL?.[kz.tlo]) || {}) };
 }
 // hex + alfa → rgba (rzeka w 50%)
 function alpha(hex, a) {
@@ -493,7 +501,9 @@ function alpha(hex, a) {
 }
 async function newRun(gra, sid) {
   ui.layer.replaceChildren(h("div", { class: "gry-load" }, h("p", { text: "Ładowanie…" })));
-  run = { gra, sid, id: null, seed: 0, t0: 0, revives: 0, asked: [], wrong: [], okN: 0, pkt: 0, pktOk: 0, pktZero: 0, xp: 0, offline: false, ended: false, qs: [], tasks: [], H: 0, colors: colors() };
+  // kosm: założona skórka postaci i tło planszy ze sklepu (tylko wygląd, v24); null = jak dotąd
+  const kosm = A.kosm?.() || null;
+  run = { gra, sid, id: null, seed: 0, t0: 0, revives: 0, asked: [], wrong: [], okN: 0, pkt: 0, pktOk: 0, pktZero: 0, xp: 0, offline: false, ended: false, qs: [], tasks: [], H: 0, colors: colors(kosm), kosm };
   G.stop?.();
   const dom = !!G.dom;
   run.tryb = runOpts.tryb || "enpl"; run.trudnosc = runOpts.trudnosc || "sredni";
@@ -511,7 +521,7 @@ async function newRun(gra, sid) {
   if (dom) return mountDom(qs);
   ui.layer.replaceChildren();
   fit(); run.H = view.H;
-  G.init({ W: view.W, H: view.H, rnd: run.rnd, cfg: GRY_CFG[gra], colors: run.colors, subjectColors: run.colors.subjects });
+  G.init({ W: view.W, H: view.H, rnd: run.rnd, cfg: GRY_CFG[gra], colors: run.colors, subjectColors: run.colors.subjects, kosm: run.kosm });
   run.t0 = performance.now();
   state = "gra"; hintSync(); paint(1); startLoop();
   ui.stage.focus?.();
