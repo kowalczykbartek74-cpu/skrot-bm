@@ -838,7 +838,8 @@
   };
   // Porównanie planów liczone z dzisiejszej daty: ile miesięcy zostało do końca planu „do końca 2. semestru”
   // i ile kosztowałby ten czas w planie miesięcznym. „Najtaniej” dostaje ten plan, który naprawdę wychodzi taniej.
-  const PLAN_END = "2027-07-11", PRICE_ROK = 199, PRICE_MIES = 35;
+  // Koniec planu „do końca 2. semestru” z rocznik.js (wspólny dla całej uczelni); zapasowo data 2026/27.
+  const PLAN_END = window.SKROT_ROCZNIK?.dostepDo || "2027-07-11", PRICE_ROK = 199, PRICE_MIES = 35;
   const planCompare = (now = new Date()) => {
     const days = Math.max(0, Math.ceil((Date.parse(PLAN_END + "T23:59:59+02:00") - now.getTime()) / 864e5));
     const months = Math.max(1, Math.ceil(days / 30.44));

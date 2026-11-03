@@ -9,12 +9,17 @@ const MODEL = Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-5-5";
 const STUDENT_MAX_TOKENS = 12000;      // starczy na opracowanie 12 tematów; starosta ma 16000
 const PROMPT_MAX_BYTES = 160000;       // jedno zapytanie
 // Student może wysłać tylko zapytania z kroków „Moich materiałów” (te same szablony co w index.html: makeStudy, SIMPLE_RULES, WHY_RULES).
+// Kierunek i rok studiów w szablonie biorą się z rocznik.js (ROK.ai), np. „first-year Business Management students”
+// albo „second-year Finance and Accounting students”, więc sprawdzamy stały początek i krótki opis odbiorców,
+// a nie jeden wpisany na sztywno kierunek. Dla BM teksty są takie same jak przed zmianą.
+const KTO_EN = "(?:first|second|third|fourth|fifth|sixth)-year [\\p{L}\\p{N} ,.&()'’-]{2,80} students";
+const KTO_PL = "[1-6]\\. roku [\\p{L}\\p{N} ,.&()'’-]{2,80}";
 const STUDENT_PROMPTS = [
-  "You are indexing a lecture file for first-year Business Management students",
-  "You write ORIGINAL study materials for first-year Business Management students",
-  "Based ONLY on the study material below, create flashcards and a quiz",
-  "Jesteś nauczycielem, który tłumaczy trudne rzeczy ze studiów (Business Management)",
-  "Jesteś cierpliwym korepetytorem studentów 1. roku Business Management",
+  new RegExp(`^You are indexing a lecture file for ${KTO_EN} `, "u"),
+  new RegExp(`^You write ORIGINAL study materials for ${KTO_EN} `, "u"),
+  /^Based ONLY on the study material below, create flashcards and a quiz/u,
+  /^Jesteś nauczycielem, który tłumaczy trudne rzeczy ze studiów \([\p{L}\p{N} ,.&'’-]{2,80}\)/u,
+  new RegExp(`^Jesteś cierpliwym korepetytorem studentów ${KTO_PL}\\.`, "u"),
 ];
 const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 
@@ -58,7 +63,7 @@ Deno.serve(async (req) => {
   if (!me.admin) {
     if (!me.platny) return out(403, { code: "not_granted", message: "AI jest dostępne z pełnym dostępem." });
     if (!/^[0-9a-f-]{36}$/i.test(ticket)) return out(403, { code: "no_ticket", message: "Brak biletu na przetworzenie pliku." });
-    if (!STUDENT_PROMPTS.some((p) => prompt.startsWith(p))) return out(403, { code: "not_granted", message: "AI służy tylko do opracowania wgranego pliku." });
+    if (!STUDENT_PROMPTS.some((p) => p.test(prompt))) return out(403, { code: "not_granted", message: "AI służy tylko do opracowania wgranego pliku." });
     const { data: ok, error: e2 } = await sb.rpc("nauka_ai_bilet", { b: ticket, n: bytes });
     if (e2 || !ok) return out(429, { code: "ticket_used", message: "Limit zapytań dla tego pliku się skończył. Wgraj plik jeszcze raz." });
   }
