@@ -3622,7 +3622,7 @@ button.kgab-slot { cursor: pointer; }
 .kpv-part { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 12px; background: var(--surface); overflow: hidden; }
 .kpv-ico { font-size: 2.2rem; line-height: 1; }
 .kpv-art { display: block; width: 100%; max-width: 220px; }
-.kpv-art svg { display: block; width: 100%; height: auto; }
+.kpv-art svg, .kpv-art canvas { display: block; width: 100%; height: auto; border-radius: 10px; }
 .kpv-part .kpv-art { width: 56px; }
 .ksez-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 .ksez-head h3 { margin: 0; }
@@ -8661,7 +8661,7 @@ button.kgab-slot { cursor: pointer; }
   let gryP = null;
   function loadGry() {
     return gryP ||= new Promise((ok, err) => {
-      const s = document.createElement("script"); s.src = "gry.js?v=20261031-recenzja2"; s.onload = () => ok(window.SKROT_GRY); s.onerror = () => { gryP = null; err(); };
+      const s = document.createElement("script"); s.src = "gry.js?v=20261103-kosm"; s.onload = () => ok(window.SKROT_GRY); s.onerror = () => { gryP = null; err(); };
       document.head.append(s);
     });
   }
@@ -8819,6 +8819,8 @@ button.kgab-slot { cursor: pointer; }
     // odp() w grze zapisuje też pytanie jako widziane (qSeen); reszta bez zmian
     get rp() { const rp = window.skrot?.rp; return rp && { ...rp, odp: (a) => { qSeen.add(a?.mid, a?.idx); return rp.odp(a); } }; },
     css: (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim(),
+    // v24: założona skórka postaci i tło planszy (tylko wygląd); grafiki w kosmetyki.js
+    kosm: () => (kosmOn() && KOSM ? { skin: kWyg(kZal("skorka"), "s"), tlo: kWyg(kZal("tlo"), "t"), art: KOSM } : null),
     close: () => render(),
     numMatch: (v, x) => numMatch(v, x), parseNum: (v) => parseNum(v), fmtNum: (x) => fmtNum(x), firstSentence: (t) => lpFirstSentence(t),
     subjectOf: (mid) => materialById(mid)?.subjectId || null,
@@ -11917,7 +11919,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   function kPreviewMini(it) {
     const g = kGroupOf(it), nick = kMyNick() || (EN ? "You" : "Ty");
     if (g === "ramka") return kAvatar(nick, it.id, 44);
-    if (KOSM?.preview) { const el = h("span", { class: "kpv-art kpv-" + g, "aria-hidden": "true" }); const art = KOSM.preview(it); if (art) { el.innerHTML = art; return el; } }
+    if (KOSM?.preview) { const el = h("span", { class: "kpv-art kpv-" + g, "aria-hidden": "true" }); const art = KOSM.preview(it); if (art) { if (art instanceof Node) el.append(art); else el.innerHTML = art; return el; } }
     return h("span", { class: "kpv-ico", "aria-hidden": "true", text: { skorka: "🐑", tlo: "🌄", fiszki: "🗂️", efekt: "✨", dzwieki: "🔔", plomien: "🔥", zamrozenie: "🧊" }[g] || "🎁" });
   }
   async function kZaloz(slot, id) {
