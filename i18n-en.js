@@ -1,6 +1,7 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Ocena AI jest chwilowo niedostępna. Oceń odpowiedzi sam według klucza, nic się nie zgubiło.": "AI grading is temporarily unavailable. Mark your answers yourself against the key – nothing was lost.",
 "Podgląd: {0}": "Preview: {0}",
 "Zestaw": "Set",
 "Na Twoim profilu": "On your profile",
