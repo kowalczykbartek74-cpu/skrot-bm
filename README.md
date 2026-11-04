@@ -57,6 +57,8 @@ Osoba z dostępem **opłaconym przez Stripe** (sam okres próbny ani dostęp dan
 
 ## Ekran logowania
 Bez zalogowania strona pokazuje tylko osobny ekran logowania (`#login` w `index.html`). Na komputerze (od 900 px) po lewej jest zielony panel z hasłem strony i trzema korzyściami, po prawej formularz; na telefonie tylko logo i formularz. Kod z maila albo hasło, regulamin, prywatność, kontakt i przełącznik EN/PL. Aplikacja pojawia się dopiero po zalogowaniu.
+
+**Wybór kierunku (4.11.2026)**: przed formularzem są kroki Kierunek → Rok i grupa → Logowanie (`#lgKierunek`, logika w skrypcie zaraz za `#login`). Wybór zapisuje się w `localStorage` (`skrot-kierunek` = `bm`, grupa w `bm-group`), bez bazy. Krok jest pomijany, gdy kierunek był już wybrany, ktoś ma zapisaną grupę (dotychczasowi użytkownicy), czeka na kod z maila albo wchodzi z `?proba=` / `?kod=`. „Inny kierunek” prowadzi do listy oczekujących: na razie gotowy mail do skrotbm@outlook.com (zapis do bazy dojdzie z modelem roczników). Karta „BM · 1. rok · grupa” nad formularzem ma przycisk „Zmień”. Test: `docs/gry/test/kierunek.mjs`.
 - Skrypt w `<head>` sprawdza, czy w przeglądarce jest sesja Supabase (`sb-zkyxujkdrovfzpasocmv-auth-token`); jeśli nie, od razu dodaje klasę `needlogin`, więc aplikacja nie miga.
 - `skrot-supabase.js` (`showLoginPage`) wypełnia ekran tym samym logowaniem co okno (`openLogin` z `page: true`). Komunikaty po płatności, po nieważnym linku i pole na kod po przeładowaniu działają jak wcześniej, tylko na tym ekranie.
 - Strona jest otwarta (bez kodu dostępu przed startem, bez `noindex`), od 27.10.2026. Pierwszy ekran to logowanie.
