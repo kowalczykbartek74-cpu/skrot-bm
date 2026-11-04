@@ -250,6 +250,12 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 - **`supabase/skrot-v28-zdarzenia-nauki.sql`** (trzeba uruchomić po v27): `nauka_rp_po`, `nauka_rp_stas`, osobiste Zadanie dnia. Bez niej XP działa, monet za Po zajęciach i Stasia nie ma.
 - Test: `docs/gry/test/polaczenia-4.mjs`, `supabase/test/v28.sql`.
 
+## Osobiste Zadanie dnia (SQL v28)
+
+- W Sklepie → Zadania dnia: 3 wspólne zadania dnia i zadanie tygodnia zostają (te same dla roku, ranking uczciwy), a nad nimi „Twoje zadanie dnia” (`personalMission`): dzisiejszy krok planu → sprint z przedmiotu z zaliczeniem w ciągu 21 dni → 5-minutówka z ostatnich zajęć → Staś → sprint z przedmiotu o najwyższym priorytecie.
+- Wybór zapisuje baza raz dziennie (`nauka_misja_osobista_ustaw`, ostateczny), postęp liczy z `nauka_rp`, nagroda 8 🪙 przez `nauka_misja_odbierz("osobista")`. Bez v28 karta się nie pokazuje.
+- Test: `docs/gry/test/polaczenia-5.mjs`.
+
 ## Po zajęciach w 5 minut
 Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie) dostajesz wyjaśnienie po polsku z angielskimi terminami, na końcu „Zapamiętaj” (3 rzeczy), pojęcia EN–PL i 3 pytania sprawdzające.
 - **Wejścia:** karta na górze ekranu Dziś w dniu zajęć (po ich końcu, także następnego dnia), link „⚡ Co było? 5 min →” przy zakończonych zajęciach na liście „Dziś masz…”, przycisk w okładce przedmiotu, Więcej → „Po zajęciach w 5 minut” (`#/po`, `#/po/<przedmiot>`, czytnik `#/po5/<id>`). Przeczytane: `localStorage["bm-po-seen"]`.

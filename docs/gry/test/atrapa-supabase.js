@@ -220,6 +220,15 @@
   const monNauka = () => Math.floor(pktDzis() / 10);
   const saldo = () => MON.start + monNauka() + MON.ksiega.reduce((a, w) => a + w.delta, 0);
   const postep = (id) => { const [pre, ile] = PULA[id]; const v = pre === null ? pktDzis() : pre === "dni" ? (pktDzis() > 0 ? 1 : 0) : RP.rows.filter((r) => r.d === dzis() && r.klucz.startsWith(pre)).length; return Math.min(v, ile); };
+  const V28 = ls("mock-v28", "1") === "1";
+  const OS_ILE = { sprint: 8, po: 2, stas: 2, plan: 5 };
+  const osobista = () => { const o = MON.os; if (!o || o.dzien !== dzis()) return null;
+    const rows = RP.rows.filter((r) => r.d === dzis()), mids = o.cel?.mids || [];
+    const v = o.typ === "po" ? rows.filter((r) => r.klucz.startsWith("q:po~")).length : o.typ === "stas" ? rows.filter((r) => r.klucz.startsWith("q:stas~")).length
+      : o.typ === "sprint" ? rows.filter((r) => r.klucz.startsWith("q:") && DOCS.materials[r.klucz.split(":")[1]]?.subjectId === o.cel?.sid).length
+      : rows.filter((r) => mids.some((m) => r.klucz.startsWith("q:" + m + ":"))).length + 5 * rows.filter((r) => mids.some((m) => r.klucz === "l:" + m)).length;
+    return { id: "osobista", okres: "dzien", typ: o.typ, cel: o.cel, opis_pl: o.cel?.pl, opis_en: o.cel?.en, ile: OS_ILE[o.typ], postep: Math.min(v, OS_ILE[o.typ]), nagroda: 8,
+      odebrana: MON.ksiega.some((w) => w.klucz === "misja:osobista:" + dzis()), zablokowane: !paid, do_kiedy: new Date(new Date().setHours(24, 0, 0, 0)).toISOString() }; };
   const misjeDzis = () => ls("mock-misje", "odp10,gra1,haslo1").split(",").map((id) => [id, "dzien"]).concat([[ls("mock-misja-tydz", "tyd_d5"), "tydzien"]]);
   const V14FN = {
     nauka_sklep_stan: () => ({ ok: true, saldo: saldo(), dzis_nauka: monNauka(), ...(ls("mock-v22", "1") === "1" ? { dzis_pkt: pktDzis() } : {}), dzis_max: 64, kurs_pkt: 10, mozna: paid, posiadane: MON.pos, katalog: KATALOG,
@@ -234,9 +243,16 @@
       const end = new Date(); end.setHours(24, 0, 0, 0);
       return { ok: true, dzien: dzis(), zablokowane: !paid, teraz: new Date().toISOString(), misje: misjeDzis().map(([id, okres]) => { const [, ile, nagroda, pl, en] = PULA[id];
         return { id, okres, opis_pl: pl, opis_en: en, ile, postep: paid ? postep(id) : 0, nagroda, odebrana: MON.ksiega.some((w) => w.klucz === "misja:" + id + ":" + dzis()), zablokowane: !paid,
-          do_kiedy: okres === "tydzien" ? new Date(Date.now() + 4 * 864e5).toISOString() : end.toISOString() }; }) }; },
+          do_kiedy: okres === "tydzien" ? new Date(Date.now() + 4 * 864e5).toISOString() : end.toISOString() }; }), ...(V28 ? { osobista: osobista() } : {}) }; },
+    // v28: osobiste Zadanie dnia (mock-v28 = "0" wyłącza)
+    nauka_misja_osobista_ustaw: (a) => {
+      if (!paid) return { ok: false, code: "no_access" };
+      if (!MON.os || MON.os.dzien !== dzis()) { MON.os = { dzien: dzis(), typ: a.p_typ, cel: a.p_cel }; monZapisz(); }
+      return V14FN.nauka_misje(); },
     nauka_misja_odbierz: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
+      if (a.p_id === "osobista") { const o = osobista(); if (!o) return { ok: false, code: "not_today" }; if (o.postep < o.ile) return { ok: false, code: "not_done" };
+        if (o.odebrana) return { ok: false, code: "already", saldo: saldo() }; MON.ksiega.push({ delta: 8, zrodlo: "misja", klucz: "misja:osobista:" + dzis(), opis: "Twoje zadanie dnia", dzien: dzis() }); monZapisz(); return { ok: true, id: "osobista", nagroda: 8, saldo: saldo() }; }
       const m = misjeDzis().find(([id]) => id === a.p_id); if (!m) return { ok: false, code: "not_today" };
       const [, ile, nagroda, pl] = PULA[m[0]]; if (postep(m[0]) < ile) return { ok: false, code: "not_done" };
       const klucz = "misja:" + m[0] + ":" + dzis(); if (MON.ksiega.some((w) => w.klucz === klucz)) return { ok: false, code: "already", saldo: saldo() };
