@@ -256,6 +256,11 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 - Wybór zapisuje baza raz dziennie (`nauka_misja_osobista_ustaw`, ostateczny), postęp liczy z `nauka_rp`, nagroda 8 🪙 przez `nauka_misja_odbierz("osobista")`. Bez v28 karta się nie pokazuje.
 - Test: `docs/gry/test/polaczenia-5.mjs`.
 
+## Jeden licznik tematów (`topicsOf`)
+
+- Temat do zaliczenia = lekcja albo materiał z zajęć, który nie jest dodatkiem do lekcji o tym samym temacie (`lessonTwin`, „to osobny temat” = `keep`). `topicsOf(sid)` → `{ main, extra, mine }`; `knowOf` liczy `main`, więc Dziś, Przedmioty, strona przedmiotu i mapa pokazują tę samą liczbę. Na mapie dodatki (prezentacje do tematów z lekcją i Moje materiały) są w rzędzie „dodatkowe”. Przygotuj się: `scopeOf` = ta sama lista bez tematów wyłączonych z danego zaliczenia.
+- Test: `docs/gry/test/polaczenia-6.mjs`.
+
 ## Po zajęciach w 5 minut
 Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie) dostajesz wyjaśnienie po polsku z angielskimi terminami, na końcu „Zapamiętaj” (3 rzeczy), pojęcia EN–PL i 3 pytania sprawdzające.
 - **Wejścia:** karta na górze ekranu Dziś w dniu zajęć (po ich końcu, także następnego dnia), link „⚡ Co było? 5 min →” przy zakończonych zajęciach na liście „Dziś masz…”, przycisk w okładce przedmiotu, Więcej → „Po zajęciach w 5 minut” (`#/po`, `#/po/<przedmiot>`, czytnik `#/po5/<id>`). Przeczytane: `localStorage["bm-po-seen"]`.

@@ -1,6 +1,11 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"umiesz: {0} z {1} tematów": "you know: {0} of {1} topics",
+"umiesz: {0} z {1} tematu": "you know: {0} of {1} topic",
+"Tematy do zaliczenia, które umiesz (ten sam licznik co na Dziś)": "Topics for your exams that you know (the same counter as on Today)",
+"dodatkowe: {0}": "extra: {0}",
+"Każdy kwadrat to jeden temat do zaliczenia, a kolor mówi, jak dobrze go umiesz. Dodatkowe materiały są w osobnym rzędzie i nie zmieniają licznika. Dotknij kwadratu, żeby zobaczyć szczegóły.": "Each square is one topic for your exams, and its colour shows how well you know it. Extra materials are in a separate row and don't change the counter. Tap a square to see details.",
 "Twoje zadanie dnia": "Your daily task",
 "3 wspólne dla roku + 1 Twoje": "3 shared with the year + 1 just for you",
 "Dodaj pojęcia do fiszek": "Add terms to flashcards",
