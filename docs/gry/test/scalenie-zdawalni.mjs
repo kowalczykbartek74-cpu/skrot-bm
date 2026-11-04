@@ -1,7 +1,8 @@
 // Etap 1 specu „Systemy z Zdawalni w Skrócie”: lekcje v4 + FSRS razem. Zegar: wtorek 3.11.2026, 18:00.
 //   A. limit dnia (30 zaległych + 20 nowych) działa na kartach FSRS i starych,
 //   B. FSRS nie wypycha karty za zaliczenie (termin przycięty do dnia przed),
-//   C. bez learner.js stare odstępy (pudełka), strona działa.
+//   C. bez learner.js stare odstępy (pudełka), strona działa,
+//   D. wybór kierunku zapisany w profilu po zalogowaniu (SQL v31, atrapa mock-v31).
 // BASE=http://127.0.0.1:8811/ node docs/gry/test/scalenie-zdawalni.mjs
 import { chromium, page, BASE, shot } from "./lib.mjs";
 const b = await chromium.launch();
@@ -62,6 +63,18 @@ async function oceniaj(p, klawisz, n = 1) {
   const v = (await srsOf(p))[keys[0]];
   ok("C: bez learner.js: SkrotLearner brak, „Pamiętam” = pudełko 1, jutro (stary odstęp)", !(await p.evaluate(() => !!window.SkrotLearner)) && v?.[0] === 1 && v[1] === day + 1, { v, day });
   ok("C: bez błędów w konsoli", !p.errors.length, p.errors);
+  await p.context().close();
+}
+// D. wybór kierunku z ekranu wejścia trafia do profilu po zalogowaniu (v31), raz; już wybrany → bez ponownego zapisu
+{
+  const p = await page(b, { konto: "platne", ls: { "mock-v31": "1", "skrot-rocznik": "wefiz-bm-1-st-2026", "mock-docs": JSON.stringify(docs) } });
+  await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
+  const r1 = await p.evaluate(() => [JSON.parse(localStorage.getItem("mock-rocznik") || "null"), window.__rpc.filter((x) => /rocznik/.test(x.fn)).map((x) => x.fn)]);
+  ok("D: pierwsze logowanie zapisuje rocznik w profilu", r1[0]?.wybrany && r1[0].id === "wefiz-bm-1-st-2026" && r1[1].join() === "nauka_rocznik_moj,nauka_rocznik_ustaw", r1);
+  await p.reload(); await p.waitForTimeout(2500);
+  const r2 = await p.evaluate(() => window.__rpc.filter((x) => /rocznik/.test(x.fn)).map((x) => x.fn));
+  ok("D: kolejne wejście tylko czyta (bez drugiego zapisu)", r2.join() === "nauka_rocznik_moj", r2);
+  ok("D: bez błędów w konsoli", !p.errors.length, p.errors);
   await p.context().close();
 }
 await b.close();

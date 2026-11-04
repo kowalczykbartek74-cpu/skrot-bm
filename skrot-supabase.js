@@ -74,6 +74,7 @@
       await refreshMe();
       skrot.state = "in";
       logLogin(viaLink ? "link" : null);
+      syncRocznik();
     } catch { skrot.state = "error"; }
   })().finally(() => { changed(); afterReady(); });
 
@@ -93,6 +94,30 @@
     skrot.trialCan = !!me?.proba_mozna && !skrot.paid;
     skrot.trialDays = me?.proba_dni || 3;
     return me;
+  }
+
+  // ---------- rocznik z profilu (supabase/skrot-v31-roczniki.sql, część 5) ----------
+  // Pierwsze logowanie: wybór z ekranu wejścia („skrot-rocznik”, czyta go rocznik.js) zapisujemy w profilu (raz).
+  // Potem rocznik z bazy wygrywa z przeglądarką: inny niż wczytany = zapisujemy i przeładowujemy stronę raz.
+  // Bez v31 w bazie (brak funkcji) wszystko zostaje jak dotąd, czyli BM. Nie czekamy na to przy logowaniu.
+  async function syncRocznik() {
+    const R = window.SKROT_ROCZNIKI, cur = window.SKROT_ROCZNIK;
+    if (!R || !cur) return;
+    try {
+      const { data, error } = await sb.rpc("nauka_rocznik_moj");
+      if (error || !data?.ok) return;
+      skrot.rocznik = data;
+      if (!data.wybrany) {
+        const r = await sb.rpc("nauka_rocznik_ustaw", { p_rocznik: cur.id });
+        if (r.data?.ok) skrot.rocznik = r.data;
+        return;
+      }
+      if (data.rocznik_id !== cur.id && R.ROCZNIKI[data.rocznik_id]) {
+        ls.set("skrot-rocznik", data.rocznik_id);
+        let juz = null; try { juz = sessionStorage.getItem("skrot-rocznik-reload"); } catch {}
+        if (juz !== data.rocznik_id) { try { sessionStorage.setItem("skrot-rocznik-reload", data.rocznik_id); } catch {} location.reload(); }
+      }
+    } catch {}
   }
 
   let token = null;
@@ -398,7 +423,7 @@
   // ---------- Gry i ranking (skrot-v13-gry.sql, skrot-v15-gry2.sql) ----------
   // Każda funkcja zwraca obiekt z bazy ({ ok: true, … } albo { ok: false, code }).
   // Brak bazy v13 → { ok: false, code: "not_enabled" }; brak sieci → { ok: false, code: "offline" }.
-  let rpV22 = null; // czy baza ma nauka_rp_powtorka z pomiarem (v22)
+  let rpV22 = null; // czy baza ma nauka_rp_powtorka z pomiarem (v29, dawniej v22 z gałęzi lekcje/v4)
   const rpCall = async (fn, args) => {
     await ready;
     if (!sb) return { ok: false, code: "offline" };
@@ -424,7 +449,7 @@
     start:    (gra, sid = null)        => rpCall("nauka_gra_start", { p_gra: gra, p_sid: sid }),
     odp:      ({ mid, idx, wybor, zrodlo, run = null }) => rpCall("nauka_rp_odpowiedz", { p_mid: mid, p_idx: idx, p_wybor: wybor, p_zrodlo: zrodlo, p_run: run }),
     zadanie:  ({ mid, wid, j, wynik, zrodlo, run = null }) => rpCall("nauka_rp_zadanie", { p_mid: mid, p_wid: String(wid), p_j: j, p_wynik: wynik, p_zrodlo: zrodlo, p_run: run }),
-    // m = { ok, first, ageDays } (v22, pomiar). Bez v22 w bazie wracamy do wersji z samym kluczem.
+    // m = { ok, first, ageDays } (v29, pomiar). Bez v29 w bazie wracamy do wersji z samym kluczem.
     powtorka: async (klucz, m) => {
       if (m && rpV22 !== false) {
         const r = await rpCall("nauka_rp_powtorka", { p_klucz: klucz, p_ok: !!m.ok, p_first: m.first !== false, p_wiek: Number.isFinite(m.ageDays) ? m.ageDays : null });
@@ -476,10 +501,10 @@
     return out;
   };
   skrot.gradeAppeal = async (run, item, dane) => { await ready; const { data, error } = await sb.rpc("nauka_ocena_odwolanie", { p_run: run, p_item: item, p_dane: dane }); if (error) throw rpcErr(error); return data; };
-  // ---------- Profil nauki (v22, Zdawalni docs/plan-profil-nauki.md L7) ----------
+  // ---------- Profil nauki (v30, Zdawalni docs/plan-profil-nauki.md L7) ----------
   // Zdarzenia nauki czekają w przeglądarce (bm-learn-q, max 300) i idą paczkami co 20 s, przy ukryciu karty i po
   // powrocie sieci. Baza sama ustawia konto, odrzuca nieznane typy, pomija duplikaty i przy wyłączonym
-  // „Ucz się na moich danych” zapisuje tylko to, co potrzebne do działania. Bez v22 w bazie → not_enabled i cisza.
+  // „Ucz się na moich danych” zapisuje tylko to, co potrzebne do działania. Bez v30 w bazie → not_enabled i cisza.
   const LQ = "bm-learn-q";
   const lqRead = () => { try { return JSON.parse(localStorage.getItem(LQ) || "[]"); } catch { return []; } };
   const lqWrite = (q) => { try { localStorage.setItem(LQ, JSON.stringify(q.slice(-300))); } catch {} };
@@ -959,7 +984,8 @@
   };
   // Porównanie planów liczone z dzisiejszej daty: ile miesięcy zostało do końca planu „do końca 2. semestru”
   // i ile kosztowałby ten czas w planie miesięcznym. „Najtaniej” dostaje ten plan, który naprawdę wychodzi taniej.
-  const PLAN_END = "2027-07-11", PRICE_ROK = 199, PRICE_MIES = 35;
+  // Koniec planu „do końca 2. semestru” z rocznik.js (wspólny dla całej uczelni); zapasowo data 2026/27.
+  const PLAN_END = window.SKROT_ROCZNIK?.dostepDo || "2027-07-11", PRICE_ROK = 199, PRICE_MIES = 35;
   const planCompare = (now = new Date()) => {
     const days = Math.max(0, Math.ceil((Date.parse(PLAN_END + "T23:59:59+02:00") - now.getTime()) / 864e5));
     const months = Math.max(1, Math.ceil(days / 30.44));

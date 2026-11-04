@@ -14,13 +14,13 @@ for (const lang of ["pl", "en"]) for (const w of [390, 1280]) {
   ok(`${lang} ${w}: bez poziomego przewijania`, await p.evaluate(() => document.getElementById("login").scrollWidth <= innerWidth));
   if (lang === "en") ok("en: krok 1 po angielsku", (await p.locator("#lgKierunek h2").innerText()) === "What's your programme?");
   await shot(p, `kierunek-1-${lang}-${w}`);
-  await p.click('#lgKierunek [data-k="bm"]');
+  await p.click('#lgKierunek [data-k="wefiz-bm-1-st-2026"]');
   ok(`${lang} ${w}: krok 2 (rok i grupa)`, await p.locator('#lgKierunek [data-g="C112"]').isVisible());
   await p.click('#lgKierunek [data-g="C112"]');
   await shot(p, `kierunek-2-${lang}-${w}`);
   await p.click('#lgKierunek [data-a="dalej"]');
   ok(`${lang} ${w}: po „Dalej” widać logowanie i kartę kierunku`, (await p.locator("#loginBox").isVisible()) && (await p.locator("#lgWybrany").isVisible()));
-  ok(`${lang} ${w}: zapisana grupa i kierunek`, await p.evaluate(() => localStorage.getItem("bm-group") === "C112" && localStorage.getItem("skrot-kierunek") === "bm"));
+  ok(`${lang} ${w}: zapisana grupa i kierunek`, await p.evaluate(() => localStorage.getItem("bm-group") === "C112" && localStorage.getItem("skrot-kierunek") === "bm" && localStorage.getItem("skrot-rocznik") === "wefiz-bm-1-st-2026"));
   await shot(p, `kierunek-3-${lang}-${w}`);
   // „Zmień” wraca do kroku 1, „Inny kierunek” pokazuje listę oczekujących.
   await p.click("#lgWybrany button");
@@ -28,7 +28,7 @@ for (const lang of ["pl", "en"]) for (const w of [390, 1280]) {
   ok(`${lang} ${w}: inny kierunek → lista oczekujących`, await p.locator("#lk-kier").isVisible());
   await shot(p, `kierunek-wkrotce-${lang}-${w}`);
   // Po przeładowaniu kierunek jest zapamiętany.
-  await p.click('#lgKierunek [data-a="wroc"]'); await p.click('#lgKierunek [data-k="bm"]'); await p.click('#lgKierunek [data-a="dalej"]');
+  await p.click('#lgKierunek [data-a="wroc"]'); await p.click('#lgKierunek [data-k="wefiz-bm-1-st-2026"]'); await p.click('#lgKierunek [data-a="dalej"]');
   await p.reload(); await p.waitForSelector("#loginBox .btn, #loginBox input", { timeout: 8000 });
   ok(`${lang} ${w}: po przeładowaniu od razu logowanie`, (await p.locator("#lgKierunek .lk-card").count()) === 0 && await p.locator("#loginBox").isVisible());
   ok(`${lang} ${w}: konsola bez błędów`, p.errors.length === 0);

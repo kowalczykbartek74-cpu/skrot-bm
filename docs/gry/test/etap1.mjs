@@ -129,6 +129,9 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const p = await page(b, { ls: { "skrot-calm": "1" } });
   await p.emulateMedia({ reducedMotion: "reduce" });
   await otworzFrun(p, 390);
+  // Motyw ustawiany ręcznie (konto testowe go nie ma): czekamy, aż strona skończy wczytywać postępy, bo wtedy
+  // pinkTheme.enforce() zdejmuje zablokowany motyw (po scaleniu v4 dochodzi jednorazowy zapis v4seed).
+  await p.waitForTimeout(3000);
   await p.evaluate(() => document.documentElement.setAttribute("data-theme", "pink"));
   await p.locator(".gry-x").click(); await p.waitForTimeout(200);
   await otworzFrun(p, 390);

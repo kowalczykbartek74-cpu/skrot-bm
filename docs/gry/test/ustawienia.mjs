@@ -14,7 +14,8 @@ ok("profil w jednym wierszu", (await p.locator(".more-prof").count()) === 1 && (
 const tiles = await p.locator(".more-tile").allInnerTexts();
 ok("kafelki nauki", tiles.length >= 7 && tiles.some((t) => /Stażysta Staś/.test(t)) && tiles.some((t) => /Ranking kierunku/.test(t)), tiles);
 const ty = await p.locator('[data-tour="ty"] .more-row').allInnerTexts();
-ok("„Ty” ma 5 pozycji", ty.length === 5 && /Sklep i monety/.test(ty[0]) && /Wygląd/.test(ty[2]) && /Konto i dostęp/.test(ty[3]) && /Pomoc/.test(ty[4]), ty);
+// + „Profil nauki” (scalenie L7, etap 1 Zdawalni w Skrócie)
+ok("„Ty” ma 6 pozycji", ty.length === 6 && /Sklep i monety/.test(ty[0]) && /Profil nauki/.test(ty[1]) && /Wygląd/.test(ty[3]) && /Konto i dostęp/.test(ty[4]) && /Pomoc/.test(ty[5]), ty);
 ok("w „Więcej” nie ma już przełączników motywów", (await p.locator(".more-themes, [role=switch]").count()) === 0);
 await shot(p, "ust-more");
 await p.locator(".more-prof").click(); await p.waitForTimeout(500);

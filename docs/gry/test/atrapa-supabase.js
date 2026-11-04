@@ -4,6 +4,7 @@
 //   mock-docs  = JSON { kolekcja: { id: dane } } dokładany do bazy w pamięci
 //   mock-konto = "platne" | "darmowe" | "starosta" | "brak" (niezalogowany)
 //   mock-v13   = "1" (SQL v13 uruchomiony) | "0" (funkcji nie ma → PGRST202)
+//   mock-v31   = "1" (rocznik w profilu, v31) | domyślnie "0"; mock-rocznik = JSON { id, wybrany }
 //   mock-v15   = "1" (SQL v15 uruchomiony, domyślnie) | "0" (funkcji v15 nie ma → not_enabled); bez v13 nie ma też v15
 //   v15 (docs/gry/SPEC-2.md, sekcja 3): mock-rok = "malo" (za_malo) · mock-haslo-slowo (domyślnie "Revenue"; "" = no_words)
 //     · mock-haslo-seria · mock-haslo-stat = "1" · mock-boss = "trwa" (domyślnie) | "pokonany" | "malo" (pokonany, 4 moje ciosy)
@@ -359,6 +360,14 @@
     nauka_profil_nauki_od_nowa: () => (profSet({ ...(prof() || {}), z_danych: {} }), { ok: true }),
     nauka_zdarzenia_usun: () => ({ ok: true, n: 0 }),
   };
+  // ---------- v31: rocznik w profilu (mock-v31 = "1"; mock-rocznik = JSON { id, wybrany }) ----------
+  const V31 = ls("mock-v31", "0") === "1";
+  const rok = () => { try { return JSON.parse(localStorage.getItem("mock-rocznik") || "null") || { id: "wefiz-bm-1-st-2026", wybrany: false }; } catch { return { id: "wefiz-bm-1-st-2026", wybrany: false }; } };
+  const V31FN = {
+    nauka_rocznik_moj: () => ({ ok: true, rocznik_id: rok().id, wybrany: !!rok().wybrany, status: "platny" }),
+    nauka_rocznik_ustaw: (a) => { if (rok().wybrany) return { ok: false, code: "juz_wybrany", rocznik_id: rok().id };
+      try { localStorage.setItem("mock-rocznik", JSON.stringify({ id: a.p_rocznik, wybrany: true })); } catch {} return { ok: true, rocznik_id: a.p_rocznik, wybrany: true, status: "platny" }; },
+  };
   const BASE = {
     ...AKT,
     nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid && !PROBA ? "2027-07-11" : null, plan: paid && !PROBA ? "rok" : null,
@@ -376,6 +385,7 @@
     else if (V14FN[fn]) out = V14 ? { data: V14FN[fn](args), error: null } : brak;
     else if (V16FN[fn]) { const r = V16FN[fn](args); out = { data: r.data ?? null, error: r.error ?? null }; }
     else if (V22FN[fn]) out = V22 ? { data: V22FN[fn](args), error: null } : brak;
+    else if (V31FN[fn]) out = V31 ? { data: V31FN[fn](args), error: null } : brak;
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;

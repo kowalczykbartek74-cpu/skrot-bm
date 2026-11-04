@@ -1,6 +1,15 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Grupę wybierzesz później. Dzięki niej zobaczysz swój plan i terminy.": "You'll choose your group later. With it you'll see your timetable and deadlines.",
+"Rok studiów · I stopień, niestacjonarne": "Year of study · first cycle, part-time",
+"Rok studiów · II stopień, stacjonarne": "Year of study · second cycle, full-time",
+"Rok studiów · II stopień, niestacjonarne": "Year of study · second cycle, part-time",
+"Rok studiów · jednolite magisterskie, stacjonarne": "Year of study · long-cycle master's, full-time",
+"Rok studiów · jednolite magisterskie, niestacjonarne": "Year of study · long-cycle master's, part-time",
+"Terminy dla roku wpisuje starosta.": "The class rep enters deadlines for the year.",
+"Nowe kolokwia i zadania pojawią się tutaj, gdy starosta je wpisze.": "New tests and assignments will appear here when the class rep adds them.",
+"prezentacja dla całego roku": "presentation for the whole year",
 "Plan projektu": "Project plan",
 "Plan projektu: etapy i lista kontrolna": "Project plan: stages and checklist",
 "Plan projektu jest w pełnej wersji": "The project plan is in the full version",
@@ -2401,6 +2410,9 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Weekend. Twoje następne zajęcia: {0}.": "Weekend. Your next class: {0}.",
 "Wolne od zajęć.": "No classes.",
 "Grupę (C111–C113) i podgrupę lab znajdziesz w USOS albo w planie zajęć. Bez tego nie wiem, które zajęcia i terminy są Twoje.": "You'll find your group (C111–C113) and lab subgroup in USOS or in the timetable. Without it I don't know which classes and deadlines are yours.",
+"Grupę ({0}) i podgrupę lab znajdziesz w USOS albo w planie zajęć. Bez tego nie wiem, które zajęcia i terminy są Twoje.": "You'll find your group ({0}) and lab subgroup in USOS or in the timetable. Without it I don't know which classes and deadlines are yours.",
+"Grupę ({0}) znajdziesz w USOS albo w planie zajęć. Bez tego nie wiem, które zajęcia i terminy są Twoje.": "You'll find your group ({0}) in USOS or in the timetable. Without it I don't know which classes and deadlines are yours.",
+"({0} albo {1}) i Twojej podgrupy lab A lub B. Bez wybranej grupy widzisz wszystko naraz.": "({0} or {1}) and your lab subgroup A or B. Without this you see everything at once.",
 "Grupa": "Group",
 "Podgrupa laboratoryjna": "Lab subgroup",
 "nie wiem / obie": "don't know / both",
