@@ -4362,7 +4362,7 @@ html.calm .kfx { display: none !important; }
   function inline(s) {
     const out = []; const parts = String(s).split("**");
     const plain = (p) => { let last = 0; for (const m of p.matchAll(ITALIC_RX)) { const at = m.index + m[1].length; if (at > last) out.push(document.createTextNode(p.slice(last, at))); out.push(h("i", { text: m[2] })); last = m.index + m[0].length; } if (last < p.length) out.push(document.createTextNode(p.slice(last))); };
-    parts.forEach((p, i) => { if (p) i % 2 ? out.push(h("b", { text: noItalic(p) })) : plain(p); });
+    parts.forEach((p, i) => { if (p) i % 2 ? out.push(h("b", { class: "md", text: noItalic(p) })) : plain(p); });
     return out;
   }
   function rich(text, cls) {
@@ -6957,7 +6957,7 @@ html.calm .kfx { display: none !important; }
   const xplUse = (m, c) => ({ X: xplCtx(m, c), used: new Set(), n: 0 });
   function inlineX(s, u) {
     if (!u?.X?.re) return inline(s);
-    return String(s).split("**").map((p, i) => (!p ? null : i % 2 ? h("b", {}, xplParts(p, u)) : xplParts(p, u)));
+    return String(s).split("**").map((p, i) => (!p ? null : i % 2 ? h("b", { class: "md" }, xplParts(p, u)) : xplParts(p, u)));
   }
   // Wzory (\( … \), \[ … \]) zostają w całości dla MathJax.
   const xplParts = (text, u) => text.split(/(\\\(.*?\\\)|\\\[.*?\\\])/s).flatMap((seg, k) => (k % 2 ? [seg] : xplSeg(seg, u)));
@@ -7900,10 +7900,12 @@ html.calm .kfx { display: none !important; }
   }
   const lpTermOf = (word) => termFind(word, LP.m, LP.c);
   // Zdanie z lekcji, w którym pogrubione słowo jest wyjaśnione (zapas, gdy nie ma go w żadnym spisie pojęć).
+  // Teksty materiału, z których powstają karty (lekcja, quiz, fiszki), bez spisów pojęć.
+  const termTexts = (c) => Object.entries(c || {}).filter(([k]) => !["lessonTerms", "explain", "concepts", "worked"].includes(k)).map(([, v]) => v);
   function lpTermSentence(word) {
     const k = norm(word), out = [];
     const walk = (v) => { if (out.length) return; if (typeof v === "string") { if (v.includes("**")) for (const s of lpSentences(v)) if ([...s.matchAll(/\*\*([^*\n]+?)\*\*/g)].some((x) => norm(x[1]) === k)) { out.push(s); return; } } else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") Object.values(v).forEach(walk); };
-    walk(LP.c?.lesson);
+    walk(termTexts(LP.c));
     return out[0] || "";
   }
   function lpTerms(node) {
@@ -7911,22 +7913,21 @@ html.calm .kfx { display: none !important; }
     // Słowniczek dochodzi w tle: gdy przyjdzie, dopisujemy pojęcia na karcie, która już jest na ekranie.
     if (!GL.terms && !GL.loading) loadGlossary().then(() => { if (LP.open && LP.el?.stage) lpTerms(LP.el.stage); }).catch(() => {});
     sylPoj(LP.m?.subjectId);
-    node.querySelectorAll(".lp-text b, .lp-big b, .lp-quote b").forEach((b) => {
-      if (b.closest("button, .opt, [role=button]") || b.classList.contains("lp-term")) return;
+    // Każde pogrubienie z treści (b.md: z inline/inlineX), także w odpowiedziach, podpowiedziach i wyjaśnieniach po odpowiedzi.
+    node.querySelectorAll("b.md, .lp-text b, .lp-big b, .lp-quote b").forEach((b) => {
+      if (b.closest("button, .opt, [role=button], label, summary, .lp-kick") || b.classList.contains("lp-term") || b.querySelector("b")) return;
       const word = b.textContent.trim();
       if (norm(word).length < 2) return;
       // Definicję szukamy przy dotknięciu: słowniczek i pojęcia z sylabusa mogą dojść już po narysowaniu karty.
       const t0 = lpTermOf(word);
-      // Zapas ze zdaniem z lekcji tylko poza pytaniami (w pytaniu mógłby podpowiedzieć odpowiedź).
-      const ctxOk = !b.closest(".q");
-      if (!t0 && !(ctxOk && lpTermSentence(word))) return;
+      if (!t0 && !lpTermSentence(word)) return;
       b.classList.add("lp-term"); b.setAttribute("role", "button"); b.setAttribute("tabindex", "0");
       b.setAttribute("aria-label", `${word}: pokaż znaczenie`);
       const open = (e) => {
         if (e.target.closest(".term-link")) return;
         e.stopPropagation();
         const t = lpTermOf(word);
-        lpTermSheet(t && (t.pl || t.def) ? t : { en: word, pl: "", def: "", ctx: ctxOk ? lpTermSentence(word) : "" });
+        lpTermSheet(t && (t.pl || t.def) ? t : { en: word, pl: "", def: "", ctx: lpTermSentence(word) });
       };
       b.addEventListener("click", open);
       b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
@@ -16187,7 +16188,7 @@ Reply with only one JSON object: {"explain": [{"t": "...", "also": [], "pl": "",
       if (typeof v === "string") { if (v.includes("**")) for (const s of lpSentences(v)) for (const x of s.matchAll(/\*\*([^*\n]{2,80}?)\*\*/g)) { const t = x[1].trim(), k = norm(t); if (k.length >= 2 && !out.has(k)) out.set(k, { t, s: s.replace(/\*\*/g, "").replace(/\s+/g, " ").trim().slice(0, 300) }); } }
       else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") Object.values(v).forEach(walk);
     };
-    walk(c?.lesson);
+    walk(termTexts(c));
     return [...out.values()];
   }
   const termsMissing = (m, c) => lessonBolds(c).filter((b) => !termFind(b.t, m, { ...c, lessonTerms: [] }));
@@ -16196,8 +16197,8 @@ Reply with only one JSON object: {"explain": [{"t": "...", "also": [], "pl": "",
     await loadGlossary().catch(() => {});
     if (!SYLP.data) { sylPoj(""); for (let i = 0; i < 50 && !SYLP.data; i++) await new Promise((r) => setTimeout(r, 100)); }
   }
-  function termsPrompt(m, c) {
-    const items = termsMissing(m, c).slice(0, 90);
+  function termsPrompt(m, c, part) {
+    const items = part || termsMissing(m, c).slice(0, 70);
     const en = (c?.lang || "en") !== "pl";
     return `You write tap-to-see definitions for first-year Business Management students at the University of Szczecin. Most are 19 and have never worked in a company. Subject: ${genSubj(m)}. Lesson: "${m.title || m.fileName}".
 In this lesson the words and phrases below are in bold. A student can tap ANY of them and must then see what it means. For EACH item write:
@@ -16210,7 +16211,7 @@ Reply with only one JSON object: {"terms": [{"t": "...", "pl": "...", "d": "..."
     const want = new Set(lessonBolds(c).map((b) => norm(b.t)));
     const seen = new Set();
     return (Array.isArray(r?.terms) ? r.terms : []).map((x) => ({ t: sText(x?.t, 80), pl: sText(x?.pl, 80), d: sText(x?.d, 400) }))
-      .filter((x) => x.t && x.d && want.has(norm(x.t)) && !seen.has(norm(x.t)) && seen.add(norm(x.t))).slice(0, 120);
+      .filter((x) => x.t && x.d && want.has(norm(x.t)) && !seen.has(norm(x.t)) && seen.add(norm(x.t))).slice(0, 400);
   }
   const genPrompt = (kind, m, c) => (kind === "worked" ? workedPrompt(m, c) : kind === "explain" ? explainPrompt(m, c) : kind === "terms" ? termsPrompt(m, c) : bankPrompt(m, c));
   function bankEps(sid) {
@@ -16309,7 +16310,12 @@ Spread the questions so that together they check as many of these outcomes as th
         const c = await getContent(m.id);
         if (!c) throw { code: "empty_completion" };
         if (kind === "explain" && !explainTexts(c).length) { line.detail = await genSave(kind, m, { explain: [] }); line.state = "ok"; render(); continue; }
-        if (kind === "terms" && !termsMissing(m, c).length) { line.detail = await genSave(kind, m, { terms: [] }); line.state = "ok"; render(); continue; }
+        if (kind === "terms") {
+          // Dużo pogrubień (lekcja + quiz): po 70 na zapytanie, wynik składamy w jedną listę.
+          const miss = termsMissing(m, c), terms = [];
+          for (let i = 0; i < miss.length && !GEN.stop; i += 70) { const r = await S.sample.json(termsPrompt(m, c, miss.slice(i, i + 70)), { modelTier: "default" }); terms.push(...(Array.isArray(r?.terms) ? r.terms : [])); line.detail = `${Math.min(i + 70, miss.length)}/${miss.length}`; render(); }
+          line.detail = await genSave(kind, m, { terms }); line.state = "ok"; render(); continue;
+        }
         const raw = await S.sample.json(genPrompt(kind, m, c), { modelTier: "default" });
         line.detail = await genSave(kind, m, raw); line.state = "ok";
       } catch (e) {
