@@ -228,6 +228,12 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 - Plan.skrotbm.pl i link .ics: `plan-bm/scripts/dziekanat.mjs` czyta zatwierdzone wpisy funkcją `nauka_odwolania_publiczne()` (**`supabase/skrot-v26-odwolania.sql`**, trzeba uruchomić) i dopisuje je do `plan.json` (`src: "teams"`). Funkcja `kalendarz` nakłada teraz `dziekanat.zmiany` (tytuł „ODWOŁANE: …”, odrabianie) – wymaga ponownego wdrożenia.
 - Test: `docs/gry/test/polaczenia-1.mjs`.
 
+## Wspólny priorytet tematu (`topicPriority`)
+
+- `topicPriority(m)` → `{ p, why, ex, next, inScope, weak, taught, core }`: zaliczenie, którego zakres (`scopeOf`) obejmuje temat (data z `examDate`, więc też własna data z `examSet`), słabe wyniki (`topicScore` + `gryWrong`), czy temat był już na zajęciach (kody `sylRef` lekcji i `topicAt` po odwołaniach), ★ kluczowy (`m.core`). `why` to gotowe powody („OWI: kolokwium za 19 dni · słabo w quizach”), w EN pisane w kodzie (`PRIO_EN`).
+- Czytają: `srsDue` (zaległe po priorytecie, nowe najpierw z zakresu najbliższego zaliczenia, potem omówione na zajęciach), podpowiedź na górze Powtórek (`studyHint`), `stasHomeCard` (po priorytecie, „Inny temat ↻”), `poSuggest` (`poPrio` zamiast premii za zaliczenie), `gryQuestions` (zakres najbliższego zaliczenia: `topicPriority().next`, kolejność gier bez zmian).
+- Test: `docs/gry/test/polaczenia-2.mjs`.
+
 ## Po zajęciach w 5 minut
 Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie) dostajesz wyjaśnienie po polsku z angielskimi terminami, na końcu „Zapamiętaj” (3 rzeczy), pojęcia EN–PL i 3 pytania sprawdzające.
 - **Wejścia:** karta na górze ekranu Dziś w dniu zajęć (po ich końcu, także następnego dnia), link „⚡ Co było? 5 min →” przy zakończonych zajęciach na liście „Dziś masz…”, przycisk w okładce przedmiotu, Więcej → „Po zajęciach w 5 minut” (`#/po`, `#/po/<przedmiot>`, czytnik `#/po5/<id>`). Przeczytane: `localStorage["bm-po-seen"]`.

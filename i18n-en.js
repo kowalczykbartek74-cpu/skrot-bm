@@ -1,6 +1,7 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Najważniejsze teraz: powtórki z": "Most important now: reviews of",
 "Odwołania z Teams": "Cancellations from Teams",
 "ogłoszenia o odwołanych i przeniesionych zajęciach": "lecturers' notices about cancelled and moved classes",
 "To odwołanie?": "A cancellation?",
