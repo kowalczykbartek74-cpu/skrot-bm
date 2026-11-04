@@ -1,6 +1,22 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Twoja data z „Przygotuj się”{0}. Widzisz ją tylko Ty.": "Your date from “Get ready”{0}. Only you can see it.",
+" (w terminach roku: {0})": " (year deadlines say: {0})",
+"Dziś według planu: {0}": "Today's plan: {0}",
+"Twoja data": "Your date",
+"Zrób dzisiejszy krok": "Do today's step",
+"Zacznij test": "Start the test",
+"Cały plan →": "Full plan →",
+"Powtórki fiszek": "Flashcard reviews",
+"Plan nauki": "Study plan",
+"Plan nauki: {0}": "Study plan: {0}",
+"Data wpisana przez Ciebie w „Przygotuj się”. Widzisz ją tylko Ty.": "A date you entered in “Get ready”. Only you can see it.",
+"Zaliczenie / kolokwium": "Exam / test",
+"Zaliczenie: {0}": "Exam: {0}",
+"Ustawić to jako datę zaliczenia z {0}? Plan nauki się przeliczy.": "Set this as the exam date for {0}? The study plan will be recalculated.",
+"Ustawiono datę: {0} z {1}, {2}.": "Date set: {0}, {1}, {2}.",
+"{0} · ok. {1} min": "{0} · approx. {1} min",
 "Najważniejsze teraz: powtórki z": "Most important now: reviews of",
 "Odwołania z Teams": "Cancellations from Teams",
 "ogłoszenia o odwołanych i przeniesionych zajęciach": "lecturers' notices about cancelled and moved classes",

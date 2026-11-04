@@ -234,6 +234,14 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 - Czytają: `srsDue` (zaległe po priorytecie, nowe najpierw z zakresu najbliższego zaliczenia, potem omówione na zajęciach), podpowiedź na górze Powtórek (`studyHint`), `stasHomeCard` (po priorytecie, „Inny temat ↻”), `poSuggest` (`poPrio` zamiast premii za zaliczenie), `gryQuestions` (zakres najbliższego zaliczenia: `topicPriority().next`, kolejność gier bez zmian).
 - Test: `docs/gry/test/polaczenia-2.mjs`.
 
+## Plan „Przygotuj się” i własne daty zaliczeń wszędzie
+
+- `studyPlans()`: plany osób z pełnym dostępem, gdy zaliczenie jest w ciągu 21 dni (`PLAN_NEAR`) albo plan był otwarty (`examSet().planAt`). Z nich: „Teraz zrób to” na Dziś (`planToday`, krok z największym priorytetem; fiszki jako druga karta `nowSecond`), Kalendarz („Plan nauki”, `planDaysOn`, dotknięcie otwiera plan) i kopia dni w `progress.planDays` (`planSync`) dla linku .ics.
+- Własna data (`examSet().date`) w `termItems()` zastępuje u tej osoby terminy tej części (także szacowane), z plakietką „Twoja data” (`ownBadge`).
+- „Mój wpis” ma rodzaj „Zaliczenie / kolokwium”; po zapisie z przedmiotem pyta, czy ustawić datę zaliczenia (`saveExamSet`), wtedy nie zostaje osobny wpis.
+- Link do kalendarza w telefonie: **`supabase/skrot-v27-kalendarz-moje.sql`** (trzeba uruchomić) oddaje `moje`, `zaliczenia` i `plan`; funkcja `kalendarz` dopisuje „✏️ Mój wpis: …”, „📅 Twoja data: …”, „📘 Plan: …” i chowa szacowany termin części z własną datą (wymaga ponownego wdrożenia).
+- Test: `docs/gry/test/polaczenia-3.mjs`, `supabase/test/v27.sql`.
+
 ## Po zajęciach w 5 minut
 Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie) dostajesz wyjaśnienie po polsku z angielskimi terminami, na końcu „Zapamiętaj” (3 rzeczy), pojęcia EN–PL i 3 pytania sprawdzające.
 - **Wejścia:** karta na górze ekranu Dziś w dniu zajęć (po ich końcu, także następnego dnia), link „⚡ Co było? 5 min →” przy zakończonych zajęciach na liście „Dziś masz…”, przycisk w okładce przedmiotu, Więcej → „Po zajęciach w 5 minut” (`#/po`, `#/po/<przedmiot>`, czytnik `#/po5/<id>`). Przeczytane: `localStorage["bm-po-seen"]`.
