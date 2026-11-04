@@ -7933,12 +7933,12 @@ html.calm .kfx { display: none !important; }
     });
   }
   function lpTermSheet(t) {
-    LP.el.sheet.replaceChildren(h("div", { class: "grab", "aria-hidden": "true" }), h("span", { class: "eyebrow", text: "Pojęcie" }),
+    LP.el.sheet.replaceChildren(...[h("div", { class: "grab", "aria-hidden": "true" }), h("span", { class: "eyebrow", text: "Pojęcie" }),
       h("h3", { style: "margin:0", lang: "en", translate: "no", text: t.en }),
       t.pl ? h("p", { class: "lp-term-pl", style: "margin:0" }, h("span", { class: "muted", text: "Po polsku: " }), h("b", { translate: "no", text: t.pl })) : null,
       t.def ? h("p", { style: "margin:0", translate: "no" }, inline(t.def)) : null,
       !t.def && t.ctx ? h("p", { style: "margin:0", translate: "no" }, h("span", { class: "muted", text: "Tak wyjaśnia to lekcja: " }), inline(t.ctx)) : null,
-      h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam"));
+      h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam")].filter(Boolean));
     LP.el.sheet.setAttribute("aria-label", "Pojęcie: " + t.en);
     LP.el.sheet.classList.add("on"); LP.el.scrim.classList.add("on");
     LP.el.sheet.querySelector("button")?.focus();

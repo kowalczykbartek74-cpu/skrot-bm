@@ -1433,6 +1433,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "🤔 Nie łapię": "🤔 I don't get it",
 "Prościej, po polsku": "Simpler, in Polish",
 "Jasne, wracam": "Got it, going back",
+"Tak wyjaśnia to lekcja:": "How the lesson explains it:",
 "Zamknij lekcję (postęp się zapisze)": "Close the lesson (progress will be saved)",
 "Cel dnia: {0}/{1} XP": "Daily goal: {0}/{1} XP",
 "Cel dnia: {0}/{1} XP{2}. Możesz teraz zrobić przerwę, wszystko jest zapisane.": "Daily goal: {0}/{1} XP{2}. You can take a break now; everything is saved.",
