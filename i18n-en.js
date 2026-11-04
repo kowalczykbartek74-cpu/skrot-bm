@@ -1,6 +1,16 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Wypróbuj za darmo": "Try it free",
+"Kup od razu": "Buy now",
+"Mam już dostęp": "I already have access",
+"Potem {0} do końca 2. semestru lub {1}": "Then {0} until the end of semester 2, or {1}",
+"{0} do końca 2. semestru lub {1}": "{0} until the end of semester 2, or {1}",
+"Pokażę Twoje zajęcia, sale i terminy.": "I'll show your classes, rooms and deadlines.",
+"nie wiem": "don't know",
+"Język strony": "Site language",
+"angielski · przełącz na polski": "English · przełącz na polski",
+"Kurs": "Course",
 "Plan projektu": "Project plan",
 "Plan projektu: etapy i lista kontrolna": "Project plan: stages and checklist",
 "Plan projektu jest w pełnej wersji": "The project plan is in the full version",

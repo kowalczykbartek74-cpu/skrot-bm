@@ -23,8 +23,8 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const tag = String(w);
   const p = await page(b, { konto: "darmowe", w, h: hgt });
   await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
-  const btn = p.locator(".buybar button", { hasText: "Wypróbuj za darmo przez 3 dni" });
-  ok(`${tag} darmowe: na Dziś „Wypróbuj za darmo przez 3 dni” w pasku`, (await btn.count()) === 1, await txt(p, ".buybar"));
+  const btn = p.locator(".buybar button", { hasText: "Wypróbuj za darmo" });
+  ok(`${tag} darmowe: na Dziś karta „3 dni za darmo” z jednym przyciskiem „Wypróbuj za darmo”`, (await btn.count()) === 1 && (await txt(p, ".buybar")).startsWith("3 dni za darmo"), await txt(p, ".buybar"));
   ok(`${tag} darmowe: gry zablokowane (rp.start → no_access)`, (await p.evaluate(() => window.skrot.rp.start("frun")))?.code === "no_access");
   if (w === 390) { await p.evaluate(() => scrollTo(0, 0)); await shot(p, `proba-przed-${tag}`); }
   await btn.click(); await p.waitForLoadState("load"); await p.waitForTimeout(3500);
