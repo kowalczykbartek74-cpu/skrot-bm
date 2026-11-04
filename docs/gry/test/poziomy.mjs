@@ -33,7 +33,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   await shot(p, `dzis-${w}`);
   const sw = await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
   ok(`${w} Dziś: bez poziomego przewijania`, sw);
-  await p.evaluate(() => { location.hash = "#/more"; }); await p.waitForTimeout(900);
+  await p.evaluate(() => { location.hash = "#/profil"; }); await p.waitForTimeout(900);
   const m = await txt(p, ".sk-profile");
   ok(`${w} Więcej: karta rangi z XP do poziomu 6 i nagrodą Nenufary (poziom 7)`, /Ogarnięty/.test(m) && /250 \/ 500 XP do poziomu 6/.test(m) && /Następna nagroda: motyw Nenufary/.test(m) && /brakuje 850 XP/.test(m), m);
   await shot(p, `wiecej-${w}`);
@@ -107,7 +107,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
 // 7) EN
 {
   const p = await page(b, { lang: "en", ls: { "mock-progress": prog(1250), "mock-saldo": "85" } });
-  await p.goto(BASE + "index.html#/more"); await p.waitForTimeout(2500);
+  await p.goto(BASE + "index.html#/profil"); await p.waitForTimeout(2500);
   const m = await txt(p, ".sk-profile");
   ok("EN: karta rangi po angielsku", /Your level/i.test(m) && /lvl 5/.test(m) && /Next reward/.test(m) && !/Następna|poziomu|brakuje/.test(m), m);
   await shot(p, "en-wiecej-390");

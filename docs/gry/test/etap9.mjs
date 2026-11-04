@@ -171,6 +171,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const p = await page(b, { konto: "starosta", w, h: hgt, ls: { "bm-starosta": "1", "mock-boss": "dwa" } });
   p.on("dialog", (d) => d.accept());
   await p.goto(BASE + "index.html#/more"); await p.waitForTimeout(2600);
+  await p.evaluate(() => { location.hash = "#/starosta"; }); await p.waitForTimeout(800);
   await p.locator(".more-row", { hasText: "Gry i ranking" }).click(); await p.waitForTimeout(600);
   ok(`${w} panel: sekcja „Bossy” z dwoma bossami`, (await p.locator(".rk-admin h4", { hasText: "Bossy" }).count()) === 1 && (await p.locator(".bs-admin li").count()) === 2);
   await p.locator(".bs-admin li").first().scrollIntoViewIfNeeded(); await shot(p, `panel-starosty-${w}`);

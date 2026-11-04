@@ -111,8 +111,8 @@ const BASE_LS = { "mock-haslo-nr": "12", "mock-haslo-seria": "2", "mock-haslo-st
   await open(p, "gry"); await p.waitForTimeout(400);
   ok("Graj po rozwiązaniu: kafelek z chipem „4/6”", (await p.locator("#gra-haslo .chip").textContent()) === "4/6");
   await open(p, "more"); await p.waitForTimeout(300);
-  ok("Więcej → Nauka: wiersz „Hasło dnia” z wynikiem", /Hasło dnia\s*4\/6 · 🔥 3/.test(await p.locator(".more-row", { hasText: "Hasło dnia" }).innerText()));
-  await p.locator(".more-row", { hasText: "Hasło dnia" }).click(); await p.waitForTimeout(400);
+  ok("Więcej → Nauka: wiersz „Hasło dnia” z wynikiem", /Hasło dnia\s*4\/6 · 🔥 3/.test(await p.locator(".more-tile", { hasText: "Hasło dnia" }).innerText()));
+  await p.locator(".more-tile", { hasText: "Hasło dnia" }).click(); await p.waitForTimeout(400);
   await p.getByRole("button", { name: /PKB i inflacja/ }).click(); await p.waitForTimeout(400);
   ok("„Z materiału” otwiera materiał", (await p.evaluate(() => location.hash)) === "#/material/m1");
   ok("zero błędów (pełna gra)", !p.errors.length, p.errors);
@@ -136,7 +136,7 @@ const BASE_LS = { "mock-haslo-nr": "12", "mock-haslo-seria": "2", "mock-haslo-st
   ok("„← Graj” wraca do Graj; kafelek „Hasło dnia” z chipem „nowe”", (await p.evaluate(() => location.hash)) === "#/gry" && (await p.locator("#gra-haslo .chip").textContent()) === "nowe");
   await p.locator("#gra-haslo .gry-tile-art").scrollIntoViewIfNeeded(); await shot(p, "e7-graj-390-pl");
   await open(p, "more"); await p.waitForTimeout(300);
-  ok("Więcej → Nauka: wiersz „Hasło dnia #12 · 7 liter”", /#12 · 7 liter/.test(await p.locator(".more-row", { hasText: "Hasło dnia" }).innerText()));
+  ok("Więcej → Nauka: wiersz „Hasło dnia #12 · 7 liter”", /#12 · 7 liter/.test(await p.locator(".more-tile", { hasText: "Hasło dnia" }).innerText()));
   ok("rp.haslo() raz na sesję (Dziś → Graj → Więcej)", (await calls(p, "nauka_haslo_dzis")).length === 1, (await calls(p, "nauka_haslo_dzis")).length);
   ok("zero błędów (wejścia)", !p.errors.length, p.errors);
   await p.context().close();
@@ -191,7 +191,7 @@ for (const [nazwa, ls, konto] of [["no_words", { "mock-haslo-slowo": "" }, "plat
   await open(p, "gry"); await p.waitForTimeout(500);
   ok(`${nazwa}: Graj bez kafelka${star ? " (notka)" : ""}`, !(await p.locator("#gra-haslo").count()) && (await p.getByText(note).count()) === (star ? 1 : 0) && (await p.locator("#gra-frun").count()) === 1);
   await open(p, "more"); await p.waitForTimeout(300);
-  ok(`${nazwa}: Więcej bez wiersza`, !(await p.locator(".more-row", { hasText: "Hasło dnia" }).count()));
+  ok(`${nazwa}: Więcej bez wiersza`, !(await p.locator(".more-tile", { hasText: "Hasło dnia" }).count()));
   await open(p, "haslo");
   ok(`${nazwa}: #/haslo pokazuje notkę zamiast planszy`, !(await p.locator(".hd-board").count()) && (await p.locator(".hd-view .notice").textContent()) === (nazwa === "brak v15" ? "Gry i ranking nie są jeszcze włączone na serwerze." : note));
   ok(`${nazwa}: zero błędów`, !p.errors.length, p.errors);

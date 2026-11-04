@@ -77,7 +77,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   // Ustawienia pseudonimu są na ekranie Rankingu (jedno miejsce rankingu, Więcej ma tylko wiersz „Ranking kierunku”).
   ok("Ranking → przycisk ustawień z opisem", /Bartek B · widoczny/.test(await p.locator("button", { hasText: "Pseudonim:" }).innerText()));
   await go(p, "more");
-  ok("Więcej → „Ranking kierunku” ze stanem (miejsce od 5 osób, inaczej punkty)", /#3 w tym tygodniu|90 pkt w tym tygodniu/.test(await p.locator(".more-row", { hasText: "Ranking kierunku" }).innerText()), await p.locator(".more-row", { hasText: "Ranking kierunku" }).innerText());
+  ok("Więcej → „Ranking kierunku” ze stanem (miejsce od 5 osób, inaczej punkty)", /#3 w tym tygodniu|90 pkt w tym tygodniu/.test(await p.locator(".more-tile", { hasText: "Ranking kierunku" }).innerText()), await p.locator(".more-tile", { hasText: "Ranking kierunku" }).innerText());
   await go(p, "ranking");
   await p.locator("button", { hasText: "Pseudonim:" }).click(); await p.waitForTimeout(500);
   ok("okno ustawień: pseudonim, „zmiana raz na 7 dni”, przełącznik", (await p.locator("#rk-set-nick").inputValue()) === "Bartek B" && (await p.getByText("zmiana raz na 7 dni").count()) === 1 && (await p.locator('.modal [role="switch"]').getAttribute("aria-checked")) === "true");
@@ -106,6 +106,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
 {
   const p = await page(b, { konto: "starosta", ls: { "bm-starosta": "1" } });
   await go(p, "more");
+  await p.evaluate(() => { location.hash = "#/starosta"; }); await p.waitForTimeout(800);
   await p.locator(".more-row", { hasText: "Gry i ranking" }).click(); await p.waitForTimeout(500);
   ok("starosta: panel z liczbami i podejrzanymi", (await p.locator(".modal.rk-admin").count()) === 1 && /Cwaniak/.test(await p.locator(".modal").innerText()) && /12/.test(await p.locator(".modal .lp-stats").innerText()));
   await shot(p, "e2-starosta");
