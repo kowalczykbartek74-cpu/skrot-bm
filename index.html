@@ -5022,7 +5022,9 @@ html.calm .kfx { display: none !important; }
   const odwPub = (t) => t.source?.postedAt || t.createdAt || Date.now();
   function odwGuess(t) {
     const text = odwText(t);
-    if (!ODW_RX.test(text)) return null;
+    // Ogłoszenie o odrabianiu („Odrabianie zajęć z …: 9.11, 12.11”) wymienia daty nowych zajęć, a nie odwołanych:
+    // takie starosta oznacza ręcznie (przeniesienie), bez automatycznej propozycji.
+    if (!ODW_RX.test(text) || /odrab|odrob|make.?up/i.test(t.title || "")) return null;
     const p = { tid: t.id, kind: "cancel", title: t.title || "", team: t.source?.team || "", pub: odwPub(t), sid: odwSubject(t, text),
       dates: odwDates(text, odwPub(t)), kinds: odwKinds(text), start: odwStart(text), groups: t.groups?.length ? t.groups.filter((g) => PLAN.groups?.[g]) : odwGroups() };
     return { ...p, ...odwBuild(p) };
