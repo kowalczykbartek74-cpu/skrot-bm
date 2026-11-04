@@ -101,5 +101,10 @@ out = {
 }
 # Użycie: python3 scripts/sylabus-parse.py SYLABUS.pdf  (tworzy syl.json)  →  python3 scripts/sylabus-build.py sylabus.json
 # „??” to w PDF-ie zepsute znaki (np. niełamliwa spacja), usuwamy je.
-open(sys.argv[1], "w").write(json.dumps(out, ensure_ascii=False, separators=(",", ":")).replace("??", ""))
+# Literówki z PDF-u uczelni, które widać na stronie (temat zajęć na Dziś i w Kalendarzu).
+TYPOS = {"Strucured Query Language": "Structured Query Language"}
+txt = json.dumps(out, ensure_ascii=False, separators=(",", ":")).replace("??", "")
+for a, b in TYPOS.items():
+    txt = txt.replace(a, b)
+open(sys.argv[1], "w").write(txt)
 print(len(courses))
