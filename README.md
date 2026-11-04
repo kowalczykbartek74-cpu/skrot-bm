@@ -219,6 +219,15 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 
 **Najpierw niewidziane.** Quiz z całego przedmiotu (`subjectQuizQs`) i gry (`gryQuestions`) zamiast czystego losowania dają najpierw pytania, których ta osoba jeszcze nie widziała, potem widziane najdawniej. Widziane = odpowiedź w quizie albo w grze, zapisane w `localStorage["bm-q-seen"]` = `{ "mid:idx": dzień }` (max 2000 wpisów, najstarsze wypadają; `qSeen`, `qFreshFirst`). Kolejność w grach: pomylone → niewidziane z zakresu najbliższego zaliczenia → niewidziane reszta → widziane od najdawniej. Bez zmian w SQL i w punktach. Test: `docs/gry/test/pytania-plus.mjs`.
 
+## Odwołania z Teams (Narzędzia starosty → Odwołania z Teams, `#/odwolania`)
+
+- Ogłoszenie z Teams (`tasks`) ze słowem „odwołane / cancelled” daje propozycję wpisów w formacie komunikatu dziekanatu (`odwGuess`: daty „3 i 4.11”, „03.11.2026”, „3 listopada”; przedmiot z `subjectId` albo z nazwy; rodzaj zajęć z „wykład / ćwiczenia / lab”). Propozycja sama nic nie zmienia.
+- Starosta widzi ją w „Ostatnio dodane” na Dziś (pasek „To odwołanie?”: Zatwierdź / Popraw / Odrzuć), na ekranie `#/odwolania` i w oknie ogłoszenia („To odwołanie lub przeniesienie”, także ręcznie, z nową datą, godziną i salą).
+- Zapis: `meta/odwolania` = `{ items: { <id>: { tid, kind, title, z: { C112: [wpisy] } } }, rejected }`. `dzList()` dokłada te wpisy do `PLAN.dziekanat.zmiany`, więc działają w `classesDz()` (Kalendarz, Dziś, „Jutro masz…”, Po zajęciach) i w `meetingsOf()`.
+- Numeracja „Zajęcia 3 z 8 · prawdopodobny temat” liczy tylko zajęcia, które się odbyły (bez odwołanych, z odrabianiem). Godziny na spotkanie liczymy z planu bez odwołań, więc odwołane zajęcia przesuwają tematy o jedno spotkanie, a ostatnie spotkanie bierze resztę.
+- Plan.skrotbm.pl i link .ics: `plan-bm/scripts/dziekanat.mjs` czyta zatwierdzone wpisy funkcją `nauka_odwolania_publiczne()` (**`supabase/skrot-v26-odwolania.sql`**, trzeba uruchomić) i dopisuje je do `plan.json` (`src: "teams"`). Funkcja `kalendarz` nakłada teraz `dziekanat.zmiany` (tytuł „ODWOŁANE: …”, odrabianie) – wymaga ponownego wdrożenia.
+- Test: `docs/gry/test/polaczenia-1.mjs`.
+
 ## Po zajęciach w 5 minut
 Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie) dostajesz wyjaśnienie po polsku z angielskimi terminami, na końcu „Zapamiętaj” (3 rzeczy), pojęcia EN–PL i 3 pytania sprawdzające.
 - **Wejścia:** karta na górze ekranu Dziś w dniu zajęć (po ich końcu, także następnego dnia), link „⚡ Co było? 5 min →” przy zakończonych zajęciach na liście „Dziś masz…”, przycisk w okładce przedmiotu, Więcej → „Po zajęciach w 5 minut” (`#/po`, `#/po/<przedmiot>`, czytnik `#/po5/<id>`). Przeczytane: `localStorage["bm-po-seen"]`.

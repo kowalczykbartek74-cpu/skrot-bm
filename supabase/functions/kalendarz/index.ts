@@ -49,8 +49,11 @@ const VTIMEZONE = [
 ];
 
 type Entry = { d: number; s: number; pl?: string; en?: string; k: string; p?: string; r?: string; g?: string; dates?: string[]; n?: string; time?: [string, string] };
+// Komunikaty dziekanatu i zatwierdzone odwołania z Teams (plan-bm/scripts/dziekanat.mjs → plan.json „dziekanat”).
+type Dz = { type: string; kind?: string; date: string; start?: string; end?: string; pl?: string; en?: string; k?: string; p?: string; r?: string; g?: string; post?: number; dup?: boolean; moved?: boolean };
+type Post = { url?: string; title?: string; text?: string; src?: string; team?: string };
 // deno-lint-ignore no-explicit-any
-type Plan = { groups: Record<string, Record<string, Entry[]>>; kalendarz?: any };
+type Plan = { groups: Record<string, Record<string, Entry[]>>; kalendarz?: any; dziekanat?: { zmiany?: Record<string, Dz[]>; posts?: Post[] } };
 // deno-lint-ignore no-explicit-any
 type Deadline = Record<string, any>;
 
@@ -67,27 +70,39 @@ function classEvents(plan: Plan, group: string, sub: string, stamp: string): str
   for (const d of Object.keys(OFF)) delete PAR[d];
   for (const [d, v] of Object.entries(SWAP)) PAR[d] = (v as { p: string }).p;
   const L: string[] = [];
+  // Odwołane zajęcia zostają w kalendarzu z „ODWOŁANE:” w tytule (jak na plan.skrotbm.pl), odrabianie i zmiany dochodzą.
+  const dz = (plan.dziekanat?.zmiany?.[group] || []).filter((x) => !sub || !x.g || x.g === sub);
+  const posts = plan.dziekanat?.posts || [];
+  const postLine = (p: Post | undefined) => !p ? null : p.src === "teams" ? `Ogłoszenie prowadzącego w Teams: ${p.title || ""}` : `Komunikat dziekanatu: ${p.text || p.title || ""}${p.url ? "\n" + p.url : ""}`;
+  for (const x of dz) { if (x.date < first) first = x.date; if (x.date > last) last = x.date; }
   for (let d = parse(first); key(d) <= last; d = addDays(d, 1)) {
     const k = key(d), sw = SWAP[k], p = sw?.p || PAR[k];
-    if (!p) continue;
+    const today = dz.filter((x) => x.date === k);
+    if (!p && !today.length) continue;
     const day = sw?.asDay ?? (d.getUTCDay() + 6) % 7;
-    for (const e of (grp[p] || []).filter((e) => e.d === day && (!sub || !e.g || e.g === sub) && (!e.dates || e.dates.includes(k)))) {
+    const items: (Entry & { extra?: Dz })[] = (p ? grp[p] || [] : []).filter((e) => e.d === day && (!sub || !e.g || e.g === sub) && (!e.dates || e.dates.includes(k)));
+    for (const x of today) if (x.type === "extra" && !x.dup && x.start) items.push({ d: day, s: 9, pl: x.pl, en: x.en, k: x.k || "X", p: x.p, r: x.r, g: x.g, time: [x.start, x.end || x.start], extra: x });
+    for (const e of items) {
       const [t0, t1] = e.time || SLOTS[e.s];
       const kind = KIND[e.k];
+      const off = !e.extra ? today.find((x) => x.type === "cancel" && x.start === t0 && x.pl === e.pl && (!x.g || !e.g || x.g === e.g)) : undefined;
+      const post = off ? posts[off.post as number] : e.extra ? posts[e.extra.post as number] : undefined;
+      const label = off ? (off.moved ? "PRZENIESIONE: " : "ODWOŁANE: ") : e.extra ? (e.extra.kind === "change" ? "Zmiana: " : "Odrabianie: ") : "";
       const desc = [
+        postLine(post),
         kind ? kind[0].toUpperCase() + kind.slice(1) + (e.g ? `, podgrupa ${e.g}` : "") : null,
         e.en && e.en !== e.pl ? e.en : null,
         e.p ? `Prowadzi: ${e.p}` : null, sw?.n || null, e.n || null,
         `Materiały: ${APP}`,
       ].filter(Boolean).join("\n");
       L.push("BEGIN:VEVENT",
-        `UID:${k}-${group}-${e.s}-${e.g || "x"}-${hash((e.pl || "") + e.k)}@skrotbm.pl`,
+        `UID:${k}-${group}-${e.extra ? "dz" + t0.replace(":", "") : e.s}-${e.g || "x"}-${hash((e.pl || "") + e.k)}@skrotbm.pl`,
         `DTSTAMP:${stamp}`,
         `DTSTART;TZID=Europe/Warsaw:${ymd(k)}T${hm(t0)}`,
         `DTEND;TZID=Europe/Warsaw:${ymd(k)}T${hm(t1)}`,
-        `SUMMARY:${esc(`${e.pl || e.en}${SHORT[e.k] ? " · " + SHORT[e.k] : ""}${e.g && !sub ? " (laby " + e.g + ")" : ""}`)}`,
+        `SUMMARY:${esc(`${label}${e.pl || e.en}${SHORT[e.k] ? " · " + SHORT[e.k] : ""}${e.g && !sub ? " (laby " + e.g + ")" : ""}`)}`,
         ...(e.r ? [`LOCATION:${esc(/ul\.|Szczecin/.test(e.r) ? e.r : e.r + ", ul. Cukrowa 8, Szczecin")}`] : []),
-        `DESCRIPTION:${esc(desc)}`, `CATEGORIES:${esc(kind || "zajęcia")}`, "TRANSP:OPAQUE", "END:VEVENT");
+        `DESCRIPTION:${esc(desc)}`, `CATEGORIES:${esc(kind || "zajęcia")}`, off ? "TRANSP:TRANSPARENT" : "TRANSP:OPAQUE", "END:VEVENT");
     }
   }
   const allDay = (od: string, doo: string, txt: string, id: string) => L.push("BEGIN:VEVENT", `UID:${id}@skrotbm.pl`, `DTSTAMP:${stamp}`,
