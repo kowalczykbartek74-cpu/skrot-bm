@@ -242,6 +242,14 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 - Link do kalendarza w telefonie: **`supabase/skrot-v27-kalendarz-moje.sql`** (trzeba uruchomić) oddaje `moje`, `zaliczenia` i `plan`; funkcja `kalendarz` dopisuje „✏️ Mój wpis: …”, „📅 Twoja data: …”, „📘 Plan: …” i chowa szacowany termin części z własną datą (wymaga ponownego wdrożenia).
 - Test: `docs/gry/test/polaczenia-3.mjs`, `supabase/test/v27.sql`.
 
+## Wspólne zdarzenie nauki (`learnEvent`, SQL v28)
+
+- `learnEvent({ kind, materialId, ok, total, xp, once })`: XP przez `xpFlush` (seria, cel dnia), wynik do `progress.learn[mid]` (topicScore: źródło `act` z Po zajęciach i Stasia; temat ćwiczony dziś ma niższy priorytet). Wołają: quiz (`saveScore`), lekcja (bilet), fiszki (`srsGrade`), gry (`GRY_API.rp.odp`), Po zajęciach, Staś.
+- Po zajęciach: pierwsze przeczytanie +10 XP, dobra odpowiedź w „Sprawdź się” = `LP_XP.mc` XP (raz dziennie) + `rpSend("po")` → **`nauka_rp_po`** (10 pkt = 1 🪙, pula quizu). Zła → `gryWrong` + `bm-po-zle` (wraca w grach od następnego dnia i w „10 minut przed snem”). „Dodaj pojęcia do fiszek” → karty `g:<sid>:…` z kopią w `progress.poTerms`. Link „Pełna lekcja” (`poLesson`: `sylRef`, temat z numeru zajęć, `lessonTwin`).
+- Staś: „Sprawdź ✓” → **`nauka_rp_stas`** (10 pkt za prawdziwy błąd, raz dziennie), „Gotowe” → `learnEvent` (wynik do tematu, XP), link do lekcji.
+- **`supabase/skrot-v28-zdarzenia-nauki.sql`** (trzeba uruchomić po v27): `nauka_rp_po`, `nauka_rp_stas`, osobiste Zadanie dnia. Bez niej XP działa, monet za Po zajęciach i Stasia nie ma.
+- Test: `docs/gry/test/polaczenia-4.mjs`, `supabase/test/v28.sql`.
+
 ## Po zajęciach w 5 minut
 Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie) dostajesz wyjaśnienie po polsku z angielskimi terminami, na końcu „Zapamiętaj” (3 rzeczy), pojęcia EN–PL i 3 pytania sprawdzające.
 - **Wejścia:** karta na górze ekranu Dziś w dniu zajęć (po ich końcu, także następnego dnia), link „⚡ Co było? 5 min →” przy zakończonych zajęciach na liście „Dziś masz…”, przycisk w okładce przedmiotu, Więcej → „Po zajęciach w 5 minut” (`#/po`, `#/po/<przedmiot>`, czytnik `#/po5/<id>`). Przeczytane: `localStorage["bm-po-seen"]`.

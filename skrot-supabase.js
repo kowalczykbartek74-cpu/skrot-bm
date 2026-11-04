@@ -380,6 +380,8 @@
     return { ok: true, osoby };
   };
   skrot.misje = async () => { await ready; const { data, error } = await sb.rpc("nauka_misje"); if (error) throw rpcErr(error); return data; };
+  // v28: osobiste Zadanie dnia (wybór raz dziennie, ostateczny; postęp liczy baza). Zwraca to samo co skrot.misje().
+  skrot.misjaOsobista = async (typ, cel) => { await ready; const { data, error } = await sb.rpc("nauka_misja_osobista_ustaw", { p_typ: typ, p_cel: cel }); if (error) throw rpcErr(error); return data; };
   skrot.misjaOdbierz = async (id) => {
     await ready;
     const { data, error } = await sb.rpc("nauka_misja_odbierz", { p_id: id });
@@ -414,7 +416,7 @@
     } catch { return { ok: false, code: "offline" }; }
   };
   // Zapytania, w których pkt to punkty przyznane teraz (nauka_haslo_dzis i nauka_bossy zwracają pkt informacyjnie).
-  const RP_ZAROBEK = new Set(["nauka_rp_odpowiedz", "nauka_rp_zadanie", "nauka_rp_powtorka", "nauka_rp_lekcja", "nauka_gra_koniec", "nauka_haslo_proba", "nauka_boss_odbierz"]);
+  const RP_ZAROBEK = new Set(["nauka_rp_odpowiedz", "nauka_rp_zadanie", "nauka_rp_powtorka", "nauka_rp_lekcja", "nauka_gra_koniec", "nauka_haslo_proba", "nauka_boss_odbierz", "nauka_rp_po", "nauka_rp_stas"]);
   skrot.rp = {
     profil:   ()                       => rpCall("nauka_profil_moj"),
     ustaw:    ({ nick = null, widoczny = null } = {}) => rpCall("nauka_profil_ustaw", { p_nick: nick, p_w_rankingu: widoczny }),
@@ -423,6 +425,9 @@
     zadanie:  ({ mid, wid, j, wynik, zrodlo, run = null }) => rpCall("nauka_rp_zadanie", { p_mid: mid, p_wid: String(wid), p_j: j, p_wynik: wynik, p_zrodlo: zrodlo, p_run: run }),
     powtorka: (klucz)                  => rpCall("nauka_rp_powtorka", { p_klucz: klucz }),
     lekcja:   (lid)                    => rpCall("nauka_rp_lekcja", { p_lid: lid }),
+    // v28 (supabase/skrot-v28-zdarzenia-nauki.sql): „Sprawdź się” w Po zajęciach i błędy znalezione u Stasia, jak pytanie w quizie.
+    po:       ({ id, idx, wybor })     => rpCall("nauka_rp_po", { p_id: id, p_idx: idx, p_wybor: wybor }),
+    stas:     ({ id, zdania })         => rpCall("nauka_rp_stas", { p_id: id, p_zdania: zdania }),
     koniec:   ({ run, wynik, czasMs, bledy = 0 }) => rpCall("nauka_gra_koniec", { p_run: run, p_wynik: wynik, p_czas_ms: czasMs, p_bledy: bledy }),
     ranking:  ({ zakres = "tydzien", grupa = null, sid = null } = {}) => rpCall("nauka_ranking", { p_zakres: zakres, p_grupa: grupa, p_sid: sid }),
     rekordy:  (gra)                    => rpCall("nauka_rekordy", { p_gra: gra }),

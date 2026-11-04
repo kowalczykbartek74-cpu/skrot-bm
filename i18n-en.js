@@ -1,6 +1,18 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Dodaj pojęcia do fiszek": "Add terms to flashcards",
+"Pełna lekcja: {0}": "Full lesson: {0}",
+"Lekcja {0}: {1}": "Lesson {0}: {1}",
+"Po zajęciach · pojęcia EN → PL": "After class · terms EN → PL",
+"{0} pojęcie w powtórkach.": "{0} term in your reviews.",
+"{0} pojęcia w powtórkach.": "{0} terms in your reviews.",
+"{0} pojęć w powtórkach.": "{0} terms in your reviews.",
+"Po zajęciach w 5 minut: pierwsze przeczytanie": "After class in 5 minutes: first read",
+"Po zajęciach: dobra odpowiedź w „Sprawdź się”": "After class: correct answer in “Check yourself”",
+"Staś: znaleziony błąd albo dobra poprawka": "Staś: mistake found or correct fix",
+"Dobra odpowiedź w „Sprawdź się” po zajęciach": "Correct answer in “Check yourself” after class",
+"Znaleziony błąd Stasia": "A mistake of Staś found",
 "Twoja data z „Przygotuj się”{0}. Widzisz ją tylko Ty.": "Your date from “Get ready”{0}. Only you can see it.",
 " (w terminach roku: {0})": " (year deadlines say: {0})",
 "Dziś według planu: {0}": "Today's plan: {0}",

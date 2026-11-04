@@ -82,6 +82,21 @@
     },
     nauka_rp_powtorka: (a) => (paid ? { ok: true, pkt: daj("p:" + a.p_klucz, 1, "powtorki") } : { ok: false, code: "no_access" }),
     nauka_rp_lekcja: (a) => (paid ? { ok: true, pkt: daj("l:" + a.p_lid, 30, "lekcje") } : { ok: false, code: "no_access" }),
+    // v28: Po zajęciach („Sprawdź się”) i Staś, jak pytanie w quizie (pierwsza odpowiedź dnia, 10 pkt, pula quizu)
+    nauka_rp_po: (a) => {
+      if (!paid) return { ok: false, code: "no_access" };
+      const q = DOCS.meta["po~" + a.p_id]?.quiz?.[a.p_idx]; if (!q) return { ok: false, code: "no_question" };
+      const k = "po~" + a.p_id + ":" + a.p_idx; RP.odp ||= {}; const first = !RP.odp[k]; RP.odp[k] = 1; (window.__rpPo ||= []).push(a);
+      const ok = a.p_wybor === q.correct;
+      return { ok: true, poprawna: ok, correct: q.correct, pkt: ok && first ? daj("q:" + k, 10, "quiz") : 0 };
+    },
+    nauka_rp_stas: (a) => {
+      if (!paid) return { ok: false, code: "no_access" };
+      const ss = DOCS.meta["stas~" + a.p_id]?.sentences; if (!ss) return { ok: false, code: "no_question" };
+      let dobre = 0, zle = 0, pkt = 0; (window.__rpStas ||= []).push(a);
+      for (const i of [...new Set(a.p_zdania)]) { if (!ss[i]) continue; if (ss[i].isWrong) { dobre++; pkt += daj("q:stas~" + a.p_id + ":" + i, 10, "quiz"); } else zle++; }
+      return { ok: true, dobre, zle, pkt };
+    },
     nauka_gra_koniec: (a) => {
       const r = RP.runs[a.p_run]; if (!r) return { ok: false, code: "bad_run" }; if (r.done) return { ok: false, code: "already_finished" };
       r.done = true; const s = (Date.now() - r.t) / 1000; const max = r.gra === "frun" ? Math.ceil(s * 1.1) + 3 : r.gra === "przejdz" ? Math.ceil(s * 5) + 5 : r.gra === "drabina" ? 12 : 10;
