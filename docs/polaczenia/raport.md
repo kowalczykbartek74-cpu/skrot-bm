@@ -54,10 +54,12 @@ Testy: `docs/gry/test/polaczenia-1…7.mjs` (atrapa, Playwright) i `supabase/tes
 ## Drobne (26775f5)
 - „Structured Query Language” w `sylabus.json` i poprawka w `scripts/sylabus-build.py`.
 
+## Wdrożenie (4.11.2026 wieczorem)
+- SQL v26–v28 uruchomione na produkcji, funkcja `kalendarz` wdrożona ponownie.
+- skrot-bm main ecb4068 (z poprawką: ogłoszenia o odrabianiu nie dają automatycznej propozycji), plan-bm main eb51f90.
+
 ## Do zrobienia / Twoja decyzja
-1. **SQL w Supabase po kolei:** `skrot-v26-odwolania.sql`, `skrot-v27-kalendarz-moje.sql`, `skrot-v28-zdarzenia-nauki.sql`.
-2. **Wdrożyć ponownie** funkcję `kalendarz`.
-3. **Scalić** `polaczenia/etapy` → main (skrot-bm) i `polaczenia/odwolania-teams` → main (plan-bm).
+1. Zatwierdzić w Narzędziach starosty → Odwołania z Teams „Odwołane wykłady z Logistyki 3 i 4.11”.
 4. Skąd teraz przychodzą ogłoszenia z Teams (`tasks`).
 5. OWI w zasadach zaliczeń to „zaliczenie wykładu”, więc teksty mówią „OWI: zaliczenie wykładu za N dni”.
 6. **Testy, które nie przechodziły już na main przed tymi zmianami:**
