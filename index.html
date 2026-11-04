@@ -7856,32 +7856,78 @@ html.calm .kfx { display: none !important; }
     node.querySelectorAll(".lp-draw").forEach((p) => { try { p.style.setProperty("--len", Math.ceil(p.getTotalLength()) + 1); } catch {} });
     lpTerms(node); typeset(node); lpSave(); lpTop(); lpIdle();
   }
-  // Pojęcia na kartach lekcji: wyróżnione słowo, które jest w słowniczku (albo w pojęciach lekcji), po dotknięciu
-  // otwiera panel od dołu z polskim odpowiednikiem i jednym zdaniem definicji. Bez wpisu zostaje samo wyróżnienie.
-  function lpTermOf(word) {
-    const k = norm(String(word || "").replace(/[.,:;!?…"„”()]+$/g, "").trim());
-    if (k.length < 2) return null;
-    const keys = [k, k.replace(/(es|s)$/, "")];
-    const fromLesson = (LP.c?.concepts || []).filter((x) => x.term).map((x) => ({ en: x.term, pl: x.pl || "", def: x.definition || "" }));
-    for (const t of [...fromLesson, ...(GL.terms || [])]) {
-      const names = [t.en, t.pl, ...(t.also || [])].filter(Boolean).map(norm);
-      if (names.some((n) => keys.includes(n))) {
-        const g = (GL.terms || []).find((x) => norm(x.en) === norm(t.en));
-        return { en: t.en, pl: t.pl || g?.pl || "", def: lpFirstSentence(t.def || g?.def || "") };
+  // Pojęcia na kartach lekcji: KAŻDE wyróżnione (pogrubione) słowo po dotknięciu otwiera panel od dołu z polskim
+  // odpowiednikiem i jednym zdaniem definicji. Źródła po kolei: definicje pogrubionych słów lekcji (c.lessonTerms,
+  // Panel AI → „Definicje w lekcjach”), pojęcia lekcji, słowniczek, wyjaśnienia w zadaniach i pojęcia z sylabusa.
+  // Pasuje też nazwa z nawiasem („Intellectual property (IP)”, „exclusive (absolute) rights”), liczba mnoga i odmiana.
+  // Bez wpisu nigdzie: zdanie z lekcji, w którym to słowo jest wyjaśnione.
+  function termKeys(word) {
+    const w = String(word || "").replace(/[.,:;!?…"„”]+$/g, "").replace(/^["„”]+/, "").trim();
+    const keys = [w, w.replace(/\s*\([^)]*\)/g, ""), w.replace(/[()]/g, "")];
+    // Skrót w nawiasie („(IP)”, „(UPRP)”) to ta sama rzecz co nazwa przed nim.
+    for (const x of w.matchAll(/\(([^)]+)\)/g)) if (/^\p{Lu}[\p{Lu}\d.&-]{1,9}$/u.test(x[1].trim())) keys.push(x[1].trim());
+    return [...new Set(keys.map((k) => norm(k)).filter((k) => k.length >= 2))];
+  }
+  const termSing = (k) => [k, k.replace(/ies$/, "y"), k.replace(/es$/, ""), k.replace(/s$/, "")];
+  const TERM_NK = new Map();
+  const termNameKeys = (n) => { let v = TERM_NK.get(n); if (!v) { v = termKeys(n).flatMap(termSing); TERM_NK.set(n, v); } return v; };
+  function termFind(word, m, c) {
+    const keys = termKeys(word);
+    if (!keys.length) return null;
+    const want = new Set(keys.flatMap(termSing));
+    const own = (c?.lessonTerms || []).map((x) => ({ en: x.t, pl: x.pl || "", def: x.d || "", also: x.also || [] }));
+    const fromLesson = (c?.concepts || []).filter((x) => x.term).map((x) => ({ en: x.term, pl: x.pl || "", def: x.definition || x.def || "" }));
+    // Słowniczek: najpierw wpisy tego przedmiotu („work” w prawie autorskim to utwór, nie praca z fizyki).
+    const gl = GL.terms || [], sid = m?.subjectId;
+    const pick = (list) => {
+      for (const t of list) {
+        const names = [t.en, t.pl, ...(t.also || [])].filter(Boolean);
+        if (!names.some((n) => termNameKeys(n).some((k) => want.has(k)))) continue;
+        const g = gl.find((x) => norm(x.en) === norm(t.en));
+        const def = lpFirstSentence(t.def || g?.def || "");
+        if (t.pl || g?.pl || def) return { en: t.en, pl: t.pl || g?.pl || "", def };
       }
-    }
-    return null;
+      return null;
+    };
+    const hit = pick([...own, ...fromLesson, ...gl.filter((t) => t.s?.includes(sid))]);
+    if (hit) return hit;
+    // Odmiana („pochodnej”, „rights”) i pozostałe źródła przedmiotu: wyjaśnienia w zadaniach i pojęcia z sylabusa.
+    const X = m ? xplCtx(m, c) : null;
+    const raw = String(word || "").replace(/[.,:;!?…"„”]+$/g, "").trim();
+    const e = X?.items.find((x) => [raw, ...keys].some((k) => x.re.test(k)));
+    if (e) return { en: e.t, pl: e.pl || "", def: lpFirstSentence(e.d) };
+    return pick(gl.filter((t) => !t.s?.includes(sid)));
+  }
+  const lpTermOf = (word) => termFind(word, LP.m, LP.c);
+  // Zdanie z lekcji, w którym pogrubione słowo jest wyjaśnione (zapas, gdy nie ma go w żadnym spisie pojęć).
+  function lpTermSentence(word) {
+    const k = norm(word), out = [];
+    const walk = (v) => { if (out.length) return; if (typeof v === "string") { if (v.includes("**")) for (const s of lpSentences(v)) if ([...s.matchAll(/\*\*([^*\n]+?)\*\*/g)].some((x) => norm(x[1]) === k)) { out.push(s); return; } } else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") Object.values(v).forEach(walk); };
+    walk(LP.c?.lesson);
+    return out[0] || "";
   }
   function lpTerms(node) {
     if (LP.src?.kind !== "lesson") return;
-    if (!GL.terms && !GL.loading) loadGlossary().catch(() => {});
+    // Słowniczek dochodzi w tle: gdy przyjdzie, dopisujemy pojęcia na karcie, która już jest na ekranie.
+    if (!GL.terms && !GL.loading) loadGlossary().then(() => { if (LP.open && LP.el?.stage) lpTerms(LP.el.stage); }).catch(() => {});
+    sylPoj(LP.m?.subjectId);
     node.querySelectorAll(".lp-text b, .lp-big b, .lp-quote b").forEach((b) => {
-      if (b.closest("button, .opt, [role=button]")) return;
-      const t = lpTermOf(b.textContent);
-      if (!t || (!t.pl && !t.def)) return;
+      if (b.closest("button, .opt, [role=button]") || b.classList.contains("lp-term")) return;
+      const word = b.textContent.trim();
+      if (norm(word).length < 2) return;
+      // Definicję szukamy przy dotknięciu: słowniczek i pojęcia z sylabusa mogą dojść już po narysowaniu karty.
+      const t0 = lpTermOf(word);
+      // Zapas ze zdaniem z lekcji tylko poza pytaniami (w pytaniu mógłby podpowiedzieć odpowiedź).
+      const ctxOk = !b.closest(".q");
+      if (!t0 && !(ctxOk && lpTermSentence(word))) return;
       b.classList.add("lp-term"); b.setAttribute("role", "button"); b.setAttribute("tabindex", "0");
-      b.setAttribute("aria-label", `${t.en}: pokaż znaczenie`);
-      const open = (e) => { e.stopPropagation(); lpTermSheet(t); };
+      b.setAttribute("aria-label", `${word}: pokaż znaczenie`);
+      const open = (e) => {
+        if (e.target.closest(".term-link")) return;
+        e.stopPropagation();
+        const t = lpTermOf(word);
+        lpTermSheet(t && (t.pl || t.def) ? t : { en: word, pl: "", def: "", ctx: ctxOk ? lpTermSentence(word) : "" });
+      };
       b.addEventListener("click", open);
       b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
     });
@@ -7891,6 +7937,7 @@ html.calm .kfx { display: none !important; }
       h("h3", { style: "margin:0", lang: "en", translate: "no", text: t.en }),
       t.pl ? h("p", { class: "lp-term-pl", style: "margin:0" }, h("span", { class: "muted", text: "Po polsku: " }), h("b", { translate: "no", text: t.pl })) : null,
       t.def ? h("p", { style: "margin:0", translate: "no" }, inline(t.def)) : null,
+      !t.def && t.ctx ? h("p", { style: "margin:0", translate: "no" }, h("span", { class: "muted", text: "Tak wyjaśnia to lekcja: " }), inline(t.ctx)) : null,
       h("button", { type: "button", class: "btn primary", onclick: lpSheetClose }, "Jasne, wracam"));
     LP.el.sheet.setAttribute("aria-label", "Pojęcie: " + t.en);
     LP.el.sheet.classList.add("on"); LP.el.scrim.classList.add("on");
@@ -16131,7 +16178,41 @@ Reply with only one JSON object: {"explain": [{"t": "...", "also": [], "pl": "",
     return (Array.isArray(r?.explain) ? r.explain : []).map((x) => ({ t: sText(x?.t, 80), also: (Array.isArray(x?.also) ? x.also : []).map((y) => sText(y, 80)).filter(Boolean).slice(0, 3), pl: sText(x?.pl, 80), d: sText(x?.d, 600) }))
       .filter((x) => x.t && x.d && [x.t, ...x.also].some((y) => txt.includes(norm(y)))).slice(0, 15);
   }
-  const genPrompt = (kind, m, c) => (kind === "worked" ? workedPrompt(m, c) : kind === "explain" ? explainPrompt(m, c) : bankPrompt(m, c));
+  // Definicje w lekcjach: każde pogrubione słowo na kartach lekcji ma mieć po dotknięciu definicję (lpTerms).
+  // Zbieramy pogrubienia, których nie ma w pojęciach lekcji, słowniczku, wyjaśnieniach ani w sylabusie, i AI dopisuje
+  // dla nich krótką definicję. Zapis: materialContent.lessonTerms = [{ t, pl, d }], materials.termsCount.
+  function lessonBolds(c) {
+    const out = new Map();
+    const walk = (v) => {
+      if (typeof v === "string") { if (v.includes("**")) for (const s of lpSentences(v)) for (const x of s.matchAll(/\*\*([^*\n]{2,80}?)\*\*/g)) { const t = x[1].trim(), k = norm(t); if (k.length >= 2 && !out.has(k)) out.set(k, { t, s: s.replace(/\*\*/g, "").replace(/\s+/g, " ").trim().slice(0, 300) }); } }
+      else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") Object.values(v).forEach(walk);
+    };
+    walk(c?.lesson);
+    return [...out.values()];
+  }
+  const termsMissing = (m, c) => lessonBolds(c).filter((b) => !termFind(b.t, m, { ...c, lessonTerms: [] }));
+  // Słowniczek i pojęcia z sylabusa muszą być wczytane, zanim policzymy, czego brakuje.
+  async function termsReady() {
+    await loadGlossary().catch(() => {});
+    if (!SYLP.data) { sylPoj(""); for (let i = 0; i < 50 && !SYLP.data; i++) await new Promise((r) => setTimeout(r, 100)); }
+  }
+  function termsPrompt(m, c) {
+    const items = termsMissing(m, c).slice(0, 90);
+    const en = (c?.lang || "en") !== "pl";
+    return `You write tap-to-see definitions for first-year Business Management students at the University of Szczecin. Most are 19 and have never worked in a company. Subject: ${genSubj(m)}. Lesson: "${m.title || m.fileName}".
+In this lesson the words and phrases below are in bold. A student can tap ANY of them and must then see what it means. For EACH item write:
+"t" = the phrase exactly as given; "pl" = ${en ? "the Polish equivalent (the term a Polish textbook would use)" : "\"\""}; "d" = ONE short sentence (max 30 words) in ${en ? "English" : "Polish"} saying what it is or means, in plain words, consistent with the lesson sentence "s". Stick to standard textbook knowledge. If the phrase is not a technical term (a group of people, a period of time, an everyday word, a heading), say in one sentence what it refers to in this lesson.
+Do not skip any item and do not add new ones.
+ITEMS: ${JSON.stringify(items)}
+Reply with only one JSON object: {"terms": [{"t": "...", "pl": "...", "d": "..."}]}`;
+  }
+  function cleanTerms(r, c) {
+    const want = new Set(lessonBolds(c).map((b) => norm(b.t)));
+    const seen = new Set();
+    return (Array.isArray(r?.terms) ? r.terms : []).map((x) => ({ t: sText(x?.t, 80), pl: sText(x?.pl, 80), d: sText(x?.d, 400) }))
+      .filter((x) => x.t && x.d && want.has(norm(x.t)) && !seen.has(norm(x.t)) && seen.add(norm(x.t))).slice(0, 120);
+  }
+  const genPrompt = (kind, m, c) => (kind === "worked" ? workedPrompt(m, c) : kind === "explain" ? explainPrompt(m, c) : kind === "terms" ? termsPrompt(m, c) : bankPrompt(m, c));
   function bankEps(sid) {
     const c = sylOf(sid); if (!c?.out.length) return "";
     const tested = new Set(c.assess.filter((a) => /egzamin|kolokwium|sprawdzian|test/i.test(a.m)).flatMap((a) => a.ep));
@@ -16166,6 +16247,7 @@ Spread the questions so that together they check as many of these outcomes as th
     const ms = studyMats(sid);
     if (kind === "worked") return ms.filter((m) => m.workedCount == null);
     if (kind === "explain") return ms.filter((m) => m.explainCount == null);
+    if (kind === "terms") return lessonsOf(sid).filter((m) => m.termsCount == null);
     const bank = await genBankDoc(sid);
     const done = new Set(bank.done || []);
     // Po dodaniu sylabusa: materiał, którego pytania nie mają przypisanych efektów uczenia się, robimy jeszcze raz.
@@ -16185,6 +16267,15 @@ Spread the questions so that together they check as many of these outcomes as th
       m.workedCount = worked.length; m.workedTaskCount = tasks;
       return worked.length ? `${worked.length} ${plural(worked.length, "przykład", "przykłady", "przykładów")}, ${tasks} ${plural(tasks, "zadanie", "zadania", "zadań")}` : "bez obliczeń, pominięty";
     }
+    if (kind === "terms") {
+      const lessonTerms = cleanTerms(raw, c);
+      const nc = { ...c, lessonTerms };
+      await S.db.doc("materialContent/" + m.id).set(nc);
+      S.content[m.id] = nc; XPL.delete(m.id);
+      await S.db.doc("materials/" + m.id).update({ termsCount: lessonTerms.length });
+      m.termsCount = lessonTerms.length;
+      return lessonTerms.length ? `${lessonTerms.length} ${plural(lessonTerms.length, "definicja", "definicje", "definicji")}` : "wszystkie pogrubienia mają już definicje";
+    }
     if (kind === "explain") {
       const explain = cleanExplain(raw, c);
       const nc = { ...c, explain };
@@ -16202,18 +16293,23 @@ Spread the questions so that together they check as many of these outcomes as th
     await S.db.doc("examBank/" + m.subjectId).set(bank);
     return `${items.length} ${plural(items.length, "pytanie", "pytania", "pytań")}`;
   }
-  async function genRun() {
+  async function genRun(allSubjects) {
     if (GEN.busy || !GEN.sid) return;
     if (!S.sample) { toast("Funkcja AI jest dostępna tylko po zalogowaniu jako starosta."); return; }
     GEN.busy = true; GEN.stop = false; GEN.log = [];
     const kind = GEN.kind;
-    for (const m of await genTodo(GEN.sid, kind)) {
+    if (kind === "terms") await termsReady();
+    const sids = allSubjects ? SUBJECTS.map((s) => s.id).filter((id) => lessonsOf(id).length) : [GEN.sid];
+    const todo = [];
+    for (const sid of sids) todo.push(...await genTodo(sid, kind));
+    for (const m of todo) {
       if (GEN.stop) break;
       const line = { title: m.title || m.fileName, state: "run", detail: "" }; GEN.log.push(line); render();
       try {
         const c = await getContent(m.id);
         if (!c) throw { code: "empty_completion" };
         if (kind === "explain" && !explainTexts(c).length) { line.detail = await genSave(kind, m, { explain: [] }); line.state = "ok"; render(); continue; }
+        if (kind === "terms" && !termsMissing(m, c).length) { line.detail = await genSave(kind, m, { terms: [] }); line.state = "ok"; render(); continue; }
         const raw = await S.sample.json(genPrompt(kind, m, c), { modelTier: "default" });
         line.detail = await genSave(kind, m, raw); line.state = "ok";
       } catch (e) {
@@ -16227,11 +16323,12 @@ Spread the questions so that together they check as many of these outcomes as th
   async function genExport() {
     const kind = GEN.kind, todo = await genTodo(GEN.sid, kind);
     if (!todo.length) { toast("W tym przedmiocie nie ma nic do wygenerowania."); return; }
+    if (kind === "terms") await termsReady();
     const zadania = [];
-    for (const m of todo) { const c = await getContent(m.id).catch(() => null); if (c && (kind !== "explain" || explainTexts(c).length)) zadania.push({ klucz: `${kind}:${m.id}`, material: m.title || m.fileName, polecenie: genPrompt(kind, m, c) }); }
+    for (const m of todo) { const c = await getContent(m.id).catch(() => null); if (c && (kind !== "explain" || explainTexts(c).length) && (kind !== "terms" || termsMissing(m, c).length)) zadania.push({ klucz: `${kind}:${m.id}`, material: m.title || m.fileName, polecenie: genPrompt(kind, m, c) }); }
     const pack = { instrukcja: "Dla każdego elementu z listy „zadania” wykonaj polecenie z pola „polecenie” (każde osobno). Odpowiedz jednym plikiem JSON: {\"wyniki\": {\"<klucz>\": <obiekt JSON, którego wymaga polecenie>}}. Użyj dokładnie tych samych kluczy.", zadania };
     const blob = new Blob([JSON.stringify(pack, null, 1)], { type: "application/json" });
-    const a = h("a", { href: URL.createObjectURL(blob), download: `skrot-bm-${{ worked: "zadania", explain: "wyjasnienia" }[kind] || "pytania"}-${GEN.sid}-${todayKey()}.json` });
+    const a = h("a", { href: URL.createObjectURL(blob), download: `skrot-bm-${{ worked: "zadania", explain: "wyjasnienia", terms: "definicje" }[kind] || "pytania"}-${GEN.sid}-${todayKey()}.json` });
     document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
   async function genImport(file) {
@@ -16243,7 +16340,7 @@ Spread the questions so that together they check as many of these outcomes as th
     for (const [key, raw] of entries) {
       const [kind, mid] = key.split(":"); const m = materialById(mid);
       const line = { title: m?.title || mid, state: "run", detail: "" }; GEN.log.push(line);
-      try { if (!m || !["worked", "bank", "explain"].includes(kind)) throw { code: "x" }; line.detail = await genSave(kind, m, raw); line.state = "ok"; ok++; }
+      try { if (!m || !["worked", "bank", "explain", "terms"].includes(kind)) throw { code: "x" }; line.detail = await genSave(kind, m, raw); line.state = "ok"; ok++; }
       catch { line.state = "err"; line.detail = "nie udało się zapisać"; }
       render();
     }
@@ -16255,6 +16352,7 @@ Spread the questions so that together they check as many of these outcomes as th
     const file = h("input", { type: "file", accept: ".json,application/json", hidden: true, onchange: (e) => { const f = e.target.files[0]; if (f) genImport(f); e.target.value = ""; } });
     const ms = studyMats(GEN.sid);
     const wDone = ms.filter((m) => m.workedCount != null).length, xDone = ms.filter((m) => m.explainCount != null).length;
+    const ls = lessonsOf(GEN.sid), tDone = ls.filter((m) => m.termsCount != null).length;
     const bank = GEN.bank[GEN.sid];
     if (!bank && GEN.sid) genBankDoc(GEN.sid).then(render);
     const bDone = bank ? new Set(bank.done || []).size : null;
@@ -16266,9 +16364,11 @@ Spread the questions so that together they check as many of these outcomes as th
         h("div", { class: "gl-chips" },
           h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "worked"), onclick: () => { GEN.kind = "worked"; render(); } }, `Zadania krok po kroku · ${wDone}/${ms.length}`),
           h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "bank"), onclick: () => { GEN.kind = "bank"; render(); } }, `Pytania do testów · ${bDone == null ? "…" : bDone}/${ms.length}${bank?.items ? ` (${bank.items.length})` : ""}`),
-          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "explain"), title: "Podkreślone trudne pojęcia i konteksty w zadaniach: kliknięcie pokazuje wyjaśnienie", onclick: () => { GEN.kind = "explain"; render(); } }, `Wyjaśnienia w zadaniach · ${xDone}/${ms.length}`))),
+          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "explain"), title: "Podkreślone trudne pojęcia i konteksty w zadaniach: kliknięcie pokazuje wyjaśnienie", onclick: () => { GEN.kind = "explain"; render(); } }, `Wyjaśnienia w zadaniach · ${xDone}/${ms.length}`),
+          h("button", { type: "button", class: "fchip", "aria-pressed": String(GEN.kind === "terms"), title: "Każde pogrubione słowo w lekcji po dotknięciu pokazuje definicję", onclick: () => { GEN.kind = "terms"; render(); } }, `Definicje w lekcjach · ${tDone}/${ls.length}`))),
       h("div", { class: "row" },
-        h("button", { type: "button", class: "btn primary", disabled: GEN.busy || AI.busy ? true : null, onclick: genRun }, GEN.busy ? "Generuję…" : "Uzupełnij przez funkcję AI"),
+        h("button", { type: "button", class: "btn primary", disabled: GEN.busy || AI.busy ? true : null, onclick: () => genRun() }, GEN.busy ? "Generuję…" : "Uzupełnij przez funkcję AI"),
+        GEN.kind === "terms" && !GEN.busy ? h("button", { type: "button", class: "btn", disabled: AI.busy ? true : null, onclick: () => genRun(true) }, "Uzupełnij we wszystkich przedmiotach") : null,
         GEN.busy ? h("button", { type: "button", class: "btn ghost", onclick: () => { GEN.stop = true; } }, "Zatrzymaj po bieżącym") : null,
         h("button", { type: "button", class: "btn", onclick: genExport }, "Pobierz paczkę (JSON)"),
         h("button", { type: "button", class: "btn", onclick: () => file.click() }, "Wgraj wyniki"), file),
