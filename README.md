@@ -261,6 +261,12 @@ Panel AI → **Dorób pytania (+10)** (tylko starosta): każdy materiał roku z 
 - Temat do zaliczenia = lekcja albo materiał z zajęć, który nie jest dodatkiem do lekcji o tym samym temacie (`lessonTwin`, „to osobny temat” = `keep`). `topicsOf(sid)` → `{ main, extra, mine }`; `knowOf` liczy `main`, więc Dziś, Przedmioty, strona przedmiotu i mapa pokazują tę samą liczbę. Na mapie dodatki (prezentacje do tematów z lekcją i Moje materiały) są w rzędzie „dodatkowe”. Przygotuj się: `scopeOf` = ta sama lista bez tematów wyłączonych z danego zaliczenia.
 - Test: `docs/gry/test/polaczenia-6.mjs`.
 
+## Projekty w Terminach (`#/projekt/<klucz>`)
+
+- Projekt albo prezentacja z przedmiotu i datą (`isProject`) ma w Terminach strzałkę (jak kolokwium) i przycisk „Plan projektu” w okienku terminu.
+- Ekran: co oddać i ile procent oceny (`projRules`: zasady zaliczeń `ZAL`, sylabus `grading`, opis z Teams), etapy liczone wstecz od terminu (`projStages`, zapisane przy pierwszym otwarciu), lista kontrolna w `progress.projects[klucz]`, „Dodaj etapy do kalendarza” → Twoje wpisy rodzaju „Etap projektu” (Kalendarz i link .ics po v27).
+- Test: `docs/gry/test/polaczenia-7.mjs`.
+
 ## Po zajęciach w 5 minut
 Krótkie podsumowanie zajęć dla kogoś, kto nie był albo nie słuchał: klikasz przedmiot, wybierasz, o czym były zajęcia, i w 5 krokach (po ok. minucie) dostajesz wyjaśnienie po polsku z angielskimi terminami, na końcu „Zapamiętaj” (3 rzeczy), pojęcia EN–PL i 3 pytania sprawdzające.
 - **Wejścia:** karta na górze ekranu Dziś w dniu zajęć (po ich końcu, także następnego dnia), link „⚡ Co było? 5 min →” przy zakończonych zajęciach na liście „Dziś masz…”, przycisk w okładce przedmiotu, Więcej → „Po zajęciach w 5 minut” (`#/po`, `#/po/<przedmiot>`, czytnik `#/po5/<id>`). Przeczytane: `localStorage["bm-po-seen"]`.

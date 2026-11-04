@@ -1,0 +1,50 @@
+// Połączenia, etap 7: projekt w Terminach ma strzałkę do ekranu projektu (zasady, etapy wstecz od terminu,
+// lista kontrolna w postępie, etapy do kalendarza). Zegar: 4.11.2026.
+// Uruchom: python3 -m http.server 8790, potem BASE=http://127.0.0.1:8790/ node docs/gry/test/polaczenia-7.mjs
+import { chromium, page, BASE, shot } from "./lib.mjs";
+const b = await chromium.launch();
+const wyniki = []; const ok = (n, w, i) => wyniki.push([w ? "✓" : "✗", n, w ? "" : JSON.stringify(i)?.slice(0, 700)]);
+const UID = "00000000-0000-4000-8000-000000000001";
+const now = Date.parse("2026-10-20T10:00:00+02:00");
+const TASK = { title: "Projekt grupowy: analiza danych", kind: "projekt", subjectId: "narzedzia-it-w-zarzadzaniu", groups: [], due: "2026-12-15", summary: "Analiza prawdziwych danych w grupach 3-osobowych.",
+  source: { team: "IT Tools", author: "dr inż. Piotr Niemcewicz", postedAt: now }, createdAt: now };
+const LS = { "bm-group": "C112", "bm-sub": "A", "bm-calmode": "month", "mock-progress": JSON.stringify({ [UID]: { group: "C112", sub: "A" } }), "mock-docs": JSON.stringify({ tasks: { tp1: TASK } }) };
+const getProg = (p) => p.evaluate((u) => JSON.parse(localStorage.getItem("mock-progress") || "{}")[u] || {}, UID);
+const p = await page(b, { konto: "platne", ls: LS });
+await p.clock.setFixedTime(new Date("2026-11-04T12:00:00+01:00"));
+await p.goto(BASE + "index.html#/terms"); await p.waitForTimeout(2500);
+const row = p.locator("article.tl", { hasText: "Projekt grupowy" });
+ok("Terminy: projekt ze strzałką", (await row.locator(".tl-prep").count()) === 1, await row.innerText().catch(() => ""));
+await row.locator(".tl-prep").click(); await p.waitForTimeout(800);
+ok("strzałka otwiera ekran projektu", /#\/projekt\/tp1$/.test(p.url()), p.url());
+const main = await p.locator("main").innerText();
+ok("co oddać: 40% oceny z zasad zaliczenia + opis z Teams", /40% oceny/.test(main) && /projekt grupowy z analizy prawdziwych danych/.test(main) && /Analiza prawdziwych danych w grupach/.test(main), main.slice(0, 900));
+const steps = await p.locator(".proj-steps li").allInnerTexts();
+ok("5 etapów z datami przed 15.12, ostatni 14.12", steps.length === 5 && /14 gru/.test(steps[4]) && /Wybór tematu/.test(steps[0]), steps);
+await p.locator(".proj-steps input").first().check(); await p.waitForTimeout(3000);
+let pr = await getProg(p);
+ok("lista kontrolna zapisana w postępie", pr.projects?.tp1?.done?.[0] && pr.projects.tp1.stages.length === 5, pr.projects);
+await p.getByRole("button", { name: "Dodaj etapy do kalendarza" }).click(); await p.waitForTimeout(3000);
+pr = await getProg(p);
+const evs = (pr.myEvents || []).filter((e) => e.kind === "projekt");
+ok("etapy jako Twoje wpisy (Kalendarz i link .ics)", evs.length === 5 && evs[4].date === "2026-12-14" && /Ostatnie sprawdzenie i oddanie: Projekt grupowy/.test(evs[4].title), evs);
+await p.goto(BASE + "index.html#/calendar"); await p.waitForTimeout(800);
+await p.getByRole("button", { name: "Następny miesiąc" }).click(); await p.waitForTimeout(300);
+const c14 = await p.locator(".cal .day:not(.out)").filter({ has: p.locator(".num", { hasText: /^14$/ }) }).first().innerText();
+ok("Kalendarz 14.12: etap projektu", /Ostatnie sprawdzenie/.test(c14) || /Ostatnie/.test(await p.locator(".cal .day:not(.out)").filter({ has: p.locator(".num", { hasText: /^14$/ }) }).first().getAttribute("aria-label")), c14);
+await p.goto(BASE + "index.html#/projekt/tp1"); await p.waitForTimeout(600);
+await p.getByRole("button", { name: "Usuń etapy z kalendarza" }).click(); await p.waitForTimeout(3000);
+pr = await getProg(p);
+ok("usuwanie etapów z kalendarza", !(pr.myEvents || []).some((e) => e.kind === "projekt"), pr.myEvents);
+await shot(p, "polaczenia7-projekt");
+ok("bez błędów", !p.errors.length, p.errors);
+const en = await page(b, { konto: "platne", lang: "en", w: 375, h: 800, ls: LS });
+await en.clock.setFixedTime(new Date("2026-11-04T12:00:00+01:00"));
+await en.goto(BASE + "index.html#/projekt/tp1"); await en.waitForTimeout(2500);
+const mEn = await en.locator("main").innerText();
+ok("EN 375: ekran projektu po angielsku, bez przewijania w bok", /What to hand in/.test(mEn) && /40% of the grade/.test(mEn) && /Choose the topic/.test(mEn) && (await en.evaluate(() => document.documentElement.scrollWidth)) <= 375, mEn.slice(0, 500));
+await b.close();
+for (const w of wyniki) console.log(w.join(" "));
+const bad = wyniki.filter((w) => w[0] === "✗").length;
+console.log(`\n${wyniki.length - bad}/${wyniki.length}`);
+process.exit(bad ? 1 : 0);
