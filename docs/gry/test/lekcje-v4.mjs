@@ -91,8 +91,10 @@ await shotX(P, "v4-rv-koniec");
 pr = await progOf();
 const t = Math.round((NOW - new Date("2026-01-01T00:00:00+01:00").getTime()) / DAY);
 ok("lv: jeden dzień", Array.isArray(pr.lv?.L1) && pr.lv.L1.length === 1, pr.lv);
-// nowa karta: „dobrze” = pudełko 1 (1 dzień); zła poprawiona w powrocie też tylko pudełko 1 (powrót nie liczy się do terminu)
-ok("wszystkie karty: pudełko 1, termin jutro", Object.values(pr.srs).every((v) => v[0] === 1 && v[1] === Object.values(pr.srs)[0][1]), pr.srs);
+// nowa karta: pudełko 1; termin liczy FSRS (learner.js, scalone z profilem nauki): zła (powrót nie liczy się do terminu) → jutro,
+// dobra → później niż jutro. Każda oceniona karta ma stan FSRS (8 pól).
+{ const vs = Object.values(pr.srs);
+  ok("wszystkie karty: pudełko 1, stan FSRS; zła jutro, dobre później", vs.every((v) => v[0] === 1 && v.length === 8 && v[1] >= t + 1) && vs.some((v) => v[1] === t + 1) && vs.some((v) => v[1] > t + 1), pr.srs); }
 await P.locator(".lp-cta").click(); await P.waitForTimeout(600);
 
 // 4. mapa kursu: 80% i ✓✓
@@ -156,6 +158,9 @@ await P.locator(".lp-x").click(); await P.waitForTimeout(500);
 pr = await progOf();
 const k3 = "q:L4:" + hashStr("L4 exit 3"), k1 = "q:L4:" + hashStr("L4 exit 1");
 ok("zgadnięte i poprawne → pudełko 1 jak błędne; pewne → nowe od jutra", pr.srs[k3]?.[0] === 1 && pr.srs[k1]?.[0] === 0, { k3: pr.srs[k3], k1: pr.srs[k1] });
+// „Pewny / Zgaduję” z biletu trafia do zdarzeń nauki (exit_ticket.odp = [dobrze, pewność]); jedno wejście: learnEvent.
+{ const q = await P.evaluate(() => JSON.parse(localStorage.getItem("bm-learn-q") || "[]")), et = q.filter((e) => e.typ === "exit_ticket" && e.dane.lessonId === "L4").pop();
+  ok("exit_ticket z pewnością: zgadnięte poprawne [1,0], bez wyboru [1,null]", et?.dane.odp?.some((x) => x[0] === 1 && x[1] === 0) && et.dane.odp.some((x) => x[0] === 1 && x[1] === null) && et.dane.max === 3, q.map((e) => e.typ + JSON.stringify(e.dane)).slice(-6)); }
 await P.evaluate(() => { location.hash = "#/material/L5"; }); await P.waitForTimeout(1500);
 await bezOkien(P); await P.locator(".lp-start").click(); await P.waitForTimeout(900);
 const t5 = await P.locator(".lp-card").getAttribute("data-type");

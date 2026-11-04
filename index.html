@@ -3846,7 +3846,7 @@ html.calm .kfx { display: none !important; }
 <div id="layer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
-<script src="skrot-supabase.js?v=20261105-scal"></script><script src="kosmetyki.js?v=20261103-podglad"></script><script src="terminy.js?v=20261028-terminy"></script><script src="lekcje-v4.js?v=20261102-c"></script>
+<script src="skrot-supabase.js?v=20261105-scal"></script><script src="kosmetyki.js?v=20261103-podglad"></script><script src="terminy.js?v=20261028-terminy"></script><script src="lekcje-v4.js?v=20261102-c"></script><script src="learner.js?v=20261104-fsrs"></script>
 <script>
 (() => {
   "use strict";
@@ -4401,7 +4401,6 @@ html.calm .kfx { display: none !important; }
   // Pudełka powtórek (dni do następnego powrotu fiszki). Tutaj, bo teksty przewodnika czytają je przy starcie strony.
   const SRS_DAYS = [0, 1, 3, 7, 14, 30, 60];
   // Odstępy powtórek do tekstów („po 1, 3, 7, 14, 30 i 60 dniach”), żeby opis zgadzał się z pudełkami.
-  const srsDaysTxt = () => SRS_DAYS.slice(1).join(", ").replace(/, (\d+)$/, " i $1");
   const DL_TYPES = [
     { id: "kolokwium", label: "Kolokwium", c: "#9A5B00" },
     { id: "test", label: "Test", c: "#9A5B00" },
@@ -4648,7 +4647,7 @@ html.calm .kfx { display: none !important; }
     review: "review", progress: "review",
     terms: "terms",
     calendar: "calendar",
-    gry: "review", haslo: "review", ranking: "more", more: "more", shop: "more", polec: "more", mine: "more", glossary: "materials", program: "more", reading: "materials", compare: "more", myFolder: "more", myUpload: "more", grading: "materials", reports: "more", ai: "more", guide: "more", profil: "more", ustawienia: "more", starosta: "more",
+    gry: "review", haslo: "review", ranking: "more", more: "more", shop: "more", polec: "more", learn: "more", mine: "more", glossary: "materials", program: "more", reading: "materials", compare: "more", myFolder: "more", myUpload: "more", grading: "materials", reports: "more", ai: "more", guide: "more", profil: "more", ustawienia: "more", starosta: "more",
   };
   function renderNav() {
     const v = S.route.view;
@@ -4705,7 +4704,7 @@ html.calm .kfx { display: none !important; }
     // Przed snem: ciepły, przyciemniony wygląd tylko na tym ekranie. Wyjście z przejazdu ucisza czytanie.
     document.body.classList.toggle("night", v === "noc");
     if (v !== "jazda" && JZ.st?.playing) jzStop();
-    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, jazda: viewJazda, noc: viewNoc, stas: viewStas, stasx: viewStasX, reading: viewReading, compare: viewCompare, guide: viewGuide, profil: viewProfil, ustawienia: viewUstawienia, starosta: viewStarosta, odwolania: viewOdwolania, projekt: viewProjekt }[v];
+    let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, learn: viewLearn, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, jazda: viewJazda, noc: viewNoc, stas: viewStas, stasx: viewStasX, reading: viewReading, compare: viewCompare, guide: viewGuide, profil: viewProfil, ustawienia: viewUstawienia, starosta: viewStarosta, odwolania: viewOdwolania, projekt: viewProjekt }[v];
     if (!fn) {
       // Nieznany adres (np. literówka w linku): mówimy o tym zamiast po cichu pokazywać Dziś.
       if (v && v !== "home") { toast("Nie ma takiej strony. Pokazuję ekran Dziś."); S.route = { view: "home" }; try { history.replaceState({ view: "home" }, "", "#/"); } catch {} }
@@ -9209,7 +9208,8 @@ html.calm .kfx { display: none !important; }
     const patch = { mastery: { ...(S.progress.mastery || {}), [m.id]: { ok, score: okN, total: X.length, at: Date.now(), weak } }, lp: { ...(S.progress.lp || {}), [m.id]: { ...(prev || {}), stars: Math.max(stars, prev?.stars || 0), last: stars, at: Date.now(), ...(ok ? { xpL: true } : {}) } } };
     if (ok) patch.done = { ...(S.progress.done || {}), [m.id]: Date.now() };
     saveProgress(patch);
-    learnEvent({ kind: "lekcja", materialId: m.id, ok: okN, total: X.length });
+    // Bilet do zdarzeń nauki z „Pewny / Zgaduję” (B2) przy każdym pytaniu: [dobrze 1/0, pewność 1 = pewny, 0 = zgaduję, null = bez wyboru].
+    learnEvent({ kind: "lekcja", materialId: m.id, ok: okN, total: X.length, ev: { lessonId: m.id, score: okN, max: X.length, odp: X.map((q) => [st.ans[q.id] === q.correct ? 1 : 0, st.conf?.[q.id] ?? null]) } });
     if (ok) rpSend("lekcja", m.id);
     // Wszystko ważne z lekcji trafia do powtórek (także po zdanym bilecie): nowe od jutra,
     // a pytania z biletu, które poszły źle albo były zgadnięte (B2), od razu do pudełka 1.
@@ -12233,6 +12233,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
         ], "studia"),
         moreGroup("Ty", [
           moreRow("spark", "Sklep i monety", sk.state === "in" ? `🪙 ${sk.sklep?.loaded ? fmtN(sk.sklep.saldo || 0) : "…"} · motywy, Zadania dnia, polecanie` : "motywy i Zadania dnia", () => go({ view: "shop" })),
+          sk.state === "in" ? moreRow("spark", "Profil nauki", S.learner?.testAt ? "rytm, pamięć, skupienie i Twoje dane" : "6 minut: jak się uczysz", () => go({ view: "learn" })) : null,
           moreRow("group", "Moja grupa", groupLabel, openGroupPicker),
           moreRow(emo("🎨"), "Wygląd", `${themeName()} · motywy i animacje`, () => go({ view: "ustawienia", id: "wyglad" })),
           moreRow("user", "Konto i dostęp", sk.state === "in" ? sk.email : "nie zalogowano", () => go({ view: "ustawienia", id: "konto" })),
@@ -12661,6 +12662,178 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   }
   const polecMsgText = (kod) => EN ? `I study for exams on Skrót BM (summaries, flashcards, quizzes and mock tests for 1st-year BM). When you buy access until the end of semester 2, enter my code ${kod}: ${window.skrot.polecLink(kod)}` : `Uczę się do zaliczeń na Skrót BM (skróty, fiszki, quizy i próbne testy dla 1. roku BM). Jak będziesz kupować dostęp do końca 2. semestru, wpisz mój kod ${kod}: ${window.skrot.polecLink(kod)}`;
   async function polecCopy(text, done) { try { await navigator.clipboard.writeText(text); toast(done); } catch { prompt("Skopiuj:", text); } }
+  // ================= PROFIL NAUKI (v22, learner.js; Zdawalni docs/plan-profil-nauki.md L7) =================
+  // Test „Jak się uczysz?” (wariant 19+): rytm, krótka gra pamięciowa, skupienie, co Cię nakręca, zainteresowania.
+  // Wynik to tylko punkt startu: lekko ustawia odstępy powtórek (FSRS) i trafia do panelu. Nigdy „styl uczenia się”.
+  S.learner = null;
+  async function loadLearner() {
+    const r = await window.skrot?.learn?.profil?.();
+    if (!r?.ok) { S.learner = { off: true, declared: {}, priors: {}, derived: {}, wlaczone: true, testAt: null }; return; }
+    const p = r.profil || {};
+    S.learner = { declared: p.deklaracje || {}, priors: p.startowe || {}, derived: p.z_danych || {}, wlaczone: p.wlaczone !== false, testAt: p.test_at || null };
+    if (S.route.view === "learn") render();
+  }
+  // Zdarzenia potrzebne do działania idą zawsze; reszta tylko przy włączonym „Ucz się na moich danych” (baza pilnuje tego samego).
+  const LEARN_ESSENTIAL = new Set(["review_graded", "exit_ticket"]);
+  function learnTrack(typ, dane) {
+    if (!S.uid || !window.skrot?.learn) return;
+    if (S.learner && S.learner.wlaczone === false && !LEARN_ESSENTIAL.has(typ)) return;
+    window.skrot.learn.track(typ, dane);
+  }
+  const LT = { step: "intro" };
+  const ltReset = () => { const seed = Math.floor(Math.random() * 2 ** 31); Object.assign(LT, { step: "intro", seed, set: ["a", "b", "c"][seed % 3], bedtime: null, clearest: null, focus: null, sessions: null, motivations: [], stress: null, interests: [], immediate: null, delayed: null, memSkipped: false, q: 0, picked: null, ans: [], study: 0, err: "" }); };
+  ltReset();
+  const ltGo = (step) => { LT.step = step; LT.err = ""; LT.q = 0; LT.picked = null; LT.ans = []; render(); scrollTo({ top: 0 }); };
+  const LT_PART = { rhythm: [1, "Rytm"], memIntro: [2, "Pamięć"], study: [2, "Pamięć"], check: [2, "Pamięć"], focus: [3, "Skupienie"], motivation: [4, "Co Cię nakręca"], interests: [5, "Zainteresowania"], delayed: [5, "Pamięć – jeszcze raz"] };
+  function ltPills(opts, isOn, onPick, role = "radio") {
+    return h("div", { class: "row", style: "flex-wrap:wrap;gap:8px", role: role === "radio" ? "radiogroup" : "group" }, opts.map((o) =>
+      h("button", { type: "button", class: "btn small" + (isOn(o.value) ? " primary" : ""), role, "aria-checked": String(isOn(o.value)), style: "min-height:44px", onclick: () => { onPick(o.value); render(); } }, o.label)));
+  }
+  const ltQ = (title, hint, body) => h("fieldset", { class: "stack", style: "border:0;padding:0;margin:0;gap:8px" }, h("legend", { style: "font-weight:700;margin-bottom:6px", text: title }), hint ? h("p", { class: "muted", style: "margin:0", text: hint }) : null, body);
+  const ltNext = (label, onclick) => h("button", { type: "button", class: "btn primary", style: "min-height:48px;width:100%", onclick }, label);
+  function ltCheck(seedOff, done) {
+    const L = window.SkrotLearner, qs = L.pairs.buildCheck(LT.set, LT.seed + seedOff), q = qs[LT.q];
+    const pick = (o) => { LT.picked = o; render(); };
+    const sure = (c) => {
+      LT.ans.push({ word: q.word, picked: LT.picked, confidence: c }); LT.picked = null;
+      if (LT.q + 1 < qs.length) { LT.q++; render(); } else done(LT.ans.slice());
+    };
+    return h("div", { class: "stack" },
+      h("p", { class: "muted", text: `Słowo ${LT.q + 1} z ${qs.length}` }),
+      h("p", { lang: "und", translate: "no", style: "font-size:2.4rem;font-weight:800;text-align:center;margin:8px 0", text: q.word }),
+      ltQ("Co znaczy to słowo?", null, ltPills(q.options.map((o) => ({ value: o, label: o })), (v) => LT.picked === v, pick)),
+      LT.picked ? ltQ("Jak pewnie?", null, ltPills([{ value: "sure", label: "Na pewno" }, { value: "likely", label: "Chyba" }, { value: "guess", label: "Strzelam" }], () => false, sure)) : null);
+  }
+  async function ltSubmit() {
+    const L = window.SkrotLearner;
+    const answers = { bedtime: LT.bedtime, clearest: LT.clearest, focus: LT.focus, sessions: LT.sessions, motivations: LT.motivations, stress: LT.stress, interests: LT.interests,
+      memory: LT.immediate && LT.delayed ? { set: LT.set, immediate: LT.immediate, delayed: LT.delayed } : null };
+    const s = L.scoring.scoreTest("19+", answers);
+    // Ze stresu zostaje tylko „wysoki albo nie” (baza odrzuca samą liczbę).
+    const { stress, ...keep } = answers; void stress;
+    const r = await window.skrot.learn.zapiszTest({ deklaracje: s.declared, startowe: s.priors, odpowiedzi: { ...keep, memory: s.memory } });
+    if (!r.ok) { LT.err = r.code === "not_enabled" ? "Profil nauki jeszcze nie działa w bazie. Spróbuj za kilka dni." : "Nie udało się zapisać. Sprawdź internet i spróbuj jeszcze raz."; render(); return; }
+    learnEvent({ kind: "profil", ev: { part: "interests", action: "done" } });
+    S.learner = { ...(S.learner || {}), declared: s.declared, priors: s.priors, derived: {}, wlaczone: S.learner?.wlaczone !== false, testAt: new Date().toISOString(), memory: s.memory };
+    LT.step = "result"; render(); scrollTo({ top: 0 });
+  }
+  // Każde zdanie osobno: słownik EN tłumaczy całe napisy, więc nie sklejamy zdań ze zmiennych kawałków.
+  const PORA_TXT = { morning: "Najjaśniej myśli Ci się rano.", afternoon: "Najjaśniej myśli Ci się po południu.", evening: "Najjaśniej myśli Ci się wieczorem." };
+  function learnCards(lp) {
+    const L = window.SkrotLearner, d = lp.declared || {}, p = lp.priors || {};
+    const m = p.stabilityMultiplier?.value || 1, pace = m > 1.05 ? "slow" : m < 0.95 ? "fast" : "std";
+    const labels = (list, opts) => (list || []).map((x) => opts.find((o) => o.value === x)?.label).filter(Boolean);
+    const mot = labels(d.motivations, L.questions.MOTIVATION_OPTIONS), intr = labels(d.interests, L.questions.INTEREST_OPTIONS);
+    return [
+      { t: "Rytm", v: [PORA_TXT[d.clearest] || "Porę dnia sprawdzimy, kiedy zbierze się więcej nauki.", d.bedtime != null ? `Śpisz ok. ${L.questions.bedtimeLabel(d.bedtime)}: powtórki najlepiej skończyć pół godziny wcześniej.` : null],
+        why: "Twoja odpowiedź z testu. Po kilku tygodniach nauki zobaczysz, o której naprawdę idzie Ci najlepiej." },
+      { t: "Pamięć", v: [lp.memory ? `Z ${lp.memory.total} słówek po kilku minutach pamiętasz ${lp.memory.delayed}.` : null,
+          { slow: "Fiszki zaczynają w trochę rzadszym rytmie.", fast: "Fiszki zaczynają w trochę częstszym rytmie.", std: "Fiszki zaczynają w standardowym rytmie." }[pace], "Potem wracają tak, jak je oceniasz."],
+        why: "Termin każdej fiszki liczy algorytm FSRS z Twoich ocen: co pamiętasz, wraca rzadziej. Wynik gry pamięciowej przesuwa tylko pierwsze odstępy i znika po 10 powtórkach." },
+      { t: "Skupienie", v: [p.blockMinutes?.value ? `Uczysz się w jednym ciągu ok. ${p.blockMinutes.value} minut.` : "Długość skupienia sprawdzimy po kilku sesjach.", p.blockMinutes?.value ? "Tyle mniej więcej trwa seria powtórek albo lekcja." : null],
+        why: "Twoja odpowiedź z testu. Krótka przerwa między seriami pomaga utrzymać uwagę." },
+      { t: "Co Cię nakręca", v: [mot.length ? null : "Nic nie wybrano."], list: [mot.length ? ["Pomaga Ci:", mot] : null, intr.length ? ["Zainteresowania:", intr] : null],
+        why: "Twoja odpowiedź z testu. Zmienisz ją, robiąc test jeszcze raz." },
+    ];
+  }
+  function learnPanel(lp) {
+    const sk = window.skrot;
+    const on = lp.wlaczone !== false;
+    const cards = h("ul", { class: "stack", style: "list-style:none;padding:0;margin:0;gap:12px" }, learnCards(lp).map((c) =>
+      h("li", { class: "panel sk-panel", style: "gap:6px" },
+        h("div", { class: "row", style: "justify-content:space-between;align-items:center" }, h("h2", { style: "margin:0;font-size:1.05rem", text: c.t }), h("span", { class: "chip", text: "z testu" })),
+        h("p", { style: "margin:0" }, ...c.v.filter(Boolean).flatMap((x, i) => [i ? " " : null, h("span", { text: x })]).filter(Boolean)),
+        ...(c.list || []).filter(Boolean).map(([lead, items]) => h("p", { style: "margin:0" }, h("span", { text: lead }), " ", ...items.flatMap((x, i) => [i ? ", " : null, h("span", { text: x })]).filter(Boolean))),
+        h("details", {}, h("summary", { style: "cursor:pointer;min-height:44px;display:flex;align-items:center", text: "Dlaczego?" }), h("p", { class: "muted", style: "margin:0", text: c.why })))));
+    const msg = h("p", { class: "muted", role: "status", style: "margin:0" });
+    const act = async (fn, done) => { const r = await fn(); msg.textContent = r.ok ? done : "Nie udało się. Sprawdź internet i spróbuj jeszcze raz."; return r.ok; };
+    const priv = h("section", { class: "panel sk-panel", style: "gap:10px" },
+      h("h2", { style: "margin:0;font-size:1.05rem", text: "Twoje dane" }),
+      h("button", { type: "button", class: "mi more-row", role: "switch", "aria-checked": String(on), onclick: async () => {
+          if (await act(() => sk.learn.wlacz(!on), on ? "Wyłączone. Nie zbieramy już danych o sesjach i przerwach." : "Włączone.")) { S.learner.wlaczone = !on; render(); }
+        } },
+        icon("spark"), h("span", { class: "more-txt" }, h("span", { text: "Ucz się na moich danych" }), h("small", { text: "Profil dopasowuje się do tego, jak Ci idzie. Wyłączone: zostają tylko oceny fiszek i bilety wyjścia, potrzebne do powtórek." })),
+        h("span", { class: "switch", "aria-hidden": "true", "aria-checked": String(on) })),
+      h("button", { type: "button", class: "btn", onclick: () => { ltReset(); LT.step = "rhythm"; S.learner.retake = true; render(); } }, "Zrób test jeszcze raz"),
+      h("button", { type: "button", class: "btn", onclick: () => act(() => sk.learn.odNowa(), "Profil zaczyna od nowa. Fiszki i postęp zostały.") }, "Zacznij profil od nowa"),
+      h("button", { type: "button", class: "btn", onclick: () => { if (confirm("Usunąć dane o aktywności (sesje, przerwy, przebieg testu)? Tego nie da się cofnąć. Fiszki, lekcje i postęp zostają.")) act(() => sk.learn.usunDane(), "Dane o aktywności usunięte."); } }, "Usuń dane o aktywności"),
+      msg);
+    return [cards, priv];
+  }
+  function viewLearn() {
+    const sk = window.skrot || {}, L = window.SkrotLearner, back = backLink({ view: "more" });
+    const head = h("section", { class: "stack" }, h("h1", { class: "ptitle", text: "Profil nauki" }),
+      h("p", { class: "muted", text: "Jak się uczysz: rytm, pamięć, skupienie. Na start z krótkiego testu, potem z tego, co faktycznie robisz." }));
+    if (sk.state !== "in") return [back, head, h("p", { class: "muted", text: "Zaloguj się, żeby zrobić test." })];
+    if (!L) return [back, head, h("p", { class: "muted", text: "Nie udało się wczytać profilu. Odśwież stronę." })];
+    if (S.learner === null) { loadLearner(); return [back, head, h("p", { class: "muted", text: "Ładuję…" })]; }
+    const Q = L.questions, lp = S.learner;
+    if (lp.testAt && LT.step !== "result" && !lp.retake) return [back, head, ...learnPanel(lp)];
+    const part = LT_PART[LT.step];
+    const bar = part ? h("p", { class: "muted", style: "margin:0" }, h("span", { text: `Krok ${part[0]} z 5` }), " · ", h("span", { text: part[1] })) : null;
+    const err = LT.err ? h("p", { class: "notice err", role: "alert", text: LT.err }) : null;
+    const need = (cond, msg, step) => () => { if (!cond()) { LT.err = msg; render(); return; } ltGo(step); };
+    let body;
+    switch (LT.step) {
+      case "intro":
+        body = [h("p", { text: "Kilka pytań i krótka gra pamięciowa, ok. 6 minut. Wynik lekko ustawi odstępy powtórek fiszek i pokaże Ci, co Ci pomaga." }),
+          h("p", { class: "muted", text: "To tylko punkt startu. Nie ma tu „stylów uczenia się” ani etykiet." }),
+          ltNext("Zaczynamy", () => { learnEvent({ kind: "profil", ev: { part: "rhythm", action: "started" } }); ltGo("rhythm"); })];
+        break;
+      case "rhythm":
+        body = [ltQ("O której zwykle idziesz spać w dni z zajęciami?", null, ltPills(Q.BEDTIMES.map((b) => ({ value: b, label: Q.bedtimeLabel(b) })), (v) => LT.bedtime === v, (v) => (LT.bedtime = v))),
+          ltQ("Kiedy myśli Ci się najjaśniej?", null, ltPills(Q.CLEAREST_OPTIONS, (v) => LT.clearest === v, (v) => (LT.clearest = v))),
+          ltNext("Dalej", need(() => LT.bedtime !== null && LT.clearest !== null, "Odpowiedz na oba pytania.", "memIntro"))];
+        break;
+      case "memIntro":
+        body = [h("p", { text: "Pokażemy Ci 6 słów z wymyślonego języka, każde przez 5 sekund. Potem sprawdzimy, ile pamiętasz – od razu i jeszcze raz na końcu." }),
+          ltNext("Pokaż słowa", () => { LT.study = 0; ltGo("study"); }),
+          h("button", { type: "button", class: "btn", style: "min-height:44px;width:100%", onclick: () => { LT.memSkipped = true; learnEvent({ kind: "profil", ev: { part: "memory", action: "skipped" } }); ltGo("focus"); } }, "Pomiń tę część")];
+        break;
+      case "study": {
+        const pairs = L.pairs.PAIR_SETS[LT.set], pr = pairs[LT.study];
+        clearTimeout(LT.timer);
+        LT.timer = setTimeout(() => { if (LT.step !== "study") return; if (LT.study + 1 < pairs.length) { LT.study++; render(); } else ltGo("check"); }, L.pairs.STUDY_MS);
+        body = [h("div", { class: "stack", style: "text-align:center", "aria-live": "polite" },
+          h("p", { class: "muted", text: `Zapamiętaj · ${LT.study + 1} z ${pairs.length}` }),
+          h("p", { lang: "und", translate: "no", style: "font-size:2.4rem;font-weight:800;margin:0", text: pr.word }),
+          h("p", { style: "font-size:1.4rem;font-weight:700;margin:0", text: pr.meaning }))];
+        break;
+      }
+      case "check":
+        body = [ltCheck(0, (a) => { LT.immediate = a; learnEvent({ kind: "profil", ev: { part: "memory", action: "done" } }); ltGo("focus"); })];
+        break;
+      case "focus":
+        body = [ltQ("Jak długo zwykle uczysz się w jednym ciągu, zanim zaczniesz zerkać w telefon?", null, ltPills(Q.FOCUS_OPTIONS, (v) => LT.focus === v, (v) => (LT.focus = v))),
+          ltQ("Wolisz jedną dłuższą sesję czy kilka krótkich w ciągu dnia?", null, ltPills(Q.SESSIONS_OPTIONS, (v) => LT.sessions === v, (v) => (LT.sessions = v))),
+          ltNext("Dalej", need(() => LT.focus !== null && LT.sessions !== null, "Odpowiedz na oba pytania.", "motivation"))];
+        break;
+      case "motivation": {
+        const tog = (v) => { LT.motivations = LT.motivations.includes(v) ? LT.motivations.filter((x) => x !== v) : LT.motivations.length < Q.MAX_MOTIVATIONS ? [...LT.motivations, v] : LT.motivations; };
+        body = [ltQ("Co najbardziej pomaga Ci zabrać się do nauki?", `Wybierz do ${Q.MAX_MOTIVATIONS}.`, ltPills(Q.MOTIVATION_OPTIONS, (v) => LT.motivations.includes(v), tog, "checkbox")),
+          ltQ("Jak bardzo stresują Cię kolokwia i egzaminy?", "1 – wcale, 5 – bardzo. Sama liczba nie jest zapisywana.", ltPills(Q.STRESS_SCALE.map((v) => ({ value: v, label: String(v) })), (v) => LT.stress === v, (v) => (LT.stress = v))),
+          ltNext("Dalej", need(() => LT.motivations.length > 0 && LT.stress !== null, "Wybierz, co Cię nakręca, i zaznacz stres.", "interests"))];
+        break;
+      }
+      case "interests": {
+        const tog = (v) => { LT.interests = LT.interests.includes(v) ? LT.interests.filter((x) => x !== v) : LT.interests.length < Q.MAX_INTERESTS ? [...LT.interests, v] : LT.interests; };
+        const last = LT.memSkipped || !LT.immediate;
+        body = [ltQ("Czym się interesujesz?", `Do ${Q.MAX_INTERESTS}.`, ltPills(Q.INTEREST_OPTIONS, (v) => LT.interests.includes(v), tog, "checkbox")),
+          ltNext(last ? "Zobacz swój profil" : "Dalej", () => (last ? ltSubmit() : ltGo("delayed")))];
+        break;
+      }
+      case "delayed":
+        body = LT.delayed ? [ltNext("Zobacz swój profil", ltSubmit)] : [h("p", { text: "Ostatnia rzecz: pamiętasz jeszcze słowa z gry?" }), ltCheck(1, (a) => { LT.delayed = a; ltSubmit(); })];
+        break;
+      case "result":
+        body = [h("h2", { style: "margin:0", text: "Twój profil na start" }), ...learnPanel(lp).slice(0, 1),
+          h("p", { class: "muted", text: "To punkt startu. Po kilku tygodniach nauki profil ułoży się według tego, co faktycznie robisz." }),
+          ltNext("Gotowe", () => { delete S.learner.retake; LT.step = "intro"; go({ view: "review" }); })];
+        break;
+    }
+    return [back, head, h("section", { class: "panel sk-panel", style: "gap:14px" }, bar, ...body, err)];
+  }
+
   function viewPolec() {
     const sk = window.skrot || {}, d = POLEC.d;
     const back = backLink({ view: "shop" });
@@ -14311,8 +14484,9 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
   }
   function demoLeitner(ok) {
     const DAYS = [1, 3, 7, 14, 30, 60];
-    let box = 0, moves = 0;
-    const lane = h("div", { class: "g-boxes" }, DAYS.map((d, i) => h("div", { class: "g-box" }, h("b", { class: "num", text: i + 1 }), h("span", { text: d === 1 ? "1 dzień" : `${d} dni` }))));
+    // Terminy jak w prawdziwych Powtórkach (FSRS z learner.js); dzień próby przesuwa się o odstęp.
+    let box = 0, moves = 0, fs = null, day = dayN();
+    const lane = h("div", { class: "g-boxes" }, DAYS.map((d, i) => h("div", { class: "g-box" }, h("b", { class: "num", text: i + 1 }), h("span", { text: i === 0 ? "start" : i === 5 ? "najrzadziej" : "" }))));
     const card = h("div", { class: "g-mini-card", text: "Inflacja to…" });
     lane.append(card);
     const msg = h("p", { class: "g-status", text: "Nowa fiszka. Oceń, jak dobrze ją pamiętasz." });
@@ -14320,7 +14494,11 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const grade = (g) => {
       const before = box;
       box = g === 0 ? 0 : g === 1 ? box : Math.min(5, box + (g === 3 ? 2 : 1));
-      const days = g === 0 ? 1 : g === 1 ? Math.max(1, Math.round(DAYS[box] / 2)) : DAYS[box];
+      let days = g === 0 ? 1 : g === 1 ? Math.max(1, Math.round(DAYS[box] / 2)) : DAYS[box];
+      if (window.SkrotLearner) {
+        const r = window.SkrotLearner.memory.reviewStoredCard(fs, g + 1, dayIso(day));
+        fs = r.card; days = Math.max(1, dayN(r.due) - day); day += days;
+      }
       msg.className = "g-status" + (g >= 2 ? " ok" : "");
       msg.textContent = (g === 0 ? "Wraca na początek. " : g === 1 ? "Zostaje w tym pudełku. " : box > before ? `Awans do pudełka ${box + 1}. ` : "") + `Zobaczysz ją za ${days} ${plural(days, "dzień", "dni", "dni")}.`;
       card.classList.remove("g-hop"); void card.offsetWidth; card.classList.add("g-hop");
@@ -14680,7 +14858,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       { sel: ".slide-ref, .term-link, .remember", title: "Odsyłacze i pojęcia", text: "📍 pokazuje slajdy prowadzącego, a podkreślone słowa otwierają definicję." },
     ] },
     { id: "powtorki", ic: "review", title: "Powtórki, które pamiętają za Ciebie", gain: "Wiesz, kiedy fiszki wracają i jak czytać mapę postępów.", slides: [
-      { t: "Fiszka wraca, zanim ją zapomnisz", p: "Oceniasz każdą fiszkę: <b>Nie pamiętam, Trudne, Pamiętam, Łatwe</b>. Im lepiej pamiętasz, tym później wraca: po 1, 3, 7, 14, 30 i 60 dniach. Przed zaliczeniem z przedmiotu każda fiszka wraca przynajmniej raz. Po lekcji wracają też jej <b>pytania</b>: zła odpowiedź wraca jeszcze w tej samej sesji, aż będzie dobra. Lekcja jest <b>utrwalona</b> po 1 dniu dobrych powtórek, a <b>opanowana</b> po 3 dniach.", tip: "Dziennie maks. 20 nowych i 30 zaległych kart, reszta czeka do jutra. Na komputerze: <b>spacja</b> odwraca, klawisze <b>1–4</b> oceniają.", try: "Oceń fiszkę 3 razy", demo: demoLeitner },
+      { t: "Fiszka wraca, zanim ją zapomnisz", p: "Oceniasz każdą fiszkę: <b>Nie pamiętam, Trudne, Pamiętam, Łatwe</b>. Im lepiej pamiętasz, tym później wraca: najpierw po kilku dniach, potem po tygodniach. Przed zaliczeniem z przedmiotu każda fiszka wraca przynajmniej raz.", tip: "Dziennie dochodzi maks. 20 nowych fiszek. Na komputerze: <b>spacja</b> odwraca, klawisze <b>1–4</b> oceniają.", try: "Oceń fiszkę 3 razy", demo: demoLeitner },
       { t: "Mapa postępów", p: "Każdy materiał to kwadrat. Kolor mówi, jak dobrze go umiesz: <b>quiz</b> liczy się w 40%, <b>fiszki</b> w 30%, <b>zadania</b> i <b>próbny test</b> po 15%. Zielony = umiesz (80+).", tip: "Przed kolokwium ekran Dziś podpowie, który słaby temat powtórzyć.", try: "Doprowadź temat do zielonego", demo: demoMap },
     ], tour: [
       { go: { view: "review" }, sel: ".rv-start", title: "Dziś do powtórki", text: "Ile fiszek czeka i ile to minut. Przycisk Zacznij i lecisz." },
@@ -14995,7 +15173,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     { go: { view: "home" }, sel: "section.sk-setup, section.today", title: "Najpierw Twoja grupa", text: () => S.group ? `Masz ustawioną grupę ${S.group}. Możesz ją zmienić tutaj albo później w Więcej → Moja grupa.` : "Wybierz grupę i podgrupę lab, a w zajęciach i terminach zobaczysz tylko to, co Cię dotyczy. Przegląd leci dalej, nic nie musisz zamykać.", art: "group", picker: true },
     { go: { view: "home" }, sel: "section.sk-now, section.now", title: "Dziś: od tego zaczynasz", text: "Karta „Teraz zrób to” sama wybiera to, co w tej chwili najważniejsze. Klikasz jeden przycisk i działasz. Tu czeka też Hasło dnia, a przed kolokwium boss.", art: "hub" },
     { go: { view: "materials" }, nav: "materials", title: "Przedmioty", text: () => "Każdy przedmiot ma skrót, wersję prostym językiem, fiszki i quiz. Wyszukiwarka znajdzie temat w sekundę" + (TOUCH ? "." : " (klawisz /)."), art: "books" },
-    { go: { view: "review" }, nav: "review", title: "Powtórki", text: `Fiszki wracają same, zanim je zapomnisz: po ${srsDaysTxt()} dniach. Tu też są gry z pytaniami z przedmiotu i mapa tego, co już umiesz.`, art: "review" },
+    { go: { view: "review" }, nav: "review", title: "Powtórki", text: `Fiszki wracają same, zanim je zapomnisz: najpierw po kilku dniach, potem coraz rzadziej. Tu też są gry z pytaniami z przedmiotu i mapa tego, co już umiesz.`, art: "review" },
     { go: { view: "terms" }, nav: "terms", title: "Terminy", text: "Kolokwia, zadania, projekty i formalności, ułożone według czasu. Zrobione odhaczasz.", art: "tasks" },
     { go: { view: "calendar" }, nav: "calendar", title: "Kalendarz", text: "Zajęcia, zaliczenia i Twoje własne wpisy. Jednym linkiem dodasz go do telefonu.", art: "cal" },
     { go: { view: "more" }, nav: "more", title: "Więcej", text: "Twoje pliki, ranking kierunku, sklep z monetami, program studiów i konto.", art: "more" },
@@ -15283,7 +15461,9 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
   //     czyta stamtąd Po zajęciach i Stasia (źródło „act”), a wspólny priorytet wie, że temat był dziś ćwiczony.
   // Punkty rankingu i monety liczy baza: wołający wysyła odpowiedzi przez rpSend (po, stas, odp, …), bo to baza je sprawdza.
   // Aktywności, które mają własne XP (odtwarzacz, gry), wołają learnEvent z xp: 0.
-  function learnEvent({ kind, materialId = null, ok = null, total = null, xp = 0, once = null } = {}) {
+  // To jest JEDYNE wejście zdarzeń nauki: learnEvent wysyła też zdarzenie do bazy (learnTrack → skrot.learn, v30);
+  // nowe aktywności wołają learnEvent, nie learnTrack. ev = dodatkowe pola zdarzenia (np. ocena fiszki, pytania biletu).
+  function learnEvent({ kind, materialId = null, ok = null, total = null, xp = 0, once = null, ev = null } = {}) {
     let got = 0;
     if (xp > 0 && !(once && xpOnceUsed(once))) {
       got = XP_CAP[kind] != null ? xpTake(kind, xp) : xp;
@@ -15298,8 +15478,13 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       const next = Object.entries({ ...all, [materialId]: cur }).sort((a, b) => (b[1].d || 0) - (a[1].d || 0)).slice(0, 400);
       progSoon({ learn: Object.fromEntries(next) });
     }
+    // Zdarzenie nauki do bazy (nauka_zdarzenia, SQL v30): fiszka → review_graded (FSRS), lekcja → exit_ticket (z pewnością),
+    // test „Jak się uczysz?” → profile_test, reszta (quiz, gra, Po zajęciach, Staś, test…) → activity. Bez v30 w bazie cisza.
+    const typ = LEARN_TYP[kind] || "activity";
+    learnTrack(typ, typ === "activity" ? { kind, materialId, ok, total, ...(ev || {}) } : ev || {});
     return got;
   }
+  const LEARN_TYP = { fiszki: "review_graded", lekcja: "exit_ticket", profil: "profile_test" };
 
   // ================= Wspólny priorytet tematu =================
   // Jedna miara „co jest teraz najważniejsze dla tej osoby”. Czytają ją Powtórki (srsDue, podpowiedź na górze),
@@ -15727,7 +15912,28 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       h("section", { class: "noc-box" }, body)];
   }
 
-  // ================= powtórki rozłożone w czasie (pudełka Leitnera) =================
+  // ================= powtórki rozłożone w czasie (FSRS, learner.js) =================
+  // Termin następnej powtórki liczy FSRS (ten sam model co w Zdawalni, plik learner.js budowany z matura-app):
+  // ocena 0–3 = Again/Hard/Good/Easy. Stan karty dopisany za [pudełko, dzień]: [.., stabilność, trudność, powtórki,
+  // pomyłki, stan, dzień ostatniej powtórki]. Karty sprzed FSRS (2 pola) zaczynają nową kartę przy następnej ocenie.
+  // Pudełko 0–6 zostaje jako prosty znak postępu (mapa postępów, „umiesz” od 3).
+  const dayIso = (n) => dkey(new Date(2026, 0, 1 + n));
+  function fsrsNext(cur, g, t) {
+    const L = window.SkrotLearner;
+    if (!L) { // learner.js się nie wczytał: stare pudełka, żeby nic nie przepadło
+      const box = g === 0 ? 1 : g === 1 ? Math.max(1, cur?.[0] || 0) : Math.min(6, (cur?.[0] || 0) + (g === 3 ? 2 : 1));
+      return { due: g === 0 ? t + 1 : t + (g === 1 ? Math.max(1, Math.round(SRS_DAYS[box] / 2)) : SRS_DAYS[box]), state: cur?.length >= 8 ? cur.slice(2) : [] };
+    }
+    const prev = cur?.length >= 8 ? { stability: cur[2], difficulty: cur[3], reps: cur[4], lapses: cur[5], state: cur[6], lastReview: dayIso(cur[7]) } : null;
+    const lp = S.learner || {};
+    const r = L.memory.reviewStoredCard(prev, g + 1, dayIso(t), lp.derived?.desiredRetention?.value);
+    let days = Math.max(1, dayN(r.due) - t);
+    // Gra pamięciowa z testu „Jak się uczysz?” lekko wydłuża albo skraca pierwsze odstępy; po 10 powtórkach już nie.
+    const m = lp.priors?.stabilityMultiplier?.value || 1;
+    if (m !== 1) days = Math.max(1, Math.round(days * (1 + (m - 1) * Math.max(0, 1 - (r.card.reps - 1) / L.memory.MULTIPLIER_FADE_REVIEWS))));
+    const c = r.card;
+    return { due: t + days, state: [+c.stability.toFixed(3), +c.difficulty.toFixed(3), c.reps, c.lapses, c.state, t] };
+  }
   const NEW_PER_DAY = 20, DUE_PER_DAY = 30;
   const cardKey = (mid, card) => mid + ":" + hashStr(card.q);
   const glKey = (sid, en) => "g:" + sid + ":" + hashStr(norm(en));
@@ -15741,16 +15947,17 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     let box = cur?.[0] || 0;
     box = g === 0 ? 1 : g === 1 ? Math.max(1, box) : Math.min(6, box + (g === 3 ? 2 : 1));
     if (g === 0) dayMiss.add("f:" + key);
-    let due = g === 0 ? t + 1 : t + (g === 1 ? Math.max(1, Math.round(SRS_DAYS[box] / 2)) : SRS_DAYS[box]);
+    const next = fsrsNext(cur, g, t);
+    let due = next.due;
     // Przed zaliczeniem z tego przedmiotu każda karta wraca przynajmniej raz.
     const sid = keySubject(key), nx = sid && nextExam(sid);
     if (nx) { const ed = dayN(nx.date); if (ed - 1 > t && due >= ed) due = ed - 1; }
-    const patch = { srs: { ...all, [key]: [box, due] } };
+    const patch = { srs: { ...all, [key]: [box, due, ...next.state] } };
     if (!cur || cur[0] === 0) { const sn = S.progress?.srsNew; patch.srsNew = { d: t, n: (sn?.d === t ? sn.n : 0) + 1 }; }
     else { const sr = S.progress?.srsRev; patch.srsRev = { d: t, n: (sr?.d === t ? sr.n : 0) + 1 }; }
     const sn = streakNext(t); if (sn) patch.streak = sn;
     progSoon(patch);
-    if (keyMid(key)) learnEvent({ kind: "fiszki", materialId: keyMid(key) });
+    learnEvent({ kind: "fiszki", materialId: keyMid(key), ev: { cardId: String(key).slice(0, 200), rating: g + 1, elapsedDays: cur?.length >= 8 ? t - cur[7] : 0 } });
   }
   // day: od kiedy nowa karta może się pokazać (karty z lekcji: od jutra).
   function srsAdd(keys, day = dayN()) {
@@ -15764,7 +15971,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
   function srsMiss(keys) {
     if (!keys.length) return;
     const all = srsAll(), t = dayN(), set = {};
-    for (const k of keys) set[k] = [1, t + 1];
+    for (const k of keys) set[k] = [1, t + 1, ...(Array.isArray(all[k]) ? all[k].slice(2) : [])]; // stan FSRS zostaje
     progSoon({ srs: { ...all, ...set } });
   }
   function srsDrop(keys) {
@@ -15862,7 +16069,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const rows = SUBJECTS.map((x) => progressRow(x)).filter(Boolean);
     return [
       h("section", { class: "stack rv-head" }, s ? backLink({ view: "subject", id: s.id }) : null, h("h1", { class: "ptitle", text: s ? `Powtórki · ${s.pl}` : "Powtórki" }),
-        onceHelp("srs", `Fiszki wracają same, zanim zdążysz je zapomnieć: po ${srsDaysTxt()} dniach.`)),
+        onceHelp("srs", "Fiszki wracają same, zanim zdążysz je zapomnieć: najpierw po kilku dniach, potem coraz rzadziej. Termin liczy algorytm FSRS z Twoich ocen.")),
       h("section", { class: "sk-hero rv-start rv-hero" + (n ? "" : " calm") },
         h("span", { class: "eyebrow", text: "Dziś do powtórki" }),
         n ? h("p", { class: "sk-bignum" }, h("b", { class: "num", text: n }), h("span", { text: plural(n, "fiszka", "fiszki", "fiszek") })) : null,
@@ -15884,17 +16091,21 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
         !S.uid ? h("p", { class: "foot-note", style: "margin:0", text: "Bez logowania postęp zapisuje się tylko w tej przeglądarce." }) : null),
     ];
   }
-  // Pudełka: ile fiszek czeka jako nowe i ile leży w każdym pudełku (1, 3, 7, 14, 30, 60 dni).
+  // Gdzie są fiszki: nowe i za ile dni wraca każda z ocenionych (terminy z FSRS, więc zakresy zamiast pudełek).
+  const RV_RANGES = [[1, "do jutra"], [3, "2–3 dni"], [7, "do tygodnia"], [14, "do 2 tygodni"], [30, "do miesiąca"], [Infinity, "dalej"]];
   function reviewBoxes(sid, freshAll) {
-    const per = SRS_DAYS.map(() => 0);
-    for (const [k, v] of Object.entries(srsAll())) if (Array.isArray(v) && v[0] > 0 && (!sid || keySubject(k) === sid)) per[Math.min(6, v[0])]++;
-    const cols = [{ n: freshAll, t: "nowe", cls: " new" }, ...SRS_DAYS.slice(1).map((d, i) => ({ n: per[i + 1], t: `${d} ${plural(d, "dzień", "dni", "dni")}`, cls: i === 5 ? " top" : "" }))];
+    const per = RV_RANGES.map(() => 0), t = dayN();
+    for (const [k, v] of Object.entries(srsAll())) {
+      if (!Array.isArray(v) || v[0] <= 0 || (sid && keySubject(k) !== sid)) continue;
+      per[RV_RANGES.findIndex(([d]) => v[1] - t <= d)]++;
+    }
+    const cols = [{ n: freshAll, t: "nowe", cls: " new" }, ...RV_RANGES.map(([, label], i) => ({ n: per[i], t: label, cls: i === RV_RANGES.length - 1 ? " top" : "" }))];
     return h("section", { class: "panel rv-boxes" },
       h("div", { class: "panel-head" }, h("h2", { text: "Gdzie są Twoje fiszki" })),
-      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Każde „Pamiętam” przesuwa fiszkę do następnego pudełka i wraca ona coraz rzadziej. „Nie pamiętam” odsyła ją na początek." }),
+      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Każde „Pamiętam” odsuwa fiszkę dalej i wraca ona coraz rzadziej. „Nie pamiętam” sprowadza ją z powrotem na jutro." }),
       h("ol", { class: "rv-track" }, cols.map((c) => h("li", { class: "rv-box" + c.cls + (c.n ? "" : " zero") },
         h("b", { class: "num", text: c.n }), h("span", { text: c.t })))),
-      h("p", { class: "rv-track-legend muted", "aria-hidden": "true" }, h("span", { text: "czekają" }), h("span", { text: "wracają po… →" })));
+      h("p", { class: "rv-track-legend muted", "aria-hidden": "true" }, h("span", { text: "czekają" }), h("span", { text: "wracają za… →" })));
   }
   function viewReview() {
     const sid = S.route.sid || "";
@@ -17862,6 +18073,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
     try { const me = await user?.me?.(); S.myName = (me?.name || "").split(" ")[0]; } catch {}
     if (!db) { S.noDb = true; S.ready = true; render(); return; }
     try { S.uid = await user?.id?.(); } catch {}
+    if (S.uid) loadLearner();
     try { S.isStarosta = !!(await user?.canEdit?.()); } catch {}
     // Tryb starosty: narzędzia administratora widać tylko po włączeniu przełącznika w „Więcej”.
     S.canEdit = S.isStarosta && ls.get("bm-starosta") === "1";
