@@ -500,6 +500,18 @@
     await ready;
     if (skrot.state === "in") rpRaw("nauka_przypomnienie_otwarte", { p_id: m[1] });
   })();
+  // Etap 10: paczka i duet tygodnia (SQL v37). Dostęp tylko przez funkcje; monety za duet przyznaje baza.
+  skrot.paczka = {
+    stan: () => rpRaw("nauka_paczka"),
+    zaloz: () => rpRaw("nauka_paczka_zaloz"),
+    podglad: (kod) => rpRaw("nauka_paczka_podglad", { p_kod: kod }),
+    dolacz: (kod) => rpRaw("nauka_paczka_dolacz", { p_kod: kod }),
+    wyjdz: () => rpRaw("nauka_paczka_wyjdz"),
+    usun: (uid) => rpRaw("nauka_paczka_usun_osobe", { p_user: uid }),
+    zapros: (uid) => rpRaw("nauka_duet_zapros", { p_user: uid }),
+    odpowiedz: (id, tak) => rpRaw("nauka_duet_odpowiedz", { p_duet: id, p_tak: !!tak }),
+    zakoncz: () => rpRaw("nauka_duet_zakoncz"),
+  };
   setInterval(kqFlush, 20000);
   addEventListener("online", () => { kqFlush(); });
   // Zapytania, w których pkt to punkty przyznane teraz (nauka_haslo_dzis i nauka_bossy zwracają pkt informacyjnie).

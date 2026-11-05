@@ -368,7 +368,41 @@
     nauka_rocznik_ustaw: (a) => { if (rok().wybrany) return { ok: false, code: "juz_wybrany", rocznik_id: rok().id };
       try { localStorage.setItem("mock-rocznik", JSON.stringify({ id: a.p_rocznik, wybrany: true })); } catch {} return { ok: true, rocznik_id: a.p_rocznik, wybrany: true, status: "platny" }; },
   };
+  // ---------- v37 (etap 10): paczka i duet; stan w localStorage mock-paczka (JSON jak z nauka_paczka(), bez ok/cfg),
+  // "off" → baza bez v37 (not_enabled); podgląd zaproszenia z mock-paczka-podglad; wywołania w window.__pk ----------
+  const PK_CFG = { min_osob: 2, max_osob: 8, plan_dni: 3, udzial: 0.7, duet_cel: 8, duet_nagroda: 20 };
+  const pkDzis = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const pkGet = () => { try { return JSON.parse(localStorage.getItem("mock-paczka") || "null"); } catch { return null; } };
+  const pkSet = (v) => { try { localStorage.setItem("mock-paczka", JSON.stringify(v)); } catch {} };
+  const pkLog = (fn, a) => (window.__pk = window.__pk || []).push({ fn, a });
+  const pkOut = () => { const st = pkGet(); return { ok: true, cfg: PK_CFG, dzis: pkDzis(), tydzien: null, paczka: null, duet: null, zaproszenia: [], ...(st || {}) }; };
+  const PK_JA = (o) => ({ id: UID, nick: "Student", ja: true, wlasciciel: false, dzis: true, dni: 2, w_duecie: false, ...o });
+  const PKFN = {
+    nauka_paczka: () => pkOut(),
+    nauka_paczka_zaloz: () => { pkLog("zaloz"); if (pkGet()?.paczka) return { ok: false, code: "juz_w_paczce" };
+      pkSet({ paczka: { kod: "AB3K9Z", wlasciciel: true, czlonkowie: [PK_JA({ wlasciciel: true })] }, duet: null, zaproszenia: [] }); return pkOut(); },
+    nauka_paczka_podglad: (a) => { pkLog("podglad", a); const v = ls("mock-paczka-podglad", ""); return v ? JSON.parse(v) : { ok: true, kod: a.p_kod, osob: 2, max: 8, pelna: false, moja: false, inna: !!pkGet()?.paczka, wlasciciel_nick: "Kasia" }; },
+    nauka_paczka_dolacz: (a) => { pkLog("dolacz", a); if (pkGet()?.paczka) return { ok: false, code: "juz_w_paczce" };
+      if (a.p_kod === "PELNA1") return { ok: false, code: "pelna" };
+      if (a.p_kod === "NIEMA1") return { ok: false, code: "nie_ma" };
+      pkSet({ paczka: { kod: a.p_kod, wlasciciel: false, czlonkowie: [
+        { id: "00000000-0000-4000-8000-00000000000a", nick: "Kasia", ja: false, wlasciciel: true, dzis: true, dni: 3, w_duecie: false },
+        { id: "00000000-0000-4000-8000-00000000000b", nick: null, ja: false, wlasciciel: false, dzis: false, dni: 1, w_duecie: false },
+        PK_JA({ dzis: false, dni: 0 })] }, duet: null, zaproszenia: [] }); return pkOut(); },
+    nauka_paczka_wyjdz: () => { pkLog("wyjdz"); if (!pkGet()?.paczka) return { ok: false, code: "brak_paczki" }; pkSet(null); return { ok: true, paczka: null }; },
+    nauka_paczka_usun_osobe: (a) => { pkLog("usun", a); const st = pkGet(); if (!st?.paczka?.wlasciciel) return { ok: false, code: "nie_wlasciciel" };
+      st.paczka.czlonkowie = st.paczka.czlonkowie.filter((m) => m.id !== a.p_user); if (st.duet?.z === a.p_user) st.duet = null; pkSet(st); return pkOut(); },
+    nauka_duet_zapros: (a) => { pkLog("zapros", a); const st = pkGet(); if (!st?.paczka) return { ok: false, code: "brak_paczki" };
+      st.duet = { id: "d-1", stan: "zaproszenie", z: a.p_user, od_mnie: true }; pkSet(st); return pkOut(); },
+    nauka_duet_odpowiedz: (a) => { pkLog("odpowiedz", a); const st = pkGet(); const z = (st?.zaproszenia || []).find((x) => x.id === a.p_duet); if (!z) return { ok: false, code: "nie_ma" };
+      st.zaproszenia = st.zaproszenia.filter((x) => x.id !== a.p_duet);
+      if (a.p_tak) { st.duet = { id: a.p_duet, stan: "aktywny", z: z.od, od: pkDzis(), moje: 0, jego: 0, cel: 8, nagroda: 20, odebrane: false, moze_zarobic: true };
+        st.paczka.czlonkowie = st.paczka.czlonkowie.map((m) => (m.id === z.od || m.ja ? { ...m, w_duecie: true } : m)); }
+      pkSet(st); return pkOut(); },
+    nauka_duet_zakoncz: () => { pkLog("zakoncz"); const st = pkGet(); if (st) { st.duet = null; st.paczka.czlonkowie = st.paczka.czlonkowie.map((m) => ({ ...m, w_duecie: false })); pkSet(st); } return pkOut(); },
+  };
   const BASE = {
+    ...PKFN,
     // v36 (etap 7a): przypomnienia mailem; ustawienia w localStorage mock-przyp (JSON jak z bazy), stan w mock-przyp-stan,
     // wywołania w window.__przyp. mock-przyp = "off" → baza bez v36 (not_enabled).
     nauka_przypomnienia_moje: () => { const v = ls("mock-przyp", "");
@@ -405,6 +439,7 @@
     else if (V22FN[fn]) out = V22 ? { data: V22FN[fn](args), error: null } : brak;
     else if (V31FN[fn]) out = V31 ? { data: V31FN[fn](args), error: null } : brak;
     else if (/^nauka_przypomnieni/.test(fn) && ls("mock-przyp", "") === "off") out = brak; // v36 jeszcze nie w bazie
+    else if (/^nauka_(paczka|duet)/.test(fn) && ls("mock-paczka", "") === "off") out = brak; // v37 jeszcze nie w bazie
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;
