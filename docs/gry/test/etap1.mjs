@@ -142,8 +142,10 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   ok("Mniej animacji: bez blura", !(await p.locator(".gry-cv.blur").count()));
   await p.waitForTimeout(20800);
   ok("koniec czasu = zła odpowiedź („Czas minął.”)", /^Czas minął\. To nie to\./.test(await p.locator(".gry-verdict").textContent()), await p.locator(".gry-verdict").textContent());
-  const zle = await p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("bm-gry-zle") || "{}")));
-  ok("pomylone pytanie w bm-gry-zle", zle.length === 1 && /^m[12]:\d+$/.test(zle[0]), zle);
+  // Etap 2 „Zdawalni w Skrócie”: pomylone pytania z gier są w rewanżach (progress.rew, klucz z:<mid>:<idx>).
+  await p.waitForTimeout(3000);
+  const zle = await p.evaluate(() => Object.values(JSON.parse(localStorage.getItem("mock-progress") || "{}")).flatMap((x) => Object.keys(x?.rew || {})));
+  ok("pomylone pytanie w rewanżach", zle.length === 1 && /^z:m[12]:\d+$/.test(zle[0]), zle);
   await p.getByRole("button", { name: "Zobacz wynik" }).click(); await p.waitForTimeout(300);
   await p.getByRole("button", { name: /Powtórz pomylone/ }).click(); await p.waitForTimeout(1200);
   ok("„Powtórz pomylone” otwiera quiz", await p.locator(".lp").count() === 1 && !(await p.locator(".gry").count()));

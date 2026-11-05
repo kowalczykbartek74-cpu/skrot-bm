@@ -10,9 +10,9 @@
   function hashStr(s) { var x = 2166136261; for (var ch of String(s)) { x ^= ch.codePointAt(0); x = Math.imul(x, 16777619) >>> 0; } return x.toString(36); }
 
   // ---------- klucze powtórek ----------
-  // „mid:hash” fiszka, „q:mid:hash” pytanie z lekcji, „d:mid:atom” rozróżnianie pojęć, „n:mid:gid” zadanie liczbowe, „g:sid:hash” słowniczek.
+  // „mid:hash” fiszka, „q:mid:hash” pytanie z lekcji, „z:mid:idx” pytanie z quizu przedmiotu (rewanże), „d:mid:atom” rozróżnianie pojęć, „n:mid:gid” zadanie liczbowe, „g:sid:hash” słowniczek.
   var qKey = function (mid, q) { return "q:" + mid + ":" + hashStr(q.q); };
-  var keyMid = function (k) { var p = String(k).split(":"); return p[0] === "g" ? null : /^[qdn]$/.test(p[0]) ? p[1] : p[0]; };
+  var keyMid = function (k) { var p = String(k).split(":"); return p[0] === "g" ? null : /^[qdnz]$/.test(p[0]) ? p[1] : p[0]; };
   // Pytania lekcji, które wracają w Powtórkach: check każdej części i bilet wyjścia (tylko pełne pytania z opcjami).
   function okQuestion(q) { return !!(q && q.q && Array.isArray(q.options) && q.options.length >= 2 && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length); }
   function lessonQuestions(L) {

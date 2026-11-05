@@ -171,12 +171,22 @@ Wymaga `pip install pdfplumber`.
 
 ## Lekcje v4 (`lekcje-v4.js`, `skrot-v29-powtorki.sql`)
 Spec lekcji v4 (`lekcja-v4-spec.md`, wklejony w czacie 2.11.2026) jest **wdrożony w kodzie** (etapy A–C; decyzje z sekcji 11 domyślne: spadek punktów tak, A/B haczyka tak, 30 + 20 powtórek). Etap D (poprawki treści modelem) to skrypty w `scripts/lekcje-*.py` i `docs/lekcje-v4/README.md`; uruchomienie poprawek na treściach to osobna decyzja Bartka.
-- **A**: po każdej lekcji fiszki i pytania `check`/`exit` trafiają do powtórek (klucze `q:<mid>:<hash>`, `d:<mid>:<atom>`, `n:<mid>:<szablon>`; przedmiot i temat z klucza przez `keyMid`), w Powtórkach pytania z opcjami, zła odpowiedź wraca w sesji (maks. 3×), poziomy lekcji Zrobione → Utrwalone → Opanowane (`progress.lv` = dni powtórek), limit dnia 30 zaległych + 20 nowych (kolejność: wspólny priorytet tematu z Połączeń), jednorazowa migracja zdanych lekcji (`v4seed`).
+- **A**: po każdej lekcji fiszki i pytania `check`/`exit` trafiają do powtórek (klucze `q:<mid>:<hash>`, `d:<mid>:<atom>`, `n:<mid>:<szablon>`, od etapu rewanży też `z:<mid>:<idx>`; przedmiot i temat z klucza przez `keyMid`), w Powtórkach pytania z opcjami, zła odpowiedź wraca w sesji (maks. 3×), poziomy lekcji Zrobione → Utrwalone → Opanowane (`progress.lv` = dni powtórek), limit dnia 30 zaległych + 20 nowych (kolejność: wspólny priorytet tematu z Połączeń), jednorazowa migracja zdanych lekcji (`v4seed`).
 - **B**: haczyk z biletu (test A/B `HOOK_AB`), „Pewny / Zgaduję” w bilecie (zgadnięte poprawne = jak błędne; trafia do zdarzeń nauki, `exit_ticket.odp`), „przed i po”, rozgrzewka.
 - **C**: atomy i pytania rozróżniające, zadania liczbowe z szablonów `gen` (parser bez `eval`), „Wyjaśnij” z kluczem, krótsze „Prościej”.
 - Termin karty liczy FSRS (patrz „Profil nauki”), poziomy v4 liczą tylko dni powtórek.
 - **SQL**: `supabase/skrot-v29-powtorki.sql` (po v28; na gałęzi `lekcje/v4` był to `skrot-v22-powtorki.sql`): `nauka_rp_powtorka(klucz, ok, first, wiek)` + log `nauka_powtorki_log` do miary „czy strona uczy” (% dobrych pierwszych odpowiedzi przy wieku ≥ 7 dni). Bez niego strona woła starą wersję (bez pomiaru).
 - Testy: `node --test tests/*.test.js` (`num-parser`, `poziomy`, `srs-q`), `supabase/test/v29.sql` (W1–W5), Playwright `docs/gry/test/lekcje-v4.mjs` (30/30).
+
+## Rewanże (`rewanze.js`, bez SQL)
+Etap 2 specu „Systemy z Zdawalni w Skrócie”: zeszyt błędów z Zdawalni (`matura-app/lib/domain/mistakes.ts` + `rematch.ts`, wersja z FSRS) przeniesiony 1:1.
+- **Skąd**: zła albo zgadnięta („Zgaduję”) odpowiedź w quizie przedmiotu, grach, `check`/bilecie lekcji, zadaniu liczbowym lekcji i pytaniu zamkniętym próbnego testu. Pytania otwarte z oceną AI tu nie trafiają (zostają w „Co poprawić”), pytania z „Po zajęciach” też nie (nie ma ich w materiałach).
+- **Zapis**: `progress.rew = { klucz: [[dzień, wynik 0–1], …] }` (jeden wpis na dzień, decyduje najgorsza odpowiedź; najwyżej 400 kluczy, 12 dni na klucz), `progress.rewPok` = liczba pokonanych (odznaka 🏆), `progress.rewDay` = rewanże rozegrane dziś. Klucze jak w Powtórkach; pytanie z quizu przedmiotu ma nowy klucz `z:<mid>:<idx>` (indeksy są stałe, bo pytania tylko dopisujemy).
+- **Zasady**: rewanż wraca, gdy powie karta FSRS odtworzona z dni odpowiedzi (`SkrotLearner.memory.replayCard`; zwykle jutro, potem po 3 i po ok. 8 dniach; bez `learner.js` stałe 1 → 3 → 7). Wygrana = pełna dobra odpowiedź **innego dnia** niż błąd; trzecia wygrana z rzędu = pokonane i pytanie dalej wraca w zwykłych powtórkach (karta FSRS w `progress.srs`). Dopóki pytanie jest w zeszycie, `srsDue` pomija je w zwykłych powtórkach.
+- **Widok**: w Powtórkach blok „⚔️ Rewanże” (ile dziś, ile czeka, ile pokonanych), sesja zaczyna się serią „Rewanże” (najwyżej 10 dziennie, reszta czeka bez zaległości); licznik na Dziś („W tym N rewanży”) i plakietka Powtórek liczą je razem z fiszkami.
+- **Gry**: lista pomylonych w grach to teraz rewanże (`gryWrong` czyta z `progress.rew`); stara `bm-gry-zle` z localStorage przechodzi jednorazowo (`progress.rewMig` = dzień przeniesienia, potem klucz znika). Dobra odpowiedź w grze też liczy się do rewanżu.
+- **Punkty**: bez nowych punktów rankingu i monet (wszystko liczy przeglądarka).
+- Testy: `node --test tests/rewanze.test.js` (port testów z Zdawalni, w tym terminy FSRS 3 i 8 dni), Playwright `docs/gry/test/rewanze.mjs`.
 
 ## Lekcje v3 (krótkie kroki)
 - Lekcja z `lesson.v2` otwiera się jako mapa krótkich części (2–5 min) i odtwarzacz kart na pełnym ekranie: jedna myśl na kartę, co 2–3 karty coś do zrobienia, XP, seria, gwiazdki, cel dnia 50 XP. „Pokaż lekcję jako tekst” wraca do starego widoku (`lessonPanel2`).

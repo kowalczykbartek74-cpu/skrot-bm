@@ -38,7 +38,8 @@ const rpc = await p.evaluate(() => (window.__rpc || []).filter((x) => x.fn === "
 const calls = await p.evaluate(() => window.__rpPo || []);
 ok("3 odpowiedzi wysłane do bazy (nauka_rp_po)", calls.length === 3 && calls[1].p_idx === 1 && calls[1].p_wybor === 0, { calls, rpc });
 const wrong = await p.evaluate(() => [JSON.parse(localStorage.getItem("bm-po-zle") || "{}"), JSON.parse(localStorage.getItem("bm-gry-zle") || "{}")]);
-ok("błędne pytanie trafia do pomylonych", !!wrong[0][`po~${PO_ID}:1`] && wrong[1][`po~${PO_ID}:1`] != null && !wrong[0][`po~${PO_ID}:0`], wrong);
+// Od etapu rewanży lista pomylonych z gier jest w progress.rew; pytania z „Po zajęciach” zostają tylko w bm-po-zle (gry czytają obie).
+ok("błędne pytanie trafia do pomylonych", !!wrong[0][`po~${PO_ID}:1`] && wrong[1][`po~${PO_ID}:1`] == null && !wrong[0][`po~${PO_ID}:0`], wrong);
 await p.getByRole("button", { name: "Gotowe ✓" }).click(); await p.waitForTimeout(3300);
 const pr = await getProg(p);
 ok("XP rośnie: 10 za przeczytanie + 2 × 10 za dobre odpowiedzi", pr.xp?.t === 30, pr.xp);
