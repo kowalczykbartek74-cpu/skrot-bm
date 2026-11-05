@@ -533,6 +533,33 @@
     if (!res.ok || !out.results) throw fail(out.code || (res.status === 404 ? "not_deployed" : "error"), out.message || "AI nie oceniło testu.");
     return out;
   };
+  // Etap 4 „Zdawalni w Skrócie”: usunięcie konta przez funkcję Edge usun-konto (SQL v32). Potwierdzenie = własny e-mail.
+  // Po sukcesie: wylogowanie i czyszczenie danych tej przeglądarki (zostaje tylko język i „Mniej animacji”).
+  skrot.usunKonto = async (email) => {
+    await ready;
+    const fail = (code, message) => Object.assign(new Error(message), { code });
+    if (!sb || skrot.state !== "in") throw fail("not_signed_in", "Zaloguj się, żeby usunąć konto.");
+    const { data } = await sb.auth.getSession();
+    let res;
+    try {
+      res = await fetch(CONFIG.url + "/functions/v1/usun-konto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + data?.session?.access_token, "x-skrot-device": DEVICE },
+        body: JSON.stringify({ email }),
+      });
+    } catch (e) { throw netErr(e) ? fail("offline", "Brak internetu. Nic nie zostało usunięte.") : fail("no_function", "Usuwanie konta nie jest jeszcze włączone. Nic nie zostało usunięte. Napisz do nas."); }
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.ok) throw fail(out.code || (res.status === 404 ? "not_deployed" : "error"), out.message || (res.status === 404 ? "Usuwanie konta nie jest jeszcze włączone. Nic nie zostało usunięte. Napisz do nas." : "Nie udało się usunąć konta. Spróbuj za chwilę."));
+    try { await sb.auth.signOut({ scope: "local" }); } catch {}
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && /^(bm-|skrot|sb-)/.test(k) && !["skrot-lang", "skrot-calm"].includes(k)) localStorage.removeItem(k);
+      }
+    } catch {}
+    skrot.state = "out"; skrot.paid = false;
+    return out;
+  };
   skrot.gradeAppeal = async (run, item, dane) => { await ready; const { data, error } = await sb.rpc("nauka_ocena_odwolanie", { p_run: run, p_item: item, p_dane: dane }); if (error) throw rpcErr(error); return data; };
   // ---------- Profil nauki (v30, Zdawalni docs/plan-profil-nauki.md L7) ----------
   // Zdarzenia nauki czekają w przeglądarce (bm-learn-q, max 300) i idą paczkami co 20 s, przy ukryciu karty i po
