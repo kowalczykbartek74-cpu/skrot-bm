@@ -60,13 +60,23 @@ const big = "x".repeat(300000); // duży stan, np. bm-q-seen
   ok(s[0] === "nowe" && s[1] === "noc", "zalogowany na nowej: urządzenie zostaje, brakujący motyw dopisany");
   await c.close();
 }
-// 5) pusta przeglądarka: od razu na nowy adres bez przenies.html
+// 5) nowa osoba ze skrotbm.pl: od razu wersja BM (bez wyboru kierunku), ?proba=1 zostaje
 {
-  const c = await ctx(), p = await c.newPage(); const seen = [];
-  p.on("framenavigated", f => seen.push(f.url()));
+  const c = await ctx(), p = await c.newPage();
   await p.goto("https://skrotbm.pl/?proba=1");
-  await p.waitForURL(u => u.host === "zdawalni.pl", { timeout: 15000 });
-  ok(p.url() === "https://zdawalni.pl/?proba=1" && !seen.some(u => u.includes("przenies")), "nowa osoba: prosto na zdawalni.pl/?proba=1");
+  await p.waitForURL(u => u.host === "zdawalni.pl" && !u.pathname.includes("przenies"), { timeout: 15000 });
+  ok(p.url() === "https://zdawalni.pl/?proba=1", "nowa osoba: " + p.url());
+  ok(await p.evaluate(() => localStorage.getItem("skrot-kierunek")) === "bm", "nowa osoba ze skrotbm.pl dostaje kierunek BM");
+  await c.close();
+}
+// 6) ktoś z innego kierunku wchodzi przez skrotbm.pl: jego wybór zostaje
+{
+  const c = await ctx(), p = await c.newPage();
+  await p.goto("https://zdawalni.pl/x");
+  await p.evaluate(() => { localStorage.setItem("skrot-rocznik", "wefiz-ekonomia-1-st-2026"); localStorage.setItem("skrot-kierunek", "wefiz-ekonomia-1-st-2026"); });
+  await p.goto("https://skrotbm.pl/");
+  await p.waitForURL(u => u.host === "zdawalni.pl" && !u.pathname.includes("przenies"), { timeout: 15000 });
+  ok(await p.evaluate(() => localStorage.getItem("skrot-rocznik")) === "wefiz-ekonomia-1-st-2026", "wybrany inny kierunek nie jest nadpisany");
   await c.close();
 }
 await br.close(); process.exit(fails ? 1 : 0);

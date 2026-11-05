@@ -1,14 +1,15 @@
 <!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>Przenoszę Twoje dane…</title>
 <style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F5F8F6;color:#14261C;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;padding:16px}b{color:#1A7F45}</style>
-</head><body><p><b>Skrót BM ma nowy adres: zdawalni.pl</b><br>Przenoszę Twoje ustawienia i postępy…</p>
+</head><body><p><b>Skrót BM to teraz Zdawalni</b><br>Przenoszę Twoje ustawienia i postępy…</p>
 <script>
 /* Odbiór danych ze starej domeny skrotbm.pl (strona przekierowania z docs/zdawalni/przekierowanie/).
    Dane przychodzą w części adresu po # (nie trafia na serwer), od razu ją czyścimy.
    Format: #z.<base64url deflate-raw JSON> albo #j.<base64url JSON>; JSON = {v:1, d:{klucz:wartość}, p, q, h}.
    Zasady: import tylko raz na przeglądarkę (skrot-przeniesione). Jeśli w nowej domenie nie ma jeszcze logowania,
    stare dane wygrywają (to samo urządzenie, ta sama sesja, bez nowego urządzenia na liście). Jeśli już jest,
-   dopisujemy tylko brakujące klucze. Wpuszczamy wyłącznie klucze Skrótu. */
+   dopisujemy tylko brakujące klucze. Wpuszczamy wyłącznie klucze Skrótu.
+   k:"bm" (wejście ze skrotbm.pl): kto nie wybrał jeszcze kierunku, dostaje od razu Business Management. */
 (async function () {
   var raw = location.hash.slice(1), dest = "/";
   try { history.replaceState(null, "", "/przenies.html"); } catch (e) {}
@@ -32,6 +33,7 @@
         }
         localStorage.setItem(FLAG, new Date().toISOString() + " · " + n);
       }
+      if (o.k === "bm" && !localStorage.getItem("skrot-rocznik") && !localStorage.getItem("skrot-kierunek")) localStorage.setItem("skrot-kierunek", "bm");
     }
   } catch (e) {}
   location.replace(dest);

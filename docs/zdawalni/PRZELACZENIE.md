@@ -9,7 +9,7 @@ Przygotowane 5.11.2026. Gałęzie: `skrot-bm` → `zdawalni/domena`, `plan-bm` �
 | `zdawalni.pl` | Skrót BM (dzisiejsze skrotbm.pl) | GitHub Pages, repo `skrot-bm` |
 | `matura.zdawalni.pl` | planer maturalny (dzisiejsze www.zdawalni.pl) | Vercel, projekt `zdawalni` |
 | `www.zdawalni.pl` | przekierowanie na `matura.zdawalni.pl` (stare linki matury dalej działają) | Vercel, projekt `zdawalni` |
-| `skrotbm.pl` | przekierowanie na `zdawalni.pl` z przeniesieniem danych przeglądarki | GitHub Pages, nowe repo `skrotbm-przekierowanie` |
+| `skrotbm.pl` | wejście dla Business Management: przekierowanie na `zdawalni.pl` z przeniesieniem danych przeglądarki i od razu kierunkiem BM (bez ekranu wyboru kierunku) | GitHub Pages, nowe repo `skrotbm-przekierowanie` |
 | `plan.skrotbm.pl` | bez zmian (na razie) | GitHub Pages, repo `plan-bm` |
 
 **Dlaczego plan zostaje na plan.skrotbm.pl:** studenci mają w kalendarzach w telefonie subskrypcje `plan.skrotbm.pl/kalendarz/C112.ics`. Aplikacje kalendarza nie przechodzą przez przekierowanie strony, więc po przeniesieniu planu te kalendarze przestałyby się odświeżać. Plan przeniesiemy osobno, razem z planem całego WEFiZ.
@@ -17,6 +17,9 @@ Przygotowane 5.11.2026. Gałęzie: `skrot-bm` → `zdawalni/domena`, `plan-bm` �
 **Dlaczego www.zdawalni.pl zostaje przy maturze:** stare linki do matury (zakładki, maile, linki w Google) mają `www`. Skrót działa na `zdawalni.pl` bez `www`.
 
 ## Co zrobiłem w kodzie (gałąź `zdawalni/domena`)
+
+- **Nazwa: Zdawalni** (decyzja 5.11.2026). Tytuł karty, nagłówek, nazwa aplikacji na telefonie (`manifest`), obrazek do udostępniania linku (`icons/og.png`), odznaka „Mistrz Zdawalni”, Hasło dnia, wiadomość polecająca, mail o współdzieleniu konta, regulamin i polityka (z dopiskiem „wcześniej Skrót BM”), wersja EN. Ikona aplikacji bez napisu, więc bez zmian. Komentarze w kodzie i identyfikatory kalendarza (`PRODID`, `UID`) celowo zostają.
+- **skrotbm.pl = adres dla BM.** Wejście ze skrotbm.pl ustawia kierunek Business Management, jeśli ktoś nie wybrał jeszcze żadnego (nowa osoba nie widzi ekranu wyboru kierunku). Wybranego innego kierunku nie nadpisuje.
 
 - `CNAME` = zdawalni.pl.
 - Teksty w aplikacji, które mówią „skrotbm.pl” (instalacja na telefonie, stopka ściągawek, Boss, udostępnianie Hasła dnia) → „zdawalni.pl”, z parami EN. Podbite `?v=20261105-zdawalni`.
@@ -27,25 +30,29 @@ Przygotowane 5.11.2026. Gałęzie: `skrot-bm` → `zdawalni/domena`, `plan-bm` �
 - **Przeniesienie danych przeglądarki.** Przy zmianie domeny przeglądarka „zapomina” wszystko, co strona trzyma lokalnie. Najgroźniejsze: `skrot-device` (ID urządzenia). Bez przeniesienia każdy student dostałby „nowe urządzenie” i wpadłby na limit 3 urządzeń (zmiana raz na 30 dni). Do tego postępy lekcji, powtórki, motywy, logowanie. Rozwiązanie:
   - `docs/zdawalni/przekierowanie/` = zawartość repo dla starej domeny. Przy wejściu na `skrotbm.pl` strona zbiera klucze Skrótu (`bm-*`, `skrot-*`, logowanie Supabase) i przenosi je w części adresu po `#` (ta część nie trafia na żaden serwer) na `zdawalni.pl/przenies.html`.
   - `przenies.html` zapisuje je w nowej domenie, czyści adres i otwiera aplikację tam, gdzie student chciał wejść. Import tylko raz; nie nadpisuje nowszych danych, jeśli ktoś już zalogował się na zdawalni.pl.
-  - Test: `docs/zdawalni/test/przeniesienie.mjs` (Playwright). Wynik 5.11: 10/10 OK, w tym 300 kB danych, `?kod=` i `#/exam/prawo` zachowane.
+  - Test: `docs/zdawalni/test/przeniesienie.mjs` (Playwright). Wynik 5.11: 12/12 OK, w tym 300 kB danych, `?kod=` i `#/exam/prawo` zachowane, kierunek BM dla nowej osoby.
 - `plan-bm` (gałąź `zdawalni`): link „Skrót BM ↗” na zdawalni.pl.
 
 **Bez zmian (celowo):** maile z kodem logowania dalej z domeny skrotbm.pl przez Resend (działa, domena zostaje Twoja). Webhook Stripe idzie do Supabase, więc nie zależy od domeny.
 
 ## Już zrobione w panelach
 
-- Vercel, projekt `zdawalni`: dodana domena `matura.zdawalni.pl` (czeka na rekord DNS, punkt A).
+- Vercel, projekt `zdawalni`: dodana domena `matura.zdawalni.pl` — działa (5.11).
+- ŚwiatDomen24, zdawalni.pl: CNAME `matura` → Vercel, TTL rekordu A zdawalni.pl = 300 (5.11).
+- Supabase Skrótu: Redirect URL `https://zdawalni.pl/**` (5.11).
 
 ## Krok A — DZIŚ, nic nie psuje (ok. 15 min)
 
-**A1. ŚwiatDomen24 → zdawalni.pl → DNS** — dodaj rekord:
+**A1. (zrobione 5.11) ŚwiatDomen24 → zdawalni.pl → DNS** — dodaj rekord:
 - Typ `CNAME`, nazwa `matura`, wartość `90023d2e388c344b.vercel-dns-017.com.` (z kropką na końcu, jeśli panel jej wymaga).
 - Przy okazji: rekord `A` dla zdawalni.pl (pole nazwy puste, wartość `216.198.79.1`) — zmień TTL na `300`. Nic więcej nie ruszaj.
 - Po ok. 15 min sprawdź, że `https://matura.zdawalni.pl` pokazuje maturę.
 
-**A2. Supabase Skrótu** (`zkyxujkdrovfzpasocmv`) → Authentication → URL Configuration → Redirect URLs → **Add URL**: `https://zdawalni.pl/**`. Site URL na razie zostaw.
+**A2. (zrobione 5.11) Supabase Skrótu** (`zkyxujkdrovfzpasocmv`) → Authentication → URL Configuration → Redirect URLs → **Add URL**: `https://zdawalni.pl/**`. Site URL na razie zostaw.
 
 **A3. Supabase → Edge Functions** — wdroż `claude` i `grade-open` z gałęzi `zdawalni/domena` (zmieniona jest jedna linia `const ORIGINS = [...]` w każdej). Strona dalej działa jak dotąd.
+
+**A5. Nazwa w mailach.** Supabase Skrótu → Authentication → Emails (szablony) i Resend/SMTP (nazwa nadawcy): jeśli jest tam „Skrót BM”, zmień na „Zdawalni”. Adres nadawcy z domeny skrotbm.pl może zostać.
 
 **A4. Matura — sprawdź, zanim zwolnimy zdawalni.pl** (projekt Vercel `zdawalni` ma Stripe, Resend, Supabase i powiadomienia push):
 - Stripe matury → Developers → Webhooks: jeśli adres to `https://www.zdawalni.pl/api/...`, zmienisz go w dniu przełączenia na `https://matura.zdawalni.pl/api/...` (Stripe nie przechodzi przez przekierowania).
@@ -84,7 +91,7 @@ Przygotowane 5.11.2026. Gałęzie: `skrot-bm` → `zdawalni/domena`, `plan-bm` �
 
 ## Do decyzji / uwagi
 
-- W CLAUDE.md był plan `studia.zdawalni.pl` dla Skrótu i `zdawalni.pl` jako strona wyboru etapu. Przygotowałem tak, jak prosisz teraz: Skrót na samym `zdawalni.pl`. Zmiana na `studia.` to podmiana adresu w tych samych miejscach.
-- Regulamin: zmienił się tylko adres serwisu. Według § o zmianach regulaminu kupujący dostają mail z 14-dniowym wyprzedzeniem — warto wysłać krótką informację o nowym adresie (nie jestem prawnikiem, to ostrożna wersja).
+- Decyzja 5.11.2026: aplikacja na samym `zdawalni.pl` pod nazwą Zdawalni (nie `studia.zdawalni.pl`); skrotbm.pl zostaje jako wejście dla BM.
+- Regulamin: zmieniła się nazwa i adres serwisu (treść bez zmian). Według § o zmianach regulaminu kupujący dostają mail z 14-dniowym wyprzedzeniem — warto wysłać krótką informację o nowym adresie (nie jestem prawnikiem, to ostrożna wersja).
 - Domenę skrotbm.pl opłacaj co najmniej rok dłużej (stare linki, ekrany początkowe telefonów, maile z kodem logowania).
 - Później: nadawca maili `@zdawalni.pl` w Resend (nowe rekordy DNS), przeniesienie planu razem z WEFiZ.
