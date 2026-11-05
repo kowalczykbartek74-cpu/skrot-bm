@@ -1,0 +1,37 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Skrót BM ma nowy adres: zdawalni.pl</title>
+<link rel="canonical" href="https://zdawalni.pl/">
+<noscript><meta http-equiv="refresh" content="0; url=https://zdawalni.pl/"></noscript>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F5F8F6;color:#14261C;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;padding:16px}a{color:#1A7F45;font-weight:700}</style>
+</head><body><p>Skrót BM ma nowy adres: <a id="go" href="https://zdawalni.pl/">zdawalni.pl</a><br>Za chwilę Cię przeniosę…</p>
+<script>
+/* Strona na starej domenie skrotbm.pl (osobne repo na GitHub Pages, ten sam plik jako index.html i 404.html).
+   Każdy adres przechodzi na ten sam adres w zdawalni.pl (ścieżka, ?kod=, ?proba=, #/trasa zostają).
+   Wejście do aplikacji (/) zabiera też dane z tej przeglądarki: urządzenie (skrot-device), logowanie, postępy,
+   motywy i ustawienia, żeby po zmianie domeny nikt nie stracił postępów ani miejsca na liście urządzeń.
+   Dane idą w części po #, której przeglądarka nie wysyła na serwer; odbiera je zdawalni.pl/przenies.html. */
+(async function () {
+  var NEW = "https://zdawalni.pl", p = location.pathname, q = location.search, h = location.hash;
+  var target = NEW + p + q + h;
+  document.getElementById("go").href = target;
+  if (p === "/" || p === "/index.html") {
+    try {
+      var OK = /^(bm-|skrot-|sb-zkyxujkdrovfzpasocmv-)/, d = {}, n = 0;
+      for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (OK.test(k)) { d[k] = localStorage.getItem(k); n++; } }
+      if (n) {
+        var bytes = new TextEncoder().encode(JSON.stringify({ v: 1, t: Date.now(), d: d, p: p, q: q, h: h })), kind = "j.";
+        if (window.CompressionStream) {
+          bytes = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());
+          kind = "z.";
+        }
+        var s = "", CH = 0x8000;
+        for (var j = 0; j < bytes.length; j += CH) s += String.fromCharCode.apply(null, bytes.subarray(j, j + CH));
+        var data = btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+        if (data.length < 1500000) target = NEW + "/przenies.html#" + kind + data;
+      }
+    } catch (e) {}
+  }
+  location.replace(target);
+})();
+</script>
+</body></html>
