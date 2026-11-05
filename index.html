@@ -3638,10 +3638,7 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
 .jz-min { display: grid; justify-items: center; gap: 0; padding: 10px 4px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; }
 .jz-min b { font-size: 1.35rem; line-height: 1.1; }
 .jz-min span { font-size: .78rem; color: var(--muted); }
-.jz-min.on, .jz-mode.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
-.jz-modes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
-.jz-mode { display: grid; gap: 2px; text-align: left; padding: 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; }
-.jz-mode span { font-size: .82rem; }
+.jz-min.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
 .jz-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .jz-prog { width: 100%; }
 .jz-item { min-height: 46vh; display: grid; align-content: start; gap: 12px; padding: 20px 18px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); touch-action: pan-y; }
@@ -3654,7 +3651,6 @@ button.po-open:hover { border-color: var(--accent); background: var(--accent-sof
 .jz-thumb { position: sticky; bottom: calc(var(--tabbar-h) + 10px); display: grid; grid-template-columns: 1fr 1.4fr 1.4fr; gap: 8px; }
 .jz-thumb:has(> :nth-child(2):last-child) { grid-template-columns: 1fr 1fr; }
 .jz-thumb .btn { min-height: 56px; font-size: 1.05rem; border-radius: 14px; }
-.jz-rate { gap: 6px; align-items: center; }
 .jz-done { text-align: center; justify-items: center; }
 /* 10 minut przed snem (#/noc): ciepła, przyciemniona paleta i większe litery */
 .noc-card { background: linear-gradient(135deg, #2a1c0e, #3a2712); border-color: #5a3f1e; color: #f6e3c4; }
@@ -3672,7 +3668,7 @@ body.night main .noc-box { display: grid; gap: 16px; padding: 22px 18px; border-
 .noc-end { text-align: center; justify-items: center; }
 .noc-moon { font-size: 3.2rem; line-height: 1; filter: drop-shadow(0 0 18px rgba(240, 168, 58, .45)); }
 body.night .po-opt { font-size: 1.05rem; padding: 12px 14px; }
-@media (max-width: 600px) { .jz-mins { grid-template-columns: repeat(4, minmax(0, 1fr)); } .jz-modes { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .jz-mins { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 /* ===== Przedmioty kosmetyczne (supabase/skrot-v24-kosmetyki.sql, grafiki w kosmetyki.js) ===== */
 /* Kolory nicku: każdy ≥ 4,5:1 na tłach wierszy rankingu w każdym motywie (docs/kosmetyki/test/kontrast.mjs).
    Zapis rgb(r g b) ze spacjami celowo: silniki motywów przemalowują tylko #hex i rgb z przecinkami, a kupiony kolor ma zostać sobą. */
@@ -4758,9 +4754,8 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
     renderNav();
     const v = S.route.view;
     $("main").dataset.view = v || "home";
-    // Przed snem: ciepły, przyciemniony wygląd tylko na tym ekranie. Wyjście z przejazdu ucisza czytanie.
+    // Przed snem: ciepły, przyciemniony wygląd tylko na tym ekranie.
     document.body.classList.toggle("night", v === "noc");
-    if (v !== "jazda" && JZ.st?.playing) jzStop();
     let fn = { gry: viewGames, haslo: viewHaslo, boss: viewBoss, ranking: viewRanking, terms: viewTerms, calendar: viewCalendar, more: viewMore, mine: viewMine, materials: viewMaterials, subject: viewSubject, material: viewMaterial, upload: viewUpload, reports: viewReports, ai: viewAi, subjectQuiz: viewSubjectQuiz, shop: viewShop, polec: viewPolec, learn: viewLearn, grading: viewGrading, review: viewReview, glossary: viewGlossary, exam: viewExam, cheat: viewCheat, myFolder: viewMyFolder, myUpload: viewMyUpload, program: viewProgram, syllabus: viewSyllabus, po: viewPo, po5: viewPo5, jazda: viewJazda, noc: viewNoc, stas: viewStas, stasx: viewStasX, reading: viewReading, compare: viewCompare, guide: viewGuide, profil: viewProfil, ustawienia: viewUstawienia, starosta: viewStarosta, odwolania: viewOdwolania, projekt: viewProjekt }[v];
     if (!fn) {
       // Nieznany adres (np. literówka w linku): mówimy o tym zamiast po cichu pokazywać Dziś.
@@ -15116,7 +15111,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       ["Co znaczy kłódka 🔒?", `To część pełnego dostępu: ${sk.prices?.rok || "199 zł"} do końca 2. semestru albo ${sk.prices?.miesiac || "35 zł / mies."}. Bez dostępu masz plan zajęć, własne wpisy w kalendarzu i darmowe próbki materiałów po zalogowaniu. Możesz też raz wypróbować wszystko za darmo przez 3 dni.`],
       ["Nie byłem na wykładzie. Co teraz?", "Wejdź w Więcej → Powtórka w 5 minut (albo w przedmiot → ⚡ Po zajęciach w 5 minut), wybierz, o czym były zajęcia, i przeczytaj 5 krótkich kroków. Na ekranie Dziś strona sama proponuje taki temat o każdej porze: po zajęciach to, co było, przed zajęciami to, co będzie."],
       ["Kim jest Stażysta Staś?", "To nowy stażysta, który tłumaczy temat z sylabusa, ale robi 2–3 błędy. Wejdź w Więcej → Stażysta Staś (albo w przedmiot → 🤓 Popraw Stasia), kliknij zdania, które są złe, sprawdź i wybierz poprawkę. Za każdy znaleziony błąd i każdą dobrą poprawkę dostajesz punkt."],
-      ["Jadę 20 minut tramwajem. Da się wtedy coś zrobić?", "Tak: Więcej → Lekcja na przejazd. Wybierasz, ile jedziesz, a strona układa fiszki z „Dziś do powtórki” i krótkie mikrolekcje z jednego przedmiotu (najbliższe zajęcia) dokładnie na ten czas. Możesz słuchać (czyta na głos) albo przewijać kciukiem. Do dwóch godzin przed zajęciami karta pojawia się też sama na ekranie Dziś."],
+      ["Jadę 20 minut tramwajem. Da się wtedy coś zrobić?", "Tak: Więcej → Lekcja na przejazd. Wybierasz, ile jedziesz, a strona układa fiszki z „Dziś do powtórki” i krótkie mikrolekcje z jednego przedmiotu (najbliższe zajęcia) dokładnie na ten czas. Przewijasz je kciukiem. Do dwóch godzin przed zajęciami karta pojawia się też sama na ekranie Dziś."],
       ["Co to jest „10 minut przed snem”?", "Po 21:30 na ekranie Dziś pojawia się karta z dzisiejszymi błędami: fiszkami, przy których było „Nie pamiętam”, i złymi odpowiedziami z quizów i gier. Bez nowego materiału, w ciemnym, ciepłym wyglądzie i większymi literami. O każdej porze znajdziesz to w Więcej → 10 minut przed snem."],
       ["Skąd biorę monety?", "Za dobre odpowiedzi w quizach, Powtórkach, lekcjach i grach (10 punktów rankingu = 1 moneta) i za Zadania dnia. Wydajesz je w Więcej → Sklep i monety na motywy."],
       ["Czy inni widzą moje imię w rankingu?", "Nie. W rankingu widać tylko pseudonim i punkty. Możesz się też całkiem ukryć: Więcej → Ranking kierunku → Pseudonim i widoczność."],
@@ -15780,19 +15775,18 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
   // ================= Na przejazd (#/jazda) i Przed snem (#/noc) =================
   // Na przejazd: wybierasz, ile jedziesz (np. 18 min), a strona układa playlistę z jednego przedmiotu (najbliższe zajęcia):
   // najpierw fiszki z „Dziś do powtórki”, potem mikrolekcje (jedna część lekcji). Każdy element ma durationSec,
-  // dobór jest zachłanny, aż suma będzie blisko wybranego czasu. Tryb „Słuchaj” czyta wszystko głosem przeglądarki,
-  // „Przewijaj” to karty pod kciuk (przesunięcie palcem albo duże przyciski na dole).
+  // dobór jest zachłanny, aż suma będzie blisko wybranego czasu.
+  // Karty pod kciuk (przesunięcie palcem albo duże przyciski na dole). Czytania na głos nie ma (głos przeglądarki był zły).
   // Przed snem: po 21:30 karta na Dziś, a w środku tylko dzisiejsze błędy (fiszki „Nie pamiętam” i złe odpowiedzi
   // w quizach i grach), bez nowego materiału, w ciepłym, przyciemnionym wyglądzie (body.night).
-  const JZ = { st: null, tok: 0, tm: 0 };
+  const JZ = { st: null };
   const JZ_MINS = [5, 10, 15, 18, 20, 25, 30, 40];
   // Mikrolekcje z przejazdów, które już były: { "mid:k": dzień }, najpierw idą te jeszcze niesłuchane.
   const jzSeen = { get() { try { return JSON.parse(ls.get("bm-jazda-seen") || "{}") || {}; } catch { return {}; } },
     add(k) { const o = this.get(); o[k] = dayN(); const e = Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, 400); ls.set("bm-jazda-seen", JSON.stringify(Object.fromEntries(e))); } };
   const jzClean = (s) => String(s || "").replace(/\*\*|\*/g, "").replace(/\\\(|\\\)|\\\[|\\\]/g, "").replace(/\\[a-z]+/gi, " ").replace(/\s+/g, " ").trim();
-  // ~2,4 słowa na sekundę czytania na głos + chwila na myślenie.
+  // ~2,4 słowa na sekundę czytania + chwila na myślenie.
   const jzSecs = (t, extra = 0) => Math.max(8, Math.round(jzClean(t).split(" ").filter(Boolean).length / 2.4) + extra);
-  const jzLang = (t) => (/[ąćęłńśźż]/i.test(t) || /\b(jest|się|nie|oraz|czyli|który|która|które|albo|żeby|to)\b/i.test(t) ? "pl-PL" : "en-GB");
   const jzStart = (e) => (e.time ? e.time[0] : SLOTS[e.s][0]);
   // Przedmiot najbliższych zajęć, które się jeszcze nie zaczęły (dziś, potem jutro), inaczej najbliższe zaliczenie.
   function jzNext() {
@@ -15839,64 +15833,29 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     while (pl.length || pc.length) { if (pl.length) items.push(pl.shift()); items.push(...pc.splice(0, 3)); }
     return { items, total: sum, dueN: keys.length };
   }
-  function jzStop() { JZ.tok++; clearTimeout(JZ.tm); try { speechSynthesis.cancel(); } catch {} if (JZ.st) JZ.st.playing = false; }
-  // Czyta po kolei części (tekst albo { pause: ms }), potem woła onEnd. Stary odczyt (tok) nic już nie robi.
-  function jzSay(parts, onEnd) {
-    jzStop();
-    const tok = JZ.tok, ss = window.speechSynthesis;
-    if (!ss || !window.SpeechSynthesisUtterance) { toast("Ta przeglądarka nie umie czytać na głos. Przełącz na Przewijaj."); return; }
-    JZ.st.playing = true;
-    const voices = ss.getVoices();
-    let i = 0;
-    const next = () => {
-      if (tok !== JZ.tok) return;
-      if (i >= parts.length) { JZ.st.playing = false; onEnd?.(); return; }
-      const p = parts[i++];
-      if (!p) return next();
-      if (p.pause) { JZ.tm = setTimeout(next, p.pause); return; }
-      const u = new SpeechSynthesisUtterance(jzClean(p)), lang = jzLang(p);
-      u.lang = lang; u.rate = JZ.st.rate || 1;
-      const v = voices.find((x) => x.lang === lang) || voices.find((x) => x.lang?.startsWith(lang.slice(0, 2)));
-      if (v) u.voice = v;
-      u.onend = next; u.onerror = next;
-      ss.speak(u);
-    };
-    next();
-  }
-  function jzPlayCur() {
-    const J = JZ.st; if (!J || J.mode !== "audio") return;
-    const it = J.items[J.pos];
-    if (!it) return jzStop();
-    const parts = it.t === "card" ? [it.q, { pause: 3500 }, it.a, { pause: 900 }] : [it.title, { pause: 400 }, it.text, it.tip ? { pause: 400 } : null, it.tip, { pause: 900 }];
-    jzSay(parts, () => { J.rev = true; jzGo(1, true); });
-  }
-  function jzGo(d, auto) {
+  function jzGo(d) {
     const J = JZ.st; if (!J) return;
     const it = J.items[J.pos];
     if (d > 0 && it) { J.heard.add(J.pos); if (it.t === "lesson") jzSeen.add(it.id); }
     J.pos = Math.max(0, Math.min(J.items.length, J.pos + d)); J.rev = false;
-    if (J.pos >= J.items.length) { jzStop(); if (!J.doneAt) { J.doneAt = Date.now(); lpConfetti(24); } }
+    if (J.pos >= J.items.length && !J.doneAt) { J.doneAt = Date.now(); lpConfetti(24); }
     render();
-    if (J.mode === "audio" && J.pos < J.items.length && (auto || J.playing !== false)) jzPlayCur();
   }
   function jzGrade(ok) {
     const J = JZ.st, it = J?.items[J.pos]; if (!it || it.t !== "card") return;
     srsGrade(it.key, ok ? 2 : 0); rpSend("powtorka", it.key);
     J.graded[J.pos] = ok; jzGo(1);
   }
-  async function jzBegin(sid, mins, mode) {
-    ls.set("bm-jazda-min", String(mins)); ls.set("bm-jazda-tryb", mode);
-    JZ.st = { loading: true, sid, mins, mode, rate: +(ls.get("bm-jazda-tempo") || 1) || 1 };
-    // iOS pozwala mówić tylko po kliknięciu: pusty odczyt od razu odblokowuje głos.
-    if (mode === "audio") try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(" ")); } catch {}
+  async function jzBegin(sid, mins) {
+    ls.set("bm-jazda-min", String(mins)); try { localStorage.removeItem("bm-jazda-tryb"); localStorage.removeItem("bm-jazda-tempo"); } catch {}
+    JZ.st = { loading: true, sid, mins };
     render();
     let r;
     try { r = await jzBuild(sid, mins); } catch { r = { items: [], total: 0 }; }
     if (JZ.st?.sid !== sid || S.route.view !== "jazda") return;
-    JZ.st = { ...JZ.st, loading: false, ...r, pos: 0, rev: false, heard: new Set(), graded: {}, playing: false };
+    JZ.st = { ...JZ.st, loading: false, ...r, pos: 0, rev: false, heard: new Set(), graded: {} };
     render();
     if (r.items.length && r.total < mins * 60 - 60) toast(`Z tego przedmiotu starczyło na ok. ${Math.max(1, Math.round(r.total / 60))} min.`);
-    if (mode === "audio" && r.items.length) jzPlayCur();
   }
   function jzHomeCard() {
     if (!S.ready || S.noDb || needGroup()) return null;
@@ -15905,7 +15864,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     return h("section", { class: "panel sk-panel jz-card", style: `--c:${s?.color || "var(--accent)"}`, "aria-label": "Lekcja na przejazd" },
       h("div", { class: "panel-head" }, h("span", { class: "eyebrow", text: "🚋 Jedziesz na zajęcia?" }), h("span", { class: "chip sun num", text: `za ${nx.min} min` })),
       h("h2", { text: s?.pl || nx.e.pl }),
-      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Fiszki z „Dziś do powtórki” i krótkie mikrolekcje z tego przedmiotu, dokładnie na tyle minut, ile jedziesz. Do słuchania albo przewijania kciukiem." }),
+      h("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Fiszki z „Dziś do powtórki” i krótkie mikrolekcje z tego przedmiotu, dokładnie na tyle minut, ile jedziesz. Przewijasz je kciukiem." }),
       h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "jazda" }) }, "Ułóż mi przejazd →")));
   }
   function viewJazda() {
@@ -15914,7 +15873,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     if (J?.loading) return [head("Układam playlistę…"), h("p", { class: "muted", text: "Zbieram fiszki i mikrolekcje." })];
     if (!J || J.setup) {
       const nx = jzNext(), saved = +(ls.get("bm-jazda-min") || 18) || 18;
-      const F = JZ.form = JZ.form || { sid: nx?.sid || "", mins: saved, mode: ls.get("bm-jazda-tryb") || "tap" };
+      const F = JZ.form = JZ.form || { sid: nx?.sid || "", mins: saved };
       if (!F.sid || !subjectById(F.sid)) F.sid = nx?.sid || SUBJECTS[0]?.id || "";
       const td = F.sid ? srsToday(F.sid) : { n: 0 };
       const pick = (k, v) => { F[k] = v; render(); };
@@ -15925,10 +15884,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
           h("label", { class: "field" }, "Przedmiot",
             h("select", { class: "input", onchange: (e) => pick("sid", e.target.value) }, SUBJECTS.map((s) => h("option", { value: s.id, selected: s.id === F.sid ? "" : null, text: s.pl + (nx?.sid === s.id && nx.e ? (nx.today ? " (najbliższe zajęcia dziś)" : " (zajęcia jutro)") : "") })))),
           h("p", { class: "muted num", style: "margin:0;font-size:.9rem", text: td.n ? `Z tego przedmiotu czeka ${td.n} ${plural(td.n, "fiszka", "fiszki", "fiszek")} do powtórki. Pójdą jako pierwsze.` : "Z tego przedmiotu nic dziś nie czeka w powtórkach, więc będą głównie mikrolekcje." }),
-          h("div", { class: "jz-modes", role: "group", "aria-label": "Jak chcesz się uczyć" },
-            [["tap", "👆 Przewijaj", "karty pod kciuk"], ["audio", "🎧 Słuchaj", "czyta na głos, sam przechodzi dalej"]].map(([k, t, d]) => h("button", { type: "button", class: "jz-mode" + (F.mode === k ? " on" : ""), "aria-pressed": F.mode === k ? "true" : "false", onclick: () => pick("mode", k) }, h("b", { text: t }), h("span", { class: "muted", text: d })))),
-          h("button", { type: "button", class: "btn primary sk-start", disabled: F.sid ? null : true, onclick: () => jzBegin(F.sid, F.mins, F.mode) }, `Ruszamy (${F.mins} min) →`)),
-        F.mode === "audio" ? h("p", { class: "muted", style: "font-size:.86rem", text: "Słuchawki w uszy. Telefon czyta głosem przeglądarki, więc nie blokuj ekranu w trakcie." }) : null];
+          h("button", { type: "button", class: "btn primary sk-start", disabled: F.sid ? null : true, onclick: () => jzBegin(F.sid, F.mins) }, `Ruszamy (${F.mins} min) →`))];
     }
     const s = subjectById(J.sid);
     if (!J.items.length) return [head(s?.pl || "Przejazd"), h("div", { class: "empty small", text: "Nie ma jeszcze nic do ułożenia z tego przedmiotu (brak lekcji i fiszek, które możesz otworzyć). Wybierz inny przedmiot." }),
@@ -15945,22 +15901,20 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const card = h("div", { class: "jz-item " + it.t, ontouchstart: (e) => { sx = e.touches[0].clientX; }, ontouchend: (e) => { if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; sx = null; if (Math.abs(dx) > 60) jzGo(dx < 0 ? 1 : -1); } },
       it.t === "card"
         ? [h("span", { class: "eyebrow", text: "Fiszka · Dziś do powtórki" }), h("p", { class: "jz-q", text: it.q }),
-          J.rev || J.mode === "audio" ? h("p", { class: "jz-a", text: it.a }) : h("button", { type: "button", class: "btn jz-reveal", onclick: () => { J.rev = true; render(); } }, "Pokaż odpowiedź"),
+          J.rev ? h("p", { class: "jz-a", text: it.a }) : h("button", { type: "button", class: "btn jz-reveal", onclick: () => { J.rev = true; render(); } }, "Pokaż odpowiedź"),
           h("p", { class: "muted", style: "font-size:.82rem", text: it.label || "" })]
         : [h("span", { class: "eyebrow", text: "Mikrolekcja" + (it.lead ? " · " + it.lead : "") }), h("h2", { class: "jz-t", text: it.title }), rich(it.text, "jz-text"), it.tip ? h("p", { class: "jz-tip" }, h("b", { text: "Zapamiętaj: " }), inline(it.tip)) : null]);
-    const grade = it.t === "card" && J.rev && J.mode !== "audio";
+    const grade = it.t === "card" && J.rev;
     return [h("section", { class: "jz-bar" },
-        h("button", { type: "button", class: "back", onclick: () => { jzStop(); JZ.st = { setup: true }; render(); } }, h("span", { "aria-hidden": "true", text: "←" }), "Zakończ"),
+        h("button", { type: "button", class: "back", onclick: () => { JZ.st = { setup: true }; render(); } }, h("span", { "aria-hidden": "true", text: "←" }), "Zakończ"),
         h("span", { class: "num muted", text: `${J.pos + 1}/${J.items.length} · zostało ok. ${Math.max(1, Math.round(left / 60))} min` })),
       h("div", { class: "progress jz-prog", "aria-hidden": "true" }, h("i", { style: `width:${pct}%` })),
       card,
       h("div", { class: "jz-thumb" },
         grade ? [h("button", { type: "button", class: "btn rv-again", onclick: () => jzGrade(false) }, "Nie pamiętam"), h("button", { type: "button", class: "btn rv-good", onclick: () => jzGrade(true) }, "Pamiętam")]
           : [h("button", { type: "button", class: "btn", "aria-label": "Poprzednie", disabled: J.pos ? null : true, onclick: () => jzGo(-1) }, "◀"),
-            J.mode === "audio" ? h("button", { type: "button", class: "btn", onclick: () => { if (J.playing) { jzStop(); render(); } else { jzPlayCur(); render(); } } }, J.playing ? "⏸ Pauza" : "▶ Czytaj")
-              : h("span", { class: "muted", style: "font-size:.82rem;align-self:center", text: TOUCH ? "przesuń palcem" : "" }),
-            h("button", { type: "button", class: "btn primary", "aria-label": "Dalej", onclick: () => jzGo(1) }, "Dalej ▶")]),
-      J.mode === "audio" ? h("div", { class: "row jz-rate" }, h("span", { class: "muted", text: "Tempo:" }), [0.9, 1, 1.2, 1.4].map((r) => h("button", { type: "button", class: "chip" + (J.rate === r ? " good" : ""), onclick: () => { J.rate = r; ls.set("bm-jazda-tempo", String(r)); if (J.playing) jzPlayCur(); render(); } }, r + "×"))) : null];
+            h("span", { class: "muted", style: "font-size:.82rem;align-self:center", text: TOUCH ? "przesuń palcem" : "" }),
+            h("button", { type: "button", class: "btn primary", "aria-label": "Dalej", onclick: () => jzGo(1) }, "Dalej ▶")])];
   }
 
   // Dzisiejsze błędy: { klucz: dzień }, klucz "f:<fiszka>" albo "q:<mid>:<idx>" (pytanie z quizu lub gry), max 300.
