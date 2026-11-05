@@ -39,7 +39,7 @@ end $$;
 
 -- Dane: 6 osób w roczniku Ekonomia 2026, konta założone 40 dni temu (5) i dziś (1).
 do $$
-declare i int; u uuid; t0 timestamptz := now() - interval '40 days';
+declare i int; u uuid; t0 timestamptz := (((now() at time zone 'Europe/Warsaw')::date - 40) + time '12:00') at time zone 'Europe/Warsaw'; -- południe w PL: godzina uruchomienia i zmiana czasu nie przesuwają dni
 begin
   insert into public.nauka_docs (kolekcja, id, data) values ('materials', 'ek-lekcja-1', '{"subjectId":"mikro"}'), ('materials', 'ek-lekcja-2', '{"subjectId":"mikro"}')
   on conflict do nothing;

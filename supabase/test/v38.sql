@@ -49,12 +49,13 @@ do $$ declare r jsonb; begin
   perform test.chk('A4 Stripe wygasł: karnet ok (wiersz istniał)', (r->>'ok')::boolean and not (r->>'nowy')::boolean, r);
   r := public.nauka_admin_karnet_wydaj('nowy38@x.pl', current_date + 10, null, 'Zanim założy konto');
   perform test.chk('A5 karnet na e-mail bez konta: ok, konto=false', (r->>'ok')::boolean and not (r->>'konto')::boolean, r);
+  -- daty od „dziś” w Polsce, jak w funkcji (current_date to UTC: między północą w PL i UTC granica wypadała o dzień obok)
   perform test.chk('A6 walidacja: e-mail, data w przeszłości, data > 400 dni, nieznany rocznik, za krótki powód',
-    public.nauka_admin_karnet_wydaj('zly-email', current_date + 5, null, 'powód')->>'code' = 'email'
-    and public.nauka_admin_karnet_wydaj('x38@x.pl', current_date - 1, null, 'powód')->>'code' = 'data'
-    and public.nauka_admin_karnet_wydaj('x38@x.pl', current_date + 401, null, 'powód')->>'code' = 'data'
-    and public.nauka_admin_karnet_wydaj('x38@x.pl', current_date + 5, 'wefiz-xx-1-st-2099', 'powód')->>'code' = 'rocznik'
-    and public.nauka_admin_karnet_wydaj('x38@x.pl', current_date + 5, null, ' a ')->>'code' = 'powod', null);
+    public.nauka_admin_karnet_wydaj('zly-email', (now() at time zone 'Europe/Warsaw')::date + 5, null, 'powód')->>'code' = 'email'
+    and public.nauka_admin_karnet_wydaj('x38@x.pl', (now() at time zone 'Europe/Warsaw')::date - 1, null, 'powód')->>'code' = 'data'
+    and public.nauka_admin_karnet_wydaj('x38@x.pl', (now() at time zone 'Europe/Warsaw')::date + 401, null, 'powód')->>'code' = 'data'
+    and public.nauka_admin_karnet_wydaj('x38@x.pl', (now() at time zone 'Europe/Warsaw')::date + 5, 'wefiz-xx-1-st-2099', 'powód')->>'code' = 'rocznik'
+    and public.nauka_admin_karnet_wydaj('x38@x.pl', (now() at time zone 'Europe/Warsaw')::date + 5, null, ' a ')->>'code' = 'powod', null);
 end $$;
 reset role;
 do $$ begin
