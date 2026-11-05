@@ -631,6 +631,29 @@
     if (!res.ok || !out.results) throw fail(out.code || (res.status === 404 ? "not_deployed" : "error"), out.message || "AI nie oceniło testu.");
     return out;
   };
+  // Etap 13 „Zdawalni w Skrócie”: „Sprawdź moje rozwiązanie ze zdjęcia” (funkcja Edge sprawdz-zdjecie, SQL v39).
+  // body = { image: base64 JPEG, mediaType, task: { task|q, answer, steps, result, unit, tol, hint, max }, lang, rocznik }
+  // → { ok, result: { points_min, points_max, good, mistake_step, notes, readable }, maxPoints, remaining }.
+  // Zdjęcie idzie tylko w tym zapytaniu; ani strona, ani funkcja go nie zapisują. Błąd rzuca wyjątek z code.
+  skrot.sprawdzZdjecie = async (body, ms = 70000) => {
+    await ready;
+    const fail = (code, message, extra) => Object.assign(new Error(message), { code }, extra || {});
+    if (!sb || skrot.state !== "in") throw fail("not_signed_in", "Zaloguj się, żeby sprawdzić zdjęcie.");
+    const { data } = await sb.auth.getSession();
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+    let res;
+    try {
+      res = await fetch(CONFIG.url + "/functions/v1/sprawdz-zdjecie", {
+        method: "POST", signal: ctl.signal,
+        headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + data?.session?.access_token, "x-skrot-device": DEVICE },
+        body: JSON.stringify(body),
+      });
+    } catch (e) { throw fail(e?.name === "AbortError" ? "timeout" : netErr(e) ? "offline" : "no_function", "AI nie odpowiedziało na czas."); }
+    finally { clearTimeout(t); }
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.ok) throw fail(out.code || (res.status === 404 ? "not_deployed" : "error"), out.message || "Nie udało się sprawdzić zdjęcia.", { limit: out.limit });
+    return out;
+  };
   // Etap 4 „Zdawalni w Skrócie”: usunięcie konta przez funkcję Edge usun-konto (SQL v32). Potwierdzenie = własny e-mail.
   // Po sukcesie: wylogowanie i czyszczenie danych tej przeglądarki (zostaje tylko język i „Mniej animacji”).
   skrot.usunKonto = async (email) => {
