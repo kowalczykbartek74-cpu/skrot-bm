@@ -315,7 +315,7 @@
   const polecNorm = (t) => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/gi, "l").toUpperCase().replace(/[^A-Z0-9]/g, "");
   skrot.polecNorm = polecNorm;
   skrot.polecZapamietany = () => { try { const p = JSON.parse(ls.get(POLEC_LS) || "null"); return p && p.kod && Date.now() - p.t < 30 * 864e5 ? p.kod : ""; } catch { return ""; } };
-  skrot.polecLink = (kod) => "https://skrotbm.pl/?kod=" + encodeURIComponent(kod);
+  skrot.polecLink = (kod) => "https://zdawalni.pl/?kod=" + encodeURIComponent(kod);
   const polecRpc = async (fn, args) => { await ready; const { data, error } = await sb.rpc(fn, args); if (error) throw rpcErr(error); return data; };
   skrot.polecMoj = () => polecRpc("nauka_polec_moj");
   skrot.polecUstaw = (kod, imie) => polecRpc("nauka_polec_ustaw", { p_kod: kod, p_imie: imie || null });
