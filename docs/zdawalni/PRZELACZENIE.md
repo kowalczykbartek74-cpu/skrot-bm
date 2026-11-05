@@ -1,5 +1,8 @@
 # Przeniesienie Skrótu BM ze skrotbm.pl na zdawalni.pl
 
+> **Stan 5.11.2026, 22:15: PRZEŁĄCZONE.** zdawalni.pl = Zdawalni (GitHub Pages, repo `skrot-bm`, HTTPS wymuszone). skrotbm.pl = repo `skrotbm-przekierowanie` (przekierowanie z kierunkiem BM, HTTPS wymuszone). Matura: `www.zdawalni.pl` i `matura.zdawalni.pl` (Vercel). DNS zdawalni.pl: A → 185.199.108.153 i 185.199.109.153. Supabase Skrótu: Site URL = https://zdawalni.pl. Certyfikat GitHuba szedł ok. 2 h (komunikat o `www` wskazującym na Vercela okazał się niegroźny).
+> **Do zrobienia przez Bartka:** wdrożyć w Supabase z `main` funkcje `claude`, `grade-open`, `usun-konto`, `kalendarz`; ewentualnie usunąć `zdawalni.pl` (apex) z projektu Vercel `zdawalni` (już nieużywane).
+
 Przygotowane 5.11.2026. Gałęzie: `skrot-bm` → `zdawalni/domena`, `plan-bm` → `zdawalni`. Nic z tego nie jest jeszcze na produkcji.
 
 ## Jak to wygląda po przełączeniu
