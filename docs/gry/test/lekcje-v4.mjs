@@ -160,7 +160,9 @@ const k3 = "q:L4:" + hashStr("L4 exit 3"), k1 = "q:L4:" + hashStr("L4 exit 1");
 ok("zgadnięte i poprawne → pudełko 1 jak błędne; pewne → nowe od jutra", pr.srs[k3]?.[0] === 1 && pr.srs[k1]?.[0] === 0, { k3: pr.srs[k3], k1: pr.srs[k1] });
 // „Pewny / Zgaduję” z biletu trafia do zdarzeń nauki (exit_ticket.odp = [dobrze, pewność]); jedno wejście: learnEvent.
 { const q = await P.evaluate(() => JSON.parse(localStorage.getItem("bm-learn-q") || "[]")), et = q.filter((e) => e.typ === "exit_ticket" && e.dane.lessonId === "L4").pop();
-  ok("exit_ticket z pewnością: zgadnięte poprawne [1,0], bez wyboru [1,null]", et?.dane.odp?.some((x) => x[0] === 1 && x[1] === 0) && et.dane.odp.some((x) => x[0] === 1 && x[1] === null) && et.dane.max === 3, q.map((e) => e.typ + JSON.stringify(e.dane)).slice(-6)); }
+  ok("exit_ticket z pewnością: zgadnięte poprawne [1,0], bez wyboru [1,null]", et?.dane.odp?.some((x) => x[0] === 1 && x[1] === 0) && et.dane.odp.some((x) => x[0] === 1 && x[1] === null) && et.dane.max === 3, q.map((e) => e.typ + JSON.stringify(e.dane)).slice(-6));
+  // Etap 6 (lejek): wariant testu A/B haczyka w bilecie, żeby panel „Lejek i retencja” porównał „haczyk” i „bez”.
+  ok("exit_ticket L4 z wariantem A/B „haczyk”", et?.dane.hak === "haczyk", et?.dane); }
 await P.evaluate(() => { location.hash = "#/material/L5"; }); await P.waitForTimeout(1500);
 await bezOkien(P); await P.locator(".lp-start").click(); await P.waitForTimeout(900);
 const t5 = await P.locator(".lp-card").getAttribute("data-type");

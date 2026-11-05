@@ -369,6 +369,10 @@
       try { localStorage.setItem("mock-rocznik", JSON.stringify({ id: a.p_rocznik, wybrany: true })); } catch {} return { ok: true, rocznik_id: a.p_rocznik, wybrany: true, status: "platny" }; },
   };
   const BASE = {
+    // v35 (etap 6): wejścia (sumy dzienne) i panel „Lejek i retencja”; podsumowanie z localStorage mock-lejek (JSON jak z bazy)
+    nauka_wejscie: () => ({ ok: true }),
+    nauka_admin_lejek: () => (KONTO === "starosta" ? { ok: true, ...(JSON.parse(ls("mock-lejek", "null")) || { dzien: null, policzono_at: null, roczniki: [], dane: {} }) } : { ok: false, code: "not_admin" }),
+    nauka_admin_lejek_przelicz: () => { window.__przelicz = (window.__przelicz || 0) + 1; return BASE.nauka_admin_lejek(); },
     // v34 (etap 5): lista oczekujących dla administratora; dane z localStorage mock-oczekujacy (JSON jak z bazy)
     nauka_admin_oczekujacy: () => (KONTO === "starosta" ? { ok: true, ...(JSON.parse(ls("mock-oczekujacy", "null")) || { potwierdzone: 0, czeka: 0, kierunki: [], wpisane: [], zrodla: {} }) } : { ok: false, code: "not_admin" }),
     nauka_admin_oczekujacy_csv: () => (KONTO === "starosta" ? { ok: true, wiersze: JSON.parse(ls("mock-oczekujacy-csv", "[]")) } : { ok: false, code: "not_admin" }),

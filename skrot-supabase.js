@@ -474,6 +474,19 @@
   // Etap 5: lista oczekujących dla administratora (SQL v34; sprawdza nauka_admin w bazie).
   skrot.oczekujacy = { panel: () => rpRaw("nauka_admin_oczekujacy"), csv: () => rpRaw("nauka_admin_oczekujacy_csv") };
   skrot.zapisy = { czeka: () => (KOP ? KOP.kolejka().length : 0), wyslij: () => kqFlush() };
+  // Etap 6: lejek i retencja dla administratora (SQL v35; sprawdza nauka_admin w bazie).
+  skrot.lejek = { panel: () => rpRaw("nauka_admin_lejek"), przelicz: () => rpRaw("nauka_admin_lejek_przelicz") };
+  // Wejście do sum dziennych (nauka_wejscie, SQL v35): raz dziennie na przeglądarkę, bez cookies i bez identyfikatora osoby.
+  // Flaga z datą w localStorage (lejek.js); rocznik z ekranu wejścia („skrot-rocznik”), źródło z linku (?z=…).
+  // Bez v35 w bazie (not_enabled) albo bez sieci flaga się nie zapisuje, więc wejście liczy się przy następnym otwarciu.
+  (function wejscieDzis() {
+    const LJ = window.SKROT_LEJEK; if (!LJ) return;
+    let flaga = null, rocznik = null;
+    try { flaga = localStorage.getItem(LJ.FLAGA); rocznik = localStorage.getItem("skrot-rocznik"); } catch { return; }
+    const d = new Date(), dzis = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const args = LJ.wejscie(flaga, dzis, location.search, rocznik);
+    if (args) rpRaw("nauka_wejscie", args).then((r) => { if (r?.ok) try { localStorage.setItem(LJ.FLAGA, dzis); } catch {} });
+  })();
   setInterval(kqFlush, 20000);
   addEventListener("online", () => { kqFlush(); });
   // Zapytania, w których pkt to punkty przyznane teraz (nauka_haslo_dzis i nauka_bossy zwracają pkt informacyjnie).
