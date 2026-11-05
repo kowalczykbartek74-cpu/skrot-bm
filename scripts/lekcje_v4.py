@@ -306,7 +306,7 @@ def check_lesson(doc, by_id=None):
             no_not.append(path)
         elif not isinstance(nt, list) or len(nt) != len(opts):
             E.append(f"{path}: not ma {len(nt) if isinstance(nt, list) else '?'} pozycji, opcji {len(opts)}")
-        elif isinstance(cor, int) and 0 <= cor < len(nt) and nt[cor] is not None:
+        elif isinstance(cor, int) and 0 <= cor < len(nt) and nt[cor] not in (None, ""):  # "" jak w lekcjach v3 = brak wyjaśnienia
             E.append(f"{path}: not[correct] powinno być null")
         elif any(x in (None, "") for j, x in enumerate(nt) if j != cor):
             W.append(f"{path}: not bez wyjaśnienia dla którejś złej opcji")

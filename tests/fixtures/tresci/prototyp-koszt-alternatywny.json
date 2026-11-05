@@ -1,0 +1,399 @@
+{
+ "id": "prototyp-koszt-alternatywny",
+ "subjectId": "ekonomia-biznesu",
+ "title": "Koszt alternatywny (lekcja wzorcowa z docs/lekcje-v3/prototyp.html)",
+ "content": {
+  "concepts": [
+   {
+    "term": "Scarcity",
+    "pl": "rzadkość",
+    "definition": "The situation in which resources are limited compared with human wants."
+   },
+   {
+    "term": "Opportunity cost",
+    "pl": "koszt alternatywny",
+    "definition": "The value of the best alternative given up when making a choice."
+   },
+   {
+    "term": "Explicit cost",
+    "pl": "koszt jawny",
+    "definition": "A cost that involves an actual payment of money."
+   },
+   {
+    "term": "Implicit cost",
+    "pl": "koszt ukryty",
+    "definition": "The value of a benefit given up that involves no payment of money."
+   },
+   {
+    "term": "PPF",
+    "pl": "krzywa możliwości produkcyjnych",
+    "definition": "A curve showing the maximum combinations of two goods an economy can produce with its resources and technology."
+   },
+   {
+    "term": "Efficiency",
+    "pl": "efektywność",
+    "definition": "Producing the most possible with the available resources, so that nothing is wasted."
+   }
+  ],
+  "flashcards": [
+   {
+    "q": "What is opportunity cost?",
+    "a": "The value of the best alternative given up."
+   },
+   {
+    "q": "What does a point inside the PPF show?",
+    "a": "Unused resources: production is inefficient."
+   },
+   {
+    "q": "Explicit vs implicit cost?",
+    "a": "Explicit = money paid; implicit = a benefit given up without paying."
+   },
+   {
+    "q": "Why is the PPF usually bowed outwards?",
+    "a": "Resources are not equally suited to both goods, so the opportunity cost rises."
+   },
+   {
+    "q": "Do you add up all the rejected options?",
+    "a": "No. Only the best rejected option counts."
+   }
+  ],
+  "lesson": {
+   "v2": 1,
+   "intro": "Every decision has a hidden price tag: the best thing you give up. In this lesson you learn to see that price, calculate it and read it from a simple graph.",
+   "hook": {
+    "q": "You have a free ticket to a concert tonight. Instead, you could work a 4-hour shift that pays 30 zł per hour. What does going to the concert really cost you?",
+    "options": [
+     "Nothing, the ticket is free",
+     "120 zł",
+     "It depends on how much you like the band"
+    ],
+    "reveal": "Going costs you 120 zł: the pay you give up (4 h × 30 zł). The ticket is free, but the opportunity cost is not zero. Whether the concert is worth it depends on whether it is worth more than 120 zł to you, and that is exactly the comparison economists make."
+   },
+   "prereq": [
+    {
+     "q": "Which statement best describes scarcity?",
+     "options": [
+      "Some goods are expensive",
+      "Resources are limited compared with what people want",
+      "Shops sometimes run out of stock",
+      "Only poor countries face it"
+     ],
+     "correct": 1,
+     "why": "Scarcity means wants exceed the resources available to satisfy them. It affects everyone, rich or poor."
+    },
+    {
+     "q": "You earn 25 zł per hour. How much do you earn in 3 hours?",
+     "options": [
+      "28 zł",
+      "50 zł",
+      "75 zł",
+      "100 zł"
+     ],
+     "correct": 2,
+     "why": "3 × 25 zł = 75 zł."
+    }
+   ],
+   "sections": [
+    {
+     "h": "Scarcity forces choices",
+     "intuition": "You have one evening, not three. Picking the gym means not picking the party or the library. Every choice closes other doors.",
+     "body": "**Scarcity** means that resources such as time, money, land and labour are limited, while human wants are not. Because of scarcity, every person, firm and government has to **choose**.\n\nA choice always has two sides:\n- what you get (the option you pick),\n- what you give up (the options you reject).\n\nEconomists focus on the second side, because people tend to forget it. The rejected options do not disappear: they are the real cost of the decision.\n\nThis applies to firms too. A bakery that uses its only oven to bake bread cannot bake cakes in the same hour. The oven is a **scarce resource**, so the owner must decide what it is used for.",
+     "visual": {
+      "type": "flow",
+      "title": "How a decision is made",
+      "steps": [
+       "Notice that a resource is limited",
+       "List the possible uses",
+       "Compare the benefits of each use",
+       "Choose one use",
+       "Give up the other uses"
+      ],
+      "note": "The last step is the one people forget: every choice has a cost."
+     },
+     "example": {
+      "task": "A student has 2 free hours. She can study for an exam or work in a café for 20 zł per hour. What does she give up in each case?",
+      "steps": [
+       "If she studies, she gives up the pay: 2 h × 20 zł = 40 zł.",
+       "If she works, she gives up 2 hours of study time and the better exam result it could bring.",
+       "Both options have a cost; the question is which cost is smaller for her."
+      ],
+      "answer": "Studying costs 40 zł of lost pay; working costs 2 hours of exam preparation."
+     },
+     "mistake": {
+      "wrong": "If something is free, choosing it costs nothing.",
+      "why": "Even a free option uses your time or another resource that you could have used for something else.",
+      "right": "A free option still has a cost: the value of the best alternative you give up."
+     },
+     "tip": "If a question asks for the cost of a decision, always ask yourself: what else could this time, money or resource have been used for?",
+     "check": {
+      "q": "Why does scarcity force people to make choices?",
+      "options": [
+       "Because prices are always rising",
+       "Because limited resources cannot satisfy all wants at once",
+       "Because the government decides what to produce"
+      ],
+      "correct": 1,
+      "why": "With limited resources you cannot have everything you want, so you must decide what to give up.",
+      "not": [
+       "Rising prices are not what scarcity means. Even with stable prices, resources would still be limited.",
+       "",
+       "Everyone makes choices, not only the government. Scarcity exists in every economic system."
+      ]
+     },
+     "simple": "Masz tylko jeden wieczór, jedną wypłatę i jeden piekarnik. Nie da się zrobić wszystkiego naraz, więc musisz wybierać. Ekonomia mówi: zawsze patrz też na to, z czego rezygnujesz."
+    },
+    {
+     "h": "Opportunity cost",
+     "intuition": "The real price of anything is the best thing you could have had instead. Not all the alternatives, only the best one.",
+     "body": "**Opportunity cost** is the value of the **best alternative forgone** when you make a choice. Only the single best rejected option counts, not all of them added together.\n\nOpportunity cost can include money you pay (an **explicit cost**) and benefits you give up without paying anything (an **implicit cost**). For example, if you spend 100 zł on a ticket and 3 hours at a concert, and you could have earned 25 zł per hour, the opportunity cost is 100 zł + 3 × 25 zł = 175 zł.\n\nFor choices between two goods, opportunity cost is often written as a ratio: how many units of good B you give up to get one more unit of good A, \\( OC_A = \\dfrac{\\text{units of B given up}}{\\text{units of A gained}} \\). This is the idea behind sentences such as: one more pizza costs two burgers.",
+     "visual": {
+      "type": "compare",
+      "title": "Explicit vs implicit cost",
+      "cols": [
+       "",
+       "Explicit cost",
+       "Implicit cost"
+      ],
+      "rows": [
+       [
+        "What it is",
+        "Money you actually pay",
+        "Value you give up without paying"
+       ],
+       [
+        "Concert example",
+        "100 zł ticket",
+        "3 h × 25 zł = 75 zł of lost pay"
+       ],
+       [
+        "Shows up in accounts?",
+        "Yes",
+        "No"
+       ]
+      ]
+     },
+     "example": {
+      "task": "Tom can spend Saturday working (earning 200 zł), helping at his uncle's shop (worth 150 zł to him) or resting (worth 120 zł to him). He chooses to rest. What is his opportunity cost?",
+      "steps": [
+       "List the rejected options: working (200 zł) and the shop (150 zł).",
+       "Pick the best rejected option: working, worth 200 zł.",
+       "Do not add the options together: Tom could only have done one of them."
+      ],
+      "answer": "200 zł, the value of the best alternative (working)."
+     },
+     "mistake": {
+      "wrong": "The opportunity cost is the sum of all the options you did not choose.",
+      "why": "You could only have done one of the rejected options, so only one of them is really given up.",
+      "right": "Opportunity cost is the value of the single best alternative you give up."
+     },
+     "check": {
+      "q": "Anna can earn 60 zł babysitting or 80 zł tutoring on Friday evening. She goes to the cinema (ticket 30 zł) instead. What is her opportunity cost?",
+      "options": [
+       "30 zł",
+       "80 zł",
+       "110 zł",
+       "170 zł"
+      ],
+      "correct": 2,
+      "why": "She pays 30 zł for the ticket (explicit cost) and gives up her best alternative, 80 zł from tutoring (implicit cost): 30 + 80 = 110 zł.",
+      "not": [
+       "30 zł is only the ticket. It ignores the 80 zł she could have earned.",
+       "80 zł is only the lost tutoring pay. The ticket is part of the cost too.",
+       "",
+       "She cannot babysit and tutor at the same time, so the 60 zł should not be added."
+      ]
+     },
+     "simple": "Koszt alternatywny to wartość najlepszej rzeczy, z której rezygnujesz. Nie dodajesz wszystkich opcji, tylko bierzesz tę najlepszą. Jeśli coś kupujesz, do ceny doliczasz też to, co mogłeś w tym czasie zarobić."
+    },
+    {
+     "h": "The production possibilities frontier (PPF)",
+     "intuition": "Imagine a farm that can grow only wheat or potatoes. Draw every best mix it can produce and you get a curve: the edge of what is possible.",
+     "body": "The **production possibilities frontier** (PPF) shows the maximum combinations of two goods an economy can produce with its resources and technology.\n\n- Points on the curve are **efficient**: you cannot make more of one good without making less of the other.\n- Points inside the curve are **inefficient**: some resources are unused.\n- Points outside the curve are **unattainable** with current resources.\n\nMoving along the curve shows opportunity cost: to get more of one good, you must give up some of the other. The PPF is usually **bowed outwards**, because resources are not equally good at producing both goods, so the opportunity cost rises as you specialise.",
+     "visual": {
+      "type": "chart",
+      "title": "PPF of a small farm",
+      "x": "Wheat (tonnes)",
+      "y": "Potatoes (tonnes)",
+      "series": [
+       {
+        "name": "PPF",
+        "points": [
+         [
+          0,
+          100
+         ],
+         [
+          20,
+          96
+         ],
+         [
+          40,
+          84
+         ],
+         [
+          60,
+          64
+         ],
+         [
+          80,
+          36
+         ],
+         [
+          100,
+          0
+         ]
+        ]
+       }
+      ],
+      "marks": [
+       {
+        "x": 40,
+        "y": 84,
+        "label": "On the curve: efficient"
+       },
+       {
+        "x": 40,
+        "y": 50,
+        "label": "Inside: some resources unused"
+       },
+       {
+        "x": 80,
+        "y": 80,
+        "label": "Outside: not possible today"
+       }
+      ],
+      "note": "Moving from 40 to 60 tonnes of wheat costs 20 tonnes of potatoes (84 → 64)."
+     },
+     "example": {
+      "task": "Using the farm's PPF, what is the opportunity cost of increasing wheat from 60 to 80 tonnes?",
+      "steps": [
+       "Read the potatoes at 60 tonnes of wheat: 64 tonnes.",
+       "Read the potatoes at 80 tonnes of wheat: 36 tonnes.",
+       "Potatoes given up: 64 − 36 = 28 tonnes for 20 extra tonnes of wheat.",
+       "Per tonne of wheat: 28 / 20 = 1.4 tonnes of potatoes."
+      ],
+      "answer": "28 tonnes of potatoes, or 1.4 tonnes of potatoes per extra tonne of wheat."
+     },
+     "mistake": {
+      "wrong": "A point inside the PPF is impossible to produce.",
+      "why": "Points inside can be produced; they just waste resources. Points outside the curve are the impossible ones.",
+      "right": "Inside = possible but inefficient; on = efficient; outside = unattainable today."
+     },
+     "tip": "In exam questions with a PPF, first say whether the point is on, inside or outside the curve, then explain what that means.",
+     "check": {
+      "q": "The farm produces 40 tonnes of wheat and 50 tonnes of potatoes. What can you say about this point?",
+      "options": [
+       "It is efficient",
+       "It is inefficient: resources are unused",
+       "It is unattainable",
+       "It shows economic growth"
+      ],
+      "correct": 1,
+      "why": "With 40 tonnes of wheat the farm could produce 84 tonnes of potatoes. Producing only 50 means resources are not fully used.",
+      "not": [
+       "An efficient point lies on the curve. At 40 tonnes of wheat that is 84 tonnes of potatoes, not 50.",
+       "",
+       "Unattainable points lie outside the curve. This one is inside.",
+       "Growth means the whole curve shifts outwards; one point inside the curve does not show that."
+      ]
+     },
+     "simple": "Wykres PPF pokazuje, ile najwięcej da się wyprodukować dwóch rzeczy naraz. Punkt na linii: wszystko pracuje. Punkt w środku: coś się marnuje. Punkt za linią: na razie się nie da."
+    }
+   ],
+   "faded": {
+    "task": "A café can make either 100 coffees or 50 sandwiches per hour (a straight-line PPF). What is the opportunity cost of one sandwich?",
+    "steps": [
+     {
+      "text": "Making 50 sandwiches means giving up 100 coffees.",
+      "blank": false
+     },
+     {
+      "text": "Opportunity cost of 1 sandwich = 100 / 50.",
+      "blank": true
+     },
+     {
+      "text": "= 2 coffees per sandwich.",
+      "blank": true
+     }
+    ],
+    "answer": "2 coffees."
+   },
+   "exercises": [
+    {
+     "level": 2,
+     "task": "You pay 40 zł for a 2-hour cooking class. You could have worked for 30 zł per hour instead. What is the opportunity cost of the class?",
+     "hint": "Add the explicit cost (the fee) and the implicit cost (lost pay).",
+     "answer": "40 zł + 2 × 30 zł = 100 zł."
+    },
+    {
+     "level": 2,
+     "task": "On the farm's PPF, what is the opportunity cost of increasing wheat from 0 to 20 tonnes?",
+     "hint": "Read the potatoes at 0 and at 20 tonnes of wheat.",
+     "answer": "100 − 96 = 4 tonnes of potatoes."
+    },
+    {
+     "level": 3,
+     "task": "Explain why the farm's opportunity cost of wheat rises as it produces more wheat.",
+     "hint": "Think about which land is switched to wheat first.",
+     "answer": "The land best suited to wheat is switched first. Later the farm has to use land that is better for potatoes, so each extra tonne of wheat costs more potatoes."
+    }
+   ],
+   "transfer": {
+    "task": "A city can use a plot of land for a park (worth 2 million zł a year to residents) or a car park (earning 1.5 million zł a year). It builds the park. What is the opportunity cost, and why can building the park still be the right choice?",
+    "hint": "Opportunity cost is the best alternative given up; compare it with the benefit of the choice.",
+    "answer": "The opportunity cost is the 1.5 million zł a year from the car park. The park is still the right choice because its value (2 million zł) is higher than what is given up."
+   },
+   "recap": {
+    "prompt": "Explain to a friend what opportunity cost is and how you calculate it.",
+    "keys": [
+     "It is the value of the best alternative given up",
+     "Only one alternative counts, not all of them",
+     "It includes explicit costs (money paid)",
+     "It includes implicit costs (benefits given up)"
+    ],
+    "model": "Opportunity cost is what a choice really costs: the value of the best option you give up. You count only the best rejected option, not all of them. To calculate it, add what you pay (explicit cost) and what you give up without paying, such as lost pay (implicit cost)."
+   },
+   "formulas": [
+    "Opportunity cost = value of the best alternative forgone",
+    "Total opportunity cost = explicit cost + implicit cost",
+    "\\( OC_A = \\dfrac{\\text{units of B given up}}{\\text{units of A gained}} \\)"
+   ],
+   "exit": [
+    {
+     "q": "Kasia can work for 50 zł or tutor for 70 zł on Saturday. She goes hiking (free). What is her opportunity cost?",
+     "options": [
+      "0 zł",
+      "50 zł",
+      "70 zł",
+      "120 zł"
+     ],
+     "correct": 2,
+     "why": "Hiking is free, so the cost is the best alternative given up: tutoring for 70 zł.",
+     "sec": 1
+    },
+    {
+     "q": "Which point on a PPF graph shows unused resources?",
+     "options": [
+      "A point on the curve",
+      "A point inside the curve",
+      "A point outside the curve"
+     ],
+     "correct": 1,
+     "why": "Inside the curve the economy could produce more of both goods, so some resources are unused.",
+     "sec": 2
+    },
+    {
+     "q": "Why do people often underestimate the cost of a choice?",
+     "options": [
+      "They forget the alternatives they give up",
+      "They overestimate prices",
+      "They always choose the cheapest option"
+     ],
+     "correct": 0,
+     "why": "Implicit costs, the alternatives given up, are easy to forget because no money changes hands.",
+     "sec": 0
+    }
+   ]
+  }
+ }
+}

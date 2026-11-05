@@ -10,6 +10,7 @@ Kod etapów A–C jest w `index.html` i `lekcje-v4.js`. Etap D to skrypty (Pytho
 | D4 poprawki | `python3 scripts/lekcje-poprawki.py <id>` (`--na-sucho` bez wysyłania) | `scratch/latki/<id>.json`, tokeny w `<id>.usage.json` |
 | D5.1 łatka + walidacja | `python3 scripts/lekcje-latka.py scratch/latki/<id>.json` | `scratch/lessons-v4-poprawione/<id>.json` |
 | D5.2 zgodność `gen` | `python3 scripts/lekcje-walidator.py --zgodnosc scratch/lessons-v4-poprawione/*.json` | Python = parser JS (20 losowań) |
+| D5.2b kontrola treści | `node scripts/tresci-kontrola.mjs scratch/lessons-v4-poprawione --przed-wgraniem` | 0 = można wgrać; przegląd liczb w `scratch/tresci-przeglad.json` (etap 12) |
 | D5.3 wgranie | upsert `materialContent/<id>` jak przy lekcjach z sylabusa – **tylko po zatwierdzeniu pilota (D6)** | |
 
 `scratch/` jest w `.gitignore`. Zasady pisania dla modelu: `docs/lekcje-v4/zasady.md` (sekcja 6 specu).

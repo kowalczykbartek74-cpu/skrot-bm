@@ -95,6 +95,7 @@ Format: **lekcje v3** jak 115 lekcji BM (haczyk, intuicja, treść, wizualizacja
 2. **Pilotaż**: jeden przedmiot kończący się egzaminem. Pokaż 2 lekcje w aplikacji (zrzuty), koszt pilotażu z konsoli i szacunek kosztu całości. **Czekaj na akcept.**
 3. Po akcepcie: reszta przedmiotów z egzaminem w bieżącym/najbliższym semestrze, potem pozostałe (decyzja Bartka).
 4. Treści oznaczone „z sylabusa”; w miejscu „przejrzane przez osobę, która zdała przedmiot” na razie nic (to dojdzie z autorami).
+5. **Kontrola jakości przed każdym wgraniem** (pilotaż i każda kolejna paczka): `node scripts/tresci-kontrola.mjs <paczka> --przed-wgraniem` musi skończyć się kodem 0. Błędy (walidator v4, zakazane sformułowania z `scripts/tresci-zakazane.json`, rachunki i pytania z `calc`, które się nie zgadzają) poprawia generator albo łatka; liczby, daty, kwoty i numery artykułów Bartek (albo autor) przegląda w `scratch/tresci-przeglad.json`, wpisując źródło. Pytania liczbowe generator pisze z polem `calc`. Opis: README → „Kontrola jakości treści”, `docs/zdawalni/etap-12.md`.
 
 **Stop.**
 

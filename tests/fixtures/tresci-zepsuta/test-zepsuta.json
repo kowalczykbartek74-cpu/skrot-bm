@@ -1,0 +1,217 @@
+{
+ "id": "test-zepsuta",
+ "subjectId": "podstawy-finansow",
+ "title": "Zepsuta lekcja testowa (musi zostać zatrzymana)",
+ "content": {
+  "lesson": {
+   "v2": true,
+   "intro": "Odsetki od odsetek: dlaczego lokata rośnie coraz szybciej.",
+   "sections": [
+    {
+     "h": "1. Procent prosty",
+     "intuition": "Co roku dostajesz tyle samo odsetek, bo liczą się tylko od wpłaty.",
+     "body": "Przy procencie prostym odsetki liczysz zawsze od kwoty początkowej. Wpłacasz 1000 zł na 5% rocznie: co roku dostajesz 1000 · 0,05 = 50 zł, więc po 3 latach masz 1000 + 3 · 50 = 1150 zł. Z tą lekcją na pewno zdasz kolokwium.",
+     "simple": "Jeśli to zrozumiałeś, idź dalej.",
+     "mistake": {
+      "wrong": "Po 3 latach: 1000 · 3 · 5 = 15 000 zł.",
+      "right": "Procent to setna część: 5% = 0,05, a nie 5."
+     },
+     "check": {
+      "q": "Wpłata 2000 zł, procent prosty 4% rocznie. Ile odsetek po 2 latach?",
+      "options": [
+       "160 zł",
+       "80 zł",
+       "1600 zł"
+      ],
+      "correct": 0,
+      "not": [
+       null,
+       "To odsetki za jeden rok.",
+       "Pomylono 4% z liczbą 4."
+      ],
+      "calc": "2000*0.04*2"
+     }
+    },
+    {
+     "h": "2. Procent składany",
+     "intuition": "Odsetki dopisane do lokaty same zarabiają w kolejnym roku.",
+     "body": "Przy procencie składanym odsetki dopisuje się do kapitału. Po roku: 1000 · 1,05 = 1050 zł, po dwóch: 1050 · 1,05 = 1105 zł. Wzór: \\(K_n = K_0 (1+r)^n\\).",
+     "simple": "Odsetki też zarabiają odsetki.",
+     "mistake": {
+      "wrong": "Procent składany daje tyle samo co prosty.",
+      "right": "Od drugiego roku daje więcej, bo podstawa rośnie."
+     },
+     "check": {
+      "q": "1000 zł na 10% rocznie, kapitalizacja roczna. Ile po 2 latach?",
+      "options": [
+       "1210 zł",
+       "1200 zł",
+       "1100 zł"
+      ],
+      "correct": 0,
+      "not": [
+       null,
+       "To procent prosty.",
+       "To stan po roku."
+      ],
+      "calc": "1000*1.1^2"
+     }
+    },
+    {
+     "h": "3. Lokata a podatek",
+     "intuition": "Część odsetek zabiera podatek, więc liczy się kwota netto.",
+     "body": "Od odsetek z lokaty w Polsce płaci się podatek od zysków kapitałowych 19% (art. 30a ust. 1 pkt 3 ustawy o PIT). Z 50 zł odsetek zostaje 50 − 9,5 = 40,5 zł.",
+     "simple": "Podatek zabiera część odsetek.",
+     "mistake": {
+      "wrong": "Podatek liczy się od całej lokaty.",
+      "right": "Tylko od odsetek."
+     },
+     "check": {
+      "q": "Odsetki 200 zł, podatek 19%. Ile zostaje?",
+      "options": [
+       "162 zł",
+       "38 zł",
+       "181 zł"
+      ],
+      "correct": 1,
+      "not": [
+       "To sam podatek.",
+       null,
+       "Odjęto 19 zł zamiast 19%."
+      ],
+      "calc": "200*(1-0.19)"
+     }
+    }
+   ],
+   "exit": [
+    {
+     "q": "Co rośnie szybciej przy tej samej stopie?",
+     "options": [
+      "Lokata z procentem składanym",
+      "Lokata z procentem prostym",
+      "Obie tak samo"
+     ],
+     "correct": 0,
+     "not": [
+      null,
+      "Odsetki prosto liczone są stałe.",
+      "Różnica pojawia się od drugiego roku."
+     ],
+     "sec": 1
+    },
+    {
+     "q": "500 zł, procent prosty 6% rocznie, 1 rok. Odsetki?",
+     "options": [
+      "30 zł",
+      "300 zł",
+      "6 zł"
+     ],
+     "correct": 5,
+     "not": [
+      null,
+      "Pomylono 6% z 60%.",
+      "Pomylono procent z kwotą."
+     ],
+     "sec": 0,
+     "calc": "500*0.06"
+    },
+    {
+     "q": "Od czego liczy się podatek od lokaty?",
+     "options": [
+      "Od odsetek",
+      "Od całej wpłaty",
+      "Od salda konta"
+     ],
+     "correct": 0,
+     "not": [
+      null,
+      "Wpłata nie jest zyskiem.",
+      "Saldo to nie zysk."
+     ],
+     "sec": 2
+    }
+   ],
+   "recap": {
+    "keys": [
+     "Procent prosty: odsetki od wpłaty.",
+     "Składany: odsetki od odsetek.",
+     "Podatek tylko od odsetek."
+    ]
+   },
+   "gen": [
+    {
+     "id": "g1",
+     "task": "Wpłacasz {k} zł na {p}% rocznie (procent składany). Ile masz po {n} latach?",
+     "vars": {
+      "k": [
+       1000,
+       5000,
+       500
+      ],
+      "p": [
+       2,
+       8,
+       1
+      ],
+      "n": [
+       2,
+       5,
+       1
+      ]
+     },
+     "answer": "round(k*(1+p/100)^n, 2)",
+     "unit": "zł"
+    },
+    {
+     "id": "g2",
+     "task": "Odsetki {o} zł, podatek 19%. Ile zostaje?",
+     "vars": {
+      "o": [
+       100,
+       900,
+       50
+      ]
+     },
+     "answer": "alert(o)",
+     "unit": "zł"
+    }
+   ]
+  },
+  "concepts": [
+   {
+    "term": "Procent prosty",
+    "definition": "Odsetki liczone zawsze od kwoty początkowej."
+   },
+   {
+    "term": "Procent składany",
+    "definition": "Odsetki dopisywane do kapitału i dalej oprocentowane."
+   },
+   {
+    "term": "Kapitalizacja",
+    "definition": "Dopisanie odsetek do kapitału."
+   },
+   {
+    "term": "Podatek od zysków kapitałowych",
+    "definition": "Podatek od odsetek i innych zysków z kapitału."
+   }
+  ],
+  "flashcards": [
+   {
+    "q": "Procent prosty?",
+    "a": "Odsetki od kwoty początkowej."
+   },
+   {
+    "q": "Procent składany?",
+    "a": "Odsetki od odsetek."
+   },
+   {
+    "q": "Kapitalizacja?",
+    "a": "Dopisanie odsetek do kapitału."
+   },
+   {
+    "q": "Podatek od lokaty?",
+    "a": "Od odsetek, nie od wpłaty."
+   }
+  ]
+ }
+}
