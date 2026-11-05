@@ -412,6 +412,19 @@
       try { localStorage.setItem("mock-przyp", JSON.stringify(nw)); } catch {} return { ok: true, ...nw }; },
     nauka_przypomnienia_stan: (a) => { (window.__przyp = window.__przyp || []).push({ fn: "stan", p: a.p_stan }); try { localStorage.setItem("mock-przyp-stan", JSON.stringify(a.p_stan)); } catch {} return { ok: true }; },
     nauka_przypomnienie_otwarte: (a) => { (window.__przyp = window.__przyp || []).push({ fn: "otwarte", p: a.p_id }); return { ok: true, pierwsze: true }; },
+    // v38 (etap 11): karnety (lista w localStorage mock-karnety; jak w bazie: płatny dostęp mock-platni = "a@x.pl,b@x.pl" → ma_dostep)
+    // i źródło konta (nauka_zrodlo_ustaw; wywołania w window.__rpc). mock-v38 = "0" → funkcji nie ma.
+    nauka_admin_karnety: () => { if (KONTO !== "starosta") return { ok: false, code: "not_admin" }; const l = JSON.parse(ls("mock-karnety", "[]")); const d = dzis();
+      return { ok: true, dzis: d, aktywne: l.filter((x) => !x.cofniety_at && x.do_kiedy >= d).length, karnety: l }; },
+    nauka_admin_karnet_wydaj: (a) => { if (KONTO !== "starosta") return { ok: false, code: "not_admin" };
+      const platni = ls("mock-platni", "").split(",").filter(Boolean); if (platni.includes(a.p_email)) return { ok: false, code: "ma_dostep", do_kiedy: "2027-07-11", zrodlo: "stripe" };
+      const l = JSON.parse(ls("mock-karnety", "[]")).filter((x) => x.email !== a.p_email);
+      l.unshift({ email: a.p_email, do_kiedy: a.p_do, rocznik_id: a.p_rocznik, powod: a.p_powod, wydal: EMAIL, wydano_at: new Date().toISOString(), cofniety_at: null, konto: a.p_email !== "nowy@x.pl" });
+      try { localStorage.setItem("mock-karnety", JSON.stringify(l)); } catch {} return { ok: true, email: a.p_email, do_kiedy: a.p_do, nowy: true, konto: a.p_email !== "nowy@x.pl" }; },
+    nauka_admin_karnet_cofnij: (a) => { if (KONTO !== "starosta") return { ok: false, code: "not_admin" }; const l = JSON.parse(ls("mock-karnety", "[]")); const x = l.find((r) => r.email === a.p_email);
+      if (!x) return { ok: false, code: "brak" }; if (x.cofniety_at) return { ok: false, code: "juz_cofniety" }; x.cofniety_at = new Date().toISOString();
+      try { localStorage.setItem("mock-karnety", JSON.stringify(l)); } catch {} return { ok: true, email: a.p_email }; },
+    nauka_zrodlo_ustaw: () => ({ ok: true }),
     // v35 (etap 6): wejścia (sumy dzienne) i panel „Lejek i retencja”; podsumowanie z localStorage mock-lejek (JSON jak z bazy)
     nauka_wejscie: () => ({ ok: true }),
     nauka_admin_lejek: () => (KONTO === "starosta" ? { ok: true, ...(JSON.parse(ls("mock-lejek", "null")) || { dzien: null, policzono_at: null, roczniki: [], dane: {} }) } : { ok: false, code: "not_admin" }),
@@ -440,6 +453,7 @@
     else if (V31FN[fn]) out = V31 ? { data: V31FN[fn](args), error: null } : brak;
     else if (/^nauka_przypomnieni/.test(fn) && ls("mock-przyp", "") === "off") out = brak; // v36 jeszcze nie w bazie
     else if (/^nauka_(paczka|duet)/.test(fn) && ls("mock-paczka", "") === "off") out = brak; // v37 jeszcze nie w bazie
+    else if (/^nauka_(admin_karnet|zrodlo_ustaw)/.test(fn) && ls("mock-v38", "") === "0") out = brak; // v38 jeszcze nie w bazie
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;

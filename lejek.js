@@ -125,6 +125,20 @@
       .sort(function (a, b) { return b.sort - a.sort || a.zrodlo.localeCompare(b.zrodlo); });
   }
 
+  // Etap 11: lejek według źródła (podsumowanie „*”, pole zrodla: { źródło: { d28: {…}, wszystko: {…} } }). Wiersz na źródło,
+  // od największej liczby wejść; każda liczba < 5 ukryta osobno. '' = bez źródła (na końcu).
+  var ZR_KOL = ["wejscia", "konta", "proba", "zakup", "lista"];
+  function zrodlaLejek(z, okres) {
+    z = z || {};
+    return Object.keys(z).map(function (k) {
+      var x = (z[k] || {})[okres || "d28"] || {}, w = { zrodlo: k, sort: liczba(x.wejscia) };
+      ZR_KOL.forEach(function (c) { var n = liczba(x[c]); w[c] = ukryj(n) ? null : n; });
+      w.pusty = ZR_KOL.every(function (c) { return liczba(x[c]) === 0; });
+      return w;
+    }).filter(function (w) { return !w.pusty; })
+      .sort(function (a, b) { return (a.zrodlo === "") - (b.zrodlo === "") || b.sort - a.sort || a.zrodlo.localeCompare(b.zrodlo); });
+  }
+
   // Roczniki do wyboru: „*” (wszystkie) pierwszy, potem roczniki z bazy, które mają podsumowanie, na końcu '' (konta bez profilu).
   function roczniki(lista, dane) {
     dane = dane || {};
@@ -136,5 +150,5 @@
   }
 
   return { MIN: MIN, FLAGA: FLAGA, zrodloZ: zrodloZ, wejscie: wejscie, pct: pct, ukryj: ukryj, kroki: kroki, powroty: powroty,
-    tygodnie: tygodnie, uczy: uczy, rewanze: rewanze, ab: ab, oczekujacy: oczekujacy, zrodla: zrodla, roczniki: roczniki };
+    tygodnie: tygodnie, uczy: uczy, rewanze: rewanze, ab: ab, oczekujacy: oczekujacy, zrodla: zrodla, zrodlaLejek: zrodlaLejek, roczniki: roczniki };
 });

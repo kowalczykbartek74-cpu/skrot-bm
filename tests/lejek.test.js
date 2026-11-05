@@ -90,3 +90,19 @@ test("lista oczekujących, źródła i roczniki z danych (nowy rocznik bez zmian
   assert.deepEqual(r.map((x) => x.id), ["*", "wefiz-bm-1-st-2026", "wefiz-ek-1-st-2027", ""]);
   assert.deepEqual(L.roczniki(lista, {}), []);
 });
+
+test("etap 11: lejek według źródła — wiersz na źródło, < 5 ukryte, bez źródła na końcu, puste pominięte", () => {
+  const z = {
+    "plakat-cukrowa": { d28: { wejscia: 5, konta: 5, proba: 1, zakup: 1, lista: 1 }, wszystko: { wejscia: 9, konta: 6, proba: 1, zakup: 1, lista: 2 } },
+    "ig-zarzadzanie": { d28: { wejscia: 12, konta: 7, proba: 2, zakup: 0, lista: 0 } },
+    "": { d28: { wejscia: 40, konta: 30, proba: 6, zakup: 5, lista: 0 } },
+    "stare": { d28: { wejscia: 0, konta: 0, proba: 0, zakup: 0, lista: 0 }, wszystko: { wejscia: 3 } },
+  };
+  const r = L.zrodlaLejek(z, "d28");
+  assert.deepEqual(r.map((x) => x.zrodlo), ["ig-zarzadzanie", "plakat-cukrowa", ""]);
+  assert.equal(r[0].wejscia, 12); assert.equal(r[0].konta, 7); assert.equal(r[0].proba, null); assert.equal(r[0].zakup, null);
+  assert.equal(r[1].wejscia, 5); assert.equal(r[1].konta, 5); assert.equal(r[1].lista, null);
+  assert.equal(r[2].zakup, 5);
+  assert.deepEqual(L.zrodlaLejek(z, "wszystko").map((x) => x.zrodlo), ["plakat-cukrowa", "stare"]);
+  assert.deepEqual(L.zrodlaLejek(null, "d28"), []);
+});

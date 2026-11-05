@@ -13,6 +13,9 @@
 // Kod polecający: strona dokleja go do client_reference_id jako „<id konta>__KOD”. Po opłaceniu planu 199 zł
 // zapisujemy polecenie (nauka_polec_zapisz); zwrot całej kwoty albo spór anuluje niewypłaconą nagrodę (nauka_polec_cofnij).
 // Błąd przy kodzie nigdy nie blokuje wpisania dostępu.
+// Źródło wejścia (etap 11, supabase/skrot-v38-admin.sql): trzecia część client_reference_id „<id konta>__<KOD>__<źródło>”
+// (KOD może być pusty). Dopisujemy je do nauka_dostep.zrodlo_wejscia tylko raz (gdy puste) i nigdy nie blokujemy dostępu:
+// bez v38 w bazie (brak kolumny) zapis po prostu się nie udaje.
 import Stripe from "npm:stripe@16.12.0";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -119,7 +122,12 @@ Deno.serve(async (req) => {
   // Ten sam e-mail co przy logowaniu na stronie (client_reference_id = id konta), a gdy go brak — e-mail z płatności.
   let userId: string | null = null;
   let email = (s.customer_details?.email || s.customer_email || "").toLowerCase();
-  const [ref = "", refKod = ""] = (s.client_reference_id || "").split("__");
+  const [ref = "", refKod = "", refZr = ""] = (s.client_reference_id || "").split("__");
+  const zrodlo = /^[a-z0-9.-]{1,40}$/.test(refZr) ? refZr : null;
+  const dopiszZrodlo = async () => {
+    if (!zrodlo) return;
+    try { await db.from("nauka_dostep").update({ zrodlo_wejscia: zrodlo }).eq("email", email).is("zrodlo_wejscia", null); } catch { /* bez v38 */ }
+  };
   if (/^[0-9a-f-]{36}$/i.test(ref)) {
     const { data } = await db.auth.admin.getUserById(ref);
     if (data?.user) { userId = data.user.id; email = (data.user.email || email).toLowerCase(); }
@@ -159,6 +167,7 @@ Deno.serve(async (req) => {
       email, do_kiedy: doKiedy, zrodlo: "stripe-miesiac", user_id: userId, stripe_session: s.id, stripe_subscription: sub, plan: "miesiac", kwota_gr: s.amount_total ?? null,
     }, { onConflict: "email" });
     if (error) return json(500, { error: error.message });
+    await dopiszZrodlo();
     return json(200, { ok: true, email, do_kiedy: doKiedy, plan: "miesiac" });
   }
 
@@ -169,6 +178,7 @@ Deno.serve(async (req) => {
     email, do_kiedy: doKiedy, zrodlo: "stripe", user_id: userId, stripe_session: s.id, plan: "rok", kwota_gr: s.amount_total ?? null,
   }, { onConflict: "email" });
   if (error) return json(500, { error: error.message });
+  await dopiszZrodlo();
 
   let polecenie: unknown = null;
   try { polecenie = await polec(); } catch (e) { return json(500, { error: String((e as Error).message) }); }

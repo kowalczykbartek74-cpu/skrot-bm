@@ -15,6 +15,19 @@
     portalLink: "https://billing.stripe.com/p/login/5kQ00keXo1Nv3QfgXlao800", // portal klienta Stripe: anulowanie i karta
     price: "199 zł/rok albo 35 zł/mies.",
   };
+  // Etap 11: „Podgląd jako” (admin.js, sessionStorage). W podglądzie każdy zapis jest zablokowany: RPC spoza listy odczytów,
+  // insert/upsert/update/delete w tabelach i funkcje Edge (AI, usuwanie konta). Strona dostaje zdarzenie skrot:podglad-blok.
+  // Podgląd działa tylko dla administratora: po nauka_ja nie-admin traci go od razu (refreshMe).
+  const ADM = window.SKROT_ADMIN || null;
+  const PG = ADM?.podglad?.() || null;
+  const pgBlok = (co) => { try { window.dispatchEvent(new CustomEvent("skrot:podglad-blok", { detail: { co } })); } catch {} };
+  const fetch = PG ? (u, o) => {
+    if (/\/functions\/v1\//.test(String(u)) && String(o?.method || "GET").toUpperCase() !== "GET") {
+      pgBlok(String(u).split("/functions/v1/")[1]);
+      return Promise.resolve(new Response(JSON.stringify({ error: "Podgląd: nic nie zapisujemy.", code: "podglad" }), { status: 423, headers: { "Content-Type": "application/json" } }));
+    }
+    return window.fetch(u, o);
+  } : window.fetch.bind(window);
   const TABLE = "nauka_docs";
   const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress", "exams", "examBank", "glossary", "myMaterials", "myContent"]);
   const UNI = /@(stud\.)?usz\.edu\.pl$/i;
@@ -51,7 +64,15 @@
   let sb = null;
   try { sb = window.supabase.createClient(CONFIG.url, CONFIG.key, { auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true, autoRefreshToken: true }, global: { headers: { "x-skrot-device": DEVICE } } }); } catch {}
 
-  const skrot = (window.skrot = { sb, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, paidAccount: false, device: null, hasPassword: false, deviceId: DEVICE, deviceName: DEVICE_NAME, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
+  if (sb && PG && ADM) {
+    const PG_ERR = { message: "Podgląd: nic nie zapisujemy.", code: "podglad" };
+    const blocked = () => { const res = { data: null, error: PG_ERR }; const p = new Proxy(function () {}, { get: (t, k) => (k === "then" ? (ok, ko) => Promise.resolve(res).then(ok, ko) : () => p) }); return p; };
+    const rpc0 = sb.rpc.bind(sb), from0 = sb.from.bind(sb);
+    sb.rpc = (fn, args, o) => { if (ADM.zapisDozwolony(fn)) return rpc0(fn, args, o); pgBlok(fn); return blocked(); };
+    sb.from = (t) => { const q = from0(t); return new Proxy(q, { get: (o, k) => (ADM.metodaZapisu(k) ? () => { pgBlok(t); return blocked(); } : typeof o[k] === "function" ? o[k].bind(o) : o[k]) }); };
+  }
+
+  const skrot = (window.skrot = { sb, podglad: PG, realAdmin: false, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, paidAccount: false, device: null, hasPassword: false, deviceId: DEVICE, deviceName: DEVICE_NAME, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const changed = () => skrot.listeners.forEach((fn) => { try { fn(skrot.state); } catch {} });
 
@@ -66,16 +87,23 @@
       if (!session && sessErr) { try { await sb.auth.signOut({ scope: "local" }); } catch {} }
       const viaLink = location.hash.includes("access_token");
       if (location.hash.includes("access_token") || location.hash.includes("error_description") || linkError) history.replaceState(null, "", location.pathname + location.search);
-      if (!session) { skrot.state = "out"; return; }
+      if (!session) {
+        skrot.state = "out";
+        if (PG) { ADM.podgladUstaw(null); if (PG.rocznik) location.reload(); }
+        return;
+      }
       skrot.uid = session.user.id;
       skrot.email = (session.user.email || "").toLowerCase();
       skrot.hasPassword = !!session.user.user_metadata?.haslo;
       token = session.access_token;
       await refreshMe();
       skrot.state = "in";
-      logLogin(viaLink ? "link" : null);
-      syncRocznik();
-      setTimeout(() => skrot.zapisy?.wyslij(), 3000); // zapisy z poprzedniej wizyty bez sieci
+      if (!PG) {
+        logLogin(viaLink ? "link" : null);
+        syncRocznik();
+        setTimeout(() => skrot.zapisy?.wyslij(), 3000); // zapisy z poprzedniej wizyty bez sieci
+        zrodloKonta();
+      }
     } catch { skrot.state = "error"; }
   })().finally(() => { changed(); afterReady(); });
 
@@ -94,7 +122,23 @@
     skrot.trialUntil = me?.proba_do || null;
     skrot.trialCan = !!me?.proba_mozna && !skrot.paid;
     skrot.trialDays = me?.proba_dni || 3;
+    skrot.realAdmin = skrot.admin;
+    if (PG) {
+      // Podgląd tylko dla administratora; ktoś inny z ręcznie wpisanym sessionStorage traci go (i wraca do swojego rocznika).
+      if (!skrot.admin) { ADM.podgladUstaw(null); location.reload(); return me; }
+      Object.assign(skrot, ADM.podgladKonto(PG, Date.now(), window.SKROT_ROCZNIK?.dostepDo || null));
+    }
     return me;
+  }
+
+  // ---------- źródło wejścia (etap 11, SQL v38) ----------
+  // Pierwsze źródło tej wizyty (admin.js, sessionStorage) raz na wizytę do nauka_zrodlo_ustaw: świeże konto dostaje je jako
+  // źródło konta, a okres próbny bierze źródło wizyty (wyzwalacz w bazie). Bez v38 nic się nie dzieje.
+  async function zrodloKonta() {
+    const z = ADM?.zrodloWizyty?.(); if (!z || !sb) return;
+    let juz = null; try { juz = sessionStorage.getItem("skrot-zrodlo-konto"); } catch {}
+    if (juz === z) return;
+    try { const { data, error } = await sb.rpc("nauka_zrodlo_ustaw", { p_zrodlo: z }); if (!error && data?.ok) sessionStorage.setItem("skrot-zrodlo-konto", z); } catch {}
   }
 
   // ---------- rocznik z profilu (supabase/skrot-v31-roczniki.sql, część 5) ----------
@@ -144,7 +188,7 @@
   // Obecność: każda zalogowana karta na wierzchu daje znać co 45 s (to widzi starosta w „Aktywność”).
   let presenceTimer = null, presenceOff = false;
   function presence() {
-    if (presenceOff || document.visibilityState !== "visible" || skrot.state !== "in") return;
+    if (PG || presenceOff || document.visibilityState !== "visible" || skrot.state !== "in") return; // podgląd: bez obecności
     sb.rpc("nauka_obecny", { p_nazwa: DEVICE_NAME }).then(({ error }) => {
       // Bez funkcji w bazie (skrot-v11-aktywnosc.sql) nie pytamy co 45 s w kółko: wyłączamy do przeładowania strony.
       if (error && /function|does not exist|schema cache|Could not find/i.test(error.message || "")) {
@@ -459,7 +503,7 @@
   };
   let kqBusy = false;
   async function kqFlush() {
-    if (!KOP || kqBusy || skrot.state !== "in") return;
+    if (PG || !KOP || kqBusy || skrot.state !== "in") return;
     let q = KOP.kolejka(); if (!q.length) return;
     if (typeof navigator !== "undefined" && navigator.onLine === false) return;
     kqBusy = true;
@@ -476,11 +520,25 @@
   skrot.zapisy = { czeka: () => (KOP ? KOP.kolejka().length : 0), wyslij: () => kqFlush() };
   // Etap 6: lejek i retencja dla administratora (SQL v35; sprawdza nauka_admin w bazie).
   skrot.lejek = { panel: () => rpRaw("nauka_admin_lejek"), przelicz: () => rpRaw("nauka_admin_lejek_przelicz") };
+  // Etap 11: karnety (SQL v38; baza sprawdza nauka_admin) i „Podgląd jako” (tylko przeglądarka, admin.js).
+  skrot.karnety = {
+    lista: () => rpRaw("nauka_admin_karnety"),
+    wydaj: (args) => rpRaw("nauka_admin_karnet_wydaj", args),
+    cofnij: (email) => rpRaw("nauka_admin_karnet_cofnij", { p_email: email }),
+  };
+  skrot.podgladStart = (tryb, rocznik) => {
+    if (!skrot.realAdmin || !ADM) return false;
+    const p = ADM.podgladNowy(tryb, rocznik || null, Date.now());
+    if (!p || !ADM.podgladUstaw(p)) return false;
+    location.hash = "#/home"; location.reload();
+    return true;
+  };
+  skrot.podgladKoniec = () => { ADM?.podgladUstaw(null); location.hash = "#/starosta"; location.reload(); };
   // Wejście do sum dziennych (nauka_wejscie, SQL v35): raz dziennie na przeglądarkę, bez cookies i bez identyfikatora osoby.
   // Flaga z datą w localStorage (lejek.js); rocznik z ekranu wejścia („skrot-rocznik”), źródło z linku (?z=…).
   // Bez v35 w bazie (not_enabled) albo bez sieci flaga się nie zapisuje, więc wejście liczy się przy następnym otwarciu.
   (function wejscieDzis() {
-    const LJ = window.SKROT_LEJEK; if (!LJ) return;
+    const LJ = window.SKROT_LEJEK; if (!LJ || PG) return;
     let flaga = null, rocznik = null;
     try { flaga = localStorage.getItem(LJ.FLAGA); rocznik = localStorage.getItem("skrot-rocznik"); } catch { return; }
     const d = new Date(), dzis = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -610,7 +668,7 @@
   const lqWrite = (q) => { try { localStorage.setItem(LQ, JSON.stringify(q.slice(-300))); } catch {} };
   let lqSending = false, lqOff = false;
   async function lqFlush() {
-    if (lqSending || lqOff || !skrot.uid || navigator.onLine === false) return;
+    if (PG || lqSending || lqOff || !skrot.uid || navigator.onLine === false) return;
     const batch = lqRead().slice(0, 50);
     if (!batch.length) return;
     lqSending = true;
@@ -626,6 +684,7 @@
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
   skrot.learn = {
     track(typ, dane = {}) {
+      if (PG) return; // podgląd: zdarzenia nauki nie trafiają nawet do kolejki w przeglądarce
       try { const q = lqRead(); q.push({ id: uuid(), typ, kiedy: new Date().toISOString(), dane }); lqWrite(q); if (q.length >= 25) lqFlush(); } catch {}
     },
     flush: lqFlush,
@@ -1028,6 +1087,7 @@
     const cfg = CONFIG.plans[plan];
     const link = cfg?.link;
     if (!link) return info("Płatności startują wkrótce", "Kupno dostępu ruszy wkrótce. Spróbuj później albo napisz na skrotbm@outlook.com.");
+    if (PG) return info("Podgląd", "W podglądzie nie da się kupić dostępu. Nic nie zostało zapisane.");
     const layer = document.getElementById("layer") || document.body;
     const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
@@ -1065,7 +1125,8 @@
       pay.textContent = "Przechodzę do płatności…";
       await recordConsent(plan);
       const u = new URL(link);
-      u.searchParams.set("client_reference_id", kod ? `${skrot.uid}__${kod}` : skrot.uid);
+      // Źródło wejścia (etap 11) jako trzecia część: „<konto>__<KOD>__<źródło>”; webhook dopisuje je do zakupu.
+      u.searchParams.set("client_reference_id", ADM ? ADM.refStripe(skrot.uid, kod, ADM.zrodloWizyty()) : kod ? `${skrot.uid}__${kod}` : skrot.uid);
       u.searchParams.set("prefilled_email", skrot.email);
       location.href = u.toString();
     });
@@ -1151,7 +1212,9 @@
       ls.set("skrot-trial", "1");
       return skrot.openLogin(`Zaloguj się e-mailem, a ${skrot.trialDays || 3} dni pełnego dostępu włączy się od razu. Bez karty i bez płatności.`);
     }
+    if (PG) return info("Podgląd", "W podglądzie okres próbny się nie włącza. Nic nie zostało zapisane.");
     if (skrot.paid && !skrot.trialUntil) return info("Masz już dostęp", "Okres próbny nie jest potrzebny.");
+    await zrodloKonta();
     const { data, error } = await sb.rpc("nauka_proba_start");
     if (error) {
       const code = Object.keys(TRIAL_ERR).find((k) => (error.message || "").includes(k));

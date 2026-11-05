@@ -110,6 +110,10 @@
   // skrot-supabase.js → nauka_rocznik_moj, v31). Nieznany albo brak → domyślny (BM).
   function wybrany() {
     var id = null;
+    // „Podgląd jako” administratora (admin.js, etap 11): inny rocznik tylko w tej karcie (sessionStorage), wybór w localStorage zostaje.
+    var pg = null;
+    try { pg = root.SKROT_ADMIN && root.SKROT_ADMIN.podglad && root.SKROT_ADMIN.podglad(); } catch (e) { pg = null; }
+    if (pg && pg.rocznik && ROCZNIKI[pg.rocznik]) return pg.rocznik;
     try { id = root.localStorage && root.localStorage.getItem("skrot-rocznik"); } catch (e) { /* tryb prywatny */ }
     return id && ROCZNIKI[id] ? id : DOMYSLNY;
   }
