@@ -21,7 +21,7 @@ const STUDENT_PROMPTS = [
   /^Jesteś nauczycielem, który tłumaczy trudne rzeczy ze studiów \([\p{L}\p{N} ,.&'’-]{2,80}\)/u,
   new RegExp(`^Jesteś cierpliwym korepetytorem studentów ${KTO_PL}\\.`, "u"),
 ];
-const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
+const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 
 function cors(req: Request) {
   const o = req.headers.get("origin") || "";
