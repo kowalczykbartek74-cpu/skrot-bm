@@ -1,0 +1,35 @@
+# Etap 9: mini-sprawdziany i „Pewny / Zgaduję”
+
+Spec: „Systemy z Zdawalni w Skrócie”, etap 9. Gałąź `zdawalni/sprawdziany` (skrot-bm, od `zdawalni/dzien` d779ece). Bez SQL.
+Źródło: `matura-app` `origin/feat/l7-learner-bundle` (9417ccf) `lib/domain/checkpoint.ts`, `lib/data/checkpoint.ts` (wybór karty), `lib/domain/learner/calibration.ts`, `lib/config.ts` (`CHECKPOINT_CONFIG`) + `tests/unit/checkpoint.test.ts`, `tests/unit/learner-model.test.ts` („calibration (6.7)”).
+
+## Co jest
+- **`sprawdzian.js`** (bez DOM i bazy, `window.SKROT_SPR`): `askConfidenceNow`, `thresholdToOffer`, `isSnoozed`, `snoozeUntil`, `targetDifficulties`, `pickCheckpointTasks`, `checkpointPassed` przepisane 1:1 (testy z Zdawalni przeniesione, z datami jako liczbami dni). Dla Skrótu: licznik pewności `kalDodaj` / `kalibracja` (sprawdzony z `calibration()` z `learner.js`), `karta` (jak `loadCheckpointCard`), `odloz` / `start` / `zakoncz` / `porzuc`, `wybierz` (6 pytań), `wynik`, `odznaka`, `doPowtorki`.
+- **„Pewny / Zgaduję”** (chipy z biletu lekcji v4): quiz materiału i przedmiotu, mini-sprawdzian, pytania zamknięte testu próbnego (w odtwarzaczu i w widoku listy). Najwyżej przy co 3. pytaniu (1., 4., 7.…; w teście liczone są tylko pytania zamknięte). Wybór dobrowolny, w teście można go zmienić do oddania. Zgadnięta dobra odpowiedź → rewanż (`rewQuiz(mid, idx, false)`; w teście przy ocenie, dla pytań `q:<mid>:<idx>`). Punkty rankingu (`nauka_rp_odpowiedz` w quizie) bez zmian.
+- **Zapis pewności**: zdarzenie nauki przez `learnEvent` → typ `activity`, `kind: "pewnosc"`, `{ zrodlo: quiz|test|sprawdzian, pewny: 1|0, ok, mid, idx }` (bez nowego typu w `nauka_zdarzenia_typy()`), oraz licznik `progress.kal = { s: [„Pewny”, dobre], g: [„Zgaduję”, dobre] }`. Bilet lekcji (już wysyłał pewność w `exit_ticket.odp`) też dopisuje do licznika.
+- **Profil nauki** (Więcej → Profil nauki): karta „Pewny czy zgadujesz?” — „Gdy mówisz „Pewny”, masz rację w X% odpowiedzi.”, „Gdy zaznaczasz „Zgaduję”, trafiasz w Y%.” (od 10 takich odpowiedzi) i jedna rada. Od 20 odpowiedzi z wybraną pewnością; wcześniej „Jeszcze N odpowiedzi…”. Widać ją w profilu po teście „Jak się uczysz?” (między kartami profilu a „Twoje dane”) i na ekranie startowym testu.
+- **Mini-sprawdzian na Dziś**: w karcie „Teraz zrób to” (bez nowej karty) jako pozycja niskiego priorytetu — po kroku planu, bliskim zaliczeniu, terminie i powtórkach, przed „Następny materiał”. Warunek: „umiesz z zakresu” (`knowOf`: tematy do najbliższego zaliczenia, które umiesz) ≥ 70% i co najmniej 6 niewidzianych pytań. „Później” chowa propozycję na 3 dni. Przerwany sprawdzian: „Dokończ sprawdzian” z tymi samymi pytaniami.
+- **Sprawdzian**: 6 pytań z quizu, `check`/`exit` lekcji i zadań `gen`, jeden temat na pytanie, gdy się da, ważniejsze tematy (`topicPriority`) najpierw. Od razu widać, czy dobrze (jak quiz), bez drugiej szansy. Każda odpowiedź to zwykła obserwacja: pytanie widziane, błędne (i zgadnięte) do rewanżu. Bez XP, punktów rankingu i monet.
+- **Wynik**: 5 z 6 = „Poziom potwierdzony 🎯” i odznaka przy przedmiocie (hero przedmiotu: „✓ Poziom potwierdzony sprawdzianem” z datą; lista Przedmiotów: „✓ sprawdzian”). Mniej: kompas zamiast gwiazdek, bez konfetti, „To nic złego: teraz wiesz, co powtórzyć”, przyciski do tematów do powtórki; w hero przedmiotu przez 14 dni „Po sprawdzianie warto powtórzyć: …”. Kolejna propozycja po 7 dniach. Zdarzenie nauki `activity`, `kind: "sprawdzian"` z wynikiem.
+- EN: wszystkie nowe teksty w `i18n-en.js` (+ liczby mnogie „odpowiedź”, „dobrej odpowiedzi”). Chipy pewności mają teraz 44 px wysokości (także w bilecie lekcji).
+
+## Kroki dla Bartka
+Nic do uruchamiania (bez SQL, bez funkcji, bez sekretów). Po scaleniu wystarczy zwykłe wdrożenie strony.
+
+## Decyzje (podjęte sam, do ewentualnej zmiany)
+- **Próg i rozmiar**: próg 70% (D7) jako jedyny (`CONFIG.thresholds: [70]`; łatwo dodać np. 90). 6 pytań, zdany od 5 dobrych (jak 4 z 5 w Zdawalni, ok. 80%). Przerwy jak w Zdawalni: „Później” 3 dni, między sprawdzianami 7 dni.
+- **Zakres** = najbliższe zaliczenie przedmiotu (to samo, co liczy „umiesz z zakresu”); rekordy są per `przedmiot|część`, więc po kolokwium przychodzi nowy sprawdzian dla egzaminu. Odznaka zostaje, nawet gdy „umiesz” potem spadnie (potwierdza wynik z dnia sprawdzianu).
+- **„Niewidziane”**: pytanie quizu — nie ma go w `bm-q-seen` (quiz, gry) ani w rewanżach (tam trafiają też pytania z testu próbnego); pytanie `check`/`exit` i zadanie `gen` — lekcja nieruszona (`lp`/`mastery`/`done`) i klucz nie w powtórkach ani rewanżach. Przy 70% „umiesz” lekcje są zwykle zrobione, więc pulę tworzą głównie pytania quizu, które jeszcze nie wypadły. `bm-q-seen` jest w przeglądarce, więc na innym urządzeniu pytanie może się powtórzyć (rewanże są w postępie i działają wszędzie).
+- **Ile pytań bez wczytywania**: Dziś liczy pulę z `quizCount` materiałów (i dokładnie z treści, które już są wczytane). Gdy wychodzi mniej niż 6, raz na wizytę wczytuje treści tego przedmiotu w tle i sprawdza jeszcze raz (pytania lekcji). Za mało → brak propozycji.
+- **Brak poziomów trudności**: w Skrócie pytania nie mają trudności, więc `pickCheckpointTasks` dostaje trudność 0 dla wszystkich, a remis rozstrzyga skrót z ziarna dnia (inny zestaw w innym tygodniu, ten sam po odświeżeniu).
+- **Licznik pewności w `progress.kal`**, nie z bazy: zdarzenia nauki idą do bazy i nie wracają do przeglądarki, a licznik w postępie działa na każdym urządzeniu i bez nowej funkcji SQL. Dwa poziomy („Pewny”, „Zgaduję”) zamiast trzech w Zdawalni; trafność poziomu od 10 odpowiedzi (`minPerLevel`), karta od 20.
+- **Zdarzenia**: typ `activity` (zapisywany także przy wyłączonym „Ucz się na moich danych”, jak inne aktywności); jedno zdarzenie na odpowiedź z pewnością (najwyżej co 3. pytanie), jedno na sprawdzian. Bez `materialId`, żeby nie zmieniać statystyk tematu w `progress.learn`.
+- **Bez XP** w sprawdzianie (spec: bez punktów rankingu; XP też wyłączone, żeby wynik tylko potwierdzał poziom). Monety i ranking nietknięte.
+
+## Testy
+- `node --test tests/*.test.js`: 124/124 (`sprawdzian` 18: port checkpoint.test.ts i calibration 6.7 + zgodność z `learner.js` + przypadki Skrótu).
+- Playwright `docs/gry/test/sprawdzian.mjs` 50/50: A quiz (chipy przy 1. i 4. pytaniu, licznik, rewanż zgadniętego, zdarzenia, ranking bez zmian), B test próbny (chipy przy co 3. zamkniętym, `run.conf`, rewanże po oddaniu), C Profil nauki od 20 / poniżej 20, EN 375/1280, D Dziś (próg, „Później” 3 dni, EN), E zdany (6 niewidzianych, odznaka w hero i na liście, bez `nauka_rp_odpowiedz`, zdarzenie), F niezdany (tematy, hero, po 7 dniach znowu), G za mało niewidzianych (5 → brak, 6 → jest), H inny przedmiot rocznika (ZZL: 67% → brak, 100% → jest).
+- Pełny zestaw Playwright (40 plików): bez nowych błędów; te same stare co na `zdawalni/dzien` (`etap5.mjs` timeout `#loginDemo`, `etap7.mjs` 3, `scalanie.mjs` 2; `po-zajeciach.mjs` 26/28 jak wcześniej).
+
+## Dla kolejnego rocznika
+Nic: przedmioty, zakresy zaliczeń i pytania biorą się z rocznika i z bazy; logika nie zna żadnego przedmiotu, teksty nie mają nazwy kierunku.
