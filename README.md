@@ -230,6 +230,12 @@ Etap 7a specu „Systemy z Zdawalni w Skrócie” (port `matura-app/lib/domain/n
 - **Wysyłka**: `pg_cron` co 15 min → `nauka_przypomnienia_wyzwol()` → `pg_net` → funkcja `przypomnienia` (sekret `PRZYPOMNIENIA_CRON`, w Vault `przypomnienia_cron` i `przypomnienia_url`) → `nauka_przypomnienia_kandydaci` → Resend. Najwyżej jeden mail dziennie (unikalne user + dzień w `nauka_przypomnienia_log`), najwyżej 60 na dobę UTC (Resend Free). Wypisanie: `List-Unsubscribe` + `List-Unsubscribe-Post` (one-click) i strona `przypomnienia.html#t=<token>`. Link z maila `?pz=<id>` oznacza przypomnienie jako otwarte.
 - Testy: `node --test tests/przypomnienia.test.js` (też funkcja Edge z atrapą Resend), `supabase/test/v36.sql` (P1–P12), Playwright `docs/gry/test/przypomnienia.mjs`. Push (7b) jeszcze nie.
 
+## „Ile masz dziś czasu?” i „Jedno zadanie” (`dzien.js`, bez SQL)
+Etap 8 specu „Systemy z Zdawalni w Skrócie” (port 1:1 `matura-app/lib/domain/fit-day.ts` i `one-task.ts` z testami). Opis: `docs/zdawalni/etap-8.md`.
+- **Jedno zadanie**: drugi przycisk w karcie „Teraz zrób to” na Dziś, pod dużym przyciskiem. Otwiera jedną rzecz, pierwszą pasującą: rewanż na dziś (sesja z 1 kartą) → najstarsza zaległa powtórka (1 karta) → temat z najwyższym wspólnym priorytetem (`topicPriority`; te same tematy co karta: krok planu, potem zakres zaliczenia) → kolejny materiał (`nextToLearn`, jak karta). Bez rewanży i zaległości wskazuje to samo co karta.
+- **Ile masz dziś czasu?**: panel pod kartą z 5 / 15 / 30 / 60 min. Po wyborze lista na dziś w kolejności ważności: rewanże (~2 min) → powtórki (~3 karty/min) → krok planu „Przygotuj się” → osobiste Zadanie dnia (~5 min) → temat albo lekcja (jej długość, gdy znana), przycięta `fitDay` (ostatni element skrócony w krokach po 5 min, próbny test nigdy nie jest cięty); przy 5 min jedna rzecz. Skrócona powtórka bierze tylko część kart (`reviewStart(sid, { keys })`). Wybór pamięta przeglądarka do końca dnia (`bm-czas`), drugi klik chowa listę.
+- Logika bez DOM w `dzien.js` (`window.SKROT_DZIEN`), testy `node --test tests/dzien.test.js`, Playwright `docs/gry/test/dzien.mjs`.
+
 ## Lekcje v3 (krótkie kroki)
 - Lekcja z `lesson.v2` otwiera się jako mapa krótkich części (2–5 min) i odtwarzacz kart na pełnym ekranie: jedna myśl na kartę, co 2–3 karty coś do zrobienia, XP, seria, gwiazdki, cel dnia 50 XP. „Pokaż lekcję jako tekst” wraca do starego widoku (`lessonPanel2`).
 - Kod: `lessonPanel3`, `lpBuildDeck` i funkcje `lp…` w `index.html` (blok „LEKCJE V3”); wzorzec z opisem zasad: `docs/lekcje-v3/prototyp.html`.
