@@ -471,6 +471,8 @@
       }
     } finally { kqBusy = false; zapisEv(q.length, false); }
   }
+  // Etap 5: lista oczekujących dla administratora (SQL v34; sprawdza nauka_admin w bazie).
+  skrot.oczekujacy = { panel: () => rpRaw("nauka_admin_oczekujacy"), csv: () => rpRaw("nauka_admin_oczekujacy_csv") };
   skrot.zapisy = { czeka: () => (KOP ? KOP.kolejka().length : 0), wyslij: () => kqFlush() };
   setInterval(kqFlush, 20000);
   addEventListener("online", () => { kqFlush(); });

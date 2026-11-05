@@ -369,6 +369,9 @@
       try { localStorage.setItem("mock-rocznik", JSON.stringify({ id: a.p_rocznik, wybrany: true })); } catch {} return { ok: true, rocznik_id: a.p_rocznik, wybrany: true, status: "platny" }; },
   };
   const BASE = {
+    // v34 (etap 5): lista oczekujących dla administratora; dane z localStorage mock-oczekujacy (JSON jak z bazy)
+    nauka_admin_oczekujacy: () => (KONTO === "starosta" ? { ok: true, ...(JSON.parse(ls("mock-oczekujacy", "null")) || { potwierdzone: 0, czeka: 0, kierunki: [], wpisane: [], zrodla: {} }) } : { ok: false, code: "not_admin" }),
+    nauka_admin_oczekujacy_csv: () => (KONTO === "starosta" ? { ok: true, wiersze: JSON.parse(ls("mock-oczekujacy-csv", "[]")) } : { ok: false, code: "not_admin" }),
     ...AKT,
     nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid && !PROBA ? "2027-07-11" : null, plan: paid && !PROBA ? "rok" : null,
       proba_do: PROBA ? probaDo : null, proba_mozna: KONTO === "darmowe", proba_dni: 3 }),

@@ -1,0 +1,312 @@
+{
+ "zrodlo": "https://planyzajec-efz.usz.edu.pl/plan",
+ "pobrano": "2026-11-05",
+ "tryb": "st",
+ "kierunki": [
+  {
+   "nazwa": "Audyt finansowy",
+   "skrot": "AF",
+   "kod": "AF",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Business Intelligence w gospodarce",
+   "skrot": "BIwG",
+   "kod": "BIWG",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Business Management",
+   "skrot": "BM",
+   "kod": "BM",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Business Management",
+   "skrot": "BM",
+   "kod": "BM",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Data Science",
+   "skrot": "DS",
+   "kod": "DS",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Economics and IT Applications",
+   "skrot": "EaIA",
+   "kod": "EAIA",
+   "stopien": 1,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Ekonomia",
+   "skrot": "Ek",
+   "kod": "EK",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Ekonomia",
+   "skrot": "Ek",
+   "kod": "EK",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Finanse i Rachunkowość",
+   "skrot": "FiR",
+   "kod": "FIR",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Finanse i Rachunkowość",
+   "skrot": "FiR",
+   "kod": "FIR",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Gospodarka Nieruchomościami",
+   "skrot": "GN",
+   "kod": "GN",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Gospodarka Przestrzenna inż.",
+   "skrot": "GPi",
+   "kod": "GPI",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "nazwa": "Informatyka i Ekonometria",
+   "skrot": "IiE",
+   "kod": "IIE",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Informatyka w Biznesie",
+   "skrot": "IwB",
+   "kod": "IWB",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Informatyka w Biznesie",
+   "skrot": "IwB",
+   "kod": "IWB",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Komunikacja i psychologia w biznesie",
+   "skrot": "KiPB",
+   "kod": "KIPB",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Komunikacja i psychologia w biznesie",
+   "skrot": "KiPB",
+   "kod": "KIPB",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Logistyka",
+   "skrot": "L",
+   "kod": "LOG",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Logistyka",
+   "skrot": "L",
+   "kod": "LOG",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Logistyka inż.",
+   "skrot": "Li",
+   "kod": "LI",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "nazwa": "Marketing",
+   "skrot": "M",
+   "kod": "MKT",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Międzynarodowy biznes turystyczny",
+   "skrot": "MBT",
+   "kod": "MBT",
+   "stopien": 2,
+   "lata": [
+    1
+   ]
+  },
+  {
+   "nazwa": "Przedsiębiorczość i Inwestycje",
+   "skrot": "PiI",
+   "kod": "PII",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Rynek Nieruchomości",
+   "skrot": "RN",
+   "kod": "RN",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Turystyka i Rekreacja",
+   "skrot": "TiR",
+   "kod": "TIR",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Zarządzanie",
+   "skrot": "Z",
+   "kod": "ZARZ",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "nazwa": "Zarządzanie",
+   "skrot": "Z",
+   "kod": "ZARZ",
+   "stopien": 2,
+   "lata": [
+    1,
+    2
+   ]
+  },
+  {
+   "nazwa": "Zarządzanie Logistyczne w Ochronie Zdrowia",
+   "skrot": "ZLOZ",
+   "kod": "ZLOZ",
+   "stopien": 1,
+   "lata": [
+    1
+   ]
+  },
+  {
+   "nazwa": "Zarządzanie odnawialnymi źródłami energii",
+   "skrot": "ZOZE",
+   "kod": "ZOZE",
+   "stopien": 1,
+   "lata": [
+    1,
+    2,
+    3
+   ]
+  }
+ ]
+}
