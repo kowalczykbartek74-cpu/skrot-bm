@@ -377,6 +377,8 @@
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
     await new Promise((r) => setTimeout(r, 30));
+    // Jak prawdziwe supabase-js bez sieci (context.setOffline): błąd „Failed to fetch”, nic nie zapisane (etap 3, kopie.mjs).
+    if (navigator.onLine === false) { window.__rpcOffline = (window.__rpcOffline || 0) + 1; return { data: null, error: { message: "TypeError: Failed to fetch", code: "" } }; }
     let out;
     const brak = { data: null, error: { code: "PGRST202", message: `Could not find the function public.${fn} in the schema cache` } };
     if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;

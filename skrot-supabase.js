@@ -75,6 +75,7 @@
       skrot.state = "in";
       logLogin(viaLink ? "link" : null);
       syncRocznik();
+      setTimeout(() => skrot.zapisy?.wyslij(), 3000); // zapisy z poprzedniej wizyty bez sieci
     } catch { skrot.state = "error"; }
   })().finally(() => { changed(); afterReady(); });
 
@@ -424,13 +425,16 @@
   // Każda funkcja zwraca obiekt z bazy ({ ok: true, … } albo { ok: false, code }).
   // Brak bazy v13 → { ok: false, code: "not_enabled" }; brak sieci → { ok: false, code: "offline" }.
   let rpV22 = null; // czy baza ma nauka_rp_powtorka z pomiarem (v29, dawniej v22 z gałęzi lekcje/v4)
-  const rpCall = async (fn, args) => {
+  // Brak sieci: supabase-js nie rzuca, tylko zwraca błąd „Failed to fetch” (Chrome) / „Load failed” (Safari) / „NetworkError” (Firefox).
+  const netErr = (e) => (typeof navigator !== "undefined" && navigator.onLine === false) || /Failed to fetch|Load failed|NetworkError|fetch failed|Network request failed/i.test(String(e?.message || e || ""));
+  const rpRaw = async (fn, args) => {
     await ready;
     if (!sb) return { ok: false, code: "offline" };
     try {
       const { data, error } = await sb.rpc(fn, args || {});
       if (error) {
         if (error.code === "PGRST202" || /does not exist/i.test(error.message || "")) return { ok: false, code: "not_enabled" };
+        if (netErr(error)) return { ok: false, code: "offline" };
         return { ok: false, code: error.code || "error" };
       }
       // Punkty rankingu dają monety (v14, trigger w bazie): po każdym zapytaniu, które coś przyznało, odświeżamy saldo i Zadania dnia.
@@ -441,6 +445,35 @@
       return data || { ok: false, code: "empty" };
     } catch { return { ok: false, code: "offline" }; }
   };
+  // Etap 3 „Zdawalni w Skrócie”: zapis odpowiedzi, który nie doszedł przez brak sieci, czeka w kolejce (kopie.js, 7 dni,
+  // max 200) i idzie ponownie po powrocie sieci, co 20 s i po wejściu na stronę. Strona dostaje zdarzenie skrot:zapis
+  // ({ czeka, nowy }) i mówi „Nie zapisało się, spróbuję jeszcze raz”. Baza liczy punkt tylko za pierwszą odpowiedź na
+  // pytanie, więc ponowienie nie daje drugiego punktu.
+  const RP_KOLEJKA = new Set(["nauka_rp_odpowiedz", "nauka_rp_zadanie", "nauka_rp_powtorka", "nauka_rp_lekcja", "nauka_rp_po", "nauka_rp_stas"]);
+  const KOP = window.SKROT_KOPIE || null;
+  const zapisEv = (czeka, nowy) => { try { window.dispatchEvent(new CustomEvent("skrot:zapis", { detail: { czeka, nowy: !!nowy } })); } catch {} };
+  const rpCall = async (fn, args) => {
+    const r = await rpRaw(fn, args);
+    if (r?.code === "offline" && KOP && RP_KOLEJKA.has(fn) && skrot.state === "in") { zapisEv(KOP.kolejkaDodaj(fn, args || {}), true); return { ...r, queued: true }; }
+    return r;
+  };
+  let kqBusy = false;
+  async function kqFlush() {
+    if (!KOP || kqBusy || skrot.state !== "in") return;
+    let q = KOP.kolejka(); if (!q.length) return;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+    kqBusy = true;
+    try {
+      while (q.length) {
+        const r = await rpRaw(q[0].fn, q[0].args);
+        if (r?.code === "offline") break; // dalej bez sieci: reszta czeka
+        q = q.slice(1); KOP.kolejkaZapisz(q); // doszło (albo baza odrzuciła na stałe): z kolejki
+      }
+    } finally { kqBusy = false; zapisEv(q.length, false); }
+  }
+  skrot.zapisy = { czeka: () => (KOP ? KOP.kolejka().length : 0), wyslij: () => kqFlush() };
+  setInterval(kqFlush, 20000);
+  addEventListener("online", () => { kqFlush(); });
   // Zapytania, w których pkt to punkty przyznane teraz (nauka_haslo_dzis i nauka_bossy zwracają pkt informacyjnie).
   const RP_ZAROBEK = new Set(["nauka_rp_odpowiedz", "nauka_rp_zadanie", "nauka_rp_powtorka", "nauka_rp_lekcja", "nauka_gra_koniec", "nauka_haslo_proba", "nauka_boss_odbierz", "nauka_rp_po", "nauka_rp_stas"]);
   skrot.rp = {
@@ -494,7 +527,7 @@
         headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + data?.session?.access_token, "x-skrot-device": DEVICE },
         body: JSON.stringify(body),
       });
-    } catch (e) { throw fail(e?.name === "AbortError" ? "timeout" : "no_function", "AI nie odpowiedziało na czas."); }
+    } catch (e) { throw fail(e?.name === "AbortError" ? "timeout" : netErr(e) ? "offline" : "no_function", "AI nie odpowiedziało na czas."); }
     finally { clearTimeout(t); }
     const out = await res.json().catch(() => ({}));
     if (!res.ok || !out.results) throw fail(out.code || (res.status === 404 ? "not_deployed" : "error"), out.message || "AI nie oceniło testu.");

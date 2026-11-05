@@ -1,6 +1,13 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Nie zapisało się, spróbuję jeszcze raz.": "That didn't save. I'll try again.",
+"Zapisane ✓": "Saved ✓",
+"Przywróciliśmy tekst, którego ostatnio nie udało się zapisać.": "We brought back the text that didn't save last time.",
+"Nie udało się wysłać zgłoszenia. Tekst zostaje w tej przeglądarce, spróbuj za chwilę.": "Couldn't send the report. Your text stays in this browser; try again in a moment.",
+"Nie zapisało się, spróbuję jeszcze raz. Odpowiedzi są bezpieczne na tym urządzeniu.": "That didn't save. I'll try again. Your answers are safe on this device.",
+"Oceń sam według klucza": "Grade it yourself with the key",
+"Bez internetu AI nie oceniło odpowiedzi. Oceń je sam według klucza, nic się nie zgubiło.": "Without internet the AI couldn't grade your answers. Grade them yourself with the key; nothing was lost.",
 "⚔️ Rewanż": "⚔️ Rematch",
 "Zapisane do rewanżu. Wróci jutro.": "Saved for a rematch. It comes back tomorrow.",
 "Rewanż wygrany! Wróci jeszcze za {0} {1}.": "Rematch won! It comes back once more in {0} {1}.",

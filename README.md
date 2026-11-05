@@ -188,6 +188,14 @@ Etap 2 specu „Systemy z Zdawalni w Skrócie”: zeszyt błędów z Zdawalni (`
 - **Punkty**: bez nowych punktów rankingu i monet (wszystko liczy przeglądarka).
 - Testy: `node --test tests/rewanze.test.js` (port testów z Zdawalni, w tym terminy FSRS 3 i 8 dni), Playwright `docs/gry/test/rewanze.mjs`.
 
+## Ochrona wpisanych odpowiedzi (`kopie.js`, bez SQL)
+Etap 3 specu „Systemy z Zdawalni w Skrócie” (port `matura-app/lib/draft-backup.ts` i zasad z `docs/error-recovery.md`): nikt nie traci tego, co wpisał.
+- **Kopie**: `skrot:kopia:<miejsce>:<id>` w localStorage, najwyżej 7 dni (stare sprząta start strony), kasowane po zapisie na serwerze. Każdy dostęp w `try/catch` (tryb prywatny = brak kopii). Pole z kopią: `KOP.podepnij(pole, miejsce, id)`, przy przywróceniu okno mówi „Przywróciliśmy tekst…”.
+- **Podpięte**: „Zgłoś błąd” (`zgloszenie`), własny wpis w kalendarzu (`kalendarz`, tytuł i notatka), podsumowanie „Po zajęciach” starosty (`po-temat`, `po-notatki`), otwarte odpowiedzi próbnego testu (`test:<start>:<id>`, obok całego testu w `bm-exam-run`; znikają po ocenie albo przerwaniu). „Wyjaśnij” w lekcji ma kopię w stanie lekcji (`bm-pl:*`, zapis przy każdym znaku). Staś nie ma pola do pisania.
+- **Test próbny bez sieci**: oddanie bez internetu nie przechodzi na samoocenę. Test czeka w „Sprawdzamy odpowiedzi…” z komunikatem „Nie zapisało się, spróbuję jeszcze raz” i wysyła je do AI po powrocie sieci (albo co 15 s); student może też wybrać „Oceń sam według klucza”. Funkcja `grade-open` liczy ponowienie tego samego testu raz.
+- **Zapis odpowiedzi w bazie** (`skrot-supabase.js`): `nauka_rp_odpowiedz`, `_zadanie`, `_powtorka`, `_lekcja`, `_po`, `_stas` bez sieci trafiają do kolejki `skrot:kopia:zapisy` (max 200, 7 dni) i idą ponownie po powrocie sieci, co 20 s i po zalogowaniu. Strona mówi raz na minutę „Nie zapisało się, spróbuję jeszcze raz”, po wysłaniu „Zapisane ✓”. Punkt liczy baza tylko za pierwszą odpowiedź, więc ponowienie nie dubluje punktów. Zapis postępu (`flushProgress`) i zdarzenia nauki (`bm-learn-q`) już wcześniej czekały na sieć.
+- Testy: `node --test tests/kopie.test.js`, Playwright `docs/gry/test/kopie.mjs` (odświeżenie w połowie testu, `context.setOffline` przy oddaniu i w quizie, zgłoszenie, kalendarz). Atrapa Supabase przy `setOffline` zwraca „Failed to fetch” jak prawdziwe supabase-js.
+
 ## Lekcje v3 (krótkie kroki)
 - Lekcja z `lesson.v2` otwiera się jako mapa krótkich części (2–5 min) i odtwarzacz kart na pełnym ekranie: jedna myśl na kartę, co 2–3 karty coś do zrobienia, XP, seria, gwiazdki, cel dnia 50 XP. „Pokaż lekcję jako tekst” wraca do starego widoku (`lessonPanel2`).
 - Kod: `lessonPanel3`, `lpBuildDeck` i funkcje `lp…` w `index.html` (blok „LEKCJE V3”); wzorzec z opisem zasad: `docs/lekcje-v3/prototyp.html`.
