@@ -487,6 +487,19 @@
     const args = LJ.wejscie(flaga, dzis, location.search, rocznik);
     if (args) rpRaw("nauka_wejscie", args).then((r) => { if (r?.ok) try { localStorage.setItem(LJ.FLAGA, dzis); } catch {} });
   })();
+  // Etap 7a: przypomnienia mailem (SQL v36). Ustawienia, stan liczony na stronie (przypomnienia.js stanZ) i otwarcie z maila:
+  // link z przypomnienia ma ?pz=<id wpisu w logu>; po zalogowaniu baza zapisuje „otwarte” (dławienie liczy zignorowane z rzędu).
+  skrot.przypomnienia = {
+    moje: () => rpRaw("nauka_przypomnienia_moje"),
+    ustaw: (p) => rpRaw("nauka_przypomnienia_ustaw", { p }),
+    stan: (stan) => rpRaw("nauka_przypomnienia_stan", { p_stan: stan }),
+  };
+  (async function otwartePrzypomnienie() {
+    const m = /[?&]pz=([0-9a-f-]{36})(?:&|$)/i.exec(location.search); if (!m) return;
+    try { const u = new URL(location.href); u.searchParams.delete("pz"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); } catch {}
+    await ready;
+    if (skrot.state === "in") rpRaw("nauka_przypomnienie_otwarte", { p_id: m[1] });
+  })();
   setInterval(kqFlush, 20000);
   addEventListener("online", () => { kqFlush(); });
   // Zapytania, w których pkt to punkty przyznane teraz (nauka_haslo_dzis i nauka_bossy zwracają pkt informacyjnie).

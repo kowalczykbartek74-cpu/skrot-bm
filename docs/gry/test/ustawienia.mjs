@@ -16,8 +16,9 @@ ok("kafelki nauki", tiles.length >= 7 && tiles.some((t) => /Stażysta Staś/.tes
 const ty = await p.locator('[data-tour="ty"] .more-row').allInnerTexts();
 // + „Profil nauki” (scalenie L7, etap 1 Zdawalni w Skrócie)
 // (+ „Język strony” na telefonie, main e65ab54)
-{ const want = [/Sklep i monety/, /Profil nauki/, /Moja grupa/, /Wygląd/, ...(ty.some((x) => /Język strony/.test(x)) ? [/Język strony/] : []), /Konto i dostęp/, /Pomoc/];
-  ok("„Ty”: Sklep, Profil nauki, Grupa, Wygląd, (Język), Konto, Pomoc", ty.length === want.length && want.every((r, i) => r.test(ty[i])), ty); }
+// + „Przypomnienia” (etap 7a Zdawalni w Skrócie: Ustawienia → Przypomnienia)
+{ const want = [/Sklep i monety/, /Profil nauki/, /Moja grupa/, /Wygląd/, /Przypomnienia/, ...(ty.some((x) => /Język strony/.test(x)) ? [/Język strony/] : []), /Konto i dostęp/, /Pomoc/];
+  ok("„Ty”: Sklep, Profil nauki, Grupa, Wygląd, Przypomnienia, (Język), Konto, Pomoc", ty.length === want.length && want.every((r, i) => r.test(ty[i])), ty); }
 ok("w „Więcej” nie ma już przełączników motywów", (await p.locator(".more-themes, [role=switch]").count()) === 0);
 await shot(p, "ust-more");
 await p.locator(".more-prof").click(); await p.waitForTimeout(500);

@@ -369,6 +369,15 @@
       try { localStorage.setItem("mock-rocznik", JSON.stringify({ id: a.p_rocznik, wybrany: true })); } catch {} return { ok: true, rocznik_id: a.p_rocznik, wybrany: true, status: "platny" }; },
   };
   const BASE = {
+    // v36 (etap 7a): przypomnienia mailem; ustawienia w localStorage mock-przyp (JSON jak z bazy), stan w mock-przyp-stan,
+    // wywołania w window.__przyp. mock-przyp = "off" → baza bez v36 (not_enabled).
+    nauka_przypomnienia_moje: () => { const v = ls("mock-przyp", "");
+      return { ok: true, ...(JSON.parse(v || "null") || { wlaczone: false, godz: 1080, co: { terminy: true, powtorki: true, zadanie: true }, jezyk: "pl", nowe: true }) }; },
+    nauka_przypomnienia_ustaw: (a) => { const cur = JSON.parse(ls("mock-przyp", "null") || "null") || { wlaczone: false, godz: 1080, co: { terminy: true, powtorki: true, zadanie: true }, jezyk: "pl" };
+      const nw = { ...cur, ...a.p, nowe: false, wypisane: false }; (window.__przyp = window.__przyp || []).push({ fn: "ustaw", p: a.p });
+      try { localStorage.setItem("mock-przyp", JSON.stringify(nw)); } catch {} return { ok: true, ...nw }; },
+    nauka_przypomnienia_stan: (a) => { (window.__przyp = window.__przyp || []).push({ fn: "stan", p: a.p_stan }); try { localStorage.setItem("mock-przyp-stan", JSON.stringify(a.p_stan)); } catch {} return { ok: true }; },
+    nauka_przypomnienie_otwarte: (a) => { (window.__przyp = window.__przyp || []).push({ fn: "otwarte", p: a.p_id }); return { ok: true, pierwsze: true }; },
     // v35 (etap 6): wejścia (sumy dzienne) i panel „Lejek i retencja”; podsumowanie z localStorage mock-lejek (JSON jak z bazy)
     nauka_wejscie: () => ({ ok: true }),
     nauka_admin_lejek: () => (KONTO === "starosta" ? { ok: true, ...(JSON.parse(ls("mock-lejek", "null")) || { dzien: null, policzono_at: null, roczniki: [], dane: {} }) } : { ok: false, code: "not_admin" }),
@@ -395,6 +404,7 @@
     else if (V16FN[fn]) { const r = V16FN[fn](args); out = { data: r.data ?? null, error: r.error ?? null }; }
     else if (V22FN[fn]) out = V22 ? { data: V22FN[fn](args), error: null } : brak;
     else if (V31FN[fn]) out = V31 ? { data: V31FN[fn](args), error: null } : brak;
+    else if (/^nauka_przypomnieni/.test(fn) && ls("mock-przyp", "") === "off") out = brak; // v36 jeszcze nie w bazie
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;

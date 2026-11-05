@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src https://zkyxujkdrovfzpasocmv.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="no-referrer"><link rel="icon" href="icons/icon.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="any">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Przypomnienia mailem · Skrót</title>
+<!-- Etap 7a „Systemy z Zdawalni w Skrócie”: link „Wyłącz przypomnienia mailem” z maila (#t=<token>). Wyłącza dopiero przycisk
+     (skanery poczty otwierają linki), bez logowania; robi to funkcja Edge przypomnienia (SQL v36 nauka_przypomnienia_wypisz).
+     Programy pocztowe z przyciskiem „Wypisz” wołają funkcję same (List-Unsubscribe-Post), bez tej strony. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap">
+<style>
+:root { --paper:#F5F8F6; --surface:#fff; --ink:#16231B; --muted:#5A6B61; --line:#E1E9E4; --accent:#15703C; --err:#B42318; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif; }
+main { max-width: 520px; margin: 0 auto; padding: 32px 16px 64px; }
+a { color: var(--accent); }
+.home { display:inline-flex; align-items:center; gap:10px; font-weight:800; text-decoration:none; color:var(--ink); min-height:44px; }
+.home img { height:28px; width:auto; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; margin-top: 18px; }
+h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 8px; }
+p { margin: 0 0 14px; }
+.muted { color: var(--muted); }
+.err { color: var(--err); }
+button, .btn { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding: 0 20px; border-radius: 12px; border:0; font: inherit; font-weight: 700; cursor: pointer; text-decoration:none; }
+.go { background: var(--accent); color:#fff; }
+.go[disabled] { opacity:.6; cursor: default; }
+.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); margin-left: 8px; }
+.row { display:flex; flex-wrap:wrap; gap:8px; }
+</style>
+</head>
+<body>
+<main>
+<p><a href="./" class="home"><img src="icons/logo-mark.png" alt="" width="36" height="28"> Skrót</a></p>
+<div class="box" id="box" aria-live="polite"></div>
+</main>
+<script src="zapisy.js?v=20261105-przyp"></script>
+<script>
+(function () {
+  var en = false; try { en = localStorage.getItem("skrot-lang") === "en"; } catch (e) {}
+  if (/^en/i.test(navigator.language || "") && !(function () { try { return localStorage.getItem("skrot-lang"); } catch (e) { return null; } })()) en = true;
+  document.documentElement.lang = en ? "en" : "pl";
+  var T = en ? {
+    t: "Turn off email reminders", p: "You will stop getting reminder emails from Skrót. You can turn them back on any time in Settings → Reminders.",
+    go: "Turn off reminders", busy: "Turning off…", back: "Back to Skrót", done: "Reminders turned off", doneP: "No more reminder emails. To turn them back on: Settings → Reminders.",
+    bad: "This link is incomplete. Copy it from the email in full, or turn reminders off in Settings → Reminders.",
+    gone: "This link no longer works. Turn reminders off in Settings → Reminders.", net: "No internet connection. Try again.", down: "This does not work right now. Try later or turn reminders off in Settings → Reminders."
+  } : {
+    t: "Wyłącz przypomnienia mailem", p: "Przestaniesz dostawać maile z przypomnieniami ze Skrótu. Włączysz je z powrotem w Ustawieniach → Przypomnienia.",
+    go: "Wyłącz przypomnienia", busy: "Wyłączam…", back: "Na stronę Skrótu", done: "Przypomnienia wyłączone", doneP: "Nie wyślemy już przypomnień. Żeby je włączyć: Ustawienia → Przypomnienia.",
+    bad: "Ten link jest niepełny. Skopiuj go z maila w całości albo wyłącz przypomnienia w Ustawieniach → Przypomnienia.",
+    gone: "Ten link już nie działa. Przypomnienia wyłączysz w Ustawieniach → Przypomnienia.", net: "Brak internetu. Spróbuj jeszcze raz.", down: "To chwilowo nie działa. Spróbuj później albo wyłącz przypomnienia w Ustawieniach → Przypomnienia."
+  };
+  document.title = T.t + " · Skrót";
+  var box = document.getElementById("box");
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var m = /^#t=([A-Za-z0-9_-]{20,80})$/.exec(location.hash);
+  var back = '<a class="btn ghost" href="./#/ustawienia/przypomnienia" style="margin-left:0">' + esc(T.back) + '</a>';
+  if (!m) { box.innerHTML = '<h1>' + esc(T.t) + '</h1><p class="err" role="alert">' + esc(T.bad) + '</p><div class="row">' + back + '</div>'; return; }
+  var token = m[1];
+  try { history.replaceState(null, "", location.pathname); } catch (e) {}
+  box.innerHTML = '<h1>' + esc(T.t) + '</h1><p class="muted">' + esc(T.p) + '</p><p class="err" id="err" role="alert" hidden></p><div class="row"><button type="button" class="go" id="go">' + esc(T.go) + '</button>' + back + '</div>';
+  var b = document.getElementById("go"), err = document.getElementById("err");
+  b.onclick = function () {
+    b.disabled = true; b.textContent = T.busy; err.hidden = true;
+    var url = (window.SKROT_ZAPISY && window.SKROT_ZAPISY.URL) || "https://zkyxujkdrovfzpasocmv.supabase.co";
+    fetch(url + "/functions/v1/przypomnienia", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ akcja: "wypisz", token: token }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { s: r.status, j: j }; }); })
+      .then(function (r) {
+        if (r.j && r.j.ok) { box.innerHTML = '<h1>' + esc(T.done) + ' ✓</h1><p class="muted">' + esc(T.doneP) + '</p><div class="row">' + back + '</div>'; return; }
+        err.textContent = r.s === 503 || r.s === 404 ? T.down : r.j && r.j.code === "token" ? T.bad : T.gone; err.hidden = false; b.disabled = false; b.textContent = T.go;
+      }, function () { err.textContent = T.net; err.hidden = false; b.disabled = false; b.textContent = T.go; });
+  };
+})();
+</script>
+</body>
+</html>
