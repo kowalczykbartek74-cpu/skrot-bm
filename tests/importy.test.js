@@ -130,6 +130,12 @@ test("sylabus: pozycja ↔ przedmiot w obie strony daje dokładnie obecny sylabu
   // różnica w jednym polu: porównanie pokazuje który przedmiot i które pole
   const inne = JSON.parse(SYL_TXT); inne.courses[5].ects = 99;
   assert.deepEqual(I.porownajSylabusy(inne, SYL).rozne, [{ id: SYL.courses[5].id, pola: ["ects"] }]);
+  // wynik z bazy (jsonb) ma klucze w innej kolejności: porównanie tego nie liczy, a pobrany plik wraca do układu strony
+  const przestaw = (x) => Array.isArray(x) ? x.map(przestaw) : x && typeof x === "object" ? Object.fromEntries(Object.keys(x).reverse().map((k) => [k, przestaw(x[k])])) : x;
+  const zBazy = przestaw(SYL);
+  assert.notEqual(JSON.stringify(zBazy), SYL_TXT);
+  assert.deepEqual([I.porownajSylabusy(zBazy, SYL).zgodne, I.porownajSylabusy(zBazy, SYL).identyczne], [84, true]);
+  assert.equal(JSON.stringify(I.uporzadkujSylabus(zBazy, WEFIZ.typy.sylabus)), SYL_TXT);
 });
 
 test("plan: pozycje → format plan.json z plan-bm (bloki godzin z profilu, oba tygodnie, godziny spoza bloków)", () => {

@@ -239,6 +239,8 @@
 
   // ---------- eksport: sylabus.json ----------
   var KOLEJNOSC_FORM = ["W", "CW", "LAB", "KON", "SEM", "WF"];
+  var KOLEJNOSC_LOAD = ["Contact hours", "Participation in test / exam", "Preparation for contact hours", "Private reading and studying",
+    "Participation in tutorials", "Preparation of project / essay / etc.", "Preparation for test / exam", "TOTAL workload", "ECTS credits"];
   function slug(s) {
     s = String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ł/g, "l");
     return s.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -298,18 +300,38 @@
       lit: c.lit.slice(), sup: c.sup.slice(), load: Object.keys(c.load).map(function (k) { return { k: k, v: c.load[k] }; }),
     };
   }
+  // JSON bez znaczenia kolejności kluczy: wynik importu wraca z bazy jako jsonb, a Postgres układa klucze po swojemu.
+  function kanon(x) {
+    if (Array.isArray(x)) return "[" + x.map(kanon).join(",") + "]";
+    if (x && typeof x === "object") return "{" + Object.keys(x).sort().map(function (k) { return JSON.stringify(k) + ":" + kanon(x[k]); }).join(",") + "}";
+    return JSON.stringify(x === undefined ? null : x);
+  }
+  // Sylabus z bazy (jsonb) → ta sama kolejność kluczy co sylabus.json na stronie (pobrany plik da czysty diff w repo).
+  function uporzadkujSylabus(s, pt) {
+    var kol = pt && pt.kolejnosc_form || KOLEJNOSC_FORM;
+    var poz = function (lista, k) { var i = lista.indexOf(k); return i < 0 ? 99 : i; };
+    var wg = function (obj, lista) { var o = {}; Object.keys(obj || {}).map(function (k, i) { return [k, i]; })
+      .sort(function (a, b) { return poz(lista, a[0]) - poz(lista, b[0]) || a[1] - b[1]; }).forEach(function (x) { o[x[0]] = obj[x[0]]; }); return o; };
+    return { source: s && s.source || "", updated: s && s.updated || "",
+      courses: (s && s.courses || []).map(function (c) {
+        // słowniki też wracają z jsonb przestawione: tematy w kolejności form zajęć, obciążenie w kolejności tabeli z karty
+        var formy = []; (c.forms || []).forEach(function (f) { if (formy.indexOf(f.f) < 0) formy.push(f.f); });
+        var d = Object.assign({}, c, { topics: wg(c.topics, formy.concat(kol)), load: wg(c.load, pt && pt.kolejnosc_load || KOLEJNOSC_LOAD) });
+        return przedmiot(pozycjaZPrzedmiotu(d), c.id, kol);
+      }) };
+  }
   // Porównanie dwóch sylabusów (pilot: AI kontra scripts/sylabus-parse.py): które przedmioty i które pola się różnią.
   function porownajSylabusy(a, b) {
     var mapa = function (s) { var m = {}; (s && s.courses || []).forEach(function (c) { m[c.id] = c; }); return m; };
     var A = mapa(a), B = mapa(b), r = { tylkoA: [], tylkoB: [], rozne: [], zgodne: 0 };
     Object.keys(A).forEach(function (id) {
       if (!B[id]) { r.tylkoA.push(id); return; }
-      var pola = Object.keys(Object.assign({}, A[id], B[id])).filter(function (k) { return JSON.stringify(A[id][k]) !== JSON.stringify(B[id][k]); });
+      var pola = Object.keys(Object.assign({}, A[id], B[id])).filter(function (k) { return kanon(A[id][k]) !== kanon(B[id][k]); });
       if (pola.length) r.rozne.push({ id: id, pola: pola }); else r.zgodne++;
     });
     Object.keys(B).forEach(function (id) { if (!A[id]) r.tylkoB.push(id); });
     r.kolejnosc = JSON.stringify((a.courses || []).map(function (c) { return c.id; })) === JSON.stringify((b.courses || []).map(function (c) { return c.id; }));
-    r.identyczne = JSON.stringify(a) === JSON.stringify(b);
+    r.identyczne = r.kolejnosc && kanon(a) === kanon(b);
     return r;
   }
 
@@ -364,7 +386,7 @@
     waliduj: waliduj, schematDlaApi: schematDlaApi, schematWyniku: schematWyniku,
     czesci: czesci, system: system, zapytanie: zapytanie, sprawdzWynik: sprawdzWynik,
     ponumeruj: ponumeruj, dodajCzesc: dodajCzesc, decyduj: decyduj, podsumuj: podsumuj, zatwierdzone: zatwierdzone, opis: opis, tytul: tytul,
-    slug: slug, doSylabusa: doSylabusa, pozycjaZPrzedmiotu: pozycjaZPrzedmiotu, porownajSylabusy: porownajSylabusy,
+    slug: slug, doSylabusa: doSylabusa, pozycjaZPrzedmiotu: pozycjaZPrzedmiotu, porownajSylabusy: porownajSylabusy, kanon: kanon, uporzadkujSylabus: uporzadkujSylabus,
     doPlanu: doPlanu, eksport: eksport, plik: plik, plikBlad: plikBlad, toHex: toHex, jestPdf: jestPdf,
   };
 });
