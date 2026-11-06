@@ -5,7 +5,8 @@
 "use strict";
 window.SKROT_GRY.add("drabina", (K) => {
   const { GRY_CFG, shuffled, GAME_SFX, BUZZ, REDUCED } = K;
-  const C = GRY_CFG.drabina;
+  // Lekcja („Dla Ciebie na dziś”) gra krótszą Drabinę (run.lekcja.drabina = { n: 6, progi: [2, 4] }); zwykła gra jak dotąd.
+  let C = GRY_CFG.drabina;
   let X = null; // stan rundy
   let A = null, h = null;
   const T = (s) => A?.T?.(s) ?? s;
@@ -59,7 +60,7 @@ window.SKROT_GRY.add("drabina", (K) => {
     hideNote();
     paintLadder(); paintStop(); paintLife();
     // zegar: 30 s (szczeble 1–8), 45 s (9–12); nie stoi przy kołach
-    X.secs = X.i < 8 ? C.sec[0] : C.sec[1]; X.t0 = performance.now(); X.left = X.secs; X.spoken = X.secs;
+    X.secs = X.i < C.progi[C.progi.length - 1] ? C.sec[0] : C.sec[1]; X.t0 = performance.now(); X.left = X.secs; X.spoken = X.secs;
     clearInterval(X.timer); tick(); X.timer = setInterval(tick, 100);
     X.opts[0]?.focus();
   }
@@ -165,7 +166,7 @@ window.SKROT_GRY.add("drabina", (K) => {
 
   const game = {
     id: "drabina", title: "Drabina", dom: true,
-    load: (api, sid, run) => api.ladder(sid, run.seedP),
+    load: (api, sid, run) => { C = run.lekcja?.drabina ? { ...GRY_CFG.drabina, ...run.lekcja.drabina } : GRY_CFG.drabina; return api.ladder(sid, run.seedP); },
     enough: (c) => (c?.length === C.n ? true : "Za mało pytań do Drabiny. Wybierz inny przedmiot albo Mix."),
     // ctx = { content (12 pytań), rnd, box, cb, run, A }
     mount(ctx) {

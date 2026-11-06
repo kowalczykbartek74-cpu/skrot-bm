@@ -61,6 +61,8 @@ async function krok(p) {
   else if (typ === "recall") { if (await cta.isEnabled()) await cta.click(); await p.waitForTimeout(100); await click(card.getByRole("button", { name: /Wiedziałem/ })); await p.waitForTimeout(400); return typ; }
   else if (typ === "recap") { const ta = card.locator("textarea"); if (await ta.count()) { await ta.fill("Moje wyjaśnienie własnymi słowami."); await cta.click(); await p.waitForTimeout(150); } }
   else if (typ === "exercise") { if (await cta.isVisible() && /Pokaż/.test(await cta.innerText())) { await cta.click(); await p.waitForTimeout(120); } await click(card.getByRole("button", { name: /Miałem dobrze/ })); }
+  else if (typ === "gra" || typ === "stas" || typ === "haslo") { await p.locator(".ld-skip").click(); await p.waitForTimeout(300); return typ + "→pomiń"; }
+  else if (typ === "example") { for (let i = 0; i < 8 && (await cta.isVisible()) && (await cta.isEnabled()); i++) { await cta.click(); await p.waitForTimeout(80); } return typ; }
   else if (typ === "match") { await p.locator(".ld-skip").click(); await p.waitForTimeout(300); return "match→pomiń"; }
   else if (typ === "order") { await p.locator(".ld-skip").click(); await p.waitForTimeout(300); return "order→pomiń"; }
   else if (typ === "visual" || typ === "read") { for (let i = 0; i < 8 && (await cta.isVisible()) && /Pokaż kolejny|Odsłoń|kolejny/i.test(await cta.innerText()); i++) { await cta.click(); await p.waitForTimeout(80); } }

@@ -118,6 +118,17 @@
     return t < v[1] ? 1 : 0.5;
   }
 
+  // ---------------- Hasło w lekcji (lokalnie, bez bazy) ----------------
+  /** Wielkie litery A–Z bez polskich znaków („Łąka” → „LAKA”), bez spacji i cyfr. */
+  function hasloNorm(s) { return String(s || "").replace(/[łŁ]/g, "L").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, ""); }
+  /** Ocena próby jak w Haśle dnia: 2 = litera na miejscu, 1 = jest w słowie gdzie indziej, 0 = nie ma (powtórzone litery liczone uczciwie). */
+  function hasloOcena(guess, word) {
+    var g = hasloNorm(guess), w = hasloNorm(word), out = [], left = {};
+    for (var i = 0; i < w.length; i++) { if (g[i] === w[i]) out[i] = 2; else { out[i] = 0; left[w[i]] = (left[w[i]] || 0) + 1; } }
+    for (var j = 0; j < w.length; j++) if (out[j] !== 2 && g[j] && left[g[j]] > 0) { out[j] = 1; left[g[j]]--; }
+    return out;
+  }
+
   // ---------------- długość lekcji i rytm gier (4.3) ----------------
   /** 15 / 20 / 25 min z bloku skupienia; 3× z rzędu przed czasem → o stopień krócej. */
   function dlugoscLekcji(profil, hist) {
@@ -451,7 +462,7 @@
 
   return {
     WAGI: WAGI, KATALOG: KATALOG, MECH: MECH, ROLE: ROLE, DLUGOSCI: DLUGOSCI,
-    dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
+    dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, hasloNorm: hasloNorm, hasloOcena: hasloOcena, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
     trybDnia: trybDnia, trybTematu: trybTematu, ulozKarte: ulozKarte, ulozLekcje: ulozLekcje, ulozDzien: ulozDzien, jeszczeJedna: jeszczeJedna,
     zablokowana: zablokowana, lubiana: lubiana, kandydaci: kandydaci,
   };

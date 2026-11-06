@@ -344,3 +344,16 @@ describe("pamięć karty (FSRS)", () => {
     assert.ok(l.segmenty.filter((s) => s.mech === "przypomnienie").length <= 2);
   });
 });
+
+describe("Hasło w lekcji", () => {
+  test("normalizacja: wielkie litery bez polskich znaków", () => {
+    assert.equal(LD.hasloNorm(" Łąka-2 "), "LAKA");
+    assert.equal(LD.hasloNorm("inflation"), "INFLATION");
+  });
+  test("ocena jak w Haśle dnia, z powtórzonymi literami", () => {
+    assert.deepEqual(LD.hasloOcena("PROFIT", "PROFIT"), [2, 2, 2, 2, 2, 2]);
+    assert.deepEqual(LD.hasloOcena("PRICES", "PROFIT"), [2, 2, 1, 0, 0, 0]);
+    // dwa T w próbie, jedno w słowie: tylko jedno dostaje kolor
+    assert.deepEqual(LD.hasloOcena("TTTAAA", "TABLET"), [2, 1, 0, 1, 0, 0]);
+  });
+});

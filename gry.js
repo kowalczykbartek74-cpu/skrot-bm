@@ -293,6 +293,10 @@ const TITLES = { frun: "Fruń", pary: "Pary", przejdz: "Przejdź", drabina: "Dra
 // RDZEŃ: nakładka, pętla, pauza, dźwięk, Druga szansa, ekran wyniku
 // =====================================================================
 let A = null; // GRY_API z open()
+// Tryb lekcji („Dla Ciebie na dziś”, index.html → ldPlayGame): { pool, tasks, pairs, ladder, limitSec, drabina, tryb, onEnd(wynik) }.
+// Ta sama gra i ten sam zapis w bazie, ale własna pula z tematu, krótka runda, bez zmiany adresu i bez ekranu wyniku:
+// na końcu onEnd() i powrót do odtwarzacza lekcji. null = zwykła gra.
+let LEK = null, lekSent = false;
 let G = null; // bieżąca gra (obiekt z GAMES)
 let ui = null; // elementy nakładki
 let run = null; // stan bieżącej rundy
@@ -338,6 +342,7 @@ function loop(t) {
   if (state !== "gra") return;
   const dt = Math.min((t - last) / 1000, GRY_CFG.step * GRY_CFG.maxSteps);
   last = t; acc += dt;
+  if (LEK?.limitSec && run.started) { run.play = (run.play || 0) + dt; if (run.play >= LEK.limitSec) return endRound(false); }
   let n = 0;
   while (acc >= GRY_CFG.step && n < GRY_CFG.maxSteps) {
     G.update(GRY_CFG.step, input);
@@ -404,18 +409,23 @@ const onResize = () => { if (G?.dom) return; fit(); if (state !== "gra" && G && 
 const gameHash = () => "#/gra/" + (curGra || "");
 const onPop = (e) => {
   if (state === "off") return;
+  // W lekcji „wstecz” nie zmienia ekranu: wraca wpis odtwarzacza i pytamy, czy przerwać rundę.
+  if (LEK) { e.stopImmediatePropagation(); try { history.pushState({ ...(e.state || {}), lp: 1 }, "", location.href); } catch {} return inRound() ? askClose() : close(true); }
   if (!e.state && !location.hash.startsWith("#/gra/")) return close(true); // nowy adres wpisany ręcznie: strona sama pokaże ekran
   e.stopImmediatePropagation();
   if (inRound()) { try { history.pushState({ gry: 1 }, "", gameHash()); } catch {} askClose(); } else close(true);
 };
-const onHash = () => { if (state !== "off" && !location.hash.startsWith("#/gra/")) close(true); };
+const onHash = () => { if (state !== "off" && !LEK && !location.hash.startsWith("#/gra/")) close(true); };
 let curGra = null;
 // runda trwa od pierwszego dotknięcia (wcześniej ✕ zamyka bez pytania)
 const inRound = () => run && run.started && !run.ended && (state === "gra" || state === "pauza" || state === "pytanie");
 
 // ---------- otwarcie i zamknięcie ----------
 async function open(gra, opts = {}) {
+  LEK = opts.lekcja || null; lekSent = false;
   A = opts.api || A;
+  // Lekcja podmienia źródła treści na pulę z tematu (reszta GRY_API bez zmian).
+  if (LEK) { const L = LEK, base = A; A = Object.assign(Object.create(base), { questions: async () => L.pool || [], tasks: async () => L.tasks || [], pairs: async () => L.pairs || [], ladder: async () => L.ladder || [] }); Object.defineProperty(A, "rp", { get: () => base.rp }); }
   if (!GAMES[gra] && LAZY[gra]) { try { await loadGame(gra); } catch { A?.toast?.(T("Nie udało się wczytać gry. Sprawdź połączenie.")); return; } }
   if (!GAMES[gra]) { A?.toast?.(T("Ta gra będzie wkrótce.")); return; }
   if (state !== "off") close(true);
@@ -423,14 +433,15 @@ async function open(gra, opts = {}) {
   build(gra);
   state = "load";
   document.documentElement.classList.add("lp-lock");
+  if (LEK) document.documentElement.classList.add("gry-lek");
   document.addEventListener("keydown", onKey);
   document.addEventListener("visibilitychange", onVis);
   addEventListener("resize", onResize);
   addEventListener("popstate", onPop, true);
   addEventListener("hashchange", onHash);
   curGra = gra;
-  try { if (location.hash !== gameHash()) history.pushState({ gry: 1 }, "", gameHash()); else history.replaceState({ gry: 1 }, "", gameHash()); } catch {}
-  runOpts = { tryb: opts.tryb, trudnosc: opts.trudnosc };
+  if (!LEK) { try { if (location.hash !== gameHash()) history.pushState({ gry: 1 }, "", gameHash()); else history.replaceState({ gry: 1 }, "", gameHash()); } catch {} }
+  runOpts = LEK ? { tryb: LEK.tryb || "def", trudnosc: "latwy" } : { tryb: opts.tryb, trudnosc: opts.trudnosc };
   await newRun(gra, opts.sid ?? null);
 }
 let runOpts = {};
@@ -458,8 +469,9 @@ function build(gra) {
 }
 function close(silent) {
   if (state === "off") return;
-  if (inRound()) endRound(true);
-  stopLoop(); clearInterval(qTimer); G?.stop?.();
+  const brk = inRound();
+  if (brk) endRound(true);
+  stopLoop(); clearInterval(qTimer); clearTimeout(run?.limitT); G?.stop?.();
   state = "off";
   document.removeEventListener("keydown", onKey);
   document.removeEventListener("visibilitychange", onVis);
@@ -467,6 +479,9 @@ function close(silent) {
   removeEventListener("popstate", onPop, true);
   removeEventListener("hashchange", onHash);
   ui?.root.remove(); ui = null; cv = g2 = null;
+  // W lekcji odtwarzacz pod spodem dalej trzyma blokadę przewijania.
+  if (LEK) { document.documentElement.classList.remove("gry-lek"); const L = LEK; LEK = null; lekEnd(L, brk || !run?.ended); A?.close?.(); return; }
+  document.documentElement.classList.remove("gry-lek");
   document.documentElement.classList.remove("lp-lock");
   // przejście dalej (quiz, materiał) zostawia nasz wpis w historii: back() zamknąłby nowo otwarty odtwarzacz
   if (!silent) { try { if (history.state?.gry) history.back(); } catch {} }
@@ -503,7 +518,7 @@ async function newRun(gra, sid) {
   ui.layer.replaceChildren(h("div", { class: "gry-load" }, h("p", { text: "Ładowanie…" })));
   // kosm: założona skórka postaci i tło planszy ze sklepu (tylko wygląd, v24); null = jak dotąd
   const kosm = A.kosm?.() || null;
-  run = { gra, sid, id: null, seed: 0, t0: 0, revives: 0, asked: [], wrong: [], okN: 0, pkt: 0, pktOk: 0, pktZero: 0, xp: 0, offline: false, ended: false, qs: [], tasks: [], H: 0, colors: colors(kosm), kosm };
+  run = { lekcja: LEK, gra, sid, id: null, seed: 0, t0: 0, revives: 0, asked: [], wrong: [], okN: 0, pkt: 0, pktOk: 0, pktZero: 0, xp: 0, offline: false, ended: false, qs: [], tasks: [], H: 0, colors: colors(kosm), kosm };
   G.stop?.();
   const dom = !!G.dom;
   run.tryb = runOpts.tryb || "enpl"; run.trudnosc = runOpts.trudnosc || "sredni";
@@ -513,10 +528,10 @@ async function newRun(gra, sid) {
     dom ? Promise.resolve().then(() => G.load(A, sid, run)).catch(() => null) : A.questions(sid, gra === "przejdz" ? 10 : 6).catch(() => []), dom ? [] : A.tasks(sid, 3).catch(() => []),
   ]);
   if (state === "off") return;
-  if (!st.ok && st.code === "no_access") return lock();
-  if (!st.ok && st.code === "too_many_runs") { A.toast("Na dziś wystarczy grania. Wróć jutro albo zrób Powtórki."); return close(); }
+  if (!st.ok && st.code === "no_access" && !LEK) return lock();
+  if (!st.ok && st.code === "too_many_runs" && !LEK) { A.toast("Na dziś wystarczy grania. Wróć jutro albo zrób Powtórki."); return close(); }
   run.demo = !!A.demo;
-  if (st.ok) { run.id = st.run; run.seed = st.seed; } else { run.offline = true; run.seed = Date.now() | 0; if (st.code === "offline" && !run.demo) A.toast("Brak połączenia. Grasz dalej, ale punkty rankingu się nie zapiszą."); }
+  if (st.ok) { run.id = st.run; run.seed = st.seed; } else { run.offline = true; run.seed = Date.now() | 0; if (st.code === "offline" && !run.demo && !LEK) A.toast("Brak połączenia. Grasz dalej, ale punkty rankingu się nie zapiszą."); }
   run.qs = qs; run.tasks = tasks; run.rnd = mulberry32(run.seed);
   if (dom) return mountDom(qs);
   ui.layer.replaceChildren();
@@ -535,7 +550,7 @@ function mountDom(content) {
   ui.layer.replaceChildren(box);
   const score = (k) => { ui.num.textContent = k; ui.live.textContent = `${k}/${run.n}`; };
   const m = G.mount({ content, rnd: run.rnd, box, run, A, cb: {
-    onStart: () => { run.started = true; },
+    onStart: () => { run.started = true; if (LEK?.limitSec && !run.limitT) run.limitT = setTimeout(() => { if (state === "gra" && !run.ended) endRound(false); }, LEK.limitSec * 1000); },
     onScore: score,
     onMatch: (k) => { score(k); run.xp += A.xp?.(1) || 0; },
     onMiss: () => {},
@@ -697,7 +712,7 @@ function back() {
 let resEl = null;
 function endRound(quiet) {
   if (run.ended) return; run.ended = true;
-  stopLoop(); clearInterval(qTimer); G.stop?.();
+  stopLoop(); clearInterval(qTimer); clearTimeout(run.limitT); G.stop?.();
   const P = G === PARY, wynik = G.score(), czasMs = G.timeMs ? G.timeMs() : Math.round(performance.now() - run.t0), bledy = G.errors?.() || 0;
   run.wynik = wynik;
   if (P) {
@@ -723,9 +738,16 @@ function endRound(quiet) {
     A.rp.koniec({ run: run.id, wynik, czasMs, bledy }).then((r) => { run.koniec = r; if (r?.ok) run.pkt += r.pkt || 0; }).catch(() => {}).finally(() => { run.pending--; resSync(); });
   }
   if (quiet) return;
+  if (LEK) { const L = LEK; lekEnd(L, false); close(true); return; }
   state = "wynik";
   cv?.classList.remove("blur");
   showResult();
+}
+// Wynik rundy w lekcji (raz): { wynik, n, okN, asked, wrong, czasMs, xp, przerwane }.
+function lekEnd(L, przerwane) {
+  if (lekSent) return; lekSent = true;
+  const r = run || {};
+  try { L.onEnd?.({ gra: r.gra, wynik: r.wynik ?? (G?.score?.() || 0), n: r.n || null, okN: r.okN || 0, asked: (r.asked || []).length, wrong: (r.wrong || []).length, czasMs: G?.timeMs ? G.timeMs() : Math.round(performance.now() - (r.t0 || performance.now())), xp: r.xp || 0, przerwane: !!przerwane }); } catch {}
 }
 // Ekran wyniku (wspólny); Pary pokazują pary, pomyłki i czas zamiast „dobrze”.
 function showResult() {
