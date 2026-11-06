@@ -36,7 +36,7 @@ Blok widzi tylko konto admina (`skrot.admin`). Wszyscy inni, także z `?ld=1`, m
 - Test porównuje wyliczone style:
   - karta 5 min ma tło, gradient, rogi i kolor tekstu takie same jak „Teraz zrób to” w tym samym motywie;
   - kafelek lekcji ma tło i rogi takie same jak kafelek przedmiotu.
-- Sprawdzone w każdym motywie ze sklepu i w domyślnym (Łąka, Nenufary, Nocny rejs, Kokardka, Jednorożec, Nokturn), w jasnym i ciemnym, na 375 i 1280 px: 28 wariantów, wszystkie zgodne.
+- Sprawdzone w każdym motywie ze sklepu i w domyślnym (Łąka, Nenufary, Nocny rejs, Kokardka, Jednorożec, Nokturn, Riwiera, Jachtklub), w jasnym i ciemnym, na 375 i 1280 px: 36 wariantów, wszystkie zgodne (po scaleniu z main: test 101/101).
 - Zrzuty (nowe obok starych) są w arkuszach wysłanych w czacie.
 
 ## Decyzje (moje, do zmiany na Twoje słowo)

@@ -30,7 +30,7 @@ await p.goBack(); await p.waitForTimeout(400);
 await p.locator(".more-row", { hasText: "Wygląd" }).click(); await p.waitForTimeout(500);
 ok("Wygląd → #/ustawienia/wyglad", /#\/ustawienia\/wyglad$/.test(p.url()), p.url());
 const th = await p.locator(".set-theme").allInnerTexts();
-ok("8 kafelków motywów, jasny włączony", th.length === 8 && /✓ Włączony/.test(th[0]), th);
+ok("10 kafelków motywów, jasny włączony", th.length === 10 && /✓ Włączony/.test(th[0]), th);
 await shot(p, "ust-wyglad");
 await p.locator(".set-theme", { hasText: "Zielony ciemny" }).click(); await p.waitForTimeout(500);
 ok("klik: zielony ciemny", (await p.evaluate(() => document.documentElement.getAttribute("data-green"))) === "dark" && /✓ Włączony/.test(await p.locator(".set-theme", { hasText: "Zielony ciemny" }).innerText()));

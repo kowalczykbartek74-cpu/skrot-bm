@@ -96,7 +96,7 @@ for (const w of [375, 1280]) {
 }
 
 // ---- motywy: ten sam wygląd co „Teraz zrób to” i kafelek przedmiotu (różni się tylko treść) ----
-const THEMES = ["", "meadow", "lilia", "sea", "bow", "pink", "noc"];
+const THEMES = ["", "meadow", "lilia", "sea", "bow", "pink", "noc", "riwiera", "klub"];
 for (const th of THEMES) for (const dark of [false, true]) for (const w of [375, 1280]) {
   const name = `${th || "domyslny"}-${dark ? "ciemny" : "jasny"}-${w}`;
   const on = await open({ theme: th || undefined, dark, w, h: w > 600 ? 900 : 812 });
