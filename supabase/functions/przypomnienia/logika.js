@@ -182,11 +182,11 @@
       var dd = diffDays(ctx.today, ctx.lastStudyDay);
       return en ? {
         kind: "powrot", title: "One short task to start",
-        body: "Your last study session in Skrót was " + dd + " days ago. Start with one short task, the rest can wait.",
+        body: "Your last study session in Zdawalni was " + dd + " days ago. Start with one short task, the rest can wait.",
         cta: "One task", path: "#/",
       } : {
         kind: "powrot", title: "Jedno krótkie zadanie na start",
-        body: "Ostatnia nauka w Skrócie: " + dd + " dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.",
+        body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.",
         cta: "Jedno zadanie", path: "#/",
       };
     }
@@ -228,14 +228,14 @@
   function mail(o) {
     var en = o.lang === "en", p = o.pick, go = link(o.site, p.path, o.id), off = o.unsubscribeUrl;
     var hello = en ? "Hi!" : "Cześć!";
-    var foot = en ? "You get this email because reminders are on in Skrót (Settings → Reminders). At most one a day."
-      : "Ten mail przychodzi, bo w Skrócie są włączone przypomnienia (Ustawienia → Przypomnienia). Najwyżej jeden dziennie.";
+    var foot = en ? "You get this email because reminders are on in Zdawalni (Settings → Reminders). At most one a day."
+      : "Ten mail przychodzi, bo w Zdawalni są włączone przypomnienia (Ustawienia → Przypomnienia). Najwyżej jeden dziennie.";
     var offTxt = en ? "Turn off email reminders" : "Wyłącz przypomnienia mailem";
-    var text = [hello, "", p.body, "", p.cta + ": " + go, "", "Skrót · skrotbm.pl", "", foot, offTxt + ": " + off].join("\n");
+    var text = [hello, "", p.body, "", p.cta + ": " + go, "", "Zdawalni · zdawalni.pl", "", foot, offTxt + ": " + off].join("\n");
     var html = '<!doctype html>\n<html lang="' + (en ? "en" : "pl") + '"><body style="margin:0;background:#F5F8F6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1d2b24">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:24px 12px"><tr><td align="center">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border:1px solid #dde5df;border-radius:14px;padding:24px"><tr><td>' +
-      '<p style="margin:0 0 14px;font-size:18px;font-weight:800;color:#1b7f4a">Skrót</p>' +
+      '<p style="margin:0 0 14px;font-size:18px;font-weight:800;color:#1b7f4a">Zdawalni</p>' +
       '<p style="margin:0 0 10px;font-size:16px;line-height:1.5">' + esc(hello) + '</p>' +
       '<p style="margin:0 0 20px;font-size:16px;line-height:1.5">' + esc(p.body) + '</p>' +
       '<a href="' + esc(go) + '" style="display:inline-block;background:#1b7f4a;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:14px 22px;border-radius:10px">' + esc(p.cta) + '</a>' +

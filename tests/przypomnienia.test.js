@@ -35,7 +35,7 @@ test("kolejność: zaliczenie za 7 / 3 / 1 dzień → powrót → powtórki i re
   assert.equal(P.wybierz(ctx({ terminy: [ter("2026-11-05", { n: "Prawo" }), ter("2026-11-07")] })).title, "Kolokwium: Prawo, jutro");
   const back = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3 }));
   assert.equal(back.kind, "powrot");
-  assert.equal(back.body, "Ostatnia nauka w Skrócie: 5 dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.");
+  assert.equal(back.body, "Ostatnia nauka w Zdawalni: 5 dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.");
   const r = P.wybierz(ctx({ rewanze: 8, powtorki: 0 }));
   assert.equal(r.kind, "powtorki");
   assert.equal(r.body, "Na dziś: 5 rewanży. 10 minut i masz to z głowy.", "port: 5 rewanży, 2 min na każdy");
@@ -60,7 +60,7 @@ test("bez poczucia winy i odliczania; EN bez polskich znaków poza nazwami", () 
   const pl = cs.map((c) => P.wybierz(c)).map((x) => x.title + " " + x.body).join(" ");
   assert.doesNotMatch(pl, /stracisz|przepadnie|zostały|godzin[ay]? do|smutny|zawiod|musisz|wstyd|ostatnia szansa/i);
   const en = cs.map((c) => P.wybierz({ ...c, lang: "en" })).map((x) => x.title + " " + x.body + " " + x.cta).join(" ");
-  assert.doesNotMatch(en.replace(/Skrót/g, ""), /[ąćęłńóśźż]/i); // nazwa własna zostaje
+  assert.doesNotMatch(en.replace(/Zdawalni/g, ""), /[ąćęłńóśźż]/i); // nazwa własna zostaje
   assert.doesNotMatch(en, /lose|last chance|shame|must/i);
   assert.equal(P.wybierz(ctx({ lang: "en", terminy: [ter("2026-11-07")] })).title, "Test: Microeconomics, in 3 days");
   assert.equal(P.wybierz(ctx({ lang: "en", terminy: [ter("2026-11-07")] })).body, "Your Microeconomics test: Saturday 7 November, in 3 days. 15 minutes of review today is a good step.");
@@ -116,13 +116,13 @@ test("godziny i dzień w Warszawie", () => {
 
 test("mail: treść, jeden przycisk, link z id i wyłączenie jednym kliknięciem", () => {
   const pick = P.wybierz(ctx({ terminy: [ter("2026-11-07", { n: "Funkcje <teoria>" })] }));
-  const m = P.mail({ lang: "pl", pick, site: "https://skrotbm.pl", id: "abc-1", unsubscribeUrl: "https://x.supabase.co/functions/v1/przypomnienia?t=tok" });
+  const m = P.mail({ lang: "pl", pick, site: "https://zdawalni.pl", id: "abc-1", unsubscribeUrl: "https://x.supabase.co/functions/v1/przypomnienia?t=tok" });
   assert.equal(m.subject, "Kolokwium: Funkcje <teoria>, za 3 dni");
   assert.match(m.html, /Funkcje &lt;teoria&gt;/);
-  assert.match(m.html, /href="https:\/\/skrotbm\.pl\/\?pz=abc-1#\/exam\/mikro"/);
+  assert.match(m.html, /href="https:\/\/zdawalni\.pl\/\?pz=abc-1#\/exam\/mikro"/);
   assert.equal((m.html.match(/<a /g) || []).length, 2, "przycisk + wyłącz");
   assert.match(m.text, /Wyłącz przypomnienia mailem: https:\/\/x\.supabase\.co\/functions\/v1\/przypomnienia\?t=tok/);
-  const en = P.mail({ lang: "en", pick: P.wybierz(ctx({ lang: "en" })), site: "https://skrotbm.pl/", id: "z", unsubscribeUrl: "u" });
+  const en = P.mail({ lang: "en", pick: P.wybierz(ctx({ lang: "en" })), site: "https://zdawalni.pl/", id: "z", unsubscribeUrl: "u" });
   assert.match(en.html, /<html lang="en">/); assert.match(en.text, /Turn off email reminders: u/);
 });
 
@@ -152,7 +152,7 @@ function atrapa() {
     return { data: null, error: { message: "nie ma " + fn } };
   };
   const fetchMock = async (url, init) => { db.maile.push({ url, body: JSON.parse(init.body), headers: init.headers }); return { ok: db.resendOk, status: db.resendOk ? 200 : 500 }; };
-  const env = { RESEND_API_KEY: "re_test", RESEND_FROM: "Skrót <przypomnienia@skrotbm.pl>", PRZYPOMNIENIA_CRON: "s".repeat(40), SUPABASE_URL: "https://abc.supabase.co" };
+  const env = { RESEND_API_KEY: "re_test", RESEND_FROM: "Zdawalni <przypomnienia@skrotbm.pl>", PRZYPOMNIENIA_CRON: "s".repeat(40), SUPABASE_URL: "https://abc.supabase.co" };
   return { db, deps: { rpc, fetch: fetchMock, env: (k) => env[k], P } };
 }
 const FN = "https://abc.supabase.co/functions/v1/przypomnienia";
@@ -184,7 +184,7 @@ test("funkcja Edge: kolokwium za 3 dni → jeden mail o godzinie, drugi tego dni
   assert.equal(db.maile.length, 1);
   // GET z linku w mailu niczego nie wyłącza, tylko prowadzi na stronę z przyciskiem
   const g = await obsluz(new Request(FN + "?t=" + "t".repeat(36)), deps);
-  assert.equal(g.status, 303); assert.equal(g.headers.get("location"), "https://skrotbm.pl/przypomnienia.html#t=" + "t".repeat(36));
+  assert.equal(g.status, 303); assert.equal(g.headers.get("location"), "https://zdawalni.pl/przypomnienia.html#t=" + "t".repeat(36));
   assert.equal(db.wlaczone.u1, true);
   // POST z programu pocztowego (RFC 8058): wyłącza
   const w = await obsluz(new Request(FN + "?t=" + "t".repeat(36), { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body: "List-Unsubscribe=One-Click" }), deps);
@@ -205,8 +205,8 @@ test("funkcja Edge: błąd Resend zostawia możliwość ponowienia; strona wypis
   assert.equal(r.sent, 1);
   const zly = await obsluz(new Request(FN, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ akcja: "wypisz", token: "x".repeat(30) }) }), deps);
   assert.equal(zly.status, 400);
-  const ok = await obsluz(new Request(FN, { method: "POST", headers: { "content-type": "application/json", origin: "https://skrotbm.pl" }, body: JSON.stringify({ akcja: "wypisz", token: "t".repeat(36) }) }), deps);
-  assert.equal(ok.status, 200); assert.equal(ok.headers.get("access-control-allow-origin"), "https://skrotbm.pl"); assert.equal(db.wlaczone.u1, false);
+  const ok = await obsluz(new Request(FN, { method: "POST", headers: { "content-type": "application/json", origin: "https://zdawalni.pl" }, body: JSON.stringify({ akcja: "wypisz", token: "t".repeat(36) }) }), deps);
+  assert.equal(ok.status, 200); assert.equal(ok.headers.get("access-control-allow-origin"), "https://zdawalni.pl"); assert.equal(db.wlaczone.u1, false);
   const bez = atrapa(); const deps2 = { ...bez.deps, env: (k) => (k.startsWith("RESEND") ? undefined : bez.deps.env(k)) };
   r = await (await obsluz(cron(), deps2)).json();
   assert.equal(r.code, "no_mail"); assert.equal(bez.db.maile.length, 0);

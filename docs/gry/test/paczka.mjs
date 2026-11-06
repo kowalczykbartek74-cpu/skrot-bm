@@ -1,5 +1,5 @@
 // Etap 10 specu „Systemy z Zdawalni w Skrócie”: paczka i duet tygodnia (SQL v37 podstawione atrapą, paczka.js).
-//   A. Więcej → „Paczka i duet”; bez paczki: „Załóż paczkę” i pole na kod; założenie → kod, link skrotbm.pl/?paczka=KOD,
+//   A. Więcej → „Paczka i duet”; bez paczki: „Załóż paczkę” i pole na kod; założenie → kod, link zdawalni.pl/?paczka=KOD,
 //   B. paczka 3 osób z duetem: tylko wysiłek (pseudonim / „Osoba N”, dziś, dni w tygodniu), wspólny cel, postęp duetu,
 //      bez punktów, XP i monet innych; właściciel ma „Usuń” (≥ 44 px), usunięcie przez potwierdzenie,
 //   C. zaproszenie do duetu: „Przyjmij” → duet aktywny; propozycja duetu z wiersza osoby,
@@ -42,7 +42,7 @@ for (const [w, hh] of [[375, 812], [1280, 900]]) {
   }
   await p.click(".pk-new"); await p.waitForTimeout(800);
   const t2 = await p.locator("main").innerText();
-  ok(`${w} A: po założeniu: kod, link, cel, duet czeka na osoby`, /AB3K9Z/.test(t2) && /https:\/\/skrotbm\.pl\/\?paczka=AB3K9Z/.test(t2) && /Wspólny cel tygodnia/.test(t2)
+  ok(`${w} A: po założeniu: kod, link, cel, duet czeka na osoby`, /AB3K9Z/.test(t2) && /https:\/\/zdawalni\.pl\/\?paczka=AB3K9Z/.test(t2) && /Wspólny cel tygodnia/.test(t2)
     && /Duet zaczniesz, gdy ktoś dołączy/.test(t2) && /Student \(Ty\) · prowadzi/.test(t2), t2.slice(0, 900));
   ok(`${w} A: bez błędów w konsoli`, !p.errors.length, p.errors);
   await p.context().close();
@@ -67,7 +67,7 @@ for (const lang of ["pl", "en"]) for (const [w, hh] of [[375, 812], [1280, 900]]
       && (await p.locator(".pk-zapros").count()) === 0, ub);
     ok(`${w} B: pasek postępu z aria`, (await p.locator(".pk-cel [role=progressbar]").getAttribute("aria-valuenow")) === "86");
   } else {
-    ok(`${w} G: EN bez polskich znaków (poza nazwą Skrót BM w stopce)`, !PL_ZN.test(t.replace(/Skrót BM/g, "")) && /Shared goal this week/.test(t) && /Duo of the week/.test(t) && /Leave the squad/.test(t), t.slice(0, 1500));
+    ok(`${w} G: EN bez polskich znaków (poza nazwą Zdawalni w stopce)`, !PL_ZN.test(t.replace(/Skrót BM/g, "")) && /Shared goal this week/.test(t) && /Duo of the week/.test(t) && /Leave the squad/.test(t), t.slice(0, 1500));
   }
   await shot(p, `paczka-${w}-${lang}`);
   await p.locator(".pk-share").scrollIntoViewIfNeeded(); await shot(p, `paczka-${w}-${lang}-dol`);

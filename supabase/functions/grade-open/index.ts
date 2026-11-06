@@ -10,7 +10,7 @@ const DAILY_LIMIT = 5;            // ocenionych testów na osobę dziennie (star
 const MAX_ITEMS = 30;             // pozycji w jednym teście
 const MAX_BYTES = 120000;         // całe zapytanie
 const TIMEOUT_MS = 55000;         // potem strona przechodzi na samoocenę
-const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
+const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 
 function cors(req: Request) {
   const o = req.headers.get("origin") || "";

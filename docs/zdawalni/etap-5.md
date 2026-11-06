@@ -3,8 +3,8 @@
 Spec: „Systemy z Zdawalni w Skrócie”, etap 5. Gałęzie: `zdawalni/oczekujacy` (skrot-bm, od `main` 253dce3) i `zdawalni-zapisz-sie` (plan-bm, od `main` 97adecd).
 
 ## Co jest
-- **Ekran wejścia skrotbm.pl → „Inny kierunek”**: zamiast otwierać maila zapisuje na listę. Kierunek z listy (z planów WEFiZ, bez działającego BM 1. st.), rok z planów albo „nie wiem”, albo „Nie ma mojego kierunku” z wpisaną nazwą; e-mail; zgoda na jeden mail.
-- **plan.skrotbm.pl**: w stopce przycisk „Studiujesz inny kierunek? Skrót dla Twojego kierunku: zapisz się ↗” → `skrotbm.pl/?zapisz=plan` (formularz od razu, źródło „plan”).
+- **Ekran wejścia zdawalni.pl → „Inny kierunek”**: zamiast otwierać maila zapisuje na listę. Kierunek z listy (z planów WEFiZ, bez działającego BM 1. st.), rok z planów albo „nie wiem”, albo „Nie ma mojego kierunku” z wpisaną nazwą; e-mail; zgoda na jeden mail.
+- **plan.skrotbm.pl**: w stopce przycisk „Studiujesz inny kierunek? Zdawalni dla Twojego kierunku: zapisz się ↗” → `zdawalni.pl/?zapisz=plan` (formularz od razu, źródło „plan”).
 - **Mail z linkami** „Potwierdź zapis” i „Usuń mój zapis” (PL i EN). Link otwiera stronę z przyciskiem; samo otwarcie linku (np. przez skaner poczty Microsoft 365) niczego nie potwierdza.
 - **Panel** Narzędzia starosty → „Kierunki” (tylko administrator): potwierdzone zapisy na kierunek i rok, wpisane nazwy pogrupowane, źródła, „Pobierz CSV”.
 - **Kierunki z systemu planów WEFiZ**: `scripts/kierunki-wefiz.mjs` przeszedł 24 kierunki × 6 lat (1 zapytanie/s). Wyszło 29 par kierunek-stopień z planem na 2026/27. „Ekonomiczno-prawny” i „Green Economy” są w formularzu uczelni, ale bez planu w tym roku, więc nie ma ich na liście (można wpisać ręcznie). Skróty jednoliterowe uczelni zamieniłem na kody: L → LOG, M → MKT, Z → ZARZ.
@@ -18,13 +18,13 @@ Spec: „Systemy z Zdawalni w Skrócie”, etap 5. Gałęzie: `zdawalni/oczekuja
 2. Sprawdź **Domains**: skrotbm.pl ma status Verified (te same ustawienia co maile logowania).
 3. Supabase → Edge Functions → **Secrets** → dodaj:
    - `RESEND_API_KEY` = klucz z punktu 1,
-   - `RESEND_FROM` = `Skrót <zapisy@skrotbm.pl>` (adres w zweryfikowanej domenie),
+   - `RESEND_FROM` = `Zdawalni <zapisy@skrotbm.pl>` (nazwa nadawcy „Zdawalni”; adres może zostać w domenie skrotbm.pl, bo ta jest zweryfikowana w Resend),
    - `ZAPISY_SALT` = dowolny długi losowy napis (np. 40 znaków z menedżera haseł). Nie wklejaj go nigdzie indziej.
    Uwaga: Resend Free to 100 maili dziennie razem z mailami logowania.
 
 **C. Funkcja `zapisz-sie`** (bez weryfikacji JWT, bo działa bez logowania). Mogę ją wysłać sam jak `usun-konto` (`npx supabase functions deploy zapisz-sie --no-verify-jwt`), napisz „wysyłaj funkcję”. Albo w panelu: Edge Functions → Deploy a new function → Via Editor → nazwa `zapisz-sie` → wklej `supabase/functions/zapisz-sie/index.ts` → w ustawieniach funkcji wyłącz **Verify JWT** → Deploy.
 
-**D. Sprawdzenie**: po wdrożeniu strony zapisz się na skrotbm.pl → Inny kierunek (swoim drugim adresem) → mail → „Potwierdź zapis” → przycisk → Narzędzia starosty → Kierunki: 1 potwierdzony.
+**D. Sprawdzenie**: po wdrożeniu strony zapisz się na zdawalni.pl → Inny kierunek (swoim drugim adresem) → mail → „Potwierdź zapis” → przycisk → Narzędzia starosty → Kierunki: 1 potwierdzony.
 
 **E. plan.skrotbm.pl**: po D scalam `zdawalni-zapisz-sie` do `main` repo plan-bm (strona planu).
 

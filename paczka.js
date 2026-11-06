@@ -24,7 +24,7 @@
   var DUO_TARGET = CFG.duet_cel;
   var DUO_POINTS = CFG.duet_nagroda;
   var DUO_LABEL = "Duet tygodnia";
-  var SITE = "https://skrotbm.pl/";
+  var SITE = "https://zdawalni.pl/";
 
   // ---------- daty (dates.ts) ----------
   function addDays(iso, n) {

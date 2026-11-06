@@ -34,7 +34,7 @@ testy `tests/unit/notifications.test.ts`, `reminder-voice.test.ts`, `reminder-em
   `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (przycisk „Wypisz” w Gmailu / Apple Mail woła funkcję POST i wyłącza od razu).
   Link w treści maila prowadzi (GET → przekierowanie) na `przypomnienia.html#t=TOKEN`: strona bez logowania z jednym przyciskiem
   „Wyłącz przypomnienia” (samo wejście niczego nie zmienia, bo skanery poczty otwierają linki). Token losowy, w tabeli.
-- **Otwarcie z maila**: przycisk w mailu prowadzi na `skrotbm.pl/?pz=<id wpisu>#/…`; po zalogowaniu baza zapisuje „otwarte”
+- **Otwarcie z maila**: przycisk w mailu prowadzi na `zdawalni.pl/?pz=<id wpisu>#/…`; po zalogowaniu baza zapisuje „otwarte”
   (dławienie), adres jest czyszczony z `?pz`.
 - **Log** `nauka_przypomnienia_log` (port `notification_log`): dzień, kanał (`email`, na 7b `push`), rodzaj, wysłano, otwarto; bez treści.
   Czyszczony po 180 dniach. Usunięcie konta kasuje wszystko (v32 bierze każdą tabelę z `user_id`, plus `on delete cascade`).
@@ -44,7 +44,7 @@ testy `tests/unit/notifications.test.ts`, `reminder-voice.test.ts`, `reminder-em
    jeśli nie: Integrations → Cron → Enable.)
 2. **Sekret cron**: w Terminalu na Macu `openssl rand -hex 32` → skopiuj wynik (nie wklejaj go nigdzie poza krokami 3 i 4).
 3. **Sekret funkcji**: Supabase → Edge Functions → Secrets → Add new secret: nazwa `PRZYPOMNIENIA_CRON`, wartość z kroku 2 → Save.
-   `RESEND_API_KEY` i `RESEND_FROM` są już z etapu 5 (nadawca z domeny skrotbm.pl zweryfikowanej w Resend).
+   `RESEND_API_KEY` i `RESEND_FROM` są już z etapu 5 (nadawca z domeny skrotbm.pl zweryfikowanej w Resend, nazwa nadawcy „Zdawalni”, np. `Zdawalni <zapisy@skrotbm.pl>`). Linki w mailu prowadzą na zdawalni.pl (opcjonalny sekret `SITE_URL`, domyślnie `https://zdawalni.pl`).
 4. **Vault** (ten sam ciąg + adres funkcji): Supabase → SQL Editor → New query →
    ```sql
    select vault.create_secret('<wartość z kroku 2>', 'przypomnienia_cron');

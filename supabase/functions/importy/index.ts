@@ -3,7 +3,7 @@
 // polecenie dla modelu, schemat, sprawdzenie wyniku) w logika.js = kopia importy.js ze strony (test pilnuje, że są identyczne).
 // Wymaga: SQL supabase/skrot-v40-importy.sql (tabela, funkcje i prywatny bucket „importy”) i sekretu ANTHROPIC_API_KEY (już jest).
 // Opcjonalnie (Supabase → Edge Functions → Secrets): IMPORT_MODEL (domyślnie claude-sonnet-5-5), IMPORT_EFFORT (domyślnie z profilu,
-// „low”), PROFILE_BASE (skąd brać profile wydziałów, domyślnie https://skrotbm.pl/importy/).
+// „low”), PROFILE_BASE (skąd brać profile wydziałów, domyślnie https://zdawalni.pl/importy/).
 // Wdrożenie: supabase functions deploy importy
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { PDFDocument } from "npm:pdf-lib@1.17.1";
@@ -30,7 +30,7 @@ Deno.serve((req) => {
   });
   // Klucz serwisowy tylko do Storage (bucket jest prywatny, bez polityk dla anon/authenticated); baza zawsze jako zalogowana osoba.
   const st = createClient(url, serverKey(), { auth: { persistSession: false } }).storage.from(BUCKET);
-  const base = (Deno.env.get("PROFILE_BASE") || "https://skrotbm.pl/importy/").replace(/\/?$/, "/");
+  const base = (Deno.env.get("PROFILE_BASE") || "https://zdawalni.pl/importy/").replace(/\/?$/, "/");
   return obsluz(req, {
     rpc: (fn, args) => sb.rpc(fn, args || {}) as unknown as Promise<{ data: any; error: unknown }>,
     storage: {

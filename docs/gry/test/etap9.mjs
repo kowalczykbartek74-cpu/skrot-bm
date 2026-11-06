@@ -152,8 +152,8 @@ for (const lang of ["pl", "en"]) {
   ok(`starosta ${lang}: chip „Nowy boss – ogłoś rokowi”`, (await txt(p, "#boss-card .bs-ann")).includes(lang === "pl" ? "Nowy boss – ogłoś rokowi" : "New boss – tell your year"));
   await p.locator("#boss-card .bs-ann").click(); await p.waitForTimeout(300);
   const ta = await p.locator(".bs-ann-ta").inputValue();
-  ok(`starosta ${lang}: tekst ogłoszenia`, lang === "pl" ? /^⚔️ Inflator atakuje! Kolokwium z Makroekonomii \d+ \S+\. Każda dobra odpowiedź na skrotbm\.pl to cios\. Jeśli go pokonamy do \d+ \S+, każdy z 10\+ ciosami dostaje \+50 pkt\.$/.test(ta)
-    : /^⚔️ The Inflator attacks! Macroeconomics test on \d+ \w+\. Every correct answer on skrotbm\.pl is a strike\. If we beat it by \d+ \w+, everyone with 10\+ strikes gets \+50 pts\.$/.test(ta), ta);
+  ok(`starosta ${lang}: tekst ogłoszenia`, lang === "pl" ? /^⚔️ Inflator atakuje! Kolokwium z Makroekonomii \d+ \S+\. Każda dobra odpowiedź na zdawalni\.pl to cios\. Jeśli go pokonamy do \d+ \S+, każdy z 10\+ ciosami dostaje \+50 pkt\.$/.test(ta)
+    : /^⚔️ The Inflator attacks! Macroeconomics test on \d+ \w+\. Every correct answer on zdawalni\.pl is a strike\. If we beat it by \d+ \w+, everyone with 10\+ strikes gets \+50 pts\.$/.test(ta), ta);
   if (lang === "pl") await shot(p, "starosta-ogloszenie-390");
   await p.locator(".modal .btn.primary").click(); await p.waitForTimeout(300);
   ok(`starosta ${lang}: „Kopiuj” → schowek`, (await p.evaluate(() => navigator.clipboard.readText())) === ta);

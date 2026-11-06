@@ -225,7 +225,7 @@ function atrapa({ profile = { WEFiZ: WEFIZ, WTEST: WTEST }, strony = 227, model,
   return { db, deps: { rpc, storage, pdf, profil: async (w) => profile[w] || null, fetch: fetchMock, env: (k) => env[k], I } };
 }
 const odp = (wynik, extra = {}) => ({ json: { model: "claude-sonnet-5-5", stop_reason: "end_turn", usage: { input_tokens: 20000, output_tokens: 6000 }, content: [{ type: "text", text: JSON.stringify(wynik) }], ...extra } });
-const zapytanie = (body, headers = {}) => new Request(FN, { method: "POST", headers: { "content-type": "application/json", origin: "https://skrotbm.pl", ...headers }, body: JSON.stringify(body) });
+const zapytanie = (body, headers = {}) => new Request(FN, { method: "POST", headers: { "content-type": "application/json", origin: "https://zdawalni.pl", ...headers }, body: JSON.stringify(body) });
 const call = async (obsluz, deps, body) => { const r = await obsluz(zapytanie(body), deps); return { status: r.status, ...(await r.json()) }; };
 
 // Model-atrapa pilota: przedmioty, które zaczynają się na stronach od–doZ wycinka (także w zakładce, jak zrobiłby to model,
@@ -349,7 +349,7 @@ test("funkcja Edge: tylko administrator; brak profilu, zły PDF, zła akcja; COR
   const o = await obsluz(new Request(FN, { method: "OPTIONS", headers: { origin: "http://127.0.0.1:8811" } }), deps);
   assert.equal(o.headers.get("access-control-allow-origin"), "http://127.0.0.1:8811");
   const o2 = await obsluz(new Request(FN, { method: "OPTIONS", headers: { origin: "https://zly.example" } }), deps);
-  assert.equal(o2.headers.get("access-control-allow-origin"), "https://skrotbm.pl");
+  assert.equal(o2.headers.get("access-control-allow-origin"), "https://zdawalni.pl");
 });
 
 test("funkcja Edge: zły format → druga próba z powodem; max_tokens, odmowa, błąd API i czas → część zostaje do ponowienia", async () => {

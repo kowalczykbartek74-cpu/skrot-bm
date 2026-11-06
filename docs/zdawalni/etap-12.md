@@ -19,7 +19,7 @@ Spec: „Systemy z Zdawalni w Skrócie”, etap 12. Gałąź `zdawalni/tresci` (
 ## Kroki dla Bartka (klik po kliku)
 
 **A. Uruchom na obecnych 115 lekcjach** (eksport tylko czyta bazę, niczego nie zapisuje):
-1. Chrome → https://skrotbm.pl → zaloguj się kontem starosty (pełny dostęp).
+1. Chrome → https://zdawalni.pl → zaloguj się kontem starosty (pełny dostęp).
 2. Cmd+Opt+J (konsola). Jeśli Chrome nie pozwala wkleić, wpisz `allow pasting` i Enter.
 3. Otwórz w repo `docs/lekcje-v4/eksport.js`, skopiuj całość, wklej w konsolę, Enter. Konsola pokaże `{ lekcje: 115 }`, a do Pobranych trafi `lekcje-eksport.json`.
 4. Terminal: `cd ~/skrot-bm && node scripts/tresci-kontrola.mjs ~/Downloads/lekcje-eksport.json` (na tej gałęzi albo po scaleniu).

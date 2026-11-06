@@ -3,7 +3,7 @@
 // a wybór treści w logika.js (kopia przypomnienia.js ze strony; test pilnuje, że są identyczne).
 // Wymaga: SQL supabase/skrot-v36-przypomnienia.sql (pg_cron co 15 min woła tę funkcję przez pg_net, sekret z Vault).
 // Sekrety (Supabase → Edge Functions → Secrets): RESEND_API_KEY, RESEND_FROM (z etapu 5), PRZYPOMNIENIA_CRON (ten sam
-// losowy ciąg co w Vault „przypomnienia_cron”). Opcjonalnie SITE_URL (domyślnie https://skrotbm.pl).
+// losowy ciąg co w Vault „przypomnienia_cron”). Opcjonalnie SITE_URL (domyślnie https://zdawalni.pl).
 // Wdrożenie: supabase functions deploy przypomnienia --no-verify-jwt   (pg_cron i program pocztowy wołają bez logowania)
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import "./logika.js";

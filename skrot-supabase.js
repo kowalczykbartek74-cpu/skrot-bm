@@ -1,4 +1,4 @@
-// Skrót BM poza claude.ai: baza, logowanie i AI przez Supabase.
+// Zdawalni poza claude.ai: baza, logowanie i AI przez Supabase.
 // Strona (index.html) woła window.claude.use("db" | "user" | "sample"),
 // a ten plik odpowiada na te wywołania własną bazą (tabela nauka_docs, reguły w supabase/skrot.sql).
 // Klucz publishable jest publiczny z założenia; dostępu do danych pilnują reguły w bazie.
@@ -359,7 +359,7 @@
   const polecNorm = (t) => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/gi, "l").toUpperCase().replace(/[^A-Z0-9]/g, "");
   skrot.polecNorm = polecNorm;
   skrot.polecZapamietany = () => { try { const p = JSON.parse(ls.get(POLEC_LS) || "null"); return p && p.kod && Date.now() - p.t < 30 * 864e5 ? p.kod : ""; } catch { return ""; } };
-  skrot.polecLink = (kod) => "https://skrotbm.pl/?kod=" + encodeURIComponent(kod);
+  skrot.polecLink = (kod) => "https://zdawalni.pl/?kod=" + encodeURIComponent(kod);
   const polecRpc = async (fn, args) => { await ready; const { data, error } = await sb.rpc(fn, args); if (error) throw rpcErr(error); return data; };
   skrot.polecMoj = () => polecRpc("nauka_polec_moj");
   skrot.polecUstaw = (kod, imie) => polecRpc("nauka_polec_ustaw", { p_kod: kod, p_imie: imie || null });
@@ -1133,7 +1133,7 @@
       return true;
     } catch (e) {
       // Zapis zgody nie blokuje zakupu, ale zostawiamy ślad w przeglądarce i w konsoli.
-      console.warn("Skrót BM: nie zapisano zgody w bazie", e);
+      console.warn("Zdawalni: nie zapisano zgody w bazie", e);
       try { ls.set("skrot-zgoda", JSON.stringify({ plan, v: CONSENT_V, t: new Date().toISOString(), email: skrot.email })); } catch {}
       return false;
     }
@@ -1496,8 +1496,8 @@
       all = data || []; draw();
     };
     const warnMail = (k) => {
-      const subject = "Skrót BM: Twoje konto jest używane przez kilka osób";
-      const text = `Cześć,\n\nTwoje konto Skrót BM (${k.email}) jest ostatnio używane na wielu urządzeniach na zmianę, co wygląda na korzystanie z niego przez kilka osób. Konto jest osobiste i nie wolno go udostępniać (regulamin, § 3).\n\nJeśli to pomyłka, np. zmieniłeś telefon, po prostu odpisz na tego maila. Jeśli sytuacja się powtórzy, będziemy musieli zablokować dostęp.\n\nPozdrawiam\nBartłomiej Kowalczyk, Skrót BM`;
+      const subject = "Zdawalni: Twoje konto jest używane przez kilka osób";
+      const text = `Cześć,\n\nTwoje konto Zdawalni (${k.email}) jest ostatnio używane na wielu urządzeniach na zmianę, co wygląda na korzystanie z niego przez kilka osób. Konto jest osobiste i nie wolno go udostępniać (regulamin, § 3).\n\nJeśli to pomyłka, np. zmieniłeś telefon, po prostu odpisz na tego maila. Jeśli sytuacja się powtórzy, będziemy musieli zablokować dostęp.\n\nPozdrawiam\nBartłomiej Kowalczyk, Zdawalni`;
       location.href = `mailto:${k.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
       act(k, "ostrzezenie");
     };

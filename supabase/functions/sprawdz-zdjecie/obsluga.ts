@@ -25,7 +25,7 @@ export interface Zaleznosci {
   Z: Logika;
 }
 
-const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
+const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 const MAX_BYTES = 7_500_000;   // całe zapytanie: zdjęcie ≤ 5 MB w base64 (×4/3) + klucz zadania
 const TIMEOUT_MS = 55000;      // na obie próby razem; potem strona mówi „spróbuj za chwilę”
 

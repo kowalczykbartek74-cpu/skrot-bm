@@ -12,7 +12,7 @@
 //   pdf     { id } → { ok, url }   podpisany link do PDF-u na 10 minut (panel pokazuje stronę obok pozycji)
 //   sprzataj {} → { ok, usuniete } kasuje z bucketu PDF-y zatwierdzonych/odrzuconych i starszych niż 30 dni
 //           (to samo robi co dzień pg_cron, jeśli Storage pozwala kasować z SQL; tu zawsze przez API Storage).
-// Profil wydziału (importy/<WYDZIAŁ>.json) funkcja pobiera ze strony (PROFILE_BASE, domyślnie https://skrotbm.pl/importy/),
+// Profil wydziału (importy/<WYDZIAŁ>.json) funkcja pobiera ze strony (PROFILE_BASE, domyślnie https://zdawalni.pl/importy/),
 // więc nowy wydział = nowy plik profilu w repozytorium strony, bez zmian tutaj.
 
 export interface Logika {
@@ -41,7 +41,7 @@ export interface Zaleznosci {
   I: Logika;
 }
 
-const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
+const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 const MAX_BODY = 21_000_000;     // PDF ≤ 15 MB w base64 (×4/3) + pola
 const TIMEOUT_MS = 140000;       // jedna część; limit czasu funkcji Edge to 150 s (plan Free) / 400 s (płatny)
 

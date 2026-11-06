@@ -99,7 +99,7 @@ const BASE_LS = { "mock-haslo-nr": "12", "mock-haslo-seria": "2", "mock-haslo-st
   await p.getByRole("button", { name: "Udostępnij wynik" }).click(); await p.waitForTimeout(200);
   const clip = await p.evaluate(() => window.__clip || "");
   const wz = (await HD(p)).d.wzory, emo = wz.map((w) => [...w].map((c) => ["⬜", "🟨", "🟩"][c]).join(""));
-  ok("udostępnij (komputer): schowek + toast, tekst bez słowa, emoji jak plansza", clip === ["Hasło dnia Skrót BM #12 · 4/6 🔥3", ...emo, "skrotbm.pl"].join("\n") && !/REVENUE/i.test(clip) && (await p.locator(".toast").textContent()) === "Skopiowano – wklej na grupę roku", clip);
+  ok("udostępnij (komputer): schowek + toast, tekst bez słowa, emoji jak plansza", clip === ["Hasło dnia Zdawalni #12 · 4/6 🔥3", ...emo, "zdawalni.pl"].join("\n") && !/REVENUE/i.test(clip) && (await p.locator(".toast").textContent()) === "Skopiowano – wklej na grupę roku", clip);
   // Powtórki
   await p.getByRole("button", { name: "Dodaj do Powtórek" }).click(); await p.waitForTimeout(200);
   ok("„Dodaj do Powtórek”: toast, przycisk znika", (await p.locator(".toast").textContent()) === "Dodano do Powtórek." && !(await p.getByRole("button", { name: "Dodaj do Powtórek" }).count()));
@@ -151,7 +151,7 @@ const BASE_LS = { "mock-haslo-nr": "12", "mock-haslo-seria": "2", "mock-haslo-st
   ok("6 nieudanych: „✗ … X/6”, „Tym razem się nie udało. Hasło: REVENUE”", /✗ Hasło dnia #12 · X\/6/.test(txt) && /Tym razem się nie udało\. Hasło: REVENUE/.test(txt), txt);
   ok("6 nieudanych: definicja, materiał, „Dodaj do Powtórek”, bez serii i punktów", /Revenue is the total income/.test(txt) && /Z materiału: PKB i inflacja/.test(txt) && (await p.getByRole("button", { name: "Dodaj do Powtórek" }).count()) === 1 && !/Seria/.test(txt) && !/pkt rankingu/.test(txt));
   ok("stat: null → „Statystyki roku pojawią się, gdy zagra co najmniej 5 osób”", /Statystyki roku pojawią się, gdy zagra co najmniej 5 osób/.test(txt));
-  ok("udostępnianie nieodgadniętego: „X/6”, bez serii", (await p.evaluate(() => window.SKROT_HASLO._share())).split("\n")[0] === "Hasło dnia Skrót BM #12 · X/6");
+  ok("udostępnianie nieodgadniętego: „X/6”, bez serii", (await p.evaluate(() => window.SKROT_HASLO._share())).split("\n")[0] === "Hasło dnia Zdawalni #12 · X/6");
   ok("zero błędów (przegrana)", !p.errors.length, p.errors);
   await p.context().close();
 }
@@ -177,7 +177,7 @@ const BASE_LS = { "mock-haslo-nr": "12", "mock-haslo-seria": "2", "mock-haslo-st
   await open(p); await p.waitForTimeout(200);
   await p.getByRole("button", { name: "Udostępnij wynik" }).click(); await p.waitForTimeout(200);
   const sh = await p.evaluate(() => [window.__shared?.text, window.__clip]);
-  ok("udostępnij (telefon): navigator.share z tekstem, bez schowka", sh[0] === "Hasło dnia Skrót BM #12 · 2/6 🔥3\n⬜⬜⬜⬜⬜⬜⬜\n🟩🟩🟩🟩🟩🟩🟩\nskrotbm.pl" && !sh[1], sh);
+  ok("udostępnij (telefon): navigator.share z tekstem, bez schowka", sh[0] === "Hasło dnia Zdawalni #12 · 2/6 🔥3\n⬜⬜⬜⬜⬜⬜⬜\n🟩🟩🟩🟩🟩🟩🟩\nzdawalni.pl" && !sh[1], sh);
   await p.context().close();
 }
 
@@ -272,7 +272,7 @@ for (const lang of ["pl", "en"]) for (const [w, hgt] of [[390, 844], [1280, 800]
     if (lang === "en") {
       const t = await p.locator(".hd-end").innerText();
       ok(`EN ${w}: ekran końca po angielsku`, /Word of the day #12 · 4\/6/.test(t) && /\+12 ranking pts/.test(t) && /From: PKB/.test(t) && /Share result/.test(t) && /Add to Reviews/.test(t) && /Streak: 3 days/.test(t) && /How your year did/.test(t) && /Next word in/.test(t) && /12 people, 75% got it/.test(t), t);
-      ok(`EN ${w}: udostępnianie „Skrót BM Word of the day #12”`, (await p.evaluate(() => window.SKROT_HASLO._share())).startsWith("Skrót BM Word of the day #12 · 4/6 🔥3"));
+      ok(`EN ${w}: udostępnianie „Zdawalni Word of the day #12”`, (await p.evaluate(() => window.SKROT_HASLO._share())).startsWith("Zdawalni Word of the day #12 · 4/6 🔥3"));
     }
     await shot(p, `e7-koniec-${w}-${lang}`);
     await p.locator(".hd-end").scrollIntoViewIfNeeded(); await shot(p, `e7-koniec-karta-${w}-${lang}`);

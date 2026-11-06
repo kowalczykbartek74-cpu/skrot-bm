@@ -94,7 +94,7 @@ test("postęp duetu i zdanie", () => {
 test("nazwa, link i kod z adresu", () => {
   assert.equal(P.nazwa({ nick: " Ola " }, 0), "Ola");
   assert.equal(P.nazwa({ nick: null }, 2), "Osoba 3");
-  assert.equal(P.link("ab3-k9z"), "https://skrotbm.pl/?paczka=AB3K9Z");
+  assert.equal(P.link("ab3-k9z"), "https://zdawalni.pl/?paczka=AB3K9Z");
   assert.equal(P.link("x"), null);
   assert.equal(P.kodZAdresu("?paczka=ab3k9z"), "AB3K9Z");
   assert.equal(P.kodZAdresu("?z=ig&paczka=AB3-K9Z&x=1"), "AB3K9Z");

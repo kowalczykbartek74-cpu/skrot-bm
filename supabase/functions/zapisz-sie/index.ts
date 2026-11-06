@@ -3,14 +3,14 @@
 //   → SQL v34 nauka_oczekujacy_zapisz (limit 5 z jednej sieci na godzinę, po skrócie IP) → mail z linkami „Potwierdź”
 //     i „Usuń mój zapis” (Resend). Odpowiedź jest ta sama dla nowego, czekającego i potwierdzonego adresu.
 // POST { akcja: "potwierdz" | "usun", token } → nauka_oczekujacy_potwierdz / _wypisz.
-// Linki w mailu prowadzą na stronę (skrotbm.pl/#/zapis/potwierdz.<token>), która dopiero po kliknięciu przycisku woła
+// Linki w mailu prowadzą na stronę (zdawalni.pl/#/zapis/potwierdz.<token>), która dopiero po kliknięciu przycisku woła
 // tę funkcję, więc skaner poczty, który otwiera linki, niczego nie potwierdzi.
-// Sekrety (Supabase → Edge Functions → Secrets): RESEND_API_KEY, RESEND_FROM (np. „Skrót <zapisy@skrotbm.pl>”,
+// Sekrety (Supabase → Edge Functions → Secrets): RESEND_API_KEY, RESEND_FROM (np. „Zdawalni <zapisy@skrotbm.pl>”,
 // domena zweryfikowana w Resend), opcjonalnie ZAPISY_SALT (sól skrótu IP). Wdrożenie: supabase functions deploy zapisz-sie --no-verify-jwt
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const SITE = "https://skrotbm.pl";
-const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://plan.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
+const SITE = "https://zdawalni.pl";
+const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://plan.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 const ZGODA_WERSJA = "2026-11-05";
 const OK_MSG = "Sprawdź skrzynkę: wysłaliśmy link do potwierdzenia zapisu. Jeśli maila nie ma, zajrzyj do spamu.";
 
@@ -54,15 +54,15 @@ function sprawdz(b: Record<string, unknown>) {
 
 function mail(token: string) {
   const ok = `${SITE}/#/zapis/potwierdz.${token}`, out = `${SITE}/#/zapis/usun.${token}`;
-  const subject = "Potwierdź zapis: Skrót dla Twojego kierunku";
-  const text = `Cześć!\n\nPotwierdź, że chcesz dostać jeden mail, gdy Skrót ruszy dla Twojego kierunku:\n${ok}\n\nTo nie Ty? Usuń zapis:\n${out}\n\n---\nConfirm that you want one email when Skrót starts for your programme:\n${ok}\nNot you? Remove the sign-up:\n${out}\n\nSkrót · skrotbm.pl`;
+  const subject = "Potwierdź zapis: Zdawalni dla Twojego kierunku";
+  const text = `Cześć!\n\nPotwierdź, że chcesz dostać jeden mail, gdy Zdawalni ruszy dla Twojego kierunku:\n${ok}\n\nTo nie Ty? Usuń zapis:\n${out}\n\n---\nConfirm that you want one email when Zdawalni starts for your programme:\n${ok}\nNot you? Remove the sign-up:\n${out}\n\nSkrót · skrotbm.pl`;
   const html = `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:16px;line-height:1.5;color:#1d2b24;max-width:520px">
-<p>Cześć!</p><p>Potwierdź, że chcesz dostać <b>jeden mail</b>, gdy Skrót ruszy dla Twojego kierunku.</p>
+<p>Cześć!</p><p>Potwierdź, że chcesz dostać <b>jeden mail</b>, gdy Zdawalni ruszy dla Twojego kierunku.</p>
 <p><a href="${ok}" style="display:inline-block;background:#1b7f4a;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:600">Potwierdź zapis</a></p>
 <p style="font-size:14px;color:#4a5a51">To nie Ty? <a href="${out}" style="color:#1b7f4a">Usuń mój zapis</a>.</p>
 <hr style="border:0;border-top:1px solid #dde5df;margin:20px 0">
-<p style="font-size:14px;color:#4a5a51">Confirm that you want one email when Skrót starts for your programme: <a href="${ok}" style="color:#1b7f4a">confirm</a> · <a href="${out}" style="color:#1b7f4a">remove the sign-up</a>.</p>
-<p style="font-size:13px;color:#6b7a72">Skrót · skrotbm.pl</p></div>`;
+<p style="font-size:14px;color:#4a5a51">Confirm that you want one email when Zdawalni starts for your programme: <a href="${ok}" style="color:#1b7f4a">confirm</a> · <a href="${out}" style="color:#1b7f4a">remove the sign-up</a>.</p>
+<p style="font-size:13px;color:#6b7a72">Zdawalni · zdawalni.pl</p></div>`;
   return { subject, text, html };
 }
 

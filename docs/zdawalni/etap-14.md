@@ -25,9 +25,9 @@ Spec: „Systemy z Zdawalni w Skrócie”, etap 14 (ostatni). Gałąź `zdawalni
 ## Kroki dla Bartka klik po kliku
 **A. SQL v40**: Supabase → skrzynka-bm → SQL Editor → New query → wklej całe `supabase/skrot-v40-importy.sql` → Run → „Success”. W komunikatach (zakładka Messages/Notices) ma być „OK bucket importy (prywatny)” i „OK importy: zadanie skrot-importy…” (bez pg_cron: Integrations → Cron → Enable i uruchom plik jeszcze raz). Sprawdź: Storage → bucket **importy**, „Public” wyłączone. Jeśli SQL nie mógł utworzyć bucketu (komunikat o braku uprawnień): Storage → New bucket → nazwa `importy`, Public bucket: **wyłączone**, Restrict file upload size: **15 MB**, Allowed MIME types: `application/pdf` → Save. Polityk (Policies) **nie dodawaj**.
 
-**B. Funkcja `importy`** (z weryfikacją JWT, jak `grade-open`): napisz „wysyłaj funkcję”, a wyślę `npx supabase functions deploy importy`. Albo w panelu: Edge Functions → Deploy a new function → Via Editor → nazwa `importy` → trzy pliki z `supabase/functions/importy/` (`index.ts`, `obsluga.ts`, `logika.js`) → Deploy (Verify JWT włączone). Nowych sekretów nie trzeba (`ANTHROPIC_API_KEY` już jest). Opcjonalnie w Edge Functions → Secrets: `IMPORT_MODEL` (domyślnie `claude-sonnet-5-5`), `IMPORT_EFFORT` (domyślnie z profilu: `low`), `PROFILE_BASE` (domyślnie `https://skrotbm.pl/importy/`).
+**B. Funkcja `importy`** (z weryfikacją JWT, jak `grade-open`): napisz „wysyłaj funkcję”, a wyślę `npx supabase functions deploy importy`. Albo w panelu: Edge Functions → Deploy a new function → Via Editor → nazwa `importy` → trzy pliki z `supabase/functions/importy/` (`index.ts`, `obsluga.ts`, `logika.js`) → Deploy (Verify JWT włączone). Nowych sekretów nie trzeba (`ANTHROPIC_API_KEY` już jest). Opcjonalnie w Edge Functions → Secrets: `IMPORT_MODEL` (domyślnie `claude-sonnet-5-5`), `IMPORT_EFFORT` (domyślnie z profilu: `low`), `PROFILE_BASE` (domyślnie `https://zdawalni.pl/importy/`).
 
-**C. Strona**: po „uruchomione” scalam gałąź i wdrażam (profil `importy/WEFiZ.json` musi być na skrotbm.pl, bo funkcja bierze go stamtąd).
+**C. Strona**: po „uruchomione” scalam gałąź i wdrażam (profil `importy/WEFiZ.json` musi być na zdawalni.pl, bo funkcja bierze go stamtąd).
 
 **D. plan-bm**: gałąź `zdawalni-importy` (commit `ebe58e4`) — scal po v40; przed v40 skrypt tylko pisze w logu „baza nie odpowiada” i działa jak dziś.
 
@@ -41,7 +41,7 @@ Spec: „Systemy z Zdawalni w Skrócie”, etap 14 (ostatni). Gałąź `zdawalni
 ## Do decyzji
 - **Wielkość części** (8 stron): mniejsze części są bezpieczniejsze względem limitu 150 s, większe tańsze (mniej powtórzonych stron zakładki). Zmiana = jedna liczba w profilu, bez wdrażania funkcji.
 - **Plan z PDF-u tylko uzupełnia stronę uczelni** (dokłada brakujące grupy). Gdyby miał ją zastępować (np. gdy uczelnia zdejmie plan), to jedna zmiana w `plan-bm/scripts/import-plan.mjs`.
-- **Profil ze strony, nie z funkcji**: nowy wydział nie wymaga ponownego wdrażania funkcji, ale profil musi być na skrotbm.pl (czyli w `main`). Lokalnie/testowo: sekret `PROFILE_BASE`.
+- **Profil ze strony, nie z funkcji**: nowy wydział nie wymaga ponownego wdrażania funkcji, ale profil musi być na zdawalni.pl (czyli w `main`). Lokalnie/testowo: sekret `PROFILE_BASE`.
 - **Polityka prywatności**: PDF-y sylabusa i planu to dokumenty uczelni, ale bywają w nich nazwiska prowadzących; trafiają do Anthropic do odczytania. Proponuję zdanie w sekcji o AI: „Administrator może przekazać do odczytu przez AI (Anthropic) publiczne dokumenty uczelni, np. sylabus i plan zajęć; plik jest kasowany najpóźniej po 30 dniach.”
 - **Wgranie jednym zapytaniem** (≤ 15 MB w base64): Supabase przyjmuje takie ciało zapytania do funkcji Edge, ale gdyby uczelnia dała większy PDF, trzeba go podzielić (komunikat to mówi) albo dopisać wysyłanie kawałkami jak w `matura-app` (3 MB).
 

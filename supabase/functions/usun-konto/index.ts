@@ -7,7 +7,7 @@
 // Wdrożenie: supabase functions deploy usun-konto
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const ORIGINS = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
+const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 const STRIPE = "https://api.stripe.com/v1";
 // Subskrypcje, które mogą jeszcze pobrać pieniądze.
 const LIVE = new Set(["active", "trialing", "past_due", "unpaid", "incomplete"]);

@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src https://zkyxujkdrovfzpasocmv.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="referrer" content="no-referrer"><link rel="icon" href="icons/icon.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="any">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Przypomnienia mailem · Skrót</title>
+<title>Przypomnienia mailem · Zdawalni</title>
 <!-- Etap 7a „Systemy z Zdawalni w Skrócie”: link „Wyłącz przypomnienia mailem” z maila (#t=<token>). Wyłącza dopiero przycisk
      (skanery poczty otwierają linki), bez logowania; robi to funkcja Edge przypomnienia (SQL v36 nauka_przypomnienia_wypisz).
      Programy pocztowe z przyciskiem „Wypisz” wołają funkcję same (List-Unsubscribe-Post), bez tej strony. -->
@@ -31,7 +31,7 @@ button, .btn { display:inline-flex; align-items:center; justify-content:center; 
 </head>
 <body>
 <main>
-<p><a href="./" class="home"><img src="icons/logo-mark.png" alt="" width="36" height="28"> Skrót</a></p>
+<p><a href="./" class="home"><img src="icons/logo-mark.png" alt="" width="36" height="28"> Zdawalni</a></p>
 <div class="box" id="box" aria-live="polite"></div>
 </main>
 <script src="zapisy.js?v=20261105-przyp"></script>
@@ -41,17 +41,17 @@ button, .btn { display:inline-flex; align-items:center; justify-content:center; 
   if (/^en/i.test(navigator.language || "") && !(function () { try { return localStorage.getItem("skrot-lang"); } catch (e) { return null; } })()) en = true;
   document.documentElement.lang = en ? "en" : "pl";
   var T = en ? {
-    t: "Turn off email reminders", p: "You will stop getting reminder emails from Skrót. You can turn them back on any time in Settings → Reminders.",
-    go: "Turn off reminders", busy: "Turning off…", back: "Back to Skrót", done: "Reminders turned off", doneP: "No more reminder emails. To turn them back on: Settings → Reminders.",
+    t: "Turn off email reminders", p: "You will stop getting reminder emails from Zdawalni. You can turn them back on any time in Settings → Reminders.",
+    go: "Turn off reminders", busy: "Turning off…", back: "Back to Zdawalni", done: "Reminders turned off", doneP: "No more reminder emails. To turn them back on: Settings → Reminders.",
     bad: "This link is incomplete. Copy it from the email in full, or turn reminders off in Settings → Reminders.",
     gone: "This link no longer works. Turn reminders off in Settings → Reminders.", net: "No internet connection. Try again.", down: "This does not work right now. Try later or turn reminders off in Settings → Reminders."
   } : {
-    t: "Wyłącz przypomnienia mailem", p: "Przestaniesz dostawać maile z przypomnieniami ze Skrótu. Włączysz je z powrotem w Ustawieniach → Przypomnienia.",
-    go: "Wyłącz przypomnienia", busy: "Wyłączam…", back: "Na stronę Skrótu", done: "Przypomnienia wyłączone", doneP: "Nie wyślemy już przypomnień. Żeby je włączyć: Ustawienia → Przypomnienia.",
+    t: "Wyłącz przypomnienia mailem", p: "Przestaniesz dostawać maile z przypomnieniami z Zdawalni. Włączysz je z powrotem w Ustawieniach → Przypomnienia.",
+    go: "Wyłącz przypomnienia", busy: "Wyłączam…", back: "Na stronę Zdawalni", done: "Przypomnienia wyłączone", doneP: "Nie wyślemy już przypomnień. Żeby je włączyć: Ustawienia → Przypomnienia.",
     bad: "Ten link jest niepełny. Skopiuj go z maila w całości albo wyłącz przypomnienia w Ustawieniach → Przypomnienia.",
     gone: "Ten link już nie działa. Przypomnienia wyłączysz w Ustawieniach → Przypomnienia.", net: "Brak internetu. Spróbuj jeszcze raz.", down: "To chwilowo nie działa. Spróbuj później albo wyłącz przypomnienia w Ustawieniach → Przypomnienia."
   };
-  document.title = T.t + " · Skrót";
+  document.title = T.t + " · Zdawalni";
   var box = document.getElementById("box");
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
   var m = /^#t=([A-Za-z0-9_-]{20,80})$/.exec(location.hash);

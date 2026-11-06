@@ -122,7 +122,7 @@ function atrapa({ me = { admin: false, platny: true }, odp = [], limitOd = 0 } =
   const env = { ANTHROPIC_API_KEY: "sk-test" };
   return { db, deps: { rpc, rpcSerwer, fetch: fetchMock, env: (k) => env[k], Z } };
 }
-const zapytanie = (body, headers = {}) => new Request(FN, { method: "POST", headers: { "content-type": "application/json", origin: "https://skrotbm.pl", ...headers }, body: JSON.stringify(body) });
+const zapytanie = (body, headers = {}) => new Request(FN, { method: "POST", headers: { "content-type": "application/json", origin: "https://zdawalni.pl", ...headers }, body: JSON.stringify(body) });
 // Strona wysyła klucz już przepuszczony przez Z.klucz (skrot.sprawdzZdjecie), tak jak tutaj.
 const ok = { image: JPG, mediaType: "image/jpeg", task: Z.klucz(TEST), lang: "pl", rocznik: "wefiz-bm-1-st-2026" };
 
@@ -133,7 +133,7 @@ test("funkcja Edge: płacący dostaje ocenę, zdjęcie idzie tylko do API i nigd
   const res = await obsluz(zapytanie(ok), deps);
   console.error = orig;
   assert.equal(res.status, 200);
-  assert.equal(res.headers.get("access-control-allow-origin"), "https://skrotbm.pl");
+  assert.equal(res.headers.get("access-control-allow-origin"), "https://zdawalni.pl");
   const r = await res.json();
   assert.deepEqual([r.ok, r.result.points_min, r.result.points_max, r.maxPoints, r.remaining], [true, 3, 3, 4, 4]);
   assert.equal(r.result.mistake_step, "W ostatnim kroku 3·4 − 3.");

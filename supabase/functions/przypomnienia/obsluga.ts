@@ -21,7 +21,7 @@ export interface Zaleznosci {
   P: Logika;
 }
 
-const SITE = "https://skrotbm.pl";
+const SITE = "https://zdawalni.pl";
 const TOKEN = /^[A-Za-z0-9_-]{20,80}$/;
 
 const json = (status: number, body: unknown, extra: Record<string, string> = {}) =>
@@ -37,9 +37,9 @@ function rowne(a: string, b: string): boolean {
 
 export function cors(req: Request) {
   const o = req.headers.get("origin") || "";
-  const ok = ["https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"].includes(o) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);
+  const ok = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"].includes(o) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o);
   return {
-    "Access-Control-Allow-Origin": ok ? o : "https://skrotbm.pl",
+    "Access-Control-Allow-Origin": ok ? o : "https://zdawalni.pl",
     "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Vary": "Origin",
