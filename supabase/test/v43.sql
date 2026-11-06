@@ -7,14 +7,14 @@ begin
     -- osoby 1–5: karta dziś; 1–3 lekcja dziś; porzucenia w segmencie 3 (Fruń) u 1–5, pominięty Staś u 1–2, Drabina ukończona dobrze u 1–4
     if i <= 5 then
       insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values
-        (u, gen_random_uuid(), 'activity', now() - interval '2 hours', '{"kind":"ld","koniec":"karta","rola":null,"segmenty":3}'),
-        (u, gen_random_uuid(), 'activity', now() - interval '2 hours', '{"kind":"ld","seg":3,"mech":"frun","stan":"porzucona","dobrze":null}');
+        (u, gen_random_uuid(), 'activity', now() - interval '1 minute', '{"kind":"ld","koniec":"karta","rola":null,"segmenty":3}'),
+        (u, gen_random_uuid(), 'activity', now() - interval '1 minute', '{"kind":"ld","seg":3,"mech":"frun","stan":"porzucona","dobrze":null}');
     end if;
-    if i <= 3 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 hour', '{"kind":"ld","koniec":"lekcja","rola":"najwazniejsze","segmenty":8}'); end if;
-    if i <= 2 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 hour', '{"kind":"ld","seg":4,"mech":"stas","stan":"pominieta","dobrze":null}'); end if;
-    if i <= 4 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 hour', '{"kind":"ld","seg":7,"mech":"drabina","stan":"ukonczona","dobrze":true}'); end if;
+    if i <= 3 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 minute', '{"kind":"ld","koniec":"lekcja","rola":"najwazniejsze","segmenty":8}'); end if;
+    if i <= 2 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 minute', '{"kind":"ld","seg":4,"mech":"stas","stan":"pominieta","dobrze":null}'); end if;
+    if i <= 4 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 minute', '{"kind":"ld","seg":7,"mech":"drabina","stan":"ukonczona","dobrze":true}'); end if;
     -- zły wpis (mech z niedozwolonymi znakami) się nie liczy
-    if i = 1 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 hour', '{"kind":"ld","seg":1,"mech":"<script>","stan":"ukonczona"}'); end if;
+    if i = 1 then insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '1 minute', '{"kind":"ld","seg":1,"mech":"<script>","stan":"ukonczona"}'); end if;
     -- „czy uczy”: osoby 1–5 robiły lekcję ek-lekcja-2 w bloku 20 dni temu; potem powtórki po ≥ 7 dniach: lekcja 2 dobrze, lekcja 1 (spoza bloku) źle
     if i <= 5 then
       insert into public.nauka_zdarzenia (user_id, klient_id, typ, kiedy, dane) values (u, gen_random_uuid(), 'activity', now() - interval '20 days', '{"kind":"ld","materialId":"ek-lekcja-2","ok":3,"total":4,"ld":"najwazniejsze"}');
@@ -39,6 +39,7 @@ do $$ declare r jsonb; ld jsonb; d text := to_char((now() at time zone 'Europe/W
   perform test.chk('D6 osoby w bloku (28 dni)', (ld->>'osoby')::int = 5, ld->'osoby');
   select dane into r from public.nauka_lejek_dzien where rocznik_id = '*' order by dzien desc limit 1;
   perform test.chk('D7 „*” = wszystkie roczniki też ma „ld”', r->'ld'->'segmenty' @> '[{"seg":3,"porzucone":5}]', r->'ld');
+  perform test.chk('D7b „*” zachowuje lejek według źródła z v38', r ? 'zrodla' and r->'zrodla' is not null and jsonb_typeof(r->'zrodla') = 'object', r->'zrodla');
 end $$;
 
 set role authenticated;

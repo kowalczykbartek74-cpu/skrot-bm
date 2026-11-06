@@ -1,5 +1,5 @@
 -- Skrót v43: „Dla Ciebie na dziś” w panelu lejka (spec „Dziś · 5 min + 2 lekcje”, etap 6). Po v35 (lejek) i v42.
--- Wklej w Supabase → SQL Editor → Run. Można uruchamiać wielokrotnie. Bez nowych tabel: liczy z nauka_zdarzenia (activity,
+-- Wklej w Supabase → SQL Editor → Run (po v38: korzysta z nauka_lejek_zrodla_dane). Można uruchamiać wielokrotnie. Bez nowych tabel: liczy z nauka_zdarzenia (activity,
 -- kind „ld”, zapisuje je strona od etapu 5) i nauka_powtorki_log (v29), w tym samym nocnym podsumowaniu co lejek.
 --
 -- Zdarzenia ze strony (bez treści odpowiedzi):
@@ -64,15 +64,17 @@ begin
     'osoby', (select count(distinct z.user_id) from pg_temp.ld_z z where z.kiedy > now() - interval '28 days'));
 end $$;
 
--- Nocne liczenie lejka (v35) z dopisanym „ld” (reszta bez zmian).
+-- Nocne liczenie lejka: wersja z v38 (lejek według źródła w „*”) z dopisanym „ld”. Reszta bez zmian.
 create or replace function public.nauka_lejek_policz() returns jsonb
 language plpgsql volatile security definer set search_path = public as $$
-declare t date := (now() at time zone 'Europe/Warsaw')::date; r text; n int := 0;
+declare t date := (now() at time zone 'Europe/Warsaw')::date; r text; n int := 0; dane jsonb;
 begin
   for r in select '*' union select x.id from public.nauka_roczniki x
            union select distinct k.rocznik_id from public.nauka_lejek_konta() k loop
-    insert into public.nauka_lejek_dzien (dzien, rocznik_id, dane, policzono_at)
-    values (t, r, public.nauka_lejek_dane(r) || jsonb_build_object('ld', public.nauka_lejek_ld(r)), now())
+    dane := public.nauka_lejek_dane(r);
+    if r = '*' then dane := dane || jsonb_build_object('zrodla', public.nauka_lejek_zrodla_dane()); end if;
+    dane := dane || jsonb_build_object('ld', public.nauka_lejek_ld(r));
+    insert into public.nauka_lejek_dzien (dzien, rocznik_id, dane, policzono_at) values (t, r, dane, now())
     on conflict (dzien, rocznik_id) do update set dane = excluded.dane, policzono_at = excluded.policzono_at;
     n := n + 1;
   end loop;
