@@ -9,8 +9,8 @@ const open = async (p, hash) => { await p.goto(BASE + "index.html" + hash); awai
 const p = await page(b, { konto: "platne", ls: { "mock-saldo": "156" } });
 await open(p, "#/more");
 const H = await p.evaluate(() => document.documentElement.scrollHeight);
-// 2100: + wiersz „Paczka i duet” (etap 10, ok. 60 px)
-ok("Więcej na telefonie: najwyżej ~2 ekrany (było ~6)", H < 2100, H);
+// 2100: + wiersz „Paczka i duet” (etap 10, ok. 60 px); 2180: + wyszukiwarka funkcji na górze (ok. 60 px)
+ok("Więcej na telefonie: najwyżej ~2 ekrany (było ~6)", H < 2180, H);
 ok("profil w jednym wierszu", (await p.locator(".more-prof").count()) === 1 && (await p.locator(".sk-profile").count()) === 0);
 const tiles = await p.locator(".more-tile").allInnerTexts();
 ok("kafelki nauki", tiles.length >= 7 && tiles.some((t) => /Stażysta Staś/.test(t)) && tiles.some((t) => /Ranking kierunku/.test(t)), tiles);
