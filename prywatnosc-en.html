@@ -32,11 +32,11 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 <p><a href="./?lang=en" class="home"><img src="icons/logo-mark.png" alt="" width="36" height="28"> Zdawalni</a></p>
 <h1>Privacy Policy</h1>
 <p class="muted">This is an English translation provided for convenience. The binding version is the Polish one: <a href="prywatnosc.html">Polityka prywatności (PL)</a>.</p>
-<p class="muted">In force from 31 October 2026</p>
+<p class="muted">In force from 6 November 2026 (previous version: 31 October 2026)</p>
 
 <div class="box">
 <h2>Who is the data controller</h2>
-<p>The controller of personal data is Bartłomiej Kowalczyk, ul. Ogrodowa 23, Wołczkowo, a natural person carrying out unregistered business activity. Contact on data matters: <a href="mailto:skrotbm@outlook.com">skrotbm@outlook.com</a>.</p>
+<p>The controller of personal data is Bartłomiej Kowalczyk, ul. Ogrodowa 23, Wołczkowo, a natural person carrying out unregistered business activity. Contact on data matters: <a href="mailto:zdawalni.support@gmail.com">zdawalni.support@gmail.com</a>.</p>
 <p>This policy applies to the zdawalni.pl (formerly skrotbm.pl) and plan.skrotbm.pl services (the “Service”).</p>
 
 <h2>What data we collect, why and on what legal basis</h2>
@@ -55,6 +55,9 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 <tr><td>Handling messages, complaints and withdrawals</td><td>e-mail address, content of correspondence</td><td>performance of a contract and legitimate interest (points b and f)</td></tr>
 <tr><td>Security and technical operation (logs, preventing abuse and sharing of access with third parties): device limit, one active session, detecting accounts used by several people</td><td>random device identifier stored in the browser, device and browser name (e.g. “iPhone · Safari”), IP address, dates and times of use, history of adding and removing devices and of session takeovers, any warning or block</td><td>legitimate interest (point f) and performance of a contract (point b)</td></tr>
 <tr><td>Account security and running the Service: login and visit history visible to the administrator (detecting unauthorised access, helping with login problems)</td><td>account e-mail address, date and time of login and login method (code, password, link), dates, times and length of visits of the logged-in account, device and browser name, IP address</td><td>legitimate interest (point f)</td></tr>
+<tr><td>Waiting list for a programme that is not available yet (“Other programme” form)</td><td>e-mail address, programme, year and mode of study, link source, a hash of the IP address (not the address itself, for one day, to prevent spam)</td><td>consent (point a), which you withdraw with the link in the e-mail</td></tr>
+<tr><td>E-mail reminders (only if you turn them on in Settings)</td><td>e-mail address, chosen time and types of reminders, dates of your upcoming exams, number of overdue reviews and rematches, study days, history of sent reminders (without content)</td><td>consent (point a), which you withdraw in Settings or with the link in every e-mail</td></tr>
+<tr><td>Checking a solution from a photo</td><td>photo of the page with your solution (downscaled in the browser, not stored by us), the task; in the database only the fact that a check took place (for the daily limit)</td><td>performance of a contract (point b)</td></tr>
 <tr><td>Defending against claims and proof of consent to the immediate delivery of digital content</td><td>data necessary to demonstrate the facts</td><td>legitimate interest (point f)</td></tr>
 </tbody>
 </table>
@@ -69,11 +72,12 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 <p>We use providers that are necessary for the Service to work:</p>
 <ul>
 <li><b>Supabase</b> – database and login (accounts, access, study progress, reports, deadlines),</li>
-<li><b>Resend</b> – sending e-mails with login codes,</li>
+<li><b>Resend</b> – sending e-mails with login codes, reminders and waiting-list e-mails,</li>
 <li><b>Stripe Payments Europe, Ltd.</b> – payment processing; to the extent required by law (e.g. for fraud prevention), Stripe acts as a separate controller,</li>
-<li><b>Anthropic PBC</b> (USA) – processing the content of files uploaded in “My materials” (summary, flashcards, quiz); the text of the file is sent only for the time needed to prepare the summary and is not stored by us; the transfer is based on standard contractual clauses. Answers you type in practice tests (without your name or e-mail address) are sent to Anthropic PBC, the AI model provider, solely to grade them,</li>
+<li><b>Anthropic PBC</b> (USA) – processing the content of files uploaded in “My materials” (summary, flashcards, quiz); the text of the file is sent only for the time needed to prepare the summary and is not stored by us; the transfer is based on standard contractual clauses. Answers you type in practice tests (without your name or e-mail address) are sent to Anthropic PBC, the AI model provider, solely to grade them. A photo of your solution is also sent for AI assessment when you click “Check my solution from a photo” (together with the task and the answer key; we do not store the photo or the result), as well as public university documents (e.g. the syllabus and timetable) that the administrator sends to be read; such a file is deleted after 30 days at the latest,</li>
 <li><b>GitHub Pages</b> – hosting of the Service's pages,</li>
-<li><b>Microsoft (Outlook)</b> – the skrotbm@outlook.com mailbox, which receives correspondence,</li>
+<li><b>Google (Gmail)</b> – the zdawalni.support@gmail.com mailbox, which receives correspondence,</li>
+<li><b>Microsoft (Outlook)</b> – the former skrotbm@outlook.com mailbox, which may still receive some correspondence,</li>
 <li><b>Google Fonts</b> (fonts), <b>jsDelivr</b> (login library) and <b>cdnjs (Cloudflare)</b> (libraries for reading files and displaying formulas: JSZip, pdf.js, MathJax) – servers from which parts of the page are loaded; they see your IP address and browser data when the page loads,</li>
 <li><b>domain registrar</b> – maintaining the zdawalni.pl and skrotbm.pl domains; it has no access to user data,</li>
 <li>public authorities and courts – only where required by law.</li>
@@ -85,8 +89,11 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 
 <h2>How long we keep data</h2>
 <ul>
-<li>Account and progress data: until the account is deleted at your request. We may delete unused accounts 12 months after access ends.</li>
-<li>Payment data: for the period required by tax law (usually 5 years from the end of the tax year).</li>
+<li>Account and progress data: until the account is deleted. You can delete your account yourself in Settings (Account → Delete account) or by writing to us. Together with the account we delete your progress, My materials, points, coins, referral code and payout details; error reports about materials remain without information about who sent them. We may delete unused accounts 12 months after access ends.</li>
+<li>Payment data: the transaction history is kept by the payment operator (Stripe) for the period required by tax law (usually 5 years from the end of the tax year). After the account is deleted we do not keep it in our database.</li>
+<li>Waiting list: until your programme launches or until you remove the sign-up with the link in the e-mail; unconfirmed sign-ups are deleted after 30 days.</li>
+<li>E-mail reminders: settings until you turn reminders off or delete the account; history of sent reminders 180 days.</li>
+<li>Photo check: the record of a check (for the daily limit) 90 days; we do not store the photo.</li>
 <li>Correspondence and complaints: until the matter is resolved and until claims become time-barred.</li>
 <li>Error reports: until they are dealt with.</li>
 <li>Referral programme: the code and payout details until the code or account is deleted; records of referrals and payouts for the period required by tax law and until claims become time-barred.</li>
@@ -97,11 +104,11 @@ th { color: var(--muted); font-weight: 700; white-space: nowrap; }
 </ul>
 
 <h2>Your rights</h2>
-<p>You have the right to access your data and receive a copy of it, to rectification, erasure, restriction of processing, data portability, and to object to processing based on legitimate interest (on grounds relating to your particular situation). Write to <a href="mailto:skrotbm@outlook.com">skrotbm@outlook.com</a>; we will reply within one month. We may ask you to confirm your identity, e.g. by sending a message from your account address.</p>
+<p>You have the right to access your data and receive a copy of it, to rectification, erasure, restriction of processing, data portability, and to object to processing based on legitimate interest (on grounds relating to your particular situation). Write to <a href="mailto:zdawalni.support@gmail.com">zdawalni.support@gmail.com</a>; we will reply within one month. We may ask you to confirm your identity, e.g. by sending a message from your account address.</p>
 <p>You also have the right to lodge a complaint with the President of the Personal Data Protection Office (Prezes UODO) (ul. Stawki 2, 00-193 Warszawa, <a href="https://uodo.gov.pl" rel="noopener">uodo.gov.pl</a>).</p>
 
 <h2>Cookies and browser storage</h2>
-<p>We do not use advertising or analytics cookies or tracking tools, which is why we do not display a consent banner. The Service stores in your browser only what it needs to work: the login session, a random device identifier (for the device limit) and your settings (e.g. your selected group). You can delete them in your browser settings, but you will then need to log in again. The Stripe payment page uses its own cookies in accordance with Stripe's policy.</p>
+<p>We do not use advertising or analytics cookies or tracking tools, which is why we do not display a consent banner. The Service stores in your browser only what it needs to work: the login session, a random device identifier (for the device limit) and your settings (e.g. your selected group). We count visit statistics without cookies or external analytics tools: only how many times a day the site was opened (in total, with the chosen programme and the link source, e.g. Instagram), without data that could identify a person. So that the same browser is not counted several times a day, only the date of the last visit is kept in its storage. Account-based summaries (e.g. how many people came back after a week) are visible only to the administrator, always in groups of at least 5 people. You can delete them in your browser settings, but you will then need to log in again. The Stripe payment page uses its own cookies in accordance with Stripe's policy.</p>
 
 <h2>Security and minors</h2>
 <p>We use an encrypted connection (HTTPS), login with one-time codes or a password (we store passwords only as encrypted hashes; nobody can see them) and restricted access to data. The Service is intended for students; a minor should buy access with the consent of a parent or guardian.</p>

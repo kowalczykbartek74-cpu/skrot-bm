@@ -1122,7 +1122,7 @@
   // (utrata prawa odstąpienia, art. 38 ust. 1 pkt 13 ustawy o prawach konsumenta, regulamin § 5).
   // Zgodę zapisuje baza (nauka_zgoda, supabase/skrot-v10-zgody.sql) z datą, kontem i e-mailem.
   // Treść zgody to dowód: zmieniasz ją tylko razem z regulaminem i z nową CONSENT_V.
-  const CONSENT_V = "2026-10-31";
+  const CONSENT_V = "2026-11-06";
   const CONSENT_TERMS = "Znam i akceptuję Regulamin oraz Politykę prywatności.";
   const CONSENT_NOW = "Chcę, żeby dostęp do Treści zaczął działać od razu po zapłacie, przed upływem 14 dni na odstąpienie od umowy. Wiem, że przez to tracę prawo odstąpienia od umowy.";
   const recordConsent = async (plan) => {
