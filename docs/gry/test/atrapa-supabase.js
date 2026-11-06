@@ -401,6 +401,9 @@
       pkSet(st); return pkOut(); },
     nauka_duet_zakoncz: () => { pkLog("zakoncz"); const st = pkGet(); if (st) { st.duet = null; st.paczka.czlonkowie = st.paczka.czlonkowie.map((m) => ({ ...m, w_duecie: false })); pkSet(st); } return pkOut(); },
   };
+  const impDb = () => JSON.parse(ls("mock-importy", "{}"));
+  const impZapisz = (db) => { try { localStorage.setItem("mock-importy", JSON.stringify(db)); } catch {} };
+  const impLicz = (poz) => { const l = { razem: 0, czeka: 0, tak: 0, popraw: 0, nie: 0 }; (poz || []).forEach((p) => { l.razem++; if (p.decyzja) l[p.decyzja]++; else l.czeka++; }); return l; };
   const BASE = {
     ...PKFN,
     // v36 (etap 7a): przypomnienia mailem; ustawienia w localStorage mock-przyp (JSON jak z bazy), stan w mock-przyp-stan,
@@ -414,6 +417,18 @@
     nauka_przypomnienie_otwarte: (a) => { (window.__przyp = window.__przyp || []).push({ fn: "otwarte", p: a.p_id }); return { ok: true, pierwsze: true }; },
     // v38 (etap 11): karnety (lista w localStorage mock-karnety; jak w bazie: płatny dostęp mock-platni = "a@x.pl,b@x.pl" → ma_dostep)
     // i źródło konta (nauka_zrodlo_ustaw; wywołania w window.__rpc). mock-v38 = "0" → funkcji nie ma.
+    // Etap 14: importy (SQL v40). Wiersze w localStorage „mock-importy” { id: wiersz }; pozycje dokłada udawana funkcja Edge w teście.
+    nauka_importy_lista: () => { if (KONTO !== "starosta") return { ok: false, code: "not_admin" };
+      return { ok: true, importy: Object.values(impDb()).sort((x, y) => (y.utworzony_at > x.utworzony_at ? 1 : -1)).map((r) => { const { pozycje, uwagi_ai, gotowe, ...l } = r; return { ...l, licznik: impLicz(pozycje) }; }) }; },
+    nauka_import_pobierz: (a) => { if (KONTO !== "starosta") return { ok: false, code: "not_admin" }; const r = impDb()[a.p_id]; return r ? { ok: true, import: { ...r, licznik: impLicz(r.pozycje) } } : { ok: false, code: "not_found" }; },
+    nauka_import_decyzja: (a) => { const db = impDb(), r = db[a.p_id]; if (!r || r.stan !== "do_sprawdzenia") return { ok: false, code: "bad_state" };
+      r.pozycje = r.pozycje.map((p) => { if (p.n !== a.p_n) return p; const { poprawione, uwaga, ...q } = p; return { ...q, decyzja: a.p_decyzja, ...(a.p_decyzja === "popraw" ? { poprawione: a.p_dane } : {}), ...(a.p_uwaga ? { uwaga: a.p_uwaga } : {}) }; });
+      impZapisz(db); return { ok: true, licznik: impLicz(r.pozycje) }; },
+    nauka_import_reszta_tak: (a) => { const db = impDb(), r = db[a.p_id]; if (!r || r.stan !== "do_sprawdzenia") return { ok: false, code: "bad_state" };
+      const k = r.pozycje.filter((p) => !p.decyzja).length; r.pozycje = r.pozycje.map((p) => (p.decyzja ? p : { ...p, decyzja: "tak" })); impZapisz(db); return { ok: true, zmienione: k, licznik: impLicz(r.pozycje) }; },
+    nauka_import_zakoncz: (a) => { const db = impDb(), r = db[a.p_id]; if (!r) return { ok: false, code: "not_found" }; const l = impLicz(r.pozycje);
+      if (a.p_stan === "zatwierdzony") { if (r.stan !== "do_sprawdzenia") return { ok: false, code: "bad_state" }; if (l.czeka) return { ok: false, code: "undecided", czeka: l.czeka }; if (!a.p_gotowe) return { ok: false, code: "bad_result" }; }
+      r.stan = a.p_stan; r.gotowe = a.p_stan === "zatwierdzony" ? a.p_gotowe : null; r.zakonczony_at = new Date().toISOString(); impZapisz(db); return { ok: true, stan: r.stan }; },
     nauka_admin_karnety: () => { if (KONTO !== "starosta") return { ok: false, code: "not_admin" }; const l = JSON.parse(ls("mock-karnety", "[]")); const d = dzis();
       return { ok: true, dzis: d, aktywne: l.filter((x) => !x.cofniety_at && x.do_kiedy >= d).length, karnety: l }; },
     nauka_admin_karnet_wydaj: (a) => { if (KONTO !== "starosta") return { ok: false, code: "not_admin" };

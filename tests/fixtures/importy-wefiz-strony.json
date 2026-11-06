@@ -1,0 +1,510 @@
+{
+ "plik": "sylabus_business_management_studia_stacjonarne_I_stopnia_2026_2027_ang.pdf",
+ "strony": 227,
+ "przedmioty": [
+  {
+   "code": "EFZ214AIJ3432_3S",
+   "strona": 1,
+   "koniec": 3,
+   "fragment": "Course title: Business economics (ekonomia biznesu) · Course code: EFZ214AIJ3432_3S"
+  },
+  {
+   "code": "EFZ214AIJ3434_30S",
+   "strona": 4,
+   "koniec": 5,
+   "fragment": "Course title: Business Inteligence · Course code: EFZ214AIJ3434_30S"
+  },
+  {
+   "code": "EFZ214AIJ3433_16S",
+   "strona": 6,
+   "koniec": 8,
+   "fragment": "Course title: Business plans and strategic analysis (biznesplan i analiza strategiczna) · Course code: EFZ214AIJ3433_16S"
+  },
+  {
+   "code": "EFZ214AIJ3433_63S",
+   "strona": 9,
+   "koniec": 11,
+   "fragment": "Course title: Business promotion with information technology application (wykorzystanie informatycznych · Course code: EFZ214AIJ3433_63S"
+  },
+  {
+   "code": "EFZ214AIJ3433_22S",
+   "strona": 12,
+   "koniec": 14,
+   "fragment": "Course title: Bussiness process modelling (modelowanie procesów biznesowych) · Course code: EFZ214AIJ3433_22S"
+  },
+  {
+   "code": "EFZ214AIJ3433_46S",
+   "strona": 15,
+   "koniec": 16,
+   "fragment": "Course title: Computer simulation for process optimization (symulacja komputerowa w optymalizacji · Course code: EFZ214AIJ3433_46S"
+  },
+  {
+   "code": "EFZ214AIJ3433_21S",
+   "strona": 17,
+   "koniec": 19,
+   "fragment": "Course title: Consumer behaviour (zachowania konsumentów) · Course code: EFZ214AIJ3433_21S"
+  },
+  {
+   "code": "EFZ214AIJ3458_15S",
+   "strona": 20,
+   "koniec": 21,
+   "fragment": "Course title: Corrective Classes: Gymnastics (gimnastyka korekcyjna) · Course code: EFZ214AIJ3458_15S"
+  },
+  {
+   "code": "EFZ214AIJ3458_10S",
+   "strona": 22,
+   "koniec": 23,
+   "fragment": "Course title: Corrective Classes: Swimming (pływanie korekcyjne) · Course code: EFZ214AIJ3458_10S"
+  },
+  {
+   "code": "EFZ214AIJ3433_18S",
+   "strona": 24,
+   "koniec": 26,
+   "fragment": "Course title: Creativity and Innovations (kreatywność i innowacje) · Course code: EFZ214AIJ3433_18S"
+  },
+  {
+   "code": "EFZ214AIJ3458_6S",
+   "strona": 27,
+   "koniec": 28,
+   "fragment": "Course title: Dance classes (zajęcia taneczne) · Course code: EFZ214AIJ3458_6S"
+  },
+  {
+   "code": "EFZ214AIJ3433_29S",
+   "strona": 29,
+   "koniec": 31,
+   "fragment": "Course title: Decision making methods in management (metody podejmowania decyzji w zarządzaniu) · Course code: EFZ214AIJ3433_29S"
+  },
+  {
+   "code": "EFZ214AIJ3432_20S",
+   "strona": 32,
+   "koniec": 34,
+   "fragment": "Course title: Descriptive statistics (statystyka opisowa) · Course code: EFZ214AIJ3432_20S"
+  },
+  {
+   "code": "EFZ214AIJ3433_45S",
+   "strona": 35,
+   "koniec": 36,
+   "fragment": "Course title: Digital documents circulation (elektoniczny obieg dokumentów) · Course code: EFZ214AIJ3433_45S"
+  },
+  {
+   "code": "EFZ214AIJ3433_48S",
+   "strona": 37,
+   "koniec": 39,
+   "fragment": "Course title: Digital media management (zarządzanie mediami cyfrowymi) · Course code: EFZ214AIJ3433_48S"
+  },
+  {
+   "code": "EFZ214AIJ3433_38S",
+   "strona": 40,
+   "koniec": 42,
+   "fragment": "Course title: Diploma Seminar (seminarium dyplomowe) · Course code: EFZ214AIJ3433_38S"
+  },
+  {
+   "code": "EFZ214AIJ3432_23S",
+   "strona": 43,
+   "koniec": 45,
+   "fragment": "Course title: Economic analysis (analiza ekonomiczna) · Course code: EFZ214AIJ3432_23S"
+  },
+  {
+   "code": "EFZ214AIJ3605_3S",
+   "strona": 46,
+   "koniec": 47,
+   "fragment": "Course title: E-learning Training (szkolenie e-learningowe) · Course code: EFZ214AIJ3605_3S"
+  },
+  {
+   "code": "EFZ214AIJ3433_43S",
+   "strona": 48,
+   "koniec": 50,
+   "fragment": "Course title: e-marketing (e-marketing) · Course code: EFZ214AIJ3433_43S"
+  },
+  {
+   "code": "EFZ214AIJ3433_32S",
+   "strona": 51,
+   "koniec": 53,
+   "fragment": "Course title: E-tourism management (zarządzanie e-turystyką) · Course code: EFZ214AIJ3433_32S"
+  },
+  {
+   "code": "EFZ214AIJ3433_59S",
+   "strona": 54,
+   "koniec": 56,
+   "fragment": "Course title: EU project management (zarządzanie projektami UE) · Course code: EFZ214AIJ3433_59S"
+  },
+  {
+   "code": "EFZ214AIJ3442_4S",
+   "strona": 57,
+   "koniec": 59,
+   "fragment": "Course title: Evolution and prospects for the development of the English language (ewolucja i perspektywy · Course code: EFZ214AIJ3442_4S"
+  },
+  {
+   "code": "EFZ214AIJ3362_36S",
+   "strona": 60,
+   "koniec": 62,
+   "fragment": "Course title: Financial risk in business strategies (ryzyko finansowe w strategiach biznesowych) · Course code: EFZ214AIJ3362_36S"
+  },
+  {
+   "code": "EFZ214AIJ3458_2S",
+   "strona": 63,
+   "koniec": 65,
+   "fragment": "Course title: Fitness (fitness) · Course code: EFZ214AIJ3458_2S"
+  },
+  {
+   "code": "EFZ214AIJ3432_55S",
+   "strona": 66,
+   "koniec": 67,
+   "fragment": "Course title: Forecasting (prognozowanie) · Course code: EFZ214AIJ3432_55S"
+  },
+  {
+   "code": "EFZ214AIJ3458_7S",
+   "strona": 68,
+   "koniec": 70,
+   "fragment": "Course title: Functional Training (trening funkcjonalny) · Course code: EFZ214AIJ3458_7S"
+  },
+  {
+   "code": "EFZ214AIJ3433_11S",
+   "strona": 71,
+   "koniec": 73,
+   "fragment": "Course title: Functioning of enterprises - principles and theoretical background (funkcjonowanie · Course code: EFZ214AIJ3433_11S"
+  },
+  {
+   "code": "EFZ214AIJ3432_19S",
+   "strona": 74,
+   "koniec": 76,
+   "fragment": "Course title: Fundamentals of accounting (podstawy rachunkowości) · Course code: EFZ214AIJ3432_19S"
+  },
+  {
+   "code": "EFZ214AIJ3432_7S",
+   "strona": 77,
+   "koniec": 79,
+   "fragment": "Course title: Fundamentals of finances (podstawy finansów) · Course code: EFZ214AIJ3432_7S"
+  },
+  {
+   "code": "EFZ214AIJ3362_5S",
+   "strona": 80,
+   "koniec": 82,
+   "fragment": "Course title: Fundamentals of management (podstawy zarządzania) · Course code: EFZ214AIJ3362_5S"
+  },
+  {
+   "code": "EFZ214AIJ3458_14S",
+   "strona": 83,
+   "koniec": 85,
+   "fragment": "Course title: Futsal (futsal) · Course code: EFZ214AIJ3458_14S"
+  },
+  {
+   "code": "EFZ214AIJ3433_1S",
+   "strona": 86,
+   "koniec": 88,
+   "fragment": "Course title: Gamification in business (gamifikacja w biznesie) · Course code: EFZ214AIJ3433_1S"
+  },
+  {
+   "code": "EFZ214AIJ3434_12S",
+   "strona": 89,
+   "koniec": 91,
+   "fragment": "Course title: Global dimensions of business (globalne wymiary biznesu) · Course code: EFZ214AIJ3434_12S"
+  },
+  {
+   "code": "EFZ214AIJ3433_8S",
+   "strona": 92,
+   "koniec": 94,
+   "fragment": "Course title: Human Resources Management (zarządzanie zasobami ludzkimi) · Course code: EFZ214AIJ3433_8S"
+  },
+  {
+   "code": "EFZ214AIJ3433_52S",
+   "strona": 95,
+   "koniec": 97,
+   "fragment": "Course title: Informatic tools of data mapping and analysis (informatyczne narzędzia mapowania i analizy · Course code: EFZ214AIJ3433_52S"
+  },
+  {
+   "code": "EFZ214AIJ3433_70S",
+   "strona": 98,
+   "koniec": 99,
+   "fragment": "Course title: Innovation management methods and tools (metody i narzędzia zarządzania innowacjami) · Course code: EFZ214AIJ3433_70S"
+  },
+  {
+   "code": "EFZ214AIJ3433_65S",
+   "strona": 100,
+   "koniec": 101,
+   "fragment": "Course title: Innovative business models (innowacyjne modele biznesowe) · Course code: EFZ214AIJ3433_65S"
+  },
+  {
+   "code": "EFZ214AIJ3433_1S",
+   "strona": 102,
+   "koniec": 103,
+   "fragment": "Course title: Intelectual property protection (ochrona własności intelektualnej) · Course code: EFZ214AIJ3433_1S"
+  },
+  {
+   "code": "EFZ214AIJ3362_56S",
+   "strona": 104,
+   "koniec": 106,
+   "fragment": "Course title: International finance (finanse międzynarodowe) · Course code: EFZ214AIJ3362_56S"
+  },
+  {
+   "code": "EFZ214AIJ3432_14S",
+   "strona": 107,
+   "koniec": 109,
+   "fragment": "Course title: International trade (handel międzynarodowy) · Course code: EFZ214AIJ3432_14S"
+  },
+  {
+   "code": "EFZ214AIJ3362_37S",
+   "strona": 110,
+   "koniec": 112,
+   "fragment": "Course title: Introduction to Business Valuation (wprowadzenie do wyceny przedsiębiorstw) · Course code: EFZ214AIJ3362_37S"
+  },
+  {
+   "code": "EFZ214AIJ3433_4S",
+   "strona": 113,
+   "koniec": 115,
+   "fragment": "Course title: IT tools in management  (narzędzia IT w zarządzaniu) · Course code: EFZ214AIJ3433_4S"
+  },
+  {
+   "code": "EFZ214AIJ3458_4S",
+   "strona": 116,
+   "koniec": 118,
+   "fragment": "Course title: Jogging (jogging) · Course code: EFZ214AIJ3458_4S"
+  },
+  {
+   "code": "EFZ214AIJ3442_2S",
+   "strona": 119,
+   "koniec": 121,
+   "fragment": "Course title: Language acquisition and foreign language learning strategies (przyswajanie języka i · Course code: EFZ214AIJ3442_2S"
+  },
+  {
+   "code": "EFZ214AIJ3435_6S",
+   "strona": 122,
+   "koniec": 123,
+   "fragment": "Course title: Law (prawo) · Course code: EFZ214AIJ3435_6S"
+  },
+  {
+   "code": "EFZ214AIJ3433_34S",
+   "strona": 124,
+   "koniec": 126,
+   "fragment": "Course title: Leadership (przywództwo) · Course code: EFZ214AIJ3433_34S"
+  },
+  {
+   "code": "EFZ214AIJ3433_13S",
+   "strona": 127,
+   "koniec": 129,
+   "fragment": "Course title: Lean management (sprawne zarządzanie) · Course code: EFZ214AIJ3433_13S"
+  },
+  {
+   "code": "EFZ214AIJ3381_41S",
+   "strona": 130,
+   "koniec": 131,
+   "fragment": "Course title: Library Training (szkolenie biblioteczne) · Course code: EFZ214AIJ3381_41S"
+  },
+  {
+   "code": "EFZ214AIJ3433_9S",
+   "strona": 132,
+   "koniec": 134,
+   "fragment": "Course title: Logistics (logistyka) · Course code: EFZ214AIJ3433_9S"
+  },
+  {
+   "code": "EFZ214AIJ3433_47S",
+   "strona": 135,
+   "koniec": 136,
+   "fragment": "Course title: Machine learning in business applications (uczenie maszynowe w aplikacjach biznesowych) · Course code: EFZ214AIJ3433_47S"
+  },
+  {
+   "code": "EFZ214AIJ3432_1S",
+   "strona": 137,
+   "koniec": 139,
+   "fragment": "Course title: Macroeconomics (makroekonomia) · Course code: EFZ214AIJ3432_1S"
+  },
+  {
+   "code": "EFZ214AIJ3433_64S",
+   "strona": 140,
+   "koniec": 142,
+   "fragment": "Course title: Management in digital system (zarządzanie w cyfrowych systemach) · Course code: EFZ214AIJ3433_64S"
+  },
+  {
+   "code": "EFZ214AIJ3362_31S",
+   "strona": 143,
+   "koniec": 145,
+   "fragment": "Course title: Managerial games (gry menedżerskie) · Course code: EFZ214AIJ3362_31S"
+  },
+  {
+   "code": "EFZ214AIJ3433_62S",
+   "strona": 146,
+   "koniec": 148,
+   "fragment": "Course title: Marketing and brands success stories (marketing i marki - historie sukcesu) · Course code: EFZ214AIJ3433_62S"
+  },
+  {
+   "code": "EFZ214AIJ3433_57S",
+   "strona": 149,
+   "koniec": 151,
+   "fragment": "Course title: Marketing communication (komunikacja marketingowa) · Course code: EFZ214AIJ3433_57S"
+  },
+  {
+   "code": "EFZ214AIJ3433_10S",
+   "strona": 152,
+   "koniec": 154,
+   "fragment": "Course title: Marketing (marketing) · Course code: EFZ214AIJ3433_10S"
+  },
+  {
+   "code": "EFZ214AIJ3433_58S",
+   "strona": 155,
+   "koniec": 157,
+   "fragment": "Course title: Marketing research (badania marketingowe) · Course code: EFZ214AIJ3433_58S"
+  },
+  {
+   "code": "EFZ214AIJ3432_2S",
+   "strona": 158,
+   "koniec": 160,
+   "fragment": "Course title: Mathematical analysis (analiza matematyczna) · Course code: EFZ214AIJ3432_2S"
+  },
+  {
+   "code": "EFZ214AIJ3458_9S",
+   "strona": 161,
+   "koniec": 162,
+   "fragment": "Course title: Modern Dance (taniec nowoczesny) · Course code: EFZ214AIJ3458_9S"
+  },
+  {
+   "code": "EFZ214AIJ3458_3S",
+   "strona": 163,
+   "koniec": 164,
+   "fragment": "Course title: Nordic Walking (nordic walking) · Course code: EFZ214AIJ3458_3S"
+  },
+  {
+   "code": "EFZ214AIJ3434_2S",
+   "strona": 165,
+   "koniec": 166,
+   "fragment": "Course title: Occupational safety and health training (szkolenie BHP) · Course code: EFZ214AIJ3434_2S"
+  },
+  {
+   "code": "EFZ214AIJ3362_35S",
+   "strona": 167,
+   "koniec": 169,
+   "fragment": "Course title: Organizational behaviour (zachowania organizacyjne) · Course code: EFZ214AIJ3362_35S"
+  },
+  {
+   "code": "EFZ214AIJ3433_60S",
+   "strona": 170,
+   "koniec": 171,
+   "fragment": "Course title: Preparation of application for co-financing (przygotowanie wniosku o dofinansowanie) · Course code: EFZ214AIJ3433_60S"
+  },
+  {
+   "code": "EFZ214AIJ3362_68S",
+   "strona": 172,
+   "koniec": 173,
+   "fragment": "Course title: Product and service design (projektowanie produktów i usług) · Course code: EFZ214AIJ3362_68S"
+  },
+  {
+   "code": "EFZ214AIJ3362_67S",
+   "strona": 174,
+   "koniec": 175,
+   "fragment": "Course title: Research methods in business (metody badawcze w biznesie) · Course code: EFZ214AIJ3362_67S"
+  },
+  {
+   "code": "EFZ214AIJ3433_42S",
+   "strona": 176,
+   "koniec": 178,
+   "fragment": "Course title: Risk management in ICT business (zarządzanie ryzykiem w ICT) · Course code: EFZ214AIJ3433_42S"
+  },
+  {
+   "code": "EFZ214AIJ3434_17S",
+   "strona": 179,
+   "koniec": 181,
+   "fragment": "Course title: Spatial conditions for business development (przestrzenne uwarunkowania rozwoju biznesu) · Course code: EFZ214AIJ3434_17S"
+  },
+  {
+   "code": "EFZ214AIJ3433_44S",
+   "strona": 182,
+   "koniec": 184,
+   "fragment": "Course title: Stress and conflict management (zarządzanie stresem i konfliktem) · Course code: EFZ214AIJ3433_44S"
+  },
+  {
+   "code": "EFZ214AIJ3443_3S",
+   "strona": 185,
+   "koniec": 186,
+   "fragment": "Course title: Supercinema: Film Philosophy in the Digital Age (Supercinema: filozofia kina w erze cyfrowej) · Course code: EFZ214AIJ3443_3S"
+  },
+  {
+   "code": "EFZ214AIJ3433_54S",
+   "strona": 187,
+   "koniec": 189,
+   "fragment": "Course title: Supply chain management (zarządzanie łańcuchem dostaw) · Course code: EFZ214AIJ3433_54S"
+  },
+  {
+   "code": "EFZ214AIJ3433_50S",
+   "strona": 190,
+   "koniec": 192,
+   "fragment": "Course title: Sustainable development in transport (zrównoważony rozwój w transporcie) · Course code: EFZ214AIJ3433_50S"
+  },
+  {
+   "code": "EFZ214AIJ3433_51S",
+   "strona": 193,
+   "koniec": 195,
+   "fragment": "Course title: Sustainable logistics (logistyka zrównoważona) · Course code: EFZ214AIJ3433_51S"
+  },
+  {
+   "code": "EFZ214AIJ3458_17S",
+   "strona": 196,
+   "koniec": 198,
+   "fragment": "Course title: Table Tennis with Team Games Elements (tenis stołowy z elementami gier zespołowych) · Course code: EFZ214AIJ3458_17S"
+  },
+  {
+   "code": "EFZ214AIJ3458_13S",
+   "strona": 199,
+   "koniec": 201,
+   "fragment": "Course title: Team Games (gry zespołowe) · Course code: EFZ214AIJ3458_13S"
+  },
+  {
+   "code": "EFZ214AIJ3458_12S",
+   "strona": 202,
+   "koniec": 204,
+   "fragment": "Course title: Team Games (gry zespołowe) · Course code: EFZ214AIJ3458_12S"
+  },
+  {
+   "code": "EFZ214AIJ3432_69S",
+   "strona": 205,
+   "koniec": 207,
+   "fragment": "Course title: The fundamentals of business success (podstawy sukcesu w biznesie) · Course code: EFZ214AIJ3432_69S"
+  },
+  {
+   "code": "EFZ214AIJ3458_5S",
+   "strona": 208,
+   "koniec": 210,
+   "fragment": "Course title: Theoretical Classes (zajęcia teoretyczne) · Course code: EFZ214AIJ3458_5S"
+  },
+  {
+   "code": "EFZ214AIJ3433_33S",
+   "strona": 211,
+   "koniec": 212,
+   "fragment": "Course title: Tourism destination management (zarządzanie regionem turystycznym) · Course code: EFZ214AIJ3433_33S"
+  },
+  {
+   "code": "EFZ214AIJ3730_16S",
+   "strona": 213,
+   "koniec": 214,
+   "fragment": "Course title: Training on the Principles of Using Artificial Intelligence (szkolenie z zasad korzystania ze · Course code: EFZ214AIJ3730_16S"
+  },
+  {
+   "code": "EFZ214AIJ3433_61S",
+   "strona": 215,
+   "koniec": 217,
+   "fragment": "Course title: Transport company management (zarządzanie przedsiębiorstwem transportowym) · Course code: EFZ214AIJ3433_61S"
+  },
+  {
+   "code": "EFZ214AIJ3433_15S",
+   "strona": 218,
+   "koniec": 220,
+   "fragment": "Course title: Transport management (zarządzanie transportem) · Course code: EFZ214AIJ3433_15S"
+  },
+  {
+   "code": "EFZ214AIJ3433_49S",
+   "strona": 221,
+   "koniec": 222,
+   "fragment": "Course title: Web technologies for business (technologie webowe w biznesie) · Course code: EFZ214AIJ3433_49S"
+  },
+  {
+   "code": "EFZ214AIJ3362_27S",
+   "strona": 223,
+   "koniec": 224,
+   "fragment": "Course title: Wide lecture (wykład ogólnouczelniany) · Course code: EFZ214AIJ3362_27S"
+  },
+  {
+   "code": "EFZ214AIJ3458_11S",
+   "strona": 225,
+   "koniec": 227,
+   "fragment": "Course title: Yoga (joga) · Course code: EFZ214AIJ3458_11S"
+  }
+ ]
+}

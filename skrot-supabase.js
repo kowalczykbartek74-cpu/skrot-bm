@@ -526,6 +526,38 @@
     wydaj: (args) => rpRaw("nauka_admin_karnet_wydaj", args),
     cofnij: (email) => rpRaw("nauka_admin_karnet_cofnij", { p_email: email }),
   };
+  // Etap 14: kolejka importów „PDF → szkic AI → zatwierdzenie → import” (SQL v40, funkcja Edge importy, importy.js).
+  // Tylko administrator: baza sprawdza nauka_admin w każdej funkcji, funkcja Edge dodatkowo nauka_ja. Błąd funkcji Edge
+  // zwraca { ok: false, code, message } (bez wyjątku), jak rpRaw.
+  const impEdge = async (body, ms) => {
+    await ready;
+    if (!sb || skrot.state !== "in") return { ok: false, code: "not_signed_in", message: "Zaloguj się." };
+    const { data } = await sb.auth.getSession();
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+    let res;
+    try {
+      res = await fetch(CONFIG.url + "/functions/v1/importy", {
+        method: "POST", signal: ctl.signal,
+        headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + data?.session?.access_token, "x-skrot-device": DEVICE },
+        body: JSON.stringify(body),
+      });
+    } catch (e) { return { ok: false, code: e?.name === "AbortError" ? "timeout" : netErr(e) ? "offline" : "no_function", message: "Funkcja importów nie odpowiedziała." }; }
+    finally { clearTimeout(t); }
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.ok) return { ok: false, code: out.code || (res.status === 404 ? "not_deployed" : "error"), message: out.message || "" };
+    return out;
+  };
+  skrot.importy = {
+    lista: () => rpRaw("nauka_importy_lista"),
+    pobierz: (id) => rpRaw("nauka_import_pobierz", { p_id: id }),
+    decyzja: (id, n, decyzja, dane, uwaga) => rpRaw("nauka_import_decyzja", { p_id: id, p_n: n, p_decyzja: decyzja, p_dane: dane ?? null, p_uwaga: uwaga ?? null }),
+    resztaTak: (id) => rpRaw("nauka_import_reszta_tak", { p_id: id }),
+    zakoncz: (id, stan, gotowe, uwagi) => rpRaw("nauka_import_zakoncz", { p_id: id, p_stan: stan, p_gotowe: gotowe ?? null, p_uwagi: uwagi ?? null }),
+    wgraj: (body) => impEdge({ akcja: "wgraj", ...body }, 120000),
+    czytaj: (id, czesc) => impEdge({ akcja: "czytaj", id, czesc }, 170000),
+    pdf: (id) => impEdge({ akcja: "pdf", id }, 30000),
+    sprzataj: () => impEdge({ akcja: "sprzataj" }, 60000),
+  };
   skrot.podgladStart = (tryb, rocznik) => {
     if (!skrot.realAdmin || !ADM) return false;
     const p = ADM.podgladNowy(tryb, rocznik || null, Date.now());
