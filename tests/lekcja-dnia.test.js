@@ -326,3 +326,21 @@ describe("„Dlaczego to?”", () => {
     assert.ok(p.map(LD.powodTekst).every((s) => s && s.length > 3));
   });
 });
+
+describe("pamięć karty (FSRS)", () => {
+  test("retrievability z dni od powtórki i stabilności", () => {
+    assert.equal(LD.pamiec([3, 120, 10, 5, 3, 0, 2, 100], 100), 1);
+    const r = LD.pamiec([3, 120, 10, 5, 3, 0, 2, 100], 110);
+    assert.ok(r > 0.85 && r < 0.95, String(r));
+    assert.ok(LD.pamiec([3, 120, 10, 5, 3, 0, 2, 100], 160) < r);
+  });
+  test("stare karty i nowe", () => {
+    assert.equal(LD.pamiec([2, 105], 100), 1);
+    assert.equal(LD.pamiec([2, 95], 100), 0.5);
+    assert.equal(LD.pamiec([0, 100], 100), null);
+  });
+  test("„5 minut”: liczba części z treści", () => {
+    const l = LD.ulozLekcje([T({ tresc: { po: 2, sekcje: 0, recap: false } })], { nowe: false, min: 25 }, K());
+    assert.ok(l.segmenty.filter((s) => s.mech === "przypomnienie").length <= 2);
+  });
+});

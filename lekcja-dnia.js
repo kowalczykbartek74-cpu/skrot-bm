@@ -58,7 +58,7 @@
   // pisanie: wymaga pisania albo liczenia na kartce (nie ma w trybie „w drodze”); rola: miejsca w szablonie.
   var t0 = function (x) { return +x || 0; };
   var KATALOG = [
-    { id: "haslo", nazwa: "Hasło", typ: "gram", energia: "spokojna", min: 1, rola: ["haczyk", "przerwa"], wymaga: function (c) { return t0(c.haslo) >= 1; } },
+    { id: "haslo", nazwa: "Zgadnij hasło", typ: "gram", energia: "spokojna", min: 1, rola: ["haczyk", "przerwa"], wymaga: function (c) { return t0(c.haslo) >= 1; } },
     { id: "pary", nazwa: "Pary", typ: "gram", energia: "zywa", min: 1.5, naCzas: true, rola: ["haczyk"], wymaga: function (c) { return t0(c.pojecia) >= 6 || t0(c.fiszki) >= 6; } },
     { id: "wyjasnienie", nazwa: "Wyjaśnienie", typ: "ucze", energia: "spokojna", min: 3, rola: ["ucze"], nowe: true, wiele: true, wymaga: function (c) { return t0(c.sekcje) >= 1; } },
     { id: "przypomnienie", nazwa: "Przypomnienie", typ: "ucze", energia: "spokojna", min: 2, rola: ["ucze"], wiele: true, wymaga: function (c) { return !!c.po || !!c.recap; } },
@@ -107,6 +107,16 @@
   var stres = function (k) { return !!(k.profil && k.profil.stressHigh); };
   var motyw = function (k, x) { return has(k.profil && k.profil.motivations, x); };
   var nieNowy = function (t) { return t.poziom && t.poziom !== "nowy"; };
+
+  /** Ile części ma podsumowanie „5 minut” (true = nie wiadomo jeszcze, przyjmujemy 5). */
+  function czesciPo(c) { return c.po === true ? 5 : t0(c.po); }
+  /** Pamięć karty FSRS dziś (0–1) z wpisu srs [pudełko, termin, stabilność, trudność, powtórki, pomyłki, stan, dzień ostatniej].
+   *  Karty sprzed FSRS: 1 przed terminem, 0,5 po terminie. Nowa karta (pudełko 0) → null (nie liczy się do zapominania). */
+  function pamiec(v, t) {
+    if (!Array.isArray(v) || !(v[0] > 0)) return null;
+    if (v.length >= 8 && v[2] > 0) { var el = Math.max(0, t - v[7]); return Math.pow(1 + (19 / 81) * el / v[2], -0.5); }
+    return t < v[1] ? 1 : 0.5;
+  }
 
   // ---------------- długość lekcji i rytm gier (4.3) ----------------
   /** 15 / 20 / 25 min z bloku skupienia; 3× z rzędu przed czasem → o stopień krócej. */
@@ -304,7 +314,7 @@
           var i = o.mieszanka ? (ki + n) % kursor.length : n, kk = kursor[i], c = cnt(kk.t), m = cand[j];
           if (!m.wymaga(c)) continue;
           if (m.id === "wyjasnienie" && kk.sek < t0(c.sekcje)) { ki = i + 1; return { mech: m, temat: kk.t, sekcja: kk.sek++ }; }
-          if (m.id === "przypomnienie" && kk.po < (c.po ? 5 : 0) + (c.recap ? 1 : 0)) { ki = i + 1; return { mech: m, temat: kk.t, czesc: kk.po++ }; }
+          if (m.id === "przypomnienie" && kk.po < czesciPo(c) + (c.recap ? 1 : 0)) { ki = i + 1; return { mech: m, temat: kk.t, czesc: kk.po++ }; }
         }
       }
       return null;
@@ -441,7 +451,7 @@
 
   return {
     WAGI: WAGI, KATALOG: KATALOG, MECH: MECH, ROLE: ROLE, DLUGOSCI: DLUGOSCI,
-    dlugoscLekcji: dlugoscLekcji, graCo: graCo, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
+    dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
     trybDnia: trybDnia, trybTematu: trybTematu, ulozKarte: ulozKarte, ulozLekcje: ulozLekcje, ulozDzien: ulozDzien, jeszczeJedna: jeszczeJedna,
     zablokowana: zablokowana, lubiana: lubiana, kandydaci: kandydaci,
   };
