@@ -151,7 +151,7 @@ await p.waitForTimeout(500);
 ok("koniec lekcji: Zrobione ✓", /Zrobione ✓/.test(await p.locator(".lp-done-screen").innerText().catch(() => "")), await p.locator(".lp").innerText().catch(() => ""));
 const mech = await p.evaluate(() => JSON.parse(localStorage.getItem("bm-ld-mech") || "{}"));
 ok("historia: ukończone haslo, stas, frun, zadanie, kazus, drabina", ["haslo", "stas", "frun", "zadanie", "kazus", "drabina"].every((m) => (mech[m] || []).some((e) => e.stan === "ukonczona")), mech);
-ok("historia: Pary (przerwane) bez „dobrze”", (mech.pary || []).some((e) => e.stan === "ukonczona" && e.dobrze === false), mech.pary);
+ok("historia: Pary (przerwana runda) = porzucona (etap 5)", (mech.pary || []).some((e) => e.stan === "porzucona"), mech.pary);
 ok("bez błędów w konsoli", p.errors.length === 0, p.errors);
 
 // ---- zwykła gra poza lekcją dalej jak dotąd (adres #/gra/, ekran wyniku) ----

@@ -357,3 +357,21 @@ describe("Hasło w lekcji", () => {
     assert.deepEqual(LD.hasloOcena("TTTAAA", "TABLET"), [2, 1, 0, 1, 0, 0]);
   });
 });
+
+describe("aktywność (4.2)", () => {
+  test("seria nieudanych dni: plan bez zrobionego, przerwana przez dzień z nauką albo bez wejścia", () => {
+    assert.equal(LD.serieNieudanych({ 99: { plan: 3, done: 0 }, 98: { plan: 3, done: 0 }, 97: { plan: 3, done: 0 } }, 100), 3);
+    assert.equal(LD.serieNieudanych({ 99: { plan: 3, done: 0 }, 98: { plan: 3, done: 1 }, 97: { plan: 3, done: 0 } }, 100), 1);
+    assert.equal(LD.serieNieudanych({ 98: { plan: 3, done: 0 } }, 100), 0);
+  });
+  test("tygodnie: odsetek zrobionego z bloku", () => {
+    const dni = {}; for (let d = 86; d < 100; d++) dni[d] = { plan: 3, done: d < 93 ? 1 : 3 };
+    const w = LD.tygodnie(dni, 100, 2);
+    assert.equal(w.length, 2); assert.ok(Math.abs(w[0] - 1 / 3) < 1e-9); assert.equal(w[1], 1);
+  });
+  test("dziennik odpowiedzi w kształcie learner.js i reszty", () => {
+    const o = LD.odpowiedziLearner([{ s: 1, m: 600, mi: 2, t: 4000, sid: "a", d: 100, iso: "2026-11-06" }, { s: 0, m: 605, mi: 7, t: 9000, sid: "a", d: 100, iso: "2026-11-06" }]);
+    assert.deepEqual(Object.keys(o[0]).sort(), ["day", "difficulty", "minuteInSitting", "minuteOfDay", "score", "sittingId", "timeMs"]);
+    assert.deepEqual(LD.reszty(o).map((x) => x.residual), [0.5, -0.5]);
+  });
+});

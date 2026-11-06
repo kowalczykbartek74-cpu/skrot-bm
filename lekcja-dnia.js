@@ -129,6 +129,36 @@
     return out;
   }
 
+  // ---------------- aktywność na stronie (4.2): dziennik dni i odpowiedzi ----------------
+  /** Seria nieudanych dni przed dziś: dni z planem, w których nic z bloku nie zostało zrobione (dzień bez wejścia przerywa serię). dni: { dayN: { plan, done } } */
+  function serieNieudanych(dni, dzis) {
+    var n = 0;
+    for (var d = dzis - 1; d > dzis - 30; d--) { var x = dni && dni[d]; if (!x) break; if (x.plan > 0 && !(x.done > 0)) n++; else break; }
+    return n;
+  }
+  /** Odsetek zrobionych rzeczy z bloku w pełnych tygodniach (od najstarszego), do reviewBudget.needsLighterPlan. */
+  function tygodnie(dni, dzis, ile) {
+    var out = [];
+    for (var w = (ile || 4); w >= 1; w--) {
+      var plan = 0, done = 0;
+      for (var d = dzis - 7 * w; d < dzis - 7 * (w - 1); d++) { var x = dni && dni[d]; if (x) { plan += x.plan || 0; done += Math.min(x.done || 0, x.plan || 0); } }
+      if (plan > 0) out.push(done / plan);
+    }
+    return out;
+  }
+  /** Dziennik odpowiedzi → kształt z learner.js: { score, difficulty, minuteOfDay, minuteInSitting, timeMs, sittingId, day }. */
+  function odpowiedziLearner(log) {
+    return (log || []).filter(function (x) { return x && x.d != null; }).map(function (x) {
+      return { score: x.s ? 1 : 0, difficulty: x.k || "ld", minuteOfDay: x.m || 0, minuteInSitting: x.mi || 0, timeMs: x.t > 0 ? x.t : null, sittingId: String(x.sid || ""), day: x.iso || "" };
+    });
+  }
+  /** Reszty (wynik − średnia dla trudności), jak te() w learner.js: do breaks.suggestBreak. */
+  function reszty(odp) {
+    var m = {};
+    odp.forEach(function (x) { var k = x.difficulty, v = m[k] || (m[k] = [0, 0]); v[0] += x.score; v[1]++; });
+    return odp.map(function (x) { var v = m[x.difficulty]; return { residual: x.score - v[0] / v[1], timeMs: x.timeMs }; });
+  }
+
   // ---------------- długość lekcji i rytm gier (4.3) ----------------
   /** 15 / 20 / 25 min z bloku skupienia; 3× z rzędu przed czasem → o stopień krócej. */
   function dlugoscLekcji(profil, hist) {
@@ -462,7 +492,7 @@
 
   return {
     WAGI: WAGI, KATALOG: KATALOG, MECH: MECH, ROLE: ROLE, DLUGOSCI: DLUGOSCI,
-    dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, hasloNorm: hasloNorm, hasloOcena: hasloOcena, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
+    dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, hasloNorm: hasloNorm, hasloOcena: hasloOcena, serieNieudanych: serieNieudanych, tygodnie: tygodnie, odpowiedziLearner: odpowiedziLearner, reszty: reszty, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
     trybDnia: trybDnia, trybTematu: trybTematu, ulozKarte: ulozKarte, ulozLekcje: ulozLekcje, ulozDzien: ulozDzien, jeszczeJedna: jeszczeJedna,
     zablokowana: zablokowana, lubiana: lubiana, kandydaci: kandydaci,
   };
