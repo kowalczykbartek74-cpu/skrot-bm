@@ -54,7 +54,7 @@
     return post("/rest/v1/rpc/nauka_kierunki_zapisy", {}, fetchImpl).then(function (r) { return Array.isArray(r.j) ? r.j : []; }, function () { return []; });
   }
   function wynik(r) {
-    if (r.status === 404 && r.j && r.j.code === "NOT_FOUND") throw Object.assign(new Error("Zapisy jeszcze nie działają. Napisz na skrotbm@outlook.com."), { code: "not_deployed" });
+    if (r.status === 404 && r.j && r.j.code === "NOT_FOUND") throw Object.assign(new Error("Zapisy jeszcze nie działają. Napisz na zdawalni.support@gmail.com."), { code: "not_deployed" });
     if (!r.j || !r.j.ok) throw Object.assign(new Error((r.j && r.j.message) || "Coś poszło nie tak. Spróbuj za chwilę."), { code: (r.j && r.j.code) || "error" });
     return r.j;
   }

@@ -55,7 +55,7 @@ function sprawdz(b: Record<string, unknown>) {
 function mail(token: string) {
   const ok = `${SITE}/#/zapis/potwierdz.${token}`, out = `${SITE}/#/zapis/usun.${token}`;
   const subject = "Potwierdź zapis: Zdawalni dla Twojego kierunku";
-  const text = `Cześć!\n\nPotwierdź, że chcesz dostać jeden mail, gdy Zdawalni ruszy dla Twojego kierunku:\n${ok}\n\nTo nie Ty? Usuń zapis:\n${out}\n\n---\nConfirm that you want one email when Zdawalni starts for your programme:\n${ok}\nNot you? Remove the sign-up:\n${out}\n\nSkrót · skrotbm.pl`;
+  const text = `Cześć!\n\nPotwierdź, że chcesz dostać jeden mail, gdy Zdawalni ruszy dla Twojego kierunku:\n${ok}\n\nTo nie Ty? Usuń zapis:\n${out}\n\n---\nConfirm that you want one email when Zdawalni starts for your programme:\n${ok}\nNot you? Remove the sign-up:\n${out}\n\nZdawalni · zdawalni.pl`;
   const html = `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:16px;line-height:1.5;color:#1d2b24;max-width:520px">
 <p>Cześć!</p><p>Potwierdź, że chcesz dostać <b>jeden mail</b>, gdy Zdawalni ruszy dla Twojego kierunku.</p>
 <p><a href="${ok}" style="display:inline-block;background:#1b7f4a;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:600">Potwierdź zapis</a></p>
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
   const v = sprawdz(b);
   if ("error" in v) return out(400, { ok: false, code: "invalid", message: v.error });
   const key = Deno.env.get("RESEND_API_KEY"), from = Deno.env.get("RESEND_FROM");
-  if (!key || !from) return out(503, { ok: false, code: "no_mail", message: "Zapisy chwilowo nie działają. Spróbuj później albo napisz na skrotbm@outlook.com." });
+  if (!key || !from) return out(503, { ok: false, code: "no_mail", message: "Zapisy chwilowo nie działają. Spróbuj później albo napisz na zdawalni.support@gmail.com." });
 
   const ip = (req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "").split(",")[0].trim();
   const ipHash = ip ? await sha256((Deno.env.get("ZAPISY_SALT") || serverKey().slice(-24)) + ":" + ip) : null;

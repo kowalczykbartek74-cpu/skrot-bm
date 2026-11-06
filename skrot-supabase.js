@@ -1141,7 +1141,7 @@
   const goPay = (plan) => {
     const cfg = CONFIG.plans[plan];
     const link = cfg?.link;
-    if (!link) return info("Płatności startują wkrótce", "Kupno dostępu ruszy wkrótce. Spróbuj później albo napisz na skrotbm@outlook.com.");
+    if (!link) return info("Płatności startują wkrótce", "Kupno dostępu ruszy wkrótce. Spróbuj później albo napisz na zdawalni.support@gmail.com.");
     if (PG) return info("Podgląd", "W podglądzie nie da się kupić dostępu. Nic nie zostało zapisane.");
     const layer = document.getElementById("layer") || document.body;
     const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
@@ -1291,7 +1291,7 @@
     box.remove();
     // Po przeładowaniu index.html pokaże ekran powitalny („Dostęp aktywny”) z trzema pierwszymi krokami.
     if (skrot.paid) { ls.set("skrot-welcome", "1"); location.reload(); }
-    else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz na skrotbm@outlook.com.");
+    else info("Płatność w trakcie", "Stripe jeszcze nie potwierdził płatności. Odśwież stronę za minutę. Jeśli dostęp się nie pojawi, napisz na zdawalni.support@gmail.com.");
   }
   async function afterReady() {
     // Bez sesji: tylko ekran logowania (powód i pole na kod, jeśli kod już poszedł).
@@ -1364,7 +1364,7 @@
   function deviceList(info, onRemoved) {
     const list = info?.urzadzenia || [];
     const err = el("p", { class: "notice err", hidden: "" });
-    const lock = info?.zmiana_od ? el("p", { class: "muted", style: "margin:0;font-size:.9rem" }, `Następną zmianę urządzenia zrobisz ${plDate(info.zmiana_od)}. Zgubiony telefon? Napisz na `, el("a", { class: "link", href: "mailto:skrotbm@outlook.com" }, "skrotbm@outlook.com"), ".") : null;
+    const lock = info?.zmiana_od ? el("p", { class: "muted", style: "margin:0;font-size:.9rem" }, `Następną zmianę urządzenia zrobisz ${plDate(info.zmiana_od)}. Zgubiony telefon? Napisz na `, el("a", { class: "link", href: "mailto:zdawalni.support@gmail.com" }, "zdawalni.support@gmail.com"), ".") : null;
     const rows = list.map((d) => el("div", { class: "device-row", style: "display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--line,#BFCEC5);border-radius:12px;background:var(--surface,#fff)" },
       el("span", { style: "display:grid;gap:2px;min-width:0" },
         el("b", { style: "overflow-wrap:anywhere", text: d.nazwa || "Urządzenie" }),
@@ -1415,7 +1415,7 @@
       return gate("Dostęp zablokowany",
         el("p", { style: "margin:0", text: "Konto było używane przez kilka osób, co narusza regulamin (§ 3)." }),
         d.powod ? el("p", { class: "muted", style: "margin:0" }, "Powód: ", el("b", { text: d.powod })) : null,
-        el("p", { style: "margin:0" }, "Jeśli to pomyłka, napisz na ", el("a", { class: "link", href: "mailto:skrotbm@outlook.com" }, "skrotbm@outlook.com"), ". Odpowiemy w ciągu 14 dni."),
+        el("p", { style: "margin:0" }, "Jeśli to pomyłka, napisz na ", el("a", { class: "link", href: "mailto:zdawalni.support@gmail.com" }, "zdawalni.support@gmail.com"), ". Odpowiemy w ciągu 14 dni."),
         el("div", { class: "row", style: "display:flex;gap:8px;flex-wrap:wrap" }, logoutBtn()));
     }
   }
