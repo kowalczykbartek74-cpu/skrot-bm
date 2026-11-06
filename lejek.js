@@ -139,6 +139,28 @@
       .sort(function (a, b) { return (a.zrodlo === "") - (b.zrodlo === "") || b.sort - a.sort || a.zrodlo.localeCompare(b.zrodlo); });
   }
 
+  // „Dla Ciebie na dziś” (SQL v43, pole ld): dni, przerwania na segment, mechaniki i „czy uczy” (blok kontra reszta).
+  // Każdy wiersz z liczbą osób < 5 ukryty osobno (liczby null, ukryte: true).
+  function ld(x) {
+    x = x || {};
+    var dni = (Array.isArray(x.dni) ? x.dni : []).map(function (d) {
+      var ko = liczba(d.karta_osoby), lo = liczba(d.lekcja_osoby), uk = ukryj(ko), ul = ukryj(lo);
+      return { dzien: d.dzien, kartaOsoby: uk ? null : ko, karty: uk ? null : liczba(d.karty), lekcjaOsoby: ul ? null : lo, lekcje: ul ? null : liczba(d.lekcje), ukryte: uk && ul };
+    });
+    var segi = (Array.isArray(x.segmenty) ? x.segmenty : []).map(function (g) {
+      var u = ukryj(g.osoby); return { seg: liczba(g.seg), porzucone: u ? null : liczba(g.porzucone), osoby: u ? null : liczba(g.osoby), ukryte: u, sort: liczba(g.porzucone) };
+    }).sort(function (a, b) { return a.seg - b.seg; });
+    var mech = (Array.isArray(x.mechaniki) ? x.mechaniki : []).map(function (m) {
+      var u = ukryj(m.osoby), uk = liczba(m.ukonczone), po = liczba(m.porzucone), pm = liczba(m.pominiete), all = uk + po + pm;
+      return { mech: String(m.mech || ""), ukryte: u, osoby: u ? null : liczba(m.osoby), ukonczone: u ? null : uk, porzucone: u ? null : po, pominiete: u ? null : pm,
+        konczyPct: u ? null : pct(uk, all), dobrzePct: u ? null : pct(liczba(m.dobrze), uk), sort: all };
+    }).sort(function (a, b) { return b.sort - a.sort || a.mech.localeCompare(b.mech); });
+    var uc = {};
+    ["ld", "inne"].forEach(function (k) { var v = (x.uczy || {})[k] || {}, u = ukryj(v.osoby); uc[k] = { ukryte: u, osoby: u ? null : liczba(v.osoby), odp: u ? null : liczba(v.odp), pct: u ? null : pct(liczba(v.ok), liczba(v.odp)) }; });
+    var os = liczba(x.osoby);
+    return { osoby: ukryj(os) ? null : os, ukryte: ukryj(os), dni: dni, segmenty: segi, mechaniki: mech, uczy: uc, puste: !dni.length && !segi.length && !mech.length };
+  }
+
   // Roczniki do wyboru: „*” (wszystkie) pierwszy, potem roczniki z bazy, które mają podsumowanie, na końcu '' (konta bez profilu).
   function roczniki(lista, dane) {
     dane = dane || {};
@@ -150,5 +172,5 @@
   }
 
   return { MIN: MIN, FLAGA: FLAGA, zrodloZ: zrodloZ, wejscie: wejscie, pct: pct, ukryj: ukryj, kroki: kroki, powroty: powroty,
-    tygodnie: tygodnie, uczy: uczy, rewanze: rewanze, ab: ab, oczekujacy: oczekujacy, zrodla: zrodla, zrodlaLejek: zrodlaLejek, roczniki: roczniki };
+    tygodnie: tygodnie, uczy: uczy, rewanze: rewanze, ab: ab, oczekujacy: oczekujacy, zrodla: zrodla, zrodlaLejek: zrodlaLejek, roczniki: roczniki, ld: ld };
 });

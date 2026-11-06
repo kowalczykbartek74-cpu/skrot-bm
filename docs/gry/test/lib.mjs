@@ -23,6 +23,9 @@ export async function page(browser, { konto = "platne", v13 = "1", lang = "pl", 
     if (konto !== "brak") localStorage.setItem("sb-zkyxujkdrovfzpasocmv-auth-token", "{}");
     localStorage.setItem("bm-group", "C111"); localStorage.setItem("bm-tour", "1"); localStorage.setItem("bm-sub", "A");
     localStorage.setItem("skrot-lang", lang);
+    // Etap 6 „Dla Ciebie na dziś”: blok jest dla wszystkich; stare testy ekranu Dziś sprawdzają stare karty (?ld=0 w tej przeglądarce).
+    // Testy bloku (lekcja-dnia*.mjs) nadpisują to przez ls: { "bm-ld-flag": "1" } albo ?ld=1.
+    localStorage.setItem("bm-ld-flag", "0");
     for (const [k, v] of Object.entries(extra)) localStorage.setItem(k, v);
   }, [konto, v13, lang, ls]);
   const p = await ctx.newPage();

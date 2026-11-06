@@ -106,3 +106,17 @@ test("etap 11: lejek według źródła — wiersz na źródło, < 5 ukryte, bez 
   assert.deepEqual(L.zrodlaLejek(z, "wszystko").map((x) => x.zrodlo), ["plakat-cukrowa", "stare"]);
   assert.deepEqual(L.zrodlaLejek(null, "d28"), []);
 });
+
+test("„Dla Ciebie na dziś” (v43): grupy < 5 osób ukryte, mechaniki od najczęstszych, procent kończenia", () => {
+  const r = L.ld({ osoby: 7, dni: [{ dzien: "2026-11-06", karta_osoby: 6, karty: 7, lekcja_osoby: 3, lekcje: 3 }],
+    segmenty: [{ seg: 3, porzucone: 6, osoby: 5 }, { seg: 1, porzucone: 2, osoby: 2 }],
+    mechaniki: [{ mech: "stas", ukonczone: 2, porzucone: 0, pominiete: 1, dobrze: 1, osoby: 2 }, { mech: "frun", ukonczone: 6, porzucone: 4, pominiete: 0, dobrze: 3, osoby: 8 }],
+    uczy: { ld: { odp: 40, ok: 30, osoby: 6 }, inne: { odp: 9, ok: 5, osoby: 3 } } });
+  assert.equal(r.osoby, 7);
+  assert.deepEqual(r.dni[0], { dzien: "2026-11-06", kartaOsoby: 6, karty: 7, lekcjaOsoby: null, lekcje: null, ukryte: false });
+  assert.deepEqual(r.segmenty.map((s) => [s.seg, s.porzucone, s.ukryte]), [[1, null, true], [3, 6, false]]);
+  assert.equal(r.mechaniki[0].mech, "frun"); assert.equal(r.mechaniki[0].konczyPct, 60); assert.equal(r.mechaniki[0].dobrzePct, 50);
+  assert.equal(r.mechaniki[1].ukryte, true); assert.equal(r.mechaniki[1].ukonczone, null);
+  assert.equal(r.uczy.ld.pct, 75); assert.equal(r.uczy.inne.ukryte, true);
+  assert.equal(L.ld(null).puste, true);
+});

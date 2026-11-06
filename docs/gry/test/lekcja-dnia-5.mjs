@@ -108,6 +108,23 @@ d = await plan(q7);
 ok("bez profilu: 20 min, gra co 5, link do testu", d?.lekcje?.every((l) => l.min === 20 && l.graCo === 5) && (await q7.getByText("Ułożymy lepiej po 6-minutowym Profilu nauki").count()) === 1, d?.lekcje?.map((l) => [l.min, l.graCo]));
 await q7.close();
 
+// ---- 8. panel lejka: sekcja „Dla Ciebie na dziś” (SQL v43), grupy < 5 osób ukryte ----
+const LJ = { dzien: "2026-11-06", policzono_at: "2026-11-06T03:15:00Z", roczniki: [], dane: { "*": { lejek: { d28: {}, wszystko: {} }, retencja: {}, tygodnie: [], uczy: [], rewanze: {}, ab: { haczyk: {} },
+  ld: { osoby: 12, dni: [{ dzien: "2026-11-06", karta_osoby: 9, karty: 11, lekcja_osoby: 6, lekcje: 8 }, { dzien: "2026-11-05", karta_osoby: 3, karty: 3, lekcja_osoby: 1, lekcje: 1 }],
+    segmenty: [{ seg: 2, porzucone: 7, osoby: 6 }, { seg: 5, porzucone: 2, osoby: 2 }],
+    mechaniki: [{ mech: "frun", ukonczone: 12, porzucone: 4, pominiete: 0, dobrze: 9, osoby: 9 }, { mech: "stas", ukonczone: 1, porzucone: 0, pominiete: 2, dobrze: 1, osoby: 3 }],
+    uczy: { ld: { odp: 50, ok: 40, osoby: 8 }, inne: { odp: 120, ok: 72, osoby: 11 } } } } } };
+const q8 = await open({ ls: { "mock-lejek": JSON.stringify(LJ) } });
+await q8.goto(BASE + "index.html#/lejekAdmin"); await q8.waitForTimeout(2500);
+const lj = await q8.locator("main").innerText();
+ok("panel lejka: sekcja „Dla Ciebie na dziś” z kończeniami dziennie", /Dla Ciebie na dziś/i.test(lj) && /12\s*osób w bloku/.test(lj) && /Karta 5 min: osoby/i.test(lj), lj.slice(0, 800));
+const tabs = await q8.locator(".lj-ld, table").allInnerTexts();
+const all = tabs.join("\n");
+ok("panel: dzień z < 5 osób ukryty, segment 3 z 7 przerwaniami, Fruń kończy 75%, Staś ukryty", /< 5/.test(all) && /3\s+7\s+6/.test(all) && /Fruń\s+12\s+4\s+0\s+75%\s+75%/.test(all) && !/Staś się myli\s+1/.test(all), all.slice(0, 900));
+ok("panel: czy uczy blok 80% kontra reszta 60%", /z lekcji dla Ciebie\s+50\s+8\s+80%/.test(all) && /pozostałe\s+120\s+11\s+60%/.test(all), all.slice(-400));
+await shot(q8, "ld5-lejek");
+ok("bez błędów (panel)", q8.errors.length === 0, q8.errors);
+await q8.close();
 } catch (e) { ok("bez wyjątku w teście", false, String(e).slice(0, 400)); }
 await b.close();
 for (const w of wyniki) console.log(w.join(" "));

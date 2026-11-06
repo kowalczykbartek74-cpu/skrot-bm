@@ -38,9 +38,16 @@ ok("flaga zapamiętana w przeglądarce", await p.evaluate(() => localStorage.get
 await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2000);
 ok("po wejściu bez ?ld=1 blok zostaje", (await p.locator(".ld-hero").count()) === 1, "");
 await shot(p, "ld4-dzis-390");
-const notAdmin = await open({ konto: "platne" });
-ok("nie-admin z ?ld=1: stare karty", (await notAdmin.locator(".ld-hero").count()) === 0 && /Teraz zrób to/i.test(await main(notAdmin)), (await main(notAdmin)).slice(0, 300));
+const notAdmin = await open({ konto: "platne", q: "", ls: { "bm-ld-flag": "1" } });
+ok("etap 6: blok dla wszystkich (konto płatne bez admina)", (await notAdmin.locator(".ld-hero").count()) === 1 && (await notAdmin.locator(".ld-tile").count()) === 2, (await main(notAdmin)).slice(0, 300));
+await notAdmin.goto(BASE + "index.html?ld=0#/"); await notAdmin.waitForTimeout(2000);
+ok("?ld=0: stare karty w tej przeglądarce", (await notAdmin.locator(".ld-hero").count()) === 0 && /Teraz zrób to/i.test(await main(notAdmin)), (await main(notAdmin)).slice(0, 300));
 await notAdmin.close();
+// D5: bez pełnego dostępu (konto bez zakupu): karta 5 min, jedna lekcja, „Kup dostęp”
+const free = await open({ konto: "darmowe", q: "", ls: { "bm-ld-flag": "1", "mock-docs": JSON.stringify({ ...docs, materials: Object.fromEntries(Object.entries(docs.materials).map(([k, v]) => [k, { ...v, free: true }])) }) } });
+ok("D5 bez dostępu: karta, najwyżej jedna lekcja i „Kup dostęp”", (await free.locator(".ld-hero").count()) === 1 && (await free.locator(".ld-tile").count()) <= 1 && (await free.getByRole("button", { name: "Kup dostęp" }).count()) >= 1, (await main(free)).slice(0, 400));
+await shot(free, "ld4-d5");
+await free.close();
 
 // ---- „Dlaczego to?”, „Mam więcej czasu”, „Inny temat” ----
 const t1 = await p.locator(".ld-hero h2").innerText();
