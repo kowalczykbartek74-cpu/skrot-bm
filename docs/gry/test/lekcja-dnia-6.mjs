@@ -44,6 +44,25 @@ try {
   await p.keyboard.press("Escape"); await p.waitForTimeout(300);
   await p.close();
 
+  // ---- Plan zamrożony, zanim strona znała dostęp (telefon): bez lekcji → sam się układa jeszcze raz ----
+  const ph = await page(b, { konto: "platne", w: 390, h: 844, ls: ls0 });
+  await ph.clock.setFixedTime(new Date("2026-11-06T17:00:00+01:00"));
+  await ph.addInitScript((T0) => { if (!sessionStorage.getItem("ld6-once")) { sessionStorage.setItem("ld6-once", "1");
+    localStorage.setItem("bm-ld:" + T0, JSON.stringify({ d: T0, plany: {}, done: {}, tem: [], pom: {}, dzien: { dzien: { tryb: "utrwalanie", nowe: true }, karta: { temat: "Z1", sid: "podstawy-zarzadzania", tryb: "utrwalanie", nowe: true, kroki: [], min: 5, powody: [] }, lekcje: [], dlugosc: 20, graCo: 5, bezProfilu: true, profil: {} } })); } }, T0);
+  await ph.goto(BASE + "index.html?ld=1#/"); await ph.waitForTimeout(3500);
+  ok("telefon: plan bez lekcji z wczytywania naprawia się sam (2 lekcje)", (await ph.locator(".ld-tile").count()) === 2 && await ph.evaluate((T0) => JSON.parse(localStorage.getItem("bm-ld:" + T0)).dzien.lekcje.length === 2, T0), (await ph.locator("main").innerText()).slice(0, 400));
+  // zrobiona karta 5 min: karta zostaje, dochodzą tylko lekcje (bez jej tematu)
+  await ph.evaluate((T0) => { const d = JSON.parse(localStorage.getItem("bm-ld:" + T0)); d.dzien.lekcje = []; d.plany = { karta: d.dzien.karta }; d.done = { karta: 1 }; localStorage.setItem("bm-ld:" + T0, JSON.stringify(d)); }, T0);
+  await ph.reload(); await ph.waitForTimeout(3000);
+  const d2 = await ph.evaluate((T0) => JSON.parse(localStorage.getItem("bm-ld:" + T0)), T0);
+  ok("zrobiona karta zostaje, lekcje dochodzą (bez tematu karty)", (await ph.locator(".ld-tile").count()) === 2 && d2.done.karta && d2.plany.karta && d2.dzien.lekcje.length === 2 && d2.dzien.lekcje.every((l) => l.temat !== d2.dzien.karta.temat), d2.dzien.lekcje?.map((l) => l.temat));
+  // zaczęta lekcja: planu nie ruszamy
+  await ph.evaluate((T0) => { const d = JSON.parse(localStorage.getItem("bm-ld:" + T0)); d.dzien.lekcje = d.dzien.lekcje.slice(0, 1); d.plany.l0 = d.dzien.lekcje[0]; localStorage.setItem("bm-ld:" + T0, JSON.stringify(d)); }, T0);
+  await ph.reload(); await ph.waitForTimeout(3000);
+  ok("zaczęta lekcja: plan zostaje bez zmian", (await ph.locator(".ld-tile").count()) === 1, "");
+  await shot(ph, "ld6-telefon");
+  await ph.close();
+
   // ---- Hasło z podpowiedziami + Fruń z pytaniem co 20 kolumn ----
   const q = await open("#/ld");
   await q.evaluate((T0) => {

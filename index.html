@@ -17910,15 +17910,36 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
   function ldPlan(force) {
     if (!LDE || !S.ready) return null;
     const st = ldDay.get();
-    if (st.dzien && !force) return st.dzien;
     // Spisy „5 minut” i Stasia muszą być wczytane, zanim zamrozimy plan dnia (inaczej Staś nie trafiłby do lekcji).
-    if (S.db) { if (!PO.idx) poLoad(); if (!STAS.idx) stasLoad(); }
-    const k = ldKontekst(), r = LDE.ulozDzien(ldTematy(), k);
-    r.profil = { ...k.profilDanych, test: !!(S.learner && !S.learner.off && S.learner.testAt), lzej: k.profilDanych.lzej || k.nieudaneDni >= LDE.WAGI.nieudaneLekko };
-    // Zamrażamy dopiero, gdy są spisy i Profil nauki (S.learner przychodzi z bazy po starcie strony).
-    if (PO.idx && STAS.idx && (S.learner || !S.uid)) { st.dzien = r; ldDay.set(st); }
+    if (S.db && (!st.dzien || force || !Object.keys(st.plany || {}).some((k) => /^l\d/.test(k)))) { if (!PO.idx) poLoad(); if (!STAS.idx) stasLoad(); }
+    // Plan zamrożony, zanim strona znała dostęp (telefon wczytuje się wolniej): bez lekcji, a teraz są dostępne → układamy jeszcze raz,
+    // o ile nic z niego nie zostało zaczęte. Inaczej lekcje nie pojawiłyby się do końca dnia.
+    if (st.dzien && !force && ldPlanStale(st) && Date.now() - (LD.staleAt || 0) > 3000) {
+      LD.staleAt = Date.now(); const r0 = ldPlanNew(), kartaZacz = !!(st.plany?.karta || st.done?.karta);
+      if (r0 && (r0.lekcje.length > (st.dzien.lekcje || []).length || (!st.dzien.karta && r0.karta))) {
+        // Zaczęta karta 5 min zostaje; dochodzą tylko lekcje (bez tematu tej karty).
+        if (kartaZacz && st.dzien.karta) { const t = st.dzien.karta.temat, r1 = LDE.ulozDzien(ldTematy().filter((x) => x.id !== t), ldKontekst()); st.dzien.lekcje = (r1?.lekcje || []).length ? r1.lekcje : r0.lekcje.filter((l) => l.temat !== t); }
+        else { st.dzien = r0; st.plany = {}; st.done = {}; }
+        ldDay.set(st);
+      }
+      return st.dzien;
+    }
+    if (st.dzien && !force) return st.dzien;
+    const r = ldPlanNew();
+    // Zamrażamy dopiero, gdy są spisy, Profil nauki (S.learner przychodzi z bazy po starcie strony) i wiadomo, jaki jest dostęp.
+    if (ldPlanReady()) { st.dzien = r; ldDay.set(st); }
     return r;
   }
+  function ldPlanNew() {
+    const k = ldKontekst(), r = LDE.ulozDzien(ldTematy(), k);
+    r.profil = { ...k.profilDanych, test: !!(S.learner && !S.learner.off && S.learner.testAt), lzej: k.profilDanych.lzej || k.nieudaneDni >= LDE.WAGI.nieudaneLekko };
+    return r;
+  }
+  // Dostęp znany: logowanie skończone (window.skrot.state ≠ „loading”), a po zalogowaniu jest już konto (S.uid) i Profil nauki.
+  const ldPlanReady = () => { const sk = window.skrot?.state; return !!PO.idx && !!STAS.idx && sk !== "loading" && (sk !== "in" || (!!S.uid && !!S.learner)); };
+  // Za mało lekcji jak na dostęp (pełny: 2, bez: 1 pokazowa), plan jeszcze nietknięty.
+  const ldPlanStale = (st) => { const lek = (k) => /^l\d/.test(k), zacz = [...Object.keys(st.plany || {}), ...Object.keys(st.done || {})];
+    return ldPlanReady() && !zacz.some(lek) && (!st.dzien.karta ? !zacz.length : (st.dzien.lekcje || []).length < (PAID() ? 2 : 1)); };
   const ldPlanKey = (which) => (which === "karta" ? "karta" : "l" + which);
   function ldPlanOf(which) { const d = ldPlan(); return !d ? null : which === "karta" ? d.karta : d.lekcje[which] || null; }
   // Ile zostało minut w zaczętej lekcji (Dziś: „Wróć, zostało ok. N min”).

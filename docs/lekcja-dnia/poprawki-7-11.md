@@ -53,3 +53,12 @@ Bez SQL. Zmienione pliki: `lekcja-dnia.js`, `index.html`, `gry.js`, `i18n-en.js`
   - karta 5 min ma niższe kroki;
   - w kafelkach lekcji są najwyżej 3 chipy mechanik i nie ma zdania z powodem (zostaje „Dlaczego to?”).
   - Ekran na telefonie skrócił się z ok. 3500 do ok. 3100 px.
+
+## Lekcje nie pokazywały się na telefonie (7.11)
+- **Przyczyna:** plan dnia zamraża się raz na dzień. Mógł się zamrozić, zanim strona wiedziała z bazy, że konto ma pełny dostęp (telefon wczytuje się wolniej). Wtedy w planie były tylko darmowe tematy albo żadne, więc lekcji nie było do końca dnia.
+- **Poprawka:**
+  - plan zamraża się dopiero wtedy, gdy logowanie jest skończone, a po zalogowaniu jest już konto i Profil nauki;
+  - plan zamrożony za wcześnie naprawia się sam: jeśli ma za mało lekcji jak na dostęp (pełny dostęp 2, bez dostępu 1), a żadna lekcja nie jest zaczęta, układa się jeszcze raz;
+  - zrobiona albo zaczęta karta 5 min zostaje, a dochodzą tylko lekcje z innych tematów niż karta;
+  - spisy „5 minut” i Stasia wczytują się też przy zamrożonym planie.
+- **Testy:** `lekcja-dnia-6.mjs` 21/21: plan bez lekcji naprawia się sam, zrobiona karta zostaje, zaczętej lekcji nic nie zmienia.
