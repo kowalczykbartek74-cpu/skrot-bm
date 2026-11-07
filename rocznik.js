@@ -45,6 +45,14 @@
       // Zasady zaliczeń wpisane ręcznie w index.html (ZAL, CALC_RULES) dotyczą tylko tego rocznika.
       // Inne roczniki dostaną je z bazy (panel redakcyjny, Etap 4 planu wdrożenia).
       zasadyZaliczen: true,
+      // Przedmioty, które strona traktuje inaczej (dawniej listy w index.html): prawne = kazusy i test z kazusem (LAW_SUBJECTS),
+      // rachunkowe = zadania z liczeniem (CALC_SUBJECTS), jeszczeProsciej = przyciski „Jeszcze prościej” w Analizie (EZ_SUBJ).
+      // Id przedmiotu = slug nazwy z planu. Inny rocznik: puste albo z sylabusa.
+      przedmioty: {
+        prawne: ["ochrona-wlasnosci-intelektualnej", "prawo"],
+        rachunkowe: ["analiza-matematyczna", "ekonomia-biznesu", "makroekonomia", "podstawy-finansow"],
+        jeszczeProsciej: ["analiza-matematyczna"],
+      },
     },
   };
   var DOMYSLNY = "wefiz-bm-1-st-2026";
@@ -98,6 +106,8 @@
     var rok = rokStudiow(r, teraz);
     var out = {};
     for (var key in r) out[key] = r[key];
+    var pr = r.przedmioty || {};
+    out.przedmioty = { prawne: pr.prawne || [], rachunkowe: pr.rachunkowe || [], jeszczeProsciej: pr.jeszczeProsciej || [] };
     out.id = id;
     out.rok = rok;
     out.rokAkademicki = rokAk(r.nabor + rok - 1);

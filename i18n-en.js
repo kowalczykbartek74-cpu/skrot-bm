@@ -1,6 +1,8 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Czym to się różni od slajdów prowadzących?": "How is this different from the lecturers' slides?",
+"Nowe kolokwia i zadania pojawią się tutaj, gdy je dodamy.": "New tests and assignments will appear here once we add them.",
 "Zapisz mnie na listę": "Add me to the list",
 "Ten kierunek jeszcze nie ruszył": "This programme hasn't started yet",
 "Płatny dostęp dla kierunku": "Paid access for",

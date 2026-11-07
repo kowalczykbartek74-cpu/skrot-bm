@@ -721,7 +721,8 @@
       res = await fetch(CONFIG.url + "/functions/v1/grade-open", {
         method: "POST", signal: ctl.signal,
         headers: { "Content-Type": "application/json", apikey: CONFIG.key, Authorization: "Bearer " + data?.session?.access_token, "x-skrot-device": DEVICE },
-        body: JSON.stringify(body),
+        // odbiorcy i język zajęć z rocznika (grade-open → system.ts; brak = „first-year university students”)
+        body: JSON.stringify({ ...body, odbiorcy: window.SKROT_ROCZNIK?.ai?.en || null, jezyk: window.SKROT_ROCZNIK?.jezykZajec || null }),
       });
     } catch (e) { throw fail(e?.name === "AbortError" ? "timeout" : netErr(e) ? "offline" : "no_function", "AI nie odpowiedziało na czas."); }
     finally { clearTimeout(t); }

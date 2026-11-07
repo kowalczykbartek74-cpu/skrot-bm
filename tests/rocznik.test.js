@@ -135,3 +135,16 @@ test("adresy planów: BM plan.json, każdy inny rocznik plan/<id>.json na tym sa
   const sql = fs.readFileSync(path.join(__dirname, "..", "supabase", "skrot-v46-roczniki-plan-ranking.sql"), "utf8");
   assert.ok(sql.includes("'https://plan.skrotbm.pl/plan/' || new.id || '.json'"), "ta sama zasada w SQL");
 });
+
+test("przedmioty rocznika: BM jak dawne listy w index.html, inny rocznik puste listy", () => {
+  const bm = R.zbuduj(BM, new Date(2026, 10, 7));
+  assert.deepStrictEqual(bm.przedmioty.prawne, ["ochrona-wlasnosci-intelektualnej", "prawo"]);
+  assert.deepStrictEqual(bm.przedmioty.rachunkowe, ["analiza-matematyczna", "ekonomia-biznesu", "makroekonomia", "podstawy-finansow"]);
+  assert.deepStrictEqual(bm.przedmioty.jeszczeProsciej, ["analiza-matematyczna"]);
+  const T = "wefiz-test-1-st-2026";
+  R.ROCZNIKI[T] = { ...R.ROCZNIKI[BM], przedmioty: undefined, teams: false, grupy: [] };
+  try { assert.deepStrictEqual(R.zbuduj(T).przedmioty, { prawne: [], rachunkowe: [], jeszczeProsciej: [] }); }
+  finally { delete R.ROCZNIKI[T]; }
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  assert.ok(!/new Set\(\["ochrona-wlasnosci-intelektualnej"|new Set\(\["analiza-matematyczna"/.test(html), "listy przedmiotów nie są już wpisane w index.html");
+});

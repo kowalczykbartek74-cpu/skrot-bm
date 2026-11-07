@@ -1,7 +1,7 @@
 {
   "name": "Zdawalni",
   "short_name": "Zdawalni",
-  "description": "Skróty, fiszki, quizy i wersje prostym językiem dla 1. roku Business Management na Uniwersytecie Szczecińskim.",
+  "description": "Skróty, fiszki, quizy i wersje prostym językiem dla studentów Uniwersytetu Szczecińskiego.",
   "lang": "pl",
   "start_url": "/",
   "scope": "/",
