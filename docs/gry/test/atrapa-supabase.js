@@ -165,6 +165,9 @@
   const bossyTeraz = () => bossBaza().map((b) => ({ ...b, moje: b.moje + (BOSS.ciosy[b.id] || 0), zadane: b.zadane + (BOSS.ciosy[b.id] || 0), ...BOSS.zmiany[b.id] })).filter((b) => !b.ukryty).map(({ ukryty, ...b }) => {
     const odebrane = !!BOSS.odebrane[b.id];
     return { ...b, odebrane, mozna_odebrac: b.stan === "pokonany" && b.moje >= 10 && !odebrane }; });
+  // v44/v46: Boss i Hasło dnia są per rocznik. Rocznik konta jak w bazie: wybór admina, potem z ekranu wejścia (atrapa nie ma profilu).
+  const ROK_KONTA = (() => { try { return localStorage.getItem("skrot-admin-rocznik") || localStorage.getItem("skrot-rocznik") || "wefiz-bm-1-st-2026"; } catch { return "wefiz-bm-1-st-2026"; } })();
+  const INNY_ROCZNIK = ROK_KONTA !== "wefiz-bm-1-st-2026";
   const V15FN = {
     nauka_pyt_trudnosc: (a) => {
       const k = a.p_klucze || []; if (k.length > 80) return { ok: false, code: "too_many" };
@@ -178,6 +181,7 @@
       const rozklad = q.options.map((_, i) => (i === q.correct ? 14 : 2 + ((hash(a.p_mid + a.p_idx) + i) % 5)));
       return { ok: true, n: rozklad.reduce((s, x) => s + x, 0), za_malo: false, rozklad }; },
     nauka_haslo_dzis: () => {
+      if (INNY_ROCZNIK) return { ok: false, code: "no_words" }; // inny rocznik: w atrapie brak jego materiałów
       if (!HASLO.term) return { ok: false, code: "no_words" };
       const g = hasloStan(), kon = g.wynik != null, slowo = HASLO.term.toUpperCase();
       const seria = +ls("mock-haslo-seria", "0") + (g.wynik > 0 ? 1 : 0);
@@ -195,7 +199,7 @@
       if (p === slowo) { g.wynik = n; g.pkt = paid ? daj("h:" + dzis(), [0, 20, 20, 15, 12, 10, 8][n], "haslo") : 0; } else if (n >= 6) g.wynik = 0;
       hasloZapisz(g);
       return { ok: true, wzor: w, proba: n, koniec: g.wynik != null, wynik: g.wynik, pkt: g.pkt }; },
-    nauka_bossy: () => (window.__bossyN = (window.__bossyN || 0) + 1, { ok: true, min_ciosow: 10, pkt: 50, bossy: bossyTeraz() }),
+    nauka_bossy: () => INNY_ROCZNIK ? { ok: true, min_ciosow: 10, pkt: 50, bossy: [] } : (window.__bossyN = (window.__bossyN || 0) + 1, { ok: true, min_ciosow: 10, pkt: 50, bossy: bossyTeraz() }),
     // ↑ window.__bossyN = licznik wywołań nauka_bossy (etap 9: na Dziś najwyżej raz na 60 s)
     nauka_boss_odbierz: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
