@@ -29,6 +29,7 @@
       jezykZajec: "en",    // w jakim języku są zajęcia (treści EN, „Prościej · PL” po polsku)
       plan: {
         json: "https://plan.skrotbm.pl/plan.json",      // plan zajęć grup, kalendarz roku, odwołane zajęcia (repo plan-bm)
+        // Inne roczniki: https://plan.skrotbm.pl/plan/<id rocznika>.json (ten sam host = CSP bez zmian; w bazie nauka_roczniki.plan_url, v46).
         strona: "https://plan.skrotbm.pl/",             // darmowa strona z planem
         skrzynka: "https://plan.skrotbm.pl/skrzynka.html", // skrzynka do opiekunki roku (null = rocznik nie ma skrzynki)
       },

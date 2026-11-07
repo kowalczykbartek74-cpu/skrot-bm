@@ -8,6 +8,9 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const PLAN_URL = "https://plan.skrotbm.pl/plan.json";
+// Plan rocznika osoby (SQL v46: nauka_kalendarz_dane → plan_url, np. https://plan.skrotbm.pl/plan/<rocznik>.json). Tylko z hosta
+// planów (ten sam co w CSP strony); brak albo inny adres → plan BM, czyli tak jak dotąd. UID-y wydarzeń bez zmian.
+const planUrl = (u: unknown) => (typeof u === "string" && /^https:\/\/plan\.skrotbm\.pl\/[a-z0-9/._-]+\.json$/.test(u) ? u : PLAN_URL);
 const APP = "https://zdawalni.pl"; // UID-y wydarzeń zostają @skrotbm.pl, żeby kalendarze w telefonach nie zdublowały wpisów
 const SLOTS = [["8:15","9:45"],["10:00","11:30"],["12:00","13:30"],["13:45","15:15"],["15:30","17:00"],["17:15","18:45"],["19:00","20:30"]];
 const KIND: Record<string, string> = { W: "wykład", CW: "ćwiczenia", LAB: "laboratorium", K: "konwersatorium", S: "seminarium" };
@@ -195,7 +198,7 @@ Deno.serve(async (req) => {
   if (!data) return new Response("Ten link do kalendarza jest nieaktualny. Nowy znajdziesz w Skrócie BM: Terminy → Do kalendarza w telefonie.", { status: 404 });
 
   let plan: Plan | null = null;
-  try { const r = await fetch(PLAN_URL); if (r.ok) plan = await r.json(); } catch { /* bez planu zostają same terminy */ }
+  try { const r = await fetch(planUrl(data.plan_url)); if (r.ok) plan = await r.json(); } catch { /* bez planu zostają same terminy */ }
 
   const group: string = data.grupa || "", sub: string = data.podgrupa || "";
   const now = new Date(), stamp = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}00Z`;

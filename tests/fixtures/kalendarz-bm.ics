@@ -1,0 +1,1960 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//skrotbm.pl//Skrot BM//PL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Skrót BM · C111 lab A
+X-WR-TIMEZONE:Europe/Warsaw
+X-WR-CALDESC:Zajęcia\, zaliczenia i zadania. Aktualizuje się sam.
+REFRESH-INTERVAL;VALUE=DURATION:PT3H
+X-PUBLISHED-TTL:PT3H
+BEGIN:VTIMEZONE
+TZID:Europe/Warsaw
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:2026-10-02-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261002T081500
+DTEND;TZID=Europe/Warsaw:20261002T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-02-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261002T100000
+DTEND;TZID=Europe/Warsaw:20261002T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-02-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261002T120000
+DTEND;TZID=Europe/Warsaw:20261002T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-02-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261002T134500
+DTEND;TZID=Europe/Warsaw:20261002T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-06-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261006T081500
+DTEND;TZID=Europe/Warsaw:20261006T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-06-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261006T120000
+DTEND;TZID=Europe/Warsaw:20261006T133000
+SUMMARY:Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: 
+ https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-07-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261007T081500
+DTEND;TZID=Europe/Warsaw:20261007T094500
+SUMMARY:Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: htt
+ ps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-07-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261007T100000
+DTEND;TZID=Europe/Warsaw:20261007T113000
+SUMMARY:Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Management\nProwadzi: dr hab. prof. US
+  Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-07-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261007T120000
+DTEND;TZID=Europe/Warsaw:20261007T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-09-C111-1-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261009T100000
+DTEND;TZID=Europe/Warsaw:20261009T113000
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-09-C111-2-x-lg92w8@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261009T120000
+DTEND;TZID=Europe/Warsaw:20261009T133000
+SUMMARY:Analiza matematyczna · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMathematical Analysis\nProwadzi: dr Barbara Batóg\nMa
+ teriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-09-C111-3-x-9kfcig@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261009T134500
+DTEND;TZID=Europe/Warsaw:20261009T151500
+SUMMARY:Zarządzanie zasobami ludzkimi · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nHuman Resources Management\nProwadzi: dr inż. Alicja 
+ Nerć-Pełka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-12-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261012T100000
+DTEND;TZID=Europe/Warsaw:20261012T113000
+SUMMARY:Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-12-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261012T120000
+DTEND;TZID=Europe/Warsaw:20261012T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-12-C111-3-x-1eh9mcq@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261012T134500
+DTEND;TZID=Europe/Warsaw:20261012T151500
+SUMMARY:Ochrona własności intelektualnej · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIntelectual Property Protection\nProwadzi: dr Jarosła
+ w Poteralski\nTylko: 12.10\, 26.10\, 9.11\, 23.11\nMateriały: https://zda
+ walni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-13-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261013T081500
+DTEND;TZID=Europe/Warsaw:20261013T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-13-C111-1-x-szmucr@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261013T100000
+DTEND;TZID=Europe/Warsaw:20261013T113000
+SUMMARY:Ekonomia biznesu · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior\nM
+ ateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-14-C111-0-x-vlm8rf@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261014T081500
+DTEND;TZID=Europe/Warsaw:20261014T094500
+SUMMARY:Zarządzanie zasobami ludzkimi · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nHuman Resources Management\nProwadzi: mgr Malwina J
+ ankowska\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-14-C111-1-x-19zau0b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261014T100000
+DTEND;TZID=Europe/Warsaw:20261014T113000
+SUMMARY:Narzędzia IT w zarządzaniu · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIT Tools in Management\nProwadzi: dr inż. Anna Boraws
+ ka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-14-C111-2-x-15daed4@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261014T120000
+DTEND;TZID=Europe/Warsaw:20261014T133000
+SUMMARY:Podstawy finansów · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Finances\nProwadzi: dr hab. prof. US B
+ eata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-16-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261016T081500
+DTEND;TZID=Europe/Warsaw:20261016T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-16-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261016T100000
+DTEND;TZID=Europe/Warsaw:20261016T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-16-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261016T120000
+DTEND;TZID=Europe/Warsaw:20261016T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-16-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261016T134500
+DTEND;TZID=Europe/Warsaw:20261016T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-20-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261020T081500
+DTEND;TZID=Europe/Warsaw:20261020T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-20-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261020T120000
+DTEND;TZID=Europe/Warsaw:20261020T133000
+SUMMARY:Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: 
+ https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-21-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261021T081500
+DTEND;TZID=Europe/Warsaw:20261021T094500
+SUMMARY:Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: htt
+ ps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-21-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261021T100000
+DTEND;TZID=Europe/Warsaw:20261021T113000
+SUMMARY:ODWOŁANE: Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Komunikat dziekanatu: The lecture will be cancelled because I
+ ’m at the conference. dr hab. prof. US Dariusz Milewski\nhttps://dos.usz
+ .edu.pl/cukrowa/2026/10/grupa-c111-c112-c113-9/\nWykład\nFundamentals of 
+ Management\nProwadzi: dr hab. prof. US Dariusz Milewski\nMateriały: https
+ ://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-21-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261021T120000
+DTEND;TZID=Europe/Warsaw:20261021T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-23-C111-1-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261023T100000
+DTEND;TZID=Europe/Warsaw:20261023T113000
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-23-C111-2-x-lg92w8@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261023T120000
+DTEND;TZID=Europe/Warsaw:20261023T133000
+SUMMARY:ODWOŁANE: Analiza matematyczna · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Komunikat dziekanatu: Dnia 23.10.2026 zostają odwołane zajęc
+ ia z dr Barbarą Batóg. Termin odrobienia zajęć: 19.11.2026 godz. 10:00
+  sala 002\nhttps://dos.usz.edu.pl/cukrowa/2026/10/grupa-c112-27/\nWykład\
+ nMathematical Analysis\nProwadzi: dr Barbara Batóg\nMateriały: https://z
+ dawalni.pl
+CATEGORIES:wykład
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-23-C111-3-x-9kfcig@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261023T134500
+DTEND;TZID=Europe/Warsaw:20261023T151500
+SUMMARY:Zarządzanie zasobami ludzkimi · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nHuman Resources Management\nProwadzi: dr inż. Alicja 
+ Nerć-Pełka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-26-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261026T100000
+DTEND;TZID=Europe/Warsaw:20261026T113000
+SUMMARY:ODWOŁANE: Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Komunikat dziekanatu: Dnia 26.10.2026 i 27.10.2026 zostają odw
+ ołane zajęcia z dr Aleksandrą Gąsior . Termin odrobienia zostanie usta
+ lony na kolejnych zajęciach.\nhttps://dos.usz.edu.pl/cukrowa/2026/10/grup
+ a-c111-c112-c113-11/\nĆwiczenia\nBusiness Economics\nProwadzi: dr Aleksan
+ dra Gąsior\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-26-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261026T120000
+DTEND;TZID=Europe/Warsaw:20261026T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-26-C111-3-x-1eh9mcq@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261026T134500
+DTEND;TZID=Europe/Warsaw:20261026T151500
+SUMMARY:Ochrona własności intelektualnej · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIntelectual Property Protection\nProwadzi: dr Jarosła
+ w Poteralski\nTylko: 12.10\, 26.10\, 9.11\, 23.11\nMateriały: https://zda
+ walni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-27-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261027T081500
+DTEND;TZID=Europe/Warsaw:20261027T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-27-C111-1-x-szmucr@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261027T100000
+DTEND;TZID=Europe/Warsaw:20261027T113000
+SUMMARY:ODWOŁANE: Ekonomia biznesu · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Komunikat dziekanatu: Dnia 26.10.2026 i 27.10.2026 zostają odw
+ ołane zajęcia z dr Aleksandrą Gąsior . Termin odrobienia zostanie usta
+ lony na kolejnych zajęciach.\nhttps://dos.usz.edu.pl/cukrowa/2026/10/grup
+ a-c111-c112-c113-11/\nWykład\nBusiness Economics\nProwadzi: dr Aleksandra
+  Gąsior\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-28-C111-0-x-vlm8rf@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261028T081500
+DTEND;TZID=Europe/Warsaw:20261028T094500
+SUMMARY:Zarządzanie zasobami ludzkimi · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nHuman Resources Management\nProwadzi: mgr Malwina J
+ ankowska\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-28-C111-1-x-19zau0b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261028T100000
+DTEND;TZID=Europe/Warsaw:20261028T113000
+SUMMARY:Narzędzia IT w zarządzaniu · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIT Tools in Management\nProwadzi: dr inż. Anna Boraws
+ ka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-28-C111-2-x-15daed4@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261028T120000
+DTEND;TZID=Europe/Warsaw:20261028T133000
+SUMMARY:Podstawy finansów · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Finances\nProwadzi: dr hab. prof. US B
+ eata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-30-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261030T081500
+DTEND;TZID=Europe/Warsaw:20261030T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-30-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261030T100000
+DTEND;TZID=Europe/Warsaw:20261030T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-30-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261030T120000
+DTEND;TZID=Europe/Warsaw:20261030T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-30-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261030T134500
+DTEND;TZID=Europe/Warsaw:20261030T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-03-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261103T081500
+DTEND;TZID=Europe/Warsaw:20261103T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-03-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261103T120000
+DTEND;TZID=Europe/Warsaw:20261103T133000
+SUMMARY:ODWOŁANE: Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Komunikat dziekanatu: Dnia 03.11.2026 zostają odwołane zajęc
+ ia z dr Jakubem Dowejko. Termin odrobienia zajęć zostanie podany w póź
+ niejszym czasie.\nhttps://dos.usz.edu.pl/cukrowa/2026/11/grupa-c111-c112-1
+ 2/\nĆwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: https:/
+ /zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-04-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261104T081500
+DTEND;TZID=Europe/Warsaw:20261104T094500
+SUMMARY:ODWOŁANE: Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ogłoszenie prowadzącego w Teams: Odwołane wykłady z Logisty
+ ki 3 i 4.11\nWykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: h
+ ttps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-04-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261104T100000
+DTEND;TZID=Europe/Warsaw:20261104T113000
+SUMMARY:Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Management\nProwadzi: dr hab. prof. US
+  Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-04-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261104T120000
+DTEND;TZID=Europe/Warsaw:20261104T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-06-C111-1-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261106T100000
+DTEND;TZID=Europe/Warsaw:20261106T113000
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-06-C111-2-x-lg92w8@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261106T120000
+DTEND;TZID=Europe/Warsaw:20261106T133000
+SUMMARY:Analiza matematyczna · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMathematical Analysis\nProwadzi: dr Barbara Batóg\nMa
+ teriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-06-C111-3-x-9kfcig@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261106T134500
+DTEND;TZID=Europe/Warsaw:20261106T151500
+SUMMARY:Zarządzanie zasobami ludzkimi · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nHuman Resources Management\nProwadzi: dr inż. Alicja 
+ Nerć-Pełka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-09-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261109T100000
+DTEND;TZID=Europe/Warsaw:20261109T113000
+SUMMARY:Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-09-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261109T120000
+DTEND;TZID=Europe/Warsaw:20261109T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-09-C111-3-x-1eh9mcq@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261109T134500
+DTEND;TZID=Europe/Warsaw:20261109T151500
+SUMMARY:Ochrona własności intelektualnej · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIntelectual Property Protection\nProwadzi: dr Jarosła
+ w Poteralski\nTylko: 12.10\, 26.10\, 9.11\, 23.11\nMateriały: https://zda
+ walni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261110T081500
+DTEND;TZID=Europe/Warsaw:20261110T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-C111-1-x-szmucr@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261110T100000
+DTEND;TZID=Europe/Warsaw:20261110T113000
+SUMMARY:Ekonomia biznesu · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior\nM
+ ateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-13-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261113T081500
+DTEND;TZID=Europe/Warsaw:20261113T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-13-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261113T100000
+DTEND;TZID=Europe/Warsaw:20261113T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-13-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261113T120000
+DTEND;TZID=Europe/Warsaw:20261113T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-13-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261113T134500
+DTEND;TZID=Europe/Warsaw:20261113T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-17-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261117T081500
+DTEND;TZID=Europe/Warsaw:20261117T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-17-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261117T120000
+DTEND;TZID=Europe/Warsaw:20261117T133000
+SUMMARY:Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: 
+ https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-18-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261118T081500
+DTEND;TZID=Europe/Warsaw:20261118T094500
+SUMMARY:Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: htt
+ ps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-18-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261118T100000
+DTEND;TZID=Europe/Warsaw:20261118T113000
+SUMMARY:Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Management\nProwadzi: dr hab. prof. US
+  Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-18-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261118T120000
+DTEND;TZID=Europe/Warsaw:20261118T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-19-C111-1-x-1nyd70i@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261119T100000
+DTEND;TZID=Europe/Warsaw:20261119T113000
+SUMMARY:Odrabianie zajęć
+LOCATION:sala 002a dr Barbara Batóg\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Jednorazowo: 19.11.2026\nMateriały: https://zdawalni.pl
+CATEGORIES:zajęcia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-20-C111-1-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261120T100000
+DTEND;TZID=Europe/Warsaw:20261120T113000
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-20-C111-2-x-lg92w8@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261120T120000
+DTEND;TZID=Europe/Warsaw:20261120T133000
+SUMMARY:Analiza matematyczna · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMathematical Analysis\nProwadzi: dr Barbara Batóg\nMa
+ teriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-20-C111-3-x-9kfcig@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261120T134500
+DTEND;TZID=Europe/Warsaw:20261120T151500
+SUMMARY:Zarządzanie zasobami ludzkimi · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nHuman Resources Management\nProwadzi: dr inż. Alicja 
+ Nerć-Pełka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-23-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261123T100000
+DTEND;TZID=Europe/Warsaw:20261123T113000
+SUMMARY:Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-23-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261123T120000
+DTEND;TZID=Europe/Warsaw:20261123T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-23-C111-3-x-1eh9mcq@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261123T134500
+DTEND;TZID=Europe/Warsaw:20261123T151500
+SUMMARY:Ochrona własności intelektualnej · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIntelectual Property Protection\nProwadzi: dr Jarosła
+ w Poteralski\nTylko: 12.10\, 26.10\, 9.11\, 23.11\nMateriały: https://zda
+ walni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-24-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261124T081500
+DTEND;TZID=Europe/Warsaw:20261124T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-24-C111-1-x-szmucr@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261124T100000
+DTEND;TZID=Europe/Warsaw:20261124T113000
+SUMMARY:Ekonomia biznesu · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior\nM
+ ateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-25-C111-0-x-vlm8rf@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261125T081500
+DTEND;TZID=Europe/Warsaw:20261125T094500
+SUMMARY:Zarządzanie zasobami ludzkimi · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nHuman Resources Management\nProwadzi: mgr Malwina J
+ ankowska\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-25-C111-1-x-19zau0b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261125T100000
+DTEND;TZID=Europe/Warsaw:20261125T113000
+SUMMARY:Narzędzia IT w zarządzaniu · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIT Tools in Management\nProwadzi: dr inż. Anna Boraws
+ ka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-25-C111-2-x-15daed4@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261125T120000
+DTEND;TZID=Europe/Warsaw:20261125T133000
+SUMMARY:Podstawy finansów · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Finances\nProwadzi: dr hab. prof. US B
+ eata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-27-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261127T081500
+DTEND;TZID=Europe/Warsaw:20261127T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-27-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261127T100000
+DTEND;TZID=Europe/Warsaw:20261127T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-27-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261127T120000
+DTEND;TZID=Europe/Warsaw:20261127T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-27-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261127T134500
+DTEND;TZID=Europe/Warsaw:20261127T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-01-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261201T081500
+DTEND;TZID=Europe/Warsaw:20261201T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-01-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261201T120000
+DTEND;TZID=Europe/Warsaw:20261201T133000
+SUMMARY:Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: 
+ https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-02-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261202T081500
+DTEND;TZID=Europe/Warsaw:20261202T094500
+SUMMARY:Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: htt
+ ps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-02-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261202T100000
+DTEND;TZID=Europe/Warsaw:20261202T113000
+SUMMARY:Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Management\nProwadzi: dr hab. prof. US
+  Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-02-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261202T120000
+DTEND;TZID=Europe/Warsaw:20261202T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-04-C111-1-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261204T100000
+DTEND;TZID=Europe/Warsaw:20261204T113000
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-04-C111-2-x-lg92w8@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261204T120000
+DTEND;TZID=Europe/Warsaw:20261204T133000
+SUMMARY:Analiza matematyczna · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMathematical Analysis\nProwadzi: dr Barbara Batóg\nMa
+ teriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-04-C111-3-x-9kfcig@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261204T134500
+DTEND;TZID=Europe/Warsaw:20261204T151500
+SUMMARY:Zarządzanie zasobami ludzkimi · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nHuman Resources Management\nProwadzi: dr inż. Alicja 
+ Nerć-Pełka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-07-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261207T100000
+DTEND;TZID=Europe/Warsaw:20261207T113000
+SUMMARY:Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-07-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261207T120000
+DTEND;TZID=Europe/Warsaw:20261207T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-08-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261208T081500
+DTEND;TZID=Europe/Warsaw:20261208T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-08-C111-1-x-szmucr@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261208T100000
+DTEND;TZID=Europe/Warsaw:20261208T113000
+SUMMARY:Ekonomia biznesu · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior\nM
+ ateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-09-C111-0-x-vlm8rf@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261209T081500
+DTEND;TZID=Europe/Warsaw:20261209T094500
+SUMMARY:Zarządzanie zasobami ludzkimi · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nHuman Resources Management\nProwadzi: mgr Malwina J
+ ankowska\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-09-C111-1-x-19zau0b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261209T100000
+DTEND;TZID=Europe/Warsaw:20261209T113000
+SUMMARY:Narzędzia IT w zarządzaniu · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIT Tools in Management\nProwadzi: dr inż. Anna Boraws
+ ka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-09-C111-2-x-15daed4@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261209T120000
+DTEND;TZID=Europe/Warsaw:20261209T133000
+SUMMARY:Podstawy finansów · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Finances\nProwadzi: dr hab. prof. US B
+ eata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-11-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261211T081500
+DTEND;TZID=Europe/Warsaw:20261211T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-11-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261211T100000
+DTEND;TZID=Europe/Warsaw:20261211T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-11-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261211T120000
+DTEND;TZID=Europe/Warsaw:20261211T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-11-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261211T134500
+DTEND;TZID=Europe/Warsaw:20261211T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-15-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261215T081500
+DTEND;TZID=Europe/Warsaw:20261215T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-15-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261215T120000
+DTEND;TZID=Europe/Warsaw:20261215T133000
+SUMMARY:Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: 
+ https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-16-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261216T081500
+DTEND;TZID=Europe/Warsaw:20261216T094500
+SUMMARY:Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: htt
+ ps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-16-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261216T100000
+DTEND;TZID=Europe/Warsaw:20261216T113000
+SUMMARY:Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Management\nProwadzi: dr hab. prof. US
+  Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-16-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261216T120000
+DTEND;TZID=Europe/Warsaw:20261216T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-17-C111-2-x-1cjqjgv@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261217T120000
+DTEND;TZID=Europe/Warsaw:20261217T133000
+SUMMARY:Szkolenie z obrony cywilnej
+LOCATION:Aula WNS ul. Krakowska 71-79\, Szczecin
+DESCRIPTION:Jednorazowo: 17.12.2026\nMateriały: https://zdawalni.pl
+CATEGORIES:zajęcia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-18-C111-1-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261218T100000
+DTEND;TZID=Europe/Warsaw:20261218T113000
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-18-C111-2-x-lg92w8@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261218T120000
+DTEND;TZID=Europe/Warsaw:20261218T133000
+SUMMARY:Analiza matematyczna · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMathematical Analysis\nProwadzi: dr Barbara Batóg\nMa
+ teriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-18-C111-3-x-9kfcig@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261218T134500
+DTEND;TZID=Europe/Warsaw:20261218T151500
+SUMMARY:Zarządzanie zasobami ludzkimi · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nHuman Resources Management\nProwadzi: dr inż. Alicja 
+ Nerć-Pełka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-21-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261221T100000
+DTEND;TZID=Europe/Warsaw:20261221T113000
+SUMMARY:Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-21-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261221T120000
+DTEND;TZID=Europe/Warsaw:20261221T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-22-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261222T081500
+DTEND;TZID=Europe/Warsaw:20261222T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-22-C111-1-x-szmucr@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261222T100000
+DTEND;TZID=Europe/Warsaw:20261222T113000
+SUMMARY:Ekonomia biznesu · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior\nM
+ ateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-23-C111-0-x-vlm8rf@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261223T081500
+DTEND;TZID=Europe/Warsaw:20261223T094500
+SUMMARY:Zarządzanie zasobami ludzkimi · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nHuman Resources Management\nProwadzi: mgr Malwina J
+ ankowska\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-23-C111-1-x-19zau0b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261223T100000
+DTEND;TZID=Europe/Warsaw:20261223T113000
+SUMMARY:Narzędzia IT w zarządzaniu · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIT Tools in Management\nProwadzi: dr inż. Anna Boraws
+ ka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-23-C111-2-x-15daed4@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261223T120000
+DTEND;TZID=Europe/Warsaw:20261223T133000
+SUMMARY:Podstawy finansów · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Finances\nProwadzi: dr hab. prof. US B
+ eata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-08-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270108T081500
+DTEND;TZID=Europe/Warsaw:20270108T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-08-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270108T100000
+DTEND;TZID=Europe/Warsaw:20270108T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-08-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270108T120000
+DTEND;TZID=Europe/Warsaw:20270108T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-08-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270108T134500
+DTEND;TZID=Europe/Warsaw:20270108T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-12-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270112T081500
+DTEND;TZID=Europe/Warsaw:20270112T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-12-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270112T120000
+DTEND;TZID=Europe/Warsaw:20270112T133000
+SUMMARY:Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: 
+ https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-13-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270113T081500
+DTEND;TZID=Europe/Warsaw:20270113T094500
+SUMMARY:Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: htt
+ ps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-13-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270113T100000
+DTEND;TZID=Europe/Warsaw:20270113T113000
+SUMMARY:Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Management\nProwadzi: dr hab. prof. US
+  Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-13-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270113T120000
+DTEND;TZID=Europe/Warsaw:20270113T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-15-C111-1-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270115T100000
+DTEND;TZID=Europe/Warsaw:20270115T113000
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-15-C111-2-x-lg92w8@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270115T120000
+DTEND;TZID=Europe/Warsaw:20270115T133000
+SUMMARY:Analiza matematyczna · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMathematical Analysis\nProwadzi: dr Barbara Batóg\nMa
+ teriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-15-C111-3-x-9kfcig@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270115T134500
+DTEND;TZID=Europe/Warsaw:20270115T151500
+SUMMARY:Zarządzanie zasobami ludzkimi · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nHuman Resources Management\nProwadzi: dr inż. Alicja 
+ Nerć-Pełka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-18-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270118T100000
+DTEND;TZID=Europe/Warsaw:20270118T113000
+SUMMARY:Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-18-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270118T120000
+DTEND;TZID=Europe/Warsaw:20270118T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-19-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270119T081500
+DTEND;TZID=Europe/Warsaw:20270119T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-19-C111-1-x-szmucr@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270119T100000
+DTEND;TZID=Europe/Warsaw:20270119T113000
+SUMMARY:Ekonomia biznesu · W
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior\nM
+ ateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-20-C111-0-x-vlm8rf@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270120T081500
+DTEND;TZID=Europe/Warsaw:20270120T094500
+SUMMARY:Zarządzanie zasobami ludzkimi · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nHuman Resources Management\nProwadzi: mgr Malwina J
+ ankowska\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-20-C111-1-x-19zau0b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270120T100000
+DTEND;TZID=Europe/Warsaw:20270120T113000
+SUMMARY:Narzędzia IT w zarządzaniu · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIT Tools in Management\nProwadzi: dr inż. Anna Boraws
+ ka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-20-C111-2-x-15daed4@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270120T120000
+DTEND;TZID=Europe/Warsaw:20270120T133000
+SUMMARY:Podstawy finansów · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Finances\nProwadzi: dr hab. prof. US B
+ eata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-22-C111-0-x-1wmb67f@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270122T081500
+DTEND;TZID=Europe/Warsaw:20270122T094500
+SUMMARY:Analiza matematyczna · ĆW
+LOCATION:s. 112\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMathematical Analysis\nProwadzi: dr Barbara Batóg\
+ nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-22-C111-1-x-4vgoku@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270122T100000
+DTEND;TZID=Europe/Warsaw:20270122T113000
+SUMMARY:Makroekonomia · ĆW
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMate
+ riały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-22-C111-2-x-ua5hxp@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270122T120000
+DTEND;TZID=Europe/Warsaw:20270122T133000
+SUMMARY:Makroekonomia · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nMacroeconomics\nProwadzi: dr Agnieszka Bretyn\nMateria
+ ły: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-22-C111-3-A-1v3f76b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270122T134500
+DTEND;TZID=Europe/Warsaw:20270122T151500
+SUMMARY:Narzędzia IT w zarządzaniu · LAB
+LOCATION:s. SIL 116 (lab)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Laboratorium\, podgrupa A\nIT Tools in Management\nProwadzi: dr
+  inż. Piotr Niemcewicz\nMateriały: https://zdawalni.pl
+CATEGORIES:laboratorium
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-26-C111-0-x-1jjry2x@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270126T081500
+DTEND;TZID=Europe/Warsaw:20270126T094500
+SUMMARY:Prawo · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLaw\nProwadzi: dr Małgorzata Szymszon\nMateriały: ht
+ tps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-26-C111-2-x-bzzsa0@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270126T120000
+DTEND;TZID=Europe/Warsaw:20270126T133000
+SUMMARY:Logistyka · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: 
+ https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-27-C111-0-x-1kbsa17@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270127T081500
+DTEND;TZID=Europe/Warsaw:20270127T094500
+SUMMARY:Logistyka · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nLogistics\nProwadzi: dr Jakub Dowejko\nMateriały: htt
+ ps://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-27-C111-1-x-1b581ny@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270127T100000
+DTEND;TZID=Europe/Warsaw:20270127T113000
+SUMMARY:Podstawy zarządzania · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Management\nProwadzi: dr hab. prof. US
+  Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-27-C111-2-x-fle48r@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270127T120000
+DTEND;TZID=Europe/Warsaw:20270127T133000
+SUMMARY:Podstawy finansów · ĆW
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Finances\nProwadzi: dr hab. prof. U
+ S Beata Świecka\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-29-C111-0-x-vlm8rf@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270129T081500
+DTEND;TZID=Europe/Warsaw:20270129T094500
+SUMMARY:Zarządzanie zasobami ludzkimi · ĆW
+LOCATION:s. 307\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nHuman Resources Management\nProwadzi: mgr Malwina J
+ ankowska\nDzień zamienny: zajęcia jak w środę (tydzień parzysty)\nMat
+ eriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-29-C111-1-x-19zau0b@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270129T100000
+DTEND;TZID=Europe/Warsaw:20270129T113000
+SUMMARY:Narzędzia IT w zarządzaniu · W
+LOCATION:s. SIL 325\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nIT Tools in Management\nProwadzi: dr inż. Anna Boraws
+ ka\nDzień zamienny: zajęcia jak w środę (tydzień parzysty)\nMateriał
+ y: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-29-C111-2-x-15daed4@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270129T120000
+DTEND;TZID=Europe/Warsaw:20270129T133000
+SUMMARY:Podstawy finansów · W
+LOCATION:s. 002\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Wykład\nFundamentals of Finances\nProwadzi: dr hab. prof. US B
+ eata Świecka\nDzień zamienny: zajęcia jak w środę (tydzień parzysty)
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:wykład
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-01-C111-1-x-x9h4js@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270201T100000
+DTEND;TZID=Europe/Warsaw:20270201T113000
+SUMMARY:Ekonomia biznesu · ĆW
+LOCATION:s. 003\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nBusiness Economics\nProwadzi: dr Aleksandra Gąsior
+ \nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-01-C111-2-x-1s50dt9@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20270201T120000
+DTEND;TZID=Europe/Warsaw:20270201T133000
+SUMMARY:Podstawy zarządzania · ĆW
+LOCATION:s. 044 (aula)\, ul. Cukrowa 8\, Szczecin
+DESCRIPTION:Ćwiczenia\nFundamentals of Management\nProwadzi: dr hab. prof.
+  US Dariusz Milewski\nMateriały: https://zdawalni.pl
+CATEGORIES:ćwiczenia
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:wolne-2026-10-01@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:Bez zajęć: Dzień rektorski
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:wolne-2026-11-02@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261103
+SUMMARY:Bez zajęć: Dzień rektorski
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:wolne-2026-11-11@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20261111
+DTEND;VALUE=DATE:20261112
+SUMMARY:Bez zajęć: Narodowe Święto Niepodległości
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:okres-2026-12-24@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20261224
+DTEND;VALUE=DATE:20270107
+SUMMARY:Przerwa świąteczna
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:okres-2027-02-02@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20270202
+DTEND;VALUE=DATE:20270216
+SUMMARY:Sesja egzaminacyjna (2–15.02)
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:okres-2027-02-16@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20270216
+DTEND;VALUE=DATE:20270222
+SUMMARY:Przerwa po sesji zimowej
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:okres-2027-02-22@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20270222
+DTEND;VALUE=DATE:20270301
+SUMMARY:Sesja poprawkowa (22–28.02)
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:termin-dl1@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261210T100000
+DTEND;TZID=Europe/Warsaw:20261210T110000
+SUMMARY:Kolokwium z mikroekonomii
+DESCRIPTION:Szczegóły w Skrócie BM: https://zdawalni.pl
+CATEGORIES:Kolokwium
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Kolokwium z mikroekonomii
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:termin-dl2@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20270115
+DTEND;VALUE=DATE:20270116
+SUMMARY:~ Projekt
+DESCRIPTION:Data orientacyjna z sylabusa: prowadzący jeszcze nie podał do
+ kładnego terminu.\nSzczegóły w Skrócie BM: https://zdawalni.pl
+CATEGORIES:Projekt
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:~ Projekt
+TRIGGER:-PT6H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:moje-m1@skrotbm.pl
+DTSTAMP:X
+DTSTART;TZID=Europe/Warsaw:20261120T120000
+DTEND;TZID=Europe/Warsaw:20261120T130000
+SUMMARY:✏️ Mój wpis: Konsultacje
+DESCRIPTION:Twój wpis w Skrócie BM: https://zdawalni.pl
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:twoja-data-makroekonomia-W@skrotbm.pl
+DTSTAMP:X
+DTSTART;VALUE=DATE:20270203
+DTEND;VALUE=DATE:20270204
+SUMMARY:📅 Twoja data: zaliczenie Makroekonomia (wykład)
+DESCRIPTION:Data wpisana przez Ciebie w Skrócie BM (Przygotuj się). Plan 
+ nauki liczy się do niej.\nhttps://zdawalni.pl
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:📅 Twoja data: zaliczenie Makroekonomia (wykład)
+TRIGGER:-PT6H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
