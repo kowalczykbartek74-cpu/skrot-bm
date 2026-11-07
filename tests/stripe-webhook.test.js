@@ -129,3 +129,12 @@ test("baza bez v45: zapis po starym kluczu e-mail (nic się nie blokuje)", async
   assert.equal(r.status, 200);
   assert.equal(b.db.dostep.length, 1); assert.equal(b.db.dostep[0].rocznik_id, undefined, "bez kolumny rocznika w zapisie");
 });
+
+test("jeden-plik.ts (do wklejenia w panelu) jest aktualny i bez importu obsluga.ts", async () => {
+  const fs = require("fs"), path = require("path");
+  const { jedenPlik } = await import("../scripts/webhook-jeden-plik.mjs");
+  const plik = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "stripe-webhook", "jeden-plik.ts"), "utf8");
+  assert.equal(plik, jedenPlik());
+  assert.ok(!plik.includes("./obsluga.ts\""));
+  assert.ok(plik.includes("export async function obsluz") && plik.includes("Deno.serve("));
+});
