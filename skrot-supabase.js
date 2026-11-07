@@ -109,6 +109,25 @@
 
   const skrot = (window.skrot = { sb, podglad: PG, realAdmin: false, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, paidAccount: false, device: null, hasPassword: false, deviceId: DEVICE, deviceName: DEVICE_NAME, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
   skrot.rocznikTresci = () => ({ id: ROK_ID, kolumna: rokKolumna }); // rocznik treści i czy baza ma v44 (testy, panel)
+  // ---------- „Edytuję rocznik” (fundament Etap 3): admin pracuje nad innym rocznikiem, z zapisem ----------
+  // Klucz „skrot-admin-rocznik” czyta rocznik.js; tu sprawdzamy konto: nie admin (albo wylogowany) → kasujemy klucz i przeładowujemy.
+  const ED_KLUCZ = window.SKROT_ROCZNIKI?.KLUCZ_EDYCJA || "skrot-admin-rocznik";
+  const ED = window.SKROT_EDYCJA || null;
+  const edKasuj = () => { let byl = false; try { byl = localStorage.getItem(ED_KLUCZ) != null; localStorage.removeItem(ED_KLUCZ); } catch {} return byl; };
+  skrot.edycja = ED;
+  skrot.edycjaUstaw = (id) => {
+    if (!skrot.realAdmin || PG) return false;
+    const R = window.SKROT_ROCZNIKI;
+    try {
+      if (!id || id === R?.DOMYSLNY) localStorage.removeItem(ED_KLUCZ);
+      else if (R?.ROCZNIKI[id]) localStorage.setItem(ED_KLUCZ, id);
+      else return false;
+    } catch { return false; }
+    location.hash = "#/starosta"; location.reload();
+    return true;
+  };
+  // wszystkie roczniki z bazy (v31: id, status, kierunek, wydział); bez v31 → null
+  skrot.rocznikiLista = async () => { await ready; const { data, error } = await sb.rpc("nauka_roczniki_lista"); return error || !Array.isArray(data) ? null : data; };
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const changed = () => skrot.listeners.forEach((fn) => { try { fn(skrot.state); } catch {} });
 
@@ -126,6 +145,7 @@
       if (!session) {
         skrot.state = "out";
         if (PG) { ADM.podgladUstaw(null); if (PG.rocznik) location.reload(); }
+        if (edKasuj() && ED) location.reload();
         return;
       }
       skrot.uid = session.user.id;
@@ -159,6 +179,8 @@
     skrot.trialCan = !!me?.proba_mozna && !skrot.paid;
     skrot.trialDays = me?.proba_dni || 3;
     skrot.realAdmin = skrot.admin;
+    // „Edytuję rocznik” tylko dla administratora: ktoś inny z ręcznie wpisanym kluczem wraca do swojego rocznika
+    if (!skrot.admin && edKasuj() && ED) { location.reload(); return me; }
     if (PG) {
       // Podgląd tylko dla administratora; ktoś inny z ręcznie wpisanym sessionStorage traci go (i wraca do swojego rocznika).
       if (!skrot.admin) { ADM.podgladUstaw(null); location.reload(); return me; }
@@ -184,6 +206,8 @@
   async function syncRocznik() {
     const R = window.SKROT_ROCZNIKI, cur = window.SKROT_ROCZNIK;
     if (!R || !cur) return;
+    // Admin edytuje inny rocznik: nie zapisujemy go w profilu (profil admina zostaje w BM) i nie przełączamy z powrotem.
+    if (ED && skrot.admin) return;
     try {
       const { data, error } = await sb.rpc("nauka_rocznik_moj");
       if (error || !data?.ok) return;

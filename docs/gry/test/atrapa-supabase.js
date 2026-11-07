@@ -369,6 +369,9 @@
     nauka_rocznik_moj: () => ({ ok: true, rocznik_id: rok().id, wybrany: !!rok().wybrany, status: "platny" }),
     nauka_rocznik_ustaw: (a) => { if (rok().wybrany) return { ok: false, code: "juz_wybrany", rocznik_id: rok().id };
       try { localStorage.setItem("mock-rocznik", JSON.stringify({ id: a.p_rocznik, wybrany: true })); } catch {} return { ok: true, rocznik_id: a.p_rocznik, wybrany: true, status: "platny" }; },
+    // lista roczników (v31): mock-roczniki-lista = JSON [{ id, status }] (domyślnie sam BM)
+    nauka_roczniki_lista: () => { let l = null; try { l = JSON.parse(localStorage.getItem("mock-roczniki-lista") || "null"); } catch {}
+      return (l || [{ id: "wefiz-bm-1-st-2026", status: "platny" }]).map((r) => ({ nabor: 2026, kierunek: {}, wydzial: {}, ...r })); },
   };
   // ---------- v37 (etap 10): paczka i duet; stan w localStorage mock-paczka (JSON jak z nauka_paczka(), bez ok/cfg),
   // "off" → baza bez v37 (not_enabled); podgląd zaproszenia z mock-paczka-podglad; wywołania w window.__pk ----------
@@ -482,6 +485,12 @@
   const rokOf = (col, id) => (ROKI[col] && id in ROKI[col] ? ROKI[col][id] : ROK_KOL.includes(col) && !(col === "meta" && id === "en") ? BM : null);
   const BRAK44 = { data: null, error: { code: "42703", message: "column nauka_docs.rocznik_id does not exist" } };
   window.__zapisy = [];
+  const TRWALE_DOCS = ls("mock-docs-trwale", "0") === "1";
+  if (TRWALE_DOCS) try { const z = JSON.parse(localStorage.getItem("mock-docs-zapis") || "null"); if (z) { for (const [k, v] of Object.entries(z.docs || {})) Object.assign((DOCS[k] ||= {}), v); for (const [k, v] of Object.entries(z.roki || {})) Object.assign((ROKI[k] ||= {}), v); } } catch {}
+  const ZAPIS = { docs: {}, roki: {} };
+  try { if (TRWALE_DOCS) Object.assign(ZAPIS, JSON.parse(localStorage.getItem("mock-docs-zapis") || "null") || {}); } catch {}
+  const zapiszTrwale = (r) => { if (!TRWALE_DOCS) return; (ZAPIS.docs[r.kolekcja] ||= {})[r.id] = r.data; if ("rocznik_id" in r) (ZAPIS.roki[r.kolekcja] ||= {})[r.id] = r.rocznik_id;
+    try { localStorage.setItem("mock-docs-zapis", JSON.stringify(ZAPIS)); } catch {} };
   function table() {
     const st = { op: "select", filters: {}, row: null, single: false, or: null };
     const run = async () => {
@@ -497,6 +506,7 @@
         for (const r of [].concat(st.row)) {
           (DOCS[r.kolekcja] ||= {})[r.id] = r.data; window.__zapisy.push({ kolekcja: r.kolekcja, id: r.id, rocznik_id: r.rocznik_id });
           if ("rocznik_id" in r) (ROKI[r.kolekcja] ||= {})[r.id] = r.rocznik_id;
+          zapiszTrwale(r);
         }
         saveProg(); return { data: null, error: null };
       }

@@ -47,6 +47,7 @@
     },
   };
   var DOMYSLNY = "wefiz-bm-1-st-2026";
+  var KLUCZ_EDYCJA = "skrot-admin-rocznik"; // localStorage: rocznik edytowany przez administratora
 
   var STOPIEN_PL = { 0: "jednolite magisterskie", 1: "I stopnia", 2: "II stopnia" };
   var STOPIEN_EN = { 0: "long-cycle master's", 1: "first-cycle", 2: "second-cycle" };
@@ -114,6 +115,11 @@
     var pg = null;
     try { pg = root.SKROT_ADMIN && root.SKROT_ADMIN.podglad && root.SKROT_ADMIN.podglad(); } catch (e) { pg = null; }
     if (pg && pg.rocznik && ROCZNIKI[pg.rocznik]) return pg.rocznik;
+    // „Edytuję rocznik” administratora (Narzędzia, fundament Etap 3): treści innego rocznika z zapisem. Obowiązuje dopiero, gdy
+    // skrot-supabase.js potwierdzi, że konto to admin (inaczej kasuje klucz i przeładowuje); profil admina zostaje w BM.
+    var ed = null;
+    try { ed = root.localStorage && root.localStorage.getItem(KLUCZ_EDYCJA); } catch (e) { ed = null; }
+    if (ed && ROCZNIKI[ed] && ed !== DOMYSLNY) { root.SKROT_EDYCJA = ed; return ed; }
     try { id = root.localStorage && root.localStorage.getItem("skrot-rocznik"); } catch (e) { /* tryb prywatny */ }
     return id && ROCZNIKI[id] ? id : DOMYSLNY;
   }
@@ -140,7 +146,7 @@
     return id.slice(0, -s.length);
   }
 
-  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow,
+  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow, wybrany: wybrany, KLUCZ_EDYCJA: KLUCZ_EDYCJA,
     KOLEKCJE_ROCZNIKA: KOLEKCJE_ROCZNIKA, KOLEKCJE_STALE_ID: KOLEKCJE_STALE_ID, kolekcjaRocznika: kolekcjaRocznika, docId: docId, docIdStrony: docIdStrony };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
   else {

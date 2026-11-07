@@ -107,3 +107,18 @@ test("id dokumentów: BM bez zmian, inny rocznik z sufiksem tylko dla stałych i
   // limit id w bazie (nauka.sql: 120 znaków): typowe id Po zajęciach z sufiksem się mieści
   assert.ok(R.docId("meta", "po~" + "x".repeat(40) + "~CW~a1b2c3d4", T).length <= 120);
 });
+
+test("wybrany(): Podgląd jako → Edytuję rocznik (admin) → skrot-rocznik → BM", () => {
+  const T = "wefiz-test-1-st-2026";
+  R.ROCZNIKI[T] = { ...R.ROCZNIKI[BM], kierunek: { kod: "BM", pl: "Test", en: "Test" } };
+  const store = {};
+  globalThis.localStorage = { getItem: (k) => (k in store ? store[k] : null) };
+  try {
+    assert.strictEqual(R.wybrany(), BM, "nic → BM");
+    store["skrot-rocznik"] = T; assert.strictEqual(R.wybrany(), T, "wybór z ekranu wejścia");
+    store["skrot-rocznik"] = BM; store[R.KLUCZ_EDYCJA] = T; assert.strictEqual(R.wybrany(), T, "klucz admina wygrywa z wyborem");
+    store[R.KLUCZ_EDYCJA] = "nie-ma-1-st-2026"; assert.strictEqual(R.wybrany(), BM, "nieznany rocznik admina → wybór/BM");
+    globalThis.SKROT_ADMIN = { podglad: () => ({ rocznik: BM }) }; store[R.KLUCZ_EDYCJA] = T;
+    assert.strictEqual(R.wybrany(), BM, "Podgląd jako wygrywa z edycją");
+  } finally { delete globalThis.localStorage; delete globalThis.SKROT_ADMIN; delete globalThis.SKROT_EDYCJA; delete R.ROCZNIKI[T]; }
+});
