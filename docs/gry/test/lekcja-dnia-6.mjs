@@ -6,7 +6,7 @@ const wyniki = []; const ok = (n, w, i) => wyniki.push([w ? "✓" : "✗", n, w 
 const UID = "00000000-0000-4000-8000-000000000001";
 const T0 = 309;
 const A = "analiza-matematyczna", M = "logistyka", Z = "podstawy-zarzadzania", P = "prawo";
-const sec = (t, i) => ({ h: `${i + 1}. ${t} ${i + 1}`, body: `Akapit ${i + 1} o **pojęciu ${i + 1}** w temacie ${t}.`, check: { q: `Check ${t} ${i + 1}?`, options: ["Dobra", "Zła"], correct: 0 } });
+const sec = (t, i) => ({ h: `${i + 1}. ${t} ${i + 1}`, body: `Akapit ${i + 1} o **Contract** i **pojęciu ${i + 1}** w temacie ${t}.`, check: { q: `Check ${t} ${i + 1}?`, options: ["Dobra", "Zła"], correct: 0 } });
 const lesson = (t) => ({ sections: [0, 1, 2, 3].map((i) => sec(t, i)), exit: [{ q: `Bilet ${t}?`, options: ["Dobra", "Zła"], correct: 0 }], recap: { prompt: `Wyjaśnij ${t}.`, keys: ["a"], model: "Wzór." }, exercises: [], faded: {}, formulas: [] });
 const quiz = (t) => Array.from({ length: 12 }, (_, i) => ({ q: `Quiz ${t} ${i + 1}?`, options: ["Dobra", "Zła", "Zła 2", "Zła 3"], correct: 0, explanation: "Bo tak." }));
 const concepts = (t) => [{ term: "Contract", definition: "Umowa: zgodne oświadczenia woli stron, contractual." }, ...Array.from({ length: 7 }, (_, i) => ({ term: `Term ${t} ${i}`, definition: `Definicja ${i}.` }))];
@@ -88,6 +88,27 @@ try {
   ok("Fruń: po odpowiedzi listek czeka na dotknięcie, wynik zostaje", (await q.locator(".gry-sheet").count()) === 0 && dbg.st === "gotowy" && dbg.score === 20 && dbg.invuln > 0, dbg);
   ok("Fruń: odpowiedź poszła do bazy jak pytanie z gry", await q.evaluate(() => JSON.stringify(window.__rpc || []).includes('"gra"')), "");
   await q.close();
+
+  // ---- Podkreślone pojęcia w nowej lekcji: dotknięcie pokazuje wyjaśnienie (jak w zwykłej lekcji) ----
+  const r = await open("#/ld");
+  await r.evaluate((T0) => {
+    const k = "bm-ld:" + T0, d = JSON.parse(localStorage.getItem(k) || "null") || { d: T0, plany: {}, done: {}, tem: [], pom: {} };
+    d.plany.l0 = { temat: "M1", sid: "logistyka", tematy: ["M1"], rola: "najwazniejsze", tryb: "utrwalanie", nowe: true, min: 20, segmenty: [
+      { i: 0, nazwa: "wyjasnienie", mech: "wyjasnienie", typ: "ucze", temat: "M1", sekcja: 0, min: 3 }], powody: [] };
+    localStorage.setItem(k, JSON.stringify(d));
+  }, T0);
+  await r.reload(); await r.waitForTimeout(2500);
+  await r.locator("main section.panel.sk-panel").nth(1).getByRole("button", { name: /Zaczynam/ }).click(); await r.locator(".ld-seg").waitFor({ timeout: 15000 }); await r.waitForTimeout(600);
+  const term = r.locator(".lp-stage b.lp-term", { hasText: "Contract" });
+  for (let i = 0; i < 6 && !(await term.count()); i++) { await r.locator(".lp-cta").click(); await r.waitForTimeout(400); }
+  ok("pojęcie w nowej lekcji jest podkreślone (lp-term)", (await term.count()) >= 1, await r.locator(".lp-stage").innerText());
+  await term.first().click(); await r.waitForTimeout(400);
+  const sh = (await r.locator(".lp-sheet.on").count()) ? await r.locator(".lp-sheet.on").innerText() : "";
+  ok("dotknięcie pokazuje wyjaśnienie z definicją", /Contract/.test(sh) && /zgodne oświadczenia woli/.test(sh), sh);
+  await shot(r, "ld6-pojecie");
+  await r.getByRole("button", { name: "Jasne, wracam" }).click(); await r.waitForTimeout(300);
+  ok("„Jasne, wracam” zamyka wyjaśnienie", (await r.locator(".lp-sheet.on").count()) === 0, "");
+  await r.close();
 } catch (e) { ok("bez wyjątku", false, String(e?.stack || e)); }
 await b.close();
 for (const [s, n, i] of wyniki) console.log(s, n, i);

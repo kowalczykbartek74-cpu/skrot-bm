@@ -9103,21 +9103,23 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
     if (e) return { en: e.t, pl: e.pl || "", def: lpFirstSentence(e.d) };
     return pick(gl.filter((t) => !t.s?.includes(sid)));
   }
-  const lpTermOf = (word) => termFind(word, LP.m, LP.c);
+  // Materiał, z którego biorą się pojęcia: w lekcji jeden, w „Dla Ciebie na dziś” temat bieżącej karty (src.termCtx).
+  const lpMC = (card) => (LP.m ? { m: LP.m, c: LP.c } : LP.src?.termCtx?.(card || lpCur()) || { m: null, c: null });
+  const lpTermOf = (word) => { const { m, c } = lpMC(); return termFind(word, m, c); };
   // Zdanie z lekcji, w którym pogrubione słowo jest wyjaśnione (zapas, gdy nie ma go w żadnym spisie pojęć).
   // Teksty materiału, z których powstają karty (lekcja, quiz, fiszki), bez spisów pojęć.
   const termTexts = (c) => Object.entries(c || {}).filter(([k]) => !["lessonTerms", "explain", "concepts", "worked"].includes(k)).map(([, v]) => v);
   function lpTermSentence(word) {
     const k = norm(word), out = [];
     const walk = (v) => { if (out.length) return; if (typeof v === "string") { if (v.includes("**")) for (const s of lpSentences(v)) if ([...s.matchAll(/\*\*([^*\n]+?)\*\*/g)].some((x) => norm(x[1]) === k)) { out.push(s); return; } } else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") Object.values(v).forEach(walk); };
-    walk(termTexts(LP.c));
+    walk(termTexts(lpMC().c));
     return out[0] || "";
   }
   function lpTerms(node) {
-    if (LP.src?.kind !== "lesson") return;
+    if (LP.src?.kind !== "lesson" && !LP.src?.termCtx) return;
     // Słowniczek dochodzi w tle: gdy przyjdzie, dopisujemy pojęcia na karcie, która już jest na ekranie.
     if (!GL.terms && !GL.loading) loadGlossary().then(() => { if (LP.open && LP.el?.stage) lpTerms(LP.el.stage); }).catch(() => {});
-    sylPoj(LP.m?.subjectId);
+    sylPoj(lpMC().m?.subjectId);
     // Każde pogrubienie z treści (b.md: z inline/inlineX), także w odpowiedziach, podpowiedziach i wyjaśnieniach po odpowiedzi.
     node.querySelectorAll("b.md, .lp-text b, .lp-big b, .lp-quote b").forEach((b) => {
       if (b.closest("button, .opt, [role=button], label, summary, .lp-kick") || b.classList.contains("lp-term") || b.querySelector("b")) return;
@@ -9498,7 +9500,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
       const C = 2 * Math.PI * 14;
       const think = h("div", { class: "lp-think" }); think.innerHTML = `<svg viewBox="0 0 34 34" aria-hidden="true"><circle class="bg" cx="17" cy="17" r="14"/><circle class="fg" cx="17" cy="17" r="14" style="stroke-dasharray:${C.toFixed(1)}"/></svg>`; think.append(h("span", { text: "Pomyśl chwilę, jak byś to policzył. Potem odsłaniaj kroki." }));
       const reveal = () => { if (r === n - 1) lpAward(lpXv("example"), { at: LP.el.cta }); ctx.setRev(r + 1, { newStep: r }); };
-      const u = xplUse(LP.m, LP.c);
+      const mc = lpMC(card), u = xplUse(mc.m, mc.c);
       return { el: [kick("✍️ Przykład: spróbuj sam", card), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inlineX(card.task, u)),
         r === 0 ? think : null,
         r ? h("ol", { class: "lp-steps" }, card.steps.slice(0, r).map((s, i) => h("li", { class: i === ctx.fx.newStep ? "lp-new" : null }, h("span", {}, inlineX(s, u))))) : null,
@@ -9519,7 +9521,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
     },
     faded(card, ctx) {
       const a = ctx.ans || {}, open = a.open || {}, blanks = card.steps.map((s, i) => (s.blank ? i : -1)).filter((i) => i >= 0), allOpen = blanks.every((i) => open[i]);
-      const u = xplUse(LP.m, LP.c);
+      const mc = lpMC(card), u = xplUse(mc.m, mc.c);
       return { el: [kick("🧩 Rozwiązanie z lukami"), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inlineX(card.task, u)),
         h("ol", { class: "lp-steps" }, card.steps.map((s, i) => !s.blank || open[i] ? h("li", { class: (s.blank ? "blank " : "") + (ctx.fx.newStep === i ? "lp-new" : "") }, h("span", {}, inlineX(s.text, u)))
           : h("li", { class: "blank" }, h("span", {}, h("span", { class: "muted", text: "Twój ruch ✍️ Zrób ten krok sam. " }), h("button", { type: "button", class: "link", onclick: () => ctx.set({ ...a, open: { ...open, [i]: 1 } }, { newStep: i }) }, "Sprawdź"))))),
@@ -9529,7 +9531,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
         cta: { label: a.grade != null ? "Dalej" : allOpen ? "Oceń się" : "Odsłoń brakujące kroki", disabled: a.grade == null } };
     },
     exercise(card, ctx) {
-      const a = ctx.ans || {}, u = xplUse(LP.m, LP.c);
+      const a = ctx.ans || {}, mc = lpMC(card), u = xplUse(mc.m, mc.c);
       return { el: [kick(card.transfer ? "🚀 Nowa sytuacja" : `💪 Zadanie · poziom ${card.level}`), h("p", { class: "lp-big", style: "font-size:1.08rem" }, inlineX(card.task, u)),
         card.hint && !a.shown ? (a.hint ? h("div", { class: "lp-fb ok lp-new" }, h("p", {}, h("span", { class: "lbl", text: "💡 Podpowiedź: " }), inlineX(card.hint, u))) : h("button", { type: "button", class: "btn small ghost", style: "justify-self:start", onclick: () => ctx.set({ ...a, hint: 1 }) }, "💡 Podpowiedź")) : null,
         a.shown ? h("div", { class: "lp-ans lp-new" }, h("b", { text: "Odpowiedź: " }), inlineX(card.answer, u)) : h("p", { class: "muted", style: "margin:0", text: "Rozwiąż w głowie albo na kartce. Potem porównaj." }),
@@ -18067,6 +18069,8 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const segOf = (idx) => lpCards()[idx]?.seg ?? 0;
     return {
       kind: "ld", id: "ld:" + D.key, title, m: null, c: null, segs,
+      // Podkreślone pojęcia (jak w lekcji): definicje z tematu bieżącej karty, rozgrzewka z klucza powtórki.
+      termCtx(card) { const mid = card?.mid || (card?.key ? keyMid(card.key) : null) || plan.temat, m = materialById(mid); return { m, c: m ? D.C.get(mid) ?? S.content[mid] ?? null : null }; },
       label: (karta ? "Dziś · 5 min: " : "Lekcja dla Ciebie: ") + title, closeLabel: "Zamknij (postęp się zapisze, wrócisz dziś)", empty: "Nie udało się ułożyć kart z tego tematu.",
       // XP tylko przy pierwszym przejściu tej karty / lekcji dzisiaj („Zrób jeszcze raz” już bez XP).
       stateKey, xp: { bite: 0 }, pool: { once: "ld:" + dayN() + ":" + D.key, ok: !xpOnceUsed("ld:" + dayN() + ":" + D.key) }, retry: true, feedback: "now",

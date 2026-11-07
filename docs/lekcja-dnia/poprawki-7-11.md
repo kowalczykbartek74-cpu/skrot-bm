@@ -24,13 +24,18 @@ Bez SQL. Zmienione pliki: `lekcja-dnia.js`, `index.html`, `gry.js`, `i18n-en.js`
   - Po pytaniu listek czeka na dotknięcie i przez 2 s jest nietykalny, jak po Drugiej szansie.
   - Pytania z bramek liczą się do limitu 12 pytań na rundę.
 
+- **Podkreślone pojęcia w nowych lekcjach** (dopisane później tego samego dnia)
+  - Pogrubione pojęcia w kartach „Dla Ciebie na dziś” są podkreślone kropkami, tak jak w zwykłej lekcji. Dotknięcie otwiera wyjaśnienie: pojęcie, polskie tłumaczenie, definicja i przycisk „Jasne, wracam”.
+  - Definicje są brane z tematu bieżącej karty, bo lekcja może łączyć kilka tematów. Kolejność źródeł jak w lekcji: pojęcia tematu, sylabus, słowniczek, a na końcu zdanie z lekcji.
+  - Podkreślenia w przykładach, zadaniach i rozwiązaniach z lukami działają tak samo.
+
 ## Decyzje (moje, do zmiany na Twoje słowo)
 - **Zła odpowiedź we Fruń nie kończy rundy.** „Musisz odpowiedzieć” rozumiem tak, że nie da się pominąć pytania. Jeśli zła odpowiedź ma kończyć grę, to jedna linijka.
 - **Podpowiedzi idą od najsłabszej do najmocniejszej.** Znaczenie jest drugie, bo uczy najwięcej.
 
 ## Testy
 - `node --test tests/*.test.js`: 243/243. Nowe testy: 5 podpowiedzi z ukrytym hasłem, samogłoski bez definicji, wybrana karta.
-- Nowy `docs/gry/test/lekcja-dnia-6.mjs`: 15/15. Sprawdza:
+- Nowy `docs/gry/test/lekcja-dnia-6.mjs`: 18/18 (w tym pojęcie podkreślone w lekcji, wyjaśnienie z definicją i zamknięcie). Sprawdza:
   - listę tematów z przedmiotami;
   - wybór, powód i zapis w planie, także po otwarciu karty;
   - Hasło: podpowiedzi 1…5 po złych próbach, ich treść, ukryte słowo i zniknięcie po zgadnięciu;
