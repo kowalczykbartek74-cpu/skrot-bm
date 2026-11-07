@@ -48,3 +48,8 @@ Bez SQL. Zmienione pliki: `lekcja-dnia.js`, `index.html`, `gry.js`, `i18n-en.js`
 - **Plan zajęć („Dziś masz 3 zajęcia”) zniknął z Dziś.** Jest dalej w Kalendarzu i w „Pełnym planie zajęć”.
 - Dotyczy też `?ld=0`, czyli starych kart.
 - Zrzuty: `zrzuty/dzis-postep-390.png`, `zrzuty/dzis-postep-1280.png`.
+- **Telefon (do 600 px), wersja krótsza; na komputerze bez zmian:**
+  - „Twój postęp”: jeden wiersz na przedmiot (bez paska i dni do zaliczenia przy przedmiocie), bez „?” i „Zaczęte” oraz jeden najbliższy termin;
+  - karta 5 min ma niższe kroki;
+  - w kafelkach lekcji są najwyżej 3 chipy mechanik i nie ma zdania z powodem (zostaje „Dlaczego to?”).
+  - Ekran na telefonie skrócił się z ok. 3500 do ok. 3100 px.

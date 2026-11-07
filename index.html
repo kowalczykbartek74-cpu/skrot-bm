@@ -2635,6 +2635,24 @@ button.lv-open:hover .lv-chev, .lv-link:hover .lv-chev { transform: translateX(3
 .pts-card.pts-dzis .term { min-height: 0; padding: 8px 10px; gap: 4px 10px; }
 .pts-card.pts-dzis .term-title { font-size: .98rem; }
 .pts-card.pts-dzis .term-end { flex-direction: row; align-items: center; gap: 8px; }
+/* Dziś na telefonie: krócej (komputer bez zmian). Jeden wiersz na przedmiot, jeden najbliższy termin, niższe kroki karty i mniej chipów w lekcjach. */
+@media (max-width: 600px) {
+  .pts-card.pts-dzis { gap: 6px; padding: 12px 14px; }
+  .pts-card.pts-dzis .once-q, .pts-card.pts-dzis .pts-started, .pts-card.pts-dzis > .pts-sub { display: none; }
+  .pts-card.pts-dzis .pts-row { grid-template-columns: minmax(0, 1fr) auto; padding: 4px 2px; }
+  .pts-card.pts-dzis .pts-row .pts-bar, .pts-card.pts-dzis .pts-row .when { display: none; }
+  .pts-card.pts-dzis .pts-more summary { font-size: .86rem; }
+  .pts-card.pts-dzis .terms .term:nth-child(n+2), .pts-card.pts-dzis .terms + p, .pts-card.pts-dzis .terms + p + .terms { display: none; }
+  .pts-card.pts-dzis .term { grid-template-columns: minmax(0, 1fr) auto; padding: 8px 10px; }
+  .pts-card.pts-dzis .term .tick { display: none; }
+  .pts-card.pts-dzis .term-end { grid-column: auto; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .pts-card.pts-dzis .term-title { font-size: .94rem; }
+  .ld-hero .ld-steps { gap: 4px; }
+  .ld-hero .ld-step { min-height: 40px; padding: 4px 10px; grid-template-columns: 28px minmax(0, 1fr) auto; }
+  .ld-hero .ld-step .t { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .ld-tile { gap: 6px; }
+  .ld-tile .foot .sk-chip:nth-child(n+4), .ld-tile > .meta.muted { display: none; }
+}
 .pts-card .panel-head { margin: 0; }
 .pts-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: .9rem; font-weight: 700; }
 .pts-sub { margin: 6px 0 0; font-size: 1rem; }
