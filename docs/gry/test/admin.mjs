@@ -117,7 +117,9 @@ const quiz = (n, tag) => Array.from({ length: n }, (_, i) => ({ q: `${tag}: ques
 const DOCS = { materials: { o1: { subjectId: SID, title: "Topic 1", quizCount: 8, flashcardCount: 0, createdAt: now - 1e6, v: 2, source: "sylabus" } },
   materialContent: { o1: { v: 2, tldr: "T1", quiz: quiz(8, "T1"), flashcards: [] } } };
 for (const [w, h] of [[375, 812], [1280, 900]]) {
-  const p = await page(b, { konto: "starosta", w, h, ls: { "bm-starosta": "1", "skrot-rocznik": "wefiz-bm-1-st-2026", "mock-docs": JSON.stringify(DOCS) } });
+  const p = await page(b, { konto: "starosta", w, h, ls: { "bm-starosta": "1", "skrot-rocznik": "wefiz-bm-1-st-2026", "mock-docs": JSON.stringify(DOCS),
+    // od v44 podgląd innego rocznika pokazuje tylko jego treści: materiał o1 należy do rocznika z podglądu
+    "mock-docs-rok": JSON.stringify({ materials: { o1: ZARZ }, materialContent: { o1: ZARZ } }) } });
   await zDrugimRocznikiem(p);
   await p.goto(BASE + "index.html#/podgladAdmin"); await p.waitForTimeout(2500);
   ok(`${w} D: drugi rocznik do wyboru`, (await p.locator("#pg-rocznik option").allTextContents()).some((t) => /Zarządzanie, 1\. rok/.test(t)));
