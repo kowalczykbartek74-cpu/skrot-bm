@@ -29,6 +29,41 @@
     return window.fetch(u, o);
   } : window.fetch.bind(window);
   const TABLE = "nauka_docs";
+  // ---------- rocznik przy treściach (supabase/skrot-v44-roczniki-tresci.sql) ----------
+  // Kolekcje rocznika czytamy tylko z wczytanego rocznika (ROK.id; admin w bazie widzi wszystkie, więc filtr jest tu),
+  // zapis dostaje rocznik_id, a stałe id (meta/po, examBank/<przedmiot>…) w innych rocznikach mają sufiks „@<rocznik>”.
+  // Bez v44 w bazie (brak kolumny) wszystko działa jak dotąd: pierwszy błąd kolumny wyłącza filtr do przeładowania.
+  const RK = window.SKROT_ROCZNIKI || null;
+  const ROK_ID = (window.SKROT_ROCZNIK && window.SKROT_ROCZNIK.id) || (RK && RK.DOMYSLNY) || "wefiz-bm-1-st-2026";
+  const rokKol = (col, id) => !!RK && RK.kolekcjaRocznika(col, id);
+  const rokKolekcja = (col) => !!RK && RK.KOLEKCJE_ROCZNIKA.indexOf(col) >= 0;
+  const dbId = (col, id) => (RK ? RK.docId(col, id, ROK_ID) : String(id));
+  const pageId = (col, id) => (RK ? RK.docIdStrony(col, id, ROK_ID) : String(id));
+  let rokKolumna = true; // false = baza bez v44
+  const bezKolumny = (e) => !!e && (e.code === "42703" || e.code === "PGRST204" || /rocznik_id/.test(String(e.message || "")));
+  // zapytanie z filtrem rocznika; przy braku kolumny ponawia bez niego
+  async function zRocznikiem(col, build) {
+    if (rokKolumna && rokKolekcja(col)) {
+      const r = await build((q) => q.or("rocznik_id.is.null,rocznik_id.eq." + ROK_ID));
+      if (!bezKolumny(r.error)) return r;
+      rokKolumna = false;
+    }
+    return build((q) => q);
+  }
+  // wiersz do zapisu: rocznik_id dla treści rocznika (null dla osobistych i wspólnych); bez v44 bez kolumny
+  const wiersz = (col, id, data) => {
+    const r = { kolekcja: col, id: dbId(col, id), data };
+    if (rokKolumna && RK) r.rocznik_id = rokKol(col, id) ? ROK_ID : null;
+    return r;
+  };
+  async function zapisz(rows) {
+    let r = await sb.from(TABLE).upsert(rows, { onConflict: "kolekcja,id" });
+    if (bezKolumny(r.error) && rows.some((x) => "rocznik_id" in x)) {
+      rokKolumna = false;
+      r = await sb.from(TABLE).upsert(rows.map(({ rocznik_id, ...x }) => x), { onConflict: "kolekcja,id" });
+    }
+    return r;
+  }
   const KNOWN = new Set(["materials", "materialContent", "materialSources", "materialSimple", "quizWhy", "tasks", "meta", "deadlines", "announcements", "reports", "progress", "exams", "examBank", "glossary", "myMaterials", "myContent"]);
   const UNI = /@(stud\.)?usz\.edu\.pl$/i;
 
@@ -73,6 +108,7 @@
   }
 
   const skrot = (window.skrot = { sb, podglad: PG, realAdmin: false, state: sb ? "loading" : "error", email: "", uid: null, admin: false, paid: false, paidAccount: false, device: null, hasPassword: false, deviceId: DEVICE, deviceName: DEVICE_NAME, until: null, plan: null, price: CONFIG.price, prices: { rok: CONFIG.plans.rok.price, miesiac: CONFIG.plans.miesiac.price }, listeners: new Set() });
+  skrot.rocznikTresci = () => ({ id: ROK_ID, kolumna: rokKolumna }); // rocznik treści i czy baza ma v44 (testy, panel)
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const changed = () => skrot.listeners.forEach((fn) => { try { fn(skrot.state); } catch {} });
 
@@ -218,6 +254,7 @@
   function makeDb() {
     const subs = new Set();
     const toDoc = (r) => ({ id: r.id, exists: true, data: () => ({ ...(r.data || {}) }) });
+    const zBazy = (col, rows) => rows.map((r) => ({ ...r, id: pageId(col, r.id) }));
     const missing = (id) => ({ id, exists: false, data: () => undefined });
     const snap = (docs) => ({ docs, size: docs.length, empty: !docs.length, docChanges: () => [], metadata: {} });
     const split = (path) => {
@@ -232,7 +269,7 @@
       if (!KNOWN.has(col)) return [];
       const hit = colCache.get(col);
       if (hit) {
-        const { data, count, error } = await sb.from(TABLE).select("updated_at", { count: "exact" }).eq("kolekcja", col).order("updated_at", { ascending: false }).limit(1);
+        const { data, count, error } = await zRocznikiem(col, (f) => f(sb.from(TABLE).select("updated_at", { count: "exact" }).eq("kolekcja", col)).order("updated_at", { ascending: false }).limit(1));
         if (!error && `${count}|${data?.[0]?.updated_at || ""}` === hit.sig) return hit.rows;
       }
       const rows = await fetchCol(col);
@@ -244,9 +281,9 @@
       if (!KNOWN.has(col)) return [];
       let all = [];
       for (let from = 0; ; from += 1000) {
-        const { data, error } = await sb.from(TABLE).select("id,data,updated_at").eq("kolekcja", col).range(from, from + 999);
+        const { data, error } = await zRocznikiem(col, (f) => f(sb.from(TABLE).select("id,data,updated_at").eq("kolekcja", col)).range(from, from + 999));
         if (error) throw error;
-        all = all.concat(data || []);
+        all = all.concat(zBazy(col, data || []));
         if (!data || data.length < 1000) break;
       }
       return all;
@@ -265,23 +302,23 @@
         id, path: col + "/" + id,
         async get() {
           if (!KNOWN.has(col)) return missing(id);
-          const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col).eq("id", id).maybeSingle();
+          const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col).eq("id", dbId(col, id)).maybeSingle();
           if (error) throw error;
-          return data ? toDoc(data) : missing(id);
+          return data ? toDoc({ ...data, id }) : missing(id);
         },
         async set(data) {
-          const { error } = await sb.from(TABLE).upsert({ kolekcja: col, id, data: JSON.parse(JSON.stringify(data)) }, { onConflict: "kolekcja,id" });
+          const { error } = await zapisz([wiersz(col, id, JSON.parse(JSON.stringify(data)))]);
           if (error) throw error; refresh();
         },
         async update(patch) {
           const cur = await this.get();
           if (!cur.exists) throw Object.assign(new Error("Nie ma takiego dokumentu."), { code: "not_found" });
-          const { error } = await sb.from(TABLE).update({ data: { ...cur.data(), ...JSON.parse(JSON.stringify(patch)) } }).eq("kolekcja", col).eq("id", id);
+          const { error } = await sb.from(TABLE).update({ data: { ...cur.data(), ...JSON.parse(JSON.stringify(patch)) } }).eq("kolekcja", col).eq("id", dbId(col, id));
           if (error) throw error; refresh();
         },
         async delete() {
           if (!KNOWN.has(col)) return;
-          const { error } = await sb.from(TABLE).delete().eq("kolekcja", col).eq("id", id);
+          const { error } = await sb.from(TABLE).delete().eq("kolekcja", col).eq("id", dbId(col, id));
           if (error) throw error; refresh();
         },
         onSnapshot(fn, err) { return watch(() => this.get(), fn, err); },
@@ -327,9 +364,9 @@
   skrot.putMany = async (rows) => {
     await ready;
     if (!skrot.admin) throw new Error("Tylko administrator może zapisywać hurtowo.");
-    const clean = rows.map((r) => ({ kolekcja: r.collection, id: r.id, data: JSON.parse(JSON.stringify(r.data)) }));
-    for (const r of clean) if (!KNOWN.has(r.kolekcja)) throw new Error("Nieznana kolekcja: " + r.kolekcja);
-    const { error } = await sb.from(TABLE).upsert(clean, { onConflict: "kolekcja,id" });
+    for (const r of rows) if (!KNOWN.has(r.collection)) throw new Error("Nieznana kolekcja: " + r.collection);
+    const clean = rows.map((r) => wiersz(r.collection, r.id, JSON.parse(JSON.stringify(r.data))));
+    const { error } = await zapisz(clean);
     if (error) throw error;
     return clean.length;
   };
@@ -337,9 +374,9 @@
     await ready;
     let all = [];
     for (let from = 0; ; from += 1000) {
-      const { data, error } = await sb.from(TABLE).select("id").eq("kolekcja", col).range(from, from + 999);
+      const { data, error } = await zRocznikiem(col, (f) => f(sb.from(TABLE).select("id").eq("kolekcja", col)).range(from, from + 999));
       if (error) throw error;
-      all = all.concat((data || []).map((r) => r.id));
+      all = all.concat((data || []).map((r) => pageId(col, r.id)));
       if (!data || data.length < 1000) break;
     }
     return all;
@@ -463,7 +500,12 @@
   ready.then(() => skrot.sklepStan());
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && skrot.state === "in" && Date.now() - sklepAt > 60e3) skrot.sklepStan(); });
 
-  skrot.list = async (col) => { await ready; const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", col); if (error) throw error; return data; };
+  skrot.list = async (col) => {
+    await ready;
+    const { data, error } = await zRocznikiem(col, (f) => f(sb.from(TABLE).select("id,data").eq("kolekcja", col)));
+    if (error) throw error;
+    return (data || []).map((r) => ({ ...r, id: pageId(col, r.id) }));
+  };
 
   // ---------- Gry i ranking (skrot-v13-gry.sql, skrot-v15-gry2.sql) ----------
   // Każda funkcja zwraca obiekt z bazy ({ ok: true, … } albo { ok: false, code }).

@@ -17,6 +17,8 @@
 //   v16 (okres próbny): mock-konto = "proba" (trwa, pełny dostęp) | "proba-koniec" (minął) · "darmowe" może go włączyć (nauka_proba_start
 //     przełącza mock-konto na "proba") · mock-proba-do (ISO, koniec trwającego) · mock-proba-blad = "wykorzystany" | "urzadzenie"
 //   v22 (Profil nauki): mock-v22 = "1" (domyślnie) | "0" (brak funkcji → not_enabled) · stan profilu w localStorage mock-profil
+//   v44 (rocznik przy treściach): mock-v44 = "1" (domyślnie: kolumna rocznik_id, filtr .or()) | "0" (brak kolumny → błąd 42703)
+//     · mock-docs-rok = JSON { kolekcja: { id: rocznik } } (domyślnie treści rocznika = BM, osobiste i meta/en = null) · zapisy w window.__zapisy
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
   const ls = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
@@ -474,20 +476,35 @@
     return out;
   };
   // ---------- nauka_docs: select / upsert / update / delete z łańcuchem .eq() ----------
+  const V44 = ls("mock-v44", "1") === "1", BM = "wefiz-bm-1-st-2026";
+  const ROK_KOL = ["materials", "materialContent", "materialSimple", "quizWhy", "materialSources", "tasks", "deadlines", "announcements", "exams", "examBank", "glossary", "meta"];
+  let ROKI = {}; try { ROKI = JSON.parse(ls("mock-docs-rok", "{}")) || {}; } catch {}
+  const rokOf = (col, id) => (ROKI[col] && id in ROKI[col] ? ROKI[col][id] : ROK_KOL.includes(col) && !(col === "meta" && id === "en") ? BM : null);
+  const BRAK44 = { data: null, error: { code: "42703", message: "column nauka_docs.rocznik_id does not exist" } };
+  window.__zapisy = [];
   function table() {
-    const st = { op: "select", filters: {}, row: null, single: false };
+    const st = { op: "select", filters: {}, row: null, single: false, or: null };
     const run = async () => {
       const col = st.filters.kolekcja, id = st.filters.id, store = (DOCS[col] ||= {});
+      if (!V44 && (st.or || [].concat(st.row || []).some((r) => r && "rocznik_id" in r))) return BRAK44;
       if (st.op === "select") {
-        const rows = Object.entries(store).filter(([k]) => id == null || k === id).map(([k, v]) => ({ id: k, data: v }));
-        return { data: st.single ? rows[0] || null : rows, error: null };
+        // .or("rocznik_id.is.null,rocznik_id.eq.X") → rocznik wiersza null albo X
+        const dozw = st.or ? st.or.split(",").map((w) => (w === "rocznik_id.is.null" ? null : w.replace(/^rocznik_id\.eq\./, ""))) : null;
+        const rows = Object.entries(store).filter(([k]) => (id == null || k === id) && (!dozw || dozw.includes(rokOf(col, k)))).map(([k, v]) => ({ id: k, data: v }));
+        return { data: st.single ? rows[0] || null : rows, error: null, count: rows.length };
       }
-      if (st.op === "upsert") { for (const r of [].concat(st.row)) (DOCS[r.kolekcja] ||= {})[r.id] = r.data; saveProg(); return { data: null, error: null }; }
+      if (st.op === "upsert") {
+        for (const r of [].concat(st.row)) {
+          (DOCS[r.kolekcja] ||= {})[r.id] = r.data; window.__zapisy.push({ kolekcja: r.kolekcja, id: r.id, rocznik_id: r.rocznik_id });
+          if ("rocznik_id" in r) (ROKI[r.kolekcja] ||= {})[r.id] = r.rocznik_id;
+        }
+        saveProg(); return { data: null, error: null };
+      }
       if (st.op === "update") { if (store[id]) store[id] = st.row.data; return { data: null, error: null }; }
       if (st.op === "delete") { delete store[id]; return { data: null, error: null }; }
     };
     const q = {
-      select() { return q; }, eq(k, v) { st.filters[k] = v; return q; }, order() { return q; }, range() { return q; }, limit() { return q; }, in() { return q; },
+      select() { return q; }, eq(k, v) { st.filters[k] = v; return q; }, or(w) { st.or = w; return q; }, order() { return q; }, range() { return q; }, limit() { return q; }, in() { return q; },
       maybeSingle() { st.single = true; return q; }, single() { st.single = true; return q; },
       upsert(row) { st.op = "upsert"; st.row = row; return q; }, update(data) { st.op = "update"; st.row = { data: data.data }; return q; }, delete() { st.op = "delete"; return q; }, insert(row) { st.op = "upsert"; st.row = row; return q; },
       then(ok, err) { return run().then(ok, err); },

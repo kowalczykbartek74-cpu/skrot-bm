@@ -76,3 +76,34 @@ test("funkcja claude dalej odrzuca dowolne prompty", () => {
   assert.ok(!ok("Jesteś cierpliwym korepetytorem studentów. Napisz wypracowanie."));
   assert.ok(!ok(" You are indexing a lecture file for first-year Business Management students "));
 });
+
+// ---------- Etap 2 fundamentu: rocznik przy treściach (supabase/skrot-v44-roczniki-tresci.sql) ----------
+test("lista kolekcji rocznika ta sama co nauka_kolekcja_rocznika w v44", () => {
+  const sql = fs.readFileSync(path.join(__dirname, "..", "supabase", "skrot-v44-roczniki-tresci.sql"), "utf8");
+  const m = sql.match(/function public\.nauka_kolekcja_rocznika[\s\S]*?p_kolekcja in \(([\s\S]*?)\)/);
+  assert.ok(m, "brak nauka_kolekcja_rocznika w v44");
+  const zSql = m[1].match(/'([a-zA-Z]+)'/g).map((x) => x.slice(1, -1)).sort();
+  assert.deepStrictEqual(zSql, [...R.KOLEKCJE_ROCZNIKA].sort());
+  assert.ok(/not \(p_kolekcja = 'meta' and p_id = 'en'\)/.test(sql), "meta/en wspólne także w SQL");
+  for (const k of R.KOLEKCJE_STALE_ID) assert.ok(R.KOLEKCJE_ROCZNIKA.includes(k), k);
+  for (const k of ["progress", "myMaterials", "myContent", "reports"]) assert.ok(!R.kolekcjaRocznika(k, "x"), k + " jest osobiste");
+  assert.ok(!R.kolekcjaRocznika("meta", "en"));
+  assert.ok(R.kolekcjaRocznika("meta", "po"));
+});
+
+test("id dokumentów: BM bez zmian, inny rocznik z sufiksem tylko dla stałych id", () => {
+  const T = "wefiz-test-1-st-2026";
+  for (const [col, id] of [["meta", "po"], ["meta", "po~makro~W~ab12"], ["examBank", "makro"], ["exams", "makro-1"], ["glossary", "makro"],
+    ["materials", "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"], ["meta", "en"]]) assert.strictEqual(R.docId(col, id, BM), id, `BM ${col}/${id}`);
+  assert.strictEqual(R.docId("meta", "po", T), "po@" + T);
+  assert.strictEqual(R.docId("examBank", "makro", T), "makro@" + T);
+  assert.strictEqual(R.docId("meta", "en", T), "en", "słownik EN wspólny");
+  for (const col of ["materials", "materialContent", "deadlines", "announcements", "tasks", "progress", "myMaterials"])
+    assert.strictEqual(R.docId(col, "abc", T), "abc", col + ": losowe id bez sufiksu");
+  // w obie strony
+  for (const [col, id] of [["meta", "po"], ["meta", "stas~x~W~1"], ["glossary", "makro"], ["materials", "m1"], ["meta", "en"]])
+    assert.strictEqual(R.docIdStrony(col, R.docId(col, id, T), T), id, `${col}/${id}`);
+  assert.strictEqual(R.docIdStrony("meta", "po@inny-x-1-st-2026", T), "po@inny-x-1-st-2026", "cudzy sufiks zostaje");
+  // limit id w bazie (nauka.sql: 120 znaków): typowe id Po zajęciach z sufiksem się mieści
+  assert.ok(R.docId("meta", "po~" + "x".repeat(40) + "~CW~a1b2c3d4", T).length <= 120);
+});

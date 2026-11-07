@@ -59,7 +59,7 @@ Podział ze specu potwierdzony, z wyjątkami:
 Rzeczy, które trzeba wiedzieć do v44:
 
 1. `materials` czyta dziś **każdy, także gość** (`skrot-v4-moje.sql:23`) – lista bez treści. Po v44 gość widzi listę BM (`nauka_moj_rocznik()` dla gościa = BM).
-2. **Studenci sami dodają `deadlines`** (polityka „nauka dodaj”, `nauka_platny()`) i zmieniają swoje. Trigger musi im **wymuszać** `rocznik_id := nauka_moj_rocznik()`, inaczej student mógłby wpisać termin innemu rocznikowi.
+2. ~~Studenci sami dodają `deadlines`~~ **Sprostowanie (Etap 2):** tak było w v4; od `skrot-v5.sql` terminy dodaje tylko admin (studenci: `reports`, `progress`, Moje materiały). Wyzwalacz i tak wymusza nie-adminowi jego rocznik – jako zabezpieczenie.
 3. **Kolejność wdrożenia:** po Run v44, a przed wdrożeniem strony (i w starych kartach PWA) strona zapisuje bez `rocznik_id`. Jeśli brak rocznika daje błąd `brak_rocznika`, przez ten czas nie da się dodać terminu w BM. Propozycja: brak → rocznik z profilu (BM); błąd tylko wtedy, gdy podany rocznik nie istnieje albo jest inny niż w wierszu (UPDATE).
 4. Reguła odczytu ma dziś 7 wersji (nauka.sql → v4); ostatnia pełna jest w `skrot-v4-moje.sql:22`, v19 dokłada osobną politykę gościa. v44 nadpisze tę z v4 w całości.
 5. Trigger `nauka_przed_zapisem` – ostatnia wersja w `skrot-v4-moje.sql:72`. v32 wyłącza go na czas usuwania konta, co dalej będzie działać.

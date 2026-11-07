@@ -118,7 +118,30 @@
     return id && ROCZNIKI[id] ? id : DOMYSLNY;
   }
 
-  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow };
+  // Treści należące do rocznika (nauka_docs.rocznik_id, supabase/skrot-v44-roczniki-tresci.sql → nauka_kolekcja_rocznika).
+  // Reszta jest osobista (progress, myMaterials, myContent, reports) albo wspólna (meta/en = słownik EN).
+  var KOLEKCJE_ROCZNIKA = ["materials", "materialContent", "materialSimple", "quizWhy", "materialSources", "tasks", "deadlines",
+    "announcements", "exams", "examBank", "glossary", "meta"];
+  // Kolekcje ze stałymi id albo zbudowanymi z przedmiotu (meta/po, examBank/<przedmiot>, exams/<przedmiot>-<część>, glossary/<przedmiot>).
+  // Klucz nauka_docs to (kolekcja, id), więc w innych rocznikach niż BM id dostaje sufiks „@<rocznik>” (BM bez zmian).
+  // Materiały, terminy i ogłoszenia mają losowe id (albo z prefiksem rocznika z generatora), więc sufiksu nie potrzebują.
+  var KOLEKCJE_STALE_ID = ["meta", "examBank", "exams", "glossary"];
+  function kolekcjaRocznika(col, id) { return KOLEKCJE_ROCZNIKA.indexOf(col) >= 0 && !(col === "meta" && id === "en"); }
+  function sufiks(col, id, rocznikId) {
+    return rocznikId && rocznikId !== DOMYSLNY && KOLEKCJE_STALE_ID.indexOf(col) >= 0 && kolekcjaRocznika(col, id) ? "@" + rocznikId : "";
+  }
+  // id na stronie → id w bazie
+  function docId(col, id, rocznikId) { return String(id) + sufiks(col, String(id), rocznikId); }
+  // id w bazie → id na stronie (odcina sufiks tego rocznika)
+  function docIdStrony(col, id, rocznikId) {
+    id = String(id);
+    var s = "@" + rocznikId;
+    if (!rocznikId || rocznikId === DOMYSLNY || KOLEKCJE_STALE_ID.indexOf(col) < 0 || id.slice(-s.length) !== s) return id;
+    return id.slice(0, -s.length);
+  }
+
+  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow,
+    KOLEKCJE_ROCZNIKA: KOLEKCJE_ROCZNIKA, KOLEKCJE_STALE_ID: KOLEKCJE_STALE_ID, kolekcjaRocznika: kolekcjaRocznika, docId: docId, docIdStrony: docIdStrony };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
   else {
     root.SKROT_ROCZNIKI = API;

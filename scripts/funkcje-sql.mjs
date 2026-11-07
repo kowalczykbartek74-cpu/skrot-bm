@@ -57,9 +57,11 @@ export function typy(args) {
 }
 
 // Najnowsza wersja każdej sygnatury (stare przeciążenia, których nikt nie usunął, też tu są).
-export function najnowsze() {
-  const map = new Map();
-  for (const f of kolejnosc()) for (const d of definicje(fs.readFileSync(R + f, "utf8"))) map.set(d.sygn, { ...d, plik: f });
+export function najnowsze(doPliku = null) {
+  const map = new Map(), kol = kolejnosc();
+  const lista = doPliku ? kol.slice(0, kol.indexOf(doPliku) + 1) : kol;
+  if (doPliku && !kol.includes(doPliku)) throw new Error("Nie ma pliku w kolejce: " + doPliku);
+  for (const f of lista) for (const d of definicje(fs.readFileSync(R + f, "utf8"))) map.set(d.sygn, { ...d, plik: f });
   return map;
 }
 
@@ -69,6 +71,9 @@ const PL = /[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/;
 // Tak wyglądają polskie litery po złym schowku (UTF-8 czytane jako Mac Central European): ł → „Ňā”, ą → „ńÖ”, ó → „√≥”.
 export const ZEPSUTE = "Ň|ń[ÖáôĄÜė]|√[≥ď]";
 // Migracje, które mogły jeszcze nie być uruchomione na produkcji: ich funkcji nie podmieniamy (zepsute pokaże sprawdzenie).
+// Ostatnia migracja uruchomiona na produkcji: plik naprawczy bierze funkcje tylko do niej (gdyby wziął z v44+, a naprawę
+// uruchomiono przed v44, funkcja odwołałaby się do kolumn, których jeszcze nie ma). Przesuń razem z NA_PRODUKCJI w pglite.mjs.
+export const NA_PRODUKCJI = "skrot-v43-lekcja-dnia.sql";
 export const CZEKA = ["skrot-v33-retencja.sql", "skrot-v41-riwiera.sql", "skrot-v42-jachtklub.sql"];
 
 const bezSrednika = (t) => t.replace(/;\s*$/, "");
@@ -77,7 +82,7 @@ function bezpieczny(t, zakazane) { for (const z of zakazane) if (t.includes(z)) 
 // Plik naprawczy: strażnik → nazwy wydziału i kierunków → każda funkcja z polskimi literami, ale tylko jeśli na tej
 // bazie jest zepsuta (wtedy jej najnowsza wersja z repo) → na końcu to samo co sprawdz-znaki.sql.
 export function naprawa() {
-  const naj = najnowsze(), out = [];
+  const naj = najnowsze(NA_PRODUKCJI), out = [];
   out.push(`-- Skrót: naprawa zepsutych polskich znaków w bazie (wygenerowane: node scripts/funkcje-sql.mjs --naprawa).
 -- Wklej w Supabase → SQL Editor → Run. Kopiuj z github.com (przycisk „Copy raw file”), nie przez Terminal.
 -- Można uruchamiać wiele razy. Funkcję podmienia tylko wtedy, gdy ta w bazie ma zepsute litery (wtedy na najnowszą wersję
