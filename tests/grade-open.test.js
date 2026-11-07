@@ -22,3 +22,10 @@ test("reszta polecenia bez zmian względem poprzedniej wersji (od drugiego wiers
   const stary = fs.readFileSync(path.join(__dirname, "fixtures", "grade-open-system.txt"), "utf8");
   assert.equal(systemPrompt().split("\n").slice(1).join("\n"), stary.split("\n").slice(1).join("\n"));
 });
+
+test("jeden-plik.ts (do wklejenia w panelu) jest aktualny i bez importu system.ts", async () => {
+  const { jedenPlik } = await import("../scripts/funkcja-jeden-plik.mjs");
+  const plik = fs.readFileSync(path.join(__dirname, "..", "supabase", "functions", "grade-open", "jeden-plik.ts"), "utf8");
+  assert.equal(plik, jedenPlik("grade-open"));
+  assert.ok(!plik.includes("./system.ts\"") && plik.includes("export function systemPrompt") && plik.includes("systemPrompt(body?.odbiorcy, body?.jezyk)"));
+});

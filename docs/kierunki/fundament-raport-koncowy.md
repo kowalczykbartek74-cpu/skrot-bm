@@ -10,10 +10,10 @@ Każdy plik SQL: otwórz link → przycisk **„Copy raw file”** (dwa kwadraty
 2. **v44 – treści per rocznik**: https://github.com/kowalczykbartek74-cpu/skrot-bm/blob/main/supabase/skrot-v44-roczniki-tresci.sql → Run (po v43).
 3. **Strona jest już na `main`** (zdawalni.pl, 7.11 na prośbę Bartka „dodaj na main”). Działa też ze starszą bazą: bez v44/v45/v46 zachowuje się jak dotąd, a po każdym Run sama zaczyna korzystać z nowych kolumn i funkcji.
 4. **v45 – dostęp i płatność per rocznik**: https://github.com/kowalczykbartek74-cpu/skrot-bm/blob/main/supabase/skrot-v45-dostep-rocznik.sql → Run.
-5. **Funkcja `stripe-webhook`**: Supabase → Edge Functions → `stripe-webhook` → edycja kodu: podmień `index.ts` i dodaj plik `obsluga.ts` (oba z `supabase/functions/stripe-webhook/` na gałęzi) → **Deploy updates**. „Verify JWT” zostaje wyłączone. (Albo z Terminala, jeśli CLI jest zalogowane: `npx supabase functions deploy stripe-webhook --no-verify-jwt`.)
+5. **Funkcja `stripe-webhook`** (najprościej: jeden plik `supabase/functions/stripe-webhook/jeden-plik.ts` wklejony w `index.ts` – panel nie zawsze pozwala dodać drugi plik): Supabase → Edge Functions → `stripe-webhook` → edycja kodu: podmień `index.ts` i dodaj plik `obsluga.ts` (oba z `supabase/functions/stripe-webhook/` na gałęzi) → **Deploy updates**. „Verify JWT” zostaje wyłączone. (Albo z Terminala, jeśli CLI jest zalogowane: `npx supabase functions deploy stripe-webhook --no-verify-jwt`.)
 6. **Test płatności**: na koncie testowym BM kup plan BLIK-iem → dostęp jest (Więcej → Konto i dostęp) → zwrot w panelu Stripe.
 7. **v46 – plan, kalendarz, ranking, Hasło dnia per rocznik**: https://github.com/kowalczykbartek74-cpu/skrot-bm/blob/main/supabase/skrot-v46-roczniki-plan-ranking.sql → Run.
-8. **Funkcje `kalendarz` i `grade-open`**: jak w kroku 5 – `kalendarz`: `index.ts`; `grade-open`: `index.ts` + nowy `system.ts` → Deploy updates.
+8. **Funkcje `kalendarz` i `grade-open`**: jak w kroku 5 – `kalendarz`: `index.ts`; `grade-open`: `supabase/functions/grade-open/jeden-plik.ts` wklejony w `index.ts` (zamiast `index.ts` + `system.ts`) → Deploy updates.
 9. **Test na żywej stronie** (zdawalni.pl, Twoje konto i konto testowe BM): logowanie; Dziś, Przedmioty, Terminy, Więcej wyglądają jak wcześniej; ranking (Więcej → Ranking) ma te same osoby; kalendarz w telefonie (link z Terminy → Do kalendarza w telefonie) ma zajęcia i zaliczenia jak dotąd; Hasło dnia i Boss działają; Narzędzia → „Edytuję rocznik” pokazuje listę (na razie sam BM, bo innego wpisu w `rocznik.js` nie ma).
 
 ## Do decyzji
