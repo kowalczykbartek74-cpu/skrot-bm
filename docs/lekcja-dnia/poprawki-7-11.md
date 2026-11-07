@@ -40,3 +40,11 @@ Bez SQL. Zmienione pliki: `lekcja-dnia.js`, `index.html`, `gry.js`, `i18n-en.js`
   - wybór, powód i zapis w planie, także po otwarciu karty;
   - Hasło: podpowiedzi 1…5 po złych próbach, ich treść, ukryte słowo i zniknięcie po zgadnięciu;
   - Fruń: pytanie przy 20, brak „Pomiń”, po odpowiedzi stan „gotowy” z nietykalnością, odpowiedź w bazie.
+
+## Dziś: nowy układ (7.11, później)
+- **Od góry:** powitanie → „Twój postęp” → karta „Dziś · 5 min” i lekcje dla Ciebie → reszta (Jedziesz na zajęcia?, Boss, przewodnik, Na luzie, Nowe).
+- **„Twój postęp”** jest teraz zawsze rozwinięty i trochę mniejszy: mniejsze odstępy, czcionka i nagłówek, bez paska poziomu, który i tak jest pod powitaniem.
+- **„Najbliższe terminy” są w karcie „Twój postęp”**: 2 najbliższe terminy (i 1 szacowany, jeśli jest wcześniej), „Przygotuj się” i „Wszystkie terminy →”. Osobnej karty „Najbliższy termin” już nie ma.
+- **Plan zajęć („Dziś masz 3 zajęcia”) zniknął z Dziś.** Jest dalej w Kalendarzu i w „Pełnym planie zajęć”.
+- Dotyczy też `?ld=0`, czyli starych kart.
+- Zrzuty: `zrzuty/dzis-postep-390.png`, `zrzuty/dzis-postep-1280.png`.

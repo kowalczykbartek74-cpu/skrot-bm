@@ -2625,6 +2625,16 @@ button.lv-open:hover .lv-chev, .lv-link:hover .lv-chev { transform: translateX(3
 .pts-foot { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; font-size: .9rem; }
 .pts-foot .link { text-align: left; }
 .pts-card { display: grid; gap: 10px; }
+/* Dziś: „Twój postęp” na górze, trochę mniejszy, z najbliższymi terminami */
+.pts-card.pts-dzis { gap: 8px; padding: 14px 16px; font-size: .95rem; }
+.pts-card.pts-dzis .panel-head h2 { font-size: 1.1rem; }
+.pts-card.pts-dzis .pts-row { padding: 6px; }
+.pts-card.pts-dzis .pts-terms-head { margin: 6px 0 0; }
+.pts-card.pts-dzis .pts-terms-head .pts-sub { margin: 0; }
+.pts-card.pts-dzis .terms { gap: 6px; }
+.pts-card.pts-dzis .term { min-height: 0; padding: 8px 10px; gap: 4px 10px; }
+.pts-card.pts-dzis .term-title { font-size: .98rem; }
+.pts-card.pts-dzis .term-end { flex-direction: row; align-items: center; gap: 8px; }
 .pts-card .panel-head { margin: 0; }
 .pts-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: .9rem; font-weight: 700; }
 .pts-sub { margin: 6px 0 0; font-size: 1rem; }
@@ -6578,6 +6588,17 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
           est.length ? h("div", { class: "terms compact" }, est.map((x) => termRow(x))) : null]
         : h("div", { class: "empty small", text: "Nic w najbliższym czasie. Nowe terminy pojawią się tutaj." }));
   }
+  // Dziś: najbliższe terminy w karcie „Twój postęp” (te same wiersze co w „Najbliższy termin”, do 3).
+  function ptsTerms() {
+    const open = termItems().filter((x) => !x.done && x.n != null && x.n >= 0);
+    const up = open.filter((x) => !x.approx).slice(0, 2), est = open.filter((x) => x.approx && (!up[0] || x.date < up[0].date)).slice(0, 1);
+    return [h("div", { class: "panel-head pts-terms-head" }, h("h3", { class: "pts-sub", text: "Najbliższe terminy" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "terms" }) }, "Wszystkie terminy →")),
+      !PAID() ? h("p", { class: "muted", style: "font-size:.9rem;margin:0", text: "Kolokwia, egzaminy, projekty i zadania od prowadzących zobaczysz z pełnym dostępem." })
+        : up.length || est.length ? [up.length ? h("div", { class: "terms compact" }, up.map((x) => termRow(x, { noSubject: true }))) : null,
+          est.length ? h("p", { class: "muted", style: "margin:4px 0 0;font-size:.86rem;font-weight:600", text: "Wcześniej, ale data szacowana:" }) : null,
+          est.length ? h("div", { class: "terms compact" }, est.map((x) => termRow(x, { noSubject: true }))) : null]
+        : h("div", { class: "empty small", text: "Nic w najbliższym czasie. Nowe terminy pojawią się tutaj." })];
+  }
   function feedRowLite(it) {
     const row = (title, meta, fn) => h("button", { type: "button", class: "feed-lite", onclick: fn }, h("b", { text: title }), h("span", { text: meta }));
     if (it.kind === "t") {
@@ -6642,6 +6663,9 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
     const annFresh = ann && Date.now() - (ann.createdAt || 0) < 7 * 864e5;
     return [
       h("section", { class: "greet" }, h("h1", { text: greeting() }), h("p", { class: "sub", text: weekLine() }), greetBadges()),
+      // Od góry: „Twój postęp” z najbliższymi terminami (mniejszy), potem karta 5 min i lekcje dla Ciebie. Planu zajęć na Dziś nie ma (jest w Kalendarzu).
+      needGroup() || !S.ready ? null : ptsHome(true),
+      !needGroup() && ldOn() ? ldBlock() : null,
       S.noDb ? accessNotice() : buyBanner(),
       annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
@@ -6653,19 +6677,16 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
       needGroup() ? null : jzHomeCard(),
       needGroup() ? null : bsHomeCard(),
       // „Dla Ciebie na dziś” (flaga ?ld=1, admin): jeden blok zamiast „Teraz zrób to”, drugiej karty, „Ile masz dziś czasu?” i „Powtórki w 5 minut” (D2).
-      needGroup() ? groupStep() : ldOn() ? ldBlock() : nowCard(),
+      needGroup() ? groupStep() : ldOn() ? null : nowCard(),
       needGroup() || ldOn() ? null : nowSecond(),
       needGroup() || ldOn() ? null : dzPanel(),
       // Gdy nie ma świeżych zajęć: strona i tak proponuje 5-minutowe podsumowanie (przed zajęciami, nieprzeczytane, odświeżenie).
       needGroup() || ldOn() ? null : poHomeCard("mid"),
       needGroup() ? null : guideStrip(),
-      // Najpierw to, co dotyczy dzisiejszego dnia (zajęcia, najbliższy termin), dopiero potem gry na luzie.
-      needGroup() ? null : h("div", { class: "hub home-hub" }, todayPanel(), upcomingPanel()),
       needGroup() ? null : przypHomeCard(),
       // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
       needGroup() || (ldOn() && ldHasStas()) ? null : stasHomeCard(),
       needGroup() ? null : funRow(hdHomeCard(), gryHomeRow()),
-      needGroup() || !S.ready ? null : homeFold("pts", ptsHome()),
       homeFold("new", newPanel(), needGroup() || (S.canEdit && odwPending().length > 0)),
     ];
   }
@@ -10090,9 +10111,9 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
   }
   // Karta „Twój postęp” na ekranie Dziś: jedna miara do nauki (tematy do zaliczeń, które umiesz),
   // a poziom, seria i cel dnia w jednej linijce pod spodem. Punkty kursu są tylko w przedmiocie i w lekcji.
-  function ptsHome() {
+  function ptsHome(dziś) {
     const rows = SUBJECTS.map((s) => ({ s, k: knowOf(s.id) })).filter((x) => x.k.n);
-    if (!rows.length) return null;
+    if (!rows.length) return dziś ? h("section", { class: "panel pts-card pts-dzis" }, h("div", { class: "panel-head" }, h("h2", { text: "Twój postęp" })), ptsTerms()) : null;
     rows.forEach((x) => { x.t = termItems(x.s.id).find((t) => !t.done && t.n != null && t.n >= 0 && ["egzamin", "kolokwium"].includes(t.kind)) || null; });
     rows.sort((a, b) => (a.t ? a.t.n : 1e9) - (b.t ? b.t.n : 1e9) || a.k.pct - b.k.pct);
     const all = rows.reduce((a, x) => ({ known: a.known + x.k.known, started: a.started + x.k.started, n: a.n + x.k.n }), { known: 0, started: 0, n: 0 });
@@ -10105,16 +10126,17 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
         h("span", { class: "pc num", text: `${k.known}/${k.n}` }), h("span", { class: "go", "aria-hidden": "true", text: "→" }));
     };
     const top = rows.slice(0, 3), rest = rows.slice(3);
-    return h("section", { class: "panel pts-card" },
+    return h("section", { class: "panel pts-card" + (dziś ? " pts-dzis" : "") },
       h("div", { class: "panel-head" }, h("h2", { text: "Twój postęp" })),
       h("div", { class: "pts-head" }, h("b", { text: "Tematy do zaliczeń, które umiesz" }), h("b", { class: "num", text: `${all.known}/${all.n}` })),
       knowBar(all, { size: "md", label: "Tematy do zaliczeń, które umiesz" }),
       all.started ? h("p", { class: "pts-started" }, h("i", { class: "pts-key", "aria-hidden": "true" }), h("b", { class: "num", text: `Zaczęte: ${all.started}` }), h("span", { class: "muted", text: " · tematy w drodze do „umiesz”" })) : null,
       onceHelp("pts-why", "Temat umiesz, gdy zdasz bilet wyjścia z lekcji albo dobrze idą Ci quiz i fiszki. Jasna część paska to tematy zaczęte.", "pts-why"),
-      lpLevelBar(lpXpTotal(), "pts-stats"),
+      dziś ? null : lpLevelBar(lpXpTotal(), "pts-stats"),
       h("h3", { class: "pts-sub", text: "Najbliżej zaliczenia" }),
       h("div", { class: "pts-list" }, top.map(row)),
       rest.length ? h("details", { class: "pts-more" }, h("summary", {}, `Pokaż wszystkie przedmioty (${rows.length})`), h("div", { class: "pts-list" }, rest.map(row))) : null,
+      dziś ? ptsTerms() : null,
       !PAID() && lockedN ? h("p", { class: "muted pts-lockline" }, h("span", { text: `${lockedN} ${plural(lockedN, "lekcja czeka", "lekcje czekają", "lekcji czeka")} w pełnym dostępie.` }), " ", h("button", { type: "button", class: "link", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null);
   }
   // Postęp lekcji jako jeden procent = punkty lekcji (części 50, bilet 10, utrwalenie 20, opanowanie 20; gwiazdki się nie liczą).

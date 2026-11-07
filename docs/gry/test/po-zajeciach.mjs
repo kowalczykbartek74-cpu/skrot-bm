@@ -81,8 +81,8 @@ ok("Więcej: wpis Po zajęciach", (await p.getByText("Po zajęciach w 5 minut").
 const q = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify({ meta }) } });
 await q.clock.setFixedTime(new Date("2026-11-06T14:00:00+01:00"));
 await q.goto(BASE + "index.html#/"); await q.waitForTimeout(2500);
-const links = await q.locator(".cls").evaluateAll((els) => els.map((e) => [e.querySelector(".nm")?.textContent, !!e.querySelector(".po-link")]));
-ok("Dziś 14:00: link ⚡ tylko przy zakończonej Analizie", links.some(([n, l]) => /Analiza/.test(n) && l) && links.filter(([, l]) => l).length === 1, links);
+// Od 7.11.2026 na Dziś nie ma planu zajęć (jest w Kalendarzu).
+ok("Dziś 14:00: bez planu zajęć na Dziś", (await q.locator("main .today, main .cls").count()) === 0, "");
 await shot(q, "po-dzis-14");
 // EN
 const e = await page(b, { konto: "platne", lang: "en", ls: { "mock-docs": JSON.stringify({ meta }) } });
