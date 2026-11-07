@@ -128,6 +128,21 @@
     for (var j = 0; j < w.length; j++) if (out[j] !== 2 && g[j] && left[g[j]] > 0) { out[j] = 1; left[g[j]]--; }
     return out;
   }
+  /** 5 podpowiedzi do Hasła w lekcji, od najsłabszej: po każdej złej próbie jedna więcej. Hasło w definicji zastępujemy „…”. */
+  function hasloPodpowiedzi(word, def) {
+    var w = hasloNorm(word), n = w.length, out = [];
+    if (!n) return out;
+    var rdzen = w.slice(0, Math.min(5, n));
+    var d = String(def || "").split(/(\s+)/).map(function (x) { return x.trim() && hasloNorm(x).indexOf(rdzen) === 0 ? "…" : x; }).join("").trim();
+    var samo = [], wzor = [];
+    for (var i = 0; i < n; i++) { if ("AEIOUY".indexOf(w[i]) >= 0 && samo.indexOf(w[i]) < 0) samo.push(w[i]); wzor.push(i % 2 === 0 || i === n - 1 ? w[i] : "_"); }
+    out.push("Zaczyna się na „" + w[0] + "”.");
+    out.push(d ? "Znaczenie: " + d : samo.length ? "Samogłoski w haśle: " + samo.join(", ") + "." : "Nie ma w nim samogłosek A, E, I, O, U, Y.");
+    out.push("Kończy się na „" + w[n - 1] + "”.");
+    out.push("Co druga litera: " + wzor.join(" "));
+    out.push("Wszystkie litery, alfabetycznie: " + w.split("").sort().join(" "));
+    return out;
+  }
 
   // ---------------- aktywność na stronie (4.2): dziennik dni i odpowiedzi ----------------
   /** Seria nieudanych dni przed dziś: dni z planem, w których nic z bloku nie zostało zrobione (dzień bez wejścia przerywa serię). dni: { dayN: { plan, done } } */
@@ -212,6 +227,7 @@
       case "mieszanka": return "Mieszanka tematów z zakresu";
       case "przed-snem": return "Przed snem: same powtórki, spokojnie";
       case "lekko": return "Dziś lżej: powtórki bez nowego materiału";
+      case "wybrany": return "Temat wybrany przez Ciebie";
       case "tekst": return p.t;
       default: return "";
     }
@@ -280,6 +296,14 @@
       ton: t.egzaminDni != null && t.egzaminDni <= WAGI.tonWarnDni ? "warn" : d.tryb === "lekko" ? "calm" : null,
       powody: powody(t, ex),
     };
+  }
+
+  /** Karta 5 min z tematu, który ktoś sam wybrał: te same kroki, pierwszy powód „Temat wybrany przez Ciebie”. */
+  function wybranaKarta(t, d, k) {
+    var r = ulozKarte(t, d, k || {});
+    if (!r) return null;
+    r.wybrany = true; r.powody = [{ k: "wybrany" }].concat(r.powody).slice(0, 3);
+    return r;
   }
 
   // ---------------- historia mechanik (6.4) ----------------
@@ -492,8 +516,8 @@
 
   return {
     WAGI: WAGI, KATALOG: KATALOG, MECH: MECH, ROLE: ROLE, DLUGOSCI: DLUGOSCI,
-    dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, hasloNorm: hasloNorm, hasloOcena: hasloOcena, serieNieudanych: serieNieudanych, tygodnie: tygodnie, odpowiedziLearner: odpowiedziLearner, reszty: reszty, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
-    trybDnia: trybDnia, trybTematu: trybTematu, ulozKarte: ulozKarte, ulozLekcje: ulozLekcje, ulozDzien: ulozDzien, jeszczeJedna: jeszczeJedna,
+    dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, hasloNorm: hasloNorm, hasloOcena: hasloOcena, hasloPodpowiedzi: hasloPodpowiedzi, serieNieudanych: serieNieudanych, tygodnie: tygodnie, odpowiedziLearner: odpowiedziLearner, reszty: reszty, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
+    trybDnia: trybDnia, trybTematu: trybTematu, ulozKarte: ulozKarte, wybranaKarta: wybranaKarta, ulozLekcje: ulozLekcje, ulozDzien: ulozDzien, jeszczeJedna: jeszczeJedna,
     zablokowana: zablokowana, lubiana: lubiana, kandydaci: kandydaci,
   };
 });

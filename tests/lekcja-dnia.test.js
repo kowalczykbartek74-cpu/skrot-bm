@@ -356,6 +356,16 @@ describe("Hasło w lekcji", () => {
     // dwa T w próbie, jedno w słowie: tylko jedno dostaje kolor
     assert.deepEqual(LD.hasloOcena("TTTAAA", "TABLET"), [2, 1, 0, 1, 0, 0]);
   });
+  test("5 podpowiedzi od najsłabszej, hasło w definicji ukryte", () => {
+    const p = LD.hasloPodpowiedzi("Inflacja", "Inflacja to wzrost cen; inflacyjny skok płac.");
+    assert.equal(p.length, 5);
+    assert.equal(p[0], "Zaczyna się na „I”.");
+    assert.ok(p[1].startsWith("Znaczenie: ") && !/infla/i.test(p[1]) && /wzrost cen/.test(p[1]), p[1]);
+    assert.equal(p[2], "Kończy się na „A”.");
+    assert.equal(p[3], "Co druga litera: I _ F _ A _ J A");
+    assert.equal(p[4], "Wszystkie litery, alfabetycznie: A A C F I J L N");
+    assert.match(LD.hasloPodpowiedzi("PROFIT", "")[1], /Samogłoski w haśle: O, I/);
+  });
 });
 
 describe("aktywność (4.2)", () => {
@@ -373,5 +383,18 @@ describe("aktywność (4.2)", () => {
     const o = LD.odpowiedziLearner([{ s: 1, m: 600, mi: 2, t: 4000, sid: "a", d: 100, iso: "2026-11-06" }, { s: 0, m: 605, mi: 7, t: 9000, sid: "a", d: 100, iso: "2026-11-06" }]);
     assert.deepEqual(Object.keys(o[0]).sort(), ["day", "difficulty", "minuteInSitting", "minuteOfDay", "score", "sittingId", "timeMs"]);
     assert.deepEqual(LD.reszty(o).map((x) => x.residual), [0.5, -0.5]);
+  });
+});
+
+describe("wybrany temat karty 5 min", () => {
+  test("te same kroki co karta dnia, pierwszy powód „wybrany przez Ciebie”", () => {
+    const t = { id: "m1", sid: "s1", poziom: "zrobione", tresc: { sekcje: 4, recap: true, quiz: 6, fiszki: 8 } };
+    const d = LD.trybDnia([t], {});
+    const a = LD.ulozKarte(t, d, {}), b = LD.wybranaKarta(t, d, {});
+    assert.equal(b.temat, "m1"); assert.equal(b.wybrany, true);
+    assert.deepEqual(b.kroki, a.kroki);
+    assert.equal(LD.powodTekst(b.powody[0]), "Temat wybrany przez Ciebie");
+    assert.ok(b.powody.length <= 3);
+    assert.equal(LD.wybranaKarta(null, d, {}), null);
   });
 });

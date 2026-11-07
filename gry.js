@@ -16,6 +16,7 @@ const GRY_CFG = {
     pipeW: 64, gap0: 170, gapMin: 130, gapStep: 4,          // przerwa maleje o 4 co 10 kolumn
     spacing: 210, speed0: 140, speedStep: 8, speedMax: 220,  // prędkość rośnie o 8 co 10 kolumn
     ground: 80, gapMaxShift: 180, margin: 110,
+    gateEvery: 20,                                          // co 20 kolumn pytanie, na które trzeba odpowiedzieć
   },
   przejdz: {
     cols: 9, cell: 40, hopMs: 120, startRows: 4,
@@ -41,7 +42,7 @@ const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { retur
 const FRUN = (() => {
   const C = GRY_CFG.frun, POOL = 8, BOOKS = 12;
   let W, H, rnd, col, subj, kz;
-  let st, y, py, vy, ang, score, tDie, tShake, invuln, blink, scroll, pscroll, nextX, lastGap, death;
+  let st, y, py, vy, ang, score, tDie, tShake, invuln, blink, scroll, pscroll, nextX, lastGap, death, gateQ, gateAt;
   // kolumny z puli (bez alokacji w pętli); bc/bw = kolory i szerokości grzbietów książek
   const pipes = Array.from({ length: POOL }, () => ({ on: false, x: 0, px: 0, gy: 0, gap: 0, passed: false, bc: new Array(BOOKS).fill(0), bw: new Array(BOOKS).fill(0) }));
   const speed = () => Math.min(C.speedMax, C.speed0 + C.speedStep * Math.floor(score / 10));
@@ -63,7 +64,7 @@ const FRUN = (() => {
     init(ctx) {
       W = ctx.W; H = ctx.H; rnd = ctx.rnd; col = ctx.colors; subj = ctx.subjectColors.length ? ctx.subjectColors : [col.shelf]; kz = ctx.kosm || null;
       pipes.forEach((p) => { p.on = false; });
-      st = "gotowy"; y = py = (H - C.ground) / 2; vy = 0; ang = 0; score = 0; tDie = 0; tShake = 0; invuln = 0; blink = 0; scroll = pscroll = 0; lastGap = null; death = "";
+      st = "gotowy"; y = py = (H - C.ground) / 2; vy = 0; ang = 0; score = 0; tDie = 0; tShake = 0; invuln = 0; blink = 0; scroll = pscroll = 0; lastGap = null; death = ""; gateQ = false; gateAt = 0;
       nextX = W + 60;
     },
     hint() { return st === "gotowy" ? (score || invuln ? "Dotknij, żeby grać dalej" : "Dotknij, żeby lecieć") : ""; },
@@ -93,7 +94,7 @@ const FRUN = (() => {
       if (invuln > 0) invuln = Math.max(0, invuln - dt);
       for (const p of pipes) {
         if (!p.on) continue;
-        if (!p.passed && p.x + C.pipeW < C.x) { p.passed = true; score++; GAME_SFX("point"); }
+        if (!p.passed && p.x + C.pipeW < C.x) { p.passed = true; score++; GAME_SFX("point"); if (C.gateEvery && score % C.gateEvery === 0 && score !== gateAt) { gateAt = score; gateQ = true; } }
         if (invuln > 0) continue;
         const top = p.gy - p.gap / 2, bot = p.gy + p.gap / 2;
         if (hitRect(C.x, y, C.r, p.x, -1000, C.pipeW, top + 1000) || hitRect(C.x, y, C.r, p.x, bot, C.pipeW, H - C.ground - bot)) { die("Zderzenie z półką"); return; }
@@ -144,8 +145,13 @@ const FRUN = (() => {
       nextX = Math.max(C.x + 220, far ? far + C.pipeW + C.spacing : W + 60);
       y = py = (H - C.ground) / 2; vy = 0; ang = 0; tDie = 0; st = "gotowy"; invuln = GRY_CFG.revive.invulnSec;
     },
-    wantsQuestion: () => false,
-    debug: () => ({ st, y, vy, score, invuln, H, ground: C.ground, pipes: pipes.filter((p) => p.on).map((p) => ({ x: p.x, gy: p.gy, gap: p.gap })) }),
+    // Co 20 kolumn pytanie (bramka bez „Pomiń”). Po odpowiedzi listek czeka na dotknięcie, z chwilą nietykalności jak po Drugiej szansie.
+    wantsQuestion() { if (!gateQ) return false; gateQ = false; return true; },
+    gateMust: true,
+    gateHead: () => `${score} kolumn · pytanie`,
+    afterGate() { vy = 0; ang = 0; st = "gotowy"; invuln = GRY_CFG.revive.invulnSec; },
+    debugSet(o) { if (o.score != null) score = o.score; if (o.invuln != null) invuln = o.invuln; },
+    debug: () => ({ st, gateAt, y, vy, score, invuln, H, ground: C.ground, pipes: pipes.filter((p) => p.on).map((p) => ({ x: p.x, gy: p.gy, gap: p.gap })) }),
   };
   function die(txt) { st = "smierc"; death = txt; tDie = 0; tShake = 0.2; vy = Math.min(vy, -120); GAME_SFX("hit"); BUZZ(false); }
   function drawShelf(g, p, x, y0, h, top) {
@@ -587,7 +593,7 @@ function askGate() {
   const used = new Set(run.asked.map((x) => x.key));
   const q = run.qs.find((x) => !used.has("q:" + x.materialId + ":" + x.index));
   if (!q || run.asked.length >= GRY_CFG.runQuestionsMax) { state = "gra"; return startLoop(); } // brak pytań: idziemy dalej
-  ask({ kind: "abcd", q, key: "q:" + q.materialId + ":" + q.index, gate: true });
+  ask({ kind: "abcd", q, key: "q:" + q.materialId + ":" + q.index, gate: true, must: !!G.gateMust });
 }
 function pickQuestion(i) {
   const used = new Set(run.asked.map((x) => x.key));
@@ -609,7 +615,7 @@ function ask(item) {
   const secs = item.kind === "zadanie" ? GRY_CFG.revive.taskSec : GRY_CFG.revive.abcdSec;
   Q = { item, secs, left: secs, t0: performance.now(), done: false, opts: null };
   const bar = h("i"), timeTxt = h("span", { class: "vh", "aria-live": "polite" });
-  const head = item.gate ? "Bramka · pytanie za punkty" : item.n === 1 ? "Druga szansa · 1/2" : "Ostatnia szansa · 2/2";
+  const head = item.gate ? (G.gateHead?.() || "Bramka · pytanie za punkty") : item.n === 1 ? "Druga szansa · 1/2" : "Ostatnia szansa · 2/2";
   const subj = A.subjects().find((s) => s.id === (item.q.sid || A.subjectOf?.(item.q.materialId ?? item.q.mid)));
   const verdict = h("div", { class: "gry-verdict", "aria-live": "assertive" });
   let body;
@@ -623,7 +629,7 @@ function ask(item) {
     Q.inp = inp;
     body = [h("p", { class: "gry-q", translate: "no", text: item.q.task }), h("div", { class: "row" }, inp, h("button", { type: "button", class: "btn primary", onclick: () => checkTask() }, "Sprawdź"))];
   }
-  Q.foot = h("div", { class: "gry-foot" }, h("button", { type: "button", class: "link", onclick: () => { if (!Q.done) { Q.done = true; clearInterval(qTimer); if (item.gate) back(); else endRound(false); } } }, item.gate ? "Pomiń pytanie" : "Zakończ rundę"));
+  Q.foot = item.must ? h("div", { class: "gry-foot" }) : h("div", { class: "gry-foot" }, h("button", { type: "button", class: "link", onclick: () => { if (!Q.done) { Q.done = true; clearInterval(qTimer); if (item.gate) back(); else endRound(false); } } }, item.gate ? "Pomiń pytanie" : "Zakończ rundę"));
   Q.bar = bar; Q.verdict = verdict; Q.timeTxt = timeTxt;
   const sheet = h("div", { class: "gry-sheet", role: "dialog", "aria-modal": "true", "aria-label": head },
     h("div", { class: "gry-time", "aria-hidden": "true" }, bar), timeTxt,
@@ -704,7 +710,8 @@ function rpTrack(p) {
 function back() {
   cv.classList.remove("blur");
   const s = ui.layer.firstChild; if (s) { s.classList.remove("on"); setTimeout(() => s.remove(), REDUCED() ? 0 : 240); }
-  if (!Q?.item?.gate) { G.revive(); run.ozyw = (run.ozyw || 0) + 1; } Q = null;
+  if (!Q?.item?.gate) { G.revive(); run.ozyw = (run.ozyw || 0) + 1; } else G.afterGate?.();
+  Q = null;
   state = "gra"; hintSync(); paint(1); startLoop();
 }
 
