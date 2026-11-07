@@ -62,8 +62,14 @@
   }
   // client_reference_id dla Stripe: „<konto>__<KOD>__<źródło>” (kod może być pusty). Bez źródła: jak dotąd (kody polecające, v17).
   // Źródło z „_” pomijamy, bo „__” rozdziela części.
-  function refStripe(uid, kod, zrodlo) {
+  // Rocznik (fundament Etap 4, SQL v45): czwarta część „<konto>__<KOD>__<źródło>__<rocznik>”, tylko dla roczników innych niż BM,
+  // więc link BM jest bajt w bajt taki sam jak wcześniej. Webhook: brak albo nieznany rocznik → BM.
+  var BM_ROCZNIK = "wefiz-bm-1-st-2026";
+  var RE_ROCZNIK = /^[a-z]+-[a-z0-9]+-[012]-(st|nst)-20[0-9]{2}$/;
+  function refStripe(uid, kod, zrodlo, rocznik) {
     var z = zrodlo && /^[a-z0-9.-]{1,40}$/.test(zrodlo) ? zrodlo : "";
+    var bm = (root.SKROT_ROCZNIKI && root.SKROT_ROCZNIKI.DOMYSLNY) || BM_ROCZNIK;
+    if (rocznik && rocznik !== bm && RE_ROCZNIK.test(rocznik)) return [uid, kod || "", z, rocznik].join("__");
     if (!z) return kod ? uid + "__" + kod : String(uid);
     return [uid, kod || "", z].join("__");
   }

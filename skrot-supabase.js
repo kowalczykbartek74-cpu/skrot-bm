@@ -1204,11 +1204,47 @@
       return false;
     }
   };
-  const goPay = (plan) => {
+  // Rocznik inny niż BM: kupno tylko, gdy rocznik ma status „platny” (v45 nauka_rocznik_do_kupienia). Inaczej zapis na listę
+  // oczekujących (v34, zapisy.js). BM bez tego sprawdzenia (jak dotąd). Bez v45 w bazie (brak funkcji) kupno jak dotąd.
+  async function rocznikDoKupienia() {
+    if (!window.SKROT_ROCZNIKI || ROK_ID === window.SKROT_ROCZNIKI.DOMYSLNY) return true;
+    try { const { data, error } = await sb.rpc("nauka_rocznik_do_kupienia", { p_rocznik: ROK_ID }); return error ? true : data !== false; } catch { return true; }
+  }
+  function listaOczekujacych() {
+    const R = window.SKROT_ROCZNIK, Z = window.SKROT_ZAPISY;
+    const nazwa = R ? (window.SKROT_LANG === "en" ? R.kierunek.en || R.kierunek.pl : R.kierunek.pl) : "";
+    const layer = document.getElementById("layer") || document.body;
+    const close = () => scrim.remove();
+    const msg = el("p", { class: "muted", role: "status", style: "margin:0", hidden: true });
+    const btn = el("button", { type: "button", class: "btn primary", style: "min-height:48px", text: "Zapisz mnie na listę", disabled: "" });
+    const zg = el("input", { type: "checkbox", style: "width:22px;height:22px;flex:none;margin-top:1px" });
+    zg.addEventListener("change", () => { btn.disabled = !zg.checked; });
+    const zgoda = el("label", { style: "display:flex;gap:10px;align-items:flex-start;min-height:44px" }, zg,
+      el("span", {}, el("span", { text: "Chcę dostać jeden mail, gdy Zdawalni ruszy dla mojego kierunku. Zapis usunę w każdej chwili linkiem z maila. " }),
+        el("a", { class: "link", href: "prywatnosc.html", target: "_blank", rel: "noopener", text: "Prywatność" })));
+    btn.addEventListener("click", async () => {
+      if (!zg.checked) return;
+      if (!Z || !R) { msg.textContent = "Zapis na listę jest chwilowo niedostępny. Spróbuj za chwilę."; msg.hidden = false; return; }
+      btn.disabled = true; btn.textContent = "Zapisuję…";
+      try {
+        const r = await Z.zapisz({ email: skrot.email, kierunek_id: R.id.replace(/-20\d{2}$/, ""), wydzial: R.wydzial.kod, stopien: R.stopien, rok: R.rok, tryb: R.tryb, zrodlo: ADM?.zrodloWizyty?.() || null, zgoda: true });
+        msg.textContent = r?.message || "Sprawdź skrzynkę: wysłaliśmy link do potwierdzenia zapisu."; msg.hidden = false; btn.hidden = true; zgoda.hidden = true;
+      } catch (e) { msg.textContent = e?.message || "Nie udało się zapisać. Spróbuj za chwilę."; msg.hidden = false; btn.disabled = false; btn.textContent = "Zapisz mnie na listę"; }
+    });
+    const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Lista oczekujących" },
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Ten kierunek jeszcze nie ruszył" }),
+        el("p", { style: "margin:0" }, el("span", { text: "Płatny dostęp dla kierunku " }), el("b", { "data-noi18n": "", text: nazwa }), el("span", { text: " jeszcze się nie zaczął. Zapisz się na listę, a damy znać jednym mailem, gdy ruszy." })),
+        zgoda, msg,
+        el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, btn, el("button", { type: "button", class: "btn ghost", onclick: close, text: "Zamknij" }))));
+    layer.append(scrim);
+  }
+  const goPay = async (plan) => {
     const cfg = CONFIG.plans[plan];
     const link = cfg?.link;
     if (!link) return info("Płatności startują wkrótce", "Kupno dostępu ruszy wkrótce. Spróbuj później albo napisz na zdawalni.support@gmail.com.");
     if (PG) return info("Podgląd", "W podglądzie nie da się kupić dostępu. Nic nie zostało zapisane.");
+    if (!(await rocznikDoKupienia())) return listaOczekujacych();
     const layer = document.getElementById("layer") || document.body;
     const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
@@ -1247,7 +1283,8 @@
       await recordConsent(plan);
       const u = new URL(link);
       // Źródło wejścia (etap 11) jako trzecia część: „<konto>__<KOD>__<źródło>”; webhook dopisuje je do zakupu.
-      u.searchParams.set("client_reference_id", ADM ? ADM.refStripe(skrot.uid, kod, ADM.zrodloWizyty()) : kod ? `${skrot.uid}__${kod}` : skrot.uid);
+      // Rocznik inny niż BM jako czwarta część (v45): zakup daje dostęp do tego rocznika (te same Payment Links).
+      u.searchParams.set("client_reference_id", ADM ? ADM.refStripe(skrot.uid, kod, ADM.zrodloWizyty(), ROK_ID) : kod ? `${skrot.uid}__${kod}` : skrot.uid);
       u.searchParams.set("prefilled_email", skrot.email);
       location.href = u.toString();
     });

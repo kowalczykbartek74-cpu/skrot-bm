@@ -108,3 +108,15 @@ test("podgląd: przepuszcza tylko odczyty; każdy zapis i nieznana funkcja zablo
     "nauka_admin_karnet_wydaj", "nauka_zrodlo_ustaw", "nauka_zalogowano", "nauka_obecny", "nauka_sklep_kup", "nowa_funkcja", "", null]) assert.equal(A.zapisDozwolony(fn), false, String(fn));
   assert.equal(A.metodaZapisu("upsert"), true); assert.equal(A.metodaZapisu("delete"), true); assert.equal(A.metodaZapisu("select"), false);
 });
+
+test("refStripe: rocznik inny niż BM jako 4. część, BM bez zmian (fundament Etap 4, v45)", () => {
+  const T = "wefiz-test-1-st-2026";
+  const U = "00000000-0000-4000-8000-000000000001";
+  assert.equal(A.refStripe(U, "", null, "wefiz-bm-1-st-2026"), U);
+  assert.equal(A.refStripe(U, "BARTEK", "plakat", "wefiz-bm-1-st-2026"), U + "__BARTEK__plakat");
+  assert.equal(A.refStripe(U, "", null, T), U + "______" + T);
+  assert.equal(A.refStripe(U, "BARTEK", "ig", T), U + "__BARTEK__ig__" + T);
+  assert.equal(A.refStripe(U, "", "zle_zrodlo", T), U + "______" + T, "złe źródło puste, rocznik zostaje");
+  assert.equal(A.refStripe(U, "", null, "Zły_rocznik"), U, "zły rocznik pominięty");
+  assert.ok((U + "__ABCDEFGHIJKLMNOP__" + "z".repeat(40) + "__" + T).length <= 200, "limit Stripe 200 znaków");
+});

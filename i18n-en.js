@@ -1,6 +1,11 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Zapisz mnie na listę": "Add me to the list",
+"Ten kierunek jeszcze nie ruszył": "This programme hasn't started yet",
+"Płatny dostęp dla kierunku": "Paid access for",
+"jeszcze się nie zaczął. Zapisz się na listę, a damy znać jednym mailem, gdy ruszy.": "hasn't started yet. Join the list and we'll send you one email when it launches.",
+"Zapis na listę jest chwilowo niedostępny. Spróbuj za chwilę.": "Joining the list is unavailable right now. Try again in a moment.",
 "Edytuję rocznik": "Editing a cohort",
 "terminy, ogłoszenia i materiały innego kierunku": "deadlines, announcements and materials of another programme",
 "teraz: {0}": "now: {0}",

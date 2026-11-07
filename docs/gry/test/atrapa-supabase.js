@@ -411,6 +411,9 @@
   const impLicz = (poz) => { const l = { razem: 0, czeka: 0, tak: 0, popraw: 0, nie: 0 }; (poz || []).forEach((p) => { l.razem++; if (p.decyzja) l[p.decyzja]++; else l.czeka++; }); return l; };
   const BASE = {
     ...PKFN,
+    // v45: czy rocznik da się kupić (status „platny” z mock-roczniki-lista; domyślnie tylko BM). mock-v45 = "0" → brak funkcji.
+    nauka_rocznik_do_kupienia: (a) => { let l = null; try { l = JSON.parse(localStorage.getItem("mock-roczniki-lista") || "null"); } catch {}
+      return (l || [{ id: "wefiz-bm-1-st-2026", status: "platny" }]).some((r) => r.id === a.p_rocznik && r.status === "platny"); },
     // v36 (etap 7a): przypomnienia mailem; ustawienia w localStorage mock-przyp (JSON jak z bazy), stan w mock-przyp-stan,
     // wywołania w window.__przyp. mock-przyp = "off" → baza bez v36 (not_enabled).
     nauka_przypomnienia_moje: () => { const v = ls("mock-przyp", "");
@@ -474,6 +477,7 @@
     else if (/^nauka_przypomnieni/.test(fn) && ls("mock-przyp", "") === "off") out = brak; // v36 jeszcze nie w bazie
     else if (/^nauka_(paczka|duet)/.test(fn) && ls("mock-paczka", "") === "off") out = brak; // v37 jeszcze nie w bazie
     else if (/^nauka_(admin_karnet|zrodlo_ustaw)/.test(fn) && ls("mock-v38", "") === "0") out = brak; // v38 jeszcze nie w bazie
+    else if (fn === "nauka_rocznik_do_kupienia" && ls("mock-v45", "1") === "0") out = brak;
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;
