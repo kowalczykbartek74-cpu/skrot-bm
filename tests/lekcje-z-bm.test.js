@@ -46,12 +46,14 @@ test("K2 na sucho: tylko teksty (bez correct/calc/gen/simple), Batch + cache + s
   const d = srodowisko(MAPA_TYMCZ);
   const r = uruchom(d, "k2", "--na-sucho");
   assert.strictEqual(r.status, 0, r.stderr.toString());
-  assert.match(r.stdout.toString(), /1 lekcji: pz-01-test[\s\S]*Szacunek: .* \$/);
+  assert.match(r.stdout.toString(), /1 lekcji \(1 zapytań\): pz-01-test[\s\S]*Szacunek: .* \$/);
   const z = JSON.parse(fs.readFileSync(path.join(d, "out/k2-zapytania.jsonl"), "utf8").trim());
+  assert.strictEqual(z.custom_id, "pz-01-test--0", "część 0 lekcji");
   assert.strictEqual(z.params.system[0].cache_control.type, "ephemeral");
   assert.strictEqual(z.params.output_config.format.type, "json_schema");
   const c = JSON.parse(z.params.messages[0].content);
   assert.deepStrictEqual(c.tematySylabusa, ["Planowanie"]);
+  assert.strictEqual(c.czesc, "1/1");
   const p = c.teksty.map((x) => x.p);
   assert.ok(p.includes("lesson.sections[0].check.q") && p.includes("lesson.gen[0].task"), p.join(" "));
   assert.ok(!p.some((x) => /simple|correct|calc|\.id$|vars/.test(x)), p.join(" "));

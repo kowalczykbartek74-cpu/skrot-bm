@@ -183,6 +183,7 @@ def porownaj(zrodlo, nowa):
 ZASADY = """Tłumaczysz lekcję z kierunku Business Management (po angielsku) na lekcję dla studentów Zarządzania (po polsku, Uniwersytet Szczeciński).
 Dostajesz listę tekstów lekcji jako pary {p: ścieżka, t: tekst EN} i tematy z sylabusa Zarządzania, do których lekcja jest przypisana.
 Zwracasz dla KAŻDEJ ścieżki tekst po polsku: {p: ta sama ścieżka, v: tekst PL}. Nie dodajesz ani nie usuwasz ścieżek.
+Dostajesz jedną część lekcji („czesc”); przetłumacz WSZYSTKIE jej teksty, bez skracania i bez pomijania – reszta lekcji przyjdzie w innych zapytaniach.
 - Zachowaj sens, długość (±20%), formatowanie (**pogrubienia**, LaTeX \\( … \\), listy), zmienne w klamrach ({a}) i WSZYSTKIE liczby, kwoty i wzory bez zmian.
 - Pytania i odpowiedzi: ta sama kolejność i ten sam sens; poprawna odpowiedź musi zostać poprawna, złe dalej złe, `not` dalej tłumaczy błąd.
 - Dostosuj słownictwo do polskich podręczników zarządzania i do tematów z sylabusa; przykłady firm zostaw albo zamień na równoważne polskie
@@ -207,15 +208,31 @@ def wybrane(prz):
     return ids[: a.ile]
 
 
-def zapytanie(bm_id, przedmiot, tematy):
-    t = teksty(BM[bm_id]["content"])
-    tresc = json.dumps({"lekcjaBM": BM[bm_id].get("title", ""), "przedmiotZarz": przedmiot, "tematySylabusa": tematy,
-                        "teksty": [{"p": p, "t": s} for p, s in t]}, ensure_ascii=False)
-    return {"custom_id": bm_id, "params": {
-        "model": a.model, "max_tokens": 32000,
-        "system": [{"type": "text", "text": ZASADY, "cache_control": {"type": "ephemeral"}}],
-        "messages": [{"role": "user", "content": tresc}],
-        "output_config": {"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}}}}
+CZESC_TEKSTOW, CZESC_ZNAKOW = 60, 12000   # jedna odpowiedź modelu = jedna część lekcji (cała lekcja BM to ~350 tekstów)
+
+
+def czesci(bm_id):
+    """Teksty lekcji podzielone na części, które model odda w całości."""
+    out, cur, zn = [], [], 0
+    for p, t in teksty(BM[bm_id]["content"]):
+        if cur and (len(cur) >= CZESC_TEKSTOW or zn + len(t) > CZESC_ZNAKOW):
+            out.append(cur); cur, zn = [], 0
+        cur.append((p, t)); zn += len(t)
+    return out + ([cur] if cur else [])
+
+
+def zapytania_lekcji(bm_id, przedmiot, tematy):
+    cz = czesci(bm_id)
+    out = []
+    for n, t in enumerate(cz):
+        tresc = json.dumps({"lekcjaBM": BM[bm_id].get("title", ""), "przedmiotKierunku": przedmiot, "tematySylabusa": tematy,
+                            "czesc": f"{n + 1}/{len(cz)}", "teksty": [{"p": p, "t": s} for p, s in t]}, ensure_ascii=False)
+        out.append({"custom_id": f"{bm_id}--{n}", "params": {
+            "model": a.model, "max_tokens": 32000,
+            "system": [{"type": "text", "text": ZASADY, "cache_control": {"type": "ephemeral"}}],
+            "messages": [{"role": "user", "content": tresc}],
+            "output_config": {"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}}}})
+    return out
 
 
 def brak_eksportu():
@@ -253,7 +270,7 @@ prz = przypisania()
 ids = wybrane(prz)
 if not ids:
     sys.exit(f"Brak lekcji BM przypisanych do „{a.przedmiot}” w mapie (koszyk K2).")
-zap = [zapytanie(i, *prz.get(i, (a.przedmiot, []))) for i in ids]
+zap = [z for i in ids for z in zapytania_lekcji(i, *prz.get(i, (a.przedmiot, [])))]
 PB = os.path.join(OUT, "k2-batch.json")
 
 if a.na_sucho or not (a.wyslij or a.odbierz):
@@ -261,10 +278,10 @@ if a.na_sucho or not (a.wyslij or a.odbierz):
         for z in zap:
             f.write(json.dumps(z, ensure_ascii=False) + "\n")
     cin, cout = CENY[a.model]
-    t_in = sum(len(ZASADY) + len(z["params"]["messages"][0]["content"]) for z in zap) / 3
+    t_in = sum(len(z["params"]["messages"][0]["content"]) for z in zap) / 3 + len(ZASADY) / 3 * (1 + 0.1 * (len(zap) - 1))
     t_out = sum(len(json.dumps([s for _, s in teksty(BM[i]["content"])], ensure_ascii=False)) * 1.15 for i in ids) / 3
     usd = (t_in * cin + t_out * cout) / 1e6 * BATCH
-    print(f"K2 na sucho ({a.model}, Batch −50%): {len(ids)} lekcji: {', '.join(ids)}")
+    print(f"K2 na sucho ({a.model}, Batch −50%): {len(ids)} lekcji ({len(zap)} zapytań): {', '.join(ids)}")
     print(f"Szacunek: ~{int(t_in)} tokenów wejścia, ~{int(t_out)} wyjścia → ~{usd:.3f} $ (≈ {usd / len(ids):.3f} $ na lekcję)")
     sys.exit(print("Wysyłka: --wyslij (po „wysyłaj” Bartka)"))
 
@@ -280,7 +297,9 @@ b = client.messages.batches.retrieve(stan["id"])
 if b.processing_status != "ended":
     sys.exit(print("Jeszcze trwa:", b.processing_status, dict(b.request_counts)))
 usage, bledy = {"input": 0, "output": 0, "cache_write": 0, "cache_read": 0}, []
+dost, uwagi = {}, {}
 for r in client.messages.batches.results(b.id):
+    lid = r.custom_id.rsplit("--", 1)[0]
     if r.result.type != "succeeded" or r.result.message.stop_reason != "end_turn":
         bledy.append(f"{r.custom_id}: {r.result.type}"); continue
     m = r.result.message
@@ -288,20 +307,24 @@ for r in client.messages.batches.results(b.id):
     usage["input"] += u.input_tokens; usage["output"] += u.output_tokens
     usage["cache_write"] += u.cache_creation_input_tokens or 0; usage["cache_read"] += u.cache_read_input_tokens or 0
     w = json.loads(next(c.text for c in m.content if c.type == "text"))
-    src = BM[r.custom_id]
-    d = k1_dokument(src, prz.get(r.custom_id, (a.przedmiot, []))[0])
+    dost.setdefault(lid, {}).update({x["p"]: x["v"] for x in w["teksty"]})
+    if w.get("uwaga"):
+        uwagi.setdefault(lid, []).append(w["uwaga"])
+for lid in stan["ids"]:
+    src = BM[lid]
+    d = k1_dokument(src, prz.get(lid, (a.przedmiot, []))[0])
     oczek = {p for p, _ in teksty(src["content"])}
-    dost = {x["p"]: x["v"] for x in w["teksty"]}
-    for p, v in dost.items():
+    got = dost.get(lid, {})
+    for p, v in got.items():
         if p in oczek:
             ustaw(d["content"], p, v)
-    d["k2"] = "gotowe" if oczek <= set(dost) else "niepełne"
-    d["uwaga"] = w.get("uwaga", "")
+    d["k2"] = "gotowe" if oczek <= set(got) else "niepełne"
+    d["uwaga"] = " ".join(uwagi.get(lid, []))
     if d["k2"] != "gotowe":
-        bledy.append(f"{r.custom_id}: brak {len(oczek - set(dost))} tekstów")
+        bledy.append(f"{lid}: brak {len(oczek - set(got))} tekstów")
     roznice = porownaj(src, d)
     if roznice:
-        bledy.append(f"{r.custom_id}: " + "; ".join(roznice[:5]))
+        bledy.append(f"{lid}: " + "; ".join(roznice[:5]))
     json.dump(d, open(os.path.join(PACZKI, d["id"] + ".json"), "w"), ensure_ascii=False, indent=1)
 cin, cout = CENY[stan["model"]]
 usage["usd"] = round((usage["input"] * cin + usage["cache_write"] * cin * 1.25 + usage["cache_read"] * cin * 0.1 + usage["output"] * cout) / 1e6 * BATCH, 4)
