@@ -52,6 +52,12 @@ def z_listy(html, nazwa, stopien, nabor, tryb="st", jezyk="pl"):
     return sorted(traf)[0][1] if traf else None
 
 
+def podstrona(html, nazwa):
+    """Adres podstrony kierunku na liście wydziału (/ksztalcenie/sylabusy/<slug>/), gdy lista nie ma jego PDF-ów wprost."""
+    m = re.search(r'href="((?:https://efz\.usz\.edu\.pl)?/ksztalcenie/sylabusy/' + re.escape(slug(nazwa)) + r'/?)"', html or "", re.I)
+    return None if not m else (m.group(1) if m.group(1).startswith("http") else "https://efz.usz.edu.pl" + m.group(1))
+
+
 def jezyk_kierunku(nazwa):
     """Język zajęć z kierunki/wspolne/kierunki-nazwy.json (konfiguracja planu z plan-bm go nie ma)."""
     try:
@@ -109,6 +115,12 @@ if __name__ == "__main__":
         pdf, js = os.path.join(OUT, c["kod"] + ".pdf"), os.path.join(OUT, c["kod"] + ".json")
         url = z_listy(lista, c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"]) if lista else None
         skad = "lista wydziału" if url else "wzór adresu"
+        pod = podstrona(lista, c["kierunek"]["pl"]) if lista and not url else None
+        if pod:   # np. Economics and IT Applications: PDF-y tylko na podstronie kierunku (i „IT” wielkimi literami w nazwie pliku)
+            url = z_listy((pobierz(pod)[0] or b"").decode("utf-8", "replace"), c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"])
+            skad = "podstrona kierunku" if url else skad
+        if url and url.startswith("/"):
+            url = "https://efz.usz.edu.pl" + url
         url = url or adresy(c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"])["pdf"]
         if a.na_sucho:
             raport.append((c["kod"], c["kierunek"]["pl"], skad, url, "na sucho")); continue
