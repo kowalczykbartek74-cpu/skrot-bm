@@ -109,3 +109,18 @@ Kandydaci BM = tematy z sylabusa BM (bez eksportu lekcji), więc źródła K2 ma
 Szacunek D+E z tej mapy (`koszt-tresci.py`): Zarządzanie ~6,28 $ (egzaminy ~3,68 $), FiR ~2,47 $ (egzaminy ~1,92 $), **łącznie ~8,75 $ (egzaminy ~5,60 $)**.
 Więcej K3 w Zarządzaniu niż w mapie tymczasowej: Prawo BM nie ma polskiego prawa cywilnego, Narzędzia IT BM to bazy danych/SQL, a nie TI z sylabusa.
 FiR: 58 tematów K1 czeka na zatwierdzone lekcje Zarządzania.
+
+## Etap D: pilot K2 Zarządzania (8.11.2026)
+
+- Eksport 115 lekcji BM (przeglądarka w aplikacji, konto Bartka, tylko odczyt) → `scratch/lessons/`. Źródła `bm-syl:…` z mapy są tłumaczone na lekcje
+  po podobieństwie tytułów EN (`lekcje-z-bm.py`): 53 tematy K2 → 37 lekcji; 6 tematów bez pewnej lekcji (Podstawy prawa 2, Podstawy ekonomii 4).
+- K1: 37 lekcji skopiowanych do `scratch/zarz26/paczki/` (0 zł).
+- K2 pilot (`pz-01-organization`, `pz-03-managers`, Sonnet 5.5):
+  - próba 1 `msgbatch_01XAEMryC1Zd8f9or3eJeqhB`: 0,042 $, pusta (model odmówił 350 tekstów naraz) → lekcja idzie teraz w częściach (≤ 60 tekstów / 12 tys. znaków);
+  - próba 2 `msgbatch_01RZ8SJbAUcaASvFrzEaP1sD`: **0,3085 $** (≈ 0,15 $/lekcję; szacunek był 0,18 $ → mnożnik wyjścia skalibrowany na ×2,1);
+  - porównanie ze źródłem: ✓ obie (porównanie rozumie już „1,200” = „1 200” i „5 p.m.” = „17:00”);
+  - walidator v4: 0 błędów (ostrzeżenia o długości jak w BM); `tresci-kontrola.mjs`: 1 blokada = „2 + 2 = 5” (synergia, to samo w BM; do oznaczenia „celowo”), 5 procentów do przejrzenia (te same co w BM).
+  - Tytuły zostały po angielsku (tytuł był poza `content`); od teraz jedzie w pierwszej części.
+- Szacunek D+E po kalibracji: **~30,4 $** (egzaminy ~19,6 $); cały K2 Zarządzania na prawdziwych lekcjach 5,52 $ (37 lekcji).
+
+**Spec ↔ kod:** Panel AI (`aiImport`) wczytuje z pliku tylko `materialSimple` i `quizWhy`. Nie ma importu całych lekcji (`materials` + `materialContent`) w trybie „Edytuję rocznik”.

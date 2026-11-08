@@ -82,7 +82,7 @@ def koszt_k2(n_lekcji, ids):
     else:
         zn = [WZ_TEKST] * n_lekcji
     wej = sum(tok(ZASADY_K2 + z * 1.1) for z in zn)
-    wyj = sum(tok(z * 1.15) for z in zn)
+    wyj = sum(tok(z * 2.1) for z in zn)      # ×2,1 z pilota K2 (8.11.2026)
     return usd(a.model_k2, wej, wyj, cache=tok(ZASADY_K2) * max(len(zn) - 1, 0))
 
 

@@ -151,11 +151,25 @@ def k1_dokument(bm, przedmiot):
             "title": bm.get("title", ""), "order": bm.get("order"), "k2": "do zrobienia", "content": copy.deepcopy(bm["content"])}
 
 
-LICZBY = re.compile(r"-?\d+(?:[.,]\d+)?")
+LICZBY = re.compile(r"g\d{4}|-?\d+(?:[.,]\d+)?")
 
 
-def liczby(s):
-    return sorted(x.replace(",", ".") for x in LICZBY.findall(s or ""))
+def liczby(s, jezyk="pl"):
+    """Liczby z tekstu w jednej postaci: bez separatorów tysięcy (EN „1,200”, PL „1 200”/„1 200”), przecinek dziesiętny PL → kropka."""
+    s = s or ""
+    # godziny w jednej postaci HH:MM (EN „5 p.m.” = PL „17:00”), żeby lokalizacja godziny nie była różnicą liczb
+    def godz(h, m, pm):
+        h = int(h) % 12 + (12 if pm else 0) if pm is not None else int(h)
+        return f" g{h:02d}{m or '00'} "
+    if jezyk == "en":
+        s = re.sub(r"\b(\d{1,2})(?::(\d{2}))?\s?([ap])\.?m\.?(?![a-z])", lambda x: godz(x[1], x[2], x[3].lower() == "p"), s, flags=re.I)
+    s = re.sub(r"\b(\d{1,2}):(\d{2})\b", lambda x: godz(x[1], x[2], None), s)
+    if jezyk == "en":
+        s = re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", s)
+    else:
+        s = re.sub(r"(?<=\d)[ \u00a0\u202f](?=\d{3}(?!\d))", "", s)
+        s = re.sub(r"(?<=\d),(?=\d)", ".", s)
+    return sorted(str(float(x)) if re.fullmatch(r"-?\d+(\.\d+)?", x) else x for x in LICZBY.findall(s))
 
 
 def porownaj(zrodlo, nowa):
@@ -173,8 +187,8 @@ def porownaj(zrodlo, nowa):
         r.append("inna struktura albo inne pola nie-tekstowe (correct/calc/gen/id) niż w BM")
     nowe = dict(teksty(nowa["content"]))
     for p, t in teksty(zrodlo["content"]):
-        if p in nowe and liczby(t) != liczby(nowe[p]):
-            r.append(f"{p}: liczby {liczby(t)} → {liczby(nowe[p])}")
+        if p in nowe and liczby(t, "en") != liczby(nowe[p]):
+            r.append(f"{p}: liczby {liczby(t, 'en')} → {liczby(nowe[p])}")
         if p in nowe and sorted(re.findall(r"\{\w+\}", t)) != sorted(re.findall(r"\{\w+\}", nowe[p])):
             r.append(f"{p}: inne zmienne {{…}} niż w BM")
     return r
@@ -211,10 +225,14 @@ def wybrane(prz):
 CZESC_TEKSTOW, CZESC_ZNAKOW = 60, 12000   # jedna odpowiedź modelu = jedna część lekcji (cała lekcja BM to ~350 tekstów)
 
 
+TYTUL = "@title"   # tytuł lekcji leży poza content; jedzie w pierwszej części jako zwykły tekst
+
+
 def czesci(bm_id):
-    """Teksty lekcji podzielone na części, które model odda w całości."""
+    """Teksty lekcji podzielone na części, które model odda w całości (tytuł na początku pierwszej)."""
     out, cur, zn = [], [], 0
-    for p, t in teksty(BM[bm_id]["content"]):
+    tyt = [(TYTUL, BM[bm_id]["title"])] if BM[bm_id].get("title") else []
+    for p, t in tyt + teksty(BM[bm_id]["content"]):
         if cur and (len(cur) >= CZESC_TEKSTOW or zn + len(t) > CZESC_ZNAKOW):
             out.append(cur); cur, zn = [], 0
         cur.append((p, t)); zn += len(t)
@@ -279,7 +297,8 @@ if a.na_sucho or not (a.wyslij or a.odbierz):
             f.write(json.dumps(z, ensure_ascii=False) + "\n")
     cin, cout = CENY[a.model]
     t_in = sum(len(z["params"]["messages"][0]["content"]) for z in zap) / 3 + len(ZASADY) / 3 * (1 + 0.1 * (len(zap) - 1))
-    t_out = sum(len(json.dumps([s for _, s in teksty(BM[i]["content"])], ensure_ascii=False)) * 1.15 for i in ids) / 3
+    # ×2,1: pilot Zarządzania 8.11.2026 (PL dłuższy + ścieżki w JSON odpowiedzi): 52,9 tys. tokenów wyjścia przy szacunku 29 tys. z ×1,15
+    t_out = sum(len(json.dumps([s for _, s in teksty(BM[i]["content"])], ensure_ascii=False)) * 2.1 for i in ids) / 3
     usd = (t_in * cin + t_out * cout) / 1e6 * BATCH
     print(f"K2 na sucho ({a.model}, Batch −50%): {len(ids)} lekcji ({len(zap)} zapytań): {', '.join(ids)}")
     print(f"Szacunek: ~{int(t_in)} tokenów wejścia, ~{int(t_out)} wyjścia → ~{usd:.3f} $ (≈ {usd / len(ids):.3f} $ na lekcję)")
@@ -318,6 +337,10 @@ for lid in stan["ids"]:
     for p, v in got.items():
         if p in oczek:
             ustaw(d["content"], p, v)
+    if got.get(TYTUL):
+        d["title"] = got[TYTUL]
+    elif src.get("title"):
+        bledy.append(f"{lid}: tytuł bez tłumaczenia")
     d["k2"] = "gotowe" if oczek <= set(got) else "niepełne"
     d["uwaga"] = " ".join(uwagi.get(lid, []))
     if d["k2"] != "gotowe":
