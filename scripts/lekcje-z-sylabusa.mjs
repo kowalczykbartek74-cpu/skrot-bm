@@ -326,6 +326,31 @@ async function odbierz() {
 }
 
 // ---------- SQL do wklejenia (po v23) ----------
+// Dokumenty jednej lekcji (materials, materialContent, quizWhy, materialSimple) z odpowiedzi modelu: wspólne dla „sql” i „pliki”.
+const FORMY = { W: "wykład", CW: "ćwiczenia", LAB: "laboratorium", KON: "konwersatorium", SEM: "seminarium" };
+function sylRefLekcji(l) {
+  // Numer tematu w sylabusie (forma + numer), a nie numer lekcji w planie (plan z --mapa zawiera tylko część tematów).
+  const c = kurs(), out = [];
+  const tem = [l.temat.replace(/^[^:]+: /, ""), ...l.cwiczenia.map((t) => t.replace(/^[^:]+: /, ""))];
+  for (const [f, ts] of Object.entries(c.topics)) ts.forEach((t, i) => { if (tem.includes(t.t)) out.push([f, i + 1]); });
+  const po = {};
+  for (const [f, n] of out) (po[f] ||= []).push(n);
+  return Object.entries(po).map(([f, ns]) => `${FORMY[f] || f.toLowerCase()}, ${ns.length > 1 ? "tematy" : "temat"} ${ns.join(", ")}`).join(" · ") || `wykład, temat ${l.nr}`;
+}
+function dokumenty(l, x, k, plan = czytaj(path.join(DIR, "plan.json"))) {
+    const L = { v2: true, ...x.lesson };
+    // Format v4 (lekcje-walidator.py): przy poprawnej odpowiedzi not[correct] = null, a nie pusty tekst (konwencja v3 z promptu).
+    for (const q of [...(L.sections || []).map((s) => s.check), ...(L.exit || []), ...(L.prereq || [])]) if (q && Array.isArray(q.not) && q.correct in q.not) q.not[q.correct] = null;
+    const content = { v: 2, tldr: x.tldr, concepts: x.concepts.map((c) => ({ term: c.term, en: c.en, definition: c.definition })), flashcards: x.flashcards,
+      quiz: x.quiz.map((q) => ({ q: q.q, options: q.options, correct: q.correct, explanation: q.explanation })), lesson: L };
+    const material = { kind: "lesson", v: 2, source: "sylabus", subjectId: plan.sid, title: x.tytul || l.tytul, order: l.nr, sylRef: sylRefLekcji(l), lang: rok.jezykZajec,
+      fileName: `Sylabus ${rok.kierunek.pl} ${rok.rokAkademicki}`, fileType: "sylabus", createdAt: Date.now(), topicCount: L.sections.length,
+      conceptCount: content.concepts.length, flashcardCount: content.flashcards.length, quizCount: content.quiz.length, generator: { model: MODEL, kontrola: k[l.nr]?.ocena ?? null } };
+    const why = { items: Object.fromEntries(x.quiz.map((q, i) => [i, { why: q.dlaczego.why, example: q.dlaczego.example, not: q.not }])), at: Date.now() };
+    const simple = { ...x.prosciej, by: "auto", at: Date.now() };
+    return { material, content, why, simple };
+}
+
 function sql() {
   const plan = czytaj(path.join(DIR, "plan.json"));
   const k = czytaj(path.join(DIR, "kontrola.json"), {});
@@ -339,16 +364,7 @@ function sql() {
     const bl = sprawdz(x);
     if (bl.length) { pominiete.push(`${l.nr} (kontrola bez AI: ${bl[0]})`); continue; }
     if (k[l.nr] && !k[l.nr].ok && !args.includes("--z-uwagami")) { pominiete.push(`${l.nr} (kontrola AI: do poprawy)`); continue; }
-    const L = { v2: true, ...x.lesson };
-    // Format v4 (lekcje-walidator.py): przy poprawnej odpowiedzi not[correct] = null, a nie pusty tekst (konwencja v3 z promptu).
-    for (const q of [...(L.sections || []).map((s) => s.check), ...(L.exit || []), ...(L.prereq || [])]) if (q && Array.isArray(q.not) && q.correct in q.not) q.not[q.correct] = null;
-    const content = { v: 2, tldr: x.tldr, concepts: x.concepts.map((c) => ({ term: c.term, en: c.en, definition: c.definition })), flashcards: x.flashcards,
-      quiz: x.quiz.map((q) => ({ q: q.q, options: q.options, correct: q.correct, explanation: q.explanation })), lesson: L };
-    const material = { kind: "lesson", v: 2, source: "sylabus", subjectId: plan.sid, title: x.tytul || l.tytul, order: l.nr, sylRef: `wykład, temat ${l.nr}`, lang: rok.jezykZajec,
-      fileName: `Sylabus ${rok.kierunek.pl} ${rok.rokAkademicki}`, fileType: "sylabus", createdAt: Date.now(), topicCount: L.sections.length,
-      conceptCount: content.concepts.length, flashcardCount: content.flashcards.length, quizCount: content.quiz.length, generator: { model: MODEL, kontrola: k[l.nr]?.ocena ?? null } };
-    const why = { items: Object.fromEntries(x.quiz.map((q, i) => [i, { why: q.dlaczego.why, example: q.dlaczego.example, not: q.not }])), at: Date.now() };
-    const simple = { ...x.prosciej, by: "auto", at: Date.now() };
+    const { material, content, why, simple } = dokumenty(l, x, k);
     for (const [kol, d] of [["materials", material], ["materialContent", content], ["materialSimple", simple], ["quizWhy", why]]) {
       wiersze.push(`  ('${kol}', '${l.id}', ${lit(d)}, '${ROCZNIK}')`);
       (atrapa[kol] ||= {})[l.id] = d;
@@ -409,6 +425,24 @@ if (cmd === "plan") {
   await wyslijBatch(lista.map((l) => prosbaPisz(c, plan, l, cmd === "popraw" ? k[l.nr].problemy.map((p) => `- ${p.gdzie}: ${p.co}`).join("\n") : null)), "pisz");
 } else if (cmd === "odbierz") await odbierz();
 else if (cmd === "sql") sql();
+else if (cmd === "pliki") {
+  // Pliki lekcji (format eksportu + rocznik_id + zrodlo) dla scripts/paczka-lekcji.py → Panel AI „Paczka lekcji”. Nic nie zapisuje do bazy.
+  const plan = czytaj(path.join(DIR, "plan.json")), k = czytaj(path.join(DIR, "kontrola.json"), {});
+  const out = path.resolve(opt("wyjscie", path.join(DIR, "pliki"))); fs.mkdirSync(out, { recursive: true });
+  const pomin = [];
+  for (const l of plan.lekcje) {
+    const x = czytaj(path.join(DIR, `lekcja-${String(l.nr).padStart(2, "0")}.json`));
+    if (!x) { pomin.push(`${l.nr} (brak pliku)`); continue; }
+    const bl = sprawdz(x);
+    if (bl.length) { pomin.push(`${l.nr} (kontrola bez AI: ${bl[0]})`); continue; }
+    if (!k[l.nr]) { pomin.push(`${l.nr} (brak kontroli AI)`); continue; }
+    if (!k[l.nr].ok && !args.includes("--z-uwagami")) { pomin.push(`${l.nr} (kontrola AI: do poprawy)`); continue; }
+    const { material, content, why, simple } = dokumenty(l, x, k);
+    zapisz(path.join(out, l.id + ".json"), { id: l.id, subjectId: material.subjectId, rocznik_id: ROCZNIK, zrodlo: "k3:sylabus", title: material.title,
+      order: material.order, sylRef: material.sylRef, content, simple, why, generator: material.generator });
+  }
+  console.log(`Pliki: ${plan.lekcje.length - pomin.length}/${plan.lekcje.length} → ${out}${pomin.length ? "\nPominięte: " + pomin.join(", ") : ""}`);
+}
 else if (cmd === "koszt") koszt();
 else if (cmd === "probka") {
   const x = JSON.parse(fs.readFileSync(opt("plik"), "utf8")), nr = Number(opt("nr", "1"));
