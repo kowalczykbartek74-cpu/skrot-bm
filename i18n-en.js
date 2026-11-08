@@ -773,6 +773,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wkrótce": "Coming soon",
 "← Zmień kierunek": "← Change programme",
 "Business Management. Który rok?": "Business Management. Which year?",
+"{0}. Który rok?": "{0}. Which year?",
 "Grupę możesz dodać teraz albo później. Dzięki niej od razu zobaczysz swój plan i terminy.": "You can add your group now or later. With it you'll see your timetable and deadlines right away.",
 "Rok studiów · I stopień, stacjonarne": "Year of study · first cycle, full-time",
 "1. rok": "1st year",

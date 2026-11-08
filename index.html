@@ -5,6 +5,8 @@ var st={grupa:G("bm-group")||""};
 /* Kierunki z rocznik.js (SKROT_ROCZNIKI): karty w kroku 1, rok i grupy w kroku 2. Wybór: „skrot-rocznik” (czyta go rocznik.js),
    po zalogowaniu zapisywany w profilu (skrot-supabase.js → nauka_rocznik_ustaw, SQL v31). */
 var RR=window.SKROT_ROCZNIKI,ROK=window.SKROT_ROCZNIK,IDS=RR?Object.keys(RR.ROCZNIKI):[],RZ=function(id){return RR.zbuduj(id)};
+/* Nazwy kierunków PL → EN do słownika (karty i nagłówek kroku 2 po angielsku dla każdego kierunku z rocznik.js). */
+if(window.SKROT_I18N&&SKROT_I18N.add)IDS.forEach(function(id){var k=RZ(id).kierunek;if(k&&k.pl&&k.en)SKROT_I18N.add(k.pl,k.en)});
 var STOP={0:"jednolite magisterskie",1:"I stopień",2:"II stopień"},LAT={0:5,1:3,2:2};
 function pending(){try{var p=JSON.parse(G("skrot-login-pending")||"null");return!!(p&&p.email&&Date.now()-p.t<36e5)}catch(e){return false}}
 /* Kierunek wybieramy raz. Pomijamy krok, gdy: wybrany wcześniej, ktoś już korzystał ze strony (ma grupę), czeka na kod z maila albo przyszedł z linku promocyjnego. */
