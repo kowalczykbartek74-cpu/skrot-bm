@@ -28,10 +28,15 @@ Poza paczką (błąd w źródle BM, ten sam co w FiR; `scratch/eaia26/zablokowan
 
 Poprawka kontroli: lekcje BM mieszają przecinek tysięcy z dziesiętnym („0,2 × 3,000 = 600”) – 8 fałszywych błędów; `tresci.js` liczy taki rachunek drugi raz.
 
-## Pilot K3 (1 lekcja): na sucho, NIE wysłany
+## Pilot K3 (1 lekcja): wysłany, Sonnet 5.5, 0,066 $
 
-Finanse (jedyny przedmiot z egzaminem bez BM), plan 7 lekcji (`.tresci/wefiz-eaia-1-st-2026/finanse/plan.json`). Pilot: lekcja 1 „The field and functions of finance. Money as building block of financial phenomena.”
-Koszt: **Sonnet 5.5 ~0,08 $** albo **Opus 5.5 ~0,16 $** (domyślny generatora) + kontrola Haiku ~0 $.
+Finanse 1 „The field and functions of finance…”: kontrola bez AI OK, kontrola Haiku OK (ocena 4; jedyna uwaga „lekcja po angielsku” = fałszywy alarm).
+Paczka `scratch/eaia26/paczka-pilot.json` (= `~/Downloads/paczka-eaia-pilot-k3.json`, 27 KB: 4 sekcje, quiz 8, fiszki 10, Prościej PL).
+21 wartości (same liczby z przykładów, rachunki się zgadzają) oznaczone przez Claude jako przejrzane (kopia: `scratch/tresci-przeglad.przed-pilot-eaia.json`).
+
+**Błąd w pilocie:** pojęcia (concepts) po polsku i w złych polach (term PL + en), a w BM jest term EN + pl + definicja EN.
+Generator poprawiony (commit „Generator K3, kierunek po angielsku…”); pilot trzeba napisać jeszcze raz (~0,07 $), zanim będzie wzorcem.
+Szacunek całych Finansów (7 lekcji, Sonnet): ~0,46 $.
 
 ## Dalej
 
