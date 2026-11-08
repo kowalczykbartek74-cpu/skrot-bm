@@ -1,4 +1,4 @@
-// Fundament, Etap 3: „Edytuję rocznik” (tylko admin). BASE=http://127.0.0.1:<port>/ node docs/gry/test/fundament-etap3.mjs
+// Fundament, Etap 3: „Edytuję rocznik” (tylko admin), od 8.11.2026 przez Panel kierunków. BASE=http://127.0.0.1:<port>/ node docs/gry/test/fundament-etap3.mjs
 import { chromium, page, BASE, shot } from "./lib.mjs";
 import { dodajRocznikTestowy, TEST_ID, BM_ID } from "./rocznik-testowy.mjs";
 const b = await chromium.launch();
@@ -14,15 +14,16 @@ async function otworz({ konto = "starosta", lang = "pl", w = 375, h = 812, ls = 
 const ev = (p, fn, a) => p.evaluate(fn, a);
 const main = (p) => p.locator("main").innerText();
 
-// 1. Narzędzia → „Edytuję rocznik” → lista z bazy
+// 1. Narzędzia → „Panel kierunków” → lista z bazy
 let p = await otworz();
-ok("1 Narzędzia: pozycja „Edytuję rocznik”", (await p.locator(".more-row", { hasText: "Edytuję rocznik" }).count()) === 1);
-await p.locator(".more-row", { hasText: "Edytuję rocznik" }).click(); await p.waitForTimeout(800);
+ok("1 Narzędzia: pozycja „Panel kierunków”", (await p.locator(".more-row", { hasText: "Panel kierunków" }).count()) === 1);
+await p.locator(".more-row", { hasText: "Panel kierunków" }).click(); await p.waitForTimeout(1500);
 const lista = await main(p);
-ok("1 lista: BM (teraz) i rocznik testowy ze statusem z bazy", /#\/rocznikAdmin/.test(p.url()) && /Teraz edytujesz/.test(lista) && /Kierunek Testowy, 1\. rok/.test(lista) && /lista oczekujących/.test(lista), lista);
+ok("1 lista: BM (teraz) i rocznik testowy ze statusem z bazy", /#\/kierunkiPanel/.test(p.url()) && /teraz na stronie/.test(lista) && /Kierunek Testowy, 1\. rok/.test(lista) && /lista oczekujących/.test(lista), lista);
 await shot(p, "fundament-etap3-lista");
 // 2. wybór → przeładowanie w roczniku testowym, pasek u góry, profil bez zmian
-await Promise.all([p.waitForEvent("load"), p.locator(".adm-row", { hasText: "Kierunek Testowy" }).locator("button", { hasText: "Edytuj" }).click()]);
+await p.locator(".pk-rok", { hasText: "Kierunek Testowy" }).click(); await p.waitForTimeout(800);
+await Promise.all([p.waitForEvent("load"), p.locator(".pk-head button", { hasText: "Narzędzia" }).click()]);
 await p.waitForTimeout(3000);
 ok("2 ROK = rocznik testowy, klucz admina zapisany", (await ev(p, () => [window.SKROT_ROCZNIK.id, localStorage.getItem("skrot-admin-rocznik")])).every((x) => x === TEST_ID));
 ok("2 pasek „Edytujesz: …” z statusem", /Edytujesz:\s*Kierunek Testowy, 1\. rok\s*lista oczekujących/.test(await p.locator("#ed-bar").innerText().catch(() => "")), await p.locator("#ed-bar").innerText().catch(() => "brak"));
