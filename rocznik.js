@@ -54,6 +54,22 @@
         jeszczeProsciej: ["analiza-matematyczna"],
       },
     },
+    // KIERUNEK-START wefiz-zarz-1-st-2026 (scripts/kierunek.mjs z kierunki/wefiz-zarz-1-st-2026.json; nie edytuj ręcznie: popraw plik kierunku i uruchom skrypt)
+    "wefiz-zarz-1-st-2026": {
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "ZARZ", pl: "Zarządzanie", en: "Management" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.skrotbm.pl/plan/wefiz-zarz-1-st-2026.json", strona: "https://plan.skrotbm.pl/?k=zarz26", skrzynka: null },
+      sylabus: { plik: null, pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["C151", "C152", "C153"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["podstawy-prawa"], rachunkowe: ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], jeszczeProsciej: ["matematyka"] },
+    },
+    // KIERUNEK-KONIEC wefiz-zarz-1-st-2026
   };
   var DOMYSLNY = "wefiz-bm-1-st-2026";
   var KLUCZ_EDYCJA = "skrot-admin-rocznik"; // localStorage: rocznik edytowany przez administratora

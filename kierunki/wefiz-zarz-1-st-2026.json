@@ -1,0 +1,25 @@
+{
+  "id": "wefiz-zarz-1-st-2026",
+  "kierunek_id": "wefiz-zarz-1-st",
+  "prefiks": "zarz26",
+  "wydzial": "WEFiZ",
+  "kierunek": { "kod": "ZARZ", "pl": "Zarządzanie", "en": "Management" },
+  "stopien": 1, "tryb": "st", "nabor": 2026, "jezykZajec": "pl",
+  "plan": { "systemNazwa": "Zarządzanie (Z)", "rok": "1 rokI", "plik": "plan/wefiz-zarz-1-st-2026.json" },
+  "grupy": ["C151", "C152", "C153"],
+  "sylabus": { "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_studia_stacjonarne_I_stopnia_2026_2027.pdf", "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_zarzadzanie_studia_stacjonarne_I_stopnia_2026_2027.pdf", "plik": "sylabus-zarz.json" },
+  "teams": false,
+  "status": "oczekujacy",
+  "przedmioty": {
+    "matematyka":                   { "bm": ["analiza-matematyczna"], "koszyk": "K2+K3" },
+    "podstawy-zarzadzania":         { "bm": ["podstawy-zarzadzania"], "koszyk": "K2" },
+    "podstawy-finansow":            { "bm": ["podstawy-finansow"], "koszyk": "K2" },
+    "podstawy-prawa":               { "bm": ["prawo"], "koszyk": "K2" },
+    "podstawy-ekonomii":            { "bm": ["ekonomia-biznesu", "makroekonomia"], "koszyk": "K2" },
+    "technologie-informacyjne":     { "bm": ["narzedzia-it-w-zarzadzaniu"], "koszyk": "K2+K3" },
+    "nauka-o-przedsiebiorstwie":    { "bm": [], "koszyk": "K3" },
+    "zachowania-konsumentow":       { "bm": [], "koszyk": "K3" },
+    "zarzadzanie-wlasnym-rozwojem": { "bm": [], "koszyk": "K3" }
+  },
+  "role": { "prawne": ["podstawy-prawa"], "rachunkowe": ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], "jeszczeProsciej": ["matematyka"] }
+}
