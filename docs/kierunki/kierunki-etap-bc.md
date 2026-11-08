@@ -86,3 +86,26 @@ Jeśli FiR ruszy przed zatwierdzeniem Zarządzania, jego 30 tematów K1 przejdzi
 - `node --test tests/*.test.js`: 291 testów, 290 OK, 1 pominięty (jak dotąd); nowe testy banku, braku karty i `koszt-tresci.py`.
 - `fundament-bm-tekst.mjs`: 24 ekrany BM przed (main) i po – identyczne.
 - `fundament-etap7.mjs` na roczniku FiR: 24/24 (PL 375 px, EN 1280 px, lista oczekujących, bez poziomego przewijania).
+
+## Mapa z modelu (8.11.2026, po „wysyłaj”)
+
+Batch Haiku 5.5: Zarządzanie `msgbatch_01CvsSq76E2tR8b9ohmRaL9P` (0,0037 $), FiR `msgbatch_019hEEsirLTqknwB8uzUNJTH` (0,0051 $). Razem **0,0088 $** (szacunek był 0,004 $: model pisał dłuższe uwagi).
+Kandydaci BM = tematy z sylabusa BM (bez eksportu lekcji), więc źródła K2 mają postać `bm-syl:…`.
+
+| Zarządzanie | K1 | K2 | K3 |  | FiR | K1 | K2 | K3 |
+|---|---|---|---|---|---|---|---|---|
+| Matematyka (E) | 0 | 5 | 4 |  | Podstawy zarządzania (E) | 16 | 0 | 1 |
+| Podstawy zarządzania (E) | 0 | 19 | 7 |  | Podstawy finansów (E) | 16 | 0 | 3 |
+| Podstawy finansów (E) | 0 | 6 | 6 |  | Podstawy prawa | 6 | 0 | 2 |
+| Podstawy prawa | 0 | 7 | 6 |  | Matematyka | 10 | 2 | 1 |
+| OWI | 0 | 5 | 0 |  | Makroekonomia (E) | 8 | 1 | 0 |
+| Podstawy ekonomii (E) | 0 | 11 | 0 |  | OWI | 0 | 5 | 0 |
+| Technologie informacyjne | 0 | 0 | 12 |  | Arkusz kalkulacyjny w F&R | 2 | 1 | 1 |
+| Nauka o przedsiębiorstwie (E) | 0 | 0 | 17 |  | Podstawy rachunkowości (E) | 0 | 0 | 21 |
+| Zachowania konsumentów | 0 | 0 | 6 |  | | | | |
+| Zarządzanie własnym rozwojem | 0 | 0 | 5 |  | | | | |
+| **Razem** | **0** | **53** | **63** |  | **Razem** | **58** | **9** | **29** |
+
+Szacunek D+E z tej mapy (`koszt-tresci.py`): Zarządzanie ~6,28 $ (egzaminy ~3,68 $), FiR ~2,47 $ (egzaminy ~1,92 $), **łącznie ~8,75 $ (egzaminy ~5,60 $)**.
+Więcej K3 w Zarządzaniu niż w mapie tymczasowej: Prawo BM nie ma polskiego prawa cywilnego, Narzędzia IT BM to bazy danych/SQL, a nie TI z sylabusa.
+FiR: 58 tematów K1 czeka na zatwierdzone lekcje Zarządzania.
