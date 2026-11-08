@@ -45,3 +45,11 @@ Do obejrzenia: lekcja jest w formacie generatora (mniejsza niż lekcje BM v4), k
 1. Przegląd pilota na telefonie (po wgraniu) → akcept: `node scripts/kierunek-start.mjs --wzorzec k3 wefiz-eaia-1-st-2026 eaia26-finanse-01`, potem Etap E.
 2. Wgranie paczki K1 (Bartek): dopiero po wdrożeniu strony i „Dodaj do bazy” (Etap F).
 3. mk-07 / pr-01: poprawić w BM (wtedy w obu) albo zostawić poza EaIA.
+
+## 9.11.2026: poprawki BM, Statystyka opisowa, scalenie
+
+- **Poprawki BM** (mk-07: „= 1,100” → „≈ 1,100”; pr-01: „poczujesz wstyd” → „kolega może się obrazić”): paczka `~/Downloads/paczka-bm-poprawki-mk07-pr01.json` dla rocznika BM (materials z bazy bez zmian, materialContent z eksportu 8.11 z jedną poprawką). Wgranie: Panel AI → Paczka lekcji w roczniku BM.
+- **K1 EaIA = 41 lekcji** z poprawionymi mk-07 i pr-01: `~/Downloads/paczka-eaia-k1-41.json`.
+- **Statystyka opisowa (K3, BM nie ma lekcji):** 6 lekcji Sonnet 5.5, 0,59 $ z poprawką lekcji 5 (Laspeyres/Paasche). Lekcja 2: 4 pytania w bilecie wyjścia → przycięte do 3 (oryginał `lekcja-02.przed-przycieciem.json`). 70 wartości = przykłady, oznaczone. Paczka `~/Downloads/paczka-eaia-statystyka-6.json`.
+- **Wzorzec K3** zatwierdzony (eaia26-finanse-01).
+- **Scalenie:** plan-bm main f6b07e2, skrot-bm main 7346624 (merge FiR + plan.zdawalni.pl, roczniki-dane.js?v=20261109-eaia). Testy: node 347/347, wszystkie-roczniki 8/8 (BM przed = po).
