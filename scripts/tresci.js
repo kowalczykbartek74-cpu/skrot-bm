@@ -91,7 +91,7 @@ function genderHits(text) {
 const UNIT = String.raw`(?:\s?(?:zł|PLN|EUR|USD|€|\$|h|godz\.|min|kg|g|szt\.?|pkt|units?|tonnes?|t|osób|os\.)(?![\p{L}]))?`;
 const NUMR = String.raw`\d+(?:[  ]\d{3})*(?:[.,]\d+)?`;
 const OP = String.raw`(?:\s*[+×*·/÷−–]\s*|\s+[-x:]\s+)`;
-const EQ = new RegExp(String.raw`(?<![\p{L}\d.,)\]}^_])(?<![+\-−–×*·/÷%^(<>]\s?)(?<![\d)]\s?[:x]\s?)(${NUMR}${UNIT}(?:${OP}${NUMR}${UNIT})+)\s*(=|≈)\s*(${NUMR})${UNIT}(?![\d\p{L}%]|\s?[×*·/÷^]|\s?\(|[.,]\d)`, "gu");
+const EQ = new RegExp(String.raw`(?<![\p{L}\d.,)\]}^_])(?<!\d[  ])(?<![+\-−–×*·/÷%^(<>]\s?)(?<![\d)]\s?[:x]\s?)(${NUMR}${UNIT}(?:${OP}${NUMR}${UNIT})+)\s*(=|≈)\s*(${NUMR})${UNIT}(?![\d\p{L}%]|\s?[×*·/÷^]|\s?\(|[.,]\d)`, "gu");
 // comma: "dec" (przecinek dziesiętny), "thou" (przecinek tysięcy, jak 1,234.5), domyślnie: „1,234” = nie wiadomo.
 function parseNum(s, comma) {
   let t = String(s).replace(/[  ]/g, "");
@@ -131,7 +131,9 @@ function arithmetic(text) {
     const [all, lhs, rel, rhs] = m;
     // Przecinek w całym rachunku: dziesiętny, jeśli gdzieś stoi przy nim inna liczba cyfr niż 3 (1,05), tysięcy, gdy są kropki dziesiętne.
     const comma = /\d,(?:\d{1,2}|\d{4,})(?!\d)/u.test(all) ? "dec" : /\d\.\d/.test(all) && /\d,\d{3}(?!\d)/.test(all) ? "thou" : undefined;
-    const want = parseNum(rhs, comma), got = evalSimple(lhs, comma);
+    // „3×4 + 2×3 = 12 + 6 = 18”: prawa strona to dalszy ciąg rachunku (12 + 6), nie wynik; porównujemy wartości obu stron.
+    const dalej = new RegExp(String.raw`^(?:${OP}${NUMR})+`, "u").exec(s.slice(m.index + all.length));
+    const want = dalej ? evalSimple(rhs + dalej[0], comma) : parseNum(rhs, comma), got = evalSimple(lhs, comma);
     if (want !== null && got !== null && Number.isFinite(got)) {
       const tol = 0.5 * 10 ** -decimalsOf(rhs) + 1e-9 * Math.abs(want) + (rel === "≈" ? 0.01 * Math.abs(want) : 0);
       out.push({ tekst: all.trim(), wynik: want, policzone: Math.round(got * 1e6) / 1e6, ok: Math.abs(got - want) <= tol });
