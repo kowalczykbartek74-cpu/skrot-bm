@@ -389,3 +389,18 @@ test("funkcja Edge: zły format → druga próba z powodem; max_tokens, odmowa, 
   const x = await call(obsluz, d2, { akcja: "wgraj", typ: "sylabus", wydzial: "WEFiZ", nazwa: "s.pdf", pdf: PDF });
   assert.equal((await call(obsluz, d2, { akcja: "czytaj", id: x.id, czesc: 1 })).code, "no_key");
 });
+
+test("plan z parsera plan-bm (v50): daty → dates, pg → pg, profil WPiA poprawny", () => {
+  const WPIA = require("../importy/WPiA.json");
+  assert.deepEqual(I.profilSprawdz(WPIA), []);
+  const pt = WPIA.typy.plan;
+  const lista = [
+    { grupa: "PRAWO1", tydzien: "oba", d: 1, od: "08:15", do: "10:45", pl: "Legal Tech start", en: "", k: "CW", p: "mgr J. Cieślicki", r: "s. 118", g: "", n: "", daty: ["2026-11-10", "2026-11-03"], pg: "Legal Tech start:1" },
+    { grupa: "PRAWO1", tydzien: "oba", d: 0, od: "11:00", do: "13:30", pl: "Historia prawa", en: "", k: "W", p: "dr hab. M. Tkaczuk", r: "s. 7-9", g: "", n: "" },
+  ];
+  const p = I.doPlanu(lista, pt);
+  assert.deepEqual(p.groups.PRAWO1.odd.map((e) => [e.d, e.time, e.pg || null, e.dates || null]), [[0, ["11:00", "13:30"], null, null], [1, ["08:15", "10:45"], "Legal Tech start:1", ["2026-11-03", "2026-11-10"]]]);
+  assert.equal(p.groups.PRAWO1.even.length, 2, "zajęcia z datami w obu tygodniach (daty same wybierają dzień)");
+  assert.deepEqual(I.waliduj(pt.schemat, lista[0]), []);
+  assert.ok(I.waliduj(pt.schemat, { ...lista[0], daty: ["4.XI"] }).length, "daty tylko RRRR-MM-DD");
+});

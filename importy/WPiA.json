@@ -1,0 +1,135 @@
+{
+ "wydzial": "WPiA",
+ "nazwa": "Wydział Prawa i Administracji, Uniwersytet Szczeciński",
+ "nazwa_en": "Faculty of Law and Administration, University of Szczecin",
+ "opis": "Profil importów WPiA (v50). Szkice planów robi parser plan-bm (scripts/us/wpia-pdf.mjs) i wysyła je do kolejki nauka_import_szkic_automat; ten sam profil działa dla PDF-u wgranego ręcznie (szkic AI).",
+ "typy": {
+  "plan": {
+   "tytul": "{grupa} · {pl} ({k}) {pg}",
+   "strony_na_czesc": 1,
+   "zakladka": 0,
+   "max_tokens": 32000,
+   "effort": "low",
+   "sloty": [],
+   "polecenie": "Each item is ONE class in the weekly timetable of one year of study (one cell of the grid, a cell may hold two classes one under another). Day columns: PONIEDZIAŁEK … PIĄTEK; d = weekday: 0 Monday … 4 Friday.\ngrupa = the year group code given in the task (e.g. PRAWO1); tydzien = oba.\nod/do = the class time written in the cell (\"godz. 8.15 - 10.45\" → 8:15 / 10:45), ignore one-off exceptions (\"zajęcia dn. 24.XI trwają 1 godz. …\") and put them into n.\npl = the full course name; short codes are explained in the timetable: \"WP 8\" = classes of the course marked [WP], group 8; workshops LTS, SRzS, OCiEN are explained in the legend.\nk = W (wykład), CW (ćwiczenia, warsztaty, lektorat), K (konwersatorium), S (seminarium), LAB, X (other).\npg = \"<course name>:<group number>\" when the class is for one group only (\"WP 8\" → \"Wstęp do prawoznawstwa:8\", \"LTS gr. 1\" → \"Legal Tech start:1\"), else \"\".\np = teachers as printed; r = room as printed (\"s. 118 al. Piastów 40b\").\ndaty = dates from \"w terminach: 4.XI, 25.XI …\" as YYYY-MM-DD (October–December 2026, January–February 2027), [] when \"co tydzień\".\nen = \"\", g = \"\", n = notes (exceptions, UWAGA) or \"\".",
+   "schemat": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "grupa",
+     "tydzien",
+     "d",
+     "od",
+     "do",
+     "pl",
+     "en",
+     "k",
+     "p",
+     "r",
+     "g",
+     "n"
+    ],
+    "properties": {
+     "grupa": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^[A-Z0-9-]{2,20}$"
+     },
+     "tydzien": {
+      "type": "string",
+      "enum": [
+       "odd",
+       "even",
+       "oba"
+      ]
+     },
+     "d": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 6
+     },
+     "od": {
+      "type": "string",
+      "maxLength": 5,
+      "pattern": "^\\d{1,2}:\\d{2}$"
+     },
+     "do": {
+      "type": "string",
+      "maxLength": 5,
+      "pattern": "^\\d{1,2}:\\d{2}$"
+     },
+     "pl": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "en": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "k": {
+      "type": "string",
+      "enum": [
+       "W",
+       "CW",
+       "LAB",
+       "K",
+       "S",
+       "X"
+      ]
+     },
+     "p": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "r": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "g": {
+      "type": "string",
+      "maxLength": 10
+     },
+     "n": {
+      "type": "string",
+      "maxLength": 300
+     },
+     "daty": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+       "type": "string",
+       "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+      }
+     },
+     "pg": {
+      "type": "string",
+      "maxLength": 120
+     }
+    }
+   },
+   "przyklady": [
+    {
+     "grupa": "PRAWO1",
+     "tydzien": "oba",
+     "d": 1,
+     "od": "8:15",
+     "do": "10:45",
+     "pl": "Legal Tech start",
+     "en": "",
+     "k": "CW",
+     "p": "mgr J. Cieślicki",
+     "r": "s. 118 al. Piastów 40b",
+     "g": "",
+     "n": "zajęcia dn. 24.XI trwają 1 godz. w godzinach 8.15 - 9.00",
+     "daty": [
+      "2026-11-03",
+      "2026-11-10",
+      "2026-11-17",
+      "2026-11-24"
+     ],
+     "pg": "Legal Tech start:1"
+    }
+   ]
+  }
+ }
+}

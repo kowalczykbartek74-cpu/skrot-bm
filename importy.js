@@ -336,8 +336,10 @@
   }
 
   // ---------- eksport: plan zajęć (format plan.json z repozytorium plan-bm) ----------
-  var KLUCZE_PLANU = ["d", "s", "time", "pl", "en", "k", "g", "p", "r", "n"];
-  // Pozycja planu: { grupa, tydzien: odd|even|oba, d (0 = poniedziałek), od, do ("8:15"), pl, en, k, p, r, g, n }.
+  var KLUCZE_PLANU = ["d", "s", "time", "pl", "en", "k", "g", "pg", "p", "r", "n", "dates"];
+  // Pozycja planu: { grupa, tydzien: odd|even|oba, d (0 = poniedziałek), od, do ("8:15"), pl, en, k, p, r, g, n }
+  // + opcjonalnie (v50, szkice z parsera plan-bm): daty ["2026-11-04", …] → dates (zajęcia tylko w te dni, oba tygodnie),
+  //   pg "Wstęp do prawoznawstwa:8" → pg (podgrupa danego przedmiotu, wybór na stronie planu).
   // Godziny bloków bierzemy z profilu (sloty); spoza bloków → s = -1 i time = [od, do], jak w plan-bm.
   function doPlanu(lista, pt) {
     var sloty = (pt && pt.sloty || []).map(function (x) { return String(x).replace(/\./g, ":"); });
@@ -348,14 +350,15 @@
       var s = sloty.indexOf(godz);
       var e = { d: d.d, s: s };
       if (s < 0) e.time = [String(d.od).replace(".", ":"), String(d.do).replace(".", ":")];
-      ["pl", "en", "k", "g", "p", "r", "n"].forEach(function (k) { if (d[k] !== undefined && d[k] !== "") e[k] = d[k]; });
+      ["pl", "en", "k", "g", "pg", "p", "r", "n"].forEach(function (k) { if (d[k] !== undefined && d[k] !== "") e[k] = d[k]; });
+      if (Array.isArray(d.daty) && d.daty.length) e.dates = d.daty.slice().sort();
       var o = {}; KLUCZE_PLANU.forEach(function (k) { if (e[k] !== undefined) o[k] = e[k]; });
       groups[g] = groups[g] || { odd: [], even: [] };
-      (d.tydzien === "even" ? ["even"] : d.tydzien === "odd" ? ["odd"] : ["odd", "even"]).forEach(function (w) { groups[g][w].push(o); });
+      (e.dates || !(d.tydzien === "even" || d.tydzien === "odd") ? ["odd", "even"] : [d.tydzien]).forEach(function (w) { groups[g][w].push(o); });
     });
     var sorted = {};
     Object.keys(groups).sort().forEach(function (g) {
-      ["odd", "even"].forEach(function (w) { groups[g][w].sort(function (a, b) { return a.d - b.d || a.s - b.s; }); });
+      ["odd", "even"].forEach(function (w) { groups[g][w].sort(function (a, b) { return a.d - b.d || a.s - b.s || String((a.time || [])[0] || "").localeCompare(String((b.time || [])[0] || "")); }); });
       sorted[g] = groups[g];
     });
     return { groups: sorted };
