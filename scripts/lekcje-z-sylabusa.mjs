@@ -119,12 +119,12 @@ Wzory LaTeX tylko w \\( … \\) i tylko gdy naprawdę potrzebne ${PRAWO ? "(w pr
 
 Poza lekcją w tym samym JSON:
 - tldr: 2 zdania streszczenia.
-- concepts: 5–8 pojęć: term (po polsku), en (odpowiednik angielski), definition (1–2 zdania własnymi słowami).
+- concepts: 5–8 pojęć: ${EN ? "term (po angielsku), pl (odpowiednik polski), definition (1–2 zdania po angielsku, własnymi słowami)" : "term (po polsku), en (odpowiednik angielski), definition (1–2 zdania własnymi słowami)"}.
 - flashcards: 8–10 fiszek {q, a}; q to pytanie o zrozumienie albo rozróżnienie, a to krótka odpowiedź.
 - quiz: 8 pytań jak wyżej, każde z "explanation" (dlaczego), "not" oraz "dlaczego": {why: wyjaśnienie dla 12–13-latka, example: przykład z życia}.
 - prosciej: wersja całej lekcji „Prościej” (jak dla 12–13-latka): intro, parts [{h, emoji, text, example, remember}] (3–4 części), words [{term, simple}] (3–5), check [{q, a}] (2–3).
 
-WZORZEC (format lekcji z innego przedmiotu, po angielsku; Ty piszesz po polsku o swoim temacie):
+WZORZEC (format lekcji z innego przedmiotu, po angielsku; Ty piszesz ${EN ? "po angielsku (simple i prosciej po polsku)" : "po polsku"} o swoim temacie):
 ${wzorcowaLekcja()}`;
 
 function kontekstPrzedmiotu(c) {
@@ -162,7 +162,7 @@ const SCHEMAT = S({
     formulas: strs,
     exit: { type: "array", items: S({ q: str, options: strs, correct: int, why: str, not: strs, sec: int }) },
   }),
-  concepts: { type: "array", items: S({ term: str, en: str, definition: str }) },
+  concepts: { type: "array", items: EN ? S({ term: str, pl: str, definition: str }) : S({ term: str, en: str, definition: str }) },
   flashcards: { type: "array", items: S({ q: str, a: str }) },
   quiz: { type: "array", items: S({ q: str, options: strs, correct: int, explanation: str, not: strs, dlaczego: S({ why: str, example: str }) }) },
   prosciej: S({ intro: str, parts: { type: "array", items: S({ h: str, emoji: str, text: str, example: str, remember: str }) }, words: { type: "array", items: S({ term: str, simple: str }) }, check: { type: "array", items: S({ q: str, a: str }) } }),
@@ -244,7 +244,7 @@ function prosbaKontrola(nr, x) {
 - pytanie check/exit/quiz sprawdza tylko definicję z pamięci zamiast zastosowania (waga „uwaga”);
 - zła odpowiedź jest absurdalna albo „not” nie wyjaśnia błędu (waga „uwaga”);
 - dobra odpowiedź jest dyskusyjna albo są dwie dobre (waga „blad”);
-- tekst nie po polsku albo „simple”/„prosciej” za trudne dla 12–13-latka (waga „uwaga”).
+- ${EN ? "tekst lekcji nie po angielsku (zajęcia są po angielsku; tylko simple, prosciej i pole pl pojęć są po polsku)" : "tekst nie po polsku"} albo „simple”/„prosciej” za trudne dla 12–13-latka (waga „uwaga”).
 ok = false tylko przy co najmniej jednym „blad”. ocena 1–5 (5 = gotowe dla studentów).` }],
       messages: [{ role: "user", content: JSON.stringify(x) }],
     },
@@ -310,7 +310,7 @@ function gotowe() {
     const L = { v2: true, ...x.lesson };
     // Format v4 (lekcje-walidator.py): przy poprawnej odpowiedzi not[correct] = null, a nie pusty tekst (konwencja v3 z promptu).
     for (const q of [...(L.sections || []).map((s) => s.check), ...(L.exit || []), ...(L.prereq || [])]) if (q && Array.isArray(q.not) && q.correct in q.not) q.not[q.correct] = null;
-    const content = { v: 2, tldr: x.tldr, concepts: x.concepts.map((c) => ({ term: c.term, en: c.en, definition: c.definition })), flashcards: x.flashcards,
+    const content = { v: 2, tldr: x.tldr, concepts: x.concepts.map((c) => (EN ? { pl: c.pl, term: c.term, definition: c.definition } : { term: c.term, en: c.en, definition: c.definition })), flashcards: x.flashcards,
       quiz: x.quiz.map((q) => ({ q: q.q, options: q.options, correct: q.correct, explanation: q.explanation })), lesson: L };
     const material = { kind: "lesson", v: 2, source: "sylabus", subjectId: plan.sid, title: x.tytul || l.tytul, order: l.nr, sylRef: `wykład, temat ${l.nr}`, lang: rok.jezykZajec,
       fileName: `Sylabus ${rok.kierunek.pl} ${rok.rokAkademicki}`, fileType: "sylabus", createdAt: Date.now(), topicCount: L.sections.length,
