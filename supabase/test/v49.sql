@@ -73,7 +73,9 @@ do $$ begin
     and public.nauka_admin_rocznik_zapisz(test.log49('darmowy'))->>'code' = 'status'
     and public.nauka_admin_rocznik_zapisz(jsonb_set(test.log49(), '{kierunek,pl}', '""'))->>'code' = 'kierunek'
     and public.nauka_admin_rocznik_zapisz('[]'::jsonb)->>'code' = 'dane'
-    and public.nauka_admin_rocznik_zapisz(test.log49() || '{"nabor": "dwa"}')->>'code' = 'dane', null);
+    and public.nauka_admin_rocznik_zapisz(test.log49() || '{"nabor": "dwa"}')->>'code' = 'dane'
+    and public.nauka_admin_rocznik_zapisz(test.log49() - 'nabor')->>'code' = 'dane'
+    and public.nauka_admin_rocznik_zapisz(jsonb_set(test.log49(), '{kierunek,stopien}', 'null'))->>'code' = 'dane', null);
 end $$;
 reset role;
 do $$ begin

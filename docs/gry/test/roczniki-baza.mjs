@@ -57,8 +57,13 @@ await sekcja(p).locator("button", { hasText: "Tak, zacznij sprzedaż" }).click()
 t = await sekcja(p).innerText();
 ok("3 po potwierdzeniu: platny w bazie, na ekranie „płatny”", JSON.parse(await ev(p, () => localStorage.getItem("mock-roczniki-lista"))).find((r) => r.id === ZARZ).status === "platny"
   && /Status w bazie:\s*płatny/.test(t), t);
-await sekcja(p).locator("button", { hasText: "Ustaw: lista oczekujących" }).click(); await p.waitForTimeout(1500);
-ok("3 cofnięcie bez pytania", JSON.parse(await ev(p, () => localStorage.getItem("mock-roczniki-lista"))).find((r) => r.id === ZARZ).status === "oczekujacy");
+await sekcja(p).locator("button", { hasText: "Ustaw: lista oczekujących" }).click(); await p.waitForTimeout(300);
+ok("3 wstrzymanie sprzedaży też pyta (nic nie wysłane)", JSON.parse(await ev(p, () => localStorage.getItem("mock-roczniki-lista"))).find((r) => r.id === ZARZ).status === "platny"
+  && /przestanie być do kupienia/.test(await sekcja(p).innerText()));
+await sekcja(p).locator("button", { hasText: "Tak, wstrzymaj sprzedaż" }).click(); await p.waitForTimeout(1500);
+ok("3 po potwierdzeniu: lista oczekujących", JSON.parse(await ev(p, () => localStorage.getItem("mock-roczniki-lista"))).find((r) => r.id === ZARZ).status === "oczekujacy");
+await sekcja(p).locator("button", { hasText: "Ustaw: w planach" }).click(); await p.waitForTimeout(1500);
+ok("3 zmiana bez sprzedaży (lista → w planach) bez pytania", JSON.parse(await ev(p, () => localStorage.getItem("mock-roczniki-lista"))).find((r) => r.id === ZARZ).status === "plan");
 ok("3 bez błędów konsoli", !p.errors.length, p.errors);
 await p.context().close();
 

@@ -44,6 +44,9 @@ begin
     v_nab := (p->>'nabor')::int;
     v_stp := (k->>'stopien')::smallint;
   exception when others then return jsonb_build_object('ok', false, 'code', 'dane'); end;
+  if v_nab is null or v_stp is null or v_wyd is null or v_kod is null or v_tryb is null then
+    return jsonb_build_object('ok', false, 'code', 'dane');
+  end if;
   -- id: <wydział>-<kierunek>-<stopień>-<tryb>-<nabór>, a kierunek_id to id bez naboru (te same reguły co w v31)
   if v_id is null or v_id !~ '^[a-z]+-[a-z0-9]+-[012]-(st|nst)-20[0-9]{2}$' or v_kid is null or v_id <> v_kid || '-' || v_nab
      or v_kid <> lower(coalesce(v_wyd, '')) || '-' || lower(coalesce(v_kod, '')) || '-' || v_stp || '-' || coalesce(v_tryb, '') then

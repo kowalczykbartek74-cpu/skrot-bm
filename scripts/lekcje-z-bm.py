@@ -374,7 +374,7 @@ if a.krok == "tytuly":
         if f.endswith(".json"):
             pth = os.path.join(st["katalog"], f); d = json.load(open(pth))
             if d.get("id") in w and w[d["id"]].strip():
-                d["title"] = w[d["id"]].strip(); json.dump(d, open(pth, "w"), ensure_ascii=False, indent=1); n += 1
+                d["title"] = w[d["id"]].strip(); d["kopiaHash"] = odcisk(d); json.dump(d, open(pth, "w"), ensure_ascii=False, indent=1); n += 1
                 print(f"  {d['id']}: {d['title']}")
     cin, cout = CENY[st["model"]]
     usd = (m.usage.input_tokens * cin + m.usage.output_tokens * cout) / 1e6 * BATCH
@@ -459,6 +459,7 @@ for lid in stan["ids"]:
     roznice = porownaj(src, d)
     if roznice:
         bledy.append(f"{lid}: " + "; ".join(roznice[:5]))
+    d["kopiaHash"] = odcisk(d)   # zapis automatu: odcisk kopii po K2 (ręczna poprawka później = zmiana kopii)
     json.dump(d, open(os.path.join(PACZKI, d["id"] + ".json"), "w"), ensure_ascii=False, indent=1)
 cin, cout = CENY[stan["model"]]
 usage["usd"] = round((usage["input"] * cin + usage["cache_write"] * cin * 1.25 + usage["cache_read"] * cin * 0.1 + usage["output"] * cout) / 1e6 * BATCH, 4)

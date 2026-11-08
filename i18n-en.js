@@ -1,6 +1,8 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Rocznik przestanie być do kupienia (dostęp kupionych zostaje). Na pewno?": "The cohort will no longer be available to buy (existing access stays). Are you sure?",
+"Tak, wstrzymaj sprzedaż": "Yes, pause selling",
 "Wybierz paczki (JSON, można kilka)": "Choose packs (JSON, several at once)",
 "Plików: {0}": "Files: {0}",
 " · ta sama lekcja w kilku plikach: {0} (wygrywa późniejszy plik)": " · same lesson in several files: {0} (the later file wins)",

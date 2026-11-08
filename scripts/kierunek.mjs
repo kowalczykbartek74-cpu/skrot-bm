@@ -315,7 +315,7 @@ Wygenerowane przez \`node scripts/kierunek.mjs kierunki/${k.id}.json\`. Kolejno�
    Link dla studentów: **https://plan.skrotbm.pl/?k=${k.prefiks}**
 ${mig ? `2. **SQL v${numer}.** Otwórz \`${mig}\` na github.com → „Copy raw file” → Supabase → SQL Editor → wklej → Run.
    Na dole ma być jeden wiersz: \`${k.id}\`, status \`${k.status}\`, \`plan_url\` = ${PLAN_HOST}${k.plan.plik}.`
-    : `2. **Baza (bez SQL).** Po wdrożeniu strony: zdawalni.pl → Więcej → Narzędzia → Panel kierunków → sekcja „Do dodania do bazy”
+    : `2. **Baza (bez SQL).** Po wdrożeniu strony: zdawalni.pl → Więcej → Narzędzia → Panel kierunków → sekcja „Baza”
    → „Dodaj do bazy” przy ${k.kierunek.pl} (status \`${k.status}\`). Wymaga jednorazowego SQL v49.`}
 3. **Strona (skrot-bm).** Scal gałąź z wpisem w \`roczniki-dane.js\`. Na ekranie wejścia (okno prywatne, zdawalni.pl) jest karta
    „${k.kierunek.pl}”, w kroku 2 rok ${rokAk(k.nabor)} i grupy ${k.grupy.join(", ")}.

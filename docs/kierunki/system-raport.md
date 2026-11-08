@@ -18,7 +18,7 @@ Twoich kroków na kierunek: 3 (przegląd, „wysyłaj”, kliknięcia w panelu),
 
 ## 10 punktów: co zrobione
 
-1. **Rocznik jako dane.** `roczniki-dane.js` (Zarządzanie i FiR przeniesione z `rocznik.js`, ROCZNIKI identyczne). SQL **v49** raz na zawsze: `nauka_admin_rocznik_zapisz` (status tylko w górę), `nauka_admin_rocznik_status`. Panel kierunków → sekcja **Baza**: „Dodaj do bazy”, „Dodaj wszystkie”, „Zacznij sprzedaż” z potwierdzeniem. `kierunek.mjs` pisze do danych; stara migracja tylko z `--sql`.
+1. **Rocznik jako dane.** `roczniki-dane.js` (Zarządzanie i FiR przeniesione z `rocznik.js`, ROCZNIKI identyczne). SQL **v49** raz na zawsze: `nauka_admin_rocznik_zapisz` (status tylko w górę), `nauka_admin_rocznik_status`. Panel kierunków → sekcja **Baza**: „Dodaj do bazy”, „Dodaj wszystkie”; włączenie i wstrzymanie sprzedaży zawsze z potwierdzeniem. `kierunek.mjs` pisze do danych; stara migracja tylko z `--sql`.
 2. **Plany całego WEFiZ.** plan-bm `scripts/wefiz-wszystkie.mjs`: kierunki z formularza uczelni, grupy z planu kierunku (a bez nich: lista grup + rok po wspólnych przedmiotach), każda sprawdzona; zapisuje brakujące `kierunki/<id>.json` (plików ze Skrótu nie rusza). Strona planu: I i II stopień jako osobne pozycje. Codzienny automat nie pobiera grup innych roczników, gdy uczelnia nic nie zmieniła; ≥ 1 s między zapytaniami.
 3. **Macierz przedmiotów.** `sylabusy-hurt.py` (PDF-y z listy wydziału albo ze wzoru adresu, ten sam parser) i `macierz-przedmiotow.py` → `scratch/macierz/bank-plan.md`: przedmiot ogólny × kierunki × egzaminy × lista oczekujących. Dziś (BM, Zarządzanie, FiR): 1. Podstawy zarządzania i Podstawy finansów (oba kierunki, egzamin), 3. Matematyka.
 4. **Plik kierunku automatycznie.** `kierunek-nowy.mjs` z konfiguracji planu + planu + danych wspólnych (`kierunki/wspolne/`). Test: z danych plan-bm odtwarza Zarządzanie i FiR (id, grupy, DOS, adresy sylabusa, przedmioty) jak pliki pisane ręcznie.
@@ -33,7 +33,7 @@ Twoich kroków na kierunek: 3 (przegląd, „wysyłaj”, kliknięcia w panelu),
 
 - `node --test tests/*.test.js`: 337 OK, 1 pominięty (jak dotąd). plan-bm: `node --test scripts/*.test.mjs` 20/20.
 - PGlite: wszystkie migracje 2×, v49 R1–R8, roczniki ze strony przez v49 (próba z zepsutym kodem kierunku: zatrzymana).
-- Playwright (`wszystkie-roczniki.mjs`): Zarządzanie i FiR ekrany 24/24 i paczka 22/22, Baza 16/16, **BM: 24 ekrany przed = po**.
+- Playwright (`wszystkie-roczniki.mjs`): Zarządzanie i FiR ekrany 24/24 i paczka 22/22, Baza 18/18, **BM: 24 ekrany przed = po**.
   Regresje: panel-kierunkow 26/26, kierunek, zapisy 29/29, fundament 2/3/4/6, admin 80/80, rocznik testowy 20/20.
 - Strona planu (plan-bm) z dodanym II stopniem: wybór PL/EN, 375 px, bez błędów.
 - `kierunek-start.mjs --nowy` na sztucznej Logistyce: plik kierunku, dane, raport; sylabus z `scratch/sylabusy` → mapa tymczasowa i koszt.
@@ -43,6 +43,13 @@ Twoich kroków na kierunek: 3 (przegląd, „wysyłaj”, kliknięcia w panelu),
 - **Strony uczelni** (planyzajec-efz, efz.usz.edu.pl): ta sesja nie ma do nich dostępu. `wefiz-wszystkie.mjs` i `sylabusy-hurt.py` są przetestowane na atrapach;
   pierwszy prawdziwy przebieg: `--na-sucho` i przejrzenie `docs/wefiz-wszystkie.md` (szczególnie wiersze „rok dopasowany po przedmiotach”).
 - Adresy sylabusów ze wzoru (`"zgadniety": true`) zgadzają się dla Zarządzania i FiR; dla „inż.” i II stopnia to przypuszczenie.
+
+## Niezależny przegląd kodu
+
+Osobny agent przejrzał zmiany (SQL v49, rocznik.js, index.html, skrypty): bez błędów bezpieczeństwa i bez zmian dla BM. Poprawione po przeglądzie:
+potwierdzenie także przy wstrzymaniu sprzedaży, odcisk kopii po K2 i tytułach, brak naboru/stopnia → `dane` zamiast błędu bazy, try/finally w przyciskach.
+Zostawione świadomie: przy dwóch plikach z tą samą lekcją „Prościej”/„Dlaczego?” z wcześniejszego pliku zostają, jeśli późniejszy ich nie ma
+(tak samo działa dziś wgranie do bazy); gdyby `roczniki-dane.js` się nie wczytał, strona pokazuje sam BM (bez błędu).
 
 ## Co kliknąć (kolejność)
 
