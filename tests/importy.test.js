@@ -393,6 +393,10 @@ test("funkcja Edge: zły format → druga próba z powodem; max_tokens, odmowa, 
 test("plan z parsera plan-bm (v50): daty → dates, pg → pg, profil WPiA poprawny", () => {
   const WPIA = require("../importy/WPiA.json");
   assert.deepEqual(I.profilSprawdz(WPIA), []);
+  for (const w of ["WNSiP", "WNS"]) {   // wydziały z parsera plan-bm: kod = p_wydzial szkicu
+    const p = require(`../importy/${w}.json`);
+    assert.deepEqual(I.profilSprawdz(p), [], w); assert.equal(p.wydzial, w); assert.ok(I.profilTypu(p, "plan"));
+  }
   const pt = WPIA.typy.plan;
   const lista = [
     { grupa: "PRAWO1", tydzien: "oba", d: 1, od: "08:15", do: "10:45", pl: "Legal Tech start", en: "", k: "CW", p: "mgr J. Cieślicki", r: "s. 118", g: "", n: "", daty: ["2026-11-10", "2026-11-03"], pg: "Legal Tech start:1" },
