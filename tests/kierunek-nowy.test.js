@@ -29,6 +29,8 @@ test("przedmiot ogólny: dokładny alias albo początek nazwy (z uwagą)", async
   assert.deepStrictEqual(ogolny("arkusz-kalkulacyjny-w-finansach-i-rachunkowosci", O).og, "technologie-informacyjne");
   assert.strictEqual(ogolny("matematyka-finansowa", O).pewne, false);
   assert.strictEqual(ogolny("geografia-turystyczna", O), null);
+  assert.strictEqual(ogolny("zarzadzanie-wlasnym-rozwojem", O), null, "jedno słowo („zarzadzanie”) nie łapie innych przedmiotów");
+  assert.strictEqual(ogolny("podstawy-prawa-pracy", O).og, "podstawy-prawa", "alias z dwóch słów: po początku nazwy");
 });
 
 test("aliasy nie dublują się między przedmiotami ogólnymi", () => {

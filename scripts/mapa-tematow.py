@@ -84,12 +84,16 @@ def bank_kandydaci(ogolne):
             continue
         for f in sorted(glob.glob(os.path.join(ROOT, "kierunki", "*.json"))):
             inny = json.load(open(f))
-            if inny.get("id") == K["id"] or inny.get("jezykZajec") != "pl" or og not in (inny.get("przedmioty") or {}):
+            if inny.get("id") == K["id"] or inny.get("jezykZajec") != "pl":
+                continue
+            # przedmiot tamtego kierunku o tej samej nazwie ogólnej albo przypisany do niej polem „bank” (np. Arkusz kalkulacyjny → TI)
+            pid_inny = next((p for p, v in (inny.get("przedmioty") or {}).items() if p == og or og in (v.get("bank") or [])), None)
+            if not pid_inny:
                 continue
             plik = os.path.join(ROOT, (inny.get("sylabus") or {}).get("plik") or "")
             if not os.path.isfile(plik):
                 continue
-            karta = next((c for c in json.load(open(plik))["courses"] if c["id"] == og), None)
+            karta = next((c for c in json.load(open(plik))["courses"] if c["id"] == pid_inny), None)
             if not karta:
                 continue
             n = 0

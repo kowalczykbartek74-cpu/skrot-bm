@@ -1,10 +1,9 @@
 {
- "opis": "Przedmioty ogólne (bez kierunku): ten sam przedmiot na różnych kierunkach WEFiZ ma jedną lekcję w banku PL (zdawalni-tresci/bank/<ogólny>/…). aliasy = slugi nazw z planów i sylabusów, bm = przedmioty BM, z których robi się K2. Czytają: kierunek-nowy.mjs, macierz-przedmiotow.py. Dopisuj, gdy macierz pokaże przedmiot „bez przypisania”.",
+ "opis": "Przedmioty ogólne (bez kierunku): ten sam przedmiot na różnych kierunkach WEFiZ ma jedną lekcję w banku PL (zdawalni-tresci/bank/<ogólny>/…). aliasy = slugi nazw z planów i sylabusów, bm = przedmioty BM, z których robi się K2. Czytają: kierunek-nowy.mjs, macierz-przedmiotow.py. Dopisuj, gdy macierz pokaże przedmiot „bez przypisania”. Dopasowanie po początku nazwy („matematyka-finansowa” → matematyka) tylko dla aliasów z co najmniej dwóch słów albo przedmiotów z \"rodzina\": true; jedno słowo jak „zarzadzanie” pasowałoby do zbyt wielu przedmiotów.",
  "ogolne": {
   "podstawy-zarzadzania": {
    "aliasy": [
     "podstawy-zarzadzania",
-    "zarzadzanie",
     "wprowadzenie-do-zarzadzania"
    ],
    "bm": [
@@ -14,7 +13,6 @@
   "podstawy-finansow": {
    "aliasy": [
     "podstawy-finansow",
-    "finanse",
     "wprowadzenie-do-finansow"
    ],
    "bm": [
@@ -52,7 +50,8 @@
    ],
    "bm": [
     "analiza-matematyczna"
-   ]
+   ],
+   "rodzina": true
   },
   "podstawy-ekonomii": {
    "aliasy": [
@@ -111,7 +110,8 @@
     "statystyka-opisowa",
     "podstawy-statystyki"
    ],
-   "bm": []
+   "bm": [],
+   "rodzina": true
   },
   "logistyka": {
    "aliasy": [

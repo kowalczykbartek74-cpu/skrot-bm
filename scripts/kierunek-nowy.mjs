@@ -39,7 +39,8 @@ export function adresySylabusa(nazwa, stopien, nabor, tryb = "st") {
 // slug przedmiotu → przedmiot ogólny (bank PL) i przedmioty BM; najpierw dokładny alias, potem alias jako początek nazwy
 export function ogolny(id, O) {
   for (const [og, v] of Object.entries(O.ogolne)) if (v.aliasy.includes(id)) return { og, bm: v.bm.slice(), pewne: true };
-  for (const [og, v] of Object.entries(O.ogolne)) if (v.aliasy.some((a) => id.startsWith(a + "-"))) return { og, bm: v.bm.slice(), pewne: false };
+  // po początku nazwy tylko aliasy z co najmniej dwóch słów albo „rodzina” (matematyka-finansowa → matematyka); „zarzadzanie-…” nie
+  for (const [og, v] of Object.entries(O.ogolne)) if (v.aliasy.some((a) => (a.includes("-") || v.rodzina) && id.startsWith(a + "-"))) return { og, bm: v.bm.slice(), pewne: false };
   return null;
 }
 // role przedmiotów w aplikacji (rocznik.js → przedmioty): kazusy, zadania z liczeniem, „Jeszcze prościej”
