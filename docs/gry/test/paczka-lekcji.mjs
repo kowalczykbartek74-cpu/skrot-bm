@@ -25,7 +25,7 @@ const paczka = (rocznik, sid, ids = ["t1-a", "t1-b"]) => ({ format: "zdawalni-pa
 
 async function otworz({ lang = "pl", w = 375, edycja = ROK } = {}) {
   const p = await page(b, { konto: "starosta", lang, w, h: 812, ls: { ...LS, ...(edycja ? { "skrot-admin-rocznik": edycja } : {}) } });
-  await p.context().route(new RegExp(`^https://plan\\.skrotbm\\.pl/plan/${ROK}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
+  await p.context().route(new RegExp(`^https://plan\\.(skrotbm|zdawalni)\\.pl/plan/${ROK}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
   await p.goto(BASE + "index.html#/ai"); await p.waitForTimeout(3000);
   return p;
 }

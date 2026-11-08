@@ -22,8 +22,8 @@ const PLAN_Z = JSON.stringify({ groups: { C151: { odd: [{ pl: "Podstawy zarządz
 const LS = { "mock-v31": "1", "mock-rocznik": JSON.stringify({ id: BM, wybrany: true }), "mock-roczniki-lista": LISTA, "mock-docs": DOCS, "mock-docs-rok": ROKI, "bm-starosta": "1" };
 async function otworz({ konto = "starosta", lang = "pl", w = 375, ls = {}, hash = "#/kierunkiPanel" } = {}) {
   const p = await page(b, { konto, lang, w, h: w > 800 ? 900 : 812, ls: { ...LS, ...ls } });
-  await p.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\/wefiz-zarz-1-st-2026\.json/, (r) => r.fulfill({ contentType: "application/json", body: PLAN_Z }));
-  await p.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\/wefiz-fir-1-st-2026\.json/, (r) => r.fulfill({ status: 404, body: "" }));
+  await p.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\/wefiz-zarz-1-st-2026\.json/, (r) => r.fulfill({ contentType: "application/json", body: PLAN_Z }));
+  await p.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\/wefiz-fir-1-st-2026\.json/, (r) => r.fulfill({ status: 404, body: "" }));
   await p.goto(BASE + "index.html" + hash); await p.waitForTimeout(2800);
   return p;
 }

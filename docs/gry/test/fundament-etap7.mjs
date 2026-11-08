@@ -30,7 +30,7 @@ async function otworz({ konto = "proba", rocznik = TEST_ID, lang = "pl", w = 375
   const p = await page(b, { konto, lang, w, h: w > 800 ? 900 : 812, ls: { "mock-docs": BM_DOCS, ...(rocznik ? { "skrot-rocznik": rocznik } : {}), ...(rocznik === TEST_ID ? { "bm-group": GRUPA, "bm-sub": "" } : {}), ...ls } });
   // lib.mjs wpisuje każdemu grupę C111 (BM); student rocznika testowego ma grupę z jego planu (T1, a prawdziwy rocznik pierwszą z pliku).
   if (!K) await dodajRocznikTestowy(p.context(), BASE);
-  await p.context().route(new RegExp(`^https://plan\\.skrotbm\\.pl/plan/${TEST_ID}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
+  await p.context().route(new RegExp(`^https://plan\\.(skrotbm|zdawalni)\\.pl/plan/${TEST_ID}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
   if (fresh) await p.addInitScript(() => { if (!sessionStorage.getItem("f-init")) { sessionStorage.setItem("f-init", "1"); ["bm-group", "bm-sub", "skrot-rocznik"].forEach((k) => localStorage.removeItem(k)); } });
   await p.goto(BASE + "index.html" + hash); await p.waitForTimeout(2800);
   return p;
@@ -131,7 +131,7 @@ for (const [kto, rocznik] of [["testowy", TEST_ID], ["BM", null]]) {
 if (K && K.status !== "platny") for (const [lang, w] of [["pl", 375], ["en", 1280]]) {
   const p = await page(b, { konto: "darmowe", lang, w, h: w > 800 ? 900 : 812,
     ls: { "mock-roczniki-lista": JSON.stringify([{ id: BM_ID, status: "platny" }, { id: TEST_ID, status: K.status }]), "skrot-rocznik": TEST_ID, "bm-group": GRUPA } });
-  await p.context().route(new RegExp(`^https://plan\\.skrotbm\\.pl/plan/${TEST_ID}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
+  await p.context().route(new RegExp(`^https://plan\\.(skrotbm|zdawalni)\\.pl/plan/${TEST_ID}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
   let stripe = null;
   await p.context().route(/^https:\/\/buy\.stripe\.com\//, (r) => { stripe = r.request().url(); r.fulfill({ contentType: "text/html", body: "<p>stripe</p>" }); });
   await p.goto(BASE + "index.html#/terms"); await p.waitForTimeout(2500);

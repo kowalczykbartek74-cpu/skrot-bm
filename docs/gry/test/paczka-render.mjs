@@ -14,7 +14,7 @@ const b = await chromium.launch();
 const p = await page(b, { konto: "starosta", w: 375, h: 812, ls: { "mock-v31": "1", "mock-rocznik": JSON.stringify({ id: BM_ID, wybrany: true }),
   "mock-roczniki-lista": JSON.stringify([{ id: BM_ID, status: "platny" }, { id: ROK, status: "oczekujacy" }]), "bm-starosta": "1", "skrot-admin-rocznik": ROK,
   "mock-docs": JSON.stringify(docs), "mock-docs-rok": JSON.stringify(rok) } });
-await p.context().route(new RegExp(`^https://plan\\.skrotbm\\.pl/plan/${ROK}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
+await p.context().route(new RegExp(`^https://plan\\.(skrotbm|zdawalni)\\.pl/plan/${ROK}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
 const EN = /\b(the|and|of|is|are|with|that|which|from|this|for)\b/gi;
 const zle = [], wiz = { chart: 0, compare: 0, flow: 0, layers: 0 };
 let n = 0;
