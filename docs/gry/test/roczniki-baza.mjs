@@ -1,10 +1,13 @@
 // Rocznik bez własnej migracji (SQL v49): roczniki-dane.js → Panel kierunków → „Dodaj do bazy” i status w bazie.
 // BASE=http://127.0.0.1:<port>/ node docs/gry/test/roczniki-baza.mjs
 import { chromium, page, BASE, shot } from "./lib.mjs";
+import { createRequire } from "module";
 const BM = "wefiz-bm-1-st-2026", ZARZ = "wefiz-zarz-1-st-2026", FIR = "wefiz-fir-1-st-2026";
 const b = await chromium.launch();
 const wyniki = []; const ok = (n, w, i) => wyniki.push([w ? "✓" : "✗", n, w ? "" : JSON.stringify(i)?.slice(0, 600)]);
-const LS = (lista) => ({ "mock-v31": "1", "mock-rocznik": JSON.stringify({ id: BM, wybrany: true }), "mock-roczniki-lista": JSON.stringify(lista), "bm-starosta": "1" });
+// Pozostałe roczniki z roczniki-dane.js (np. EaIA) są w atrapie bazy od początku: test sprawdza Zarządzanie i FiR, nowy kierunek go nie psuje.
+const INNE = createRequire(import.meta.url)("../../../roczniki-dane.js").map((r) => r.id).filter((id) => ![BM, ZARZ, FIR].includes(id)).map((id) => ({ id, status: "oczekujacy" }));
+const LS = (lista) => ({ "mock-v31": "1", "mock-rocznik": JSON.stringify({ id: BM, wybrany: true }), "mock-roczniki-lista": JSON.stringify([...lista, ...INNE]), "bm-starosta": "1" });
 async function otworz({ konto = "starosta", lang = "pl", w = 375, lista, hash = "#/kierunkiPanel" } = {}) {
   const p = await page(b, { konto, lang, w, h: w > 800 ? 900 : 812, ls: LS(lista) });
   await p.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));

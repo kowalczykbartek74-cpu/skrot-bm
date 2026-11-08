@@ -24,7 +24,7 @@ const BM_DOCS = JSON.stringify({
 // (przedmiot, który ma też ten rocznik, np. OWI na Zarządzaniu, nie jest śladem BM)
 // (pary PL/EN odpadają razem)
 const BM_SLADY = new RegExp([["PKB i inflacja"], ["Polityka pieniężna"], ["Źródła prawa"], ["Kolokwium BM z bazy"], ["Ogłoszenie dla BM"], ["Business Management"], ["C11[1-6]"],
-  ["Makroekonom", "Macroeconom"], ["Mikroekonom", "Microeconom"], ["Inflator"], ["Prawa\\b", "Law\\b"], ["Logisty", "Logistic"], ["Revenue"], ["własności intelektualnej", "Intellectual"]]
+  ["Makroekonom", "Macroeconom"], ["Mikroekonom", "Microeconom"], ["Inflator"], ["Praw[ao]\\b", "Law\\b"], ["Logisty", "Logistic"], ["Revenue"], ["własności intelektualnej", "Intellectual"]]
   .filter(([pl]) => !NAZWY.some((n) => new RegExp(pl, "i").test(n))).flat().join("|"));
 async function otworz({ konto = "proba", rocznik = TEST_ID, lang = "pl", w = 375, ls = {}, hash = "#/home", fresh = false } = {}) {
   const p = await page(b, { konto, lang, w, h: w > 800 ? 900 : 812, ls: { "mock-docs": BM_DOCS, ...(rocznik ? { "skrot-rocznik": rocznik } : {}), ...(rocznik === TEST_ID ? { "bm-group": GRUPA, "bm-sub": "" } : {}), ...ls } });
