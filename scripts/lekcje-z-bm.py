@@ -4,6 +4,8 @@
   python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --na-sucho [--tylko id,id] [--przedmiot p] [--ile 2]
   python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --wyslij   …           # dopiero po „wysyłaj” Bartka
   python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --odbierz              # wyniki → paczki + porównanie ze źródłem
+  python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json tytuly --na-sucho|--wyslij|--odbierz [--katalog …]
+                                                                                    # tytuły PL dla gotowych lekcji, które mają jeszcze tytuł BM
 
 Wejście: eksport lekcji BM w scratch/lessons/ (docs/lekcje-v4/eksport.js) i mapa tematów scratch/<prefiks>/mapa.json (Etap C).
 K1 (spec 4.2): nowy dokument z id `<prefiks>-<id BM>`, `rocznik_id`, `zrodlo: "bm:<id>"`; kopiuje 1:1 `gen` (zmienne, wzór, wynik), `type`, wizualizacje,
@@ -18,7 +20,7 @@ import argparse, copy, json, math, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
 ap.add_argument("kierunek")
-ap.add_argument("krok", choices=["k1", "k2", "porownaj"])
+ap.add_argument("krok", choices=["k1", "k2", "porownaj", "tytuly"])
 ap.add_argument("--na-sucho", action="store_true")
 ap.add_argument("--wyslij", action="store_true")
 ap.add_argument("--odbierz", action="store_true")
@@ -28,6 +30,7 @@ ap.add_argument("--ile", type=int, default=2)
 ap.add_argument("--model", default="claude-sonnet-5-5")
 ap.add_argument("--lekcje", default=os.path.join(ROOT, "scratch", "lessons"))
 ap.add_argument("--wyjscie", default=None)
+ap.add_argument("--katalog", default=None, help="tytuly: katalog lekcji (domyślnie paczki)")
 a = ap.parse_args()
 
 CENY = {"claude-haiku-5-5": (0.10, 0.50), "claude-sonnet-5-5": (2.00, 10.00), "claude-opus-5-5": (4.00, 20.00)}
@@ -269,6 +272,57 @@ if a.krok == "k1":
         json.dump(d, open(os.path.join(PACZKI, d["id"] + ".json"), "w"), ensure_ascii=False, indent=1)
     tymcz = " (mapa TYMCZASOWA: całe przedmioty BM)" if any(m.get("tymczasowa") for m in MAPA) else ""
     sys.exit(print(f"K1: {len(prz)} lekcji skopiowanych do {os.path.relpath(PACZKI, ROOT)}{tymcz}, 0 zł. Teksty EN czekają na K2."))
+
+if a.krok == "tytuly":
+    # Jedno małe zapytanie: tytuły gotowych lekcji K2, które mają jeszcze tytuł z BM (tytuł był kiedyś poza tłumaczeniem).
+    KAT = a.katalog or PACZKI
+    pliki = []
+    for f in sorted(os.listdir(KAT)):
+        if f.endswith(".json"):
+            d = json.load(open(os.path.join(KAT, f)))
+            src = BM.get((d.get("zrodlo") or "")[3:])
+            if d.get("k2") == "gotowe" and src and d.get("title") == src.get("title"):
+                pliki.append((f, d))
+    PT = os.path.join(OUT, "tytuly-batch.json")
+    SCH = {"type": "object", "additionalProperties": False, "required": ["tytuly"], "properties": {"tytuly": {"type": "array", "items": {
+        "type": "object", "additionalProperties": False, "required": ["id", "v"], "properties": {"id": {"type": "string"}, "v": {"type": "string"}}}}}}
+    Z_T = ("Tłumaczysz tytuły lekcji z kierunku Business Management (EN) na polski, dla studentów kierunku " + K["kierunek"]["pl"] +
+           ". Krótko, jak tytuł rozdziału w polskim podręczniku; zachowaj dwukropek i strukturę. Dla każdego id zwróć {id, v}.")
+    if not a.odbierz:
+        if not pliki:
+            sys.exit("Brak lekcji z tytułem BM do tłumaczenia w " + os.path.relpath(KAT, ROOT))
+        tresc = json.dumps([{"id": d["id"], "t": d["title"]} for _, d in pliki], ensure_ascii=False)
+        zq = {"custom_id": "tytuly", "params": {"model": a.model, "max_tokens": 2000, "system": Z_T, "messages": [{"role": "user", "content": tresc}],
+                                                 "output_config": {"format": {"type": "json_schema", "schema": SCH}}}}
+        cin, cout = CENY[a.model]
+        usd = ((len(Z_T) + len(tresc)) / 3 * cin + len(tresc) / 3 * 1.5 * cout) / 1e6 * BATCH
+        print(f"Tytuły ({a.model}, Batch): {len(pliki)} lekcji → ~{usd:.4f} $")
+        if not a.wyslij:
+            sys.exit(print("Wysyłka: tytuly --wyslij (po „wysyłaj” Bartka)"))
+        import anthropic  # noqa: E402
+        b = anthropic.Anthropic().messages.batches.create(requests=[zq])
+        json.dump({"id": b.id, "model": a.model, "katalog": KAT}, open(PT, "w"))
+        sys.exit(print("Wysłano batch", b.id, "– potem: tytuly --odbierz"))
+    import anthropic  # noqa: E402
+    st = json.load(open(PT)); client = anthropic.Anthropic()
+    b = client.messages.batches.retrieve(st["id"])
+    if b.processing_status != "ended":
+        sys.exit(print("Jeszcze trwa:", b.processing_status))
+    r = next(iter(client.messages.batches.results(b.id)))
+    if r.result.type != "succeeded":
+        sys.exit("Błąd: " + r.result.type)
+    m = r.result.message
+    w = {x["id"]: x["v"] for x in json.loads(next(c.text for c in m.content if c.type == "text"))["tytuly"]}
+    n = 0
+    for f in sorted(os.listdir(st["katalog"])):
+        if f.endswith(".json"):
+            pth = os.path.join(st["katalog"], f); d = json.load(open(pth))
+            if d.get("id") in w and w[d["id"]].strip():
+                d["title"] = w[d["id"]].strip(); json.dump(d, open(pth, "w"), ensure_ascii=False, indent=1); n += 1
+                print(f"  {d['id']}: {d['title']}")
+    cin, cout = CENY[st["model"]]
+    usd = (m.usage.input_tokens * cin + m.usage.output_tokens * cout) / 1e6 * BATCH
+    sys.exit(print(f"Tytuły: {n} zapisanych, koszt {usd:.4f} $"))
 
 if a.krok == "porownaj":
     zle = 0
