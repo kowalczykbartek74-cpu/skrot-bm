@@ -215,9 +215,11 @@ function prosbaPisz(c, plan, l, uwagi) {
     custom_id: `l${String(l.nr).padStart(2, "0")}`,
     params: {
       model: MODEL, max_tokens: 32000,
-      output_config: { effort: EFFORT, format: { type: "json_schema", schema: SCHEMAT } },
+      // Pełny schemat lekcji jest za duży na structured outputs („compiled grammar is too large”, 8.11.2026), więc domyślnie
+      // schemat idzie jako tekst w instrukcji, a strukturę sprawdza sprawdz(); --schemat wraca do ścisłego trybu.
+      output_config: args.includes("--schemat") ? { effort: EFFORT, format: { type: "json_schema", schema: SCHEMAT } } : { effort: EFFORT },
       system: [
-        { type: "text", text: PRZEWODNIK(), cache_control: { type: "ephemeral", ttl: "1h" } },
+        { type: "text", text: PRZEWODNIK() + (args.includes("--schemat") ? "" : `\n\nODPOWIEDŹ: wyłącznie jeden obiekt JSON (bez komentarzy i bez \`\`\`), dokładnie według tego JSON Schema – wszystkie pola są wymagane:\n${JSON.stringify(SCHEMAT)}`), cache_control: { type: "ephemeral", ttl: "1h" } },
         { type: "text", text: kontekstPrzedmiotu(c), cache_control: { type: "ephemeral", ttl: "1h" } },
       ],
       messages: [{ role: "user", content:
@@ -268,7 +270,7 @@ async function odbierz() {
       st.usage.push({ model: m.model, ...m.usage });
       if (m.stop_reason === "refusal" || m.stop_reason === "max_tokens") { console.log(`  ${r.custom_id}: ${m.stop_reason}`); continue; }
       const text = m.content.filter((x) => x.type === "text").map((x) => x.text).join("");
-      let x; try { x = JSON.parse(text); } catch { console.log(`  ${r.custom_id}: zły JSON`); continue; }
+      let x; try { x = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { console.log(`  ${r.custom_id}: zły JSON`); continue; }
       if (b.rodzaj === "pisz") {
         zapisz(path.join(DIR, `lekcja-${String(nr).padStart(2, "0")}.json`), x);
         const bl = sprawdz(x);
