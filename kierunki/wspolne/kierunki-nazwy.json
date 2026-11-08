@@ -1,0 +1,93 @@
+{
+ "opis": "Nazwy kierunków WEFiZ po angielsku i język zajęć (do plików kierunków ze scripts/kierunek-nowy.mjs). Nazwy z supabase/kierunki-wefiz.json. Popraw tu, jeśli uczelnia używa innej nazwy angielskiej.",
+ "kierunki": {
+  "Audyt finansowy": {
+   "en": "Financial Audit",
+   "jezykZajec": "pl"
+  },
+  "Business Intelligence w gospodarce": {
+   "en": "Business Intelligence in the Economy",
+   "jezykZajec": "pl"
+  },
+  "Business Management": {
+   "en": "Business Management",
+   "jezykZajec": "en"
+  },
+  "Data Science": {
+   "en": "Data Science",
+   "jezykZajec": "en"
+  },
+  "Economics and IT Applications": {
+   "en": "Economics and IT Applications",
+   "jezykZajec": "en"
+  },
+  "Ekonomia": {
+   "en": "Economics",
+   "jezykZajec": "pl"
+  },
+  "Finanse i Rachunkowość": {
+   "en": "Finance and Accounting",
+   "jezykZajec": "pl"
+  },
+  "Gospodarka Nieruchomościami": {
+   "en": "Real Estate Management",
+   "jezykZajec": "pl"
+  },
+  "Gospodarka Przestrzenna inż.": {
+   "en": "Spatial Management (engineering)",
+   "jezykZajec": "pl"
+  },
+  "Informatyka i Ekonometria": {
+   "en": "Computer Science and Econometrics",
+   "jezykZajec": "pl"
+  },
+  "Informatyka w Biznesie": {
+   "en": "Business Informatics",
+   "jezykZajec": "pl"
+  },
+  "Komunikacja i psychologia w biznesie": {
+   "en": "Communication and Psychology in Business",
+   "jezykZajec": "pl"
+  },
+  "Logistyka": {
+   "en": "Logistics",
+   "jezykZajec": "pl"
+  },
+  "Logistyka inż.": {
+   "en": "Logistics (engineering)",
+   "jezykZajec": "pl"
+  },
+  "Marketing": {
+   "en": "Marketing",
+   "jezykZajec": "pl"
+  },
+  "Międzynarodowy biznes turystyczny": {
+   "en": "International Tourism Business",
+   "jezykZajec": "pl"
+  },
+  "Przedsiębiorczość i Inwestycje": {
+   "en": "Entrepreneurship and Investment",
+   "jezykZajec": "pl"
+  },
+  "Rynek Nieruchomości": {
+   "en": "Real Estate Market",
+   "jezykZajec": "pl"
+  },
+  "Turystyka i Rekreacja": {
+   "en": "Tourism and Recreation",
+   "jezykZajec": "pl"
+  },
+  "Zarządzanie": {
+   "en": "Management",
+   "jezykZajec": "pl"
+  },
+  "Zarządzanie Logistyczne w Ochronie Zdrowia": {
+   "en": "Logistics Management in Healthcare",
+   "jezykZajec": "pl"
+  },
+  "Zarządzanie odnawialnymi źródłami energii": {
+   "en": "Renewable Energy Management",
+   "jezykZajec": "pl"
+  }
+ }
+}

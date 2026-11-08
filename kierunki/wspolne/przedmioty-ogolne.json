@@ -1,0 +1,156 @@
+{
+ "opis": "Przedmioty ogólne (bez kierunku): ten sam przedmiot na różnych kierunkach WEFiZ ma jedną lekcję w banku PL (zdawalni-tresci/bank/<ogólny>/…). aliasy = slugi nazw z planów i sylabusów, bm = przedmioty BM, z których robi się K2. Czytają: kierunek-nowy.mjs, macierz-przedmiotow.py. Dopisuj, gdy macierz pokaże przedmiot „bez przypisania”.",
+ "ogolne": {
+  "podstawy-zarzadzania": {
+   "aliasy": [
+    "podstawy-zarzadzania",
+    "zarzadzanie",
+    "wprowadzenie-do-zarzadzania"
+   ],
+   "bm": [
+    "podstawy-zarzadzania"
+   ]
+  },
+  "podstawy-finansow": {
+   "aliasy": [
+    "podstawy-finansow",
+    "finanse",
+    "wprowadzenie-do-finansow"
+   ],
+   "bm": [
+    "podstawy-finansow"
+   ]
+  },
+  "podstawy-prawa": {
+   "aliasy": [
+    "podstawy-prawa",
+    "prawo",
+    "wstep-do-prawa",
+    "prawo-gospodarcze",
+    "elementy-prawa"
+   ],
+   "bm": [
+    "prawo"
+   ]
+  },
+  "ochrona-wlasnosci-intelektualnej": {
+   "aliasy": [
+    "ochrona-wlasnosci-intelektualnej",
+    "prawo-wlasnosci-intelektualnej"
+   ],
+   "bm": [
+    "ochrona-wlasnosci-intelektualnej"
+   ]
+  },
+  "matematyka": {
+   "aliasy": [
+    "matematyka",
+    "analiza-matematyczna",
+    "matematyka-ekonomiczna",
+    "matematyka-dla-ekonomistow",
+    "matematyka-w-ekonomii"
+   ],
+   "bm": [
+    "analiza-matematyczna"
+   ]
+  },
+  "podstawy-ekonomii": {
+   "aliasy": [
+    "podstawy-ekonomii",
+    "ekonomia",
+    "wprowadzenie-do-ekonomii",
+    "ekonomia-biznesu"
+   ],
+   "bm": [
+    "ekonomia-biznesu",
+    "makroekonomia"
+   ]
+  },
+  "makroekonomia": {
+   "aliasy": [
+    "makroekonomia",
+    "makroekonomia-i"
+   ],
+   "bm": [
+    "makroekonomia"
+   ]
+  },
+  "mikroekonomia": {
+   "aliasy": [
+    "mikroekonomia",
+    "mikroekonomia-i"
+   ],
+   "bm": [
+    "ekonomia-biznesu"
+   ]
+  },
+  "technologie-informacyjne": {
+   "aliasy": [
+    "technologie-informacyjne",
+    "technologia-informacyjna",
+    "narzedzia-it-w-zarzadzaniu",
+    "informatyka",
+    "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci",
+    "arkusz-kalkulacyjny"
+   ],
+   "bm": [
+    "narzedzia-it-w-zarzadzaniu"
+   ]
+  },
+  "podstawy-rachunkowosci": {
+   "aliasy": [
+    "podstawy-rachunkowosci",
+    "rachunkowosc",
+    "rachunkowosc-finansowa"
+   ],
+   "bm": []
+  },
+  "statystyka": {
+   "aliasy": [
+    "statystyka",
+    "statystyka-opisowa",
+    "podstawy-statystyki"
+   ],
+   "bm": []
+  },
+  "logistyka": {
+   "aliasy": [
+    "logistyka",
+    "podstawy-logistyki"
+   ],
+   "bm": [
+    "logistyka"
+   ]
+  },
+  "zarzadzanie-zasobami-ludzkimi": {
+   "aliasy": [
+    "zarzadzanie-zasobami-ludzkimi",
+    "zarzadzanie-kadrami"
+   ],
+   "bm": [
+    "zarzadzanie-zasobami-ludzkimi"
+   ]
+  },
+  "nauka-o-przedsiebiorstwie": {
+   "aliasy": [
+    "nauka-o-przedsiebiorstwie",
+    "ekonomika-przedsiebiorstw",
+    "ekonomika-przedsiebiorstwa"
+   ],
+   "bm": []
+  },
+  "marketing": {
+   "aliasy": [
+    "marketing",
+    "podstawy-marketingu"
+   ],
+   "bm": []
+  },
+  "zachowania-konsumentow": {
+   "aliasy": [
+    "zachowania-konsumentow"
+   ],
+   "bm": []
+  }
+ }
+}
