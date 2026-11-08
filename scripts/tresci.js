@@ -89,19 +89,19 @@ function genderHits(text) {
 // ---------------- 4. matematyka: przykłady liczbowe liczone ponownie ----------------
 // „3 × 25 zł = 75 zł”, „(110 − 100) / 100 = 0,1” (bez nawiasów: tylko proste działania), „1000 · 1,05 ≈ 1050”.
 const UNIT = String.raw`(?:\s?(?:zł|PLN|EUR|USD|€|\$|h|godz\.|min|kg|g|szt\.?|pkt|units?|tonnes?|t|osób|os\.)(?![\p{L}]))?`;
-const NUMR = String.raw`\d+(?:[  ]\d{3})*(?:[.,]\d+)?`;
+const NUMR = String.raw`\d+(?:[ \u00a0\u202f]\d{3})*(?:[.,]\d+)?`;   // tysiące: spacja zwykła, nierozdzielająca albo wąska
 const OP = String.raw`(?:\s*[+×*·/÷−–]\s*|\s+[-x:]\s+)`;
-const EQ = new RegExp(String.raw`(?<![\p{L}\d.,)\]}^_])(?<!\d[  ])(?<![+\-−–×*·/÷%^(<>]\s?)(?<![\d)]\s?[:x]\s?)(${NUMR}${UNIT}(?:${OP}${NUMR}${UNIT})+)\s*(=|≈)\s*(${NUMR})${UNIT}(?![\d\p{L}%]|\s?[×*·/÷^]|\s?\(|[.,]\d)`, "gu");
+const EQ = new RegExp(String.raw`(?<![\p{L}\d.,)\]}^_])(?<!\d[ \u00a0\u202f])(?<![+\-−–×*·/÷%^(<>]\s?)(?<![\d)]\s?[:x]\s?)(${NUMR}${UNIT}(?:${OP}${NUMR}${UNIT})+)\s*(=|≈)\s*(${NUMR})${UNIT}(?![\d\p{L}%]|\s?[×*·/÷^]|\s?\(|[.,]\d|[   ]\d{3}(?!\d))`, "gu");
 // comma: "dec" (przecinek dziesiętny), "thou" (przecinek tysięcy, jak 1,234.5), domyślnie: „1,234” = nie wiadomo.
 function parseNum(s, comma) {
-  let t = String(s).replace(/[  ]/g, "");
+  let t = String(s).replace(/[ \u00a0\u202f]/g, "");
   if (comma === "thou" || (comma === "mix" && /^[1-9]\d{0,2}(,\d{3})+$/.test(t))) t = t.replace(/,/g, "");
   else if (comma === "mix") { /* „0,2”, „1,10”: przecinek dziesiętny */ }
   else if (comma !== "dec" && /^\d{1,3}(,\d{3})+$/.test(t)) return null; // „1,234” – nie wiadomo, tysiące czy ułamek
   const n = Number(t.replace(",", "."));
   return Number.isFinite(n) ? n : null;
 }
-const decimalsOf = (s) => { const m = /[.,](\d+)$/.exec(String(s).replace(/[  ]/g, "")); return m ? m[1].length : 0; };
+const decimalsOf = (s) => { const m = /[.,](\d+)$/.exec(String(s).replace(/[ \u00a0\u202f]/g, "")); return m ? m[1].length : 0; };
 // Liczy lewą stronę: + − oraz × · * / ÷ : (zwykła kolejność działań, bez nawiasów).
 function evalSimple(lhs, comma) {
   const parts = lhs.split(new RegExp(`(${OP})`, "u"));
@@ -195,9 +195,9 @@ function checkLesson(doc, forbidden) {
     const rs = !ARITH_SKIP.test(at) && !VALUE_SKIP.test(at) ? arithmetic(text) : [];
     for (const r of rs) rachunki.push({ ...r, pole: at });
     // Liczby z rachunku, który się zgadza, to dane przykładu: nie trafiają do przeglądu źródeł.
-    const inCalc = new Set(rs.filter((r) => r.ok).flatMap((r) => r.tekst.match(/\d+(?:[  ]\d{3})*(?:[.,]\d+)?/g) || []).map((x) => x.replace(/[  ]/g, "")));
+    const inCalc = new Set(rs.filter((r) => r.ok).flatMap((r) => r.tekst.match(/\d+(?:[  ]\d{3})*(?:[.,]\d+)?/g) || []).map((x) => x.replace(/[ \u00a0\u202f]/g, "")));
     if (!VALUE_SKIP.test(at) && !VALUE_EXAMPLE.test(at) && !calcQs.some((q) => at.startsWith(q + "."))) for (const v of valueHits(text)) {
-      const num = (/\d+(?:[  ]\d{3})*(?:[.,]\d+)?/.exec(v.tekst) || [""])[0].replace(/[  ]/g, "");
+      const num = (/\d+(?:[  ]\d{3})*(?:[.,]\d+)?/.exec(v.tekst) || [""])[0].replace(/[ \u00a0\u202f]/g, "");
       if (["kwota", "procent", "liczba"].includes(v.typ) && inCalc.has(num)) continue;
       wartosci.push({ ...v, pole: at });
     }

@@ -7,7 +7,7 @@ const wyniki = []; const ok = (n, w, i) => wyniki.push([w ? "✓" : "✗", n, w 
 const LS = (lista) => ({ "mock-v31": "1", "mock-rocznik": JSON.stringify({ id: BM, wybrany: true }), "mock-roczniki-lista": JSON.stringify(lista), "bm-starosta": "1" });
 async function otworz({ konto = "starosta", lang = "pl", w = 375, lista, hash = "#/kierunkiPanel" } = {}) {
   const p = await page(b, { konto, lang, w, h: w > 800 ? 900 : 812, ls: LS(lista) });
-  await p.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));
+  await p.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));
   await p.goto(BASE + "index.html" + hash); await p.waitForTimeout(2800);
   return p;
 }
@@ -80,7 +80,7 @@ for (const [lang, w] of [["en", 375], ["pl", 1280], ["en", 1280]]) {
 
 // 5. Bez v49 w bazie (mock-v31 = "0" → brak funkcji): czytelny komunikat zamiast cichego błędu
 p = await page(b, { konto: "starosta", w: 375, ls: { ...LS([{ id: BM, status: "platny" }]), "mock-v31": "0" } });
-await p.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));
+await p.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));
 await p.goto(BASE + "index.html#/kierunkiPanel"); await p.waitForTimeout(2800);
 const s5 = await main(p);
 ok("5 bez listy z bazy (stara baza): sekcja Baza się nie pokazuje, panel działa", !/Dodaj do bazy/.test(s5) && /Kierunki/.test(s5) && !p.errors.length, [s5.slice(0, 300), p.errors]);
@@ -90,7 +90,7 @@ await p.context().close();
 const gosc = async (ls) => {
   const g = await page(b, { konto: "brak", w: 390, ls: { "mock-v31": "1", "mock-roczniki-lista": JSON.stringify([{ id: BM, status: "platny" }, { id: ZARZ, status: "oczekujacy" }]), ...ls } });
   await g.addInitScript(() => { if (!sessionStorage.getItem("k-init")) { sessionStorage.setItem("k-init", "1"); localStorage.removeItem("bm-group"); } });
-  await g.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));
+  await g.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));
   return g;
 };
 p = await gosc({});

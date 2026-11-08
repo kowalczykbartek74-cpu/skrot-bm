@@ -203,4 +203,12 @@ test("rachunek: łańcuch „a = b + c = d” i spacja tysięcy nie dają fałsz
   assert.deepStrictEqual(ok("(3 000 : 5 = 600)"), []);
   assert.deepStrictEqual(ok("10 000 : 4 = 2 500"), [true]);
   assert.deepStrictEqual(ok("2 + 2 = 5"), [false]);
+  // spacja nierozdzielająca i wąska w liczbach (zapis typograficzny z lekcji K2): jak zwykła spacja
+  assert.deepStrictEqual(ok("10\u00a0000 : 4 = 2\u00a0500"), [true]);
+  assert.deepStrictEqual(ok("300 + 800 = 1\u00a0100"), [true]);
+  assert.deepStrictEqual(ok("2\u202f000 \u2212 200 \u00d7 3 = 1\u202f400"), [true]);
+  assert.deepStrictEqual(ok("300 + 800 = 1\u00a0200"), [false]);
+  // wynik z grupą tysięcy przed nawiasem: pominięty (jak każdy wynik przed „(”), a nie ucięty do „1” i uznany za błąd
+  assert.deepStrictEqual(ok("300 + 800 = 1 100 (razem)"), []);
+  assert.deepStrictEqual(ok("300 + 800 = 1 200 (razem)"), []);
 });

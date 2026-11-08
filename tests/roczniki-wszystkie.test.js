@@ -31,8 +31,8 @@ for (const id of IDS) {
     for (const t of Object.values(r.teksty)) assert.ok(t.pl && t.en, `${id}: tekst bez pary PL/EN`);
     assert.ok(r.ai.en && r.ai.pl && r.ai.kontekst);
     // plan na tym samym hoście (CSP strony), BM pod plan.json, reszta plan/<id>.json; strona planu z ?k=<prefiks>
-    assert.strictEqual(r.plan.json, id === R.DOMYSLNY ? "https://plan.skrotbm.pl/plan.json" : `https://plan.skrotbm.pl/plan/${id}.json`);
-    if (id !== R.DOMYSLNY) assert.strictEqual(r.plan.strona, `https://plan.skrotbm.pl/?k=${k.prefiks}`);
+    assert.strictEqual(r.plan.json, id === R.DOMYSLNY ? "https://plan.zdawalni.pl/plan.json" : `https://plan.zdawalni.pl/plan/${id}.json`);
+    if (id !== R.DOMYSLNY) assert.strictEqual(r.plan.strona, `https://plan.zdawalni.pl/?k=${k.prefiks}`);
     assert.strictEqual(r.teams, id === R.DOMYSLNY, "Teams tylko BM");
     // sylabus: plik w repo, karty z formami i semestrami
     if (r.sylabus.plik) {
