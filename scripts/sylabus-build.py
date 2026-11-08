@@ -1,5 +1,10 @@
-import json, re, unicodedata, sys
+import json, re, unicodedata, sys, datetime
 
+# Użycie BM (jak dotąd):  python3 scripts/sylabus-build.py sylabus.json
+# Inny kierunek:          python3 scripts/sylabus-build.py sylabus-zarz.json --kierunek kierunki/wefiz-zarz-1-st-2026.json
+# (kierunek po polsku: nazwa przedmiotu bez części angielskiej, źródło i data z pliku kierunku)
+ARGS = sys.argv[1:]
+KIER = json.load(open(ARGS[ARGS.index("--kierunek") + 1])) if "--kierunek" in ARGS else None
 D = json.load(open("syl.json"))
 
 def slug(s):
@@ -31,12 +36,18 @@ def cap(s):
 
 FORM = {"lecture": "W", "discussion classes": "CW", "laboratory": "LAB", "conversation": "KON", "seminar": "SEM", "pe classes": "WF"}
 AI_BOILER = "The course teacher shall specify how artificial intelligence"
+GRADE_SPLIT = ("Grade calculation principles",)
+if KIER:
+    # polska karta przedmiotu (scripts/sylabus_pl.py); lektorat = zajęcia językowe (w BM: conversation → KON)
+    FORM = {"wykład": "W", "ćwiczenia": "CW", "laboratorium": "LAB", "konwersatorium": "KON", "lektorat": "KON", "seminarium": "SEM", "zajęcia z wychowania fizycznego": "WF"}
+    AI_BOILER = ("The course teacher shall specify how artificial intelligence", "W ramach realizacji przedmiotu, sposób wykorzystania sztucznej inteligencji")
+    GRADE_SPLIT = ("Grade calculation principles", "Zasady wyliczania oceny z przedmiotu")
 
 courses = []
 seen = set()
 for d in D:
-    m = re.match(r"^(.*?)\s*\(([^()]*(?:\([^()]*\))?[^()]*)\)\s*$", d["title"])
-    en, pl = (m.group(1), m.group(2)) if m else (d["title"], "")
+    m = None if KIER else re.match(r"^(.*?)\s*\(([^()]*(?:\([^()]*\))?[^()]*)\)\s*$", d["title"])
+    en, pl = (m.group(1), m.group(2)) if m else ("", d["title"]) if KIER else (d["title"], "")
     if pl.lower() == en.lower():
         pl = en
     pl = cap(pl) if pl else ""
@@ -50,7 +61,7 @@ for d in D:
     grading, calc, cur = [], [], None
     cur = grading
     for l in d.get("grading", []):
-        if l.strip() == "Grade calculation principles":
+        if l.strip() in GRADE_SPLIT:
             cur = calc; continue
         cur.append(l)
     final = {"m": "", "parts": []}
@@ -99,6 +110,11 @@ out = {
     "updated": "2026-10-23",
     "courses": courses,
 }
+if KIER:
+    st = {0: "jednolite magisterskie", 1: "I stopnia", 2: "II stopnia"}[KIER["stopien"]]
+    out["source"] = f'Sylabus {KIER["kierunek"]["pl"]}, studia {"stacjonarne" if KIER["tryb"] == "st" else "niestacjonarne"} {st} {KIER["nabor"]}/{(KIER["nabor"] + 1) % 100:02d}{(", program " + D[0]["program"]) if D and D[0].get("program") else ""} (Uniwersytet Szczeciński, {KIER["wydzial"] if isinstance(KIER["wydzial"], str) else KIER["wydzial"]["kod"]})'
+    out["updated"] = ARGS[ARGS.index("--data") + 1] if "--data" in ARGS else datetime.date.today().isoformat()
+    out["rocznik"] = KIER["id"]
 # Użycie: python3 scripts/sylabus-parse.py SYLABUS.pdf  (tworzy syl.json)  →  python3 scripts/sylabus-build.py sylabus.json
 # „??” to w PDF-ie zepsute znaki (np. niełamliwa spacja), usuwamy je.
 # Literówki z PDF-u uczelni, które widać na stronie (temat zajęć na Dziś i w Kalendarzu).

@@ -7,3 +7,5 @@ exclude:
   - PALETA.md
   - shots
   - docs
+  - kierunki
+  - tests

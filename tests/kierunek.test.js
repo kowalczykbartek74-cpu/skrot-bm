@@ -65,7 +65,8 @@ test("rocznik Zarządzania: plan per rocznik, bez Teams i zasad BM, teksty i opi
   assert.strictEqual(z.plan.skrzynka, null);
   assert.strictEqual(z.teams, false);
   assert.strictEqual(z.zasadyZaliczen, false);
-  assert.strictEqual(z.sylabus.plik, null, "sylabus dopiero w Etapie B");
+  assert.strictEqual(z.sylabus.plik, "sylabus-zarz.json", "sylabus z Etapu B (plik w repo)");
+  assert.strictEqual(z.sylabus.pojecia, null);
   assert.deepStrictEqual(z.grupy, ["C151", "C152", "C153"]);
   assert.strictEqual(z.ai.en, "first-year Management students");
   assert.strictEqual(z.ai.kontekst, "Uniwersytet Szczeciński, zajęcia po polsku");

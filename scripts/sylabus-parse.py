@@ -3,6 +3,17 @@ import pdfplumber, json, re, sys
 PDF = sys.argv[1]
 pdf = pdfplumber.open(PDF)
 
+# Polski układ karty przedmiotu (np. Zarządzanie): osobny moduł scripts/sylabus_pl.py, ten sam kształt syl.json.
+# PDF-y BM (angielskie etykiety) idą dalej starą drogą, bez zmian.
+if "KARTA PRZEDMIOTU" in (pdf.pages[0].extract_text() or "")[:200]:
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import sylabus_pl
+    out = sylabus_pl.parse(pdf)
+    json.dump(out, open("syl.json", "w"), ensure_ascii=False, indent=1)
+    print(len(out))
+    sys.exit(0)
+
 class Row(list):
     pass
 

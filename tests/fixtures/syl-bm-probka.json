@@ -1,0 +1,668 @@
+[
+ {
+  "forms": [
+   {
+    "year": 1,
+    "sem": 1,
+    "form": "discussion classes",
+    "hours": 30,
+    "elearning": 0,
+    "credit": "pg",
+    "ects": "4"
+   },
+   {
+    "year": 1,
+    "sem": 1,
+    "form": "lecture",
+    "hours": 15,
+    "elearning": 0,
+    "credit": "e"
+   }
+  ],
+  "outcomes": [
+   {
+    "cat": "wiedza",
+    "code": "EP1",
+    "text": "Zna podstawy algebry macierzy oraz potrafi wyjaśnić i opisać procedury rozwiązywania układów równań liniowych",
+    "refs": [
+     "K_W13"
+    ]
+   },
+   {
+    "cat": "wiedza",
+    "code": "EP4",
+    "text": "Zna podstawy rachunku różniczkowego i całkowego funkcji jednej zmiennej.",
+    "refs": [
+     "K_W13"
+    ]
+   },
+   {
+    "cat": "wiedza",
+    "code": "EP5",
+    "text": "Rozumie i potrafi wytłumaczyć opisy prawidłowości zjawisk wykorzystując język matematyczny.",
+    "refs": [
+     "K_W13"
+    ]
+   },
+   {
+    "cat": "umiejętności",
+    "code": "EP6",
+    "text": "Posługuje się rachunkiem zdań i kwantyfikatorów w języku potocznym i specjalistycznym języku ekonomicznym.",
+    "refs": [
+     "K_U04"
+    ]
+   },
+   {
+    "cat": "umiejętności",
+    "code": "EP7",
+    "text": "Posługuje się rachunkiem wektorowym i macierzowym oraz potrafi wykorzystać go do rozwiązywania układów równań liniowych.",
+    "refs": [
+     "K_U04"
+    ]
+   },
+   {
+    "cat": "umiejętności",
+    "code": "EP8",
+    "text": "Potrafi wykorzystać twierdzenia i metody rachunku różniczkowego funkcji jednej zmiennej w zagadnieniach związanych z optymalizacją, poszukiwaniem ekstremów lokalnych i globalnych, szukaniem punktów przegięcia, przedziałów wypukłości funkcji.",
+    "refs": [
+     "K_U04"
+    ]
+   },
+   {
+    "cat": "kompetencje społeczne",
+    "code": "EP3",
+    "text": "Zna ograniczenia własnej wiedzy i jest gotów do dalszego kształcenia",
+    "refs": [
+     "K_K01"
+    ]
+   }
+  ],
+  "content": {
+   "lecture": [
+    {
+     "t": "Funkcja jednej, dwóch i wielu zmiennych",
+     "sem": 1,
+     "h": 5
+    },
+    {
+     "t": "Elementy rachunku różniczkowego i całkowego",
+     "sem": 1,
+     "h": 5
+    },
+    {
+     "t": "Algebra liniowa",
+     "sem": 1,
+     "h": 5
+    }
+   ],
+   "discussion classes": [
+    {
+     "t": "Rachunek wektorów i macierzy",
+     "sem": 1,
+     "h": 6
+    },
+    {
+     "t": "Układy równań i nierówności",
+     "sem": 1,
+     "h": 6
+    },
+    {
+     "t": "Funkcja jednej zmiennej",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Funkcja wielu zmiennych",
+     "sem": 1,
+     "h": 4
+    },
+    {
+     "t": "Ciągłość i granice funkcji",
+     "sem": 1,
+     "h": 4
+    },
+    {
+     "t": "Rachunek różniczkowy i całkowy",
+     "sem": 1,
+     "h": 8
+    }
+   ]
+  },
+  "assessment": [
+   {
+    "method": "EGZAMIN PISEMNY",
+    "outcomes": "EP1,EP4,EP5,EP6,E\nP7,EP8"
+   },
+   {
+    "method": "KOLOKWIUM",
+    "outcomes": "EP3,EP6,EP7,EP8"
+   }
+  ],
+  "basic": [
+   "Batóg B., Bieszk-Stolorz B., Forys I., Guzowska M., Heberlein K. (2020): Matematyka dla studentów ekonomii, finansów i zarzadzania, Difin, Warszawa"
+  ],
+  "supplementary": [
+   "J. Piszczała (2008): Matematyka i jej zastosowanie w naukach ekonomicznych, Wydawnictwo AE w Poznaniu, Poznań",
+   "M. Dobek, O. Rakowski (2007): Matematyka i jej zastosowania w ekonomii, PPH Zapol, , Szczecin",
+   "M. Matłoka (2008): Matematyka dla ekonomistów, , Wydawnictwo AE w Poznaniu, Poznań",
+   "W. Krysicki, L. Włodarski (2019): Analiza matematyczna w zadaniach 1, Wydawnictwo Naukowe PWN, Warszawa"
+  ],
+  "workload": {
+   "Zajęcia dydaktyczne": 45,
+   "Udział w egzaminie/zaliczeniu": 4,
+   "Przygotowanie się do zajęć": 24,
+   "Studiowanie literatury": 10,
+   "Udział w konsultacjach": 7,
+   "Przygotowanie projektu / eseju / itp.": 0,
+   "Przygotowanie się do egzaminu/zaliczenia": 10
+  },
+  "final": [
+   [
+    "matematyka",
+    "Arytmetyczna"
+   ],
+   [
+    "matematyka [ćwiczenia]",
+    "zaliczenie z oceną"
+   ],
+   [
+    "matematyka [wykład]",
+    "egzamin"
+   ]
+  ],
+  "objectives": [
+   "Uzupełnienie i utrwalenie wiadomości z zakresu matematyki w stopniu umożliwiającym studiowanie nowoczesnej ekonomii, statystyki i ekonometrii oraz innych dziedzin, których podstawę stanowi rachunek ekonomiczny i których treścią jest wskazywanie sposobów podejmowania optymalnych decyzji."
+  ],
+  "prerequisites": [
+   "student potrafi rozwiązać samodzielnie zadania z matematyki na poziomie podstawowym ma wpojone nawyki systematycznego kształcenia się i samodzielnego korzystania z literatury student zna materiał z matematyki ze szkoły średniej na poziomie podstawowym"
+  ],
+  "delivery": [
+   "Wykład połączony z prezentacja multimedialna, ćwiczenia - rozwiązywanie zadań problemowych",
+   "The course teacher shall specify how artificial intelligence may be used."
+  ],
+  "grading": [
+   "Zaliczenie ćwiczeń w formie pisemnej. Zaliczenie ćwiczeń następuje na podstawie kolokwiów (rozwiązanie zadań). Egzamin pisemny obejmujący wiedzę z wykładu oraz ćwiczeń, opiera się na odpowiedzi na pytania z wykładu oraz rozwiązaniu zestawu zadań.",
+   "Zasady wyliczania oceny z przedmiotu",
+   "Grade calculation principles",
+   "Oceną końcową z przedmiotu jest średnia z ocen z ćwiczeń i egzaminu."
+  ],
+  "title": "Course 0 (matematyka)",
+  "group": "PODSTAWOWE",
+  "code": "US182AIJ2497_6S",
+  "status": "obligatory",
+  "language": "semestr: 1 - język polski",
+  "totalHours": 45,
+  "ects": "4",
+  "coordinator": "dr BARBARA BATÓG",
+  "instructors": [
+   "dr BARBARA BATÓG"
+  ]
+ },
+ {
+  "forms": [
+   {
+    "year": 1,
+    "sem": 1,
+    "form": "laboratory",
+    "hours": 15,
+    "elearning": 0,
+    "credit": "pg",
+    "ects": "3"
+   },
+   {
+    "year": 1,
+    "sem": 1,
+    "form": "lecture",
+    "hours": 15,
+    "elearning": 0,
+    "credit": "e"
+   }
+  ],
+  "outcomes": [
+   {
+    "cat": "wiedza",
+    "code": "EP1",
+    "text": "zna i rozumie podstawowe reguły działania systemu finansowego, głównie w obszarze instytucji finansowych i niefinansowych (sektora publicznego i prywatnego) oraz związków ze sferą realną",
+    "refs": [
+     "K_W02",
+     "K_W03"
+    ]
+   },
+   {
+    "cat": "umiejętności",
+    "code": "EP2",
+    "text": "potrafi określać szanse i zagrożenia związane z przemianami współczesnych zjawisk finansowych",
+    "refs": [
+     "K_U03"
+    ]
+   },
+   {
+    "cat": "umiejętności",
+    "code": "EP3",
+    "text": "potrafi analizować wpływ wykorzystywania instrumentów finansowych przez instytucje finansowe i niefinansowe w oparciu o kryteria rentowności, płynności i ryzyka na ich sytuację finansową",
+    "refs": [
+     "K_U01",
+     "K_U02",
+     "K_U04"
+    ]
+   },
+   {
+    "cat": "kompetencje społeczne",
+    "code": "EP4",
+    "text": "jest przygotowany do pogłębiania wiedzy i doskonalenia umiejętności z zakresu finansów",
+    "refs": [
+     "K_K01"
+    ]
+   }
+  ],
+  "content": {
+   "lecture": [
+    {
+     "t": "Przedmiot i funkcje finansów. Zjawiska finansowe i ich pieniężny wymiar",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "System finansowy, jego funkcje i struktura oraz instrumenty i instytucje",
+     "sem": 1,
+     "h": 4
+    },
+    {
+     "t": "Podmioty niefinansowe (przedsiębiorstwa, gospodarstwa domowe) a instytucje finansowe",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Sektor finansów publicznych i jego struktura. Powiązania sektora finansów publicznych z systemem finansowym. Budżet państwa i budżet samorządowy. Dochody publiczne, źródła i sposoby ich kreacji. Metody planowania budżetowego. Dyscyplina finansów publicznych. Organy skarbowe i ich rola w systemie finansowym.",
+     "sem": 1,
+     "h": 4
+    },
+    {
+     "t": "Bank centralny i jego rola",
+     "sem": 1,
+     "h": 1
+    },
+    {
+     "t": "Istota i przesłanki stabilności systemu finansowego",
+     "sem": 1,
+     "h": 1
+    }
+   ],
+   "laboratory": [
+    {
+     "t": "Internetowe źródła danych finansowych (MF, NBP, GUS, Eurostat, forex, analizy.pl, Money.pl, bankier.pl)",
+     "sem": 1,
+     "h": 1
+    },
+    {
+     "t": "Analiza struktury podaży pieniądza, rynkowych stóp procentowych, stóp banku centralnego i kursu walutowego. Rynek finansowy, giełdowy i walutowy.",
+     "sem": 1,
+     "h": 4
+    },
+    {
+     "t": "Podstawowe charakterystyki systemu bankowego. Analiza produktów bankowych, analiza pozostałych produktów finansowych - GPW, analizy.pl",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Analiza oferty firm ubezpieczeniowych. Rola składek na ubezpieczenie społeczne w wysokości wynagrodzenia",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Finanse publiczne a finanse samorządowe. Dochody i wydatki publiczne. Deficyt sektora finansów publicznych i struktura długu publicznego. Analiza budżetu państwa i budżetów JST. Analiza danych GUS, BDL, Portrety JST.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Podstawy wyceny instrumentów finansowych - rentowność, ryzyko, elementarne metody wyceny",
+     "sem": 1,
+     "h": 2
+    }
+   ]
+  },
+  "assessment": [
+   {
+    "method": "EGZAMIN PISEMNY",
+    "outcomes": "EP1,EP2,EP3"
+   },
+   {
+    "method": "PROJEKT",
+    "outcomes": "EP1,EP2,EP3,EP4"
+   },
+   {
+    "method": "ZAJĘCIA PRAKTYCZNE (WERYFIKACJA POPRZEZ OBSERWACJĘ)",
+    "outcomes": "EP1,EP2,EP3"
+   }
+  ],
+  "basic": [
+   "Dylewski M., Filipiak B., Gorzałczyńska-Koczkodaj M., Zioło M (2014): Finanse publiczne.Aspekty teoretyczne i praktyczne,, CH Beck, Warszawa",
+   "Podstawka M. (2017): Finanse. Instytucje, instrumenty, podmioty, rynki, regulacje, PWN, Warszawa",
+   "red. B. Pietrzak, Z. Polański, B Woźniak (2021): System finansowy w Polsce, t. 1 i 2, PWN, Warszawa"
+  ],
+  "supplementary": [
+   "Felis P.; Malinowska-Misiąg E. (red.) (2020): Planowanie dochodów z podatków lokalnych, Oficyna SGH, Warszawa",
+   "Ostaszewski J. Iwanicz-Drozdowska M. (red.) (2021): Finanse u progu trzeciej dekady XXI w., Difin, Warszawa",
+   "red. A.Paździor (2014): Finanse, Wyd. Politechniki Lubelskiej, Lublin"
+  ],
+  "workload": {
+   "Zajęcia dydaktyczne": 30,
+   "Udział w egzaminie/zaliczeniu": 4,
+   "Przygotowanie się do zajęć": 10,
+   "Studiowanie literatury": 10,
+   "Udział w konsultacjach": 8,
+   "Przygotowanie projektu / eseju / itp.": 8,
+   "Przygotowanie się do egzaminu/zaliczenia": 5
+  },
+  "final": [
+   [
+    "podstawy finansów",
+    "Ważona"
+   ],
+   [
+    "podstawy finansów [laboratorium]",
+    "zaliczenie z oceną",
+    "0,40"
+   ],
+   [
+    "podstawy finansów [wykład]",
+    "egzamin",
+    "0,60"
+   ]
+  ],
+  "objectives": [
+   "Identyfikacja i rozumienie procesów zachodzących w obszarze systemu finansowego (publicznego i prywatnego)"
+  ],
+  "prerequisites": [
+   "student posiada znajomość podstawowych kategorii ekonomicznych student posiada umiejętność wykonywania podstawowych operacji matematycznych student potrafi korzystać ze źródeł wiedzy pierwotnych i wtórnych dostępnych w Internecie i w literaturze"
+  ],
+  "delivery": [
+   "Analiza case studies w oparciu o aktualne materiały empiryczne, Prezentacja multimedialna powiązana z komentowaniem aktualnych zjawisk w sferze finansów;analiza danych źródłowych (głównie z Internetu: KNF, NBP, MF i największe polskie banki)dotyczących struktury i ewolucji systemu finansowego; zadania i case study do przygotowania przez studentów, dyskusja, Dyskusja w grupach studenckich, wartościowanie, weryfikowanie przedstawionych poglądów i rozwiązań przez studentów, weryfikacja danych..",
+   "The course teacher shall specify how artificial intelligence may be used."
+  ],
+  "grading": [
+   "Zaliczenie laboratorium: student realizuje zadania i quizy na platformie Moodle (60% punktów) oraz przygotowuje projekt grupowy na platformie Moodle, który prezentuje na zajęciach lab. (40% punktów). Na zajęciach obowiązuje system punktowy, każda aktywność studenta jest punktowana (przygotowanie merytoryczne do zajęć, zadania domowe indywidualne i grupowe na platformie Moodle, projekt, wystąpienie projektowe, aktywność w realizacji zadań).",
+   "Egzamin: pisemny (test), ocena obejmuje sprawdzenie wiedzy i umiejętności pozyskanej w trakcie wykładów i laboratoriów, możliwość podwyższenia oceny (o pół oceny w przypadku aktywności na zajęciach).",
+   "Grade calculation principles",
+   "Ocena z przedmiotu to średnia ważona ocen z zaliczenia z laboratoriów (waga 40%) oraz egzaminu (waga 60%)"
+  ],
+  "title": "Course 1 (podstawy finansów)",
+  "group": "PODSTAWOWE",
+  "code": "US182AIWNEiZ_7S",
+  "status": "obligatory",
+  "language": "semestr: 1 - język polski",
+  "totalHours": 30,
+  "ects": "3",
+  "coordinator": "prof. dr hab. BEATA FILIPIAK",
+  "instructors": [
+   "dr hab. SŁAWOMIR FRANEK"
+  ]
+ },
+ {
+  "forms": [
+   {
+    "year": 1,
+    "sem": 1,
+    "form": "discussion classes",
+    "hours": 30,
+    "elearning": 0,
+    "credit": "pg",
+    "ects": "6"
+   },
+   {
+    "year": 1,
+    "sem": 1,
+    "form": "lecture",
+    "hours": 30,
+    "elearning": 0,
+    "credit": "e"
+   }
+  ],
+  "outcomes": [
+   {
+    "cat": "wiedza",
+    "code": "EP1",
+    "text": "Zna podstawowe pojęcia zarządzania, w tym funkcje oraz rozumie mechanizmy funkcjonowania firm na rynku konkurencyjnym",
+    "refs": [
+     "K_W01",
+     "K_W03",
+     "K_W06"
+    ]
+   },
+   {
+    "cat": "umiejętności",
+    "code": "EP2",
+    "text": "Potrafi wykorzystać narzędzia analizy sytuacji, organizacji działań i zarządzania nimi właściwe do warunków oraz nakierować je na sprawność, zarówno w działaniu indywidualnym, jak i zespołowym",
+    "refs": [
+     "K_U03",
+     "K_U04",
+     "K_U08"
+    ]
+   },
+   {
+    "cat": "kompetencje społeczne",
+    "code": "EP3",
+    "text": "Jest gotów do myślenia i działania w sposób przedsiębiorczy, w tym współpracując w zespołach, w oparciu o wiedzę własną oraz źródła zewnętrzne",
+    "refs": [
+     "K_K01",
+     "K_K04"
+    ]
+   }
+  ],
+  "content": {
+   "lecture": [
+    {
+     "t": "Wprowadzenie do teorii organizacji i zarządzania.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Działanie zorganizowane.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Ocena sprawności pracy.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Systemowy model organizacji.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Formalizacja organizacji.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Struktura organizacyjna.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Doskonalenie struktury organizacyjnej.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Proces zarządzania organizacją.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Zarządzanie strategiczne.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Kierowanie ludźmi.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Proces podejmowania decyzji.",
+     "sem": 1,
+     "h": 4
+    },
+    {
+     "t": "Modelowanie biznesu.",
+     "sem": 1,
+     "h": 4
+    },
+    {
+     "t": "Zarządzanie przyszłości.",
+     "sem": 1,
+     "h": 2
+    }
+   ],
+   "discussion classes": [
+    {
+     "t": "Zarządzanie - istota i znaczenie; funkcje zarządzania.",
+     "sem": 1,
+     "h": 1
+    },
+    {
+     "t": "Organizacja i jej zasoby.",
+     "sem": 1,
+     "h": 1
+    },
+    {
+     "t": "Otoczenie organizacji. Zarządzanie w kontekście zmian zachodzących w otoczeniu organizacji.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Planowanie w organizacji.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Proces zarządzania. Cele i funkcje zarządzania.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Funkcje organizowania. Struktury organizacyjne - rodzaje, funkcje, parametry, uwarunkowania i ewolucja.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Cechy menedżerów. Role i umiejętności kierownicze, style kierowania.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Motywowanie w organizacji. Teorie motywacji. Przywództwo.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Kulturowy kontekst zarządzania.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Istota kontroli, funkcje kontroli, rodzaje kontroli, etapy procesu kontrolowania.",
+     "sem": 1,
+     "h": 3
+    },
+    {
+     "t": "Informacja (pojęcie, rodzaje), czynniki oceny informacji, elementy procesu komunikacji.",
+     "sem": 1,
+     "h": 1
+    },
+    {
+     "t": "Proces decyzyjny, modele i narzędzia podejmowania decyzji, grupowe podejmowanie decyzji.",
+     "sem": 1,
+     "h": 2
+    },
+    {
+     "t": "Nowoczesne koncepcje i metody zarządzania.",
+     "sem": 1,
+     "h": 1
+    }
+   ]
+  },
+  "assessment": [
+   {
+    "method": "EGZAMIN PISEMNY",
+    "outcomes": "EP1,EP2"
+   },
+   {
+    "method": "KOLOKWIUM",
+    "outcomes": "EP1,EP2"
+   },
+   {
+    "method": "ZAJĘCIA PRAKTYCZNE (WERYFIKACJA POPRZEZ OBSERWACJĘ)",
+    "outcomes": "EP1,EP2,EP3"
+   }
+  ],
+  "basic": [
+   "Andrzej K. Koźmiński, Dariusz Jemielniak (2011): Zarządzanie od podstaw, Oficyna a Wolters Kluwer business, Warszawa",
+   "B. Dobrodziej (red.) (2010): Podstawy organizacji i zarządzania, Wyd. Naukowe US, Szczecin",
+   "James A. F. Stoner, R. Edward Freeman, Daniel R. Gilbert, Jr. ; przekł. Andrzej Ehrlich (2011): Kierowanie , Polskie Wydawnictwo Ekonomiczne, Warszawa:",
+   "Podstawy zarządzania organizacjami Kazimierz Krzakiewicz, Szymon Cyfert Poznań Uniwersytet Ekonomiczny w Poznaniu 2020 :",
+   "red.nauk. Andrzej K. Koźmiński, Włodzimierz Piotrowski (2021): Zarządzanie : teoria i praktyka, Wyższa Szkoła Przedsiębiorczości i Zarządzania im.L.Koźmińskiego, Wydaw.Nauk.PWN,, Warszawa",
+   "R.W.Griffin (2020): Podstawy zarządzania organizacjami, PWE, Warszawa"
+  ],
+  "supplementary": [
+   "Podstawy zarządzania : teoria i ćwiczenia / redakcja naukowa Agnieszka Zakrzewska-Bielawska. Warszawa: Wydawnictwo Nieoczywiste - imprint GAB Media, 2020. :",
+   "Samuel C. Certo, S. Trevis Certo (2014): Modern management : concepts and skills, Pearson Education Limited, 3th ed. Harlow",
+   "Czasopismo Harvard Business Review"
+  ],
+  "workload": {
+   "Zajęcia dydaktyczne": 60,
+   "Udział w egzaminie/zaliczeniu": 2,
+   "Przygotowanie się do zajęć": 35,
+   "Studiowanie literatury": 40,
+   "Udział w konsultacjach": 5,
+   "Przygotowanie projektu / eseju / itp.": 0,
+   "Przygotowanie się do egzaminu/zaliczenia": 8
+  },
+  "final": [
+   [
+    "podstawy zarządzania",
+    "Arytmetyczna"
+   ],
+   [
+    "podstawy zarządzania [wykład]",
+    "egzamin"
+   ],
+   [
+    "podstawy zarządzania [ćwiczenia]",
+    "zaliczenie z oceną"
+   ]
+  ],
+  "objectives": [
+   "Celem z zakresu wiedzy jest zaprezentowanie podstawowych pojęć i mechanizmów charakteryzujących działania zorganizowane.",
+   "Celem z zakresu umiejętności jest dobór i wykorzystywanie narzędzi organizacji i zarządzania właściwych do sprawnego działania.",
+   "Celem z zakresu kompetencji społecznych jest organizowanie i aktywne uczestnictwo w aktywnościach społecznych o charakterze przedsiębiorczym."
+  ],
+  "prerequisites": [
+   "Student opisuje podstawowe kategorie ekonomiczne i społeczne oraz rozumie konieczność ustawicznego kształcenia."
+  ],
+  "delivery": [
+   "prezentacja multimedialna, ćwiczenia, case study, praca w grupach",
+   "The course teacher shall specify how artificial intelligence may be used."
+  ],
+  "grading": [
+   "Forma i warunki zaliczenia ćwiczeń:",
+   "- kolokwium w formie pisemnej,",
+   "Grade calculation principles",
+   "Oceną końcową z przedmiotu jest średnia arytmetyczna ocen uzyskanych z zaliczenia ćwiczeń i egzaminu."
+  ],
+  "title": "Course 2 (podstawy zarządzania)",
+  "group": "PODSTAWOWE",
+  "code": "US182AIJ3344_8S",
+  "status": "elective",
+  "language": "semestr: 1 - język polski",
+  "totalHours": 60,
+  "ects": "6",
+  "coordinator": "dr hab. KAROL KUCZERA",
+  "instructors": [
+   "dr hab. KATARZYNA GADOMSKA-LILA"
+  ]
+ }
+]

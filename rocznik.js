@@ -63,11 +63,11 @@
       nabor: 2026,
       jezykZajec: "pl",
       plan: { json: "https://plan.skrotbm.pl/plan/wefiz-zarz-1-st-2026.json", strona: "https://plan.skrotbm.pl/?k=zarz26", skrzynka: null },
-      sylabus: { plik: null, pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      sylabus: { plik: "sylabus-zarz.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
       grupy: ["C151", "C152", "C153"],
       teams: false,
       zasadyZaliczen: false,
-      przedmioty: { prawne: ["podstawy-prawa"], rachunkowe: ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], jeszczeProsciej: ["matematyka"] },
+      przedmioty: { prawne: ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"], rachunkowe: ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], jeszczeProsciej: ["matematyka"] },
     },
     // KIERUNEK-KONIEC wefiz-zarz-1-st-2026
   };

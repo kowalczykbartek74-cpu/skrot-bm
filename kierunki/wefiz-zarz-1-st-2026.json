@@ -15,11 +15,12 @@
     "podstawy-zarzadzania":         { "bm": ["podstawy-zarzadzania"], "koszyk": "K2" },
     "podstawy-finansow":            { "bm": ["podstawy-finansow"], "koszyk": "K2" },
     "podstawy-prawa":               { "bm": ["prawo"], "koszyk": "K2" },
+    "ochrona-wlasnosci-intelektualnej": { "bm": ["ochrona-wlasnosci-intelektualnej"], "koszyk": "K2" },
     "podstawy-ekonomii":            { "bm": ["ekonomia-biznesu", "makroekonomia"], "koszyk": "K2" },
     "technologie-informacyjne":     { "bm": ["narzedzia-it-w-zarzadzaniu"], "koszyk": "K2+K3" },
     "nauka-o-przedsiebiorstwie":    { "bm": [], "koszyk": "K3" },
     "zachowania-konsumentow":       { "bm": [], "koszyk": "K3" },
     "zarzadzanie-wlasnym-rozwojem": { "bm": [], "koszyk": "K3" }
   },
-  "role": { "prawne": ["podstawy-prawa"], "rachunkowe": ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], "jeszczeProsciej": ["matematyka"] }
+  "role": { "prawne": ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"], "rachunkowe": ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], "jeszczeProsciej": ["matematyka"] }
 }
