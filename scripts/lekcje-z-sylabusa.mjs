@@ -82,12 +82,47 @@ function planuj() {
     lekcje.forEach((l, i) => { const s = 3 * wsp(at, rdzenie(l.tytul)) + wsp(a, rdzenie(l.temat)); if (s > score) { score = s; best = i; } });
     lekcje[best].cwiczenia.push(`${t.f === "CW" ? "Ćwiczenia" : t.f}: ${t.t}`);
   }
-  for (const l of lekcje) if (!/^[a-z0-9-]+$/.test(l.id)) throw new Error("Zły id lekcji: " + l.id);
-  return { rocznik: ROCZNIK, przedmiot: c.pl, sid: SID, kod: c.code, lekcje };
+  // --mapa scratch/<prefiks>/mapa.json (Etap C): tylko tematy z koszykiem K3; tematy K1/K2 mają już lekcje z banku albo z BM.
+  // Lekcja = temat główny K3 z dopiętymi ćwiczeniami K3; temat ćwiczeń K3 bez lekcji K3 staje się osobną lekcją (id z „c”).
+  let lista = lekcje;
+  if (opt("mapa")) {
+    const mapa = JSON.parse(fs.readFileSync(path.resolve(opt("mapa")), "utf8"));
+    const m = mapa.find((x) => x.przedmiot === c.id);
+    if (!m) throw new Error(`Brak przedmiotu ${c.id} w mapie`);
+    const k3 = new Set(m.tematy.filter((t) => t.koszyk === "K3").map((t) => t.temat));
+    const kod = slug(rok.kierunek.kod) + String(rok.nabor % 100);
+    lista = lekcje.filter((l) => k3.has(l.temat)).map((l) => ({ ...l, cwiczenia: l.cwiczenia.filter((t) => k3.has(t.replace(/^[^:]+: /, ""))) }));
+    const dopiete = new Set(lista.flatMap((l) => l.cwiczenia.map((t) => t.replace(/^[^:]+: /, ""))));
+    const glowneT = new Set(lekcje.map((l) => l.temat));
+    reszta.filter((t) => k3.has(t.t) && !dopiete.has(t.t) && !glowneT.has(t.t)).forEach((t, i) => lista.push({
+      nr: 0, id: `${kod}-${slug(PRZEDMIOT).slice(0, 26).replace(/-+$/, "")}-c${String(i + 1).padStart(2, "0")}`,
+      tytul: t.t.split(" - ")[0].replace(/^\d+\.\s*/, "").trim().slice(0, 120), temat: `${t.f === "CW" ? "Ćwiczenia" : t.f}: ${t.t}`, h: t.h, cwiczenia: [] }));
+    lista.forEach((l, i) => { l.nr = i + 1; });
+  }
+  for (const l of lista) if (!/^[a-z0-9-]+$/.test(l.id)) throw new Error("Zły id lekcji: " + l.id);
+  return { rocznik: ROCZNIK, przedmiot: c.pl, sid: SID, kod: c.code, lekcje: lista, ...(opt("mapa") ? { tylkoK3: true } : {}) };
 }
 
 // ---------- prompt: stała część (przewodnik + wzorcowa lekcja) i kontekst przedmiotu w cache ----------
+// --wzorzec <plik lekcji> (schemat kierunków 4.2: wzorcem K3 jest zatwierdzona lekcja PL z K2): lekcja przycięta do SCHEMAT,
+// bez pól, których generator nie pisze (wykresy „chart”, notatki, ściągawka).
+function przytnij(x, sch) {
+  if (!sch) return undefined;
+  if (sch.type === "array") return Array.isArray(x) ? x.map((v) => przytnij(v, sch.items)).filter((v) => v !== undefined) : undefined;
+  if (sch.type === "object") {
+    if (!x || typeof x !== "object") return undefined;
+    if (sch.properties.type?.enum && !sch.properties.type.enum.includes(x.type)) return undefined;
+    const o = {};
+    for (const [k, v] of Object.entries(sch.properties)) { const w = przytnij(x[k], v); if (w !== undefined) o[k] = w; }
+    return o;
+  }
+  return x === undefined ? undefined : x;
+}
 function wzorcowaLekcja() {
+  if (opt("wzorzec")) {
+    const d = JSON.parse(fs.readFileSync(path.resolve(opt("wzorzec")), "utf8"));
+    return JSON.stringify(przytnij(d.content.lesson, SCHEMAT.properties.lesson), null, 1);
+  }
   // Wzorzec formatu z prototypu lekcji v3 (BM, „Opportunity cost”): ten sam kształt danych, który czyta odtwarzacz.
   const s = fs.readFileSync(path.join(ROOT, "docs/lekcje-v3/prototyp.html"), "utf8");
   const a = s.indexOf("const DEMO_C"), b = s.indexOf("\n};", a) + 3;
@@ -121,7 +156,7 @@ Poza lekcją w tym samym JSON:
 - quiz: 8 pytań jak wyżej, każde z "explanation" (dlaczego), "not" oraz "dlaczego": {why: wyjaśnienie dla 12–13-latka, example: przykład z życia}.
 - prosciej: wersja całej lekcji „Prościej” (jak dla 12–13-latka): intro, parts [{h, emoji, text, example, remember}] (3–4 części), words [{term, simple}] (3–5), check [{q, a}] (2–3).
 
-WZORZEC (format lekcji z innego przedmiotu, po angielsku; Ty piszesz po polsku o swoim temacie):
+${opt("wzorzec") ? "WZORZEC (zatwierdzona lekcja tego kierunku po polsku, z innego tematu; ten sam format, styl i poziom; piszesz o swoim temacie):" : "WZORZEC (format lekcji z innego przedmiotu, po angielsku; Ty piszesz po polsku o swoim temacie):"}
 ${wzorcowaLekcja()}`;
 
 function kontekstPrzedmiotu(c) {
