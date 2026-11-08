@@ -124,3 +124,20 @@ FiR: 58 tematów K1 czeka na zatwierdzone lekcje Zarządzania.
 - Szacunek D+E po kalibracji: **~30,4 $** (egzaminy ~19,6 $); cały K2 Zarządzania na prawdziwych lekcjach 5,52 $ (37 lekcji).
 
 **Spec ↔ kod:** Panel AI (`aiImport`) wczytuje z pliku tylko `materialSimple` i `quizWhy`. Nie ma importu całych lekcji (`materials` + `materialContent`) w trybie „Edytuję rocznik”.
+
+## Import paczek lekcji w Panelu AI (8.11.2026, decyzja Bartka)
+
+- `index.html` → Panel AI → sekcja **„Paczka lekcji”** (tylko admin): plik `zdawalni-paczka-lekcji` zapisuje `materials`, `materialContent`
+  (oraz `materialSimple`, `quizWhy`, jeśli są) przez `skrot.putMany`, czyli do **wczytanego** rocznika (`rocznik_id` z makeDb).
+  Odrzuca paczkę z innego rocznika, przedmiot spoza rocznika i zły plik; przed zapisem pokazuje podsumowanie i przycisk „Wgraj N lekcji”.
+  Kod ogólny, bez nazw kierunków. Pary EN w `i18n-en.js`, `i18n.js?v=20261108-paczka`.
+- `scripts/paczka-lekcji.py <kierunek> <katalog>`: składa paczkę z gotowych lekcji tego rocznika, najpierw `tresci-kontrola.mjs --przed-wgraniem` (kod ≠ 0 = brak paczki).
+- Testy: `docs/gry/test/paczka-lekcji.mjs` 17/17 dla Zarządzania i 17/17 dla FiR (PL 375 px, EN 1280 px, bez admina brak sekcji),
+  `tests/paczka-lekcji.test.js`, `node --test` 292/292, BM 24 ekrany bez zmian, Panel AI: jeszcze-prosciej 17/17, pytania-plus OK.
+
+Wgranie pilota, po kolei:
+1. W `scratch/tresci-przeglad.json` oznacz „2 + 2 = 5” jako `"celowo": true` i 5 procentów jako `"przejrzane": true` (te same co w BM).
+2. Tytuły pilota są jeszcze EN (ułamek centa na poprawkę, po „wysyłaj”).
+3. `python3 scripts/paczka-lekcji.py kierunki/wefiz-zarz-1-st-2026.json scratch/zarz26/pilot --nazwa pilot` → `scratch/zarz26/paczka-pilot.json`.
+4. zdawalni.pl → Więcej → „Edytuję rocznik”: Zarządzanie → Więcej → Panel AI → „Paczka lekcji” → wybierz plik → „Wgraj 2 lekcje”.
+   Wymaga wdrożenia tej gałęzi na main.

@@ -1,6 +1,19 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Paczka lekcji": "Lesson pack",
+"Gotowe lekcje z paczki (lekcja, fiszki, quiz, „Prościej”, „Dlaczego?”) zapisują się w roczniku, który jest teraz wczytany. Lekcja o tym samym id zostaje podmieniona.": "Ready lessons from the pack (lesson, flashcards, quiz, “Prościej”, “Dlaczego?”) are saved in the cohort that is loaded now. A lesson with the same id is replaced.",
+"Wczytany rocznik: ": "Loaded cohort: ",
+"Wybierz paczkę (JSON)": "Choose a pack (JSON)",
+"To nie jest paczka lekcji (brak pola format).": "This isn't a lesson pack (no format field).",
+"W paczce nie ma lekcji.": "The pack has no lessons.",
+"Paczka jest dla rocznika: {0}. Wczytany jest: {1}. Przełącz „Edytuję rocznik”.": "The pack is for the cohort: {0}. Loaded: {1}. Switch “Editing a cohort”.",
+"Lekcja {0}: brak treści lekcji.": "Lesson {0}: no lesson content.",
+"Lekcja {0}: przedmiotu „{1}” nie ma w tym roczniku.": "Lesson {0}: subject “{1}” isn't in this cohort.",
+"Wgrano {0} {1} do rocznika: {2}.": "Uploaded {0} {1} to the cohort: {2}.",
+"Nie udało się zapisać w bazie: {0}": "Couldn't save to the database: {0}",
+"Wgraj {0} {1}": "Upload {0} {1}",
+"lekcję": "lesson",
 "Czym to się różni od slajdów prowadzących?": "How is this different from the lecturers' slides?",
 "Nowe kolokwia i zadania pojawią się tutaj, gdy je dodamy.": "New tests and assignments will appear here once we add them.",
 "Zapisz mnie na listę": "Add me to the list",
