@@ -53,7 +53,7 @@ Brakuje sylabusa albo źródła planu → zapytaj i nic nie zaczynaj.
 Repo `plan-bm` (plan.skrotbm.pl). Najpierw przeczytaj jego README i obecny importer WEFiZ.
 
 1. Rozszerz importer o ten kierunek (ten sam system uczelni → ten sam importer, inny filtr kierunku/roku). Wynik w **tym samym formacie co dzisiejszy `plan.json` BM** (`groups → odd/even`, `kalendarz`, `dziekanat`), w osobnym pliku **`plan/<id-rocznika>.json`** na plan.skrotbm.pl (ta zasada jest już w `rocznik.js`, w bazie `nauka_roczniki.plan_url` i w funkcji `kalendarz`; host ten sam, więc CSP bez zmian). Plik BM `plan.json` zostaje pod tym samym adresem.
-2. Odwołane zajęcia: **tylko komunikaty DOS** (bez Teams). Adres sekcji DOS bierz z bazy (`nauka_roczniki_lista()` → `wydzial.dos_url`, v31/v46), nie wpisuj go na stałe w `dziekanat.mjs`.
+2. Odwołane zajęcia: **tylko komunikaty DOS** (bez Teams). Adres sekcji DOS bierz z bazy (`nauka_roczniki_lista()` → `wydzial.dos_url`, v31/v46), nie wpisuj go na stałe w `dziekanat.mjs`. Gdy rocznik ma zajęcia w innym budynku niż reszta wydziału (FiR: Mickiewicza 64), wpisz w pliku kierunku `"dos": "https://dos.usz.edu.pl/<budynek>/zajecia-<budynek>/"`; skrypt przekaże go do konfiguracji planu.
 3. Strona planu: wybór kierunku na plan.skrotbm.pl (kierunek → rok → grupa), adres planu do wysłania na grupę roku. Grzeczność wobec uczelni jak dziś (≤ 1 zapytanie/s, pełne pobranie tylko przy zmianie, walidacja przed publikacją).
 4. Test: plan wygląda jak u BM, grupy i laby się zgadzają z systemem uczelni.
 

@@ -44,9 +44,11 @@ test("każdy plik kierunku: rocznik.js, SQL, test SQL i kolejka PGlite są aktua
 
 test("wstawienie do rocznik.js: dokładnie jedno miejsce, drugi raz nic nie zmienia, wynik da się wczytać", async () => {
   const { wczytaj, wstawDoRocznika } = await K();
-  const k = { ...wczytaj(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json")) };
-  // rocznik.js bez wpisu Zarządzania (jak przed pierwszym uruchomieniem)
+  // ostatni wpis ze skryptu (nowy kierunek trafia na koniec), np. FiR po Zarządzaniu
   const src = czytaj("rocznik.js");
+  const ostatni = [...src.matchAll(/\/\/ KIERUNEK-START (\S+)/g)].pop()[1];
+  const k = { ...wczytaj(path.join(ROOT, `kierunki/${ostatni}.json`)) };
+  // rocznik.js bez tego wpisu (jak przed pierwszym uruchomieniem)
   const a = src.indexOf("    // KIERUNEK-START " + k.id), b = src.indexOf("// KIERUNEK-KONIEC " + k.id);
   const przed = a >= 0 ? src.slice(0, a - 1) + src.slice(b + ("// KIERUNEK-KONIEC " + k.id).length) : src;
   const Rprzed = { ...R, ROCZNIKI: { [BM]: R.ROCZNIKI[BM] } };
@@ -72,6 +74,22 @@ test("rocznik Zarządzania: plan per rocznik, bez Teams i zasad BM, teksty i opi
   assert.strictEqual(z.teksty.opis.pl, "Zarządzanie · 1. rok");
 });
 
+test("rocznik FiR: ten sam skrypt bez zmian w kodzie, 4 grupy M120–M123, v48, własna sekcja DOS (Mickiewicza 64)", async () => {
+  const { wczytaj, numerSql, konfiguracjaPlanu } = await K();
+  const z = R.zbuduj("wefiz-fir-1-st-2026", new Date(2026, 10, 8));
+  assert.strictEqual(z.plan.json, "https://plan.skrotbm.pl/plan/wefiz-fir-1-st-2026.json");
+  assert.strictEqual(z.plan.strona, "https://plan.skrotbm.pl/?k=fir26");
+  assert.deepStrictEqual(z.grupy, ["M120", "M121", "M122", "M123"]);
+  assert.strictEqual(z.teams, false);
+  assert.strictEqual(z.zasadyZaliczen, false);
+  assert.strictEqual(z.teksty.opis.pl, "Finanse i Rachunkowość · 1. rok");
+  const k = wczytaj(path.join(ROOT, "kierunki/wefiz-fir-1-st-2026.json"));
+  assert.strictEqual(numerSql(k), 48, "kolejny numer po Zarządzaniu (v47)");
+  assert.strictEqual(konfiguracjaPlanu(k, R).dos, "https://dos.usz.edu.pl/mickiewicza/zajecia-mickiewicza/");
+  const zarz = wczytaj(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json"));
+  assert.ok(!("dos" in konfiguracjaPlanu(zarz, R)), "bez pola dos: adres sekcji wydziału z bazy");
+});
+
 test("zły plik kierunku zatrzymuje skrypt, zanim cokolwiek zapisze", async () => {
   const { wczytaj, sprawdzPlik } = await K();
   const k = wczytaj(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json"));
@@ -82,6 +100,7 @@ test("zły plik kierunku zatrzymuje skrypt, zanim cokolwiek zapisze", async () =
   assert.throws(zly({ plan: { ...k.plan, plik: "plan.json" } }), /plan\.plik/);
   assert.throws(zly({ role: { prawne: ["nie-ma"] } }), /nie-ma/);
   assert.throws(zly({ role: { inne: [] } }), /nieznana rola/);
+  assert.throws(zly({ dos: "dos.usz.edu.pl/mickiewicza" }), /dos/);
 });
 
 test("SQL: wydział sprawdzony, status rocznika tylko w górę (plan → oczekujacy → platny)", async () => {

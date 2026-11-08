@@ -1,0 +1,33 @@
+{
+  "id": "wefiz-fir-1-st-2026",
+  "kierunek_id": "wefiz-fir-1-st",
+  "prefiks": "fir26",
+  "wydzial": "WEFiZ",
+  "kierunek": { "kod": "FIR", "pl": "Finanse i Rachunkowość", "en": "Finance and Accounting" },
+  "stopien": 1, "tryb": "st", "nabor": 2026, "jezykZajec": "pl",
+  "plan": { "systemNazwa": "Finanse i Rachunkowość (FiR)", "rok": "1 rokI", "plik": "plan/wefiz-fir-1-st-2026.json" },
+  "grupy": ["M120", "M121", "M122", "M123"],
+  "sylabus": {
+    "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_finanse_i_rachunkowosc_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_finanse_i_rachunkowosc_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "plik": "sylabus-fir.json"
+  },
+  "teams": false,
+  "dos": "https://dos.usz.edu.pl/mickiewicza/zajecia-mickiewicza/",
+  "status": "oczekujacy",
+  "przedmioty": {
+    "podstawy-zarzadzania":            { "bank": ["podstawy-zarzadzania"], "bm": ["podstawy-zarzadzania"], "koszyk": "K1" },
+    "podstawy-finansow":               { "bank": ["podstawy-finansow"], "bm": ["podstawy-finansow"], "koszyk": "K1" },
+    "podstawy-prawa":                  { "bank": ["podstawy-prawa"], "bm": ["prawo"], "koszyk": "K1" },
+    "matematyka":                      { "bank": ["matematyka"], "bm": ["analiza-matematyczna"], "koszyk": "K1+K2" },
+    "makroekonomia":                   { "bank": ["podstawy-ekonomii"], "bm": ["makroekonomia"], "koszyk": "K2" },
+    "ochrona-wlasnosci-intelektualnej": { "bank": [], "bm": ["ochrona-wlasnosci-intelektualnej"], "koszyk": "K2" },
+    "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci": { "bank": ["technologie-informacyjne"], "bm": ["narzedzia-it-w-zarzadzaniu"], "koszyk": "K2+K3" },
+    "podstawy-rachunkowosci":          { "bank": [], "bm": [], "koszyk": "K3" }
+  },
+  "role": {
+    "prawne": ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"],
+    "rachunkowe": ["matematyka", "makroekonomia", "podstawy-finansow", "podstawy-rachunkowosci", "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci"],
+    "jeszczeProsciej": ["matematyka", "podstawy-rachunkowosci"]
+  }
+}

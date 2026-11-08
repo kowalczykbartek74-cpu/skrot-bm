@@ -70,6 +70,22 @@
       przedmioty: { prawne: ["podstawy-prawa"], rachunkowe: ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], jeszczeProsciej: ["matematyka"] },
     },
     // KIERUNEK-KONIEC wefiz-zarz-1-st-2026
+    // KIERUNEK-START wefiz-fir-1-st-2026 (scripts/kierunek.mjs z kierunki/wefiz-fir-1-st-2026.json; nie edytuj ręcznie: popraw plik kierunku i uruchom skrypt)
+    "wefiz-fir-1-st-2026": {
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "FIR", pl: "Finanse i Rachunkowość", en: "Finance and Accounting" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.skrotbm.pl/plan/wefiz-fir-1-st-2026.json", strona: "https://plan.skrotbm.pl/?k=fir26", skrzynka: null },
+      sylabus: { plik: null, pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_finanse_i_rachunkowosc_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["M120", "M121", "M122", "M123"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"], rachunkowe: ["matematyka", "makroekonomia", "podstawy-finansow", "podstawy-rachunkowosci", "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci"], jeszczeProsciej: ["matematyka", "podstawy-rachunkowosci"] },
+    },
+    // KIERUNEK-KONIEC wefiz-fir-1-st-2026
   };
   var DOMYSLNY = "wefiz-bm-1-st-2026";
   var KLUCZ_EDYCJA = "skrot-admin-rocznik"; // localStorage: rocznik edytowany przez administratora
