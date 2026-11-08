@@ -305,6 +305,8 @@ function sql() {
     if (bl.length) { pominiete.push(`${l.nr} (kontrola bez AI: ${bl[0]})`); continue; }
     if (k[l.nr] && !k[l.nr].ok && !args.includes("--z-uwagami")) { pominiete.push(`${l.nr} (kontrola AI: do poprawy)`); continue; }
     const L = { v2: true, ...x.lesson };
+    // Format v4 (lekcje-walidator.py): przy poprawnej odpowiedzi not[correct] = null, a nie pusty tekst (konwencja v3 z promptu).
+    for (const q of [...(L.sections || []).map((s) => s.check), ...(L.exit || []), ...(L.prereq || [])]) if (q && Array.isArray(q.not) && q.correct in q.not) q.not[q.correct] = null;
     const content = { v: 2, tldr: x.tldr, concepts: x.concepts.map((c) => ({ term: c.term, en: c.en, definition: c.definition })), flashcards: x.flashcards,
       quiz: x.quiz.map((q) => ({ q: q.q, options: q.options, correct: q.correct, explanation: q.explanation })), lesson: L };
     const material = { kind: "lesson", v: 2, source: "sylabus", subjectId: plan.sid, title: x.tytul || l.tytul, order: l.nr, sylRef: `wykład, temat ${l.nr}`, lang: rok.jezykZajec,
