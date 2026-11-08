@@ -2,7 +2,7 @@
    Bez DOM i bez bazy: dostaje wiersze nauka_docs wszystkich roczników (skrot-supabase.js → skrot.panelKierunkow.wczytaj,
    reguła „nauka czytaj” z v44 daje administratorowi wszystkie roczniki) i liczy z nich to, co rysuje index.html (viewKierunkiPanel).
    Wiersz: { id, rocznik_id, data? }. Wiersz bez rocznika (rocznik_id null) widzą wszystkie roczniki, tak jak w makeDb.
-   index.html bierze to z window.SKROT_PANEL_KIERUNKOW, testy z require("./kierunki-panel.js"). Testy: node --test tests/*.test.js */
+   index.html bierze to z window.SKROT_PANEL_KIERUNKOW, testy z require("./panel-kierunkow.js"). Testy: node --test tests/*.test.js */
 (function (root, factory) {
   var api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;

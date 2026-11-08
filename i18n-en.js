@@ -19,6 +19,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Teraz edytujesz": "Editing now",
 "Wróć do BM": "Back to BM",
 "Panel kierunków": "Programmes panel",
+"Panel nie wczytał się do końca. Odśwież stronę.": "The panel didn't fully load. Refresh the page.",
 "Wszystkie kierunki w jednym miejscu: materiały, lekcje, terminy i ogłoszenia. Przełączasz się między nimi bez wylogowania.": "All programmes in one place: materials, lessons, deadlines and announcements. You switch between them without logging out.",
 "podgląd i edycja wszystkich kierunków, bez wylogowania": "preview and edit every programme, without logging out",
 "Panel potrzebuje SQL v44 (rocznik przy treściach).": "The panel needs SQL v44 (cohort on content).",

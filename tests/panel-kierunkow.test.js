@@ -1,7 +1,7 @@
-// Testy kierunki-panel.js (Panel kierunków administratora): node --test tests/*.test.js
+// Testy panel-kierunkow.js (Panel kierunków administratora): node --test tests/*.test.js
 const test = require("node:test");
 const assert = require("node:assert");
-const P = require("../kierunki-panel.js");
+const P = require("../panel-kierunkow.js");
 
 const BM = "wefiz-bm-1-st-2026", ZARZ = "wefiz-zarz-1-st-2026";
 const D = {
@@ -99,4 +99,17 @@ test("adres po przełączeniu", () => {
 
 test("roczniki z danych", () => {
   assert.deepStrictEqual(P.rocznikiZDanych(D), [BM, ZARZ]);
+});
+
+// GitHub Pages (Jekyll) pomija wpisy z _config.yml → exclude, a także każdy plik, którego ścieżka ZACZYNA SIĘ od wpisu
+// (EntryFilter: start_with?). 8.11.2026 „kierunki-panel.js” nie trafił na stronę przez wpis „kierunki”.
+test("każdy lokalny skrypt i plik z index.html jest publikowany (nie wpada w exclude z _config.yml)", () => {
+  const fs = require("fs"), path = require("path");
+  const root = path.join(__dirname, "..");
+  const ex = fs.readFileSync(path.join(root, "_config.yml"), "utf8").split("\n").map((l) => (/^\s*-\s*(\S+)/.exec(l) || [])[1]).filter(Boolean);
+  const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+  const pliki = [...html.matchAll(/<script src="([^"?:]+)(?:\?[^"]*)?"/g)].map((m) => m[1]);
+  assert.ok(pliki.includes("panel-kierunkow.js"));
+  const zle = pliki.filter((f) => ex.some((e) => f.startsWith(e)));
+  assert.deepStrictEqual(zle, []);
 });

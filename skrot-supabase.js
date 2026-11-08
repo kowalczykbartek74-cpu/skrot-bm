@@ -131,7 +131,7 @@
   skrot.rocznikiLista = async () => { await ready; const { data, error } = await sb.rpc("nauka_roczniki_lista"); return error || !Array.isArray(data) ? null : data; };
   // ---------- Panel kierunków (tylko administrator): treści wszystkich roczników bez przełączania strony ----------
   // Reguła odczytu z v44 daje administratorowi wiersze każdego rocznika, więc pytamy bez filtra rocznika (same odczyty,
-  // działa też w „Podglądzie jako”). Liczenie: kierunki-panel.js. Treść materiałów dopiero po kliknięciu „Podgląd”.
+  // działa też w „Podglądzie jako”). Liczenie: panel-kierunkow.js. Treść materiałów dopiero po kliknięciu „Podgląd”.
   skrot.panelKierunkow = {
     async wczytaj() {
       await ready;
