@@ -1,6 +1,6 @@
 # System dodawania kierunków: 10 optymalizacji (8.11.2026)
 
-Gałąź `kierunki/system` w **skrot-bm** (6 commitów) i w **plan-bm** (1 commit), od `main` z 8.11. Nic nie jest scalone ani uruchomione na produkcji.
+Gałąź `kierunki-system` w **skrot-bm** (6 commitów) i w **plan-bm** (1 commit), od `main` z 8.11. Nic nie jest scalone ani uruchomione na produkcji.
 Koszt API: 0 zł (nic nie poszło do modelu).
 
 ## Przebieg nowego kierunku po zmianach
@@ -53,8 +53,8 @@ Zostawione świadomie: przy dwóch plikach z tą samą lekcją „Prościej”/�
 
 ## Co kliknąć (kolejność)
 
-1. **Supabase → SQL Editor:** `supabase/skrot-v49-roczniki-dane.sql` z github.com („Copy raw file”, gałąź `kierunki/system`) → Run. Na dole lista roczników.
-2. **Scal `kierunki/system` do `main`** w skrot-bm i w plan-bm (albo powiedz Claude Code „scal”). Strona: tylko nowa sekcja w Panelu kierunków i wiele plików w Paczce lekcji; BM bez zmian.
+1. **Supabase → SQL Editor:** `supabase/skrot-v49-roczniki-dane.sql` z github.com („Copy raw file”, gałąź `kierunki-system`) → Run. Na dole lista roczników.
+2. **Scal `kierunki-system` do `main`** w skrot-bm i w plan-bm (albo powiedz Claude Code „scal”). Strona: tylko nowa sekcja w Panelu kierunków i wiele plików w Paczce lekcji; BM bez zmian.
 3. Panel kierunków → Baza: „Wszystkie roczniki ze strony są w bazie” (Zarządzanie i FiR mają już v47/v48).
 
 ## Do Twojej decyzji
