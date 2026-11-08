@@ -13,7 +13,7 @@ K2: model dostaje WYŁĄCZNIE listę tekstów lekcji (ścieżka → tekst EN) i 
   Porównanie ze źródłem (spec 4.4 pkt 2) sprawdza to jeszcze raz i dodatkowo liczby w tekstach.
 Nic nie zapisuje do bazy. Wynik: scratch/<prefiks>/paczki/<id>.json (format eksportu + rocznik_id + zrodlo), koszt w k2-usage.json.
 """
-import argparse, copy, json, os, re, sys
+import argparse, copy, json, math, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
@@ -61,15 +61,51 @@ MAPA_P = os.path.join(OUT, "mapa.json")
 MAPA = json.load(open(MAPA_P)) if os.path.exists(MAPA_P) else []
 
 
+BM_SYL = {c["id"]: c for c in json.load(open(os.path.join(ROOT, "sylabus.json")))["courses"]}
+STOP_EN = {"and", "the", "of", "in", "its", "their", "for", "with", "basic", "chosen", "different", "definition", "properties", "process", "essence", "role", "incl"}
+
+
+def rdzenie_en(t):
+    return {w[:6] for w in re.findall(r"[a-z]+", t.lower()) if len(w) >= 4 and w not in STOP_EN}
+
+
+def lekcje_tematu(zr):
+    """„bm-syl:<przedmiot>:<forma>:<n>” (mapa zrobiona na tematach sylabusa BM, bez eksportu) → lekcje tego przedmiotu BM
+    o najbardziej podobnym tytule (wspólne rdzenie słów EN ważone rzadkością; co najmniej 1/3 tematu). Pusto = brak pewnej lekcji."""
+    try:
+        _, sid, forma, n = zr.split(":")
+        n = int(n)
+    except ValueError:
+        return []
+    tem = [t["t"] for f, l in BM_SYL.get(sid, {}).get("topics", {}).items() for t in l]
+    if not 0 < n <= len(tem):
+        return []
+    les = [(i, d.get("title", "")) for i, d in BM.items() if d.get("subjectId") == sid]
+    df = {}
+    for _, t in les:
+        for r in rdzenie_en(t):
+            df[r] = df.get(r, 0) + 1
+    w = lambda r: math.log(1 + len(les) / df.get(r, 1))
+    rt = rdzenie_en(tem[n - 1])
+    if not rt:
+        return []
+    wyn = sorted(((sum(w(r) for r in rt & rdzenie_en(t)) / sum(w(r) for r in rt), i) for i, t in les), reverse=True)
+    if not wyn or wyn[0][0] < 1 / 3:
+        return []
+    return [i for sc, i in wyn if sc >= max(1 / 3, wyn[0][0] * 0.75)][:3]
+
+
 def przypisania():
-    """id lekcji BM → (przedmiot kierunku, [tematy sylabusa]) z mapy; źródło „bm:<przedmiot>” (mapa tymczasowa) = wszystkie jego lekcje."""
+    """id lekcji BM → (przedmiot kierunku, [tematy sylabusa]) z mapy; źródło „bm:<przedmiot>” (mapa tymczasowa) = wszystkie jego lekcje,
+    „bm-syl:…” = lekcje dopasowane do tematu sylabusa BM (lekcje_tematu)."""
     out = {}
     for m in MAPA:
         for t in m["tematy"]:
             if t.get("koszyk") not in ("K1", "K2"):
                 continue
             for z in t.get("zrodlo") or []:
-                ids = [i for i, d in BM.items() if d.get("subjectId") == z[3:]] if z.startswith("bm:") else ([z] if z in BM else [])
+                ids = ([i for i, d in BM.items() if d.get("subjectId") == z[3:]] if z.startswith("bm:")
+                       else lekcje_tematu(z) if z.startswith("bm-syl:") else ([z] if z in BM else []))
                 for i in ids:
                     p, tem = out.setdefault(i, (m["przedmiot"], []))
                     if t["temat"] not in tem:

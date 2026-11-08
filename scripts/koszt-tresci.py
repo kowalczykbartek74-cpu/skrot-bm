@@ -71,6 +71,11 @@ for f in glob.glob(os.path.join(a.lekcje, "*.json")):
         pass
 
 
+if EKSPORT:   # prawdziwy rozmiar lekcji BM zamiast wzorca z testów
+    WZ_TEKST = sum(znaki_tekstow(d["content"]) for d in EKSPORT.values()) // len(EKSPORT)
+    WZ_CALOSC = sum(len(json.dumps(d["content"], ensure_ascii=False)) for d in EKSPORT.values()) // len(EKSPORT)
+
+
 def koszt_k2(n_lekcji, ids):
     if ids:
         zn = [znaki_tekstow(EKSPORT[i]["content"]) for i in ids]
@@ -119,7 +124,7 @@ for kp in a.kierunki:
 if a.json:
     sys.exit(print(json.dumps(wyniki, ensure_ascii=False, indent=1)))
 
-zrodlo = f"eksport lekcji BM ({len(EKSPORT)})" if EKSPORT else f"bez eksportu: ~{NA_TEMAT:.2f} lekcji na temat, teksty jak w lekcji wzorcowej"
+zrodlo = f"rozmiar ze średniej {len(EKSPORT)} lekcji BM z eksportu, ~{NA_TEMAT:.2f} lekcji na temat" if EKSPORT else f"bez eksportu: ~{NA_TEMAT:.2f} lekcji na temat, teksty jak w lekcji wzorcowej"
 print(f"Na sucho, Batch −50%, cache. K2: {a.model_k2}, K3: {a.model_k3} + kontrola {a.model_kontroli}. Lekcje K2: {zrodlo}.")
 for w in wyniki:
     print(f"\n{w['kierunek']} ({w['rocznik']}){' – MAPA TYMCZASOWA' if w['tymczasowa'] else ''}")
