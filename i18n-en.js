@@ -763,6 +763,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wyjaśnione prostym językiem, po polsku i po angielsku": "Explained in plain language, in Polish and English",
 "Krok 1 z 3": "Step 1 of 3",
 "Krok 2 z 3": "Step 2 of 3",
+"Krok 3 z 3": "Step 3 of 3",
 "Na jakim kierunku studiujesz?": "What's your programme?",
 "Dostępne": "Available",
 "Pokażemy Ci przedmioty, plan i terminy Twojego roku. Kierunek wybierasz raz.": "We'll show you your year's subjects, timetable and deadlines. You only choose once.",
