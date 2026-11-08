@@ -29,10 +29,10 @@
       nabor: 2026,         // rok, w którym rocznik zaczął 1. rok
       jezykZajec: "en",    // w jakim języku są zajęcia (treści EN, „Prościej · PL” po polsku)
       plan: {
-        json: "https://plan.skrotbm.pl/plan.json",      // plan zajęć grup, kalendarz roku, odwołane zajęcia (repo plan-bm)
-        // Inne roczniki: https://plan.skrotbm.pl/plan/<id rocznika>.json (ten sam host = CSP bez zmian; w bazie nauka_roczniki.plan_url, v46).
-        strona: "https://plan.skrotbm.pl/",             // darmowa strona z planem
-        skrzynka: "https://plan.skrotbm.pl/skrzynka.html", // skrzynka do opiekunki roku (null = rocznik nie ma skrzynki)
+        json: "https://plan.zdawalni.pl/plan.json",      // plan zajęć grup, kalendarz roku, odwołane zajęcia (repo plan-bm)
+        // Inne roczniki: https://plan.zdawalni.pl/plan/<id rocznika>.json (do 11.2026 plan.skrotbm.pl) (ten sam host = CSP bez zmian; w bazie nauka_roczniki.plan_url, v46).
+        strona: "https://plan.zdawalni.pl/",             // darmowa strona z planem
+        skrzynka: "https://plan.zdawalni.pl/skrzynka.html", // skrzynka do opiekunki roku (null = rocznik nie ma skrzynki)
       },
       sylabus: {
         plik: "sylabus.json",            // z PDF-u sylabusa (scripts/sylabus-*.py); null = brak sylabusa w aplikacji

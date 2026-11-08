@@ -10,7 +10,7 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const SITE = "https://zdawalni.pl";
-const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://plan.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
+const ORIGINS = ["https://zdawalni.pl", "https://www.zdawalni.pl", "https://skrotbm.pl", "https://www.skrotbm.pl", "https://plan.zdawalni.pl", "https://plan.skrotbm.pl", "https://kowalczykbartek74-cpu.github.io"];
 const ZGODA_WERSJA = "2026-11-05";
 const OK_MSG = "Sprawdź skrzynkę: wysłaliśmy link do potwierdzenia zapisu. Jeśli maila nie ma, zajrzyj do spamu.";
 

@@ -1,16 +1,21 @@
 // Funkcja „kalendarz” dla Skrót BM: osobisty plik kalendarza (.ics) pod tajnym linkiem.
 //   GET /functions/v1/kalendarz?t=TOKEN
-// Zawiera zajęcia grupy wybranej w aplikacji (plan z plan.skrotbm.pl, z odwołaniami), zaliczenia i zadania z bazy,
+// Zawiera zajęcia grupy wybranej w aplikacji (plan z plan.zdawalni.pl, z odwołaniami), zaliczenia i zadania z bazy,
 // a od SQL v27 także własne wpisy („✏️ Mój wpis”), własne daty zaliczeń („📅 Twoja data”) i dni planu nauki („📘 Plan”).
 // Google, Apple i Outlook subskrybują ten link i same pobierają nowszą wersję.
 // Wdrażanie: npx supabase functions deploy kalendarz --no-verify-jwt
 // (kalendarze w telefonach nie wysyłają tokenu Supabase; chroni tajny token w linku).
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const PLAN_URL = "https://plan.skrotbm.pl/plan.json";
-// Plan rocznika osoby (SQL v46: nauka_kalendarz_dane → plan_url, np. https://plan.skrotbm.pl/plan/<rocznik>.json). Tylko z hosta
+const PLAN_HOST = "https://plan.zdawalni.pl/";
+const PLAN_URL = PLAN_HOST + "plan.json";
+// Plan rocznika osoby (SQL v46: nauka_kalendarz_dane → plan_url, np. https://plan.zdawalni.pl/plan/<rocznik>.json). Tylko z hosta
 // planów (ten sam co w CSP strony); brak albo inny adres → plan BM, czyli tak jak dotąd. UID-y wydarzeń bez zmian.
-const planUrl = (u: unknown) => (typeof u === "string" && /^https:\/\/plan\.skrotbm\.pl\/[a-z0-9/._-]+\.json$/.test(u) ? u : PLAN_URL);
+// Stary host plan.skrotbm.pl (wiersze sprzed SQL v50) → ten sam plik na plan.zdawalni.pl, gdzie są świeże dane.
+const planUrl = (u: unknown) => {
+  const m = typeof u === "string" ? u.match(/^https:\/\/plan\.(?:zdawalni|skrotbm)\.pl\/([a-z0-9/._-]+\.json)$/) : null;
+  return m ? PLAN_HOST + m[1] : PLAN_URL;
+};
 const APP = "https://zdawalni.pl"; // UID-y wydarzeń zostają @skrotbm.pl, żeby kalendarze w telefonach nie zdublowały wpisów
 const SLOTS = [["8:15","9:45"],["10:00","11:30"],["12:00","13:30"],["13:45","15:15"],["15:30","17:00"],["17:15","18:45"],["19:00","20:30"]];
 const KIND: Record<string, string> = { W: "wykład", CW: "ćwiczenia", LAB: "laboratorium", K: "konwersatorium", S: "seminarium" };
