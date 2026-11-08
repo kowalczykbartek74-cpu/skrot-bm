@@ -87,3 +87,36 @@ test("bez eksportu BM: czytelny komunikat zamiast pustych paczek", () => {
   assert.strictEqual(r.status, 1);
   assert.match(r.stderr.toString(), /Brak eksportu lekcji BM/);
 });
+
+test("K2: do tłumaczenia idą też answer (poza gen) i podpisy diagramów; wzór gen.answer zostaje", () => {
+  const d = srodowisko(MAPA_TYMCZ);
+  const z = JSON.parse(fs.readFileSync(path.join(d, "lessons", lekcja.id + ".json"), "utf8"));
+  z.content.lesson.exercises = [{ task: "Compute it.", answer: "The answer is 5, because the rate is 2%." }];
+  z.content.lesson.sections[0].visual = { type: "flow", title: "The planning cycle", steps: ["Set a goal", "Make a plan"], note: "Read it from left to right." };
+  fs.writeFileSync(path.join(d, "lessons", lekcja.id + ".json"), JSON.stringify(z));
+  const r = uruchom(d, "k2", "--na-sucho");
+  assert.strictEqual(r.status, 0, r.stderr.toString());
+  const c = JSON.parse(JSON.parse(fs.readFileSync(path.join(d, "out/k2-zapytania.jsonl"), "utf8").trim()).params.messages[0].content);
+  const p = c.teksty.map((x) => x.p);
+  assert.ok(p.includes("lesson.exercises[0].answer"), p.join(" "));
+  assert.ok(["title", "steps[0]", "steps[1]", "note"].every((k) => p.includes("lesson.sections[0].visual." + k)), p.join(" "));
+  assert.ok(!p.includes("lesson.gen[0].answer"), "wzór w gen zostaje");
+  assert.ok(!p.some((x) => /visual\.type/.test(x)), "typ diagramu zostaje");
+});
+
+test("uzupelnij: wysyła tylko pola nadal po angielsku, nic nie wysyła bez --wyslij", () => {
+  const d = srodowisko(MAPA_TYMCZ);
+  const z = JSON.parse(fs.readFileSync(path.join(d, "lessons", lekcja.id + ".json"), "utf8"));
+  z.content.lesson.exercises = [{ task: "Compute it.", answer: "The answer is 5, because the rate is 2%." }];
+  fs.writeFileSync(path.join(d, "lessons", lekcja.id + ".json"), JSON.stringify(z));
+  assert.strictEqual(uruchom(d, "k1").status, 0);
+  const plik = path.join(d, "out/paczki/zarz26-pz-01-test.json");
+  const k = JSON.parse(fs.readFileSync(plik, "utf8"));
+  k.k2 = "gotowe"; k.content.lesson.sections[0].body = "**Planowanie** jest pierwsze."; // reszta przetłumaczona, answer nadal EN
+  fs.writeFileSync(plik, JSON.stringify(k));
+  const r = uruchom(d, "uzupelnij", "--na-sucho");
+  assert.strictEqual(r.status, 0, r.stderr.toString());
+  assert.match(r.stdout.toString(), /1 pól w 1 lekcjach/);
+  const c = JSON.parse(JSON.parse(fs.readFileSync(path.join(d, "out/k2u-zapytania.jsonl"), "utf8").trim()).params.messages[0].content);
+  assert.deepStrictEqual(c.teksty.map((x) => x.p), ["lesson.exercises[0].answer"]);
+});

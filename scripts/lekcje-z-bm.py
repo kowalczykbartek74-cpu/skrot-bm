@@ -20,7 +20,7 @@ import argparse, copy, json, math, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
 ap.add_argument("kierunek")
-ap.add_argument("krok", choices=["k1", "k2", "porownaj", "tytuly", "sylref"])
+ap.add_argument("krok", choices=["k1", "k2", "porownaj", "tytuly", "sylref", "napraw", "uzupelnij"])
 ap.add_argument("--na-sucho", action="store_true")
 ap.add_argument("--wyslij", action="store_true")
 ap.add_argument("--odbierz", action="store_true")
@@ -42,6 +42,13 @@ os.makedirs(PACZKI, exist_ok=True)
 
 # Pola, które nie są tekstem do tłumaczenia (zostają 1:1). simple/pl są już po polsku.
 NIE_TEKST = {"id", "correct", "calc", "vars", "answer", "unit", "tol", "type", "sec", "conf", "simple", "pl", "img", "viz", "visual", "chart", "order", "level"}
+# „answer” poza szablonami gen to proza dla studenta (odpowiedź ćwiczenia, przykładu, transferu), „visual” to podpisy diagramów
+# (tytuł, notka, komórki tabel, kroki, etykiety wykresów): tłumaczymy. W gen „answer” jest wzorem, zostaje.
+STALE = NIE_TEKST - {"answer", "visual"}
+
+
+def pomin(k, sciezka):
+    return k in STALE or (k == "answer" and ".gen[" in sciezka + ".")
 
 
 def wczytaj_bm():
@@ -143,7 +150,7 @@ def teksty(x, sciezka=""):
     out = []
     if isinstance(x, dict):
         for k, v in x.items():
-            if k in NIE_TEKST:
+            if pomin(k, sciezka):
                 continue
             out += teksty(v, f"{sciezka}.{k}" if sciezka else k)
     elif isinstance(x, list):
@@ -173,45 +180,122 @@ def k1_dokument(bm, przedmiot):
             "content": copy.deepcopy(bm["content"])}
 
 
+TYS_EN = re.compile(r"(?<![\d,.])\d{1,3}(?:,\d{3})+(?![\d])")
+
+
+def tys_pewne(tok):
+    """Czy „1,800” w źródle EN to na pewno tysiące (a nie ułamek z przecinkiem dziesiętnym, którego BM też używa: „0,015”, „1,029”)?
+    Tak, gdy część całkowita nie zaczyna się od 0 oraz (ma ≥ 2 cyfry albo każda grupa kończy się na 00/50: „1,800”, „2,000”, „1,250”).
+    Reszta zostaje bez zmian (i bez nich kontrola liczb zgłosi różnicę do przeglądu)."""
+    cz = tok.split(",")
+    if cz[0].startswith("0"):
+        return False
+    return len(cz[0]) >= 2 or all(g.endswith(("00", "50")) for g in cz[1:])
+
+
+def napraw_tysiace(en, pl):
+    """EN „1,800” przepisane bez zmian w PL czyta się po polsku jako 1,8. Zamienia taki zapis (tylko gdy ten sam napis jest w źródle EN
+    i tys_pewne) na „1 800” (spacja nierozdzielająca). Deterministycznie, bez modelu."""
+    for tok in sorted({t for t in TYS_EN.findall(en or "") if tys_pewne(t)}, key=len, reverse=True):
+        if tok in (pl or ""):
+            pl = re.sub(r"(?<![\d,.])" + re.escape(tok) + r"(?![\d])", lambda m: m.group(0).replace(",", "\u00a0"), pl)
+    return pl
+
+
+def napraw_lekcje(src, d):
+    """Naprawia liczby z przecinkiem tysięcy we wszystkich tekstach PL lekcji d względem źródła EN; zwraca liczbę poprawionych tekstów."""
+    en = dict(teksty(src["content"]))
+    n = 0
+    for pth, t in teksty(d["content"]):
+        if pth in en:
+            nowy = napraw_tysiace(en[pth], t)
+            if nowy != t:
+                ustaw(d["content"], pth, nowy); n += 1
+    return n
+
+
 LICZBY = re.compile(r"g\d{4}|-?\d+(?:[.,]\d+)?")
 
 
 def liczby(s, jezyk="pl"):
-    """Liczby z tekstu w jednej postaci: bez separatorów tysięcy (EN „1,200”, PL „1 200”/„1 200”), przecinek dziesiętny PL → kropka."""
+    """Liczby z tekstu w jednej postaci: bez separatorów tysięcy (EN „1,200”, każda spacja między cyframi: PL „1 200”, EN „20 000”),
+    przecinek dziesiętny → kropka, godziny HH:MM (EN „5 p.m.” = PL „17:00”)."""
     s = s or ""
-    # godziny w jednej postaci HH:MM (EN „5 p.m.” = PL „17:00”), żeby lokalizacja godziny nie była różnicą liczb
+    # LaTeX: „1\,157{,}63” = 1157,63 (przecinek w klamrach, wąska spacja)
+    s = re.sub(r"(?<=\d)\\[,;! ](?=\d)", " ", s)
+    s = re.sub(r"(?<=\d)\{,\}(?=\d)", ",", s)
     def godz(h, m, pm):
         h = int(h) % 12 + (12 if pm else 0) if pm is not None else int(h)
         return f" g{h:02d}{m or '00'} "
     if jezyk == "en":
         s = re.sub(r"\b(\d{1,2})(?::(\d{2}))?\s?([ap])\.?m\.?(?![a-z])", lambda x: godz(x[1], x[2], x[3].lower() == "p"), s, flags=re.I)
     s = re.sub(r"\b(\d{1,2}):(\d{2})\b", lambda x: godz(x[1], x[2], None), s)
-    if jezyk == "en":
-        s = re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", s)
-    else:
-        s = re.sub(r"(?<=\d)[ \u00a0\u202f](?=\d{3}(?!\d))", "", s)
-        s = re.sub(r"(?<=\d),(?=\d)", ".", s)
+    s = re.sub(r"(?<=[A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ])[-\u2010-\u2015](?=\d)", "|", s)   # „year-1” to nie liczba ujemna
+    s = re.sub(r"(?<=\d)[-\u2010-\u2015](?=\d)", "|", s)   # zakres „5-10” / „5–10” (bez spacji) to dwie liczby, nie liczba ujemna
+    s = re.sub(r"(?<=\d)[\s\u00a0\u2009\u202f](?=\d{3}(?!\d))", "", s)
+    if jezyk == "en":   # przecinek tysięcy tylko tam, gdzie to pewne (tys_pewne); „1,029” i „0,015” to ułamki, jak w polskim zapisie
+        s = TYS_EN.sub(lambda m: m.group(0).replace(",", "") if tys_pewne(m.group(0)) else m.group(0), s)
+    s = re.sub(r"(?<=\d),(?=\d)", ".", s)
     return sorted(str(float(x)) if re.fullmatch(r"-?\d+(\.\d+)?", x) else x for x in LICZBY.findall(s))
+
+
+MIEKKIE = []   # różnice niewiążące: liczba zastąpiona słowem/porządkową, do przeglądu
 
 
 def porownaj(zrodlo, nowa):
     """Spec 4.4 pkt 2: ta sama struktura, te same pola nie-tekstowe, te same liczby w tekstach. Zwraca listę różnic."""
     r = []
 
-    def szkielet(x):
+    def szkielet(x, p=""):
         if isinstance(x, dict):
-            return {k: (v if k in NIE_TEKST - {"simple", "pl"} else szkielet(v)) for k, v in x.items()}
+            return {k: (v if pomin(k, p) and k not in ("simple", "pl") else szkielet(v, f"{p}.{k}")) for k, v in x.items()}
         if isinstance(x, list):
-            return [szkielet(v) for v in x]
+            return [szkielet(v, p) for v in x]
         return "·" if isinstance(x, str) else x
 
     if szkielet(zrodlo["content"]) != szkielet(nowa["content"]):
         r.append("inna struktura albo inne pola nie-tekstowe (correct/calc/gen/id) niż w BM")
     nowe = dict(teksty(nowa["content"]))
     for p, t in teksty(zrodlo["content"]):
-        if p in nowe and liczby(t, "en") != liczby(nowe[p]):
-            r.append(f"{p}: liczby {liczby(t, 'en')} → {liczby(nowe[p])}")
-        if p in nowe and sorted(re.findall(r"\{\w+\}", t)) != sorted(re.findall(r"\{\w+\}", nowe[p])):
+        if p not in nowe:
+            continue
+        en_t = t
+        alt = []   # niepewne „1,336” w źródle: ułamek (1.336) albo tysiące (1336); model mógł wybrać którąkolwiek
+        def zbierz(m):
+            tok = m.group(0)
+            if tys_pewne(tok):
+                return tok
+            alt.append((str(float(tok.replace(",", "."))), str(float(tok.replace(",", "")))))
+            return " "
+        en_t = TYS_EN.sub(zbierz, en_t)
+        en_l, pl_l = liczby(en_t, "en"), liczby(nowe[p])
+        for dec, thou in alt:
+            for x in (dec, thou):
+                if x in pl_l:
+                    pl_l.remove(x)
+                    break
+            else:
+                en_l.append(dec)
+        if en_l != pl_l:
+            brak, nadmiar = list(en_l), []
+            for x in pl_l:
+                if x in brak:
+                    brak.remove(x)
+                else:
+                    nadmiar.append(x)
+            # dekady i wieki: EN „1950s”/„19th century” → PL „lata 50.”/„XIX wiek” (liczba skrócona do końcówki) nie jest zmianą wartości
+            def skrot(x):
+                try:
+                    v = float(x)
+                except ValueError:
+                    return False
+                return any(abs(float(b) % 100 - v) < 1e-9 or abs(float(b) % 1000 - v) < 1e-9 for b in brak if re.fullmatch(r"\d+\.0", b))
+            nadmiar = [x for x in nadmiar if not skrot(x)]
+            if nadmiar:
+                r.append(f"{p}: liczby {en_l} → {pl_l}")
+            else:
+                MIEKKIE.append(f"{p}: bez liczb {brak} (słownie/porządkowa?)")
+        if ".gen[" in p and sorted(re.findall(r"\{\w+\}", t)) != sorted(re.findall(r"\{\w+\}", nowe[p])):
             r.append(f"{p}: inne zmienne {{…}} niż w BM")
     return r
 
@@ -224,6 +308,8 @@ Dostajesz jedną część lekcji („czesc”); przetłumacz WSZYSTKIE jej tekst
 - Pytania i odpowiedzi: ta sama kolejność i ten sam sens; poprawna odpowiedź musi zostać poprawna, złe dalej złe, `not` dalej tłumaczy błąd.
 - Dostosuj słownictwo do polskich podręczników zarządzania i do tematów z sylabusa; przykłady firm zostaw albo zamień na równoważne polskie
   tylko wtedy, gdy nie zmienia to liczb ani odpowiedzi.
+- Liczby po polsku: separator tysięcy to spacja nierozdzielająca („1 800”, „2 000 mld zł”), przecinek dziesiętny to przecinek.
+  NIGDY nie zostawiaj angielskiego przecinka tysięcy („1,800”): po polsku to znaczy 1,8. W LaTeX-u: \\(1\\,800\\), \\(0{,}05\\).
 - Terminy fachowe po polsku; przy pierwszym użyciu kluczowego pojęcia możesz dodać angielski odpowiednik w nawiasie.
 - Pole `uwaga`: puste albo 1 zdanie, jeśli temat lekcji słabo pasuje do sylabusa Zarządzania."""
 
@@ -250,19 +336,20 @@ CZESC_TEKSTOW, CZESC_ZNAKOW = 60, 12000   # jedna odpowiedź modelu = jedna czę
 TYTUL = "@title"   # tytuł lekcji leży poza content; jedzie w pierwszej części jako zwykły tekst
 
 
-def czesci(bm_id):
-    """Teksty lekcji podzielone na części, które model odda w całości (tytuł na początku pierwszej)."""
+def czesci(bm_id, tylko=None):
+    """Teksty lekcji podzielone na części, które model odda w całości (tytuł na początku pierwszej).
+    tylko = zbiór ścieżek: tylko te teksty (krok „uzupelnij”), bez tytułu."""
     out, cur, zn = [], [], 0
-    tyt = [(TYTUL, BM[bm_id]["title"])] if BM[bm_id].get("title") else []
-    for p, t in tyt + teksty(BM[bm_id]["content"]):
+    tyt = [(TYTUL, BM[bm_id]["title"])] if BM[bm_id].get("title") and tylko is None else []
+    for p, t in tyt + [x for x in teksty(BM[bm_id]["content"]) if tylko is None or x[0] in tylko]:
         if cur and (len(cur) >= CZESC_TEKSTOW or zn + len(t) > CZESC_ZNAKOW):
             out.append(cur); cur, zn = [], 0
         cur.append((p, t)); zn += len(t)
     return out + ([cur] if cur else [])
 
 
-def zapytania_lekcji(bm_id, przedmiot, tematy):
-    cz = czesci(bm_id)
+def zapytania_lekcji(bm_id, przedmiot, tematy, tylko=None):
+    cz = czesci(bm_id, tylko)
     out = []
     for n, t in enumerate(cz):
         tresc = json.dumps({"lekcjaBM": BM[bm_id].get("title", ""), "przedmiotKierunku": przedmiot, "tematySylabusa": tematy,
@@ -291,6 +378,107 @@ if a.krok == "k1":
         json.dump(d, open(os.path.join(PACZKI, d["id"] + ".json"), "w"), ensure_ascii=False, indent=1)
     tymcz = " (mapa TYMCZASOWA: całe przedmioty BM)" if any(m.get("tymczasowa") for m in MAPA) else ""
     sys.exit(print(f"K1: {len(prz)} lekcji skopiowanych do {os.path.relpath(PACZKI, ROOT)}{tymcz}, 0 zł. Teksty EN czekają na K2."))
+
+ANG = {"the", "and", "of", "is", "are", "in", "for", "with", "that", "this", "which", "from", "by", "at", "be", "as", "it", "was", "were",
+       "has", "have", "its", "than", "then", "so", "if", "when", "not", "you", "your", "we", "our"}
+
+
+def po_angielsku(t):
+    """Tekst (bez LaTeX-u) z ≥ 2 angielskimi słowami funkcyjnymi: nie przetłumaczony."""
+    slowa = re.findall(r"[A-Za-z']+", re.sub(r"\\\(.*?\\\)|\\\[.*?\\\]", " ", t or "", flags=re.S))
+    return sum(w.lower() in ANG for w in slowa) >= 2
+
+
+def brakujace(src, d):
+    """Ścieżki tekstów, które w gotowej lekcji d są nadal identyczne ze źródłem EN i wyglądają na angielskie."""
+    pl = dict(teksty(d["content"]))
+    return {p for p, t in teksty(src["content"]) if pl.get(p) == t and len(t) > 12 and po_angielsku(t)}
+
+
+if a.krok == "uzupelnij":
+    # Domyka tłumaczenie pól pominiętych wcześniej (answer poza gen, podpisy diagramów): wysyła TYLKO te teksty. Sonnet, Batch.
+    KAT = a.katalog or PACZKI
+    PU = os.path.join(OUT, "k2u-batch.json")
+    przy = przypisania()
+    if not a.odbierz:
+        zap, ile = [], {}
+        for f in sorted(os.listdir(KAT)):
+            if not f.endswith(".json"):
+                continue
+            d = json.load(open(os.path.join(KAT, f)))
+            src = BM.get((d.get("zrodlo") or "")[3:])
+            if d.get("k2") != "gotowe" or not src:
+                continue
+            br = brakujace(src, d)
+            if br:
+                zap += zapytania_lekcji(src["id"], przy.get(src["id"], (d["subjectId"], []))[0], przy.get(src["id"], (None, []))[1], br)
+                ile[src["id"]] = len(br)
+        if not zap:
+            sys.exit("Nic do uzupełnienia.")
+        cin, cout = CENY[a.model]
+        t_in = sum(len(z["params"]["messages"][0]["content"]) for z in zap) / 3 + len(ZASADY) / 3 * (1 + 0.1 * (len(zap) - 1))
+        t_out = sum(len(z["params"]["messages"][0]["content"]) for z in zap) / 3 * 1.6
+        usd = (t_in * cin + t_out * cout) / 1e6 * BATCH
+        print(f"Uzupełnienie ({a.model}, Batch −50%): {sum(ile.values())} pól w {len(ile)} lekcjach, {len(zap)} zapytań → ~{usd:.3f} $")
+        if not a.wyslij:
+            with open(os.path.join(OUT, "k2u-zapytania.jsonl"), "w") as fh:
+                for z in zap:
+                    fh.write(json.dumps(z, ensure_ascii=False) + "\n")
+            sys.exit(print("Wysyłka: uzupelnij --wyslij (po „wysyłaj” Bartka)"))
+        import anthropic  # noqa: E402
+        b = anthropic.Anthropic().messages.batches.create(requests=zap)
+        json.dump({"id": b.id, "model": a.model, "katalog": KAT, "lekcje": sorted(ile)}, open(PU, "w"))
+        sys.exit(print("Wysłano batch", b.id, "– potem: uzupelnij --odbierz"))
+    import anthropic  # noqa: E402
+    st = json.load(open(PU)); client = anthropic.Anthropic()
+    b = client.messages.batches.retrieve(st["id"])
+    if b.processing_status != "ended":
+        sys.exit(print("Jeszcze trwa:", b.processing_status, dict(b.request_counts)))
+    dost, bledy = {}, []
+    usage = {"input": 0, "output": 0, "cache_write": 0, "cache_read": 0}
+    for r in client.messages.batches.results(b.id):
+        lid = r.custom_id.rsplit("--", 1)[0]
+        if r.result.type != "succeeded" or r.result.message.stop_reason != "end_turn":
+            bledy.append(f"{r.custom_id}: {r.result.type}"); continue
+        m = r.result.message; u = m.usage
+        usage["input"] += u.input_tokens; usage["output"] += u.output_tokens
+        usage["cache_write"] += u.cache_creation_input_tokens or 0; usage["cache_read"] += u.cache_read_input_tokens or 0
+        dost.setdefault(lid, {}).update({x["p"]: x["v"] for x in json.loads(next(c.text for c in m.content if c.type == "text"))["teksty"]})
+    for f in sorted(os.listdir(st["katalog"])):
+        if not f.endswith(".json"):
+            continue
+        pth = os.path.join(st["katalog"], f); d = json.load(open(pth))
+        bid = (d.get("zrodlo") or "")[3:]
+        if bid not in dost:
+            continue
+        src = BM[bid]
+        for p, v in dost[bid].items():
+            ustaw(d["content"], p, v)
+        napraw_lekcje(src, d)
+        json.dump(d, open(pth, "w"), ensure_ascii=False, indent=1)
+        zost = brakujace(src, d)
+        if zost:
+            bledy.append(f"{bid}: nadal po angielsku {len(zost)} pól")
+        r = porownaj(src, d)
+        if r:
+            bledy.append(f"{bid}: " + "; ".join(r[:3]))
+    cin, cout = CENY[st["model"]]
+    usage["usd"] = round((usage["input"] * cin + usage["cache_write"] * cin * 1.25 + usage["cache_read"] * cin * 0.1 + usage["output"] * cout) / 1e6 * BATCH, 4)
+    json.dump(usage, open(os.path.join(OUT, "k2u-usage.json"), "w"), indent=1)
+    sys.exit(print(f"Uzupełniono {len(dost)} lekcji, koszt {usage['usd']} $", ("\nDo poprawy: " + "\n  ".join(bledy)) if bledy else "– porównanie ze źródłem OK"))
+
+if a.krok == "napraw":
+    # Naprawa liczb z angielskim przecinkiem tysięcy w gotowych plikach (0 zł, bez modelu).
+    KAT = a.katalog or PACZKI
+    for f in sorted(os.listdir(KAT)):
+        if f.endswith(".json"):
+            pth = os.path.join(KAT, f); d = json.load(open(pth))
+            src = BM.get((d.get("zrodlo") or "")[3:])
+            if d.get("k2") == "gotowe" and src:
+                n = napraw_lekcje(src, d)
+                if n:
+                    json.dump(d, open(pth, "w"), ensure_ascii=False, indent=1); print(f"  {d['id']}: poprawionych tekstów {n}")
+    sys.exit(0)
 
 if a.krok == "sylref":
     # Dopisuje sylRef (tematy sylabusa kierunku z mapy) do gotowych plików lekcji, które go nie mają. 0 zł, bez modelu.
@@ -362,9 +550,10 @@ if a.krok == "porownaj":
         d = json.load(open(os.path.join(PACZKI, f)))
         if d.get("k2") != "gotowe":
             continue
+        MIEKKIE.clear()
         r = porownaj(BM[d["zrodlo"][3:]], d)
         zle += bool(r)
-        print(("✗ " if r else "✓ ") + d["id"] + ("".join("\n    " + x for x in r)))
+        print(("✗ " if r else "✓ ") + d["id"] + ("".join("\n    " + x for x in r)) + ("".join("\n    ~ do przeglądu: " + x for x in MIEKKIE)))
     sys.exit(1 if zle else 0)
 
 # K2
@@ -431,6 +620,7 @@ for lid in stan["ids"]:
     d["uwaga"] = " ".join(uwagi.get(lid, []))
     if d["k2"] != "gotowe":
         bledy.append(f"{lid}: brak {len(oczek - set(got))} tekstów")
+    napraw_lekcje(src, d)
     roznice = porownaj(src, d)
     if roznice:
         bledy.append(f"{lid}: " + "; ".join(roznice[:5]))
