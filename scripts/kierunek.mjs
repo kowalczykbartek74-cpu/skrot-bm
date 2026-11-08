@@ -16,7 +16,10 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
-const PLAN_HOST = "https://plan.skrotbm.pl/";
+const PLAN_HOST = "https://plan.zdawalni.pl/";
+// Migracje v47/v48 (i ich testy) powstały, gdy plan był na plan.skrotbm.pl; wyzwalacz v46 wpisywał ten host, a v50 go przepisuje.
+// Pliki migracji są już na produkcji, więc szablon SQL zostaje przy starym hoście (test „migracja aktualna” tego pilnuje).
+const PLAN_HOST_V46 = "https://plan.skrotbm.pl/";
 const STATUSY = ["plan", "oczekujacy", "platny"];
 export const DANE = "roczniki-dane.js";
 const ROLE = ["prawne", "rachunkowe", "jeszczeProsciej"];
@@ -238,7 +241,7 @@ join public.nauka_kierunki k on k.id = r.kierunek_id where r.id = ${q(k.id)};
 }
 
 export function testSql(k, numer) {
-  const plan = PLAN_HOST + k.plan.plik;
+  const plan = PLAN_HOST_V46 + k.plan.plik;
   return `-- Testy dla skrot-v${numer}-${k.prefiks}.sql (wygenerowane przez scripts/kierunek.mjs, po dwóch uruchomieniach migracji).
 reset role;
 do $$ begin
@@ -311,8 +314,8 @@ export function listaKontrolna(k, numer) {
 Wygenerowane przez \`node scripts/kierunek.mjs kierunki/${k.id}.json\`. Kolejność ma znaczenie.
 
 1. **Plan zajęć (repo plan-bm).** Scal gałąź z konfiguracją \`kierunki/${k.id}.json\` i planem \`${k.plan.plik}\`.
-   Po publikacji otwórz https://plan.skrotbm.pl/?k=${k.prefiks}: wybrany kierunek ${k.kierunek.pl}, grupy ${k.grupy.join(", ")}.
-   Link dla studentów: **https://plan.skrotbm.pl/?k=${k.prefiks}**
+   Po publikacji otwórz https://plan.zdawalni.pl/?k=${k.prefiks}: wybrany kierunek ${k.kierunek.pl}, grupy ${k.grupy.join(", ")}.
+   Link dla studentów: **https://plan.zdawalni.pl/?k=${k.prefiks}**
 ${mig ? `2. **SQL v${numer}.** Otwórz \`${mig}\` na github.com → „Copy raw file” → Supabase → SQL Editor → wklej → Run.
    Na dole ma być jeden wiersz: \`${k.id}\`, status \`${k.status}\`, \`plan_url\` = ${PLAN_HOST}${k.plan.plik}.`
     : `2. **Baza (bez SQL).** Po wdrożeniu strony: zdawalni.pl → Więcej → Narzędzia → Panel kierunków → sekcja „Baza”

@@ -124,16 +124,16 @@ test("wybrany(): Podgląd jako → Edytuję rocznik (admin) → skrot-rocznik �
 });
 
 test("adresy planów: BM plan.json, każdy inny rocznik plan/<id>.json na tym samym hoście (CSP bez zmian, v46 plan_url)", () => {
-  assert.strictEqual(R.ROCZNIKI[BM].plan.json, "https://plan.skrotbm.pl/plan.json");
+  assert.strictEqual(R.ROCZNIKI[BM].plan.json, "https://plan.zdawalni.pl/plan.json");
   for (const [id, r] of Object.entries(R.ROCZNIKI)) {
     if (id === BM) continue;
-    assert.strictEqual(r.plan.json, `https://plan.skrotbm.pl/plan/${id}.json`, id);
+    assert.strictEqual(r.plan.json, `https://plan.zdawalni.pl/plan/${id}.json`, id);
   }
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const csp = html.match(/connect-src ([^;"]+)/)[1];
-  assert.ok(csp.includes("https://plan.skrotbm.pl"), "CSP wpuszcza host planów");
-  const sql = fs.readFileSync(path.join(__dirname, "..", "supabase", "skrot-v46-roczniki-plan-ranking.sql"), "utf8");
-  assert.ok(sql.includes("'https://plan.skrotbm.pl/plan/' || new.id || '.json'"), "ta sama zasada w SQL");
+  assert.ok(csp.includes("https://plan.zdawalni.pl"), "CSP wpuszcza host planów");
+  const sql = fs.readFileSync(path.join(__dirname, "..", "supabase", "skrot-v50-plan-zdawalni.sql"), "utf8");
+  assert.ok(sql.includes("'https://plan.zdawalni.pl/plan/' || new.id || '.json'"), "ta sama zasada w SQL (v50)");
 });
 
 test("przedmioty rocznika: BM jak dawne listy w index.html, inny rocznik puste listy", () => {

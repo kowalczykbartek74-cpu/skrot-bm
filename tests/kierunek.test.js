@@ -96,7 +96,7 @@ test("stara droga (wpis w rocznik.js): usunięcie bloku zostawia poprawny plik",
 
 test("rocznik Zarządzania: plan per rocznik, bez Teams i zasad BM, teksty i opis dla AI z pliku", () => {
   const z = R.zbuduj("wefiz-zarz-1-st-2026", new Date(2026, 10, 8));
-  assert.strictEqual(z.plan.json, "https://plan.skrotbm.pl/plan/wefiz-zarz-1-st-2026.json");
+  assert.strictEqual(z.plan.json, "https://plan.zdawalni.pl/plan/wefiz-zarz-1-st-2026.json");
   assert.strictEqual(z.plan.skrzynka, null);
   assert.strictEqual(z.teams, false);
   assert.strictEqual(z.zasadyZaliczen, false);
@@ -111,8 +111,8 @@ test("rocznik Zarządzania: plan per rocznik, bez Teams i zasad BM, teksty i opi
 test("rocznik FiR: ten sam skrypt bez zmian w kodzie, 4 grupy M120–M123, v48, własna sekcja DOS (Mickiewicza 64)", async () => {
   const { wczytaj, numerSql, konfiguracjaPlanu } = await K();
   const z = R.zbuduj("wefiz-fir-1-st-2026", new Date(2026, 10, 8));
-  assert.strictEqual(z.plan.json, "https://plan.skrotbm.pl/plan/wefiz-fir-1-st-2026.json");
-  assert.strictEqual(z.plan.strona, "https://plan.skrotbm.pl/?k=fir26");
+  assert.strictEqual(z.plan.json, "https://plan.zdawalni.pl/plan/wefiz-fir-1-st-2026.json");
+  assert.strictEqual(z.plan.strona, "https://plan.zdawalni.pl/?k=fir26");
   assert.deepStrictEqual(z.grupy, ["M120", "M121", "M122", "M123"]);
   assert.strictEqual(z.teams, false);
   assert.strictEqual(z.zasadyZaliczen, false);
