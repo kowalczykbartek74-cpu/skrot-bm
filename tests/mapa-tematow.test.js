@@ -22,7 +22,8 @@ test("na sucho: jedno zapytanie na przedmiot z BM, K3 bez API, Batch + cache + s
     assert.strictEqual(x.params.system[0].cache_control.type, "ephemeral");
     assert.strictEqual(x.params.output_config.format.type, "json_schema");
     const c = JSON.parse(x.params.messages[0].content);
-    assert.ok(c.tematy.length > 0 && c.kandydaciBM.length > 0, x.custom_id);
+    assert.ok(c.tematy.length > 0 && c.kandydaci.length > 0, x.custom_id);
+    assert.ok(c.kandydaci.every((k) => k.zrodloTyp === "BM"), "Zarządzanie nie ma banku");
   }
 });
 
@@ -45,6 +46,56 @@ test("--bez-api: mapa tymczasowa (koszyk przedmiotu, źródło bm:<przedmiot>), 
     const r = require("child_process").spawnSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--bez-api"], { cwd: ROOT, env: { PATH: process.env.PATH } });
     assert.strictEqual(r.status, 1);
     assert.match(r.stderr.toString(), /nie nadpisuję/);
+  } finally {
+    if (kopia) fs.writeFileSync(plik, kopia); else fs.rmSync(plik, { force: true });
+  }
+});
+
+const uruchom = (args) => execFileSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), ...args], { cwd: ROOT, env: { PATH: process.env.PATH } }).toString();
+
+test("bank PL: drugi kierunek dostaje kandydatów z wcześniejszego kierunku (czeka na zatwierdzenie), K1 w schemacie", () => {
+  const pusty = fs.mkdtempSync(path.join(os.tmpdir(), "lekcje-"));
+  const brakBanku = fs.mkdtempSync(path.join(os.tmpdir(), "bank-"));
+  const out = uruchom(["kierunki/wefiz-fir-1-st-2026.json", "--na-sucho", "--lekcje", pusty, "--bank", brakBanku]);
+  assert.match(out, /Kandydaci z banku PL: \d+ \(czeka na zatwierdzenie zarz26\)/);
+  const k = JSON.parse(fs.readFileSync(path.join(ROOT, "kierunki/wefiz-fir-1-st-2026.json"), "utf8"));
+  const z = fs.readFileSync(path.join(ROOT, "scratch", k.prefiks, "mapa-zapytania.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
+  const pz = z.find((x) => x.custom_id === "podstawy-zarzadzania");
+  const c = JSON.parse(pz.params.messages[0].content);
+  assert.ok(c.kandydaci.some((x) => x.zrodloTyp === "bank" && x.id.startsWith("zarz26-syl:podstawy-zarzadzania:")));
+  assert.ok(c.kandydaci.some((x) => x.zrodloTyp === "BM"));
+  assert.ok(!c.kandydaci.some((x) => "status" in x), "status nie idzie do modelu");
+  assert.deepStrictEqual(pz.params.output_config.format.schema.properties.tematy.items.properties.koszyk.enum, ["K1", "K2", "K3"]);
+  // przedmiot bez karty w sylabusie kierunku: tematy z sylabusa BM
+  const mak = JSON.parse(z.find((x) => x.custom_id === "makroekonomia").params.messages[0].content);
+  assert.ok(mak.tematy.length > 0);
+  // przedmiot bez banku i bez BM: bez zapytania
+  assert.ok(!z.some((x) => x.custom_id === "podstawy-rachunkowosci"));
+});
+
+test("--bez-api z bankiem: K1 tylko ze źródłem z banku i statusem „czeka…”, uwaga przy braku karty", () => {
+  const k = JSON.parse(fs.readFileSync(path.join(ROOT, "kierunki/wefiz-fir-1-st-2026.json"), "utf8"));
+  const plik = path.join(ROOT, "scratch", k.prefiks, "mapa.json");
+  const kopia = fs.existsSync(plik) ? fs.readFileSync(plik) : null;
+  try {
+    if (kopia && !JSON.parse(kopia).every((m) => m.tymczasowa)) return;
+    uruchom(["kierunki/wefiz-fir-1-st-2026.json", "--bez-api", "--bank", fs.mkdtempSync(path.join(os.tmpdir(), "bank-"))]);
+    const m = JSON.parse(fs.readFileSync(plik, "utf8"));
+    const k1 = m.flatMap((x) => x.tematy).filter((t) => t.koszyk === "K1");
+    assert.ok(k1.length > 0);
+    for (const t of k1) {
+      assert.ok(t.zrodlo.length && t.zrodlo.every((z) => z.startsWith("zarz26-syl:")), t.temat);
+      assert.strictEqual(t.bank, "czeka na zatwierdzenie zarz26");
+    }
+    const mak = m.find((x) => x.przedmiot === "makroekonomia");
+    assert.ok(mak.tematy.every((t) => /brak karty w sylabusie kierunku/.test(t.uwaga)));
+    assert.ok(m.find((x) => x.przedmiot === "podstawy-rachunkowosci").tematy.every((t) => t.koszyk === "K3"));
+    // szacunek kosztu D+E liczy się z tej mapy
+    const w = JSON.parse(execFileSync("python3", ["-I", path.join(ROOT, "scripts/koszt-tresci.py"), "kierunki/wefiz-fir-1-st-2026.json", "--json", "--lekcje", fs.mkdtempSync(path.join(os.tmpdir(), "l-"))], { cwd: ROOT }).toString());
+    const pr = w[0].przedmioty.find((p) => p.przedmiot === "podstawy-rachunkowosci");
+    assert.ok(pr.egzamin && pr.lekcjeK3 > 0 && pr.usdK3 > 0 && pr.usdK2 === 0);
+    assert.ok(w[0].przedmioty.find((p) => p.przedmiot === "makroekonomia").egzamin, "egzamin z planu studiów (egzaminyBezKarty)");
+    assert.ok(w[0].usd > 0 && w[0].usd < 20);
   } finally {
     if (kopia) fs.writeFileSync(plik, kopia); else fs.rmSync(plik, { force: true });
   }

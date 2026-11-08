@@ -15,6 +15,7 @@
   "teams": false,
   "dos": "https://dos.usz.edu.pl/mickiewicza/zajecia-mickiewicza/",
   "status": "oczekujacy",
+  "egzaminyBezKarty": ["makroekonomia"],
   "przedmioty": {
     "podstawy-zarzadzania":            { "bank": ["podstawy-zarzadzania"], "bm": ["podstawy-zarzadzania"], "koszyk": "K1" },
     "podstawy-finansow":               { "bank": ["podstawy-finansow"], "bm": ["podstawy-finansow"], "koszyk": "K1" },
