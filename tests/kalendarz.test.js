@@ -51,21 +51,24 @@ test("BM: .ics bajt w bajt jak przed zmianą (bez plan_url i z plan_url BM)", as
   const zloty = fs.readFileSync(path.join(FIX, "kalendarz-bm.ics"), "utf8");
   assert.ok(zloty.includes("BEGIN:VEVENT") && zloty.includes("@skrotbm.pl"), "złoty plik ma zajęcia");
   const h = await zaladuj(NOWY);
-  for (const dane of [DANE, { ...DANE, plan_url: "https://plan.skrotbm.pl/plan.json" }]) {
+  for (const dane of [DANE, { ...DANE, plan_url: "https://plan.skrotbm.pl/plan.json" }, { ...DANE, plan_url: "https://plan.zdawalni.pl/plan.json" }]) {
     const r = await ics(h, dane);
     assert.equal(r.status, 200);
-    assert.deepEqual(r.pobrane, ["https://plan.skrotbm.pl/plan.json"]);
+    assert.deepEqual(r.pobrane, ["https://plan.zdawalni.pl/plan.json"]);
     assert.equal(norm(r.body), zloty);
   }
 });
 
 test("inny rocznik: plan z jego adresu; obcy host albo zły adres → plan BM", async () => {
   const h = await zaladuj(NOWY);
-  let r = await ics(h, { ...DANE, plan_url: "https://plan.skrotbm.pl/plan/wefiz-test-1-st-2026.json" });
-  assert.deepEqual(r.pobrane, ["https://plan.skrotbm.pl/plan/wefiz-test-1-st-2026.json"]);
-  for (const zly of ["https://zly.example.com/plan.json", "http://plan.skrotbm.pl/plan.json", "https://plan.skrotbm.pl/../x.json?y", 7]) {
+  let r = await ics(h, { ...DANE, plan_url: "https://plan.zdawalni.pl/plan/wefiz-test-1-st-2026.json" });
+  assert.deepEqual(r.pobrane, ["https://plan.zdawalni.pl/plan/wefiz-test-1-st-2026.json"]);
+  // stary host (wiersz sprzed SQL v50) → ten sam plik na plan.zdawalni.pl
+  r = await ics(h, { ...DANE, plan_url: "https://plan.skrotbm.pl/plan/wefiz-test-1-st-2026.json" });
+  assert.deepEqual(r.pobrane, ["https://plan.zdawalni.pl/plan/wefiz-test-1-st-2026.json"]);
+  for (const zly of ["https://zly.example.com/plan.json", "http://plan.skrotbm.pl/plan.json", "https://plan.skrotbm.pl/../x.json?y", "https://plan.zdawalni.pl.zly.pl/plan.json", 7]) {
     r = await ics(h, { ...DANE, plan_url: zly });
-    assert.deepEqual(r.pobrane, ["https://plan.skrotbm.pl/plan.json"], String(zly));
+    assert.deepEqual(r.pobrane, ["https://plan.zdawalni.pl/plan.json"], String(zly));
   }
 });
 
