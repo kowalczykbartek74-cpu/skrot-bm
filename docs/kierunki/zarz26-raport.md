@@ -1,6 +1,6 @@
-# Zarządzanie (wefiz-zarz-1-st-2026): raport po etapach A–C (noc 7/8.11.2026)
+# Zarządzanie (wefiz-zarz-1-st-2026): raport po etapach A–D (8.11.2026)
 
-Spec: `kierunek-schemat-spec.md` (projekt „szkoła app”). Etapy A i B są zrobione, Etap C czeka na Twoje „wysyłaj”.
+Spec: `kierunek-schemat-spec.md` (projekt „szkoła app”). Etapy A i B są zrobione. Etap C ma mapę tymczasową bez API (prawdziwa czeka na klucz). Etap D: skrypty gotowe, nic nie wysłane.
 Na produkcji nic nie jest uruchomione ani scalone.
 
 ## Gałęzie
@@ -10,6 +10,7 @@ Na produkcji nic nie jest uruchomione ani scalone.
 | skrot-bm | `kierunek-zarz/a` | `scripts/kierunek.mjs`, `kierunki/*.json`, wpis w `rocznik.js`, SQL v47, testy |
 | skrot-bm | `kierunek-zarz/b` (od a) | sylabus: `scripts/sylabus_pl.py`, `sylabus-zarz.json`, raport `docs/kierunki/zarz26-sylabus.md` |
 | skrot-bm | `kierunek-zarz/c` (od b) | `scripts/mapa-tematow.py` (na sucho), ten raport |
+| skrot-bm | `kierunek-zarz/d` (od c) | mapa tymczasowa `--bez-api`, `scripts/lekcje-z-bm.py` (K1 kopia, K2 na sucho, porównanie ze źródłem) |
 | plan-bm | `kierunek-zarz/a` | importer z konfiguracji, `plan/wefiz-zarz-1-st-2026.json`, wybór Kierunek → Rok → Grupa |
 
 ## Co kliknąć, po kolei
@@ -29,9 +30,25 @@ Na produkcji nic nie jest uruchomione ani scalone.
    **ok. 0,002 $**. Trzy przedmioty bez odpowiednika w BM (Nauka o przedsiębiorstwie, Zachowania konsumentów, Zarządzanie własnym rozwojem) dostają K3 bez API.
    Wysyłka dopiero po Twoim „wysyłaj”: `--wyslij`, potem `--odbierz` → `scratch/zarz26/mapa.html` do przejrzenia i poprawienia koszyków.
 
+## Etap C bez API i Etap D (8.11, po „wysyłaj” bez klucza)
+
+- `ANTHROPIC_API_KEY` nie był ustawiony w żadnym terminalu, więc mapa z modelu nie poszła. Na Twoje „wstaw na razie bez”:
+  `python3 scripts/mapa-tematow.py kierunki/wefiz-zarz-1-st-2026.json --bez-api` → `scratch/zarz26/mapa.html` z mapą **tymczasową**
+  (koszyk całego przedmiotu z pliku kierunku: 88 tematów K2, 28 K3; źródło = przedmiot BM, nie lekcja). Strona ma żółty baner „tymczasowa”.
+  Prawdziwą mapę robisz później: `export ANTHROPIC_API_KEY=…`, potem `--wyslij` i `--odbierz` (ok. 0,002 $); nadpisuje tymczasową, odwrotnie skrypt nie pozwoli.
+- `scripts/lekcje-z-bm.py` (Etap D, K1 + K2):
+  - `k1`: kopia lekcji BM przypisanych w mapie → `scratch/zarz26/paczki/zarz26-<id BM>.json` (`rocznik_id`, `zrodlo: "bm:<id>"`), 0 zł.
+  - `k2 --na-sucho` (domyślnie 2 lekcje z Podstaw zarządzania, Sonnet 5.5, Batch): model dostaje **tylko teksty** (ścieżka → EN) i tematy z sylabusa,
+    oddaje PL dla tych samych ścieżek. `correct`, `calc`, zmienne i wzory `gen`, `simple` (już PL) i struktura nie przechodzą przez model.
+  - `porownaj`: spec 4.4 pkt 2, ta sama struktura i pola nie-tekstowe, te same liczby i zmienne `{a}` w tekstach; kod 1 = do poprawy.
+  - **Wymaga eksportu lekcji BM** (krok 4 wyżej). Bez niego skrypt kończy się komunikatem, a szacunku kosztu K2 nie da się policzyć.
+- K3 (1 lekcja z Nauki o przedsiębiorstwie): generator `scripts/lekcje-z-sylabusa.mjs` jest na gałęzi `kierunek-prawo` (Prawo, lekcje v3, nie na main).
+  Spec każe wzorować K3 na pierwszej zatwierdzonej lekcji K2, więc K3 robię dopiero po pilocie K2. Wtedy przeniosę generator z Prawa (v4, wzorzec PL).
+- Kolejność, gdy będzie klucz i eksport: `mapa-tematow.py --wyslij/--odbierz` → przegląd mapy → `lekcje-z-bm.py k1` → `k2 --na-sucho` (koszt do akceptu) → „wysyłaj” → `k2 --odbierz` → `porownaj` → `tresci-kontrola.mjs scratch/zarz26/paczki --przed-wgraniem`.
+
 ## Jak sprawdzone
 
-- `node --test tests/*.test.js`: 282 testy, 0 błędów (w tym `kierunek.test.js`: plik BM odtworzony skryptem = dzisiejszy wpis BM; drugi przebieg bez zmian).
+- `node --test tests/*.test.js`: 288 testów (287 OK, 1 pominięty jak dotąd), 0 błędów; nowe: `lekcje-z-bm.test.js` (sztuczna lekcja), `--bez-api` w `mapa-tematow.test.js` (w tym `kierunek.test.js`: plik BM odtworzony skryptem = dzisiejszy wpis BM; drugi przebieg bez zmian).
 - PGlite: wszystkie migracje po kolei, v47 2×, testy K1–K6.
 - `fundament-etap7.mjs` na prawdziwym roczniku Zarządzania: 24/24 (PL/EN, 375/1280, bez śladów BM, lista oczekujących). Tryb testowy dalej 20/20.
 - `fundament-bm-tekst.mjs`: tekst 24 ekranów BM przed i po identyczny. Regresje: kierunek, fundament-etap2/3/4/6, zapisy: wszystko OK.

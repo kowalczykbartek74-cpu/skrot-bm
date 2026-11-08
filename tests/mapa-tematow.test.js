@@ -25,3 +25,27 @@ test("na sucho: jedno zapytanie na przedmiot z BM, K3 bez API, Batch + cache + s
     assert.ok(c.tematy.length > 0 && c.kandydaciBM.length > 0, x.custom_id);
   }
 });
+
+test("--bez-api: mapa tymczasowa (koszyk przedmiotu, źródło bm:<przedmiot>), nie nadpisuje mapy z modelu", () => {
+  const k = JSON.parse(fs.readFileSync(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json"), "utf8"));
+  const plik = path.join(ROOT, "scratch", k.prefiks, "mapa.json");
+  const kopia = fs.existsSync(plik) ? fs.readFileSync(plik) : null;
+  try {
+    if (kopia && !JSON.parse(kopia).every((m) => m.tymczasowa)) return; // prawdziwa mapa: test nic nie rusza
+    execFileSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--bez-api"], { cwd: ROOT, env: { PATH: process.env.PATH } });
+    const m = JSON.parse(fs.readFileSync(plik, "utf8"));
+    assert.deepStrictEqual(m.map((x) => x.przedmiot), Object.keys(k.przedmioty));
+    for (const x of m) {
+      assert.ok(x.tymczasowa);
+      const bm = k.przedmioty[x.przedmiot].bm;
+      for (const t of x.tematy) assert.deepStrictEqual([t.koszyk, t.zrodlo], bm.length ? ["K2", bm.map((b) => "bm:" + b)] : ["K3", []], x.przedmiot);
+    }
+    const prawdziwa = m.map((x) => ({ ...x, tymczasowa: undefined }));
+    fs.writeFileSync(plik, JSON.stringify(prawdziwa));
+    const r = require("child_process").spawnSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--bez-api"], { cwd: ROOT, env: { PATH: process.env.PATH } });
+    assert.strictEqual(r.status, 1);
+    assert.match(r.stderr.toString(), /nie nadpisuję/);
+  } finally {
+    if (kopia) fs.writeFileSync(plik, kopia); else fs.rmSync(plik, { force: true });
+  }
+});

@@ -21,6 +21,7 @@ ap.add_argument("--na-sucho", action="store_true")
 ap.add_argument("--wyslij", action="store_true")
 ap.add_argument("--odbierz", action="store_true")
 ap.add_argument("--html", action="store_true")
+ap.add_argument("--bez-api", action="store_true", help="mapa tymczasowa bez modelu: koszyk całego przedmiotu z pliku kierunku")
 ap.add_argument("--model", default="claude-haiku-5-5")
 ap.add_argument("--lekcje", default=os.path.join(ROOT, "scratch", "lessons"))
 a = ap.parse_args()
@@ -146,6 +147,7 @@ td,th{{border-bottom:1px solid #dfe8e2;padding:6px 8px;text-align:left;vertical-
 select{{font:inherit;min-height:36px}} button{{font:inherit;padding:10px 16px;border:0;border-radius:10px;background:#1a7f45;color:#fff;min-height:44px}}
 .wrap{{overflow-x:auto}}</style></head><body>
 <h1>Mapa tematów: {html.escape(K["kierunek"]["pl"])}</h1>
+{'<p style="background:#fff4d6;padding:10px;border-radius:8px"><b>Mapa tymczasowa (bez API).</b> Koszyk i źródło są dla całego przedmiotu, nie dla tematu. Zastąp ją wynikiem --wyslij/--odbierz.</p>' if any(m.get("tymczasowa") for m in mapa) else ''}
 <p>K2: {licz["K2"]} · K3: {licz["K3"]} · K1: {licz["K1"]}. Popraw koszyki i kliknij „Pobierz mapa.json”, potem podmień plik w scratch/{K["prefiks"]}/.</p>
 <p><button id="dl">Pobierz mapa.json</button></p>
 <div class="wrap"><table><thead><tr><th>Przedmiot</th><th>Temat (sylabus)</th><th>Forma</th><th>h</th><th>Koszyk</th><th>Źródło BM</th><th>Uwaga</th></tr></thead><tbody>
@@ -182,6 +184,26 @@ if a.html:
     mapa = json.load(open(os.path.join(OUT, "mapa.json")))
     open(os.path.join(OUT, "mapa.html"), "w").write(html_mapy(mapa))
     sys.exit(print("Zapisano", os.path.join(OUT, "mapa.html")))
+
+if a.bez_api:
+    # Tymczasowa mapa (0 zł): każdy temat dostaje koszyk przedmiotu z pliku kierunku, źródło = przedmiot BM, nie lekcja.
+    # Zastępuje ją dopiero --wyslij/--odbierz. Skrypty Etapu D/E traktują „tymczasowa” jak niezatwierdzoną mapę.
+    stara = os.path.join(OUT, "mapa.json")
+    if os.path.exists(stara) and not all(m.get("tymczasowa") for m in json.load(open(stara))):
+        sys.exit("scratch/" + K["prefiks"] + "/mapa.json to już mapa z modelu – nie nadpisuję jej mapą tymczasową.")
+    mapa = []
+    for pid, cfg in K["przedmioty"].items():
+        bm = cfg.get("bm") or []
+        kosz = "K3" if not bm else ("K2" if cfg.get("koszyk") != "K3" else "K3")
+        mapa.append({"przedmiot": pid, "tymczasowa": True, "tematy": [
+            {**t, "koszyk": kosz, "zrodlo": ["bm:" + b for b in bm] if kosz == "K2" else [],
+             "uwaga": "tymczasowo bez API: przedmiot BM, nie konkretna lekcja" if kosz == "K2" else ("brak w BM" if not bm else "")}
+            for t in tematy_kierunku(pid)]})
+    json.dump(mapa, open(os.path.join(OUT, "mapa.json"), "w"), ensure_ascii=False, indent=1)
+    open(os.path.join(OUT, "mapa.html"), "w").write(html_mapy(mapa))
+    licz = {k: sum(t["koszyk"] == k for m in mapa for t in m["tematy"]) for k in ("K2", "K3")}
+    sys.exit(print("Mapa tymczasowa (bez API, 0 zł):", os.path.relpath(os.path.join(OUT, "mapa.html"), ROOT), licz,
+                   "– prawdziwa mapa: --wyslij, potem --odbierz"))
 
 if a.na_sucho or not (a.wyslij or a.odbierz):
     with open(os.path.join(OUT, "mapa-zapytania.jsonl"), "w") as f:
