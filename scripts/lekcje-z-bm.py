@@ -193,10 +193,21 @@ def tys_pewne(tok):
     return len(cz[0]) >= 2 or all(g.endswith(("00", "50")) for g in cz[1:])
 
 
+def tys_sure(m):
+    """Dopasowanie TYS_EN jest pewnym zapisem tysięcy: wzorzec tys_pewne albo kropka dziesiętna tuż za nim („4,636.80”)."""
+    return tys_pewne(m.group(0)) or re.match(r"\.\d", m.string[m.end():]) is not None
+
+
+TYS_DZ_EN = re.compile(r"(?<![\d,.])\d{1,3}(?:,\d{3})+\.\d+(?!\d)")   # „1,288.60” – zapis angielski, pewny
+
+
 def napraw_tysiace(en, pl):
     """EN „1,800” przepisane bez zmian w PL czyta się po polsku jako 1,8. Zamienia taki zapis (tylko gdy ten sam napis jest w źródle EN
     i tys_pewne) na „1 800” (spacja nierozdzielająca). Deterministycznie, bez modelu."""
-    for tok in sorted({t for t in TYS_EN.findall(en or "") if tys_pewne(t)}, key=len, reverse=True):
+    for tok in sorted(set(TYS_DZ_EN.findall(en or "")), key=len, reverse=True):   # „1,288.60” → „1 288,60”
+        if tok in (pl or ""):
+            pl = pl.replace(tok, tok.replace(",", "\u00a0").replace(".", ","))
+    for tok in sorted({m.group(0) for m in TYS_EN.finditer(en or "") if tys_sure(m)}, key=len, reverse=True):
         if tok in (pl or ""):
             pl = re.sub(r"(?<![\d,.])" + re.escape(tok) + r"(?![\d])", lambda m: m.group(0).replace(",", "\u00a0"), pl)
     return pl
@@ -234,7 +245,7 @@ def liczby(s, jezyk="pl"):
     s = re.sub(r"(?<=\d)[-\u2010-\u2015](?=\d)", "|", s)   # zakres „5-10” / „5–10” (bez spacji) to dwie liczby, nie liczba ujemna
     s = re.sub(r"(?<=\d)[\s\u00a0\u2009\u202f](?=\d{3}(?!\d))", "", s)
     if jezyk == "en":   # przecinek tysięcy tylko tam, gdzie to pewne (tys_pewne); „1,029” i „0,015” to ułamki, jak w polskim zapisie
-        s = TYS_EN.sub(lambda m: m.group(0).replace(",", "") if tys_pewne(m.group(0)) else m.group(0), s)
+        s = TYS_EN.sub(lambda m: m.group(0).replace(",", "") if tys_sure(m) else m.group(0), s)
     s = re.sub(r"(?<=\d),(?=\d)", ".", s)
     return sorted(str(float(x)) if re.fullmatch(r"-?\d+(\.\d+)?", x) else x for x in LICZBY.findall(s))
 
@@ -263,7 +274,7 @@ def porownaj(zrodlo, nowa):
         alt = []   # niepewne „1,336” w źródle: ułamek (1.336) albo tysiące (1336); model mógł wybrać którąkolwiek
         def zbierz(m):
             tok = m.group(0)
-            if tys_pewne(tok):
+            if tys_sure(m):
                 return tok
             alt.append((str(float(tok.replace(",", "."))), str(float(tok.replace(",", "")))))
             return " "
@@ -389,10 +400,16 @@ def po_angielsku(t):
     return sum(w.lower() in ANG for w in slowa) >= 2
 
 
+def slowo(t):
+    """Tekst (bez LaTeX-u) ma słowo z ≥ 3 liter: nie jest samym wzorem ani liczbą."""
+    return bool(re.search(r"[A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ]{3,}", re.sub(r"\\\(.*?\\\)|\\\[.*?\\\]", " ", t or "", flags=re.S)))
+
+
 def brakujace(src, d):
-    """Ścieżki tekstów, które w gotowej lekcji d są nadal identyczne ze źródłem EN i wyglądają na angielskie."""
+    """Ścieżki pól, które wcześniej były pomijane (answer poza gen, visual.*), a w gotowej lekcji są nadal identyczne ze źródłem EN
+    i mają słowo z liter. Krótkie podpisy („Cost and revenue”, nazwy serii) też, bo nie mają słów funkcyjnych do wykrycia."""
     pl = dict(teksty(d["content"]))
-    return {p for p, t in teksty(src["content"]) if pl.get(p) == t and len(t) > 12 and po_angielsku(t)}
+    return {p for p, t in teksty(src["content"]) if pl.get(p) == t and slowo(t) and (".visual" in p or p.endswith(".answer"))}
 
 
 if a.krok == "uzupelnij":
