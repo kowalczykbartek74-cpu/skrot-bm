@@ -95,7 +95,8 @@ const EQ = new RegExp(String.raw`(?<![\p{L}\d.,)\]}^_])(?<!\d[  ])(?<![+\-−–
 // comma: "dec" (przecinek dziesiętny), "thou" (przecinek tysięcy, jak 1,234.5), domyślnie: „1,234” = nie wiadomo.
 function parseNum(s, comma) {
   let t = String(s).replace(/[  ]/g, "");
-  if (comma === "thou") t = t.replace(/,/g, "");
+  if (comma === "thou" || (comma === "mix" && /^[1-9]\d{0,2}(,\d{3})+$/.test(t))) t = t.replace(/,/g, "");
+  else if (comma === "mix") { /* „0,2”, „1,10”: przecinek dziesiętny */ }
   else if (comma !== "dec" && /^\d{1,3}(,\d{3})+$/.test(t)) return null; // „1,234” – nie wiadomo, tysiące czy ułamek
   const n = Number(t.replace(",", "."));
   return Number.isFinite(n) ? n : null;
@@ -133,11 +134,17 @@ function arithmetic(text) {
     const comma = /\d,(?:\d{1,2}|\d{4,})(?!\d)/u.test(all) ? "dec" : /\d\.\d/.test(all) && /\d,\d{3}(?!\d)/.test(all) ? "thou" : undefined;
     // „3×4 + 2×3 = 12 + 6 = 18”: prawa strona to dalszy ciąg rachunku (12 + 6), nie wynik; porównujemy wartości obu stron.
     const dalej = new RegExp(String.raw`^(?:${OP}${NUMR})+`, "u").exec(s.slice(m.index + all.length));
-    const want = dalej ? evalSimple(rhs + dalej[0], comma) : parseNum(rhs, comma), got = evalSimple(lhs, comma);
-    if (want !== null && got !== null && Number.isFinite(got)) {
+    const licz = (c) => {
+      const want = dalej ? evalSimple(rhs + dalej[0], c) : parseNum(rhs, c), got = evalSimple(lhs, c);
+      if (want === null || got === null || !Number.isFinite(got)) return null;
       const tol = 0.5 * 10 ** -decimalsOf(rhs) + 1e-9 * Math.abs(want) + (rel === "≈" ? 0.01 * Math.abs(want) : 0);
-      out.push({ tekst: all.trim(), wynik: want, policzone: Math.round(got * 1e6) / 1e6, ok: Math.abs(got - want) <= tol });
-    }
+      return { tekst: all.trim(), wynik: want, policzone: Math.round(got * 1e6) / 1e6, ok: Math.abs(got - want) <= tol };
+    };
+    let r = licz(comma);
+    // Lekcje BM po angielsku mieszają przecinek tysięcy i dziesiętny: „0,2 × 3,000 = 600”, „1,000/1,10 ≈ 909”.
+    // Gdy zwykłe czytanie się nie zgadza, druga próba: [1-9]dd,ddd = tysiące, reszta przecinków = ułamek.
+    if ((!r || !r.ok) && /\d,\d{1,2}(?!\d)/u.test(all) && /(?<![\d.,])[1-9]\d{0,2},\d{3}(?![\d,])/u.test(all)) r = licz("mix") || r;
+    if (r) out.push(r);
     EQ.lastIndex = m.index + all.lastIndexOf(rhs); // „a · b = c · d = e”: od c liczymy dalej
   }
   return out;
