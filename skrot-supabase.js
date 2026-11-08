@@ -207,7 +207,28 @@
         zrodloKonta();
       }
     } catch { skrot.state = "error"; }
-  })().finally(() => { changed(); afterReady(); });
+  })().finally(() => { changed(); afterReady(); rocznikiBaza(); });
+
+  // Rocznik widoczny dla studentów tylko wtedy, gdy baza go zna i da się go wybrać (oczekujacy / platny; v31, v49).
+  // Lista trafia do localStorage (rocznik.js → widoczny, przy następnym wejściu od razu); karty ekranu wejścia bez wiersza w bazie
+  // znikają, a wybrany wcześniej rocznik, którego baza nie zna, wraca do BM (raz, z przeładowaniem). Administrator widzi wszystko.
+  // Bez v31 albo bez odpowiedzi bazy: jak dotąd.
+  async function rocznikiBaza() {
+    const R = window.SKROT_ROCZNIKI, cur = window.SKROT_ROCZNIK;
+    if (!sb || !R?.ustawWBazie || PG) return;
+    let l = null;
+    try { l = await skrot.rocznikiLista(); } catch { l = null; }
+    if (!l) return;
+    const ok = [R.DOMYSLNY, ...l.filter((r) => r.status === "oczekujacy" || r.status === "platny").map((r) => r.id)];
+    R.ustawWBazie(ok);
+    if (skrot.realAdmin) return;
+    document.querySelectorAll(".lk-card[data-k]").forEach((b) => { if (!ok.includes(b.dataset.k)) b.remove(); });
+    if (cur && !ok.includes(cur.id) && !ED) {
+      ls.set("skrot-rocznik", R.DOMYSLNY);
+      let juz = null; try { juz = sessionStorage.getItem("skrot-rocznik-baza-reload"); } catch {}
+      if (!juz) { try { sessionStorage.setItem("skrot-rocznik-baza-reload", "1"); } catch {} location.reload(); }
+    }
+  }
 
   async function refreshMe() {
     // Najpierw sygnał urządzenia: rejestruje je na liście konta (jeśli jest miejsce) i zajmuje sesję.

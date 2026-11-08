@@ -72,6 +72,15 @@
   });
   var DOMYSLNY = "wefiz-bm-1-st-2026";
   var KLUCZ_EDYCJA = "skrot-admin-rocznik"; // localStorage: rocznik edytowany przez administratora
+  // localStorage: roczniki, które baza zna i które da się wybrać (status oczekujacy / platny). Zapisuje skrot-supabase.js
+  // (rocznikiBaza) po każdym wejściu. Rocznik, który jest już w danych strony, ale jeszcze nie w bazie (przed „Dodaj do bazy”),
+  // nie pokazuje się na ekranie wejścia i nie da się go wybrać. Brak listy (pierwsze wejście, stara baza) = jak dotąd.
+  var KLUCZ_BAZA = "skrot-roczniki-baza";
+  function wBazie() {
+    try { var l = JSON.parse(root.localStorage.getItem(KLUCZ_BAZA) || "null"); return Array.isArray(l) ? l : null; } catch (e) { return null; }
+  }
+  function widoczny(id) { if (id === DOMYSLNY) return true; var l = wBazie(); return !l || l.indexOf(id) >= 0; }
+  function ustawWBazie(ids) { try { root.localStorage.setItem(KLUCZ_BAZA, JSON.stringify(ids)); } catch (e) { /* tryb prywatny */ } }
 
   var STOPIEN_PL = { 0: "jednolite magisterskie", 1: "I stopnia", 2: "II stopnia" };
   var STOPIEN_EN = { 0: "long-cycle master's", 1: "first-cycle", 2: "second-cycle" };
@@ -147,7 +156,7 @@
     try { ed = root.localStorage && root.localStorage.getItem(KLUCZ_EDYCJA); } catch (e) { ed = null; }
     if (ed && ROCZNIKI[ed] && ed !== DOMYSLNY) { root.SKROT_EDYCJA = ed; return ed; }
     try { id = root.localStorage && root.localStorage.getItem("skrot-rocznik"); } catch (e) { /* tryb prywatny */ }
-    return id && ROCZNIKI[id] ? id : DOMYSLNY;
+    return id && ROCZNIKI[id] && widoczny(id) ? id : DOMYSLNY;
   }
 
   // Treści należące do rocznika (nauka_docs.rocznik_id, supabase/skrot-v44-roczniki-tresci.sql → nauka_kolekcja_rocznika).
@@ -182,7 +191,7 @@
       wydzial: { kod: r.wydzial.kod } };
   }
 
-  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, STATUS_DANYCH: STATUS_DANYCH, doBazy: doBazy, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow, wybrany: wybrany, KLUCZ_EDYCJA: KLUCZ_EDYCJA,
+  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, STATUS_DANYCH: STATUS_DANYCH, doBazy: doBazy, widoczny: widoczny, ustawWBazie: ustawWBazie, KLUCZ_BAZA: KLUCZ_BAZA, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow, wybrany: wybrany, KLUCZ_EDYCJA: KLUCZ_EDYCJA,
     KOLEKCJE_ROCZNIKA: KOLEKCJE_ROCZNIKA, KOLEKCJE_STALE_ID: KOLEKCJE_STALE_ID, kolekcjaRocznika: kolekcjaRocznika, docId: docId, docIdStrony: docIdStrony };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
   else {

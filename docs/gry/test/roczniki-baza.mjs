@@ -86,6 +86,32 @@ const s5 = await main(p);
 ok("5 bez listy z bazy (stara baza): sekcja Baza się nie pokazuje, panel działa", !/Dodaj do bazy/.test(s5) && /Kierunki/.test(s5) && !p.errors.length, [s5.slice(0, 300), p.errors]);
 await p.context().close();
 
+// 6. Gość: rocznik ze strony, którego baza jeszcze nie zna (przed „Dodaj do bazy”), nie jest do wyboru
+const gosc = async (ls) => {
+  const g = await page(b, { konto: "brak", w: 390, ls: { "mock-v31": "1", "mock-roczniki-lista": JSON.stringify([{ id: BM, status: "platny" }, { id: ZARZ, status: "oczekujacy" }]), ...ls } });
+  await g.addInitScript(() => { if (!sessionStorage.getItem("k-init")) { sessionStorage.setItem("k-init", "1"); localStorage.removeItem("bm-group"); } });
+  await g.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\//, (r) => r.fulfill({ status: 404, body: "" }));
+  return g;
+};
+p = await gosc({});
+await p.goto(BASE + "index.html"); await p.waitForTimeout(2500);
+const karty = () => p.$$eval("#lgKierunek .lk-card[data-k]", (l) => l.map((x) => x.dataset.k));
+ok("6 pierwsze wejście: karta FiR (nie ma go w bazie) znika po odpowiedzi bazy", JSON.stringify(await karty()) === JSON.stringify([BM, ZARZ])
+  && JSON.parse(await ev(p, () => localStorage.getItem("skrot-roczniki-baza"))).includes(ZARZ), await karty());
+await p.reload(); await p.waitForTimeout(300);
+ok("6 kolejne wejście: FiR nie ma od razu (lista z poprzedniej wizyty)", !(await karty()).includes(FIR), await karty());
+ok("6 bez błędów konsoli", !p.errors.length, p.errors);
+await p.context().close();
+p = await gosc({ "skrot-rocznik": FIR, "skrot-kierunek": "fir26", "bm-group": "M120" });
+await p.goto(BASE + "index.html"); await p.waitForTimeout(3500);
+ok("6 wybrany wcześniej FiR bez wiersza w bazie → BM (jedno przeładowanie)", (await ev(p, () => [window.SKROT_ROCZNIK.id, localStorage.getItem("skrot-rocznik")])).join() === [BM, BM].join(),
+  await ev(p, () => [window.SKROT_ROCZNIK.id, localStorage.getItem("skrot-rocznik")]));
+await p.context().close();
+p = await gosc({ "mock-roczniki-lista": JSON.stringify([{ id: BM, status: "platny" }, { id: ZARZ, status: "oczekujacy" }, { id: FIR, status: "oczekujacy" }]) });
+await p.goto(BASE + "index.html"); await p.waitForTimeout(2500);
+ok("6 po „Dodaj do bazy”: FiR znowu na ekranie wejścia", (await karty()).includes(FIR), await karty());
+await p.context().close();
+
 await b.close();
 for (const w of wyniki) console.log(w.join(" "));
 const zle = wyniki.filter((w) => w[0] === "✗").length;
