@@ -27,11 +27,12 @@ const POMIJANE = /^(szkolenie|odrabianie|bhp|wf|wychowanie-fizyczne|lektorat|jez
 
 // „Finanse i Rachunkowość” → „finanse_i_rachunkowosc” (tak wydział nazywa pliki sylabusów i planów studiów)
 export const slugPdf = (nazwa) => slug(nazwa.replace(/\s*inż\.?$/i, " inzynierskie")).replace(/-/g, "_");
-export function adresySylabusa(nazwa, stopien, nabor, tryb = "st") {
+// Kierunek po angielsku: wersja angielska sylabusa ma dopisek „_ang” (jak BM: sylabus_business_management_…_2026_2027_ang.pdf).
+export function adresySylabusa(nazwa, stopien, nabor, tryb = "st", jezyk = "pl") {
   const lata = `${nabor}_${nabor + 1}`, kat = `${String(nabor).slice(2)}-${String(nabor + 1).slice(2)}`;
   const studia = (tryb === "st" ? "studia_stacjonarne_" : "studia_niestacjonarne_") + STOPIEN_PDF[stopien] + "_stopnia_" + lata;
   return {
-    pdf: `${SYLABUS_BAZA}sylabusy/${kat}/sylabus_${slugPdf(nazwa)}_${studia}.pdf`,
+    pdf: `${SYLABUS_BAZA}sylabusy/${kat}/sylabus_${slugPdf(nazwa)}_${studia}${jezyk === "en" ? "_ang" : ""}.pdf`,
     planStudiow: `${SYLABUS_BAZA}plany_studiow/${nabor}-${String(nabor + 1).slice(2)}/plany_studiow_${slugPdf(nazwa)}_${studia}.pdf`,
   };
 }
@@ -66,7 +67,9 @@ export function wBanku(og, inne) {
   return inne.some((k) => k.jezykZajec === "pl" && Object.entries(k.przedmioty || {}).some(([id, v]) => id === og || (v.bank || []).includes(og)));
 }
 
-export function zbuduj({ cfg, plan, nazwy, O, inne = [] }) {
+// bmIds: id przedmiotów BM (sylabus.json). Ten sam slug co w BM (plan: „MACROECONOMICS (MAKROEKONOMIA)” → makroekonomia) = ten sam
+// przedmiot BM wprost, przed aliasami. Kierunek po angielsku: przedmiot z BM to K1 (kopia lekcji BM, bez tłumaczenia), bank PL nie liczy się.
+export function zbuduj({ cfg, plan, nazwy, O, inne = [], bmIds = new Set() }) {
   if (!cfg?.id || !cfg.kierunek?.kod) blad("Brak konfiguracji planu (plan-bm/kierunki/<id>.json): najpierw plan-bm/scripts/wefiz-wszystkie.mjs");
   const n = nazwy.kierunki[cfg.kierunek.pl] || {};
   const ids = przedmiotyZPlanu(plan);
@@ -74,12 +77,13 @@ export function zbuduj({ cfg, plan, nazwy, O, inne = [] }) {
   if (!n.en) uwagi.push(`brak nazwy EN dla „${cfg.kierunek.pl}” w kierunki/wspolne/kierunki-nazwy.json (wpisana polska)`);
   if (!ids.length) uwagi.push("plan zajęć jeszcze pusty: lista przedmiotów pusta (uruchom update-plan.mjs w plan-bm i ten skrypt z --nadpisz)");
   const przedmioty = {};
+  const en = (n.jezykZajec || "pl") === "en";
   for (const id of ids) {
     const o = ogolny(id, O);
-    const bank = o ? [o.og] : [], bm = o ? o.bm : [];
+    const bank = o && !en ? [o.og] : [], bm = bmIds.has(id) ? [id] : o ? o.bm : [];
     if (o && !o.pewne) uwagi.push(`„${id}” przypisany do „${o.og}” po początku nazwy – sprawdź`);
-    if (!o) uwagi.push(`„${id}” bez przedmiotu ogólnego (nowy w banku: K3; dopisz alias w przedmioty-ogolne.json, jeśli to ten sam przedmiot co gdzie indziej)`);
-    przedmioty[id] = { bank, bm, koszyk: bank.length && wBanku(bank[0], inne) ? "K1" : bm.length ? "K2" : "K3" };
+    if (!o && !bm.length) uwagi.push(`„${id}” bez przedmiotu ogólnego (nowy w banku: K3; dopisz alias w przedmioty-ogolne.json, jeśli to ten sam przedmiot co gdzie indziej)`);
+    przedmioty[id] = { bank, bm, koszyk: en ? (bm.length ? "K1" : "K3") : bank.length && wBanku(bank[0], inne) ? "K1" : bm.length ? "K2" : "K3" };
   }
   const nab = cfg.nabor, jezyk = n.jezykZajec || "pl";
   const k = {
@@ -91,7 +95,7 @@ export function zbuduj({ cfg, plan, nazwy, O, inne = [] }) {
     stopien: cfg.stopien, tryb: cfg.tryb || "st", nabor: nab, jezykZajec: jezyk,
     plan: { systemNazwa: cfg.system?.nazwa, rok: cfg.system?.rok, plik: cfg.plik },
     grupy: (cfg.grupy || []).slice(),
-    sylabus: { ...adresySylabusa(cfg.kierunek.pl, cfg.stopien, nab, cfg.tryb || "st"), plik: `sylabus-${cfg.kod}.json`, zgadniety: true },
+    sylabus: { ...adresySylabusa(cfg.kierunek.pl, cfg.stopien, nab, cfg.tryb || "st", jezyk), plik: `sylabus-${cfg.kod}.json`, zgadniety: true },
     teams: false,
     ...(cfg.dos ? { dos: cfg.dos } : {}),
     status: "oczekujacy",
@@ -124,7 +128,8 @@ async function main(argv) {
   const pp = path.join(planBm, cfg.plik);
   const plan = fs.existsSync(pp) ? czytajJson(pp) : null;
   const inne = fs.readdirSync(path.join(ROOT, "kierunki")).filter((f) => f.endsWith(".json")).map((f) => czytajJson(path.join(ROOT, "kierunki", f))).filter((x) => x.id !== cfg.id);
-  const { k, uwagi } = zbuduj({ cfg, plan, nazwy: czytajJson(path.join(ROOT, "kierunki/wspolne/kierunki-nazwy.json")), O: czytajJson(path.join(ROOT, "kierunki/wspolne/przedmioty-ogolne.json")), inne });
+  const bmIds = new Set(czytajJson(path.join(ROOT, "sylabus.json")).courses.map((c) => c.id));
+  const { k, uwagi } = zbuduj({ cfg, plan, nazwy: czytajJson(path.join(ROOT, "kierunki/wspolne/kierunki-nazwy.json")), O: czytajJson(path.join(ROOT, "kierunki/wspolne/przedmioty-ogolne.json")), inne, bmIds });
   const out = path.join(ROOT, "kierunki", k.id + ".json");
   const tekst = JSON.stringify(k, null, 2) + "\n";
   console.log(uwagi.length ? "Do sprawdzenia:\n- " + uwagi.join("\n- ") : "Bez uwag.");

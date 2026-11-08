@@ -29,25 +29,36 @@ def slug_pdf(nazwa):
     return slug(re.sub(r"\s*inż\.?$", " inzynierskie", nazwa, flags=re.I)).replace("-", "_")
 
 
-def adresy(nazwa, stopien, nabor, tryb="st"):
-    """Ten sam wzór co scripts/kierunek-nowy.mjs (adresySylabusa); test porównuje oba."""
+def adresy(nazwa, stopien, nabor, tryb="st", jezyk="pl"):
+    """Ten sam wzór co scripts/kierunek-nowy.mjs (adresySylabusa); test porównuje oba. Po angielsku: dopisek „_ang”."""
     lata, kat = f"{nabor}_{nabor + 1}", f"{str(nabor)[2:]}-{str(nabor + 1)[2:]}"
     studia = ("studia_stacjonarne_" if tryb == "st" else "studia_niestacjonarne_") + STOPIEN_PDF[stopien] + "_stopnia_" + lata
-    return {"pdf": f"{BAZA}sylabusy/{kat}/sylabus_{slug_pdf(nazwa)}_{studia}.pdf",
+    return {"pdf": f"{BAZA}sylabusy/{kat}/sylabus_{slug_pdf(nazwa)}_{studia}{'_ang' if jezyk == 'en' else ''}.pdf",
             "planStudiow": f"{BAZA}plany_studiow/{nabor}-{str(nabor + 1)[2:]}/plany_studiow_{slug_pdf(nazwa)}_{studia}.pdf"}
 
 
-def z_listy(html, nazwa, stopien, nabor, tryb="st"):
-    """Odnośnik do PDF-u sylabusa tego kierunku na liście wydziału (nazwa pliku zawiera slug kierunku, stopień i lata)."""
+def z_listy(html, nazwa, stopien, nabor, tryb="st", jezyk="pl"):
+    """Odnośnik do PDF-u sylabusa tego kierunku na liście wydziału (nazwa pliku zawiera slug kierunku, stopień i lata).
+    Kierunek po angielsku: najpierw wersja „_ang”, polska tylko gdy angielskiej nie ma."""
     lata = f"{nabor}_{nabor + 1}"
     want = slug_pdf(nazwa)
     st = ("stacjonarne" if tryb == "st" else "niestacjonarne") + "_" + STOPIEN_PDF[stopien] + "_stopnia"
+    traf = []
     for m in re.finditer(r'href="([^"]+\.pdf)"', html or "", re.I):
         u = m.group(1)
         f = u.rsplit("/", 1)[-1].lower()
         if f.startswith("sylabus_" + want + "_") and st.lower() in f and lata in f:
-            return u
-    return None
+            traf.append((("_ang" in f) != (jezyk == "en"), u))
+    return sorted(traf)[0][1] if traf else None
+
+
+def jezyk_kierunku(nazwa):
+    """Język zajęć z kierunki/wspolne/kierunki-nazwy.json (konfiguracja planu z plan-bm go nie ma)."""
+    try:
+        d = json.load(open(os.path.join(ROOT, "kierunki", "wspolne", "kierunki-nazwy.json")))
+        return d["kierunki"].get(nazwa, {}).get("jezykZajec", "pl")
+    except Exception:
+        return "pl"
 
 
 def pobierz(url, cel=None):
@@ -94,10 +105,11 @@ if __name__ == "__main__":
     lista = None if a.na_sucho else (pobierz(LISTA)[0] or b"").decode("utf-8", "replace")
     raport = []
     for c in cfgs:
+        c = {**c, "jezykZajec": jezyk_kierunku(c["kierunek"]["pl"])}   # sylabus-build: karta angielska jak BM albo polska
         pdf, js = os.path.join(OUT, c["kod"] + ".pdf"), os.path.join(OUT, c["kod"] + ".json")
-        url = z_listy(lista, c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st")) if lista else None
+        url = z_listy(lista, c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"]) if lista else None
         skad = "lista wydziału" if url else "wzór adresu"
-        url = url or adresy(c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"))["pdf"]
+        url = url or adresy(c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"])["pdf"]
         if a.na_sucho:
             raport.append((c["kod"], c["kierunek"]["pl"], skad, url, "na sucho")); continue
         if a.odswiez or not os.path.isfile(pdf):

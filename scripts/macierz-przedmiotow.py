@@ -70,12 +70,16 @@ def roczniki(plan_bm):
         if plik and os.path.isfile(os.path.join(ROOT, plik)):
             out[k["id"]] = {"id": k["id"], "kierunek_id": k["kierunek_id"], "nazwa": k["kierunek"]["pl"], "prefiks": k["prefiks"],
                             "stopien": k["stopien"], "nabor": k["nabor"], "jezyk": k.get("jezykZajec", "pl"), "sylabus": os.path.join(ROOT, plik)}
+    try:
+        NAZWY = json.load(open(os.path.join(ROOT, "kierunki", "wspolne", "kierunki-nazwy.json")))["kierunki"]
+    except Exception:
+        NAZWY = {}
     for f in sorted(glob.glob(os.path.join(plan_bm, "kierunki", "*.json"))) if plan_bm else []:
         c = json.load(open(f))
         s = os.path.join(ROOT, "scratch", "sylabusy", c["kod"] + ".json")
         if c["id"] not in out and os.path.isfile(s):
             out[c["id"]] = {"id": c["id"], "kierunek_id": c["id"].rsplit("-", 1)[0], "nazwa": c["kierunek"]["pl"], "prefiks": c["kod"],
-                            "stopien": c["stopien"], "nabor": c["nabor"], "jezyk": "pl", "sylabus": s}
+                            "stopien": c["stopien"], "nabor": c["nabor"], "jezyk": NAZWY.get(c["kierunek"]["pl"], {}).get("jezykZajec", "pl"), "sylabus": s}
     return out
 
 

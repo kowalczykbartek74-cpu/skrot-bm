@@ -1,0 +1,477 @@
+{
+ "source": "test EaIA",
+ "updated": "2026-11-08",
+ "rocznik": "wefiz-eaia-1-st-2026",
+ "courses": [
+  {
+   "id": "makroekonomia",
+   "code": "EFZ214AIJ3432_1S",
+   "en": "Macroeconomics",
+   "pl": "Makroekonomia",
+   "group": "PODSTAWOWE",
+   "elective": false,
+   "unit": null,
+   "sem": [
+    1
+   ],
+   "ects": 3,
+   "hours": 30,
+   "forms": [
+    {
+     "f": "W",
+     "h": 15,
+     "c": "pg",
+     "s": 1
+    },
+    {
+     "f": "CW",
+     "h": 15,
+     "c": "pg",
+     "s": 1
+    }
+   ],
+   "coord": "dr hab. Rafał Nagaj",
+   "inst": [
+    "dr hab. Rafał Nagaj"
+   ],
+   "goals": [
+    "To acquaint the student with the basic issues and models of macroeconomics, to explain key processes and relationships in the economy, and to make students able to perceive the relationships between parts of the economy."
+   ],
+   "pre": [
+    "Student's ability to consider phenomena in a cause and effect manner and willingness to acquire economic knowledge."
+   ],
+   "out": [
+    {
+     "c": "knowledge",
+     "k": "EP1",
+     "t": "Student has general knowledge about main variables and macroeconomic processes as well as the relationship between economic operators."
+    },
+    {
+     "c": "knowledge",
+     "k": "EP2",
+     "t": "Student knows and describes the basic macroeconomic aggregates (ie production, aggregate demand, inflation, unemployment) and the processes taking place within them."
+    },
+    {
+     "c": "skills",
+     "k": "EP3",
+     "t": "Student can correctly identify the macroeconomic aggregates."
+    },
+    {
+     "c": "skills",
+     "k": "EP4",
+     "t": "Student can recognize the relationships that occur between parts of the economy, as well as the role that individual economic operators play in achieving the global equilibrium."
+    },
+    {
+     "c": "social competences",
+     "k": "EP5",
+     "t": "The student is aware of the importance of knowledge in solving macroeconomic problems."
+    }
+   ],
+   "topics": {
+    "W": [
+     {
+      "t": "Fundamentals of economics and functioning of the economy. The state of balance in the economy.",
+      "h": 4
+     },
+     {
+      "t": "Main macroeconomic problems: global product and economic growth, labor market and unemployment, inflation.",
+      "h": 5
+     },
+     {
+      "t": "Cryptocurrency markets and central bank digital currencies",
+      "h": 2
+     }
+    ],
+    "CW": [
+     {
+      "t": "Introduction to economics. Circular flow of income and the equilibrium in the economy.",
+      "h": 4
+     },
+     {
+      "t": "Basic macroeconomic problems: measurement of global product including GDP, unemployment, inflation.",
+      "h": 4
+     },
+     {
+      "t": "Money and banking system. Fundamentals of monetary policy.",
+      "h": 2
+     },
+     {
+      "t": "Private and public sector demand versus aggregate demand. International trade versus aggregate demand.",
+      "h": 3
+     },
+     {
+      "t": "Repetition and summary of macroeconomic issues.",
+      "h": 2
+     }
+    ]
+   },
+   "how": [
+    "solving tasks, multimedia lectures"
+   ],
+   "assess": [
+    {
+     "m": "Kolokwium",
+     "ep": [
+      "EP1",
+      "EP2",
+      "EP3",
+      "EP4",
+      "EP5"
+     ]
+    }
+   ],
+   "grading": [
+    "Credit for the classes: Students are assessed on the basis of a written colloquium. Test consist of test questions and open tasks.",
+    "Credit for lectures: Students are assessed on the basis of the written colloquium that consists of test questions.",
+    "Graduating: a positive grade means that the the student has scored more than half of the points possible in the colloquium and the exam."
+   ],
+   "calc": [
+    "The final grade is the arithmetic of grades of the classes and the exam. If the result of this arithmetic mean is ambiguous, then the exam grade prevails."
+   ],
+   "final": {
+    "m": "Arytmetyczna",
+    "parts": [
+     {
+      "n": "wykład",
+      "c": "zaliczenie z oceną",
+      "w": null
+     },
+     {
+      "n": "ćwiczenia",
+      "c": "zaliczenie z oceną",
+      "w": null
+     }
+    ]
+   },
+   "lit": [
+    "oceną C.J. Jones. (2018): Macroeconomics, 3rd Edition., Norton & Company, Inc., New York/London",
+    "Krugman, P., Wells, R. (2018): Macroeconomics, 5th Edition, Worth Publishers, New York",
+    "N.G. Mankiw (2016): Macroeconomics, 9th Edition, Worth Publishers, New York"
+   ],
+   "sup": [
+    "Mankiw, N.G. (2018): Principles of Macroeconomics, 8th Edition, Cengage Learning, Inc."
+   ],
+   "load": {
+    "Contact hours": 30,
+    "Participation in test / exam": 3,
+    "Preparation for contact hours": 8,
+    "Private reading and studying": 17,
+    "Participation in tutorials": 7,
+    "Preparation of project / essay / etc.": 0,
+    "Preparation for test / exam": 10,
+    "TOTAL workload": 75,
+    "ECTS credits": 3
+   }
+  },
+  {
+   "id": "analiza-matematyczna",
+   "code": "EFZ214AIJ3432_2S",
+   "en": "Mathematical analysis",
+   "pl": "Analiza matematyczna",
+   "group": "PODSTAWOWE",
+   "elective": false,
+   "unit": null,
+   "sem": [
+    1
+   ],
+   "ects": 4,
+   "hours": 30,
+   "forms": [
+    {
+     "f": "W",
+     "h": 15,
+     "c": "e",
+     "s": 1
+    },
+    {
+     "f": "CW",
+     "h": 15,
+     "c": "pg",
+     "s": 1
+    }
+   ],
+   "coord": "dr Barbara Batóg",
+   "inst": [
+    "dr Barbara Batóg"
+   ],
+   "goals": [
+    "Course deals with differential and integral calculus for one and two variable functions."
+   ],
+   "pre": [
+    "Knowledge: student knows mathematics on the high school level Skills: student is able to solve mathematical problems on the high school level Social competencies: student is able to study systematically"
+   ],
+   "out": [
+    {
+     "c": "knowledge",
+     "k": "EP1",
+     "t": "student is able to explain the concept of monotonicity, extrema, concavity, inflection points and asymptotes for single variable function"
+    },
+    {
+     "c": "knowledge",
+     "k": "EP2",
+     "t": "student is able to explain the concept of indefinite and definite integral for single variable function"
+    },
+    {
+     "c": "knowledge",
+     "k": "EP3",
+     "t": "student knows necessary and sufficient conditions of existing of extrema of two variable functions"
+    },
+    {
+     "c": "skills",
+     "k": "EP4",
+     "t": "student is able to analyze the properties of one variable functions by means of derivatives"
+    },
+    {
+     "c": "skills",
+     "k": "EP5",
+     "t": "student is able to compute chosen types of indefinite and definite integrals"
+    },
+    {
+     "c": "skills",
+     "k": "EP6",
+     "t": "student is able to compute local extrema of two variable functions"
+    },
+    {
+     "c": "social competences",
+     "k": "EP7",
+     "t": "student is ready to apply mathematical analysis to analyze dependencies of economic variables"
+    }
+   ],
+   "topics": {
+    "W": [
+     {
+      "t": "Elementary functions and their properties",
+      "h": 2
+     },
+     {
+      "t": "Definition and properties of derivative of one variable function and its applications",
+      "h": 6
+     },
+     {
+      "t": "Chosen indefinite and definite integrals",
+      "h": 3
+     },
+     {
+      "t": "Local extrema of two variable functions",
+      "h": 4
+     }
+    ],
+    "CW": [
+     {
+      "t": "Elementary functions and their properties",
+      "h": 2
+     },
+     {
+      "t": "Definition of derivative, its properties and applications",
+      "h": 6
+     },
+     {
+      "t": "Chosen indefinite and definite integrals",
+      "h": 3
+     },
+     {
+      "t": "Local extrema of two variable functions",
+      "h": 4
+     }
+    ]
+   },
+   "how": [
+    "Lecture, exercises, solving problems"
+   ],
+   "assess": [
+    {
+     "m": "Egzamin pisemny",
+     "ep": [
+      "EP1",
+      "EP2",
+      "EP3",
+      "EP4",
+      "EP5",
+      "EP6",
+      "EP7"
+     ]
+    },
+    {
+     "m": "Kolokwium",
+     "ep": [
+      "EP4",
+      "EP5",
+      "EP6"
+     ]
+    }
+   ],
+   "grading": [
+    "Min. 50% points from colloquium and min. 50% points from exam"
+   ],
+   "calc": [
+    "The final grade is calculated as an average of grades of exercises and exam"
+   ],
+   "final": {
+    "m": "Arytmetyczna",
+    "parts": [
+     {
+      "n": "wykład",
+      "c": "egzamin",
+      "w": null
+     },
+     {
+      "n": "ćwiczenia",
+      "c": "zaliczenie z oceną",
+      "w": null
+     }
+    ]
+   },
+   "lit": [
+    "Batóg B., Bieszk-Stolorz B., Forys I., Guzowska M., Heberlein K. (2021): Mathematics for Students of Economics, Finance and Management, Difin, Warszawa",
+    "Bittinger M.J., Ellenbogen D.J., Surgent S.A. (2012): Calculus and its Applications, Addison-Wesley, Pearson Education, Boston"
+   ],
+   "sup": [
+    "Ciałowicz B. (2017): Workouts in Calculus and Linear Algebra with Applications in Economics, Cracow University of Economics Press, Kraków"
+   ],
+   "load": {
+    "Contact hours": 30,
+    "Participation in test / exam": 2,
+    "Preparation for contact hours": 15,
+    "Private reading and studying": 20,
+    "Participation in tutorials": 10,
+    "Preparation of project / essay / etc.": 0,
+    "Preparation for test / exam": 23,
+    "TOTAL workload": 100,
+    "ECTS credits": 4
+   }
+  },
+  {
+   "id": "programowanie-w-python",
+   "code": "X1",
+   "en": "Python programming",
+   "pl": "Programowanie w Python",
+   "group": "KIERUNKOWE",
+   "elective": false,
+   "unit": null,
+   "sem": [
+    1
+   ],
+   "ects": 3,
+   "hours": 30,
+   "forms": [
+    {
+     "f": "W",
+     "h": 15,
+     "c": "pg",
+     "s": 1
+    },
+    {
+     "f": "CW",
+     "h": 15,
+     "c": "pg",
+     "s": 1
+    }
+   ],
+   "coord": "dr Jakub Dowejko",
+   "inst": [
+    "dr Joanna Drobiazgiewicz",
+    "dr Jakub Dowejko"
+   ],
+   "goals": [
+    "The aim of the course is to provide knowledge and skills in the field of logistics basis as well as research and analysis.",
+    "Students learn about the market and service principals as well as final buyers of products and delivery systems. Market reaserch and analysis are design to provide managers with information about the current state, business goals, and problem solving paths. All those factors are tailored to support company's development."
+   ],
+   "pre": [
+    "Knowledge of basic concepts in the field of logistics"
+   ],
+   "out": [
+    {
+     "c": "knowledge",
+     "k": "EP1",
+     "t": "Student know the concepts in the area of logistics"
+    },
+    {
+     "c": "knowledge",
+     "k": "EP3",
+     "t": "Student has advanced knowledge in the field of supply chain management and about the determinants of their functioning"
+    },
+    {
+     "c": "skills",
+     "k": "EP2",
+     "t": "Student is able to define problems in supply chais and indicates possible solutions"
+    },
+    {
+     "c": "social competences",
+     "k": "EP4",
+     "t": "Student has knowledge of the geopolitical situation and globalization in business. Student has skills in the field of business responsibility"
+    }
+   ],
+   "topics": {
+    "LAB": [
+     {
+      "t": "Variables, loops and functions in Python",
+      "h": 4
+     },
+     {
+      "t": "Working with pandas data frames",
+      "h": 4
+     }
+    ]
+   },
+   "how": [
+    "Discussion, case studies, group work, multimedia presentation"
+   ],
+   "assess": [
+    {
+     "m": "Kolokwium",
+     "ep": [
+      "EP3"
+     ]
+    },
+    {
+     "m": "Zajęcia praktyczne (weryfikacja poprzez obserwację)",
+     "ep": [
+      "EP1",
+      "EP2",
+      "EP4"
+     ]
+    }
+   ],
+   "grading": [
+    "Students are assesses on the tests basis (selection), which will allow to verify the learning outcomes. Students are also assessed for class involvement."
+   ],
+   "calc": [
+    "The grade for the course is the arithmetic average of the exercises and lectures"
+   ],
+   "final": {
+    "m": "Arytmetyczna",
+    "parts": [
+     {
+      "n": "wykład",
+      "c": "zaliczenie z oceną",
+      "w": null
+     },
+     {
+      "n": "ćwiczenia",
+      "c": "zaliczenie z oceną",
+      "w": null
+     }
+    ]
+   },
+   "lit": [
+    "Henk Zijm, Matthias Klumpp, Alberto Regattieri, Sunderesh Heragu (2019): Operations, Logistics and Supply Chain Management, Springer International Publishing",
+    "Martin Christopher (2011): Logistics and Supply Chain Management, Pearson Education Limited",
+    "Rushton, Alan, Baker, Peter, Croucher, Phil (2014): The Handbook of Logistics and Distribution Management: Understanding the Supply Chain, Kogan Page; 5th edition"
+   ],
+   "sup": [
+    "Paul R. Murphy, Jr., A. Michael Knemeyer (2018): Contemporary Logistics (Global Edition), Pearson"
+   ],
+   "load": {
+    "Contact hours": 30,
+    "Participation in test / exam": 2,
+    "Preparation for contact hours": 9,
+    "Private reading and studying": 12,
+    "Participation in tutorials": 7,
+    "Preparation of project / essay / etc.": 0,
+    "Preparation for test / exam": 15,
+    "TOTAL workload": 75,
+    "ECTS credits": 3
+   }
+  }
+ ]
+}

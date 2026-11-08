@@ -40,6 +40,10 @@ K = json.load(open(os.path.join(ROOT, a.kierunek) if not os.path.isabs(a.kierune
 OUT = os.path.join(ROOT, "scratch", K["prefiks"])
 os.makedirs(OUT, exist_ok=True)
 SYL = {c["id"]: c for c in json.load(open(os.path.join(ROOT, K["sylabus"]["plik"])))["courses"]}
+# Kierunek prowadzony po angielsku (jezykZajec "en", np. Economics and IT Applications): lekcje BM są w tym samym języku,
+# więc temat, który BM ma, to K1 (kopia 1:1, 0 zł), a nie K2 (tłumaczenie). Bank PL (lekcje polskie) wtedy nie jest źródłem:
+# tłumaczenia PL→EN skrypty nie robią, taki temat to K3 (nowa lekcja EN, wzorcem lekcje BM).
+EN = K.get("jezykZajec", "pl") == "en"
 BM_SYL = {c["id"]: c for c in json.load(open(os.path.join(ROOT, "sylabus.json")))["courses"]}
 
 
@@ -71,6 +75,8 @@ def nazwa(pid):
 
 # ---------- bank PL ----------
 def bank_kandydaci(ogolne):
+    if EN:
+        return []   # bank to lekcje PL; kierunek po angielsku bierze kopie wprost z BM
     """Kandydaci z banku: zatwierdzone pliki z bank/indeks.json (status „zatwierdzone”), a dla przedmiotów, których bank
     jeszcze nie ma: tematy z sylabusa wcześniejszego kierunku PL, który ma ten przedmiot (status „czeka”)."""
     out = []
@@ -104,7 +110,9 @@ def bank_kandydaci(ogolne):
     return out
 
 
-STOP = {"oraz", "jako", "przez", "wybrane", "wybranych", "podstawy", "podstawowe", "zasady", "istota", "pojecie", "pojecia", "rodzaje", "znaczenie", "dla", "jego", "ich"}
+STOP = {"oraz", "jako", "przez", "wybrane", "wybranych", "podstawy", "podstawowe", "zasady", "istota", "pojecie", "pojecia", "rodzaje", "znaczenie", "dla", "jego", "ich",
+        # te same słowa po angielsku (kierunek po angielsku: tematy EN ↔ tematy sylabusa BM)
+        "with", "from", "into", "their", "basic", "basics", "selected", "concept", "concepts", "types", "role", "introduction", "principles", "overview"}
 
 
 def rdzenie(s):
@@ -154,6 +162,14 @@ def kandydaci(bm_ids):
     return out
 
 
+ZASADY_EN = """Mapujesz tematy przedmiotu z nowego kierunku studiów prowadzonego PO ANGIELSKU na istniejące lekcje kierunku
+Business Management (też po angielsku; kandydaci mają zrodloTyp "BM"). Dla każdego tematu z listy „tematy” zwróć:
+- koszyk "K1", gdy kandydat "BM" ma tę samą treść (pokrywa większość tematu) – lekcję BM skopiujemy bez zmian;
+- koszyk "K3", gdy żaden kandydat jej nie ma albo pokrywa ją tylko w małej części – powstanie nowa lekcja;
+- zrodlo: id kandydatów (dokładnie tak, jak w liście) dla K1; dla K3 pusta lista;
+- uwaga: jedno krótkie zdanie po polsku tylko wtedy, gdy przypisanie jest niepewne albo kandydat pokrywa temat częściowo; inaczej pusty napis.
+Nie używaj koszyka "K2". Nie wymyślaj id. Zwróć każdy temat dokładnie raz, z jego numerem i."""
+
 ZASADY = """Mapujesz tematy przedmiotu z nowego kierunku studiów (po polsku) na istniejące treści. Kandydaci mają zrodloTyp:
 "bank" = polskie lekcje (albo tematy) z innego kierunku tej uczelni, "BM" = lekcje kierunku Business Management po angielsku.
 Dla każdego tematu z listy „tematy” zwróć:
@@ -180,7 +196,7 @@ def zapytanie(pid, tem, kand):
     return {"custom_id": pid, "params": {
         "model": a.model, "max_tokens": 8000,
         "output_config": {"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}},
-        "system": [{"type": "text", "text": ZASADY, "cache_control": {"type": "ephemeral"}}],
+        "system": [{"type": "text", "text": ZASADY_EN if EN else ZASADY, "cache_control": {"type": "ephemeral"}}],
         "messages": [{"role": "user", "content": json.dumps(tresc, ensure_ascii=False)}],
     }}
 
@@ -285,13 +301,18 @@ def zapisz_mape(wyniki):
             uw = x["uwaga"] + (" (odrzucone nieznane id: " + ", ".join(z for z in x["zrodlo"] if z not in ids) + ")" if len(zr) < len(x["zrodlo"]) else "")
             typ = {k["id"]: k["zrodloTyp"] for p, _, kk in plan if p == pid for k in kk}
             bank_z, bm_z = [z for z in zr if typ[z] == "bank"], [z for z in zr if typ[z] == "BM"]
-            # K1 tylko ze źródłem z banku, K2 tylko z BM; inaczej koszyk o stopień niżej
             kosz = x["koszyk"]
-            if kosz == "K1" and not bank_z:
-                kosz = "K2" if bm_z else "K3"
-            if kosz == "K2" and not bm_z:
-                kosz = "K3"
-            zr = bank_z if kosz == "K1" else bm_z if kosz == "K2" else []
+            if EN:
+                # po angielsku: K1 = kopia lekcji BM, reszta K3 (K2 nie ma, bo nie ma czego tłumaczyć)
+                kosz = "K1" if kosz in ("K1", "K2") and bm_z else "K3"
+                zr = bm_z if kosz == "K1" else []
+            else:
+                # K1 tylko ze źródłem z banku, K2 tylko z BM; inaczej koszyk o stopień niżej
+                if kosz == "K1" and not bank_z:
+                    kosz = "K2" if bm_z else "K3"
+                if kosz == "K2" and not bm_z:
+                    kosz = "K3"
+                zr = bank_z if kosz == "K1" else bm_z if kosz == "K2" else []
             out.append(z_uwagami({**t, "koszyk": kosz, "zrodlo": zr}, uw.strip()))
         mapa.append({"przedmiot": pid, "tematy": out})
     json.dump(oznacz_pewne(mapa), open(os.path.join(OUT, "mapa.json"), "w"), ensure_ascii=False, indent=1)
@@ -313,6 +334,24 @@ if a.bez_api:
     mapa = []
     for pid, cfg in K["przedmioty"].items():
         bm = cfg.get("bm") or []
+        if EN:
+            # po angielsku: temat ↔ temat sylabusa BM po wspólnych słowach (EN↔EN, 0 zł); trafienie = K1 z lekcji tego tematu BM
+            kand = [k for k in kandydaci(bm) if k["id"].startswith("bm-syl:")] if bm else []
+            df = {}
+            for k in kand:
+                for r in rdzenie(k["tytul"]):
+                    df[r] = df.get(r, 0) + 1
+            import math
+            waga = {r: math.log(1 + len(kand) / n) for r, n in df.items()}
+            tem = []
+            for t in tematy_kierunku(pid):
+                traf = sorted(((podobne(t["temat"], k["tytul"], waga), k["id"]) for k in kand), reverse=True)
+                if traf and traf[0][0] >= 0.5:
+                    tem.append(z_uwagami({**t, "koszyk": "K1", "zrodlo": [i for w, i in traf if w >= 0.5][:3]}, "tymczasowo: dopasowanie słów z tematem sylabusa BM"))
+                else:
+                    tem.append(z_uwagami({**t, "koszyk": "K3", "zrodlo": []}, "brak w BM" if not bm else "tymczasowo: bez pewnego tematu BM"))
+            mapa.append({"przedmiot": pid, "tymczasowa": True, "tematy": tem})
+            continue
         bank = bank_kandydaci(cfg.get("bank") or [])
         kosz_bm = "K3" if not bm else ("K2" if cfg.get("koszyk") != "K3" else "K3")
         tem = []

@@ -182,6 +182,8 @@ def k1_dokument(bm, przedmiot):
     d = {"id": nowe_id(bm["id"]), "subjectId": przedmiot, "rocznik_id": K["id"], "zrodlo": "bm:" + bm["id"],
          "title": bm.get("title", ""), "order": bm.get("order"), "sylRef": syl_ref(bm["id"]), "k2": "do zrobienia",
          "content": copy.deepcopy(bm["content"]), "zrodloHash": odcisk(bm)}
+    if K.get("jezykZajec") == "en":
+        del d["k2"]   # kierunek po angielsku: kopia lekcji BM jest od razu gotowa (bez K2)
     d["kopiaHash"] = odcisk(d)
     return d
 
@@ -314,7 +316,8 @@ if a.krok == "k1":
         d = k1_dokument(BM[i], p)
         json.dump(d, open(os.path.join(PACZKI, d["id"] + ".json"), "w"), ensure_ascii=False, indent=1)
     tymcz = " (mapa TYMCZASOWA: całe przedmioty BM)" if any(m.get("tymczasowa") for m in MAPA) else ""
-    sys.exit(print(f"K1: {len(prz)} lekcji skopiowanych do {os.path.relpath(PACZKI, ROOT)}{tymcz}, 0 zł. Teksty EN czekają na K2."))
+    dalej = "Gotowe do paczki (kierunek po angielsku)." if K.get("jezykZajec") == "en" else "Teksty EN czekają na K2."
+    sys.exit(print(f"K1: {len(prz)} lekcji skopiowanych do {os.path.relpath(PACZKI, ROOT)}{tymcz}, 0 zł. {dalej}"))
 
 if a.krok == "sylref":
     # Dopisuje sylRef (tematy sylabusa kierunku z mapy) do gotowych plików lekcji, które go nie mają. 0 zł, bez modelu.

@@ -5,6 +5,9 @@ import json, re, unicodedata, sys, datetime
 # (kierunek po polsku: nazwa przedmiotu bez części angielskiej, źródło i data z pliku kierunku)
 ARGS = sys.argv[1:]
 KIER = json.load(open(ARGS[ARGS.index("--kierunek") + 1])) if "--kierunek" in ARGS else None
+# Kierunek po angielsku (jezykZajec "en", np. Economics and IT Applications): karta jak w BM („Title (Tytuł)”, etykiety EN),
+# tylko źródło, data i rocznik z pliku kierunku. PL_KARTA = polska karta (Zarządzanie, FiR).
+PL_KARTA = bool(KIER) and KIER.get("jezykZajec", "pl") != "en"
 D = json.load(open("syl.json"))
 
 def slug(s):
@@ -37,7 +40,7 @@ def cap(s):
 FORM = {"lecture": "W", "discussion classes": "CW", "laboratory": "LAB", "conversation": "KON", "seminar": "SEM", "pe classes": "WF"}
 AI_BOILER = "The course teacher shall specify how artificial intelligence"
 GRADE_SPLIT = ("Grade calculation principles",)
-if KIER:
+if PL_KARTA:
     # polska karta przedmiotu (scripts/sylabus_pl.py); lektorat = zajęcia językowe (w BM: conversation → KON)
     FORM = {"wykład": "W", "ćwiczenia": "CW", "laboratorium": "LAB", "konwersatorium": "KON", "lektorat": "KON", "seminarium": "SEM", "zajęcia z wychowania fizycznego": "WF"}
     AI_BOILER = ("The course teacher shall specify how artificial intelligence", "W ramach realizacji przedmiotu, sposób wykorzystania sztucznej inteligencji")
@@ -46,8 +49,8 @@ if KIER:
 courses = []
 seen = set()
 for d in D:
-    m = None if KIER else re.match(r"^(.*?)\s*\(([^()]*(?:\([^()]*\))?[^()]*)\)\s*$", d["title"])
-    en, pl = (m.group(1), m.group(2)) if m else ("", d["title"]) if KIER else (d["title"], "")
+    m = None if PL_KARTA else re.match(r"^(.*?)\s*\(([^()]*(?:\([^()]*\))?[^()]*)\)\s*$", d["title"])
+    en, pl = (m.group(1), m.group(2)) if m else ("", d["title"]) if PL_KARTA else (d["title"], "")
     if pl.lower() == en.lower():
         pl = en
     pl = cap(pl) if pl else ""

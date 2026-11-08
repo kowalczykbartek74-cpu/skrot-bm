@@ -16,6 +16,8 @@
 //   node scripts/lekcje-z-sylabusa.mjs sql     --rocznik … --przedmiot …   → tresci.sql (materials, materialContent, materialSimple, quizWhy)
 //   node scripts/lekcje-z-sylabusa.mjs koszt   --rocznik … --przedmiot …   → koszt z zużycia tokenów (ceny batcha)
 //   node scripts/lekcje-z-sylabusa.mjs probka  --rocznik … --przedmiot … --plik lekcja.json --nr 1   (gotowa lekcja z pliku, np. pilotaż)
+//   node scripts/lekcje-z-sylabusa.mjs paczki  --rocznik … --przedmiot …   → scratch/<prefiks>/paczki/<id>.json (K3 do paczka-lekcji.py,
+//        zamiast SQL; prefiks z kierunki/<rocznik>.json). Kierunek po angielsku (jezykZajec "en"): lekcje po angielsku, „simple” po polsku.
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -43,6 +45,7 @@ const slug = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").rep
 const SID = (rok.prefiks || "") + slug(PRZEDMIOT || "");
 // Prawo ma własne zasady o przepisach; inne kierunki (Zarządzanie, FiR…) zasady o liczbach i firmach w przykładach.
 const PRAWO = /prawo/i.test(rok.kierunek.pl);
+const EN = rok.jezykZajec === "en";   // kierunek po angielsku (np. Economics and IT Applications): lekcja po angielsku jak w BM
 const DIR = path.join(ROOT, ".tresci", ROCZNIK, slug(PRZEDMIOT || "brak"));
 const STAN = path.join(DIR, "stan.json");
 const czytaj = (f, d = null) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : d);
@@ -95,7 +98,7 @@ function wzorcowaLekcja() {
 }
 const PRZEWODNIK = () => `Piszesz lekcję do aplikacji do nauki „Skrót” dla studentów ${rok.ai.pl} (${rok.ai.kontekst}). Lekcja ma prowadzić do ZROZUMIENIA, nie do wkuwania definicji.
 
-Język: polski, prosty i konkretny. Zdania krótkie. Bez lania wody i bez zwrotów typu „warto zauważyć”. Terminy ${PRAWO ? "prawnicze" : "fachowe"} wyjaśniaj przy pierwszym użyciu.
+${EN ? "Język: ANGIELSKI (zajęcia są po angielsku), prosty i konkretny, jak lekcje Business Management; tylko pole simple po polsku." : "Język: polski, prosty i konkretny."} Zdania krótkie. Bez lania wody i bez zwrotów typu „warto zauważyć”. Terminy ${PRAWO ? "prawnicze" : "fachowe"} wyjaśniaj przy pierwszym użyciu.
 Zakres: tylko temat z sylabusa podany w wiadomości (i dopięte do niego ćwiczenia). Nie przepisuj tekstu sylabusa: piszesz własne wyjaśnienia.
 ${PRAWO ? `Prawo: stan na rok akademicki ${rok.rokAkademicki}. Przepisy (Konstytucja RP, ustawy) cytuj tylko wtedy, gdy masz pewność numeru artykułu i treści; w razie wątpliwości opisz zasadę bez numeru. Nie wymyślaj orzeczeń, sygnatur ani nazwisk autorów.` : `Przykłady: polskie realia (zł, polskie firmy i sytuacje studenta). Firmy w kazusach fikcyjne albo bez konkretnych danych finansowych; nie podawaj prawdziwych statystyk, dat ani przepisów, jeśli nie masz pewności. Liczby w przykładach licz dokładnie i sprawdzaj rachunek. Nie wymyślaj nazwisk autorów ani tytułów książek.`}
 
@@ -290,13 +293,13 @@ async function odbierz() {
   void plan;
 }
 
-// ---------- SQL do wklejenia (po v23) ----------
-function sql() {
+// ---------- gotowe lekcje (wspólne dla sql i paczki) ----------
+function gotowe() {
   const plan = czytaj(path.join(DIR, "plan.json"));
+  if (!plan) throw new Error(`Brak ${path.relative(ROOT, path.join(DIR, "plan.json"))}: najpierw krok „plan”, potem „wyslij” i „odbierz”.`);
   const k = czytaj(path.join(DIR, "kontrola.json"), {});
   const wyb = opt("tylko") ? opt("tylko").split(",").map(Number) : plan.lekcje.map((l) => l.nr);
-  const lit = (o) => { const s = JSON.stringify(o); if (s.includes("$skrot$")) throw new Error("tekst zawiera $skrot$"); return `$skrot$${s}$skrot$::jsonb`; };
-  const wiersze = [], pominiete = [], atrapa = {};
+  const out = [], pominiete = [];
   for (const l of plan.lekcje.filter((x) => wyb.includes(x.nr))) {
     const f = path.join(DIR, `lekcja-${String(l.nr).padStart(2, "0")}.json`);
     const x = czytaj(f);
@@ -314,6 +317,34 @@ function sql() {
       conceptCount: content.concepts.length, flashcardCount: content.flashcards.length, quizCount: content.quiz.length, generator: { model: MODEL, kontrola: k[l.nr]?.ocena ?? null } };
     const why = { items: Object.fromEntries(x.quiz.map((q, i) => [i, { why: q.dlaczego.why, example: q.dlaczego.example, not: q.not }])), at: Date.now() };
     const simple = { ...x.prosciej, by: "auto", at: Date.now() };
+    out.push({ l, material, content, simple, why });
+  }
+  return { plan, lekcje: out, pominiete };
+}
+
+// ---------- paczki: K3 do schematu kierunków (scripts/paczka-lekcji.py → Panel AI → Paczka lekcji) ----------
+function paczki() {
+  const pk = path.join(ROOT, "kierunki", ROCZNIK + ".json");
+  if (!fs.existsSync(pk)) throw new Error(`Brak ${path.relative(ROOT, pk)} (plik kierunku)`);
+  const P = JSON.parse(fs.readFileSync(pk, "utf8")).prefiks;
+  const { lekcje, pominiete } = gotowe();
+  if (!lekcje.length) throw new Error("Brak lekcji do zapisania: " + pominiete.join(", "));
+  const dir = path.join(ROOT, "scratch", P, "paczki");
+  fs.mkdirSync(dir, { recursive: true });
+  for (const { l, material, content, simple, why } of lekcje) {
+    const id = l.id.startsWith(P + "-") ? l.id : `${P}-${l.id}`;
+    fs.writeFileSync(path.join(dir, id + ".json"), JSON.stringify({ id, subjectId: material.subjectId, rocznik_id: ROCZNIK, zrodlo: "k3:sylabus",
+      title: material.title, order: material.order, sylRef: material.sylRef, content, simple, why }, null, 1));
+  }
+  console.log(`K3: ${lekcje.length} lekcji → scratch/${P}/paczki${pominiete.length ? "\nPominięte: " + pominiete.join(", ") : ""}\nDalej: python3 scripts/paczka-lekcji.py kierunki/${ROCZNIK}.json scratch/${P}/paczki --nazwa k3`);
+}
+
+// ---------- SQL do wklejenia (po v23) ----------
+function sql() {
+  const lit = (o) => { const s = JSON.stringify(o); if (s.includes("$skrot$")) throw new Error("tekst zawiera $skrot$"); return `$skrot$${s}$skrot$::jsonb`; };
+  const wiersze = [], atrapa = {};
+  const { plan, lekcje, pominiete } = gotowe();
+  for (const { l, material, content, simple, why } of lekcje) {
     for (const [kol, d] of [["materials", material], ["materialContent", content], ["materialSimple", simple], ["quizWhy", why]]) {
       wiersze.push(`  ('${kol}', '${l.id}', ${lit(d)}, '${ROCZNIK}')`);
       (atrapa[kol] ||= {})[l.id] = d;
@@ -374,6 +405,7 @@ if (cmd === "plan") {
   await wyslijBatch(lista.map((l) => prosbaPisz(c, plan, l, cmd === "popraw" ? k[l.nr].problemy.map((p) => `- ${p.gdzie}: ${p.co}`).join("\n") : null)), "pisz");
 } else if (cmd === "odbierz") await odbierz();
 else if (cmd === "sql") sql();
+else if (cmd === "paczki") paczki();
 else if (cmd === "koszt") koszt();
 else if (cmd === "probka") {
   const x = JSON.parse(fs.readFileSync(opt("plik"), "utf8")), nr = Number(opt("nr", "1"));
