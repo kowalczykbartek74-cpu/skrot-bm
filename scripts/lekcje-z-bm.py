@@ -1,7 +1,9 @@
 """Etap D/E schematu kierunków: lekcje nowego kierunku z lekcji BM (koszyki K1 i K2), bez pisania treści w czacie.
 
   python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k1                       # K1: kopia części niezależnych od języka, 0 zł
-  python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --na-sucho [--tylko id,id] [--przedmiot p] [--ile 2]
+  python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --na-sucho [--tylko id,id] [--przedmiot p] [--ile 2]   # pilot (pierwszy kierunek)
+  python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --na-sucho --wszystkie [--przedmioty a,b]          # bez pilota: cała mapa
+                                                                                    # (albo wybrane przedmioty, np. z harmonogramu)
   python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --wyslij   …           # dopiero po „wysyłaj” Bartka
   python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json k2 --odbierz              # wyniki → paczki + porównanie ze źródłem
   python3 scripts/lekcje-z-bm.py kierunki/<rocznik>.json tytuly --na-sucho|--wyslij|--odbierz [--katalog …]
@@ -27,6 +29,8 @@ ap.add_argument("--odbierz", action="store_true")
 ap.add_argument("--tylko", default="")
 ap.add_argument("--przedmiot", default="podstawy-zarzadzania")
 ap.add_argument("--ile", type=int, default=2)
+ap.add_argument("--wszystkie", action="store_true", help="wszystkie lekcje K2 z mapy (kolejny kierunek: wzorzec zatwierdzony, bez pilota)")
+ap.add_argument("--przedmioty", default="", help="z --wszystkie: tylko te przedmioty (lista po przecinku)")
 ap.add_argument("--model", default="claude-sonnet-5-5")
 ap.add_argument("--lekcje", default=os.path.join(ROOT, "scratch", "lessons"))
 ap.add_argument("--wyjscie", default=None)
@@ -240,7 +244,18 @@ def wybrane(prz):
         if brak:
             sys.exit("Nie ma w eksporcie BM: " + ", ".join(brak))
         return ids
-    ids = sorted((i for i, (p, _) in prz.items() if p == a.przedmiot), key=lambda i: (BM[i].get("order") is None, BM[i].get("order") or 0, i))
+    kol = lambda i: (BM[i].get("order") is None, BM[i].get("order") or 0, i)
+    if a.wszystkie:
+        chc = {x.strip() for x in a.przedmioty.split(",") if x.strip()}
+        # lekcje już gotowe (k2: gotowe w paczkach) nie idą drugi raz
+        gotowe = set()
+        if os.path.isdir(PACZKI):
+            for f in os.listdir(PACZKI):
+                d = json.load(open(os.path.join(PACZKI, f)))
+                if d.get("k2") == "gotowe" and str(d.get("zrodlo", "")).startswith("bm:"):
+                    gotowe.add(d["zrodlo"][3:])
+        return sorted((i for i, (p, _) in prz.items() if (not chc or p in chc) and i not in gotowe), key=lambda i: (prz[i][0], kol(i)))
+    ids = sorted((i for i, (p, _) in prz.items() if p == a.przedmiot), key=kol)
     return ids[: a.ile]
 
 
@@ -373,7 +388,8 @@ if not BM:
 prz = przypisania()
 ids = wybrane(prz)
 if not ids:
-    sys.exit(f"Brak lekcji BM przypisanych do „{a.przedmiot}” w mapie (koszyk K2).")
+    sys.exit("Brak lekcji K2 do zrobienia w mapie" + (f" ({a.przedmioty})" if a.przedmioty else "") + " – wszystkie gotowe albo mapa nie ma K2." if a.wszystkie
+             else f"Brak lekcji BM przypisanych do „{a.przedmiot}” w mapie (koszyk K2).")
 zap = [z for i in ids for z in zapytania_lekcji(i, *prz.get(i, (a.przedmiot, [])))]
 PB = os.path.join(OUT, "k2-batch.json")
 

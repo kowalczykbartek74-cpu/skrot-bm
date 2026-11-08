@@ -174,7 +174,18 @@
     return "#/home";
   }
 
+  // Terminy wszystkich roczników do harmonogramu treści (scripts/harmonogram-tresci.mjs --terminy): przyszłe terminy z przedmiotem,
+  // jeden wiersz na (rocznik, przedmiot, data, tytuł). Wynik: [{ rocznik_id, subjectId, date, title }] po dacie.
+  function terminyDoHarmonogramu(D, ids, dzis) {
+    var out = [];
+    (ids || []).forEach(function (rid) {
+      nadchodzace(D, rid, dzis, 100000).forEach(function (t) { if (t.subjectId) out.push({ rocznik_id: rid, subjectId: t.subjectId, date: t.date, title: t.title }); });
+    });
+    return out.filter(function (t, i) { return out.findIndex(function (x) { return x.rocznik_id === t.rocznik_id && x.subjectId === t.subjectId && x.date === t.date && x.title === t.title; }) === i; })
+      .sort(function (a, b) { return a.date.localeCompare(b.date) || a.rocznik_id.localeCompare(b.rocznik_id); });
+  }
+
   return { Z_DANYMI: Z_DANYMI, TYLKO_ID: TYLKO_ID, slug: slug, przedmiotyZPlanu: przedmiotyZPlanu, nazwaZeSluga: nazwaZeSluga, wRoczniku: wRoczniku,
     materialy: materialy, podsumowanie: podsumowanie, przedmioty: przedmioty, nadchodzace: nadchodzace, ogloszenia: ogloszenia,
-    rocznikiZDanych: rocznikiZDanych, adresPo: adresPo, WIDOKI: WIDOKI };
+    rocznikiZDanych: rocznikiZDanych, adresPo: adresPo, WIDOKI: WIDOKI, terminyDoHarmonogramu: terminyDoHarmonogramu };
 });

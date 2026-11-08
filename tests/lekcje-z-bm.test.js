@@ -87,3 +87,17 @@ test("bez eksportu BM: czytelny komunikat zamiast pustych paczek", () => {
   assert.strictEqual(r.status, 1);
   assert.match(r.stderr.toString(), /Brak eksportu lekcji BM/);
 });
+
+test("K2 bez pilota (--wszystkie): cała mapa albo wybrane przedmioty, gotowe lekcje pominięte", () => {
+  const d = srodowisko(MAPA_TYMCZ);
+  let r = uruchom(d, "k2", "--na-sucho", "--wszystkie");
+  assert.strictEqual(r.status, 0, r.stderr.toString());
+  assert.match(r.stdout.toString(), /1 lekcji \(1 zapytań\): pz-01-test/);
+  r = uruchom(d, "k2", "--na-sucho", "--wszystkie", "--przedmioty", "matematyka");
+  assert.notStrictEqual(r.status, 0);
+  assert.match(r.stderr.toString(), /Brak lekcji K2 do zrobienia w mapie \(matematyka\)/);
+  fs.mkdirSync(path.join(d, "out/paczki"), { recursive: true });
+  fs.writeFileSync(path.join(d, "out/paczki/zarz26-pz-01-test.json"), JSON.stringify({ id: "zarz26-pz-01-test", zrodlo: "bm:pz-01-test", k2: "gotowe", subjectId: "podstawy-zarzadzania", content: {} }));
+  r = uruchom(d, "k2", "--na-sucho", "--wszystkie");
+  assert.notStrictEqual(r.status, 0, "gotowa lekcja nie idzie drugi raz");
+});

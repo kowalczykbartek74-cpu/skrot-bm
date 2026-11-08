@@ -335,7 +335,8 @@ export function sprawdz(k, plan, sylabus = null) {
   for (const g of k.grupy) if (gr.length && !gr.includes(g)) uwagi.push(`grupa ${g} jest w pliku kierunku, a nie ma jej w planie`);
   for (const g of gr) if (!k.grupy.includes(g)) uwagi.push(`grupa ${g} jest w planie, a nie ma jej w pliku kierunku`);
   const przedm = new Map();
-  for (const g of Object.values(plan?.groups || {})) for (const w of ["odd", "even"]) for (const e of g[w] || []) if (e.k !== "X") przedm.set(slug(e.pl), e.pl);
+  // szkolenia (BHP, biblioteczne) i odrabianie nie są przedmiotami kierunku (to samo pomija kierunek-nowy.mjs)
+  for (const g of Object.values(plan?.groups || {})) for (const w of ["odd", "even"]) for (const e of g[w] || []) if (e.k !== "X" && !/^(szkolenie|odrabianie|bhp)/.test(slug(e.pl))) przedm.set(slug(e.pl), e.pl);
   const zPliku = Object.keys(k.przedmioty || {});
   if (gr.length) {
     for (const id of zPliku) if (!przedm.has(id)) uwagi.push(`przedmiot „${id}” jest w pliku kierunku, a nie ma go w planie`);

@@ -4324,7 +4324,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
 <div id="layer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
-<script src="kopie.js?v=20261105-kopie"></script><script src="panel-kierunkow.js?v=20261108-panel2"></script><script src="lejek.js?v=20261106-ld"></script><script src="przypomnienia.js?v=20261106-scal"></script><script src="dzien.js?v=20261105-dzien2"></script><script src="lekcja-dnia.js?v=20261107-ld6"></script><script src="skrot-supabase.js?v=20261108-system"></script><script src="kosmetyki.js?v=20261103-podglad"></script><script src="terminy.js?v=20261028-terminy"></script><script src="lekcje-v4.js?v=20261105-rew"></script><script src="learner.js?v=20261104-fsrs"></script><script src="rewanze.js?v=20261105-rew"></script><script src="sprawdzian.js?v=20261105-spr"></script><script src="paczka.js?v=20261106-scal"></script><script src="zdjecie.js?v=20261105-zdjecie2"></script>
+<script src="kopie.js?v=20261105-kopie"></script><script src="panel-kierunkow.js?v=20261108-system"></script><script src="lejek.js?v=20261106-ld"></script><script src="przypomnienia.js?v=20261106-scal"></script><script src="dzien.js?v=20261105-dzien2"></script><script src="lekcja-dnia.js?v=20261107-ld6"></script><script src="skrot-supabase.js?v=20261108-system"></script><script src="kosmetyki.js?v=20261103-podglad"></script><script src="terminy.js?v=20261028-terminy"></script><script src="lekcje-v4.js?v=20261105-rew"></script><script src="learner.js?v=20261104-fsrs"></script><script src="rewanze.js?v=20261105-rew"></script><script src="sprawdzian.js?v=20261105-spr"></script><script src="paczka.js?v=20261106-scal"></script><script src="zdjecie.js?v=20261105-zdjecie2"></script>
 <script>
 (() => {
   "use strict";
@@ -14175,6 +14175,13 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     return [back, head, karty, akcje, baza, kafle, przedm, h("div", { class: "pk-dwa" }, tero, oglo),
       h("div", { class: "row", style: "gap:10px;align-items:center;flex-wrap:wrap" },
         h("button", { type: "button", class: "btn", style: "min-height:44px", disabled: PKV.busy ? true : null, onclick: () => { PKV.plany = {}; pkLoad(); render(); } }, PKV.busy ? "Odświeżam…" : "Odśwież dane"),
+        // terminy wszystkich roczników do harmonogramu treści (scripts/harmonogram-tresci.mjs --terminy plik): kiedy generować lekcje
+        h("button", { type: "button", class: "btn", style: "min-height:44px", onclick: () => {
+          const t = PKP.terminyDoHarmonogramu(D, ids, dzis);
+          const a = h("a", { href: URL.createObjectURL(new Blob([JSON.stringify(t, null, 1)], { type: "application/json" })), download: "terminy-" + dzis + ".json" });
+          document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+          toast(`Terminy do harmonogramu: ${t.length}.`);
+        } }, "Pobierz terminy do harmonogramu"),
         h("small", { class: "muted" }, h("span", { text: "Stan z" }), " ", h("span", { class: "num", text: godz }))),
       h("ul", { class: "notes adm-notes" },
         h("li", { text: "Panel tylko pokazuje: kliknięcie kierunku na liście nie zmienia strony." }),

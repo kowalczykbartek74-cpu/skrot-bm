@@ -1,0 +1,5 @@
+{
+ "opis": "Zatwierdzone wzorce treści (optymalizacja nr 6). Pilot 2–3 lekcji robi się tylko wtedy, gdy wzorca jeszcze nie ma; potem kolejne kierunki idą od razu całą mapą, z próbką 1 lekcji do obejrzenia. Zapis: node scripts/kierunek-start.mjs --wzorzec k2|k3 <id rocznika> <id lekcji,…>.",
+ "k2": null,
+ "k3": null
+}

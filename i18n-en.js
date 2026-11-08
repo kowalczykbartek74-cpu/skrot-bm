@@ -1,6 +1,8 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Pobierz terminy do harmonogramu": "Download deadlines for the content schedule",
+"Terminy do harmonogramu: {0}.": "Deadlines for the schedule: {0}.",
 "Baza": "Database",
 "Te roczniki są już na stronie (roczniki-dane.js), ale nie ma ich w bazie. Bez tego nie da się ich wybrać ani zapisać na listę oczekujących.": "These cohorts are already on the site (roczniki-dane.js) but not in the database yet. Until then nobody can pick them or join their waiting list.",
 "Dodaj do bazy": "Add to database",

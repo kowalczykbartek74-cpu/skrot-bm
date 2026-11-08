@@ -215,12 +215,28 @@ def koszt():
     return int(tok_in), int(tok_out), usd
 
 
+def pewny(t, tymczasowa=False):
+    """Wiersz, którego nie trzeba oglądać (optymalizacja nr 5): mapa z modelu, model nie dodał uwagi, koszyk ma źródło (K3 nie musi),
+    a K1 bierze tylko zatwierdzone lekcje banku. Reszta = „do przejrzenia” (filtr w mapa.html, licznik w raporcie kierunek-start)."""
+    k = t.get("koszyk")
+    return (not tymczasowa and k in ("K1", "K2", "K3") and not (t.get("uwaga") or "").strip()
+            and (k == "K3" or bool(t.get("zrodlo"))) and (k != "K1" or t.get("bank") == "zatwierdzone"))
+
+
+def oznacz_pewne(mapa):
+    for m in mapa:
+        for t in m["tematy"]:
+            t["pewny"] = pewny(t, m.get("tymczasowa"))
+    return mapa
+
+
 def html_mapy(mapa):
+    oznacz_pewne(mapa)
     wiersze = []
     for m in mapa:
         for j, t in enumerate(m["tematy"]):
             opt = "".join(f'<option{" selected" if t["koszyk"] == k else ""}>{k}</option>' for k in ("K1", "K2", "K3"))
-            wiersze.append(f'<tr class="{t["koszyk"]}"><td>{html.escape(nazwa(m["przedmiot"]))}</td><td>{html.escape(t["temat"])}</td><td>{html.escape(t.get("forma") or "")}</td>'
+            wiersze.append(f'<tr class="{t["koszyk"]}{" pewny" if t["pewny"] else ""}"><td>{html.escape(nazwa(m["przedmiot"]))}</td><td>{html.escape(t["temat"])}</td><td>{html.escape(t.get("forma") or "")}</td>'
                            f'<td>{t.get("godz") or ""}</td><td><select data-p="{m["przedmiot"]}" data-j="{j}">{opt}</select></td>'
                            f'<td>{html.escape(", ".join(t["zrodlo"]))}</td><td>{html.escape(t.get("bank") or "")}</td><td>{html.escape(t.get("uwaga") or "")}</td></tr>')
     licz = {k: sum(t["koszyk"] == k for m in mapa for t in m["tematy"]) for k in ("K1", "K2", "K3")}
@@ -238,11 +254,15 @@ table.p{{width:auto;margin:0 0 16px}} table.p td:not(:first-child),table.p th:no
 {'<p style="background:#fff4d6;padding:10px;border-radius:8px"><b>Mapa tymczasowa (bez API).</b> K1 z banku = dopasowanie słów PL↔PL; K2/K3 z BM = koszyk całego przedmiotu, nie tematu. Zastąp ją wynikiem --wyslij/--odbierz.</p>' if any(m.get("tymczasowa") for m in mapa) else ''}
 <p>K2: {licz["K2"]} · K3: {licz["K3"]} · K1: {licz["K1"]}. Popraw koszyki i kliknij „Pobierz mapa.json”, potem podmień plik w scratch/{K["prefiks"]}/.</p>
 <p>K1 = kopia z banku PL (0 zł), K2 = tłumaczenie lekcji BM, K3 = nowa lekcja. „Bank: czeka…” = temat wspólny z kierunkiem, którego lekcje nie są jeszcze zatwierdzone.</p>
+<p><label style="display:inline-flex;gap:8px;align-items:center;min-height:44px"><input type="checkbox" id="tylko" style="width:22px;height:22px">
+Pokaż tylko do przejrzenia ({sum(not t["pewny"] for m in mapa for t in m["tematy"])} z {sum(len(m["tematy"]) for m in mapa)}; pewne wiersze: model bez uwag, źródło jest)</label></p>
+<style>body.tylko tr.pewny{{display:none}}</style>
 <div class="wrap"><table class="p"><thead><tr><th>Przedmiot</th><th>K1</th><th>K2</th><th>K3</th></tr></thead><tbody>{podsum}</tbody></table></div>
 <p><button id="dl">Pobierz mapa.json</button></p>
 <div class="wrap"><table><thead><tr><th>Przedmiot</th><th>Temat (sylabus)</th><th>Forma</th><th>h</th><th>Koszyk</th><th>Źródło</th><th>Bank</th><th>Uwaga</th></tr></thead><tbody>
 {"".join(wiersze)}</tbody></table></div>
 <script>const MAPA={json.dumps(mapa, ensure_ascii=False)};
+document.getElementById("tylko").onchange=(e)=>document.body.classList.toggle("tylko",e.target.checked);
 document.getElementById("dl").onclick=()=>{{document.querySelectorAll("select").forEach(s=>{{MAPA.find(m=>m.przedmiot===s.dataset.p).tematy[+s.dataset.j].koszyk=s.value}});
 const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(MAPA,null,1)],{{type:"application/json"}}));a.download="mapa.json";a.click()}};</script>
 </body></html>"""
@@ -274,7 +294,7 @@ def zapisz_mape(wyniki):
             zr = bank_z if kosz == "K1" else bm_z if kosz == "K2" else []
             out.append(z_uwagami({**t, "koszyk": kosz, "zrodlo": zr}, uw.strip()))
         mapa.append({"przedmiot": pid, "tematy": out})
-    json.dump(mapa, open(os.path.join(OUT, "mapa.json"), "w"), ensure_ascii=False, indent=1)
+    json.dump(oznacz_pewne(mapa), open(os.path.join(OUT, "mapa.json"), "w"), ensure_ascii=False, indent=1)
     open(os.path.join(OUT, "mapa.html"), "w").write(html_mapy(mapa))
     return mapa
 
@@ -310,7 +330,7 @@ if a.bez_api:
                 tem.append(z_uwagami({**t, "koszyk": kosz_bm, "zrodlo": ["bm:" + b for b in bm] if kosz_bm == "K2" else []},
                                      "tymczasowo bez API: przedmiot BM, nie konkretna lekcja" if kosz_bm == "K2" else ("brak w banku i w BM" if not bm else "")))
         mapa.append({"przedmiot": pid, "tymczasowa": True, "tematy": tem})
-    json.dump(mapa, open(os.path.join(OUT, "mapa.json"), "w"), ensure_ascii=False, indent=1)
+    json.dump(oznacz_pewne(mapa), open(os.path.join(OUT, "mapa.json"), "w"), ensure_ascii=False, indent=1)
     open(os.path.join(OUT, "mapa.html"), "w").write(html_mapy(mapa))
     licz = {k: sum(t["koszyk"] == k for m in mapa for t in m["tematy"]) for k in ("K1", "K2", "K3")}
     sys.exit(print("Mapa tymczasowa (bez API, 0 zł):", os.path.relpath(os.path.join(OUT, "mapa.html"), ROOT), licz,
