@@ -9,7 +9,7 @@ Bierze lekcje z katalogu (wynik lekcje-z-bm.py k2 albo generatora K3: format eks
 Przed złożeniem uruchamia node scripts/tresci-kontrola.mjs <katalog> --przed-wgraniem; kod ≠ 0 = brak paczki.
 Zero nazw kierunków w kodzie: rocznik, prefiks i nazwa kierunku są z pliku kierunku.
 """
-import argparse, json, os, subprocess, sys, time
+import argparse, glob, json, os, subprocess, sys, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
@@ -18,6 +18,7 @@ ap.add_argument("katalog")
 ap.add_argument("--nazwa", default="paczka")
 ap.add_argument("--bez-kontroli", action="store_true", help="tylko do testów")
 ap.add_argument("--wyjscie", default=None)
+ap.add_argument("--dodatki", default=None, help="eksport materialSimple/quizWhy BM (domyślnie najnowszy scratch/lekcje-dodatki-eksport-*.json)")
 a = ap.parse_args()
 
 K = json.load(open(a.kierunek if os.path.isabs(a.kierunek) else os.path.join(ROOT, a.kierunek)))
@@ -31,6 +32,8 @@ for f in sorted(os.listdir(KAT)):
         continue
     if d.get("k2") not in (None, "gotowe"):
         pominiete.append(f"{d['id']} (k2: {d.get('k2')})"); continue
+    if not d.get("sylRef"):
+        pominiete.append(f"{d['id']} (brak sylRef: lekcje-z-bm.py sylref)"); continue
     if d.get("rocznik_id") != K["id"]:
         pominiete.append(f"{d['id']} (inny rocznik: {d.get('rocznik_id')})"); continue
     lekcje.append(d)
@@ -43,6 +46,13 @@ if not a.bez_kontroli:
         print(r.stdout[-1500:], r.stderr[-500:])
         sys.exit("Kontrola treści nie przeszła (scratch/tresci-raport.md) – paczki nie składam.")
 
+# „Prościej · PL” i „Dlaczego?” z BM są już po polsku: kopia 1:1 (K1) pod nowe id, jeśli lekcja ich nie ma i źródło to lekcja BM.
+# quizWhy jest po indeksach pytań; K2 nie zmienia kolejności pytań (porównanie ze źródłem), więc indeksy pasują.
+DOD = {"materialSimple": {}, "quizWhy": {}}
+pd = a.dodatki or (sorted(glob.glob(os.path.join(ROOT, "scratch", "lekcje-dodatki-eksport-*.json"))) or [None])[-1]
+if pd:
+    DOD = json.load(open(pd))
+
 teraz = int(time.time() * 1000)
 P = {"format": "zdawalni-paczka-lekcji", "v": 1, "rocznik": K["id"], "utworzono": teraz,
      "materials": {}, "materialContent": {}, "materialSimple": {}, "quizWhy": {}}
@@ -51,14 +61,22 @@ for d in lekcje:
     P["materials"][d["id"]] = {
         "kind": "lesson", "v": 2, "source": "kierunek", "zrodlo": d.get("zrodlo"), "subjectId": d["subjectId"],
         "title": d.get("title", ""), "order": d.get("order"), "lang": K.get("jezykZajec", "pl"),
+        **({"sylRef": d["sylRef"]} if d.get("sylRef") else {}),
         "fileName": f"Sylabus {K['kierunek']['pl']}", "fileType": "sylabus", "createdAt": teraz,
         "topicCount": len(les.get("sections") or []), "conceptCount": len(c.get("concepts") or []),
         "flashcardCount": len(c.get("flashcards") or []), "quizCount": len(c.get("quiz") or [])}
     P["materialContent"][d["id"]] = c
+    bid = (d.get("zrodlo") or "")[3:] if (d.get("zrodlo") or "").startswith("bm:") else None
     if d.get("simple"):
         P["materialSimple"][d["id"]] = d["simple"]
+    elif bid:
+        for k, v in DOD.get("materialSimple", {}).items():
+            if k == bid or k.startswith(bid + "~"):
+                P["materialSimple"][d["id"] + k[len(bid):]] = v
     if d.get("why"):
         P["quizWhy"][d["id"]] = d["why"]
+    elif bid and bid in DOD.get("quizWhy", {}):
+        P["quizWhy"][d["id"]] = DOD["quizWhy"][bid]
 OUT = a.wyjscie or os.path.join(ROOT, "scratch", K["prefiks"], f"paczka-{a.nazwa}.json")
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(P, open(OUT, "w"), ensure_ascii=False)
@@ -66,5 +84,5 @@ po = {}
 for m in P["materials"].values():
     po[m["subjectId"]] = po.get(m["subjectId"], 0) + 1
 print(f"Paczka: {os.path.relpath(OUT, ROOT)} · {len(lekcje)} lekcji ({', '.join(f'{k}: {v}' for k, v in po.items())}) · "
-      f"{os.path.getsize(OUT) // 1024} KB" + (f"\nPominięte: {', '.join(pominiete)}" if pominiete else ""))
+      f"{os.path.getsize(OUT) // 1024} KB · Prościej: {len(P['materialSimple'])} · Dlaczego?: {len(P['quizWhy'])}" + (f"\nPominięte: {', '.join(pominiete)}" if pominiete else ""))
 print("Wgranie: zdawalni.pl → Więcej → „Edytuję rocznik”: " + K["kierunek"]["pl"] + " → Więcej → Panel AI → „Paczka lekcji”.")

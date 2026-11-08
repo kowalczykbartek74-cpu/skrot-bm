@@ -19,7 +19,9 @@ const lekcja = (id, sid) => ({
   fileName: "Sylabus testowy", fileType: "sylabus", createdAt: 1, topicCount: 1, conceptCount: 0, flashcardCount: 0, quizCount: 0 });
 const tresc = { v: 2, concepts: [], flashcards: [], quiz: [], lesson: { v2: true, intro: "Wstęp testowy", sections: [{ h: "1. Część", body: "Treść testowa części pierwszej." }], exit: [] } };
 const paczka = (rocznik, sid, ids = ["t1-a", "t1-b"]) => ({ format: "zdawalni-paczka-lekcji", v: 1, rocznik,
-  materials: Object.fromEntries(ids.map((i) => [i, lekcja(i, sid)])), materialContent: Object.fromEntries(ids.map((i) => [i, tresc])), materialSimple: {}, quizWhy: {} });
+  materials: Object.fromEntries(ids.map((i) => [i, lekcja(i, sid)])), materialContent: Object.fromEntries(ids.map((i) => [i, tresc])),
+  materialSimple: { [ids[0]]: { parts: [{ h: "Prościej", text: "Tekst testowy." }] }, [ids[0] + "~ez"]: { items: {} }, "obca-lekcja": { parts: [] } },
+  quizWhy: { [ids[0]]: { items: {} } } });
 
 async function otworz({ lang = "pl", w = 375, edycja = ROK } = {}) {
   const p = await page(b, { konto: "starosta", lang, w, h: 812, ls: { ...LS, ...(edycja ? { "skrot-admin-rocznik": edycja } : {}) } });
@@ -51,7 +53,9 @@ ok("1 przed kliknięciem nic nie zapisane", (await p.evaluate(() => window.__zap
 await shot(p, "paczka-lekcji-375");
 await s.getByRole("button", { name: "Wgraj 2 lekcje" }).click(); await p.waitForTimeout(1200);
 const zap = await p.evaluate(() => window.__zapisy.filter((z) => /^t1-/.test(z.id)));
-ok("1 zapis: materials + materialContent obu lekcji, rocznik_id = edytowany", zap.length === 4 && zap.every((z) => z.rocznik_id === ROK), zap);
+ok("1 zapis: materials + materialContent obu lekcji + Prościej (z ~ez) + Dlaczego?, rocznik_id = edytowany",
+  zap.length === 7 && zap.every((z) => z.rocznik_id === ROK) && zap.some((z) => z.kolekcja === "materialSimple" && z.id === "t1-a~ez") && zap.some((z) => z.kolekcja === "quizWhy"), zap);
+ok("1 wpis spoza paczki (obca lekcja) nie zapisany", !(await p.evaluate(() => window.__zapisy.some((z) => z.id === "obca-lekcja"))));
 ok("1 komunikat po zapisie", /Wgrano 2 lekcje do rocznika/.test(await s.innerText()), await s.innerText());
 ok("1 375 px: bez poziomego przewijania", await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
 ok("1 bez błędów konsoli", p.errors.length === 0, p.errors);

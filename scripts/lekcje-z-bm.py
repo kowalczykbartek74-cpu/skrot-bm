@@ -20,7 +20,7 @@ import argparse, copy, json, math, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
 ap.add_argument("kierunek")
-ap.add_argument("krok", choices=["k1", "k2", "porownaj", "tytuly"])
+ap.add_argument("krok", choices=["k1", "k2", "porownaj", "tytuly", "sylref"])
 ap.add_argument("--na-sucho", action="store_true")
 ap.add_argument("--wyslij", action="store_true")
 ap.add_argument("--odbierz", action="store_true")
@@ -102,8 +102,12 @@ def przypisania():
     """id lekcji BM → (przedmiot kierunku, [tematy sylabusa]) z mapy; źródło „bm:<przedmiot>” (mapa tymczasowa) = wszystkie jego lekcje,
     „bm-syl:…” = lekcje dopasowane do tematu sylabusa BM (lekcje_tematu)."""
     out = {}
+    SYL_REF.clear()
     for m in MAPA:
+        nr = {}
         for t in m["tematy"]:
+            nr[t.get("forma")] = nr.get(t.get("forma"), 0) + 1
+            t["_nr"] = nr[t.get("forma")]
             if t.get("koszyk") not in ("K1", "K2"):
                 continue
             for z in t.get("zrodlo") or []:
@@ -113,7 +117,21 @@ def przypisania():
                     p, tem = out.setdefault(i, (m["przedmiot"], []))
                     if t["temat"] not in tem:
                         tem.append(t["temat"])
+                        SYL_REF.setdefault(i, []).append((t.get("forma") or "", t["_nr"]))
     return out
+
+
+SYL_REF = {}   # id lekcji BM → [(forma, numer tematu w sylabusie kierunku)] z ostatniego przypisania
+FORMY = {"W": "wykład", "CW": "ćwiczenia", "LAB": "laboratorium", "KON": "konwersatorium", "SEM": "seminarium"}
+
+
+def syl_ref(bm_id):
+    """Opis pod tytułem lekcji (pole sylRef w aplikacji): „wykład, tematy 1, 3 · ćwiczenia, temat 2”."""
+    po = {}
+    for f, n in SYL_REF.get(bm_id, []):
+        po.setdefault(f, []).append(n)
+    cz = [f"{FORMY.get(f, f.lower())}, {'tematy' if len(ns) > 1 else 'temat'} {', '.join(map(str, sorted(ns)))}" for f, ns in po.items()]
+    return " · ".join(cz) or None
 
 
 def nowe_id(bm_id):
@@ -151,7 +169,8 @@ def ustaw(root, sciezka, wartosc):
 
 def k1_dokument(bm, przedmiot):
     return {"id": nowe_id(bm["id"]), "subjectId": przedmiot, "rocznik_id": K["id"], "zrodlo": "bm:" + bm["id"],
-            "title": bm.get("title", ""), "order": bm.get("order"), "k2": "do zrobienia", "content": copy.deepcopy(bm["content"])}
+            "title": bm.get("title", ""), "order": bm.get("order"), "sylRef": syl_ref(bm["id"]), "k2": "do zrobienia",
+            "content": copy.deepcopy(bm["content"])}
 
 
 LICZBY = re.compile(r"g\d{4}|-?\d+(?:[.,]\d+)?")
@@ -272,6 +291,19 @@ if a.krok == "k1":
         json.dump(d, open(os.path.join(PACZKI, d["id"] + ".json"), "w"), ensure_ascii=False, indent=1)
     tymcz = " (mapa TYMCZASOWA: całe przedmioty BM)" if any(m.get("tymczasowa") for m in MAPA) else ""
     sys.exit(print(f"K1: {len(prz)} lekcji skopiowanych do {os.path.relpath(PACZKI, ROOT)}{tymcz}, 0 zł. Teksty EN czekają na K2."))
+
+if a.krok == "sylref":
+    # Dopisuje sylRef (tematy sylabusa kierunku z mapy) do gotowych plików lekcji, które go nie mają. 0 zł, bez modelu.
+    przypisania()
+    KAT = a.katalog or PACZKI
+    for f in sorted(os.listdir(KAT)):
+        if f.endswith(".json"):
+            pth = os.path.join(KAT, f); d = json.load(open(pth))
+            bid = (d.get("zrodlo") or "")[3:]
+            if bid in BM and not d.get("sylRef"):
+                d["sylRef"] = syl_ref(bid); json.dump(d, open(pth, "w"), ensure_ascii=False, indent=1)
+                print(f"  {d['id']}: {d['sylRef']}")
+    sys.exit(0)
 
 if a.krok == "tytuly":
     # Jedno małe zapytanie: tytuły gotowych lekcji K2, które mają jeszcze tytuł z BM (tytuł był kiedyś poza tłumaczeniem).

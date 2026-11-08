@@ -21237,7 +21237,8 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
   async function packImport() {
     const d = PACK.data; if (!d || PACK.busy) return;
     const rows = [];
-    for (const col of PACK_KOL) for (const [id, data] of Object.entries(d[col] || {})) if (d.materials[id]) rows.push({ collection: col, id, data });
+    // „Prościej” ma też wpisy <id>~ez („Jeszcze prościej”): należą do lekcji <id>
+    for (const col of PACK_KOL) for (const [id, data] of Object.entries(d[col] || {})) if (d.materials[id.split("~")[0]]) rows.push({ collection: col, id, data });
     PACK.busy = true; render();
     try {
       for (let i = 0; i < rows.length; i += 20) await window.skrot.putMany(rows.slice(i, i + 20));
