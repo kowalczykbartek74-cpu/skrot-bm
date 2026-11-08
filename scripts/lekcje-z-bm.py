@@ -15,12 +15,12 @@ K2: model dostaje WYŁĄCZNIE listę tekstów lekcji (ścieżka → tekst EN) i 
   Porównanie ze źródłem (spec 4.4 pkt 2) sprawdza to jeszcze raz i dodatkowo liczby w tekstach.
 Nic nie zapisuje do bazy. Wynik: scratch/<prefiks>/paczki/<id>.json (format eksportu + rocznik_id + zrodlo), koszt w k2-usage.json.
 """
-import argparse, copy, json, math, os, re, sys
+import argparse, copy, json, math, os, re, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
 ap.add_argument("kierunek")
-ap.add_argument("krok", choices=["k1", "k2", "porownaj", "tytuly", "sylref", "napraw", "uzupelnij"])
+ap.add_argument("krok", choices=["k1", "k2", "porownaj", "tytuly", "sylref", "napraw", "uzupelnij", "przeformuluj"])
 ap.add_argument("--na-sucho", action="store_true")
 ap.add_argument("--wyslij", action="store_true")
 ap.add_argument("--odbierz", action="store_true")
@@ -484,6 +484,94 @@ if a.krok == "uzupelnij":
     usage["usd"] = round((usage["input"] * cin + usage["cache_write"] * cin * 1.25 + usage["cache_read"] * cin * 0.1 + usage["output"] * cout) / 1e6 * BATCH, 4)
     json.dump(usage, open(os.path.join(OUT, "k2u-usage.json"), "w"), indent=1)
     sys.exit(print(f"Uzupełniono {len(dost)} lekcji, koszt {usage['usd']} $", ("\nDo poprawy: " + "\n  ".join(bledy)) if bledy else "– porównanie ze źródłem OK"))
+
+def pobierz(root, sciezka):
+    cur = root
+    for c in re.findall(r"[^.\[\]]+|\[\d+\]", sciezka):
+        cur = cur[int(c[1:-1]) if c.startswith("[") else c]
+    return cur
+
+
+ZASADY_PRZEF = """Przeformułowujesz pojedyncze teksty z lekcji dla studentów (po polsku), w których kontrola treści znalazła frazę zakazaną przez zasady tonu Zdawalni.
+Dla każdej pozycji {p: ścieżka, t: tekst, fraza: zakazana fraza, powod: dlaczego jest zakazana} zwróć {p, v}, gdzie v to cały tekst po poprawce.
+- Zmień tylko to, co konieczne: zwykle jedno słowo albo krótki zwrot. Nie wymieniaj frazy zakazanej, ani jej odmiany czy bliskiego synonimu o tym samym wydźwięku.
+- Zachowaj sens merytoryczny (definicje, fakty, poprawną odpowiedź), długość, formatowanie (**pogrubienia**, listy), LaTeX \\( … \\), zmienne w klamrach i WSZYSTKIE liczby.
+- Ton: spokojny, wspierający; nic, co zawstydza ucznia. Nie dodawaj nowych treści ani komentarzy.
+- Pole uwaga: puste albo jedno zdanie, jeśli poprawka zmienia sens."""
+
+
+if a.krok == "przeformuluj":
+    # Frazy zakazane (scripts/tresci-zakazane.json) znalezione w gotowych lekcjach: model przeformułowuje TYLKO te teksty.
+    KAT = a.katalog or PACZKI
+    PR = os.path.join(OUT, "przeformuluj-batch.json")
+    ZAK = {x["fraza"]: x.get("dlaczego", "") for x in json.load(open(os.path.join(ROOT, "scripts", "tresci-zakazane.json")))["frazy"]}
+    SCH_P = {"type": "object", "additionalProperties": False, "required": ["teksty", "uwaga"], "properties": {
+        "teksty": {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["p", "v"], "properties": {"p": {"type": "string"}, "v": {"type": "string"}}}},
+        "uwaga": {"type": "string"}}}
+    if not a.odbierz:
+        r = subprocess.run(["node", os.path.join(ROOT, "scripts", "tresci-kontrola.mjs"), KAT], cwd=ROOT, capture_output=True, text=True)
+        raport = open(os.path.join(ROOT, "scratch", "tresci-raport.md")).read().split("\n")
+        poz, lid = {}, None
+        for l in raport:
+            m = re.match(rf"^#+\s+({re.escape(K['prefiks'])}-[\w-]+) · ", l)
+            if m:
+                lid = m.group(1)
+            h = re.search(r"\*\*BŁĄD\*\* (\S+?): zakazane „([^”]*)” \((.*)\) · ", l)
+            if h and lid:
+                poz.setdefault(lid, []).append({"p": h.group(1), "fraza": h.group(3), "tekst": h.group(2)})
+        if not poz:
+            sys.exit("Kontrola nie znalazła fraz zakazanych w " + os.path.relpath(KAT, ROOT))
+        zap, ile = [], 0
+        for lid, lst in poz.items():
+            d = json.load(open(os.path.join(KAT, lid + ".json")))
+            pozycje = [{"p": x["p"], "t": pobierz(d["content"], x["p"]), "fraza": x["fraza"], "powod": ZAK.get(x["fraza"], "")} for x in lst]
+            ile += len(pozycje)
+            zap.append({"custom_id": lid + "--f", "params": {"model": a.model, "max_tokens": 8000,
+                        "system": [{"type": "text", "text": ZASADY_PRZEF, "cache_control": {"type": "ephemeral"}}],
+                        "messages": [{"role": "user", "content": json.dumps({"lekcja": d.get("title", ""), "pozycje": pozycje}, ensure_ascii=False)}],
+                        "output_config": {"format": {"type": "json_schema", "schema": SCH_P}}}})
+        cin, cout = CENY[a.model]
+        t_in = sum(len(z["params"]["messages"][0]["content"]) for z in zap) / 3 + len(ZASADY_PRZEF) / 3 * len(zap)
+        t_out = sum(len(z["params"]["messages"][0]["content"]) for z in zap) / 3 * 1.2 + 200 * len(zap)
+        usd = (t_in * cin + t_out * cout) / 1e6 * BATCH
+        print(f"Przeformułowanie ({a.model}, Batch): {ile} tekstów w {len(zap)} lekcjach → ~{usd:.4f} $")
+        for lid, lst in poz.items():
+            print(f"  {lid}: " + ", ".join(f"{x['p']} ({x['fraza']})" for x in lst))
+        if not a.wyslij:
+            sys.exit(print("Wysyłka: przeformuluj --wyslij (po „wysyłaj” Bartka)"))
+        import anthropic  # noqa: E402
+        b = anthropic.Anthropic().messages.batches.create(requests=zap)
+        json.dump({"id": b.id, "model": a.model, "katalog": KAT, "pozycje": {lid: [x["p"] for x in lst] for lid, lst in poz.items()}}, open(PR, "w"))
+        sys.exit(print("Wysłano batch", b.id, "– potem: przeformuluj --odbierz"))
+    import anthropic  # noqa: E402
+    st = json.load(open(PR)); client = anthropic.Anthropic()
+    b = client.messages.batches.retrieve(st["id"])
+    if b.processing_status != "ended":
+        sys.exit(print("Jeszcze trwa:", b.processing_status))
+    usage = {"input": 0, "output": 0, "cache_write": 0, "cache_read": 0}; bledy = []
+    for r in client.messages.batches.results(b.id):
+        lid = r.custom_id.rsplit("--", 1)[0]
+        if r.result.type != "succeeded" or r.result.message.stop_reason != "end_turn":
+            bledy.append(f"{lid}: {r.result.type}"); continue
+        m = r.result.message; u = m.usage
+        usage["input"] += u.input_tokens; usage["output"] += u.output_tokens
+        usage["cache_write"] += u.cache_creation_input_tokens or 0; usage["cache_read"] += u.cache_read_input_tokens or 0
+        w = json.loads(next(c.text for c in m.content if c.type == "text"))
+        pth = os.path.join(st["katalog"], lid + ".json"); d = json.load(open(pth))
+        for x in w["teksty"]:
+            if x["p"] in st["pozycje"][lid] and x["v"].strip():
+                przed = pobierz(d["content"], x["p"])
+                if sorted(liczby(przed)) != sorted(liczby(x["v"])):
+                    bledy.append(f"{lid} {x['p']}: zmienione liczby, pomijam"); continue
+                ustaw(d["content"], x["p"], x["v"])
+                print(f"  {lid} {x['p']}\n    było: {przed[:150]}\n    jest: {x['v'][:150]}")
+        if w.get("uwaga"):
+            print("  uwaga modelu:", w["uwaga"])
+        json.dump(d, open(pth, "w"), ensure_ascii=False, indent=1)
+    cin, cout = CENY[st["model"]]
+    usage["usd"] = round((usage["input"] * cin + usage["cache_write"] * cin * 1.25 + usage["cache_read"] * cin * 0.1 + usage["output"] * cout) / 1e6 * BATCH, 4)
+    json.dump(usage, open(os.path.join(OUT, "przeformuluj-usage.json"), "w"), indent=1)
+    sys.exit(print(f"Przeformułowano, koszt {usage['usd']} $", ("\nDo poprawy: " + "\n  ".join(bledy)) if bledy else ""))
 
 if a.krok == "napraw":
     # Naprawa liczb z angielskim przecinkiem tysięcy w gotowych plikach (0 zł, bez modelu).
