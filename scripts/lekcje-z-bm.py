@@ -409,7 +409,8 @@ def brakujace(src, d):
     """Ścieżki pól, które wcześniej były pomijane (answer poza gen, visual.*), a w gotowej lekcji są nadal identyczne ze źródłem EN
     i mają słowo z liter. Krótkie podpisy („Cost and revenue”, nazwy serii) też, bo nie mają słów funkcyjnych do wykrycia."""
     pl = dict(teksty(d["content"]))
-    return {p for p, t in teksty(src["content"]) if pl.get(p) == t and slowo(t) and (".visual" in p or p.endswith(".answer"))}
+    sig = lambda t: re.sub(r"[\d\s\u00a0.,]", "", t or "")   # bez cyfr i separatorów: naprawa tysięcy mogła zmienić same liczby
+    return {p for p, t in teksty(src["content"]) if p in pl and sig(pl[p]) == sig(t) and slowo(t) and (".visual" in p or p.endswith(".answer"))}
 
 
 if a.krok == "uzupelnij":
