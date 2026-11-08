@@ -1,7 +1,8 @@
 /* Rocznik: dla kogo jest ta strona (kierunek × stopień × tryb × nabór).
    Jedno miejsce z danymi, które dawniej były wpisane w kod jako „1. rok Business Management”:
    adres planu, sylabus, opis kierunku w nagłówkach i w poleceniach dla AI, koniec dostępu.
-   Nowy kierunek = nowy wpis w ROCZNIKI (te same pola) + wiersz w tabeli nauka_roczniki (supabase/skrot-v31-roczniki.sql).
+   BM jest wpisany tu wprost. Każdy kolejny rocznik to wpis w roczniki-dane.js (te same pola, robi go scripts/kierunek.mjs)
+   + wiersz w nauka_roczniki dodany przyciskiem „Dodaj do bazy” w Panelu kierunków (SQL v49).
 
    Identyfikator: <wydział>-<kierunek>-<stopień>-<tryb>-<rok naboru>, np. „wefiz-bm-1-st-2026”.
    Rocznik to grupa ludzi, którzy zaczęli razem: rok studiów (1., 2., 3.) liczy się z daty, więc
@@ -54,39 +55,21 @@
         jeszczeProsciej: ["analiza-matematyczna"],
       },
     },
-    // KIERUNEK-START wefiz-zarz-1-st-2026 (scripts/kierunek.mjs z kierunki/wefiz-zarz-1-st-2026.json; nie edytuj ręcznie: popraw plik kierunku i uruchom skrypt)
-    "wefiz-zarz-1-st-2026": {
-      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
-      kierunek: { kod: "ZARZ", pl: "Zarządzanie", en: "Management" },
-      stopien: 1,
-      tryb: "st",
-      nabor: 2026,
-      jezykZajec: "pl",
-      plan: { json: "https://plan.skrotbm.pl/plan/wefiz-zarz-1-st-2026.json", strona: "https://plan.skrotbm.pl/?k=zarz26", skrzynka: null },
-      sylabus: { plik: "sylabus-zarz.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
-      grupy: ["C151", "C152", "C153"],
-      teams: false,
-      zasadyZaliczen: false,
-      przedmioty: { prawne: ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"], rachunkowe: ["matematyka", "podstawy-finansow", "podstawy-ekonomii"], jeszczeProsciej: ["matematyka"] },
-    },
-    // KIERUNEK-KONIEC wefiz-zarz-1-st-2026
-    // KIERUNEK-START wefiz-fir-1-st-2026 (scripts/kierunek.mjs z kierunki/wefiz-fir-1-st-2026.json; nie edytuj ręcznie: popraw plik kierunku i uruchom skrypt)
-    "wefiz-fir-1-st-2026": {
-      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
-      kierunek: { kod: "FIR", pl: "Finanse i Rachunkowość", en: "Finance and Accounting" },
-      stopien: 1,
-      tryb: "st",
-      nabor: 2026,
-      jezykZajec: "pl",
-      plan: { json: "https://plan.skrotbm.pl/plan/wefiz-fir-1-st-2026.json", strona: "https://plan.skrotbm.pl/?k=fir26", skrzynka: null },
-      sylabus: { plik: "sylabus-fir.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_finanse_i_rachunkowosc_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
-      grupy: ["M120", "M121", "M122", "M123"],
-      teams: false,
-      zasadyZaliczen: false,
-      przedmioty: { prawne: ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"], rachunkowe: ["matematyka", "makroekonomia", "podstawy-finansow", "podstawy-rachunkowosci", "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci"], jeszczeProsciej: ["matematyka", "podstawy-rachunkowosci"] },
-    },
-    // KIERUNEK-KONIEC wefiz-fir-1-st-2026
   };
+  // Pozostałe roczniki to dane, nie kod: roczniki-dane.js (ładowany przed tym plikiem; robi go scripts/kierunek.mjs z kierunki/<id>.json).
+  // Nowy kierunek = nowy wpis w danych + „Dodaj do bazy” w Panelu kierunków (SQL v49, jedna migracja na zawsze), bez zmian w kodzie.
+  // Wpis wpisany wyżej wprost (BM, rocznik testowy w testach) wygrywa z danymi o tym samym id.
+  var DANE = [];
+  if (typeof module !== "undefined" && module.exports) { try { DANE = require("./roczniki-dane.js"); } catch (e) { DANE = []; } }
+  else DANE = root.SKROT_ROCZNIKI_DANE || [];
+  var STATUS_DANYCH = {}; // status, z którym rocznik ma trafić do bazy (Panel kierunków → „Dodaj do bazy”)
+  (Array.isArray(DANE) ? DANE : []).forEach(function (d) {
+    if (!d || typeof d.id !== "string" || ROCZNIKI[d.id] || !d.kierunek || !d.plan || !d.wydzial) return;
+    var e = {};
+    for (var key in d) if (key !== "id" && key !== "status") e[key] = d[key];
+    ROCZNIKI[d.id] = e;
+    STATUS_DANYCH[d.id] = d.status || "plan";
+  });
   var DOMYSLNY = "wefiz-bm-1-st-2026";
   var KLUCZ_EDYCJA = "skrot-admin-rocznik"; // localStorage: rocznik edytowany przez administratora
 
@@ -189,7 +172,7 @@
     return id.slice(0, -s.length);
   }
 
-  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow, wybrany: wybrany, KLUCZ_EDYCJA: KLUCZ_EDYCJA,
+  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, STATUS_DANYCH: STATUS_DANYCH, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow, wybrany: wybrany, KLUCZ_EDYCJA: KLUCZ_EDYCJA,
     KOLEKCJE_ROCZNIKA: KOLEKCJE_ROCZNIKA, KOLEKCJE_STALE_ID: KOLEKCJE_STALE_ID, kolekcjaRocznika: kolekcjaRocznika, docId: docId, docIdStrony: docIdStrony };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
   else {

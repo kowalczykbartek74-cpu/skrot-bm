@@ -24,14 +24,17 @@ test("skrypt nie zmienia wpisu BM", async () => {
   assert.throws(() => wstawDoRocznika(czytaj("rocznik.js"), k, R), /BM/);
 });
 
-test("każdy plik kierunku: rocznik.js, SQL, test SQL i kolejka PGlite są aktualne (drugi przebieg = brak zmian)", async () => {
-  const { wczytaj, wstawDoRocznika, numerSql, sql, testSql, dopiszDoKolejki, wpis } = await K();
+test("każdy plik kierunku: wpis w roczniki-dane.js aktualny, w rocznik.js go nie ma, migracja (jeśli jest) aktualna", async () => {
+  const { wczytaj, wstawDoDanych, usunZRocznika, maMigracje, numerSql, sql, testSql, dopiszDoKolejki, wpis, DANE } = await K();
+  const dane = czytaj(DANE), roc = czytaj("rocznik.js");
   for (const f of kierunki()) {
     const k = wczytaj(path.join(ROOT, f));
     if (k.id === BM) continue;
-    const src = czytaj("rocznik.js");
-    assert.strictEqual(wstawDoRocznika(src, k, R), src, `${f}: rocznik.js nieaktualny (node scripts/kierunek.mjs ${f})`);
-    assert.deepStrictEqual(R.ROCZNIKI[k.id], wpis(k, R), `${f}: wpis w rocznik.js`);
+    assert.strictEqual(wstawDoDanych(dane, k, R), dane, `${f}: roczniki-dane.js nieaktualny (node scripts/kierunek.mjs ${f})`);
+    assert.strictEqual(usunZRocznika(roc, k.id), roc, `${f}: wpis został w rocznik.js`);
+    assert.deepStrictEqual(R.ROCZNIKI[k.id], wpis(k, R), `${f}: wpis w ROCZNIKI`);
+    assert.strictEqual(R.STATUS_DANYCH[k.id], k.status, `${f}: status do bazy`);
+    if (!maMigracje(k)) continue;   // nowe kierunki: bez migracji (v49 + „Dodaj do bazy”)
     const nr = numerSql(k);
     assert.strictEqual(czytaj(`supabase/skrot-v${nr}-${k.prefiks}.sql`), sql(k, nr, R), `${f}: SQL nieaktualny`);
     assert.strictEqual(czytaj(`supabase/test/v${nr}.sql`), testSql(k, nr), `${f}: test SQL nieaktualny`);
@@ -42,23 +45,52 @@ test("każdy plik kierunku: rocznik.js, SQL, test SQL i kolejka PGlite są aktua
   }
 });
 
-test("wstawienie do rocznik.js: dokładnie jedno miejsce, drugi raz nic nie zmienia, wynik da się wczytać", async () => {
-  const { wczytaj, wstawDoRocznika } = await K();
-  // ostatni wpis ze skryptu (nowy kierunek trafia na koniec), np. FiR po Zarządzaniu
-  const src = czytaj("rocznik.js");
-  const ostatni = [...src.matchAll(/\/\/ KIERUNEK-START (\S+)/g)].pop()[1];
-  const k = { ...wczytaj(path.join(ROOT, `kierunki/${ostatni}.json`)) };
-  // rocznik.js bez tego wpisu (jak przed pierwszym uruchomieniem)
-  const a = src.indexOf("    // KIERUNEK-START " + k.id), b = src.indexOf("// KIERUNEK-KONIEC " + k.id);
-  const przed = a >= 0 ? src.slice(0, a - 1) + src.slice(b + ("// KIERUNEK-KONIEC " + k.id).length) : src;
-  const Rprzed = { ...R, ROCZNIKI: { [BM]: R.ROCZNIKI[BM] } };
-  const raz = wstawDoRocznika(przed, k, Rprzed);
-  assert.strictEqual(raz, src, "pierwsze uruchomienie daje dzisiejszy rocznik.js");
-  assert.strictEqual(wstawDoRocznika(raz, k, R), raz, "drugie uruchomienie bez zmian");
+test("roczniki-dane.js: z pustego pliku skrypt odtwarza dzisiejszy, drugi raz nic nie zmienia, wynik da się wczytać", async () => {
+  const { wczytaj, wstawDoDanych, PUSTE_DANE, DANE } = await K();
+  const dane = czytaj(DANE);
+  const ids = [...dane.matchAll(/\/\/ ROCZNIK-START (\S+)/g)].map((m) => m[1]);
+  assert.ok(ids.length >= 2, "co najmniej Zarządzanie i FiR");
+  const Rbm = { ...R, ROCZNIKI: { [BM]: R.ROCZNIKI[BM] } };
+  let src = PUSTE_DANE;
+  for (const id of ids) src = wstawDoDanych(src, wczytaj(path.join(ROOT, `kierunki/${id}.json`)), Rbm);
+  assert.strictEqual(src, dane, "kolejne uruchomienia od pustego pliku = dzisiejszy roczniki-dane.js");
+  for (const id of ids) assert.strictEqual(wstawDoDanych(src, wczytaj(path.join(ROOT, `kierunki/${id}.json`)), R), src, `${id}: drugi raz bez zmian`);
   const m = { exports: {} };
-  new Function("module", "globalThis", raz)(m, {});
-  assert.ok(m.exports.ROCZNIKI[k.id] && m.exports.ROCZNIKI[BM]);
-  assert.throws(() => wstawDoRocznika(przed.replace("\n  };\n  var DOMYSLNY", "\n  };\n  var DOMYSLNY0;\n  };\n  var DOMYSLNY"), k, Rprzed), /1/);
+  new Function("module", "globalThis", src)(m, {});
+  assert.deepStrictEqual(m.exports.map((d) => d.id), ids);
+  // przeglądarka: bez module dane trafiają do window.SKROT_ROCZNIKI_DANE, a rocznik.js składa z nich ROCZNIKI
+  const okno = {};
+  new Function("window", "module", src)(okno, undefined);
+  new Function("window", "module", czytaj("rocznik.js"))(okno, undefined);
+  assert.deepStrictEqual(Object.keys(okno.SKROT_ROCZNIKI.ROCZNIKI), [BM, ...ids], "BM pierwszy, potem dane w kolejności pliku");
+  assert.ok(okno.SKROT_ROCZNIK && okno.SKROT_ROCZNIK.id === BM);
+  assert.throws(() => wstawDoDanych(PUSTE_DANE.replace("\n  ];\n  if (typeof module", "\n  ];\n  if (typeof module0;\n  ];\n  if (typeof module"), wczytaj(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json")), R), /1/);
+  assert.throws(() => wstawDoDanych(src, wczytaj(path.join(ROOT, `kierunki/${BM}.json`)), R), /BM/);
+});
+
+test("dane do bazy (Panel kierunków → „Dodaj do bazy”): to samo, co liczy strona, i przechodzi reguły v49", async () => {
+  const { wczytaj, doBazy } = await K();
+  for (const f of kierunki()) {
+    const k = wczytaj(path.join(ROOT, f));
+    if (k.id === BM) continue;
+    const d = doBazy(k, R), r = R.zbuduj(k.id);
+    // ta sama postać buduje index.html (rbDoBazy) z ROCZNIKI
+    assert.deepStrictEqual(d, { id: k.id, kierunek_id: k.id.replace(/-\d{4}$/, ""), nabor: r.nabor, status: R.STATUS_DANYCH[k.id],
+      kierunek: { kod: r.kierunek.kod, pl: r.kierunek.pl, en: r.kierunek.en, stopien: r.stopien, tryb: r.tryb, jezyk: r.jezykZajec }, wydzial: { kod: r.wydzial.kod } });
+    assert.match(d.id, /^[a-z]+-[a-z0-9]+-[012]-(st|nst)-20[0-9]{2}$/);
+    assert.strictEqual(d.kierunek_id, `${d.wydzial.kod.toLowerCase()}-${d.kierunek.kod.toLowerCase()}-${d.kierunek.stopien}-${d.kierunek.tryb}`);
+  }
+  assert.match(czytaj("index.html"), /const rbDoBazy = \(id\) => \{/, "strona buduje dane tak samo (rbDoBazy)");
+});
+
+test("stara droga (wpis w rocznik.js): usunięcie bloku zostawia poprawny plik", async () => {
+  const { usunZRocznika, blokWpisu, wczytaj } = await K();
+  const k = wczytaj(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json"));
+  const roc = czytaj("rocznik.js"), kon = "\n  };\n  // Pozostałe roczniki";
+  assert.strictEqual(roc.split(kon).length, 2);
+  const zBlokiem = roc.replace(kon, "\n" + blokWpisu(k, R) + kon);
+  assert.notStrictEqual(zBlokiem, roc);
+  assert.strictEqual(usunZRocznika(zBlokiem, k.id), roc);
 });
 
 test("rocznik Zarządzania: plan per rocznik, bez Teams i zasad BM, teksty i opis dla AI z pliku", () => {
@@ -104,7 +136,7 @@ test("zły plik kierunku zatrzymuje skrypt, zanim cokolwiek zapisze", async () =
   assert.throws(zly({ dos: "dos.usz.edu.pl/mickiewicza" }), /dos/);
 });
 
-test("SQL: wydział sprawdzony, status rocznika tylko w górę (plan → oczekujacy → platny)", async () => {
+test("SQL (stara droga, --sql): wydział sprawdzony, status rocznika tylko w górę (plan → oczekujacy → platny)", async () => {
   const { wczytaj, sql, numerSql } = await K();
   const k = wczytaj(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json"));
   const s = sql(k, numerSql(k), R);

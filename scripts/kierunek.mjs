@@ -1,8 +1,10 @@
-// Nowy kierunek z jednego pliku: kierunki/<rocznik>.json → wpis w rocznik.js, SQL z wierszem w nauka_roczniki,
+// Nowy kierunek z jednego pliku: kierunki/<rocznik>.json → wpis w roczniki-dane.js (dane, nie kod; rocznik.js tylko je czyta),
 // konfiguracja importera planu dla repo plan-bm i lista kontrolna dla Bartka (spec „Schemat robienia kierunków”, 3.2).
+// Wiersz w bazie dodaje przycisk „Dodaj do bazy” w Panelu kierunków (SQL v49, raz na zawsze), więc nowy kierunek nie potrzebuje
+// własnej migracji. Stara droga (migracja skrot-vNN-<prefiks>.sql) tylko z --sql albo gdy taki plik już jest (Zarządzanie v47, FiR v48).
 // Skrypt nie zna żadnego kierunku: wszystko bierze z pliku. Kolejny kierunek = nowy plik + te same komendy.
 //
-//   node scripts/kierunek.mjs kierunki/wefiz-zarz-1-st-2026.json [--plan-bm ../plan-bm]   zapisuje pliki
+//   node scripts/kierunek.mjs kierunki/wefiz-zarz-1-st-2026.json [--plan-bm ../plan-bm] [--sql]   zapisuje pliki
 //   node scripts/kierunek.mjs kierunki/wefiz-zarz-1-st-2026.json --sprawdz [--plan-bm …]   tylko porównuje (nic nie zapisuje)
 //
 // Drugie uruchomienie bez zmian w pliku kierunku nic nie zmienia. Nic nie trafia do bazy: SQL uruchamia Bartek.
@@ -16,6 +18,7 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 const PLAN_HOST = "https://plan.skrotbm.pl/";
 const STATUSY = ["plan", "oczekujacy", "platny"];
+export const DANE = "roczniki-dane.js";
 const ROLE = ["prawne", "rachunkowe", "jeszczeProsciej"];
 
 const blad = (m) => { throw new Error(m); };
@@ -26,6 +29,7 @@ export const slug = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, 
 export function roczniki() {
   const p = path.join(ROOT, "rocznik.js");
   delete require.cache[p];
+  delete require.cache[path.join(ROOT, DANE)];
   return require(p);
 }
 
@@ -125,8 +129,70 @@ export function wstawDoRocznika(src, k, R = roczniki()) {
   return src.slice(0, i) + "\n" + blok + src.slice(i);
 }
 
-// ---------- 2) SQL ----------
+// ---------- 1b) wpis do roczniki-dane.js (domyślnie; rocznik.js tylko czyta te dane) ----------
+const ZD_START = (id) => `    // ROCZNIK-START ${id}`;
+const ZD_KONIEC = (id) => `    // ROCZNIK-KONIEC ${id}`;
+const DANE_KON = "\n  ];\n  if (typeof module";
+export const PUSTE_DANE = `/* Roczniki poza BM: dane, nie kod. Czyta je rocznik.js (ładowany po tym pliku), testy przez require.
+   Wygenerowane: node scripts/kierunek.mjs kierunki/<id>.json (jeden wpis na plik kierunku). Nie edytuj ręcznie: popraw plik kierunku i uruchom skrypt.
+   Pole status = z jakim statusem rocznik trafia do bazy (Panel kierunków → „Dodaj do bazy”, SQL v49); potem status zmienia się tylko w bazie. */
+(function (root) {
+  var DANE = [
+  ];
+  if (typeof module !== "undefined" && module.exports) module.exports = DANE;
+  else root.SKROT_ROCZNIKI_DANE = DANE;
+})(typeof window !== "undefined" ? window : globalThis);
+`;
+
+export function blokDanych(k, R = roczniki()) {
+  const e = wpis(k, R);
+  return [
+    ZD_START(k.id) + ` (kierunki/${k.id}.json)`,
+    "    {",
+    `      id: ${JSON.stringify(k.id)},`,
+    `      status: ${JSON.stringify(k.status)},`,
+    ...Object.entries(e).map(([a, b]) => `      ${a}: ${js(b)},`),
+    "    },",
+    ZD_KONIEC(k.id),
+  ].join("\n");
+}
+
+export function wstawDoDanych(src, k, R = roczniki()) {
+  if (k.id === R.DOMYSLNY) blad("Wpis BM jest w rocznik.js ręcznie; skrypt go nie zmienia (test porównuje go z kierunki/wefiz-bm-1-st-2026.json).");
+  src = src || PUSTE_DANE;
+  const blok = blokDanych(k, R);
+  const a = src.indexOf(ZD_START(k.id)), b = src.indexOf(ZD_KONIEC(k.id));
+  if (a >= 0 && b > a) return src.slice(0, a) + blok + src.slice(b + ZD_KONIEC(k.id).length);
+  const n = src.split(DANE_KON).length - 1;
+  if (n !== 1) blad(`${DANE}: koniec listy („  ];” przed module.exports) znaleziony ${n} razy zamiast 1`);
+  const i = src.indexOf(DANE_KON);
+  return src.slice(0, i) + "\n" + blok + src.slice(i);
+}
+
+// Dawny wpis w rocznik.js (znaczniki KIERUNEK-START/KONIEC) przenosi się do danych: usuwamy go z kodu.
+export function usunZRocznika(src, id) {
+  const a = src.indexOf(ZN_START(id)), b = src.indexOf(ZN_KONIEC(id));
+  if (a < 0) return src;
+  if (b < a) blad(`rocznik.js: KIERUNEK-START ${id} bez KIERUNEK-KONIEC`);
+  const e = src.indexOf("\n", b);
+  return src.slice(0, a) + src.slice(e + 1);
+}
+
+// To, co przycisk „Dodaj do bazy” wysyła do nauka_admin_rocznik_zapisz (v49). Strona liczy to samo z ROCZNIKI (index.html),
+// skrypt daje to do listy kontrolnej i testów.
+export function doBazy(k, R = roczniki()) {
+  const w = wydzialObiekt(k, R);
+  return {
+    id: k.id, kierunek_id: k.kierunek_id, nabor: k.nabor, status: k.status,
+    kierunek: { kod: k.kierunek.kod, pl: k.kierunek.pl, en: k.kierunek.en, stopien: k.stopien, tryb: k.tryb, jezyk: k.jezykZajec },
+    wydzial: { kod: w.kod },
+  };
+}
+
+// ---------- 2) SQL (stara droga: tylko --sql albo istniejąca migracja rocznika) ----------
 const q = (s) => (s == null ? "null" : "'" + String(s).replace(/'/g, "''") + "'");
+
+export const maMigracje = (k, pliki = fs.readdirSync(path.join(ROOT, "supabase"))) => pliki.some((f) => /^skrot-v\d+-/.test(f) && f.endsWith(`-${k.prefiks}.sql`));
 
 export function numerSql(k, pliki = fs.readdirSync(path.join(ROOT, "supabase"))) {
   const nr = (f) => +f.match(/^skrot-v(\d+)-/)[1];
@@ -239,7 +305,7 @@ export function konfiguracjaPlanu(k, R = roczniki()) {
 
 // ---------- 4) lista kontrolna ----------
 export function listaKontrolna(k, numer) {
-  const mig = `supabase/skrot-v${numer}-${k.prefiks}.sql`;
+  const mig = numer ? `supabase/skrot-v${numer}-${k.prefiks}.sql` : null;
   return `# ${k.kierunek.pl} (${k.id}): co uruchomić i sprawdzić
 
 Wygenerowane przez \`node scripts/kierunek.mjs kierunki/${k.id}.json\`. Kolejność ma znaczenie.
@@ -247,9 +313,11 @@ Wygenerowane przez \`node scripts/kierunek.mjs kierunki/${k.id}.json\`. Kolejno�
 1. **Plan zajęć (repo plan-bm).** Scal gałąź z konfiguracją \`kierunki/${k.id}.json\` i planem \`${k.plan.plik}\`.
    Po publikacji otwórz https://plan.skrotbm.pl/?k=${k.prefiks}: wybrany kierunek ${k.kierunek.pl}, grupy ${k.grupy.join(", ")}.
    Link dla studentów: **https://plan.skrotbm.pl/?k=${k.prefiks}**
-2. **SQL v${numer}.** Otwórz \`${mig}\` na github.com → „Copy raw file” → Supabase → SQL Editor → wklej → Run.
-   Na dole ma być jeden wiersz: \`${k.id}\`, status \`${k.status}\`, \`plan_url\` = ${PLAN_HOST}${k.plan.plik}.
-3. **Strona (skrot-bm).** Scal gałąź z wpisem w \`rocznik.js\`. Na ekranie wejścia (okno prywatne, zdawalni.pl) jest karta
+${mig ? `2. **SQL v${numer}.** Otwórz \`${mig}\` na github.com → „Copy raw file” → Supabase → SQL Editor → wklej → Run.
+   Na dole ma być jeden wiersz: \`${k.id}\`, status \`${k.status}\`, \`plan_url\` = ${PLAN_HOST}${k.plan.plik}.`
+    : `2. **Baza (bez SQL).** Po wdrożeniu strony: zdawalni.pl → Więcej → Narzędzia → Panel kierunków → sekcja „Do dodania do bazy”
+   → „Dodaj do bazy” przy ${k.kierunek.pl} (status \`${k.status}\`). Wymaga jednorazowego SQL v49.`}
+3. **Strona (skrot-bm).** Scal gałąź z wpisem w \`roczniki-dane.js\`. Na ekranie wejścia (okno prywatne, zdawalni.pl) jest karta
    „${k.kierunek.pl}”, w kroku 2 rok ${rokAk(k.nabor)} i grupy ${k.grupy.join(", ")}.
 4. **Lista oczekujących.** Wybierz ${k.kierunek.pl} → zamiast płatności ma być zapis na listę oczekujących (status \`${k.status}\`).
    Zapis testowym mailem → Narzędzia → Lista oczekujących: wpis z kierunkiem ${k.kierunek.pl}.
@@ -312,15 +380,19 @@ async function main(argv) {
   }
 
   const zmiany = [];
-  const pr = path.join(ROOT, "rocznik.js");
-  if (zapisz(pr, wstawDoRocznika(fs.readFileSync(pr, "utf8"), k, R))) zmiany.push("rocznik.js");
-  const nr = numerSql(k);
-  const ps = path.join(ROOT, "supabase", `skrot-v${nr}-${k.prefiks}.sql`);
-  if (zapisz(ps, sql(k, nr, R))) zmiany.push(path.relative(ROOT, ps));
-  const pt = path.join(ROOT, "supabase", "test", `v${nr}.sql`);
-  if (zapisz(pt, testSql(k, nr))) zmiany.push(path.relative(ROOT, pt));
-  const pk = path.join(ROOT, "supabase", "test", "pglite.mjs");
-  if (zapisz(pk, dopiszDoKolejki(fs.readFileSync(pk, "utf8"), k, nr))) zmiany.push("supabase/test/pglite.mjs");
+  const pd = path.join(ROOT, DANE), pr = path.join(ROOT, "rocznik.js");
+  if (zapisz(pd, wstawDoDanych(fs.existsSync(pd) ? fs.readFileSync(pd, "utf8") : null, k, R))) zmiany.push(DANE);
+  if (zapisz(pr, usunZRocznika(fs.readFileSync(pr, "utf8"), k.id))) zmiany.push("rocznik.js (wpis przeniesiony do danych)");
+  // migracja na rocznik tylko po staremu: --sql albo plik już jest (v47, v48)
+  const nr = argv.includes("--sql") || maMigracje(k) ? numerSql(k) : null;
+  if (nr) {
+    const ps = path.join(ROOT, "supabase", `skrot-v${nr}-${k.prefiks}.sql`);
+    if (zapisz(ps, sql(k, nr, R))) zmiany.push(path.relative(ROOT, ps));
+    const pt = path.join(ROOT, "supabase", "test", `v${nr}.sql`);
+    if (zapisz(pt, testSql(k, nr))) zmiany.push(path.relative(ROOT, pt));
+    const pk = path.join(ROOT, "supabase", "test", "pglite.mjs");
+    if (zapisz(pk, dopiszDoKolejki(fs.readFileSync(pk, "utf8"), k, nr))) zmiany.push("supabase/test/pglite.mjs");
+  }
   const cel = planBm ? path.join(planBm, "kierunki", `${k.id}.json`) : path.join(ROOT, "scratch", k.prefiks, "plan-bm", "kierunki", `${k.id}.json`);
   if (zapisz(cel, JSON.stringify(konfiguracjaPlanu(k, R), null, 2) + "\n")) zmiany.push(planBm ? cel : path.relative(ROOT, cel));
   const pl = path.join(ROOT, "scratch", k.prefiks, "lista.md");

@@ -129,6 +129,15 @@
   };
   // wszystkie roczniki z bazy (v31: id, status, kierunek, wydział); bez v31 → null
   skrot.rocznikiLista = async () => { await ready; const { data, error } = await sb.rpc("nauka_roczniki_lista"); return error || !Array.isArray(data) ? null : data; };
+  // v49: rocznik z roczniki-dane.js do bazy i zmiana statusu (tylko administrator; baza sprawdza to sama). Brak v49 → code: "not_enabled".
+  const rocznikRpc = async (fn, args) => {
+    await ready;
+    const { data, error } = await sb.rpc(fn, args);
+    if (error) return { ok: false, code: /does not exist|schema cache|Could not find/i.test(error.message || "") ? "not_enabled" : "blad" };
+    return data && typeof data === "object" ? data : { ok: false, code: "blad" };
+  };
+  skrot.rocznikZapisz = (p) => rocznikRpc("nauka_admin_rocznik_zapisz", { p });
+  skrot.rocznikStatus = (id, status) => rocznikRpc("nauka_admin_rocznik_status", { p_id: id, p_status: status });
   // ---------- Panel kierunków (tylko administrator): treści wszystkich roczników bez przełączania strony ----------
   // Reguła odczytu z v44 daje administratorowi wiersze każdego rocznika, więc pytamy bez filtra rocznika (same odczyty,
   // działa też w „Podglądzie jako”). Liczenie: panel-kierunkow.js. Treść materiałów dopiero po kliknięciu „Podgląd”.

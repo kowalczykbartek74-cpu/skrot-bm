@@ -376,6 +376,26 @@
     // lista roczników (v31): mock-roczniki-lista = JSON [{ id, status }] (domyślnie sam BM)
     nauka_roczniki_lista: () => { let l = null; try { l = JSON.parse(localStorage.getItem("mock-roczniki-lista") || "null"); } catch {}
       return (l || [{ id: "wefiz-bm-1-st-2026", status: "platny" }]).map((r) => ({ nabor: 2026, kierunek: {}, wydzial: {}, ...r })); },
+    // v49: rocznik do bazy przyciskiem administratora (status tylko w górę) i zmiana statusu; mock-v49 = "off" → brak funkcji.
+    // Wywołania w window.__v49. Lista roczników = ta sama mock-roczniki-lista co wyżej.
+    nauka_admin_rocznik_zapisz: (a) => { (window.__v49 = window.__v49 || []).push({ fn: "zapisz", a });
+      let l = null; try { l = JSON.parse(localStorage.getItem("mock-roczniki-lista") || "null"); } catch {}
+      l = l || [{ id: "wefiz-bm-1-st-2026", status: "platny" }];
+      const P = ["plan", "oczekujacy", "platny"], p = a.p || {}, st = p.status || "plan";
+      if (!/^[a-z]+-[a-z0-9]+-[012]-(st|nst)-20\d\d$/.test(p.id || "") || p.kierunek_id + "-" + p.nabor !== p.id) return { ok: false, code: "id" };
+      if (p.wydzial?.kod !== "WEFiZ") return { ok: false, code: "wydzial", wydzial: p.wydzial?.kod };
+      const cur = l.find((r) => r.id === p.id);
+      if (!cur) l.push({ id: p.id, status: st }); else if (P.indexOf(st) > P.indexOf(cur.status)) cur.status = st;
+      try { localStorage.setItem("mock-roczniki-lista", JSON.stringify(l)); } catch {}
+      return { ok: true, id: p.id, status: (cur || l[l.length - 1]).status, nowy: !cur }; },
+    nauka_admin_rocznik_status: (a) => { (window.__v49 = window.__v49 || []).push({ fn: "status", a });
+      let l = null; try { l = JSON.parse(localStorage.getItem("mock-roczniki-lista") || "null"); } catch {}
+      l = l || [{ id: "wefiz-bm-1-st-2026", status: "platny" }];
+      const cur = l.find((r) => r.id === a.p_id);
+      if (!cur) return { ok: false, code: "brak" };
+      const byl = cur.status; cur.status = a.p_status;
+      try { localStorage.setItem("mock-roczniki-lista", JSON.stringify(l)); } catch {}
+      return { ok: true, id: a.p_id, status: a.p_status, byl }; },
   };
   // ---------- v37 (etap 10): paczka i duet; stan w localStorage mock-paczka (JSON jak z nauka_paczka(), bez ok/cfg),
   // "off" → baza bez v37 (not_enabled); podgląd zaproszenia z mock-paczka-podglad; wywołania w window.__pk ----------
