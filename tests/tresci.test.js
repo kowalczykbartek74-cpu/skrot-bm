@@ -191,3 +191,12 @@ test("komenda: bez paczki i z pustą paczką kod 2; --strona przechodzi", () => 
   assert.match(fs.readFileSync(path.join(d, "s.md"), "utf8"), /Formy zależne od płci/);
   fs.rmSync(d, { recursive: true, force: true });
 });
+
+test("rachunek: łańcuch „a = b + c = d” i spacja tysięcy nie dają fałszywych błędów, zły wynik dalej tak", () => {
+  const ok = (s) => T.arithmetic(s).map((r) => r.ok);
+  assert.deepStrictEqual(ok("A: 3×4 + 2×3 = 12 + 6 = 18."), [true, true]);
+  assert.deepStrictEqual(ok("3×4 + 2×3 = 12 + 7 = 19"), [false, true]);
+  assert.deepStrictEqual(ok("(3 000 : 5 = 600)"), []);
+  assert.deepStrictEqual(ok("10 000 : 4 = 2 500"), [true]);
+  assert.deepStrictEqual(ok("2 + 2 = 5"), [false]);
+});

@@ -507,7 +507,7 @@
       if (st.op === "select") {
         // .or("rocznik_id.is.null,rocznik_id.eq.X") → rocznik wiersza null albo X
         const dozw = st.or ? st.or.split(",").map((w) => (w === "rocznik_id.is.null" ? null : w.replace(/^rocznik_id\.eq\./, ""))) : null;
-        const rows = Object.entries(store).filter(([k]) => (id == null || k === id) && (!dozw || dozw.includes(rokOf(col, k)))).map(([k, v]) => ({ id: k, data: v }));
+        const rows = Object.entries(store).filter(([k]) => (id == null || k === id) && (!dozw || dozw.includes(rokOf(col, k)))).map(([k, v]) => ({ id: k, data: v, rocznik_id: rokOf(col, k), updated_at: "2026-11-01T00:00:00Z" }));
         return { data: st.single ? rows[0] || null : rows, error: null, count: rows.length };
       }
       if (st.op === "upsert") {

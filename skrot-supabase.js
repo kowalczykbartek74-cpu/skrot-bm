@@ -115,7 +115,8 @@
   const ED = window.SKROT_EDYCJA || null;
   const edKasuj = () => { let byl = false; try { byl = localStorage.getItem(ED_KLUCZ) != null; localStorage.removeItem(ED_KLUCZ); } catch {} return byl; };
   skrot.edycja = ED;
-  skrot.edycjaUstaw = (id) => {
+  // hash = dokąd po przeładowaniu (Panel kierunków: Dziś, przedmiot albo materiał tego rocznika); domyślnie Narzędzia.
+  skrot.edycjaUstaw = (id, hash) => {
     if (!skrot.realAdmin || PG) return false;
     const R = window.SKROT_ROCZNIKI;
     try {
@@ -123,11 +124,47 @@
       else if (R?.ROCZNIKI[id]) localStorage.setItem(ED_KLUCZ, id);
       else return false;
     } catch { return false; }
-    location.hash = "#/starosta"; location.reload();
+    location.hash = /^#\/[\w%~@.\/-]*$/.test(hash || "") ? hash : "#/starosta"; location.reload();
     return true;
   };
   // wszystkie roczniki z bazy (v31: id, status, kierunek, wydział); bez v31 → null
   skrot.rocznikiLista = async () => { await ready; const { data, error } = await sb.rpc("nauka_roczniki_lista"); return error || !Array.isArray(data) ? null : data; };
+  // ---------- Panel kierunków (tylko administrator): treści wszystkich roczników bez przełączania strony ----------
+  // Reguła odczytu z v44 daje administratorowi wiersze każdego rocznika, więc pytamy bez filtra rocznika (same odczyty,
+  // działa też w „Podglądzie jako”). Liczenie: panel-kierunkow.js. Treść materiałów dopiero po kliknięciu „Podgląd”.
+  skrot.panelKierunkow = {
+    async wczytaj() {
+      await ready;
+      if (!sb || !skrot.realAdmin) return { ok: false, code: "not_admin" };
+      const P = window.SKROT_PANEL_KIERUNKOW;
+      const pobierz = async (col, cols) => {
+        let all = [];
+        for (let from = 0; ; from += 1000) {
+          const { data, error } = await sb.from(TABLE).select(cols).eq("kolekcja", col).range(from, from + 999);
+          if (error) throw error;
+          all = all.concat(data || []);
+          if (!data || data.length < 1000) break;
+        }
+        return all;
+      };
+      try {
+        const kol = [...P.Z_DANYMI.map((c) => [c, "id,rocznik_id,data,updated_at"]), ...P.TYLKO_ID.map((c) => [c, "id,rocznik_id"])];
+        const wyn = await Promise.all(kol.map(([c, cols]) => pobierz(c, cols)));
+        const out = { ok: true, at: Date.now() };
+        kol.forEach(([c], i) => { out[c] = wyn[i]; });
+        return out;
+      } catch (e) {
+        return { ok: false, code: /rocznik_id/.test(e?.message || "") ? "not_enabled" : "error" };
+      }
+    },
+    // Treść jednego materiału (opracowanie, lekcja, fiszki, quiz) do podglądu w panelu.
+    async tresc(id) {
+      await ready;
+      if (!sb || !skrot.realAdmin) return null;
+      const { data, error } = await sb.from(TABLE).select("id,data").eq("kolekcja", "materialContent").eq("id", String(id)).maybeSingle();
+      return error ? null : data?.data || {};
+    },
+  };
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const changed = () => skrot.listeners.forEach((fn) => { try { fn(skrot.state); } catch {} });
 
@@ -624,14 +661,20 @@
     pdf: (id) => impEdge({ akcja: "pdf", id }, 30000),
     sprzataj: () => impEdge({ akcja: "sprzataj" }, 60000),
   };
-  skrot.podgladStart = (tryb, rocznik) => {
+  skrot.podgladStart = (tryb, rocznik, powrot) => {
     if (!skrot.realAdmin || !ADM) return false;
     const p = ADM.podgladNowy(tryb, rocznik || null, Date.now());
     if (!p || !ADM.podgladUstaw(p)) return false;
+    // powrot (Panel kierunków): dokąd wrócić po „Zakończ podgląd”; bez niego jak dotąd do Narzędzi.
+    try { if (powrot && /^#\/[\w%~@.\/-]*$/.test(powrot)) sessionStorage.setItem("skrot-podglad-powrot", powrot); else sessionStorage.removeItem("skrot-podglad-powrot"); } catch {}
     location.hash = "#/home"; location.reload();
     return true;
   };
-  skrot.podgladKoniec = () => { ADM?.podgladUstaw(null); location.hash = "#/starosta"; location.reload(); };
+  skrot.podgladKoniec = () => {
+    ADM?.podgladUstaw(null);
+    let h = null; try { h = sessionStorage.getItem("skrot-podglad-powrot"); sessionStorage.removeItem("skrot-podglad-powrot"); } catch {}
+    location.hash = h && /^#\/[\w%~@.\/-]*$/.test(h) ? h : "#/starosta"; location.reload();
+  };
   // Wejście do sum dziennych (nauka_wejscie, SQL v35): raz dziennie na przeglądarkę, bez cookies i bez identyfikatora osoby.
   // Flaga z datą w localStorage (lejek.js); rocznik z ekranu wejścia („skrot-rocznik”), źródło z linku (?z=…).
   // Bez v35 w bazie (not_enabled) albo bez sieci flaga się nie zapisuje, więc wejście liczy się przy następnym otwarciu.

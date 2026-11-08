@@ -1,2 +1,4 @@
 scratch/
 __pycache__/
+.tresci/
+scripts/node_modules/
