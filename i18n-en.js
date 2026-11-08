@@ -1,6 +1,10 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Wybierz paczki (JSON, można kilka)": "Choose packs (JSON, several at once)",
+"Plików: {0}": "Files: {0}",
+" · ta sama lekcja w kilku plikach: {0} (wygrywa późniejszy plik)": " · same lesson in several files: {0} (the later file wins)",
+"{0}: to nie jest poprawny plik JSON.": "{0}: this is not a valid JSON file.",
 "Pobierz terminy do harmonogramu": "Download deadlines for the content schedule",
 "Terminy do harmonogramu: {0}.": "Deadlines for the schedule: {0}.",
 "Baza": "Database",

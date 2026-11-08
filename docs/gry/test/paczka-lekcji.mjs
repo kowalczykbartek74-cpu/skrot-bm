@@ -61,6 +61,24 @@ ok("1 375 px: bez poziomego przewijania", await p.evaluate(() => document.docume
 ok("1 bez błędów konsoli", p.errors.length === 0, p.errors);
 await p.context().close();
 
+// 1b. kilka plików naraz (optymalizacja nr 8): jedna paczka na przedmiot → jeden zapis; dubel lekcji = wygrywa późniejszy plik
+p = await otworz();
+const s2 = sekcja(p, /^Paczka lekcji$/);
+const plik = (name, obj) => ({ name, mimeType: "application/json", buffer: Buffer.from(JSON.stringify(obj)) });
+const pB = paczka(ROK, SID, ["t2-c", "t1-b"]);
+pB.materials["t1-b"].title = "Lekcja z drugiego pliku";
+await s2.locator('input[type="file"]').setInputFiles([plik("a.json", paczka(ROK, SID)), plik("b.json", pB)]); await p.waitForTimeout(600);
+ok("1b dwa pliki: 3 różne lekcje, informacja o dublu", /Plików: 2/.test(await s2.innerText()) && /ta sama lekcja w kilku plikach: 1/.test(await s2.innerText())
+  && (await s2.getByRole("button", { name: "Wgraj 3 lekcje" }).count()) === 1, await s2.innerText());
+await s2.getByRole("button", { name: "Wgraj 3 lekcje" }).click(); await p.waitForTimeout(1200);
+const zap2 = await p.evaluate(() => window.__zapisy.filter((z) => z.kolekcja === "materials" && /^t[12]-/.test(z.id)));
+ok("1b zapis: 3 lekcje, dubel z drugiego pliku, wszystko w edytowanym roczniku",
+  zap2.length === 3 && zap2.every((z) => z.rocznik_id === ROK) && zap2.find((z) => z.id === "t1-b")?.tytul === "Lekcja z drugiego pliku", zap2.map((z) => [z.id, z.tytul]));
+await s2.locator('input[type="file"]').setInputFiles([plik("dobry.json", paczka(ROK, SID)), plik("obcy.json", paczka(BM_ID, SID))]); await p.waitForTimeout(600);
+ok("1b jeden zły plik zatrzymuje całość, z nazwą pliku", /obcy\.json: Paczka jest dla rocznika/.test(await s2.innerText()) && !(await s2.getByRole("button", { name: /^Wgraj/ }).count()), await s2.innerText());
+ok("1b bez błędów konsoli", p.errors.length === 0, p.errors);
+await p.context().close();
+
 // 2. EN
 p = await otworz({ lang: "en", w: 1280 });
 const se = sekcja(p, /^Lesson pack$/);

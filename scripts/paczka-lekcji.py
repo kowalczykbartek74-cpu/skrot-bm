@@ -62,6 +62,8 @@ for d in lekcje:
         "kind": "lesson", "v": 2, "source": "kierunek", "zrodlo": d.get("zrodlo"), "subjectId": d["subjectId"],
         "title": d.get("title", ""), "order": d.get("order"), "lang": K.get("jezykZajec", "pl"),
         **({"sylRef": d["sylRef"]} if d.get("sylRef") else {}),
+        # odciski źródła i kopii (scripts/tresci-bank.py synchronizuj): jadą do bazy, wracają w eksporcie lekcji
+        **{k: d[k] for k in ("zrodloHash", "kopiaHash") if d.get(k)},
         "fileName": f"Sylabus {K['kierunek']['pl']}", "fileType": "sylabus", "createdAt": teraz,
         "topicCount": len(les.get("sections") or []), "conceptCount": len(c.get("concepts") or []),
         "flashcardCount": len(c.get("flashcards") or []), "quizCount": len(c.get("quiz") or [])}

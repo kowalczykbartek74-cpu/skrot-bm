@@ -532,7 +532,7 @@
       }
       if (st.op === "upsert") {
         for (const r of [].concat(st.row)) {
-          (DOCS[r.kolekcja] ||= {})[r.id] = r.data; window.__zapisy.push({ kolekcja: r.kolekcja, id: r.id, rocznik_id: r.rocznik_id });
+          (DOCS[r.kolekcja] ||= {})[r.id] = r.data; window.__zapisy.push({ kolekcja: r.kolekcja, id: r.id, rocznik_id: r.rocznik_id, tytul: r.data?.title ?? null });
           if ("rocznik_id" in r) (ROKI[r.kolekcja] ||= {})[r.id] = r.rocznik_id;
           zapiszTrwale(r);
         }

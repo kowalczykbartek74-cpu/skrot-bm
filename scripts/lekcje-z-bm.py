@@ -171,10 +171,19 @@ def ustaw(root, sciezka, wartosc):
         cur = cur[klucz]
 
 
+def odcisk(d):
+    """Ten sam odcisk co scripts/tresci-bank.py: tytuł + treść, klucze posortowane (zmiana źródła BM → lista do ponownego K2)."""
+    import hashlib
+    s = json.dumps({"title": d.get("title", ""), "content": d.get("content")}, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(s.encode("utf-8")).hexdigest()[:16]
+
+
 def k1_dokument(bm, przedmiot):
-    return {"id": nowe_id(bm["id"]), "subjectId": przedmiot, "rocznik_id": K["id"], "zrodlo": "bm:" + bm["id"],
-            "title": bm.get("title", ""), "order": bm.get("order"), "sylRef": syl_ref(bm["id"]), "k2": "do zrobienia",
-            "content": copy.deepcopy(bm["content"])}
+    d = {"id": nowe_id(bm["id"]), "subjectId": przedmiot, "rocznik_id": K["id"], "zrodlo": "bm:" + bm["id"],
+         "title": bm.get("title", ""), "order": bm.get("order"), "sylRef": syl_ref(bm["id"]), "k2": "do zrobienia",
+         "content": copy.deepcopy(bm["content"]), "zrodloHash": odcisk(bm)}
+    d["kopiaHash"] = odcisk(d)
+    return d
 
 
 LICZBY = re.compile(r"g\d{4}|-?\d+(?:[.,]\d+)?")
