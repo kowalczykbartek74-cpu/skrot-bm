@@ -244,7 +244,7 @@ function prosbaKontrola(nr, x) {
 - pytanie check/exit/quiz sprawdza tylko definicję z pamięci zamiast zastosowania (waga „uwaga”);
 - zła odpowiedź jest absurdalna albo „not” nie wyjaśnia błędu (waga „uwaga”);
 - dobra odpowiedź jest dyskusyjna albo są dwie dobre (waga „blad”);
-- ${EN ? "tekst lekcji nie po angielsku (zajęcia są po angielsku; tylko simple, prosciej i pole pl pojęć są po polsku)" : "tekst nie po polsku"} albo „simple”/„prosciej” za trudne dla 12–13-latka (waga „uwaga”).
+- ${EN ? "tekst lekcji nie po angielsku (zajęcia są po angielsku; po polsku są tylko simple, prosciej, pole pl pojęć i „dlaczego” w quizie)" : "tekst nie po polsku"} albo „simple”/„prosciej” za trudne dla 12–13-latka (waga „uwaga”).
 ok = false tylko przy co najmniej jednym „blad”. ocena 1–5 (5 = gotowe dla studentów).` }],
       messages: [{ role: "user", content: JSON.stringify(x) }],
     },
