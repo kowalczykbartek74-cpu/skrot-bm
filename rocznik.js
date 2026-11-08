@@ -172,7 +172,17 @@
     return id.slice(0, -s.length);
   }
 
-  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, STATUS_DANYCH: STATUS_DANYCH, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow, wybrany: wybrany, KLUCZ_EDYCJA: KLUCZ_EDYCJA,
+  // To, co Panel kierunków → „Dodaj do bazy” wysyła do nauka_admin_rocznik_zapisz (SQL v49). Jedno miejsce dla strony,
+  // scripts/kierunek.mjs (doBazy) i testu bazy (supabase/test/pglite.mjs: każdy rocznik z danych przechodzi przez v49).
+  function doBazy(id) {
+    var r = ROCZNIKI[id];
+    if (!r) return null;
+    return { id: id, kierunek_id: String(id).replace(/-\d{4}$/, ""), nabor: r.nabor, status: STATUS_DANYCH[id] || (id === DOMYSLNY ? "platny" : "plan"),
+      kierunek: { kod: r.kierunek.kod, pl: r.kierunek.pl, en: r.kierunek.en, stopien: r.stopien, tryb: r.tryb, jezyk: r.jezykZajec },
+      wydzial: { kod: r.wydzial.kod } };
+  }
+
+  var API = { ROCZNIKI: ROCZNIKI, DOMYSLNY: DOMYSLNY, STATUS_DANYCH: STATUS_DANYCH, doBazy: doBazy, UCZELNIA: UCZELNIA, zbuduj: zbuduj, rokStudiow: rokStudiow, wybrany: wybrany, KLUCZ_EDYCJA: KLUCZ_EDYCJA,
     KOLEKCJE_ROCZNIKA: KOLEKCJE_ROCZNIKA, KOLEKCJE_STALE_ID: KOLEKCJE_STALE_ID, kolekcjaRocznika: kolekcjaRocznika, docId: docId, docIdStrony: docIdStrony };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
   else {

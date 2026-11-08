@@ -74,13 +74,14 @@ test("dane do bazy (Panel kierunków → „Dodaj do bazy”): to samo, co liczy
     const k = wczytaj(path.join(ROOT, f));
     if (k.id === BM) continue;
     const d = doBazy(k, R), r = R.zbuduj(k.id);
-    // ta sama postać buduje index.html (rbDoBazy) z ROCZNIKI
-    assert.deepStrictEqual(d, { id: k.id, kierunek_id: k.id.replace(/-\d{4}$/, ""), nabor: r.nabor, status: R.STATUS_DANYCH[k.id],
-      kierunek: { kod: r.kierunek.kod, pl: r.kierunek.pl, en: r.kierunek.en, stopien: r.stopien, tryb: r.tryb, jezyk: r.jezykZajec }, wydzial: { kod: r.wydzial.kod } });
+    // ta sama postać buduje strona (rocznik.js → doBazy, index.html → rbDoBazy) z ROCZNIKI
+    assert.deepStrictEqual(d, R.doBazy(k.id));
+    assert.strictEqual(d.status, R.STATUS_DANYCH[k.id]);
+    assert.strictEqual(r.nabor, d.nabor);
     assert.match(d.id, /^[a-z]+-[a-z0-9]+-[012]-(st|nst)-20[0-9]{2}$/);
     assert.strictEqual(d.kierunek_id, `${d.wydzial.kod.toLowerCase()}-${d.kierunek.kod.toLowerCase()}-${d.kierunek.stopien}-${d.kierunek.tryb}`);
   }
-  assert.match(czytaj("index.html"), /const rbDoBazy = \(id\) => \{/, "strona buduje dane tak samo (rbDoBazy)");
+  assert.match(czytaj("index.html"), /const rbDoBazy = \(id\) => window\.SKROT_ROCZNIKI\.doBazy\(id\)/, "strona bierze dane z rocznik.js");
 });
 
 test("stara droga (wpis w rocznik.js): usunięcie bloku zostawia poprawny plik", async () => {

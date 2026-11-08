@@ -13964,12 +13964,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   // Rocznik, który jest na stronie (ROCZNIKI), a nie ma go w nauka_roczniki, dodaje się jednym kliknięciem (nauka_admin_rocznik_zapisz).
   // Status z danych tylko w górę; świadoma zmiana statusu (start sprzedaży) osobnym przyciskiem z potwierdzeniem.
   const RBV = { busy: null, potw: null, err: null, v49: true };
-  const rbDoBazy = (id) => {
-    const r = window.SKROT_ROCZNIKI.zbuduj(id);
-    return { id, kierunek_id: id.replace(/-\d{4}$/, ""), nabor: r.nabor, status: window.SKROT_ROCZNIKI.STATUS_DANYCH?.[id] || "plan",
-      kierunek: { kod: r.kierunek.kod, pl: r.kierunek.pl, en: r.kierunek.en, stopien: r.stopien, tryb: r.tryb, jezyk: r.jezykZajec },
-      wydzial: { kod: r.wydzial.kod } };
-  };
+  const rbDoBazy = (id) => window.SKROT_ROCZNIKI.doBazy(id);   // rocznik.js: ta sama postać testuje baza (pglite.mjs)
   const RB_BLAD = { not_enabled: "Najpierw uruchom SQL v49 (supabase/skrot-v49-roczniki-dane.sql).", not_admin: "Tylko administrator.",
     wydzial: "Tego wydziału nie ma jeszcze w bazie.", id: "Dane rocznika się nie zgadzają (id, kierunek, nabór).", kierunek: "Brak nazwy albo zły kod kierunku.",
     status: "Nie można ustawić tego statusu.", brak: "Tego rocznika nie ma w bazie.", dane: "Złe dane rocznika.", blad: "Nie udało się zapisać. Spróbuj ponownie." };
