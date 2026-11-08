@@ -1,0 +1,8 @@
+{
+  "name": "skrot-skrypty",
+  "private": true,
+  "description": "Zależności skryptów (scripts/lekcje-z-sylabusa.mjs). Instalacja: cd scripts && npm install",
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.129.0"
+  }
+}
