@@ -34,12 +34,14 @@ Finanse 1 „The field and functions of finance…”: kontrola bez AI OK, kontr
 Paczka `scratch/eaia26/paczka-pilot.json` (= `~/Downloads/paczka-eaia-pilot-k3.json`, 27 KB: 4 sekcje, quiz 8, fiszki 10, Prościej PL).
 21 wartości (same liczby z przykładów, rachunki się zgadzają) oznaczone przez Claude jako przejrzane (kopia: `scratch/tresci-przeglad.przed-pilot-eaia.json`).
 
-**Błąd w pilocie:** pojęcia (concepts) po polsku i w złych polach (term PL + en), a w BM jest term EN + pl + definicja EN.
-Generator poprawiony (commit „Generator K3, kierunek po angielsku…”); pilot trzeba napisać jeszcze raz (~0,07 $), zanim będzie wzorcem.
-Szacunek całych Finansów (7 lekcji, Sonnet): ~0,46 $.
+**Próba 1 (odłożona, `.tresci/…/finanse/proba-1/`):** pojęcia po polsku i w złych polach; generator poprawiony.
+**Próba 2 = pilot:** pojęcia jak w BM (term EN, pl, definicja EN), kontrola bez AI OK, Haiku ocena 4 (uwaga o „dlaczego” po polsku = fałszywy alarm, prompt kontroli poprawiony).
+Paczka `scratch/eaia26/paczka-pilot.json` (= `~/Downloads/paczka-eaia-pilot-k3.json`, 25 KB), kontrola przed wgraniem 0 błędów, 11 rachunków OK; 13 nowych wartości (przykłady) oznaczone przez Claude.
+**Koszt pilota razem (2 próby): 0,131 $.** Szacunek całych Finansów (7 lekcji): ~0,46 $.
+Do obejrzenia: lekcja jest w formacie generatora (mniejsza niż lekcje BM v4), kwoty w „zł”/„mld zł” i z przecinkiem dziesiętnym w tekście angielskim.
 
 ## Dalej
 
-1. Wybór modelu pilota i „wysyłaj” → `wyslij --tylko 1`, `odbierz`, `paczki`, `paczka-lekcji.py … --nazwa pilot`.
+1. Przegląd pilota na telefonie (po wgraniu) → akcept: `node scripts/kierunek-start.mjs --wzorzec k3 wefiz-eaia-1-st-2026 eaia26-finanse-01`, potem Etap E.
 2. Wgranie paczki K1 (Bartek): dopiero po wdrożeniu strony i „Dodaj do bazy” (Etap F).
 3. mk-07 / pr-01: poprawić w BM (wtedy w obu) albo zostawić poza EaIA.
