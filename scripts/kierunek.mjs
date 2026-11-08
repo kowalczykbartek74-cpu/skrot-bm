@@ -48,6 +48,7 @@ export function sprawdzPlik(k) {
   if (!/^[a-z0-9]{2,16}$/.test(k.prefiks || "")) blad("prefiks: 2–16 małych liter i cyfr (np. zarz26)");
   if (!STATUSY.includes(k.status)) blad(`status: jeden z ${STATUSY.join(", ")}`);
   if (!Array.isArray(k.grupy) || k.grupy.some((g) => !/^[A-Za-z0-9]{1,12}$/.test(g))) blad("grupy: lista nazw grup z planu uczelni");
+  if (k.dos !== undefined && !/^https:\/\/[^\s"']+\/$/.test(k.dos)) blad("dos: adres sekcji „zajęcia” DOS (https://…/), gdy rocznik ma zajęcia w innym budynku niż wydział");
   const plikPlanu = k.id === roczniki().DOMYSLNY ? "plan.json" : `plan/${k.id}.json`;
   if (k.plan?.plik !== plikPlanu) blad(`plan.plik ma być „${plikPlanu}” (ten sam adres liczą rocznik.js i v46)`);
   for (const r of Object.keys(k.role || {})) if (!ROLE.includes(r)) blad(`role.${r}: nieznana rola (są: ${ROLE.join(", ")})`);
@@ -229,8 +230,10 @@ export function konfiguracjaPlanu(k, R = roczniki()) {
     system: { nazwa: k.plan.systemNazwa, rok: k.plan.rok },
     grupy: k.grupy.slice(),
     plik: k.plan.plik,
-    // odwołane zajęcia: bez Teams tylko komunikaty DOS wydziału (adres z bazy: nauka_roczniki_lista → wydzial.dos_url)
+    // odwołane zajęcia: bez Teams tylko komunikaty DOS. Adres sekcji: "dos" z pliku kierunku (zajęcia w innym budynku,
+    // np. FiR na Mickiewicza 64), a bez niego adres wydziału z bazy (nauka_roczniki_lista → wydzial.dos_url)
     odwolania: k.teams ? ["dos", "teams"] : ["dos"],
+    ...(k.dos ? { dos: k.dos } : {}),
   };
 }
 
