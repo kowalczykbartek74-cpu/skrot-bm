@@ -53,3 +53,27 @@ Do obejrzenia: lekcja jest w formacie generatora (mniejsza niż lekcje BM v4), k
 - **Statystyka opisowa (K3, BM nie ma lekcji):** 6 lekcji Sonnet 5.5, 0,59 $ z poprawką lekcji 5 (Laspeyres/Paasche). Lekcja 2: 4 pytania w bilecie wyjścia → przycięte do 3 (oryginał `lekcja-02.przed-przycieciem.json`). 70 wartości = przykłady, oznaczone. Paczka `~/Downloads/paczka-eaia-statystyka-6.json`.
 - **Wzorzec K3** zatwierdzony (eaia26-finanse-01).
 - **Scalenie:** plan-bm main f6b07e2, skrot-bm main 7346624 (merge FiR + plan.zdawalni.pl, roczniki-dane.js?v=20261109-eaia). Testy: node 347/347, wszystkie-roczniki 8/8 (BM przed = po).
+
+## 9.11.2026: Etap E, reszta K3 (47 lekcji, 2,96 $)
+
+Sonnet 5.5 (Batch), kontrola Haiku 5.5. Koszt z zużycia tokenów razem z poprawkami: **2,96 $** (na sucho 3,47 $).
+
+| Przedmiot | Lekcje | Koszt |
+|---|---|---|
+| Finanse (egzamin), 2–7 | 6 | 0,48 $ |
+| Makroekonomia (egzamin), tematy bez BM | 3 | 0,18 $ |
+| Informatyka w ekonomii | 7 | 0,49 $ |
+| Systemy pozyskiwania danych | 7 | 0,36 $ |
+| Zarządzanie organizacją | 7 | 0,45 $ |
+| Zarządzanie pracą zespołową | 7 | 0,38 $ |
+| Technologie informacyjne | 7 | 0,41 $ |
+| Ochrona własności intelektualnej, tematy bez BM | 3 | 0,22 $ |
+
+- **Kontrola AI:** 44/47 OK za pierwszym razem. Finanse 6 (pytanie o formy efektywności rynku miało dwie dobre odpowiedzi) poprawione przez `popraw`. IwE 6 i ZO 1: dwie rundy `popraw` (jedna odpowiedź błędna), resztę uwag poprawiłem ręcznie: IwE 6 dopisany model C2B w treści, ZO 1 doprecyzowane pytanie o szpital (koszt na pacjenta) i dystraktory Financial/Interpersonal skills zamiast „Typing skills / Physical strength”.
+- **Kontrola bez AI:** 7 lekcji z brakującymi/przesuniętymi wyjaśnieniami „not” (Finanse 3, 4; IwE 4, 5, 6; SPD 7; ZO 2) – uzupełnione ręcznie. TI 4: 4 pytania w bilecie wyjścia → 3. Oryginały: `lekcja-NN.przed-reczna.json` / `.przed-przycieciem.json` w `.tresci/wefiz-eaia-1-st-2026/<przedmiot>/`.
+- **Kontrola treści:** ZPZ 7 cytowało „You are lazy”/„you are bad” jako złe przykłady – filtr fraz blokował, przeformułowane. Polskie formy zależne od płci w „Prościej” ZPZ 7 poprawione; tytuł IwE 6 był po polsku → po angielsku. 143 rachunki OK, 0 błędów. 165 wartości = przykłady; daty OWI 03 sprawdzone z art. 36–37 pr. aut.
+- **Kolejność lekcji:** Makroekonomia i OWI mają teraz numerację 1…N wg sylabusa razem z kopiami BM (Makro: 1 BM, 2–3 nowe, 4–11 BM, 12 nowa; OWI: 1–2 BM, 3–5 nowe, 6–7 BM). Zmienione też w paczce K1 (lekcje nie były jeszcze wgrane).
+- **Uwaga do przeglądu:** 83 ostrzeżenia „poprawna opcja dużo dłuższa od reszty” (nie blokują; podpowiedź w pytaniu) – warto przejrzeć na telefonie.
+- **Paczka:** `~/Downloads/paczka-eaia-etap-e-47.json` (1,4 MB, Prościej 47, Dlaczego? 47); kontrola przed wgraniem: można wgrać.
+
+Do wgrania w roczniku EaIA (razem): `paczka-eaia-k1-41`, `paczka-eaia-pilot-k3`, `paczka-eaia-statystyka-6`, `paczka-eaia-etap-e-47` = **95 lekcji**. W roczniku BM: `paczka-bm-poprawki-mk07-pr01`.
