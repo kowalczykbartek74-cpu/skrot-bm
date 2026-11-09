@@ -1,0 +1,134 @@
+{
+ "wydzial": "WT",
+ "nazwa": "Wydział Teologiczny, Uniwersytet Szczeciński",
+ "nazwa_en": "Faculty of Theology, University of Szczecin",
+ "opis": "Profil importów WT (v50). Plany WT (Teologia, Nauki o rodzinie) to SKANY bez tekstu: szkic robi AI z obrazu strony – z pliku wgranego tutaj albo odczyt zapisany w plan-bm (odczyty/wt/, scripts/us/wt-pdf.mjs → kolejka nauka_import_szkic_automat).",
+ "typy": {
+  "plan": {
+   "tytul": "{grupa} · {pl} ({k}) {pg}",
+   "strony_na_czesc": 1,
+   "zakladka": 0,
+   "max_tokens": 32000,
+   "effort": "low",
+   "sloty": [],
+   "polecenie": "Each item is ONE class in the weekly timetable of one year of study. The page is a scanned image of one table: weekday blocks as rows (PONIEDZIAŁEK … PIĄTEK, rotated label on the left), time slots in the left column (\"8:15 9:45\", \"10:00 11:30\", \"11:45 13:15\", …; a last row without times holds afternoon classes with their own red time), and one column per year of study (\"ROK 1\" … \"ROK 5\" for Teologia; \"Nauki o rodzinie I st. rok 1\" … \"II st. rok 2\").\ngrupa = the year group code given in the task (e.g. TEO1, NOR2); one task = one column. tydzien = oba. d = weekday: 0 Monday … 4 Friday (a red \"PIĄTEK 8:15-9:45\" inside a Thursday cell means Friday).\nod/do = a red time written in the cell (\"15:30-17:00\", \"od 9:45\" = start 9:45, end of the slots covered) or the slots the cell covers (a cell spanning two slots = 10:00–13:15).\nA column split into two sub-columns = two classes for the same year (usually on different dates), pg = \"\".\npl = subject without the bracket; k from the bracket: [wykład] = W, [ćwiczenia]/[ćw.] = CW, [laboratorium] = LAB; languages (Język …), Emisja głosu, Wychowanie fizyczne = CW; Wykład ogólnouczelniany = W; no bracket = X.\np = teacher as printed (\"Ks. dr hab. …\"). r = the blue room number as \"s. 202\"; another building as printed: \"s. 107 ACKJ, ul. Wawrzyniaka 15\".\nDates in blue with Roman months: \"12 X 19 X 26 X 9 XI\" = those days, \"od 16 XI\" = every week from then on, \"w pierwszej/drugiej połowie semestru\" = first/second half of the weeks; daty as YYYY-MM-DD (October 2026 – January 2027), [] when every week. Hours per date (\"8 X (2h)\") and footnotes [1]–[5] from the second page go to n.\nSkip classes whose dates are still to be set (footnote \"Terminy i godziny … zostaną ustalone\", \"w dniach ustalonych\"). en = \"\", g = \"\", n = notes or \"\".",
+   "schemat": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "grupa",
+     "tydzien",
+     "d",
+     "od",
+     "do",
+     "pl",
+     "en",
+     "k",
+     "p",
+     "r",
+     "g",
+     "n"
+    ],
+    "properties": {
+     "grupa": {
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^[A-Z0-9-]{2,20}$"
+     },
+     "tydzien": {
+      "type": "string",
+      "enum": [
+       "odd",
+       "even",
+       "oba"
+      ]
+     },
+     "d": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 6
+     },
+     "od": {
+      "type": "string",
+      "maxLength": 5,
+      "pattern": "^\\d{1,2}:\\d{2}$"
+     },
+     "do": {
+      "type": "string",
+      "maxLength": 5,
+      "pattern": "^\\d{1,2}:\\d{2}$"
+     },
+     "pl": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "en": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "k": {
+      "type": "string",
+      "enum": [
+       "W",
+       "CW",
+       "LAB",
+       "K",
+       "S",
+       "X"
+      ]
+     },
+     "p": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "r": {
+      "type": "string",
+      "maxLength": 200
+     },
+     "g": {
+      "type": "string",
+      "maxLength": 10
+     },
+     "n": {
+      "type": "string",
+      "maxLength": 300
+     },
+     "daty": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+       "type": "string",
+       "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+      }
+     },
+     "pg": {
+      "type": "string",
+      "maxLength": 120
+     }
+    }
+   },
+   "przyklady": [
+    {
+     "grupa": "TEO3",
+     "tydzien": "oba",
+     "d": 0,
+     "od": "10:00",
+     "do": "13:15",
+     "pl": "Pedagogika ogólna",
+     "en": "",
+     "k": "CW",
+     "p": "Ks. dr Krzysztof Łuszczek",
+     "r": "s. 303",
+     "g": "",
+     "n": "",
+     "daty": [
+      "2026-10-12",
+      "2026-10-19",
+      "2026-10-26",
+      "2026-11-09"
+     ]
+    }
+   ]
+  }
+ }
+}
