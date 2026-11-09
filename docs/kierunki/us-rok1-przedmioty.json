@@ -1,0 +1,2416 @@
+{
+ "opis": "Przedmioty 1. roku (semestr zimowy 2026/27, studia stacjonarne) na wszystkich wydziałach US, zebrane 9.11.2026 z publicznych planów zajęć i planów studiów wydziałów. grupy = liczba grup 1. roku, jeśli źródło ją podaje (brak = nieznana). niska = dane niepewne. Źródło dla klocków (claude/klocki-spec.md, Etap 1).",
+ "roczniki": [
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Business Intelligence w gospodarce",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ekonomia",
+    "Komparatystyka finansów",
+    "Matematyka",
+    "Ochrona własności intelektualnej",
+    "Podstawy rachunkowości i sprawozdawczości",
+    "Prawo gospodarcze",
+    "Procesy przetwarzania danych w excelu",
+    "Wprowadzenie do baz danych",
+    "Wprowadzenie do business intelligence",
+    "Zarządzanie procesami biznesowymi"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Economics and IT Applications",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "en",
+   "przedmioty_rok1_zima": [
+    "Analiza matematyczna",
+    "Finanse",
+    "Informatyka w ekonomii",
+    "Makroekonomia",
+    "Ochrona własności intelektualnej",
+    "Prawo",
+    "Statystyka opisowa",
+    "Systemy pozyskiwania danych",
+    "Technologie informacyjne",
+    "Zarządzanie organizacją",
+    "Zarządzanie pracą zespołową"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Ekonomia",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Badanie zachowań społecznych",
+    "Makroekonomia",
+    "Matematyka",
+    "Ochrona własności intelektualnej",
+    "Polityka społeczna",
+    "Technologie informacyjne",
+    "Warsztaty autoprezentacji",
+    "Wprowadzenie do finansów",
+    "Wstęp do zarządzania"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Finanse i Rachunkowość",
+   "stopien": "I",
+   "grupy": {
+    "1": 4
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Arkusz kalkulacyjny w finansach i rachunkowości",
+    "Makroekonomia",
+    "Matematyka",
+    "Ochrona własności intelektualnej",
+    "Podstawy finansów",
+    "Podstawy prawa",
+    "Podstawy rachunkowości",
+    "Podstawy zarządzania"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Gospodarka Nieruchomościami",
+   "stopien": "I",
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ekonomika rynku nieruchomości",
+    "Informatyka ekonomiczna",
+    "Matematyka",
+    "Mikroekonomia",
+    "Ochrona danych osobowych",
+    "Ochrona własności intelektualnej",
+    "Podstawy finansów publicznych",
+    "Podstawy organizacji i zarządzania",
+    "Podstawy prawa administracji",
+    "Wstęp do gospodarki nieruchomościami",
+    "Zastosowania informacji przestrzennej w gospodarce nieruchomościami"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Gospodarka Przestrzenna (inż.)",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Geografia gospodarcza",
+    "Matematyka",
+    "Ochrona i kształtowanie środowiska",
+    "Ochrona własności intelektualnej",
+    "Podstawy ekonomii",
+    "Podstawy gospodarki przestrzennej",
+    "Podstawy zarządzania",
+    "Rysunek techniczny i planistyczny",
+    "Systemy i techniki informatyczne",
+    "Wprowadzenie do socjologii"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Informatyka i Ekonometria",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Algebra liniowa",
+    "Algorytmy i struktury danych",
+    "Analiza matematyczna",
+    "Makroekonomia",
+    "Ochrona własności intelektualnej",
+    "Technologie informacyjne",
+    "Wprowadzenie do prawa"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Informatyka w biznesie",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Algorytmy i struktury danych",
+    "Logika",
+    "Ochrona własności intelektualnej",
+    "Podstawy mikroekonomii",
+    "Podstawy projektowania uniwersalnego",
+    "Podstawy zarządzania",
+    "Przedsiębiorczość",
+    "Systemy operacyjne i technologie sieciowe w biznesie",
+    "Wprowadzenie do e-biznesu",
+    "Wstęp do informatyki w biznesie",
+    "Zarządzanie własnym rozwojem"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Komunikacja i psychologia w biznesie",
+   "stopien": "I",
+   "grupy": {
+    "1": 3
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Kultura organizacyjna",
+    "Ochrona własności intelektualnej",
+    "Podstawy ekonomii",
+    "Podstawy komunikacji",
+    "Podstawy psychologii",
+    "Podstawy socjologii",
+    "Podstawy zarządzania",
+    "Przedsiębiorczość",
+    "Relacje międzyludzkie w biznesie",
+    "Technologie informacyjne"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Logistyka (inż.)",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Elementy prawa",
+    "Inżynieria systemów i analiza systemowa",
+    "Logistyka i zarządzanie łańcuchem dostaw",
+    "Matematyka",
+    "Ochrona własności intelektualnej i przemysłowej",
+    "Podstawy projektowania uniwersalnego",
+    "Podstawy zarządzania",
+    "Technologie informatyczne",
+    "Ładunkoznawstwo"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Logistyka",
+   "stopien": "I",
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Etyka zawodowa",
+    "Ochrona własności intelektualnej i przemysłowej",
+    "Podstawy ekonomii",
+    "Podstawy logistyki",
+    "Podstawy marketingu",
+    "Podstawy projektowania uniwersalnego",
+    "Podstawy rachunkowości",
+    "Podstawy zarządzania",
+    "Technologie informatyczne",
+    "Towaroznawstwo"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Przedsiębiorczość i innowacje",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Marketing w małej firmie",
+    "Metody twórczego rozwiązywania problemów",
+    "Narzędzia informatyczne w małej firmie",
+    "Ochrona własności intelektualnej",
+    "Podstawy ekonomiki przedsiębiorstw",
+    "Podstawy makroekonomii",
+    "Podstawy prawa dla ekonomistów",
+    "Problemy biznesu w praktyce",
+    "Sztuka wystąpień publicznych",
+    "Wyszukiwanie, ocena wiarygodności informacji i bazy danych"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Turystyka i Rekreacja",
+   "stopien": "I",
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ekologia i ochrona środowiska",
+    "Geografia społeczno-ekonomiczna",
+    "Historia architektury i sztuki",
+    "Krajoznawstwo",
+    "Ochrona własności intelektualnej",
+    "Pedagogika czasu wolnego z elementami psychologii",
+    "Podstawy ekonomii",
+    "Podstawy geografii turyzmu",
+    "Podstawy projektowania uniwersalnego",
+    "Podstawy socjologii",
+    "Podstawy turystyki i rekreacji",
+    "Techniki informatyczne"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Zarządzanie",
+   "stopien": "I",
+   "grupy": {
+    "1": 3
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Matematyka",
+    "Nauka o przedsiębiorstwie",
+    "Ochrona własności intelektualnej",
+    "Podstawy ekonomii",
+    "Podstawy finansów",
+    "Podstawy prawa",
+    "Podstawy zarządzania",
+    "Technologie informacyjne",
+    "Zachowania konsumentów",
+    "Zarządzanie własnym rozwojem"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Zarządzanie i logistyka w ochronie zdrowia",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ekonomika zdrowia",
+    "Ochrona własności intelektualnej i przemysłowej",
+    "Podstawy logistyki w ochronie zdrowia",
+    "Podstawy zarządzania jakością w medycynie",
+    "Podstawy zarządzania w ochronie zdrowia",
+    "Procedury i standardy w chirurgii",
+    "Wprowadzenie do anatomii funkcjonalnej i fizjologii"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Zarządzanie w odnawialnych źródłach energii",
+   "stopien": "I",
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ekonomia",
+    "Funkcjonowanie rynku energii w polsce",
+    "Infrastruktura energetyczna",
+    "Krajowy system elektroenergetyczny",
+    "Logistyka w energetyce",
+    "Matematyka w zarządzaniu",
+    "Ochrona własności intelektualnej i przemysłowej",
+    "Podstawy energetyki",
+    "Podstawy prawa",
+    "Podstawy zarządzania",
+    "Podstawy zrównoważonego rozwoju",
+    "Technologie informatyczne",
+    "Zarządzanie finansami przedsiębiorstwa"
+   ]
+  },
+  {
+   "wydzial": "WEFiZ",
+   "nazwa": "Business Management",
+   "stopien": "I",
+   "grupy": {
+    "1": 3
+   },
+   "jezyk": "en",
+   "przedmioty_rok1_zima": [
+    "Analiza matematyczna",
+    "Ekonomia biznesu",
+    "Logistyka",
+    "Makroekonomia",
+    "Narzędzia IT w zarządzaniu",
+    "Ochrona własności intelektualnej",
+    "Podstawy finansów",
+    "Podstawy zarządzania",
+    "Prawo",
+    "Zarządzanie zasobami ludzkimi"
+   ],
+   "gotowy": true
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Animacja kultury",
+   "stopien": "I",
+   "lata": [
+    3
+   ],
+   "grupy": {
+    "3": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": []
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Bezpieczeństwo narodowe",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 3,
+    "2": 2,
+    "3": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Geografia bezpieczeństwa",
+    "Psychologia bezpieczeństwa",
+    "Podstawy wyszkolenia strzeleckiego",
+    "Terroryzm i zagrożenia asymetryczne współczesnego świata",
+    "Ekonomia",
+    "Współczesne konflikty i wojny",
+    "Protokół dyplomatyczny",
+    "Historia najnowsza",
+    "Międzynarodowe stosunki wojskowe",
+    "Teorie bezpieczeństwa",
+    "Współczesne zagrożenia niemilitarne",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Bezpieczeństwo narodowe",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Analiza bieżących wydarzeń",
+    "Organizacja i zasady prowadzenia działań ratowniczych",
+    "Metodologia w zakresie nauk o bezpieczeństwie",
+    "Geografia i geopolityka XIX i XX wieku",
+    "Autoprezentacja i protokół dyplomatyczny",
+    "Mechanizmy radykalizacji i ekstremizmu",
+    "Zarządzanie strategią bezpieczeństwa narodowego",
+    "Socjotechnika komunikacji",
+    "Seminarium dyplomowe"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Bezpieczeństwo wewnętrzne",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 5,
+    "2": 3,
+    "3": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Najnowsza historia polityczna",
+    "Podstawy prawa",
+    "Polityka zagraniczna i bezpieczeństwa Polski",
+    "Psychologia",
+    "Technologia informacyjna",
+    "Administracja publiczna",
+    "Nauka o państwie i prawie",
+    "Podstawy projektowania uniwersalnego",
+    "Bezpieczeństwo a ochrona środowiska naturalnego człowieka",
+    "Socjologia",
+    "Współczesne stosunki międzynarodowe",
+    "Teoria bezpieczeństwa",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Bezpieczeństwo wewnętrzne",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 2,
+    "2": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Filozofia bezpieczeństwa",
+    "Metodologia badań nad bezpieczeństwem",
+    "Strategia bezpieczeństwa wewnętrznego",
+    "Współczesne zagrożenia terroryzmem",
+    "Psychologia społeczna",
+    "Komunikacja społeczna",
+    "Historia bezpieczeństwa wewnętrznego w Polsce",
+    "Seminarium dyplomowe"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Edukacja artystyczna",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1,
+    "3": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Dyrygowanie z czytaniem partytur",
+    "Zasady tańca klasycznego z metodyką",
+    "Propedeutyka cyfrowej edycji multimediów",
+    "Propedeutyka pracy nauczyciela",
+    "Instalacje artystyczne",
+    "Malarstwo",
+    "Historia rozwoju myśli technologicznej",
+    "Lego w edukacji artystycznej",
+    "Zagadnienia formalne dzieła sztuki",
+    "Fotografia",
+    "Rysunek",
+    "Komunikacja i kultura języka",
+    "Zasady muzyki z metodyką",
+    "Kreatywne pisanie",
+    "Udzielanie pierwszej pomocy przedmedycznej",
+    "Ochrona własności intelektualnej",
+    "Etyczne aspekty twórczości"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Edukacja artystyczna",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Praca z osobami uzdolnionymi",
+    "Historia muzealnictwa i współczesne nurty kuratorstwa",
+    "Marketing i zarządzanie w kulturze",
+    "Historia i problemy kultury",
+    "Zagadnienia i kierunki filozofii współczesnej",
+    "Komunikacja i wystąpienia publiczne",
+    "Finansowanie w obszarze kultury",
+    "Rysunek z metodyką",
+    "Podstawy analizy dzieła artystycznego",
+    "Współczesne nurty muzyki i tańca z metodyką"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Management instytucji publicznych i PR",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2,
+    "2": 1,
+    "3": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Wiedza o państwie",
+    "Wprowadzenie do marketingu",
+    "Idee społeczne i polityczne",
+    "Personal Branding",
+    "Socjologia",
+    "Ekonomia",
+    "Instytucje polityczne współczesnego świata",
+    "Wprowadzenie do PR",
+    "Psychologia społeczna",
+    "Technologia informacyjna",
+    "Współczesne problemy społeczne",
+    "Etykieta biznesowa i urzędowa",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Management instytucji publicznych i PR",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Techniki neuronauki poznawczej",
+    "Protokół dyplomatyczny",
+    "Standardy zarządzania bezpieczeństwem informacji",
+    "Współczesne dyskursy polityczne",
+    "Media społecznościowe w instytucjach publicznych",
+    "Polityka w przestrzeni medialnej",
+    "Nowe media",
+    "E-administracja",
+    "Seminarium dyplomowe"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Politologia",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1,
+    "3": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Administracja publiczna",
+    "Nauka o polityce",
+    "Integracja europejska",
+    "Socjologia",
+    "Ekonomia",
+    "Historia współczesnego świata",
+    "Współczesna historia polityczna Polski",
+    "Nauka o państwie i prawie",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Pedagogika",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1,
+    "3": 1
+   },
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "Biomedyczne podstawy rozwoju i wychowania",
+    "Metody diagnozy w pedagogice opiekuńczowychowawczej",
+    "Pedagogika społeczna",
+    "Teoretyczne podstawy wychowania",
+    "Pedagogika opiekuńcza",
+    "Prawne podstawy opieki i wychowania",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Pedagogika",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Psychologia stosowana",
+    "Problemy opiekuńczo-wychowawcze",
+    "Metodyka edukacji zdrowotnej i promocji zdrowia",
+    "Pedagogika porównawcza",
+    "Pedagogika ogólna",
+    "Podstawy socjoterapii",
+    "Metodologia badań społecznych",
+    "Podstawy dydaktyki",
+    "Organizacja i zarządzanie w oświacie",
+    "Seminarium dyplomowe",
+    "Antropologiczne podstawy edukacji"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Pedagogika opiekuńczo-wychowawcza",
+   "stopien": "I",
+   "lata": [
+    3
+   ],
+   "grupy": {
+    "3": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": []
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Pedagogika przedszkolna i wczesnoszkolna",
+   "stopien": "J",
+   "lata": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "grupy": {
+    "1": 3,
+    "2": 2,
+    "3": 2,
+    "4": 1,
+    "5": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Wprowadzenie do pedagogiki",
+    "Historia wychowania",
+    "Psychologia rozwojowa",
+    "Antropologiczne i kulturowe podstawy edukacji",
+    "Psychologia rozwoju osobistego",
+    "Ochrona własności intelektualnej",
+    "Biomedyczne podstawy rozwoju małego dziecka",
+    "Tutoring"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Pedagogika resocjalizacyjna",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2,
+    "2": 2,
+    "3": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Psychologia rozwojowa",
+    "Metody badań pedagogicznych",
+    "Psychologia ogólna i społeczna",
+    "Teoretyczne podstawy wychowania",
+    "Historia myśli pedagogicznej",
+    "Wprowadzenie do pedagogiki",
+    "Filozofia edukacji",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Pedagogika resocjalizacyjna",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1,
+    "2": 1
+   },
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "Edukacja społeczna",
+    "Psychologia kliniczna",
+    "Metodologia badań społecznych",
+    "Współczesne nurty resocjalizacji",
+    "Resocjalizacja penitencjarna",
+    "Seminarium magisterskie"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Pedagogika specjalna",
+   "stopien": "J",
+   "lata": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "grupy": {
+    "1": 2,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Podstawy prawne i organizacje oświaty",
+    "Szkoła jako instytucja wychowawcza",
+    "Teoretyczne podstawy wychowania",
+    "Podstawy projektowania uniwersalnego",
+    "Nurty współczesnej filozofii",
+    "Pedagogika ogólna",
+    "Biomedyczne podstawy rozwoju",
+    "Historia wychowania",
+    "Nurty współczesnej socjologii",
+    "Aksjologiczne podstawy edukacji",
+    "Międzynarodowe i krajowe regulacje dotyczące praw człowieka i dziecka",
+    "Pedagogika społeczna",
+    "Filozoficzne podstawy wychowania",
+    "Ochrona własności intelektualnej",
+    "Antropologiczne i kulturowe podstawy edukacji",
+    "Współczesne koncepcje wychowania",
+    "Etyka pedagogiczna"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Praca socjalna",
+   "stopien": "I",
+   "lata": [
+    1
+   ],
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Filozofia z etyką",
+    "Psychologia ogólna",
+    "Podstawy ekonomii",
+    "Teoretyczne podstawy pracy socjalnej",
+    "Psychologia społeczna",
+    "Socjologia ogólna",
+    "Pedagogika społeczna",
+    "Historia pomocy społecznej",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Psychologia",
+   "stopien": "J",
+   "lata": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "grupy": {
+    "1": 4,
+    "2": 4
+   },
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "Biologiczne podstawy zachowań",
+    "Psychologia rozwoju człowieka w cyklu życia",
+    "Filozofia z elementami logiki",
+    "Ochrona własności intelektualnej",
+    "Psychologia ogólna",
+    "Kobieta w kulturach świata",
+    "Historia myśli psychologicznej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Socjologia",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Etyczne problemy zawodu socjologa",
+    "Podstawy socjologii",
+    "Socjologia komunikacji",
+    "Antropologia kulturowa",
+    "Socjologia designu",
+    "Socjologia zachowań ludzkich",
+    "Historia społecznogospodarcza",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Socjologia",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Zróżnicowanie społeczne",
+    "Filozofia",
+    "Socjologia wielokulturowości",
+    "Seminarium dyplomowe",
+    "Działalność szkoleniowa w kreowaniu kapitału społecznego",
+    "Rodzina w systemie pomocy społecznej",
+    "Problemy socjalizacji i wychowania w rodzinie",
+    "Zaawansowane programy komputerowe analizy danych",
+    "Strategie interwencji kryzysowej",
+    "Socjologia ekonomiczna",
+    "Socjologia problemów społecznych"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Socjotechnika i oddziaływanie społeczne",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Socjalizacja jako wpływ społeczny",
+    "Podstawy socjologii",
+    "Kultura w globalizującym się świecie",
+    "Obraz jako narzędzie wpływu społecznego",
+    "Kulturowe aspekty dyplomacji",
+    "Wstęp do nauk społecznych",
+    "Metodologia badań społecznych",
+    "Psychologia społeczna",
+    "Socjotechnika: teorie i strategie wpływu społecznego",
+    "Ochrona własności intelektualnej",
+    "Praca ze społecznością lokalną"
+   ]
+  },
+  {
+   "wydzial": "WNS",
+   "nazwa": "Social sciences",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "en",
+   "przedmioty_rok1_zima": [
+    "Introduction to Social Science",
+    "Building Social Capital Workshop",
+    "Cultural Differences",
+    "Human and Social Geography",
+    "Cultural Antropology",
+    "Religions in the Contemporary World",
+    "Culture and Power",
+    "Historical Sociology",
+    "Introduction to Politics",
+    "Philosophy",
+    "Intellectual Property Protection"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Biologia",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Histologia",
+    "Chemia ogólna i analityczna",
+    "Biofizyka",
+    "Ochrona własności intelektualnej",
+    "Metody analizy i prezentacji danych w naukach biologicznych",
+    "Botanika ogólna",
+    "Embriologia zwierząt"
+   ],
+   "egzaminy": [
+    "Botanika ogólna",
+    "Chemia ogólna i analityczna",
+    "Histologia"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Biotechnologia",
+   "stopien": "I",
+   "lata": [
+    1,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Biologia komórki",
+    "Chemia ogólna i fizyczna",
+    "Wstęp do biotechnologii",
+    "Zarys histologii i organografii roślin",
+    "Rośliny użytkowe",
+    "Ochrona własności intelektualnej",
+    "Fizyka",
+    "Matematyka"
+   ],
+   "egzaminy": [
+    "Biologia komórki",
+    "Chemia ogólna i fizyczna"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Biotechnologia",
+   "stopien": "II",
+   "lata": [
+    1
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Mechanizmy komórkowe na poziomie molekularnym",
+    "Metody molekularne w diagnostyce",
+    "Bioinformatyka",
+    "Mutacje i mutageneza",
+    "Biofizyka"
+   ],
+   "egzaminy": []
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Biologiczne podstawy kryminalistyki",
+   "stopien": "II",
+   "lata": [
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": []
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Eksploatacja zasobów naturalnych",
+   "stopien": "I",
+   "lata": [
+    4
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": []
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Fizyka",
+   "stopien": "I",
+   "lata": [
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": []
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Genetyka i biologia eksperymentalna",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 3
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Biologia komórki",
+    "Fizjologia roślin",
+    "Biofizyka",
+    "Analiza chemiczna",
+    "Genetyka",
+    "Mikrobiologia z wirusologią",
+    "Anatomia roślin",
+    "Ochrona własności intelektualnej"
+   ],
+   "egzaminy": [
+    "Biologia komórki",
+    "Fizjologia roślin",
+    "Genetyka"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Geografia",
+   "stopien": "I",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Astronomiczne podstawy geografii",
+    "Geologia",
+    "Ochrona własności intelektualnej",
+    "Technologie informacyjne",
+    "Kartografia i topografia",
+    "Wstęp do geografii",
+    "Geografia społeczna",
+    "Socjologia dla geografów",
+    "Matematyka",
+    "Elementy fizyki i chemii Ziemi"
+   ],
+   "egzaminy": [
+    "Astronomiczne podstawy geografii",
+    "Geografia społeczna",
+    "Geologia",
+    "Kartografia i topografia"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Geologia",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Mineralogia",
+    "Ochrona własności intelektualnej",
+    "Technologia informacyjna",
+    "Geomorfologia",
+    "Geologia fizyczna z elementami planisekcji",
+    "Matematyka dla geologów",
+    "Chemia"
+   ],
+   "egzaminy": [
+    "Geologia fizyczna z elementami planisekcji",
+    "Geomorfologia",
+    "Mineralogia"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Geologia",
+   "stopien": "II",
+   "lata": [
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": []
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Hydrobiology",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "en",
+   "przedmioty_rok1_zima": [
+    "Global water resources",
+    "Marine Invertebrates",
+    "Water chemistry",
+    "Cell biology",
+    "Animal systematics",
+    "Intellectual property protection",
+    "Vertebrate Zoology",
+    "Water Physics",
+    "Methods of hydrobiology"
+   ],
+   "egzaminy": [
+    "Cell biology",
+    "Marine Invertebrates",
+    "Water chemistry"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Kosmologia",
+   "stopien": "I",
+   "lata": [
+    1
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ochrona własności intelektualnej",
+    "Programowanie strukturalne",
+    "Statystyka i analiza danych pomiarowych",
+    "Podstawy fizyki",
+    "Matematyka wyższa",
+    "Technologia informacyjna"
+   ],
+   "egzaminy": [
+    "Matematyka wyższa",
+    "Podstawy fizyki"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Matematyka",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ochrona własności intelektualnej",
+    "Elementarna teoria liczb",
+    "Wstęp do geometrii",
+    "Wstęp do algebry",
+    "Wstęp do matematyki współczesnej",
+    "Wstęp do analizy matematycznej"
+   ],
+   "egzaminy": [
+    "Elementarna teoria liczb",
+    "Wstęp do matematyki współczesnej"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Matematyka",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Analiza rzeczywista",
+    "Równania różniczkowe cząstkowe",
+    "Algebra z teorią liczb",
+    "Matematyczne podstawy informatyki",
+    "Topologia"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Mikrobiologia",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Techniki sterylizacji i dezynfekcji",
+    "Techniki mikroskopowania",
+    "Techniki laboratoryjne w mikrobiologii",
+    "Biologia komórki",
+    "Ochrona własności intelektualnej",
+    "Biofizyka",
+    "Chemia dla mikrobiologów",
+    "Historia i rozwój mikrobiologii",
+    "Systematyka Prokaryota i Eukaryota",
+    "Statystyka",
+    "Technologia informacyjna",
+    "Biologia mikroorganizmów",
+    "Antropologia z elementami anatomii człowieka"
+   ],
+   "egzaminy": [
+    "Biologia komórki",
+    "Biologia mikroorganizmów",
+    "Chemia dla mikrobiologów"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Mikrobiologia",
+   "stopien": "II",
+   "lata": [
+    1
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Genetyka stosowana",
+    "Diagnostyka bakteriologiczna",
+    "Genetyka drobnoustrojów",
+    "Epidemiologia i profilaktyka chorób zakaźnych",
+    "Proteomika i genomika",
+    "Biostatystyka"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Oceanografia",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Ochrona własności intelektualnej",
+    "Matematyka dla oceanografów",
+    "Wstęp do geologii",
+    "Klimatologia i meteorologia",
+    "Biologia",
+    "Chemia"
+   ],
+   "egzaminy": [
+    "Biologia",
+    "Chemia",
+    "Wstęp do geologii"
+   ]
+  },
+  {
+   "wydzial": "WNŚiP",
+   "nazwa": "Optyka okularowa",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "Elementy chemii",
+    "Podstawy fizyki",
+    "Elementy matematyki w fizyce",
+    "Elementy biologii",
+    "Ochrona własności intelektualnej",
+    "Statystyka i analiza danych pomiarowych",
+    "Technologia informacyjna",
+    "Optyka geometryczna"
+   ],
+   "egzaminy": [
+    "Elementy matematyki w fizyce"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "archeologia",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "archeologia paleolitu i mezolitu",
+    "ochrona własności intelektualnej",
+    "techniki pracy naukowej",
+    "wstęp do archeologii",
+    "wstęp do archeologii śródziemnomorskiej",
+    "zarys archeologii ziem polskich",
+    "źródłoznawstwo paleolitu i mezolitu"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "archeologia",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "aktualne problemy badawcze: archeologia Bliskiego Wschodu",
+    "aktualne problemy badawcze: epoka kamienia",
+    "archeologia społeczna",
+    "laboratorium archeologiczne",
+    "podstawy prawne ochrony zabytków",
+    "przeszłość w interpretacjach archeologicznych",
+    "sztuka Bliskiego Wschodu"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "bałtyckie studia kulturowe",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "historia Pomorza",
+    "historia regionu nadbałtyckiego do XX w.",
+    "literackie antropologie życia codziennego",
+    "mity i sagi narodów nadbałtyckich",
+    "państwa regionu nadbałtyckiego w XX i XXI wieku",
+    "pragmatyka językowa",
+    "przekład kulturowy",
+    "teorie kultury"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "dziennikarstwo i komunikacja społeczna",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "analiza i interpretacja tekstu",
+    "gatunki dziennikarskie - informacja",
+    "historia Polski XX i XXI wieku",
+    "historia filozofii",
+    "lektorat prasy krajowej",
+    "literatura faktu",
+    "metody badań medioznawczych",
+    "ochrona własności intelektualnej",
+    "ortografia i interpunkcja",
+    "podstawy prawa",
+    "polski system medialny",
+    "technologie informacyjne"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "dziennikarstwo i zarządzanie mediami",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "dziennikarski warsztat krytyczny",
+    "ekonomia sektora medialnego",
+    "elementy zarządzania",
+    "instrumentarium badawcze mediów",
+    "instrumentarium badawcze nauk ekonomicznych",
+    "komunikacja gospodarcza",
+    "laboratorium analityczne informacji i publicystyki",
+    "nauka o organizacji",
+    "pisarski warsztat dziennikarski",
+    "propaganda i manipulacja w języku mediów",
+    "statystyka",
+    "warsztaty cyfrowej humanistyki"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia angielska",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "historia Wysp Brytyjskich",
+    "ochrona własności intelektualnej",
+    "PNJA - fonetyka",
+    "PNJA - gramatyka praktyczna",
+    "PNJA - konwersacje",
+    "PNJA - pisanie akademickie",
+    "PNJA - zintegrowane sprawności",
+    "technologie informacyjne",
+    "wstęp do językoznawstwa"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia angielska",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "metodologia badań językoznawczych",
+    "metodologia badań literaturoznawczych",
+    "PNJA - pisanie akademickie II",
+    "PNJA - język biznesu",
+    "PNJA - sztuka prezentacji",
+    "PNJA - zaawansowane sprawności"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia germańska",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "PNJN - kurs poszerzony 1",
+    "współczesne tendencje językoznawcze",
+    "współczesne tendencje w literaturze niemieckojęzycznej",
+    "wybrane problemy językoznawstwa",
+    "wybrane problemy literaturoznawstwa"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia germańska z dodatkowym językiem obcym",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "akwizycja języka obcego",
+    "historia filozofii",
+    "kultura i historia krajów niemieckiego obszaru językowego",
+    "ochrona własności intelektualnej",
+    "PNJN - fonetyka i ortografia",
+    "PNJN - kurs podstawowy 1",
+    "technologie informacyjne"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia germańska z językiem angielskim",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "akwizycja języka obcego",
+    "historia filozofii",
+    "kultura i historia krajów niemieckiego obszaru językowego",
+    "ochrona własności intelektualnej",
+    "PNJA - kurs podstawowy",
+    "PNJN - gramatyka praktyczna 1",
+    "PNJN - kurs podstawowy 1",
+    "PNJN - ćwiczenia leksykalno-konwersacyjne",
+    "technologie informacyjne"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia hiszpańska",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "gramatyka praktyczna i słownictwo (hiszp.)",
+    "historia filozofii",
+    "historia i cywilizacja Półwyspu Iberyjskiego",
+    "ochrona własności intelektualnej",
+    "technologie informacyjne",
+    "ćwiczenia fonetyczne (hiszp.)",
+    "ćwiczenia konwersacyjne (hiszp.)"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia hiszpańska",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "język hiszpański w tekstach o tematyce gospodarczej",
+    "PNJH: kurs poszerzony 1",
+    "współczesne tendencje w językoznawstwie hiszpańskojęzycznym",
+    "współczesne tendencje w literaturze hiszpańskojęzycznej"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia norweska",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "gramatyka praktyczna (norw.)",
+    "ikony literatury norweskiej",
+    "ochrona własności intelektualnej",
+    "PNJ norweskiego - ustne",
+    "technologie informacyjne",
+    "ćwiczenia fonetyczne (norw.)"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia polska",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "analiza i interpretacja dzieła literackiego",
+    "fonetyka i fonologia współczesnego języka polskiego",
+    "historia filozofii",
+    "historia literatury polskiej - renesans",
+    "historia literatury polskiej - średniowiecze",
+    "literatura biblijna i antyczna",
+    "ochrona własności intelektualnej",
+    "stylistyka",
+    "technologie informacyjne",
+    "wstęp do nauki o kulturze"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia polska",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "dramat w kulturze XX i XXI wieku",
+    "lingwistyka kulturowa",
+    "metodologia badań językoznawczych",
+    "metodologia badań literackich",
+    "piśmiennictwo polskiego oświecenia",
+    "piśmiennictwo staropolskie",
+    "teorie kultury"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia romańska z językiem obcym do wyboru",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "kultura i filozofia francuskiego obszaru językowego",
+    "ochrona własności intelektualnej",
+    "PNJF - fonetyka z fonologią",
+    "PNJF - gramatyka praktyczna",
+    "PNJF - zintegrowane sprawności",
+    "PNJF - ćwiczenia leksykalne",
+    "technologie informacyjne"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia romańska",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "akwizycja języka obcego",
+    "gramatyka praktyczna - język francuski",
+    "historia literatury francuskiej (po 1945 r.)",
+    "język prawa i biznesu (fr.)",
+    "konwersacje i słuchanie - język francuski",
+    "pisanie/lektura - język francuski",
+    "współczesne teorie badań literackich",
+    "zintegrowane sprawności językowe - język francuski"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filologia rosyjska z dodatkowym językiem obcym",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "akwizycja języka obcego",
+    "gramatyka praktyczna (ros.)",
+    "ochrona własności intelektualnej",
+    "praktyczna nauka języka czeskiego",
+    "technologie informacyjne",
+    "wstęp do językoznawstwa",
+    "wstęp do literaturoznawstwa",
+    "ćwiczenia fonetyczne (ros.)",
+    "ćwiczenia konwersacyjne (ros.)",
+    "ćwiczenia w pisaniu (ros.)"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filozofia",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "estetyka",
+    "historia filozofii starożytnej",
+    "kultura logicznego myślenia",
+    "metodyka pracy naukowej",
+    "ochrona własności intelektualnej",
+    "podstawy informatyki",
+    "propedeutyka filozofii"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "filozofia",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "dyskursy emancypacyjne",
+    "etyka w ponowoczesności",
+    "filozofia polska",
+    "metodologia filozofii",
+    "najnowsze tendencje filozoficzne I",
+    "teorie płci kulturowej"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "Global Communication",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "en",
+   "przedmioty_rok1_zima": [
+    "Academic Writing",
+    "English Phonetics",
+    "Information Technologies",
+    "Intellectual property protection",
+    "Introduction to General and Applied Linguistics",
+    "Oral and Presentation Skills",
+    "Practical Grammar",
+    "Selected Aspects of Global History",
+    "Selected Aspects of Sociology",
+    "Sociology of Minorities",
+    "Text Analysis"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "Global Communication",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "en",
+   "przedmioty_rok1_zima": [
+    "Grammar II",
+    "History of Communication",
+    "Methodology of Linguistic Research",
+    "Speaking and Presentation Skills II",
+    "Writing Skills II"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "historia",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "historia filozofii",
+    "historia starożytna Bliskiego Wschodu",
+    "historia starożytna Grecji i Rzymu",
+    "ochrona własności intelektualnej",
+    "podstawy socjologii dla historyków",
+    "prahistoria ziem polskich",
+    "technologia informatyczna",
+    "wprowadzenie do debat historycznych",
+    "wstęp do badań historycznych"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "historia",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "debaty historyczne",
+    "historia cyfrowa",
+    "metodologia historii",
+    "oral history",
+    "przemiany cywilizacyjne XIX i XX w.",
+    "translatorium z języka nowożytnego",
+    "źródłoznawstwo antyczne",
+    "źródłoznawstwo średniowieczne"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "italianistyka",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "cywilizacja starożytnej Italii",
+    "geografia Włoch",
+    "historia filozofii",
+    "historia literatury włoskiej: początki",
+    "ochrona własności intelektualnej",
+    "PNJW: gramatyka praktyczna",
+    "PNJW: konwersacje",
+    "PNJW: pisanie",
+    "PNJW: zintegrowane sprawności",
+    "technologie informacyjne",
+    "wstęp do językoznawstwa"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "italianistyka",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "historia i społeczeństwo współczesnych Włoch",
+    "lingwistyka tekstu",
+    "PNJW: interpretacja i tłumaczenie",
+    "PNJW: konwersacje II",
+    "PNJW: stylistyka i pisanie",
+    "socjologia jedzenia i włoskiej tożsamości",
+    "teoria komunikacji",
+    "tradycje i kultura ludowa Włoch",
+    "współczesna włoska literatura masowa"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "kognitywistyka komunikacji",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "kultura logicznego myślenia",
+    "ochrona własności intelektualnej",
+    "podstawy informatyki",
+    "propedeutyka filozofii",
+    "psychologia poznawcza",
+    "tworzenie stron internetowych",
+    "wprowadzenie do algorytmów",
+    "wprowadzenie do językoznawstwa",
+    "wprowadzenie do kognitywistyki"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "kognitywistyka komunikacji",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "ewolucja poznania",
+    "metodologiczne podstawy badań eksperymentalnych",
+    "neurolingwistyka",
+    "neuronauka poznawcza",
+    "nowe trendy w psychologii poznawczej",
+    "programy komputerowej analizy danych",
+    "psychometria",
+    "tworzenie aplikacji internetowych",
+    "zagadnienia kognitywistyki I"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "lingwistyka dla biznesu (ros.-pol.-niem.)",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "akwizycja języka obcego",
+    "ochrona własności intelektualnej",
+    "praktyczna nauka języka czeskiego",
+    "PNJN - zintegrowane sprawności",
+    "PNJ rosyjskiego - zintegrowane sprawności",
+    "technologie informacyjne"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "media i cywilizacja",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "formy komunikacji w starożytności",
+    "geopolityka",
+    "media i komunikowanie społeczne",
+    "ochrona własności intelektualnej",
+    "prezentacje multimedialne",
+    "przemiany cywilizacyjne w starożytności",
+    "religie i ruchy religijne współczesnego świata",
+    "wprowadzenie do retoryki praktycznej",
+    "wpływ społeczny",
+    "współczesne ruchy społeczne i polityczne",
+    "wstęp do nauki o cywilizacji",
+    "życie prywatne w starożytnej Grecji i Rzymie"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "przekład rosyjsko-polski",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "gramatyka porównawcza ros.-pol.",
+    "metodologia badań przekładoznawczych",
+    "najnowsza literatura rosyjska",
+    "PNJ rosyjskiego: komunikacja",
+    "PNJ rosyjskiego: poprawność",
+    "psychologia języka i komunikacji",
+    "teoria przekładu",
+    "tłumaczenie tekstów ekonomicznych",
+    "tłumaczenie wspomagane komputerowo"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "stosunki międzynarodowe",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "elementy statystyki i demografii",
+    "historia filozofii",
+    "historia stosunków międzynarodowych 1815-1918",
+    "nauka o państwie",
+    "ochrona własności intelektualnej",
+    "podstawy prawa",
+    "polityka gospodarcza",
+    "wprowadzenie do stosunków międzynarodowych",
+    "technologia informacyjna"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "stosunki międzynarodowe",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "bezpieczeństwo międzynarodowe na przestrzeni dziejów",
+    "ekonomia rozwoju",
+    "etyka w przestrzeni publicznej",
+    "ewolucja teorii stosunków międzynarodowych",
+    "koncepcje międzynarodowej ochrony praw człowieka",
+    "międzynarodowe rynki finansowe",
+    "od regionalizacji do globalizacji",
+    "prognozowanie i symulacje międzynarodowe"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "studia pisarskie",
+   "stopien": "I",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "arcydzieła i eksperymenty",
+    "gatunki, konwencje, tematy literatury polskiej",
+    "język a literatura",
+    "literatura i terapia",
+    "mikroformy narracyjne",
+    "ochrona własności intelektualnej",
+    "opowieści lokalne",
+    "technologie informacyjne",
+    "warsztaty pisarskie",
+    "warsztaty prozatorskie",
+    "ślady poetów"
+   ]
+  },
+  {
+   "wydzial": "WH",
+   "nazwa": "studia pisarskie",
+   "stopien": "II",
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "antroponarracje",
+    "copywriting",
+    "komunikacja interpersonalna - warsztaty",
+    "literackie rewolucje i skandale",
+    "literatura na świecie",
+    "warsztaty pisarskie II",
+    "warsztaty redakcyjne"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "Prawo",
+   "stopien": "J",
+   "lata": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "grupy": {
+    "1": 10,
+    "2": 6,
+    "3": 9,
+    "4": 7,
+    "5": 6
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Wstęp do prawoznawstwa",
+    "Prawo konstytucyjne - zasady i źródła prawa",
+    "Historia prawa i myśli polityczno-prawnych",
+    "Podstawy przedsiębiorczości",
+    "Profesje prawnicze i okołoprawnicze",
+    "Wstęp do prawa autorskiego",
+    "Łacińska terminologia prawnicza",
+    "Etos i savoir vivre akademicki",
+    "Podstawy projektowania uniwersalnego",
+    "Organizacja czasu i efektywna nauka",
+    "Legal Tech start",
+    "Sposoby radzenia ze stresem na studiach"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "Administracja",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 3
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Mikroekonomia",
+    "Prawo administracyjne Rzymian",
+    "Historia administracji",
+    "Nauka administracji z elementami teorii organizacji i zarządzania",
+    "Podstawy przedsiębiorczości",
+    "Techniki negocjacji i mediacji w administracji",
+    "Ochrona własności intelektualnej",
+    "Podstawy prawoznawstwa",
+    "Informatyka w administracji"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "Administracja",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Poprawna polszczyzna w praktyce",
+    "Prawo autorskie i prawo własności intelektualnej",
+    "Historia myśli ustrojowo-administracyjnej",
+    "System prawa międzynarodowego publicznego",
+    "Prawo ochrony środowiska",
+    "Prawo gospodarcze publiczne",
+    "Ochrona praw człowieka",
+    "Zasady ustroju konstytucyjnego państwa",
+    "Podstawy przedsiębiorczości"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "Prawo służb mundurowych",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Historia służb mundurowych",
+    "Kryminalistyka",
+    "Filozofia prawa",
+    "Społeczeństwo obywatelskie",
+    "Status i rodzaje służb mundurowych",
+    "Ochrona własności intelektualnej",
+    "Źródła prawa",
+    "Podstawy socjologii",
+    "Podstawy psychologii",
+    "Podstawy prawoznawstwa",
+    "Stany nadzwyczajne",
+    "Technologie informacyjne",
+    "Etyka zawodowa funkcjonariuszy służb mundurowych",
+    "Podstawy przedsiębiorczości"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "Prawo służb mundurowych",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Prawo karne skarbowe",
+    "Zabezpieczanie śladów i dowodów",
+    "Prawo dewizowe",
+    "Mediacje karne",
+    "Rozwiązywanie konfliktów",
+    "Podstawy przedsiębiorczości",
+    "Resocjalizacja",
+    "Psychologia społeczna",
+    "Ustrój i funkcjonowanie krajowej administracji skarbowej",
+    "Ogólne prawo podatkowe"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "International and European Business Law",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {
+    "1": 1
+   },
+   "jezyk": "en",
+   "przedmioty_rok1_zima": [
+    "Business and Human Rights",
+    "Introduction to Economy",
+    "Basic Legal Knowledge",
+    "Public Business Law in International Context",
+    "Introduction to Civil Law",
+    "Introduction to EU Law",
+    "Public International Law",
+    "Legal English",
+    "Introduction to Entrepreneurship"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "Ekonomiczno-prawny",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {
+    "1": 2
+   },
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "Wstęp do prawoznawstwa",
+    "Historia prawa",
+    "Prawo cywilne część ogólna i rzeczowa",
+    "Ochrona własności intelektualnej"
+   ]
+  },
+  {
+   "wydzial": "WPiA",
+   "nazwa": "Ekonomiczno-prawny",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "Wprowadzenie do podatku od towarów i usług",
+    "Wykładnia prawa",
+    "Źródła prawa polskiego i międzynarodowego"
+   ]
+  },
+  {
+   "wydzial": "WKFiZ",
+   "nazwa": "Wychowanie fizyczne",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "anatomia",
+    "biologiczne podstawy wysiłku",
+    "kurs na wychowawcę wypoczynku",
+    "muzyka, rytm, taniec",
+    "ochrona własności intelektualnej",
+    "pierwsza pomoc",
+    "technologia informacyjna",
+    "teoria i metodyka gimnastyki",
+    "teoria i metodyka lekkiej atletyki",
+    "teoria i metodyka piłki nożnej",
+    "teoria i metodyka piłki ręcznej",
+    "zabawy i gry ruchowe"
+   ]
+  },
+  {
+   "wydzial": "WKFiZ",
+   "nazwa": "Wychowanie fizyczne",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "kulturystyka i fitness",
+    "metodologia badań naukowych",
+    "metodyka edukacji zdrowotnej",
+    "statystyka",
+    "teoria i metodyka sportów indywidualnych: gimnastyka",
+    "teoria i metodyka sportów indywidualnych: pływanie",
+    "teoria i metodyka sportów zespołowych: piłka nożna",
+    "teoria i metodyka sportów zespołowych: piłka ręczna",
+    "turystyka szkolna i ekologia",
+    "wychowanie fizyczne specjalne"
+   ]
+  },
+  {
+   "wydzial": "WKFiZ",
+   "nazwa": "Management w sporcie",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "historia sportu",
+    "media a sport",
+    "ochrona własności intelektualnej",
+    "pedagogika czasu wolnego",
+    "podstawy budowy i funkcjonowania organizmu człowieka",
+    "podstawy ekonomii",
+    "podstawy finansów",
+    "podstawy marketingu",
+    "podstawy psychologii",
+    "promocja zdrowia",
+    "techniki informatyczne",
+    "teoria sportu"
+   ]
+  },
+  {
+   "wydzial": "WKFiZ",
+   "nazwa": "Diagnostyka sportowa",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "anatomia człowieka",
+    "antropomotoryka",
+    "biochemia",
+    "biofizyka",
+    "ochrona własności intelektualnej",
+    "techniki informatyczne",
+    "wybrane zagadnienia z biologii człowieka"
+   ]
+  },
+  {
+   "wydzial": "WKFiZ",
+   "nazwa": "Diagnostyka sportowa",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "ergonomia",
+    "metodologia badań naukowych",
+    "podstawy żywienia w sporcie",
+    "poznawcze aspekty psychiki",
+    "profilaktyka urazów w sporcie",
+    "psychologiczne aspekty diagnozy",
+    "rozgrzewka w wybranych dyscyplinach sportu",
+    "sporty sylwetkowe",
+    "trening koordynacyjny"
+   ]
+  },
+  {
+   "wydzial": "WKFiZ",
+   "nazwa": "Zdrowie publiczne",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "biologiczne podstawy zdrowia",
+    "ekonomia",
+    "komunikacja interpersonalna",
+    "nauki o człowieku - anatomia",
+    "ochrona własności intelektualnej",
+    "pierwsza pomoc",
+    "podstawy badań klinicznych",
+    "podstawy prawa",
+    "podstawy psychofizjologii",
+    "podstawy żywienia",
+    "propedeutyka zdrowia publicznego",
+    "psychologia",
+    "socjologia",
+    "technologia informacyjna"
+   ]
+  },
+  {
+   "wydzial": "WKFiZ",
+   "nazwa": "Zdrowie publiczne",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "bioetyka",
+    "biologia człowieka",
+    "biostatystyka",
+    "e-zdrowie",
+    "ekonomia zdrowia i opieki zdrowotnej",
+    "historia medycyny",
+    "komunikacja medialna",
+    "prawo w ochronie zdrowia",
+    "promocja zdrowia i edukacja zdrowotna",
+    "psychologia zdrowia",
+    "rekreacja ruchowa osób w różnym wieku",
+    "socjologia zdrowia"
+   ]
+  },
+  {
+   "wydzial": "WT",
+   "nazwa": "Teologia",
+   "stopien": "J",
+   "lata": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Filozofia nauki",
+    "Historia filozofii starożytnej",
+    "Historia Kościoła w starożytności",
+    "Liturgika fundamentalna",
+    "Logika",
+    "Metafizyka",
+    "Ochrona własności intelektualnej",
+    "Podstawy przedsiębiorczości",
+    "Środowisko biblijne",
+    "Wstęp do filozofii"
+   ]
+  },
+  {
+   "wydzial": "WT",
+   "nazwa": "Nauki o rodzinie",
+   "stopien": "I",
+   "lata": [
+    1,
+    2,
+    3
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "przedmioty_rok1_zima": [
+    "Antropologia filozoficzna i teologiczna",
+    "Biomedyczne podstawy rozwoju człowieka",
+    "Komunikacja interpersonalna",
+    "Kulturowe uwarunkowania życia rodziny",
+    "Ochrona własności intelektualnej",
+    "Podstawy przedsiębiorczości",
+    "Podstawy przygotowania do małżeństwa",
+    "Polityka społeczna wobec rodziny",
+    "Rodzina w religiach i kulturach świata",
+    "Socjologia ogólna",
+    "Wprowadzenie do pedagogiki",
+    "Wprowadzenie do psychologii"
+   ]
+  },
+  {
+   "wydzial": "WT",
+   "nazwa": "Nauki o rodzinie",
+   "stopien": "II",
+   "lata": [
+    1,
+    2
+   ],
+   "grupy": {},
+   "jezyk": "pl",
+   "niska": true,
+   "przedmioty_rok1_zima": [
+    "Antropologia filozoficzna i teologiczna",
+    "Kompetencje doradcy, coacha i mediatora",
+    "Kulturowe aspekty życia rodzinnego",
+    "Metodologia nauk o rodzinie",
+    "Podstawy przedsiębiorczości",
+    "Problemy współczesnej rodziny",
+    "Rodzina w aspekcie prawa cywilnego, rodzinnego i kanonicznego",
+    "Teorie komunikacji interpersonalnej",
+    "Trening komunikacji interpersonalnej",
+    "Wprowadzenie do coachingu",
+    "Wprowadzenie do mediacji"
+   ]
+  }
+ ]
+}

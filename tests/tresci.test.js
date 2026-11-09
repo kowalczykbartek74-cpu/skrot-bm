@@ -56,6 +56,10 @@ test("matematyka: rachunki w tekście liczone ponownie", () => {
   assert.deepEqual(ok("10 · 1,05 = 10,5 · 1,05 = 11,025"), [true]);
   assert.deepEqual(ok("1000 · 1,05 ≈ 1050"), [true]);
   assert.deepEqual(ok("Koszt 30 zł + 80 zł = 110 zł."), [true]);
+  // lekcje BM po angielsku: przecinek tysięcy obok dziesiętnego (druga próba, gdy zwykłe czytanie się nie zgadza)
+  assert.deepEqual(ok("0,2 × 3,000 = 600"), [true]);
+  assert.deepEqual(ok("1,000/1,10 ≈ 909 PLN"), [true]);
+  assert.deepEqual(ok("0,5 × 2,000 = 1,500"), [false]);
   // nie zgaduje: nawiasy, procenty, godziny, „1,234”
   for (const s of ["(110 − 100) / 100 = 0,1", "5% × 200 = 10", "12:30 = pora", "1,234 + 1 = 1,235", "2^3 + 1 = 9"]) assert.deepEqual(T.arithmetic(s), [], s);
 });
@@ -199,4 +203,12 @@ test("rachunek: łańcuch „a = b + c = d” i spacja tysięcy nie dają fałsz
   assert.deepStrictEqual(ok("(3 000 : 5 = 600)"), []);
   assert.deepStrictEqual(ok("10 000 : 4 = 2 500"), [true]);
   assert.deepStrictEqual(ok("2 + 2 = 5"), [false]);
+  // spacja nierozdzielająca i wąska w liczbach (zapis typograficzny z lekcji K2): jak zwykła spacja
+  assert.deepStrictEqual(ok("10\u00a0000 : 4 = 2\u00a0500"), [true]);
+  assert.deepStrictEqual(ok("300 + 800 = 1\u00a0100"), [true]);
+  assert.deepStrictEqual(ok("2\u202f000 \u2212 200 \u00d7 3 = 1\u202f400"), [true]);
+  assert.deepStrictEqual(ok("300 + 800 = 1\u00a0200"), [false]);
+  // wynik z grupą tysięcy przed nawiasem: pominięty (jak każdy wynik przed „(”), a nie ucięty do „1” i uznany za błąd
+  assert.deepStrictEqual(ok("300 + 800 = 1 100 (razem)"), []);
+  assert.deepStrictEqual(ok("300 + 800 = 1 200 (razem)"), []);
 });

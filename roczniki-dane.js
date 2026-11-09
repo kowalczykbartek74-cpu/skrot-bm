@@ -39,6 +39,24 @@
       przedmioty: { prawne: ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"], rachunkowe: ["matematyka", "makroekonomia", "podstawy-finansow", "podstawy-rachunkowosci", "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci"], jeszczeProsciej: ["matematyka", "podstawy-rachunkowosci"] },
     },
     // ROCZNIK-KONIEC wefiz-fir-1-st-2026
+    // ROCZNIK-START wefiz-eaia-1-st-2026 (kierunki/wefiz-eaia-1-st-2026.json)
+    {
+      id: "wefiz-eaia-1-st-2026",
+      status: "oczekujacy",
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "EAIA", pl: "Economics and IT Applications", en: "Economics and IT Applications" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "en",
+      plan: { json: "https://plan.zdawalni.pl/plan/wefiz-eaia-1-st-2026.json", strona: "https://plan.zdawalni.pl/?k=eaia26", skrzynka: null },
+      sylabus: { plik: "sylabus-eaia26.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_economics_and_IT_applications_studia_stacjonarne_I_stopnia_2026_2027_ang.pdf" } },
+      grupy: ["M190"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej", "prawo"], rachunkowe: ["analiza-matematyczna", "finanse", "informatyka-w-ekonomii", "makroekonomia", "statystyka-opisowa"], jeszczeProsciej: ["analiza-matematyczna", "statystyka-opisowa"] },
+    },
+    // ROCZNIK-KONIEC wefiz-eaia-1-st-2026
   ];
   if (typeof module !== "undefined" && module.exports) module.exports = DANE;
   else root.SKROT_ROCZNIKI_DANE = DANE;

@@ -1,5 +1,11 @@
 {
  "opis": "Zatwierdzone wzorce treści (optymalizacja nr 6). Pilot 2–3 lekcji robi się tylko wtedy, gdy wzorca jeszcze nie ma; potem kolejne kierunki idą od razu całą mapą, z próbką 1 lekcji do obejrzenia. Zapis: node scripts/kierunek-start.mjs --wzorzec k2|k3 <id rocznika> <id lekcji,…>.",
  "k2": null,
- "k3": null
+ "k3": {
+  "rocznik": "wefiz-eaia-1-st-2026",
+  "lekcje": [
+   "eaia26-finanse-01"
+  ],
+  "zatwierdzono": "2026-11-08"
+ }
 }

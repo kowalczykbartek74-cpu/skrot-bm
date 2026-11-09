@@ -22,8 +22,8 @@ const PLAN_Z = JSON.stringify({ groups: { C151: { odd: [{ pl: "Podstawy zarządz
 const LS = { "mock-v31": "1", "mock-rocznik": JSON.stringify({ id: BM, wybrany: true }), "mock-roczniki-lista": LISTA, "mock-docs": DOCS, "mock-docs-rok": ROKI, "bm-starosta": "1" };
 async function otworz({ konto = "starosta", lang = "pl", w = 375, ls = {}, hash = "#/kierunkiPanel" } = {}) {
   const p = await page(b, { konto, lang, w, h: w > 800 ? 900 : 812, ls: { ...LS, ...ls } });
-  await p.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\/wefiz-zarz-1-st-2026\.json/, (r) => r.fulfill({ contentType: "application/json", body: PLAN_Z }));
-  await p.context().route(/^https:\/\/plan\.skrotbm\.pl\/plan\/wefiz-fir-1-st-2026\.json/, (r) => r.fulfill({ status: 404, body: "" }));
+  await p.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\/wefiz-zarz-1-st-2026\.json/, (r) => r.fulfill({ contentType: "application/json", body: PLAN_Z }));
+  await p.context().route(/^https:\/\/plan\.(skrotbm|zdawalni)\.pl\/plan\/wefiz-fir-1-st-2026\.json/, (r) => r.fulfill({ status: 404, body: "" }));
   await p.goto(BASE + "index.html" + hash); await p.waitForTimeout(2800);
   return p;
 }
@@ -36,7 +36,9 @@ let p = await otworz({ hash: "#/starosta" });
 ok("1 Narzędzia: pozycja „Panel kierunków”", (await p.locator(".more-row", { hasText: "Panel kierunków" }).count()) === 1);
 await p.locator(".more-row", { hasText: "Panel kierunków" }).click(); await p.waitForTimeout(1500);
 let t = await main(p);
-ok("1 panel: trzy kierunki ze statusem, BM teraz na stronie", /#\/kierunkiPanel/.test(p.url()) && (await p.locator(".pk-rok").count()) === 3 && /Zarządzanie, 1\. rok/.test(t) && /Finanse i Rachunkowość/.test(t) && /teraz na stronie/.test(t) && /lista oczekujących/.test(t), t.slice(0, 800));
+// tyle kart, ile roczników w rocznik.js + roczniki-dane.js (nowy kierunek nie psuje testu)
+const ileRocznikow = await p.evaluate(() => Object.keys(window.SKROT_ROCZNIKI?.ROCZNIKI || {}).length);
+ok("1 panel: wszystkie kierunki ze statusem, BM teraz na stronie", /#\/kierunkiPanel/.test(p.url()) && ileRocznikow >= 3 && (await p.locator(".pk-rok").count()) === ileRocznikow && /Zarządzanie, 1\. rok/.test(t) && /Finanse i Rachunkowość/.test(t) && /teraz na stronie/.test(t) && /lista oczekujących/.test(t), t.slice(0, 800));
 ok("1 BM: liczby z bazy (3 materiały BM, termin i ogłoszenie BM, bez Zarządzania)", /Kolokwium BM panel/.test(t) && /Ogłoszenie BM panel/.test(t) && !/Test Zarz panel|Ogłoszenie Zarz panel|lekcja Z/.test(t), t);
 await shot(p, "panel-kierunkow-bm-pl-375");
 // 2. Zarządzanie w panelu bez przeładowania

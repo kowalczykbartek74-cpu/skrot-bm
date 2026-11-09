@@ -85,12 +85,47 @@ function planuj() {
     lekcje.forEach((l, i) => { const s = 3 * wsp(at, rdzenie(l.tytul)) + wsp(a, rdzenie(l.temat)); if (s > score) { score = s; best = i; } });
     lekcje[best].cwiczenia.push(`${t.f === "CW" ? "Ćwiczenia" : t.f}: ${t.t}`);
   }
-  for (const l of lekcje) if (!/^[a-z0-9-]+$/.test(l.id)) throw new Error("Zły id lekcji: " + l.id);
-  return { rocznik: ROCZNIK, przedmiot: c.pl, sid: SID, kod: c.code, lekcje };
+  // --mapa scratch/<prefiks>/mapa.json (Etap C): tylko tematy z koszykiem K3; tematy K1/K2 mają już lekcje z banku albo z BM.
+  // Lekcja = temat główny K3 z dopiętymi ćwiczeniami K3; temat ćwiczeń K3 bez lekcji K3 staje się osobną lekcją (id z „c”).
+  let lista = lekcje;
+  if (opt("mapa")) {
+    const mapa = JSON.parse(fs.readFileSync(path.resolve(opt("mapa")), "utf8"));
+    const m = mapa.find((x) => x.przedmiot === c.id);
+    if (!m) throw new Error(`Brak przedmiotu ${c.id} w mapie`);
+    const k3 = new Set(m.tematy.filter((t) => t.koszyk === "K3").map((t) => t.temat));
+    const kod = slug(rok.kierunek.kod) + String(rok.nabor % 100);
+    lista = lekcje.filter((l) => k3.has(l.temat)).map((l) => ({ ...l, cwiczenia: l.cwiczenia.filter((t) => k3.has(t.replace(/^[^:]+: /, ""))) }));
+    const dopiete = new Set(lista.flatMap((l) => l.cwiczenia.map((t) => t.replace(/^[^:]+: /, ""))));
+    const glowneT = new Set(lekcje.map((l) => l.temat));
+    reszta.filter((t) => k3.has(t.t) && !dopiete.has(t.t) && !glowneT.has(t.t)).forEach((t, i) => lista.push({
+      nr: 0, id: `${kod}-${slug(PRZEDMIOT).slice(0, 26).replace(/-+$/, "")}-c${String(i + 1).padStart(2, "0")}`,
+      tytul: t.t.split(" - ")[0].replace(/^\d+\.\s*/, "").trim().slice(0, 120), temat: `${t.f === "CW" ? "Ćwiczenia" : t.f}: ${t.t}`, h: t.h, cwiczenia: [] }));
+    lista.forEach((l, i) => { l.nr = i + 1; });
+  }
+  for (const l of lista) if (!/^[a-z0-9-]+$/.test(l.id)) throw new Error("Zły id lekcji: " + l.id);
+  return { rocznik: ROCZNIK, przedmiot: c.pl, sid: SID, kod: c.code, lekcje: lista, ...(opt("mapa") ? { tylkoK3: true } : {}) };
 }
 
 // ---------- prompt: stała część (przewodnik + wzorcowa lekcja) i kontekst przedmiotu w cache ----------
+// --wzorzec <plik lekcji> (schemat kierunków 4.2: wzorcem K3 jest zatwierdzona lekcja PL z K2): lekcja przycięta do SCHEMAT,
+// bez pól, których generator nie pisze (wykresy „chart”, notatki, ściągawka).
+function przytnij(x, sch) {
+  if (!sch) return undefined;
+  if (sch.type === "array") return Array.isArray(x) ? x.map((v) => przytnij(v, sch.items)).filter((v) => v !== undefined) : undefined;
+  if (sch.type === "object") {
+    if (!x || typeof x !== "object") return undefined;
+    if (sch.properties.type?.enum && !sch.properties.type.enum.includes(x.type)) return undefined;
+    const o = {};
+    for (const [k, v] of Object.entries(sch.properties)) { const w = przytnij(x[k], v); if (w !== undefined) o[k] = w; }
+    return o;
+  }
+  return x === undefined ? undefined : x;
+}
 function wzorcowaLekcja() {
+  if (opt("wzorzec")) {
+    const d = JSON.parse(fs.readFileSync(path.resolve(opt("wzorzec")), "utf8"));
+    return JSON.stringify(przytnij(d.content.lesson, SCHEMAT.properties.lesson), null, 1);
+  }
   // Wzorzec formatu z prototypu lekcji v3 (BM, „Opportunity cost”): ten sam kształt danych, który czyta odtwarzacz.
   const s = fs.readFileSync(path.join(ROOT, "docs/lekcje-v3/prototyp.html"), "utf8");
   const a = s.indexOf("const DEMO_C"), b = s.indexOf("\n};", a) + 3;
@@ -119,12 +154,12 @@ Wzory LaTeX tylko w \\( … \\) i tylko gdy naprawdę potrzebne ${PRAWO ? "(w pr
 
 Poza lekcją w tym samym JSON:
 - tldr: 2 zdania streszczenia.
-- concepts: 5–8 pojęć: term (po polsku), en (odpowiednik angielski), definition (1–2 zdania własnymi słowami).
+- concepts: 5–8 pojęć: ${EN ? "term (po angielsku), pl (odpowiednik polski), definition (1–2 zdania po angielsku, własnymi słowami)" : "term (po polsku), en (odpowiednik angielski), definition (1–2 zdania własnymi słowami)"}.
 - flashcards: 8–10 fiszek {q, a}; q to pytanie o zrozumienie albo rozróżnienie, a to krótka odpowiedź.
 - quiz: 8 pytań jak wyżej, każde z "explanation" (dlaczego), "not" oraz "dlaczego": {why: wyjaśnienie dla 12–13-latka, example: przykład z życia}.
 - prosciej: wersja całej lekcji „Prościej” (jak dla 12–13-latka): intro, parts [{h, emoji, text, example, remember}] (3–4 części), words [{term, simple}] (3–5), check [{q, a}] (2–3).
 
-WZORZEC (format lekcji z innego przedmiotu, po angielsku; Ty piszesz po polsku o swoim temacie):
+${opt("wzorzec") ? "WZORZEC (zatwierdzona lekcja tego kierunku, z innego tematu; ten sam format, styl i poziom; piszesz o swoim temacie):" : `WZORZEC (format lekcji z innego przedmiotu, po angielsku; Ty piszesz ${EN ? "po angielsku (simple i prosciej po polsku)" : "po polsku"} o swoim temacie):`}
 ${wzorcowaLekcja()}`;
 
 function kontekstPrzedmiotu(c) {
@@ -162,7 +197,7 @@ const SCHEMAT = S({
     formulas: strs,
     exit: { type: "array", items: S({ q: str, options: strs, correct: int, why: str, not: strs, sec: int }) },
   }),
-  concepts: { type: "array", items: S({ term: str, en: str, definition: str }) },
+  concepts: { type: "array", items: EN ? S({ term: str, pl: str, definition: str }) : S({ term: str, en: str, definition: str }) },
   flashcards: { type: "array", items: S({ q: str, a: str }) },
   quiz: { type: "array", items: S({ q: str, options: strs, correct: int, explanation: str, not: strs, dlaczego: S({ why: str, example: str }) }) },
   prosciej: S({ intro: str, parts: { type: "array", items: S({ h: str, emoji: str, text: str, example: str, remember: str }) }, words: { type: "array", items: S({ term: str, simple: str }) }, check: { type: "array", items: S({ q: str, a: str }) } }),
@@ -244,7 +279,7 @@ function prosbaKontrola(nr, x) {
 - pytanie check/exit/quiz sprawdza tylko definicję z pamięci zamiast zastosowania (waga „uwaga”);
 - zła odpowiedź jest absurdalna albo „not” nie wyjaśnia błędu (waga „uwaga”);
 - dobra odpowiedź jest dyskusyjna albo są dwie dobre (waga „blad”);
-- tekst nie po polsku albo „simple”/„prosciej” za trudne dla 12–13-latka (waga „uwaga”).
+- ${EN ? "tekst lekcji nie po angielsku (zajęcia są po angielsku; po polsku są tylko simple, prosciej, pole pl pojęć i „dlaczego” w quizie)" : "tekst nie po polsku"} albo „simple”/„prosciej” za trudne dla 12–13-latka (waga „uwaga”).
 ok = false tylko przy co najmniej jednym „blad”. ocena 1–5 (5 = gotowe dla studentów).` }],
       messages: [{ role: "user", content: JSON.stringify(x) }],
     },
@@ -293,7 +328,33 @@ async function odbierz() {
   void plan;
 }
 
-// ---------- gotowe lekcje (wspólne dla sql i paczki) ----------
+// ---------- dokumenty jednej lekcji ----------
+// Dokumenty jednej lekcji (materials, materialContent, quizWhy, materialSimple) z odpowiedzi modelu: wspólne dla „sql” i „pliki”.
+const FORMY = { W: "wykład", CW: "ćwiczenia", LAB: "laboratorium", KON: "konwersatorium", SEM: "seminarium" };
+function sylRefLekcji(l) {
+  // Numer tematu w sylabusie (forma + numer), a nie numer lekcji w planie (plan z --mapa zawiera tylko część tematów).
+  const c = kurs(), out = [];
+  const tem = [l.temat.replace(/^[^:]+: /, ""), ...l.cwiczenia.map((t) => t.replace(/^[^:]+: /, ""))];
+  for (const [f, ts] of Object.entries(c.topics)) ts.forEach((t, i) => { if (tem.includes(t.t)) out.push([f, i + 1]); });
+  const po = {};
+  for (const [f, n] of out) (po[f] ||= []).push(n);
+  return Object.entries(po).map(([f, ns]) => `${FORMY[f] || f.toLowerCase()}, ${ns.length > 1 ? "tematy" : "temat"} ${ns.join(", ")}`).join(" · ") || `wykład, temat ${l.nr}`;
+}
+function dokumenty(l, x, k, plan = czytaj(path.join(DIR, "plan.json"))) {
+    const L = { v2: true, ...x.lesson };
+    // Format v4 (lekcje-walidator.py): przy poprawnej odpowiedzi not[correct] = null, a nie pusty tekst (konwencja v3 z promptu).
+    for (const q of [...(L.sections || []).map((s) => s.check), ...(L.exit || []), ...(L.prereq || [])]) if (q && Array.isArray(q.not) && q.correct in q.not) q.not[q.correct] = null;
+    const content = { v: 2, tldr: x.tldr, concepts: x.concepts.map((c) => (EN ? { pl: c.pl, term: c.term, definition: c.definition } : { term: c.term, en: c.en, definition: c.definition })), flashcards: x.flashcards,
+      quiz: x.quiz.map((q) => ({ q: q.q, options: q.options, correct: q.correct, explanation: q.explanation })), lesson: L };
+    const material = { kind: "lesson", v: 2, source: "sylabus", subjectId: plan.sid, title: x.tytul || l.tytul, order: l.nr, sylRef: sylRefLekcji(l), lang: rok.jezykZajec,
+      fileName: `Sylabus ${rok.kierunek.pl} ${rok.rokAkademicki}`, fileType: "sylabus", createdAt: Date.now(), topicCount: L.sections.length,
+      conceptCount: content.concepts.length, flashcardCount: content.flashcards.length, quizCount: content.quiz.length, generator: { model: MODEL, kontrola: k[l.nr]?.ocena ?? null } };
+    const why = { items: Object.fromEntries(x.quiz.map((q, i) => [i, { why: q.dlaczego.why, example: q.dlaczego.example, not: q.not }])), at: Date.now() };
+    const simple = { ...x.prosciej, by: "auto", at: Date.now() };
+    return { material, content, why, simple };
+}
+
+// ---------- gotowe lekcje (wspólne dla sql, paczki i pliki) ----------
 function gotowe() {
   const plan = czytaj(path.join(DIR, "plan.json"));
   if (!plan) throw new Error(`Brak ${path.relative(ROOT, path.join(DIR, "plan.json"))}: najpierw krok „plan”, potem „wyslij” i „odbierz”.`);
@@ -307,16 +368,7 @@ function gotowe() {
     const bl = sprawdz(x);
     if (bl.length) { pominiete.push(`${l.nr} (kontrola bez AI: ${bl[0]})`); continue; }
     if (k[l.nr] && !k[l.nr].ok && !args.includes("--z-uwagami")) { pominiete.push(`${l.nr} (kontrola AI: do poprawy)`); continue; }
-    const L = { v2: true, ...x.lesson };
-    // Format v4 (lekcje-walidator.py): przy poprawnej odpowiedzi not[correct] = null, a nie pusty tekst (konwencja v3 z promptu).
-    for (const q of [...(L.sections || []).map((s) => s.check), ...(L.exit || []), ...(L.prereq || [])]) if (q && Array.isArray(q.not) && q.correct in q.not) q.not[q.correct] = null;
-    const content = { v: 2, tldr: x.tldr, concepts: x.concepts.map((c) => ({ term: c.term, en: c.en, definition: c.definition })), flashcards: x.flashcards,
-      quiz: x.quiz.map((q) => ({ q: q.q, options: q.options, correct: q.correct, explanation: q.explanation })), lesson: L };
-    const material = { kind: "lesson", v: 2, source: "sylabus", subjectId: plan.sid, title: x.tytul || l.tytul, order: l.nr, sylRef: `wykład, temat ${l.nr}`, lang: rok.jezykZajec,
-      fileName: `Sylabus ${rok.kierunek.pl} ${rok.rokAkademicki}`, fileType: "sylabus", createdAt: Date.now(), topicCount: L.sections.length,
-      conceptCount: content.concepts.length, flashcardCount: content.flashcards.length, quizCount: content.quiz.length, generator: { model: MODEL, kontrola: k[l.nr]?.ocena ?? null } };
-    const why = { items: Object.fromEntries(x.quiz.map((q, i) => [i, { why: q.dlaczego.why, example: q.dlaczego.example, not: q.not }])), at: Date.now() };
-    const simple = { ...x.prosciej, by: "auto", at: Date.now() };
+    const { material, content, why, simple } = dokumenty(l, x, k, plan);
     out.push({ l, material, content, simple, why });
   }
   return { plan, lekcje: out, pominiete };
@@ -406,6 +458,24 @@ if (cmd === "plan") {
 } else if (cmd === "odbierz") await odbierz();
 else if (cmd === "sql") sql();
 else if (cmd === "paczki") paczki();
+else if (cmd === "pliki") {
+  // Pliki lekcji (format eksportu + rocznik_id + zrodlo) dla scripts/paczka-lekcji.py → Panel AI „Paczka lekcji”. Nic nie zapisuje do bazy.
+  const plan = czytaj(path.join(DIR, "plan.json")), k = czytaj(path.join(DIR, "kontrola.json"), {});
+  const out = path.resolve(opt("wyjscie", path.join(DIR, "pliki"))); fs.mkdirSync(out, { recursive: true });
+  const pomin = [];
+  for (const l of plan.lekcje) {
+    const x = czytaj(path.join(DIR, `lekcja-${String(l.nr).padStart(2, "0")}.json`));
+    if (!x) { pomin.push(`${l.nr} (brak pliku)`); continue; }
+    const bl = sprawdz(x);
+    if (bl.length) { pomin.push(`${l.nr} (kontrola bez AI: ${bl[0]})`); continue; }
+    if (!k[l.nr]) { pomin.push(`${l.nr} (brak kontroli AI)`); continue; }
+    if (!k[l.nr].ok && !args.includes("--z-uwagami")) { pomin.push(`${l.nr} (kontrola AI: do poprawy)`); continue; }
+    const { material, content, why, simple } = dokumenty(l, x, k);
+    zapisz(path.join(out, l.id + ".json"), { id: l.id, subjectId: material.subjectId, rocznik_id: ROCZNIK, zrodlo: "k3:sylabus", title: material.title,
+      order: material.order, sylRef: material.sylRef, content, simple, why, generator: material.generator });
+  }
+  console.log(`Pliki: ${plan.lekcje.length - pomin.length}/${plan.lekcje.length} → ${out}${pomin.length ? "\nPominięte: " + pomin.join(", ") : ""}`);
+}
 else if (cmd === "koszt") koszt();
 else if (cmd === "probka") {
   const x = JSON.parse(fs.readFileSync(opt("plik"), "utf8")), nr = Number(opt("nr", "1"));

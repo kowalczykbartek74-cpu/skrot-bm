@@ -104,3 +104,15 @@ print(json.dumps([m.adresy("Economics and IT Applications",1,2026,"st","en"), m.
   assert.ok(!/_ang/.test(out[2]));
   assert.deepStrictEqual(out.slice(3), ["en", "pl"]);
 });
+
+test("sylabusy-hurt: podstrona kierunku na liście wydziału (EaIA: PDF-y tylko tam, „IT” wielkimi literami)", () => {
+  const lista = `<a href="/ksztalcenie/sylabusy/international-economics/">IE</a><a href="/ksztalcenie/sylabusy/economics-and-it-applications/">EaIA</a>`;
+  const pod = `<a href="/wp-content/uploads/sylabusy/26-27/sylabus_economics_and_IT_applications_studia_stacjonarne_I_stopnia_2026_2027_ang.pdf">EN</a>`;
+  const out = JSON.parse(execFileSync("python3", ["-c", `import json,importlib.util as u
+s=u.spec_from_file_location("h","sylabusy-hurt.py");m=u.module_from_spec(s);s.loader.exec_module(m)
+print(json.dumps([m.podstrona(${JSON.stringify(lista)},"Economics and IT Applications"), m.podstrona(${JSON.stringify(lista)},"Logistyka"),
+  m.z_listy(${JSON.stringify(pod)},"Economics and IT Applications",1,2026,"st","en")]))`], { cwd: path.join(ROOT, "scripts"), encoding: "utf8" }));
+  assert.strictEqual(out[0], "https://efz.usz.edu.pl/ksztalcenie/sylabusy/economics-and-it-applications/");
+  assert.strictEqual(out[1], null);
+  assert.match(out[2], /economics_and_IT_applications_.*_ang\.pdf$/);
+});

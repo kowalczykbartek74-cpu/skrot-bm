@@ -132,11 +132,21 @@
       if (p.lit && core.indexOf(p.lit) < 0) continue;
       var mm = p.re.exec(core);
       if (!mm) continue;
-      var out = p.v;
+      var out = p.v, slaby = p.lit.length <= 4, zostal = false;
       for (var j = 0; j < p.order.length; j++) {
         var g = mm[j + 1], gt = tr(g, depth + 1);
+        // Krótki wzór („{0} do {1}”, „{0} z {1}”) jest dla liczb i nazw ze słownika. Gdy kawałek z literami zostaje po polsku,
+        // wyszłoby pół na pół („Wprowadzenie to ekonomii”), więc ten wzór pomijamy.
+        if (slaby && gt === g && HAS_LETTER.test(g) && !KEEP.has(norm(g.trim()))) {
+          // „Lekcja 1” w „Lekcja 1 z 12”: słowo przed liczbą (albo po niej) tłumaczy słownik
+          var nm = /^([\s\S]*?[A-Za-zÀ-ž][\s\S]*?)(\s+[\d.,:]+)$/.exec(g) || /^([\d.,:]+\s+)([\s\S]*[A-Za-zÀ-ž][\s\S]*)$/.exec(g);
+          var nt = nm ? (/^\d/.test(nm[1]) ? find(norm(nm[2].trim()), depth + 1) : find(norm(nm[1].trim()), depth + 1)) : null;
+          if (nt == null) { zostal = true; break; }
+          gt = /^\d/.test(nm[1]) ? nm[1] + nt : nt + nm[2];
+        }
         out = out.split("{" + p.order[j] + "}").join(gt);
       }
+      if (zostal) continue;
       return out;
     }
     for (i = 0; i < prefixes.length; i++) {
