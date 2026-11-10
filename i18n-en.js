@@ -42,6 +42,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Lekcja {0}: przedmiotu „{1}” nie ma w tym roczniku.": "Lesson {0}: subject “{1}” isn't in this cohort.",
 "Wgrano {0} {1} do rocznika: {2}.": "Uploaded {0} {1} to the cohort: {2}.",
 "Nie udało się zapisać w bazie: {0}": "Couldn't save to the database: {0}",
+"Tego rocznika nie ma jeszcze w bazie. Otwórz Panel kierunków, kliknij „Dodaj do bazy” i wgraj ponownie.": "This cohort isn't in the database yet. Open the Programmes panel, click “Add to database” and upload again.",
 "Wgraj {0} {1}": "Upload {0} {1}",
 "lekcję": "lesson",
 "Czym to się różni od slajdów prowadzących?": "How is this different from the lecturers' slides?",

@@ -512,6 +512,9 @@
   let ROKI = {}; try { ROKI = JSON.parse(ls("mock-docs-rok", "{}")) || {}; } catch {}
   const rokOf = (col, id) => (ROKI[col] && id in ROKI[col] ? ROKI[col][id] : ROK_KOL.includes(col) && !(col === "meta" && id === "en") ? BM : null);
   const BRAK44 = { data: null, error: { code: "42703", message: "column nauka_docs.rocznik_id does not exist" } };
+  // mock-brak-rocznika = id rocznika, którego nie ma w nauka_roczniki: zapis z tym rocznik_id baza odrzuca kluczem obcym (jak produkcja 9.11.2026)
+  const BRAK_ROK = ls("mock-brak-rocznika", "");
+  const BRAK_FK = { data: null, error: { code: "23503", message: 'insert or update on table "nauka_docs" violates foreign key constraint "nauka_docs_rocznik_id_fkey"', details: 'Key (rocznik_id)=(' + BRAK_ROK + ') is not present in table "nauka_roczniki".' } };
   window.__zapisy = [];
   const TRWALE_DOCS = ls("mock-docs-trwale", "0") === "1";
   if (TRWALE_DOCS) try { const z = JSON.parse(localStorage.getItem("mock-docs-zapis") || "null"); if (z) { for (const [k, v] of Object.entries(z.docs || {})) Object.assign((DOCS[k] ||= {}), v); for (const [k, v] of Object.entries(z.roki || {})) Object.assign((ROKI[k] ||= {}), v); } } catch {}
@@ -531,6 +534,7 @@
         return { data: st.single ? rows[0] || null : rows, error: null, count: rows.length };
       }
       if (st.op === "upsert") {
+        if (BRAK_ROK && [].concat(st.row).some((r) => r && r.rocznik_id === BRAK_ROK)) return BRAK_FK;
         for (const r of [].concat(st.row)) {
           (DOCS[r.kolekcja] ||= {})[r.id] = r.data; window.__zapisy.push({ kolekcja: r.kolekcja, id: r.id, rocznik_id: r.rocznik_id, tytul: r.data?.title ?? null });
           if ("rocznik_id" in r) (ROKI[r.kolekcja] ||= {})[r.id] = r.rocznik_id;

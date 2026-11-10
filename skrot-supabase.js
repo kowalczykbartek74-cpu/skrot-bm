@@ -40,7 +40,11 @@
   const dbId = (col, id) => (RK ? RK.docId(col, id, ROK_ID) : String(id));
   const pageId = (col, id) => (RK ? RK.docIdStrony(col, id, ROK_ID) : String(id));
   let rokKolumna = true; // false = baza bez v44
-  const bezKolumny = (e) => !!e && (e.code === "42703" || e.code === "PGRST204" || /rocznik_id/.test(String(e.message || "")));
+  // Błąd ograniczenia (klasa 23, np. klucz obcy nauka_docs_rocznik_id_fkey) to nie „brak kolumny”: kolumna jest, zapis odrzuciła baza.
+  const bezKolumny = (e) => !!e && !/^23/.test(String(e.code || "")) && (e.code === "42703" || e.code === "PGRST204" || /rocznik_id/.test(String(e.message || "")));
+  // Zapis do rocznika, którego nie ma w tabeli nauka_roczniki (przed „Dodaj do bazy” w Panelu kierunków).
+  const brakRocznika = (e) => !!e && e.code === "23503" && /rocznik_id/.test(String(e.message || "") + " " + String(e.details || ""));
+  const BRAK_ROCZNIKA = "Tego rocznika nie ma jeszcze w bazie. Otwórz Panel kierunków, kliknij „Dodaj do bazy” i wgraj ponownie.";
   // zapytanie z filtrem rocznika; przy braku kolumny ponawia bez niego
   async function zRocznikiem(col, build) {
     if (rokKolumna && rokKolekcja(col)) {
@@ -58,6 +62,8 @@
   };
   async function zapisz(rows) {
     let r = await sb.from(TABLE).upsert(rows, { onConflict: "kolekcja,id" });
+    // Bez ponawiania: zapis bez rocznik_id trafiłby do rocznika administratora (tak 9.11.2026 lekcje EaIA wylądowały w BM, zob. v51).
+    if (brakRocznika(r.error)) return { data: null, error: Object.assign(new Error(BRAK_ROCZNIKA), { code: "brak_rocznika" }) };
     if (bezKolumny(r.error) && rows.some((x) => "rocznik_id" in x)) {
       rokKolumna = false;
       r = await sb.from(TABLE).upsert(rows.map(({ rocznik_id, ...x }) => x), { onConflict: "kolekcja,id" });

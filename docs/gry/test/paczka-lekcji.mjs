@@ -23,8 +23,8 @@ const paczka = (rocznik, sid, ids = ["t1-a", "t1-b"]) => ({ format: "zdawalni-pa
   materialSimple: { [ids[0]]: { parts: [{ h: "Prościej", text: "Tekst testowy." }] }, [ids[0] + "~ez"]: { items: {} }, "obca-lekcja": { parts: [] } },
   quizWhy: { [ids[0]]: { items: {} } } });
 
-async function otworz({ lang = "pl", w = 375, edycja = ROK } = {}) {
-  const p = await page(b, { konto: "starosta", lang, w, h: 812, ls: { ...LS, ...(edycja ? { "skrot-admin-rocznik": edycja } : {}) } });
+async function otworz({ lang = "pl", w = 375, edycja = ROK, ls = {} } = {}) {
+  const p = await page(b, { konto: "starosta", lang, w, h: 812, ls: { ...LS, ...(edycja ? { "skrot-admin-rocznik": edycja } : {}), ...ls } });
   await p.context().route(new RegExp(`^https://plan\\.(skrotbm|zdawalni)\\.pl/plan/${ROK}\\.json`), (r) => r.fulfill({ contentType: "application/json", body: PLAN }));
   await p.goto(BASE + "index.html#/ai"); await p.waitForTimeout(3000);
   return p;
@@ -89,6 +89,24 @@ await wgraj(p, paczka(ROK, SID));
 ok("2 EN: przycisk po angielsku", (await se.getByRole("button", { name: "Upload 2 lessons" }).count()) === 1, await se.innerText());
 ok("2 EN: bez błędów konsoli", p.errors.length === 0, p.errors);
 await p.context().close();
+
+// 2b. rocznika nie ma jeszcze w tabeli nauka_roczniki (przed „Dodaj do bazy”): baza odrzuca zapis kluczem obcym.
+// Strona nie może wtedy zapisać tego samego bez rocznik_id (trafiłoby do rocznika administratora = BM, jak 9.11.2026 z EaIA).
+for (const lang of ["pl", "en"]) {
+  p = await otworz({ lang, ls: { "mock-brak-rocznika": ROK } });
+  const sb = sekcja(p, /^(Paczka lekcji|Lesson pack)$/);
+  await wgraj(p, paczka(ROK, SID));
+  await sb.getByRole("button", { name: /^(Wgraj 2 lekcje|Upload 2 lessons)$/ }).click(); await p.waitForTimeout(1200);
+  const txt = await sb.innerText();
+  ok(`2b ${lang}: komunikat „rocznika nie ma w bazie”`, lang === "pl" ? /Nie udało się zapisać w bazie: Tego rocznika nie ma jeszcze w bazie\..*Dodaj do bazy/.test(txt)
+    : /Couldn't save to the database: This cohort isn't in the database yet\..*Add to database/.test(txt), txt);
+  ok(`2b ${lang}: nic nie zapisane (ani z rocznikiem, ani bez)`, (await p.evaluate(() => window.__zapisy.filter((z) => /^t1-/.test(z.id)).length)) === 0, await p.evaluate(() => window.__zapisy));
+  // kolejny zapis na tej samej stronie dalej idzie z rocznik_id (jeden błąd nie wyłącza kolumny rocznika do końca sesji)
+  const drugi = await p.evaluate(async (sid) => { try { await window.skrot.putMany([{ collection: "materials", id: "t9-x", data: { subjectId: sid, title: "x" } }]); return "zapisano"; } catch (e) { return e.code || String(e.message); } }, SID);
+  ok(`2b ${lang}: drugi zapis też zatrzymany, bez obejścia`, drugi === "brak_rocznika" && !(await p.evaluate(() => window.__zapisy.some((z) => z.id === "t9-x"))), drugi);
+  ok(`2b ${lang}: paczka zostaje do ponownego wgrania`, (await sb.getByRole("button", { name: /^(Wgraj 2 lekcje|Upload 2 lessons)$/ }).count()) === 1, txt);
+  await p.context().close();
+}
 
 // 3. starosta bez roli admina: sekcji nie ma
 p = await page(b, { konto: "platne", w: 375, ls: { "bm-starosta": "1" } });
