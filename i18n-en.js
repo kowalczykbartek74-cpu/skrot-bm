@@ -1,6 +1,24 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+/* Ekran wejścia: start, żywa karta, podpis autora (2026-11-10) */
+"Sprawdź, czy to dla Ciebie": "See if it works for you",
+"Bez karty. Po {0} dniach nic nie pobieramy samo.": "No card. Nothing is charged automatically after {0} days.",
+"Potem, jeśli zechcesz: 199 zł jednorazowo do 11 lipca 2027 (dziś to ok. {0} dziennie) albo 35 zł miesięcznie.": "After that, if you want: 199 zł one-off until 11 July 2027 (about {0} a day from today) or 35 zł a month.",
+"Mam już konto: zaloguj się": "I already have an account: log in",
+"Nie masz konta? Zacznij {0} dni za darmo": "No account yet? Start {0} days free",
+"Lekcje, fiszki i próbne testy pod Twój sylabus i Twoje terminy.": "Lessons, flashcards and practice tests built around your syllabus and your deadlines.",
+"Cześć, jestem Bartek.": "Hi, I'm Bartek.",
+"Studiuję Business Management na 1. roku. Zrobiłem tę stronę, bo sam gubiłem się w slajdach z Teams. Sam się z niej uczę.": "I'm a first-year Business Management student. I built this site because I kept getting lost in the Teams slides myself. I study with it too.",
+"Spróbuj · 10 sekund": "Try it · 10 seconds",
+"bez logowania": "no login",
+"PKB to produkcja firm, a PNB to produkcja państwa.": "GDP is what companies produce and GNP is what the state produces.",
+"PKB: wszystko, co wytworzono w kraju. PNB: wszystko, co wytworzyli jego mieszkańcy i firmy, także za granicą.": "GDP: everything produced inside the country. GNP: everything produced by its residents and companies, also abroad.",
+"PNB to PKB po odjęciu inflacji.": "GNP is GDP minus inflation.",
+"Dobrze! Dlaczego?": "Correct! Why?",
+"Jeszcze nie. Dlaczego?": "Not yet. Why?",
+"Niemiecka firma ma fabrykę w Szczecinie. To, co tam powstaje, liczy się do PKB Polski. Zysk, który trafia do właściciela, wchodzi do PNB Niemiec.": "A German company has a factory in Szczecin. What is made there counts towards Poland's GDP. The profit that goes to the owner is part of Germany's GNP.",
+"Tak tłumaczymy wszystko. Zacznij 3 dni za darmo": "This is how we explain everything. Start 3 days free",
 "Rocznik przestanie być do kupienia (dostęp kupionych zostaje). Na pewno?": "The cohort will no longer be available to buy (existing access stays). Are you sure?",
 "Tak, wstrzymaj sprzedaż": "Yes, pause selling",
 "Wybierz paczki (JSON, można kilka)": "Choose packs (JSON, several at once)",

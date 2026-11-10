@@ -984,13 +984,38 @@
     // Okres próbny z ekranu logowania: gość klika „Wypróbuj…”, loguje się kodem, a afterReady sam włącza próbę (znacznik skrot-trial).
     const trialDays = () => skrot.trialDays || 3;
     const trialOn = () => !!ls.get("skrot-trial");
-    const trialCard = () => (page && !reason && !trialOn()) ? el("div", { class: "lg-trial" },
-      el("p", { class: "lg-trial-t", text: `${trialDays()} dni za darmo` }),
-      el("p", { class: "lg-trial-p", text: "Pełny dostęp do wszystkiego: materiały, fiszki, quizy i gry. Bez karty i bez płatności." }),
-      // Ceny jak w CONFIG.plans i regulaminie § 4; przy zmianie cen popraw też ten tekst i i18n-en.js.
-      el("p", { class: "lg-trial-price", text: "Potem, jeśli zechcesz: 199 zł jednorazowo (do 11 lipca 2027) albo 35 zł miesięcznie. Po okresie próbnym nic nie pobieramy samo." }),
-      el("button", { type: "button", class: "btn primary", onclick: () => { ls.set("skrot-trial", "1"); emailStep(); } }, `Zacznij ${trialDays()} dni za darmo`)) : null;
-    const orLogin = () => (page && !reason && !trialOn()) ? el("p", { class: "lg-or", text: "Masz już konto?" }) : null;
+    // Ekran startowy (10.11.2026): nowy gość widzi jeden przycisk okresu próbnego, a logowanie pod linkiem „Mam już konto”.
+    // Kto już się tu logował (zapamiętany e-mail, hasło albo kod w drodze), dostaje od razu formularz, a próbę jako link pod nim.
+    const KNOWN = "skrot-login-znam";
+    const wraca = () => !!(ls.get(LAST_EMAIL) || ls.get(KNOWN) || ls.get(MODE) === "haslo" || pending.get());
+    const startOk = () => !!(page && !reason && !trialOn());
+    const goTrial = () => { ls.set("skrot-trial", "1"); emailStep(); };
+    // Cena w przeliczeniu na dzień: 199 zł do końca dostępu (jak PLAN_END niżej). Po terminie zostaje sam tekst z cenami.
+    const perDay = () => {
+      const end = new Date((window.SKROT_ROCZNIK?.dostepDo || "2027-07-11") + "T23:59:59");
+      const days = Math.ceil((end - Date.now()) / 864e5);
+      if (!(days > 0)) return null;
+      const gr = Math.round(19900 / days);
+      return gr < 100 ? `${gr} gr` : `${(gr / 100).toFixed(2).replace(".", ",")} zł`;
+    };
+    // Ceny jak w CONFIG.plans i regulaminie § 4; przy zmianie cen popraw też te teksty i i18n-en.js.
+    const priceNote = () => {
+      const d = perDay();
+      return el("p", { class: "lg-trial-price", text: d
+        ? `Potem, jeśli zechcesz: 199 zł jednorazowo do 11 lipca 2027 (dziś to ok. ${d} dziennie) albo 35 zł miesięcznie.`
+        : "Potem, jeśli zechcesz: 199 zł jednorazowo (do 11 lipca 2027) albo 35 zł miesięcznie. Po okresie próbnym nic nie pobieramy samo." });
+    };
+    const startStep = () => {
+      inCode = false;
+      body.replaceChildren(el("div", { class: "lg-start" },
+        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Sprawdź, czy to dla Ciebie" }),
+        el("p", { class: "lg-start-p", text: "Pełny dostęp do wszystkiego: materiały, fiszki, quizy i gry. Bez karty i bez płatności." }),
+        el("button", { type: "button", class: "btn primary", onclick: goTrial }, `Zacznij ${trialDays()} dni za darmo`),
+        el("p", { class: "lg-sure", text: `Bez karty. Po ${trialDays()} dniach nic nie pobieramy samo.` }),
+        priceNote(),
+        el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set(KNOWN, "1"); if (ls.get(MODE) === "haslo") passStep(); else emailStep(); } }, "Mam już konto: zaloguj się")));
+    };
+    const newLink = () => startOk() ? el("button", { type: "button", class: "btn ghost lg-new", onclick: goTrial }, `Nie masz konta? Zacznij ${trialDays()} dni za darmo`) : null;
     // Konto zakłada się samo przy pierwszym kodzie, więc pod formularzem mówimy, na jakich zasadach (regulamin § 3 ust. 1).
     const legalHref = (f) => f + (window.SKROT_LANG === "en" ? "-en" : "") + ".html";
     const termsNote = () => page ? el("p", { class: "lg-terms" },
@@ -1071,13 +1096,12 @@
         el("label", { for: "skrot-login-pass", style: "display:grid;gap:6px;font-weight:700" }, "Hasło", pass),
         err, btn);
       body.replaceChildren(...[
-        trialCard(),
-        orLogin(),
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
         reason ? el("p", { class: "muted", style: "margin:0", text: reason }) : null,
         modeSwitch("haslo"),
         form,
         el("button", { type: "button", class: "btn ghost", onclick: () => emailStep() }, "Nie pamiętam hasła: wyślij kod na maila"),
+        newLink(),
         closeBtn(),
       ].filter(Boolean));
       setTimeout(() => (input.value ? pass : input).focus(), 30);
@@ -1114,15 +1138,14 @@
       const trial = page && trialOn();
       if (trial) btn.textContent = "Wyślij kod i zacznij";
       body.replaceChildren(...[
-        trial ? null : trialCard(),
-        trial ? null : orLogin(),
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: trial ? `${trialDays()} dni za darmo` : "Zaloguj się" }),
         el("p", { class: "muted", style: "margin:0", text: trial ? "Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo." : reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
         trial ? null : modeSwitch("kod"),
         form,
         termsNote(),
         p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
-        trial ? el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("skrot-trial", null); emailStep(); } }, "Mam już konto: zwykłe logowanie") : null,
+        trial ? el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("skrot-trial", null); ls.set(KNOWN, "1"); emailStep(); } }, "Mam już konto: zwykłe logowanie") : null,
+        trial ? null : newLink(),
         closeBtn(),
       ].filter(Boolean));
       setTimeout(() => input.focus(), 30);
@@ -1132,7 +1155,7 @@
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Logowanie" }, body));
     if (page) page.replaceChildren(body);
     else { layer.append(scrim); document.addEventListener("keydown", onKey); }
-    if (opts.codeFor) codeStep(opts.codeFor, false); else if (ls.get(MODE) === "haslo") passStep(); else emailStep();
+    if (opts.codeFor) codeStep(opts.codeFor, false); else if (ls.get(MODE) === "haslo") passStep(); else if (startOk() && !wraca()) startStep(); else emailStep();
   };
 
   // ---------- hasło do logowania (opcjonalne) ----------
