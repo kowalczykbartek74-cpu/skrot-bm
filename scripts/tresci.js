@@ -73,14 +73,22 @@ function forbiddenHits(text, list, zakres) {
 
 // ---------------- 3. formy zależne od płci (copy-gender; tylko ostrzeżenie) ----------------
 // „masz 3 z 4”, „gotowe”, „udało się” zamiast „zrobiłeś/zrobiłaś”, „jesteś gotowy”.
-const GENDERED = /(?<![\p{L}])\p{L}+(?:łeś|łaś|łbyś|łabyś|łem|łam)(?![\p{L}])|(?<![\p{L}])gotow[ya](?![\p{L}])|(?<![\p{L}])jesteś\s+(?:pewien|pewna|sam|sama|zalogowan[ya]|zapisan[ya])(?![\p{L}])/giu;
+// „gotowy/gotowa” tylko jako orzeczenie o osobie („jesteś gotowy”, „Gotowa?”), nie przed rzeczownikiem („gotowy przepis”).
+const GENDERED = /(?<![\p{L}])\p{L}+(?:łeś|łaś|łbyś|łabyś|łem|łam)(?![\p{L}])|(?<![\p{L}])(?:(?:jesteś|jestem|będziesz|będę|bądź|czujesz\s+się|czuję\s+się)\s+(?:już\s+|naprawdę\s+|w\s+pełni\s+)?gotow[ya](?![\p{L}])|gotow[ya](?=\s*(?:[?!.,;:)”"]|$)))|(?<![\p{L}])jesteś\s+(?:pewien|pewna|sam|sama|zalogowan[ya]|zapisan[ya])(?![\p{L}])/giu;
 // Rzeczowniki i przysłówki na -łem/-łam, które nie są formą osoby.
-const NOT_GENDERED = new Set(["dołem", "kołem", "stołem", "popiołem", "kościołem", "aniołem", "orłem", "wołem", "mułem", "posłem", "węzłem", "kotłem", "szkłem", "dyszlem", "celem", "skałam", "działem", "udziałem", "przedziałem", "materiałem", "kapitałem", "artykułem", "tytułem", "rozdziałem", "podziałem", "wydziałem", "zespołem", "pułem", "żłobkiem", "dałam", "sałam", "zasłonam", "palcem", "kreślem", "przełam", "złam", "słam"]);
+const NOT_GENDERED = new Set(["dołem", "kołem", "stołem", "popiołem", "kościołem", "aniołem", "orłem", "wołem", "mułem", "posłem", "węzłem", "kotłem", "szkłem", "dyszlem", "celem", "skałam", "działem", "udziałem", "przedziałem", "materiałem", "kapitałem", "artykułem", "tytułem", "rozdziałem", "podziałem", "wydziałem", "zespołem", "pułem", "żłobkiem", "dałam", "sałam", "zasłonam", "palcem", "kreślem", "przełam", "złam", "słam",
+  // rzeczowniki w narzędniku z lekcji banku klocków (fałszywe alarmy, Etap 1 Cukrowej)
+  "sygnałem", "kanałem", "ciałem", "ogółem", "ciepłem", "masłem", "szczegółem", "hasłem", "cłem", "światłem", "protokołem",
+  "potencjałem", "gardłem", "tłem", "rytuałem", "oryginałem", "czołem", "zawałem", "wahadłem", "tyłem", "mydłem", "trybunałem",
+  "wałem", "upałem", "strzałem", "regałem", "pudłem", "pedałem", "nabiałem", "minerałem", "krzesłem", "kryształem", "michałem",
+  "ideałem", "rozłam", "odłam", "działam", "skrzydłem", "liczydłem", "prawidłem", "godłem"]);
+// Końcówki zawsze rzeczownikowe (…działem, …dziełem, …źródłem, …mysłem: pomysłem, przemysłem) albo czasu teraźniejszego (…syłam: wysyłam).
+const NOT_GENDERED_END = ["działem", "dziełem", "źródłem", "mysłem", "syłam"];
 function genderHits(text) {
   const out = [];
   for (const m of String(text).matchAll(GENDERED)) {
     const w = m[0].toLowerCase();
-    if (NOT_GENDERED.has(w)) continue;
+    if (NOT_GENDERED.has(w) || NOT_GENDERED_END.some((e) => w.endsWith(e))) continue;
     out.push({ tekst: m[0], index: m.index });
   }
   return out;
