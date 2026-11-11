@@ -97,3 +97,34 @@ test("K1 z BM (lekcje-z-bm.py k1) zapisuje odciski źródła i kopii", () => {
   assert.match(fs.readFileSync(path.join(ROOT, "scripts/paczka-lekcji.py"), "utf8"), /for k in \("zrodloHash", "kopiaHash"\) if d\.get\(k\)/);
   assert.match(fs.readFileSync(path.join(ROOT, "docs/lekcje-v4/eksport.js"), "utf8"), /zrodloHash: m\.zrodloHash, kopiaHash: m\.kopiaHash/);
 });
+
+test("bank w formacie zdawalni-tresci: indeks-lista, lekcja v4 na wierzchu → format aplikacji; kopiuj-k1 kopiuje cały klocek; dodaj nie nadpisuje", () => {
+  const d = tmp(), bank = path.join(d, "bank"), paczki = path.join(d, "paczki");
+  fs.mkdirSync(path.join(bank, "psychologia-podstawy"), { recursive: true });
+  const klocek = (nn, t) => ({ tytul: t, tldr: "Skrót.", klocek: { id: `psychologia-podstawy/${nn}`, ogolny: "psychologia-podstawy" },
+    lesson: { intro: "Wstęp", sections: [{ h: "1", body: "Treść" }] }, concepts: [], flashcards: [{ q: "Co?", a: "To." }],
+    quiz: [{ q: "Pytanie?", options: ["Dobra", "Zła", "Zła 2"], correct: 0, explanation: "Bo tak.", not: [null, "Nie.", "Też nie."], dlaczego: { why: "Prosto.", example: "Przykład." } }],
+    prosciej: { intro: "Prościej", parts: [{ h: "a", emoji: "🙂", text: "t", example: "e", remember: "r" }], words: [], check: [] } });
+  fs.writeFileSync(path.join(bank, "psychologia-podstawy", "01.json"), JSON.stringify(klocek("01", "Czym jest psychologia")));
+  fs.writeFileSync(path.join(bank, "psychologia-podstawy", "02.json"), JSON.stringify(klocek("02", "Spostrzeganie")));
+  fs.writeFileSync(path.join(bank, "indeks.json"), JSON.stringify(["01", "02"].map((nn) => ({ id: `psychologia-podstawy/${nn}`, ogolny: "psychologia-podstawy",
+    plik: `psychologia-podstawy/${nn}.json`, tytul: "T" + nn, zrodlo: "klocki-czat" }))));
+  const L = py("lekcja_banku", path.join(bank, "psychologia-podstawy", "01.json"));
+  assert.strictEqual(L.title, "Czym jest psychologia");
+  assert.deepStrictEqual(Object.keys(L.content).sort(), ["concepts", "flashcards", "lesson", "quiz", "tldr", "v"]);
+  assert.strictEqual(L.simple.intro, "Prościej");
+  assert.deepStrictEqual(L.why.items["0"], { why: "Prosto.", example: "Przykład.", not: [null, "Nie.", "Też nie."] });
+  assert.strictEqual(L.order, 1);
+  const KK = { id: "wefiz-test-1-st-2026", prefiks: "test26", przedmioty: { "podstawy-psychologii": { bank: ["psychologia-podstawy"], koszyk: "K1" }, "inny": { bank: [], koszyk: "K3" } } };
+  const mapa = [{ przedmiot: "podstawy-psychologii", tematy: [{ temat: "a", forma: "W", koszyk: "K1", zrodlo: ["bank:psychologia-podstawy/02"] }, { temat: "b", forma: "W", koszyk: "K1", zrodlo: ["bank:psychologia-podstawy/02"] }] }];
+  const ok = py("kopiuj_k1", KK, mapa, bank, paczki);
+  assert.deepStrictEqual(ok, [["test26-psychologia-podstawy-01", "podstawy-psychologii"], ["test26-psychologia-podstawy-02", "podstawy-psychologii"]]);
+  const k2 = JSON.parse(fs.readFileSync(path.join(paczki, "test26-psychologia-podstawy-02.json"), "utf8"));
+  assert.strictEqual(k2.sylRef, "wykład, tematy 1, 2");
+  assert.strictEqual(k2.zrodlo, "bank:psychologia-podstawy/02");
+  assert.strictEqual(JSON.parse(fs.readFileSync(path.join(paczki, "test26-psychologia-podstawy-01.json"), "utf8")).sylRef, "całość przedmiotu");
+  assert.throws(() => execFileSync("python3", ["-c", `import importlib.util as u
+s=u.spec_from_file_location("b","scripts/tresci-bank.py");m=u.module_from_spec(s);s.loader.exec_module(m)
+m.zapisz_indeks(${JSON.stringify(bank)}, m.indeks(${JSON.stringify(bank)}))`], { cwd: ROOT, stdio: "pipe" }));
+  assert.strictEqual(Array.isArray(JSON.parse(fs.readFileSync(path.join(bank, "indeks.json"), "utf8"))), true);
+});

@@ -69,7 +69,8 @@ export function wBanku(og, inne) {
 
 // bmIds: id przedmiotów BM (sylabus.json). Ten sam slug co w BM (plan: „MACROECONOMICS (MAKROEKONOMIA)” → makroekonomia) = ten sam
 // przedmiot BM wprost, przed aliasami. Kierunek po angielsku: przedmiot z BM to K1 (kopia lekcji BM, bez tłumaczenia), bank PL nie liczy się.
-export function zbuduj({ cfg, plan, nazwy, O, inne = [], bmIds = new Set() }) {
+// bankPL: foldery banku zdawalni-tresci (przedmiot ogólny z lekcjami PL) → K1 od razu, bez czekania na inny kierunek
+export function zbuduj({ cfg, plan, nazwy, O, inne = [], bmIds = new Set(), bankPL = new Set() }) {
   if (!cfg?.id || !cfg.kierunek?.kod) blad("Brak konfiguracji planu (plan-bm/kierunki/<id>.json): najpierw plan-bm/scripts/wefiz-wszystkie.mjs");
   const n = nazwy.kierunki[cfg.kierunek.pl] || {};
   const ids = przedmiotyZPlanu(plan);
@@ -80,10 +81,12 @@ export function zbuduj({ cfg, plan, nazwy, O, inne = [], bmIds = new Set() }) {
   const en = (n.jezykZajec || "pl") === "en";
   for (const id of ids) {
     const o = ogolny(id, O);
-    const bank = o && !en ? [o.og] : [], bm = bmIds.has(id) ? [id] : o ? o.bm : [];
+    // bank: folder w zdawalni-tresci/bank — pole „bank” wpisu, gdy inne niż klucz (np. podstawy-ekonomii → ekonomia-mikroekonomia)
+    const bank = o && !en ? [O.ogolne[o.og].bank || o.og] : [], bm = bmIds.has(id) ? [id] : o ? o.bm : [];
     if (o && !o.pewne) uwagi.push(`„${id}” przypisany do „${o.og}” po początku nazwy – sprawdź`);
     if (!o && !bm.length) uwagi.push(`„${id}” bez przedmiotu ogólnego (nowy w banku: K3; dopisz alias w przedmioty-ogolne.json, jeśli to ten sam przedmiot co gdzie indziej)`);
-    przedmioty[id] = { bank, bm, koszyk: en ? (bm.length ? "K1" : "K3") : bank.length && wBanku(bank[0], inne) ? "K1" : bm.length ? "K2" : "K3" };
+    const k1 = bank.length && (bankPL.has(bank[0]) || wBanku(bank[0], inne) || wBanku(o.og, inne));
+    przedmioty[id] = { bank, bm, koszyk: en ? (bm.length ? "K1" : "K3") : k1 ? "K1" : bm.length ? "K2" : "K3" };
   }
   const nab = cfg.nabor, jezyk = n.jezykZajec || "pl";
   const k = {
@@ -129,7 +132,9 @@ async function main(argv) {
   const plan = fs.existsSync(pp) ? czytajJson(pp) : null;
   const inne = fs.readdirSync(path.join(ROOT, "kierunki")).filter((f) => f.endsWith(".json")).map((f) => czytajJson(path.join(ROOT, "kierunki", f))).filter((x) => x.id !== cfg.id);
   const bmIds = new Set(czytajJson(path.join(ROOT, "sylabus.json")).courses.map((c) => c.id));
-  const { k, uwagi } = zbuduj({ cfg, plan, nazwy: czytajJson(path.join(ROOT, "kierunki/wspolne/kierunki-nazwy.json")), O: czytajJson(path.join(ROOT, "kierunki/wspolne/przedmioty-ogolne.json")), inne, bmIds });
+  const bankDir = path.resolve(ROOT, opt("--bank", "../zdawalni-tresci/bank"));
+  const bankPL = new Set(fs.existsSync(bankDir) ? fs.readdirSync(bankDir).filter((f) => fs.statSync(path.join(bankDir, f)).isDirectory()) : []);
+  const { k, uwagi } = zbuduj({ cfg, plan, nazwy: czytajJson(path.join(ROOT, "kierunki/wspolne/kierunki-nazwy.json")), O: czytajJson(path.join(ROOT, "kierunki/wspolne/przedmioty-ogolne.json")), inne, bmIds, bankPL });
   const out = path.join(ROOT, "kierunki", k.id + ".json");
   const tekst = JSON.stringify(k, null, 2) + "\n";
   console.log(uwagi.length ? "Do sprawdzenia:\n- " + uwagi.join("\n- ") : "Bez uwag.");

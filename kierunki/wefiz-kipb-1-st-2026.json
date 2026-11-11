@@ -46,7 +46,7 @@
     },
     "podstawy-ekonomii": {
       "bank": [
-        "podstawy-ekonomii"
+        "ekonomia-mikroekonomia"
       ],
       "bm": [
         "ekonomia-biznesu",
@@ -55,19 +55,25 @@
       "koszyk": "K1"
     },
     "podstawy-komunikacji": {
-      "bank": [],
+      "bank": [
+        "komunikacja-interpersonalna"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     },
     "podstawy-psychologii": {
-      "bank": [],
+      "bank": [
+        "psychologia-podstawy"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     },
     "podstawy-socjologii": {
-      "bank": [],
+      "bank": [
+        "socjologia-podstawy"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     },
     "podstawy-zarzadzania": {
       "bank": [
@@ -79,9 +85,11 @@
       "koszyk": "K1"
     },
     "przedsiebiorczosc": {
-      "bank": [],
+      "bank": [
+        "przedsiebiorczosc"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     },
     "relacje-miedzyludzkie-w-biznesie": {
       "bank": [],

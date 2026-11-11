@@ -54,6 +54,7 @@
    "rodzina": true
   },
   "podstawy-ekonomii": {
+   "bank": "ekonomia-mikroekonomia",
    "aliasy": [
     "podstawy-ekonomii",
     "ekonomia",
@@ -75,6 +76,7 @@
    ]
   },
   "mikroekonomia": {
+   "bank": "ekonomia-mikroekonomia",
    "aliasy": [
     "mikroekonomia",
     "mikroekonomia-i"
@@ -140,6 +142,7 @@
    "bm": []
   },
   "marketing": {
+   "bank": "marketing-podstawy",
    "aliasy": [
     "marketing",
     "podstawy-marketingu"
@@ -149,6 +152,57 @@
   "zachowania-konsumentow": {
    "aliasy": [
     "zachowania-konsumentow"
+   ],
+   "bm": []
+  },
+  "psychologia-podstawy": {
+   "aliasy": [
+    "podstawy-psychologii",
+    "psychologia",
+    "psychologia-ogolna",
+    "wprowadzenie-do-psychologii"
+   ],
+   "bm": []
+  },
+  "socjologia-podstawy": {
+   "aliasy": [
+    "podstawy-socjologii",
+    "socjologia",
+    "socjologia-ogolna",
+    "wprowadzenie-do-socjologii"
+   ],
+   "bm": []
+  },
+  "przedsiebiorczosc": {
+   "aliasy": [
+    "przedsiebiorczosc"
+   ],
+   "bm": []
+  },
+  "komunikacja-interpersonalna": {
+   "aliasy": [
+    "podstawy-komunikacji",
+    "komunikacja-interpersonalna"
+   ],
+   "bm": []
+  },
+  "logika": {
+   "aliasy": [
+    "logika",
+    "kultura-logicznego-myslenia"
+   ],
+   "bm": []
+  },
+  "projektowanie-uniwersalne": {
+   "aliasy": [
+    "podstawy-projektowania-uniwersalnego",
+    "projektowanie-uniwersalne"
+   ],
+   "bm": []
+  },
+  "psychologia-spoleczna": {
+   "aliasy": [
+    "psychologia-spoleczna"
    ],
    "bm": []
   }

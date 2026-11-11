@@ -82,7 +82,10 @@ def bank_kandydaci(ogolne):
     out = []
     ind = os.path.join(a.bank, "indeks.json")
     wpisy = json.load(open(ind)) if os.path.exists(ind) else {}
-    wpisy = wpisy.get("tematy", wpisy) if isinstance(wpisy, dict) else {}
+    if isinstance(wpisy, list):   # format zdawalni-tresci (narz/bank.py): [{id, ogolny, plik, tytul, …}], każdy wpis zatwierdzony
+        wpisy = {w["id"]: {"temat": w.get("tytul") or w["id"], "plik": w.get("plik"), "status": "zatwierdzone"} for w in wpisy if w.get("id")}
+    else:
+        wpisy = wpisy.get("tematy", wpisy) if isinstance(wpisy, dict) else {}
     for og in ogolne:
         zatw = [(k, v) for k, v in wpisy.items() if k.split("/")[0] == og]
         if zatw:

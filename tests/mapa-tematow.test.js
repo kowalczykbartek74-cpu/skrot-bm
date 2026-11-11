@@ -8,9 +8,12 @@ const path = require("path");
 const { execFileSync } = require("child_process");
 const ROOT = path.join(__dirname, "..");
 
+// testy bez banku PL: pusty katalog zamiast prawdziwego ../zdawalni-tresci/bank (ten jest czytany od Etapu 3 Cukrowej)
+const PUSTY_BANK = fs.mkdtempSync(path.join(os.tmpdir(), "bank-pusty-"));
+
 test("na sucho: jedno zapytanie na przedmiot z BM, K3 bez API, Batch + cache + structured outputs, nic nie wysyła", () => {
   const pusty = fs.mkdtempSync(path.join(os.tmpdir(), "lekcje-"));
-  const out = execFileSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--na-sucho", "--lekcje", pusty], { cwd: ROOT, env: { PATH: process.env.PATH } }).toString();
+  const out = execFileSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--na-sucho", "--lekcje", pusty, "--bank", PUSTY_BANK], { cwd: ROOT, env: { PATH: process.env.PATH } }).toString();
   assert.match(out, /Na sucho/);
   assert.match(out, /bez API \(K3 od razu\): nauka-o-przedsiebiorstwie, zachowania-konsumentow, zarzadzanie-wlasnym-rozwojem/);
   const k = JSON.parse(fs.readFileSync(path.join(ROOT, "kierunki/wefiz-zarz-1-st-2026.json"), "utf8"));
@@ -33,7 +36,7 @@ test("--bez-api: mapa tymczasowa (koszyk przedmiotu, źródło bm:<przedmiot>), 
   const kopia = fs.existsSync(plik) ? fs.readFileSync(plik) : null;
   try {
     if (kopia && !JSON.parse(kopia).every((m) => m.tymczasowa)) return; // prawdziwa mapa: test nic nie rusza
-    execFileSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--bez-api"], { cwd: ROOT, env: { PATH: process.env.PATH } });
+    execFileSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--bez-api", "--bank", PUSTY_BANK], { cwd: ROOT, env: { PATH: process.env.PATH } });
     const m = JSON.parse(fs.readFileSync(plik, "utf8"));
     assert.deepStrictEqual(m.map((x) => x.przedmiot), Object.keys(k.przedmioty));
     for (const x of m) {
@@ -43,7 +46,7 @@ test("--bez-api: mapa tymczasowa (koszyk przedmiotu, źródło bm:<przedmiot>), 
     }
     const prawdziwa = m.map((x) => ({ ...x, tymczasowa: undefined }));
     fs.writeFileSync(plik, JSON.stringify(prawdziwa));
-    const r = require("child_process").spawnSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--bez-api"], { cwd: ROOT, env: { PATH: process.env.PATH } });
+    const r = require("child_process").spawnSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), "kierunki/wefiz-zarz-1-st-2026.json", "--bez-api", "--bank", PUSTY_BANK], { cwd: ROOT, env: { PATH: process.env.PATH } });
     assert.strictEqual(r.status, 1);
     assert.match(r.stderr.toString(), /nie nadpisuję/);
   } finally {
@@ -57,7 +60,8 @@ test("bank PL: drugi kierunek dostaje kandydatów z wcześniejszego kierunku (cz
   const pusty = fs.mkdtempSync(path.join(os.tmpdir(), "lekcje-"));
   const brakBanku = fs.mkdtempSync(path.join(os.tmpdir(), "bank-"));
   const out = uruchom(["kierunki/wefiz-fir-1-st-2026.json", "--na-sucho", "--lekcje", pusty, "--bank", brakBanku]);
-  assert.match(out, /Kandydaci z banku PL: \d+ \(czeka na zatwierdzenie zarz26\)/);
+  // kandydaci z wcześniejszych kierunków PL (zarz26, potem kolejne, np. kipb26)
+  assert.match(out, /Kandydaci z banku PL: \d+ \([^)]*czeka na zatwierdzenie zarz26/);
   const k = JSON.parse(fs.readFileSync(path.join(ROOT, "kierunki/wefiz-fir-1-st-2026.json"), "utf8"));
   const z = fs.readFileSync(path.join(ROOT, "scratch", k.prefiks, "mapa-zapytania.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
   const pz = z.find((x) => x.custom_id === "podstawy-zarzadzania");
@@ -84,8 +88,8 @@ test("--bez-api z bankiem: K1 tylko ze źródłem z banku i statusem „czeka…
     const k1 = m.flatMap((x) => x.tematy).filter((t) => t.koszyk === "K1");
     assert.ok(k1.length > 0);
     for (const t of k1) {
-      assert.ok(t.zrodlo.length && t.zrodlo.every((z) => z.startsWith("zarz26-syl:")), t.temat);
-      assert.strictEqual(t.bank, "czeka na zatwierdzenie zarz26");
+      assert.ok(t.zrodlo.length && t.zrodlo.every((z) => /^[a-z]+\d\d-syl:/.test(z)), t.temat);
+      assert.match(t.bank, /^czeka na zatwierdzenie [a-z]+\d\d$/);
     }
     const mak = m.find((x) => x.przedmiot === "makroekonomia");
     assert.ok(mak.tematy.every((t) => /brak karty w sylabusie kierunku/.test(t.uwaga)));
