@@ -57,6 +57,24 @@
       przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej", "prawo"], rachunkowe: ["analiza-matematyczna", "finanse", "informatyka-w-ekonomii", "makroekonomia", "statystyka-opisowa"], jeszczeProsciej: ["analiza-matematyczna", "statystyka-opisowa"] },
     },
     // ROCZNIK-KONIEC wefiz-eaia-1-st-2026
+    // ROCZNIK-START wefiz-kipb-1-st-2026 (kierunki/wefiz-kipb-1-st-2026.json)
+    {
+      id: "wefiz-kipb-1-st-2026",
+      status: "oczekujacy",
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "KIPB", pl: "Komunikacja i psychologia w biznesie", en: "Communication and Psychology in Business" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.zdawalni.pl/plan/wefiz-kipb-1-st-2026.json", strona: "https://plan.zdawalni.pl/?k=kipb26", skrzynka: null },
+      sylabus: { plik: "sylabus-kipb26.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_komunikacja_i_psychologia_w_biznesie_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["C121", "C122", "C123"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej"], rachunkowe: ["podstawy-ekonomii"], jeszczeProsciej: [] },
+    },
+    // ROCZNIK-KONIEC wefiz-kipb-1-st-2026
   ];
   if (typeof module !== "undefined" && module.exports) module.exports = DANE;
   else root.SKROT_ROCZNIKI_DANE = DANE;
