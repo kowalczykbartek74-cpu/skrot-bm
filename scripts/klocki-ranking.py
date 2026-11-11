@@ -18,7 +18,7 @@ R=[
 (r"przedsiębiorczoś|entrepreneurship","Przedsiębiorczość","NEW"),
 (r"projektowania uniwersalnego","Projektowanie uniwersalne","NEW"),
 (r"^(socjologia|podstawy socjologii|socjologia ogólna|wprowadzenie do socjologii|selected aspects of sociology|socjologia dla geografów)","Socjologia (podstawy)","NEW"),
-(r"^(psychologia|podstawy psychologii|psychologia ogólna|wprowadzenie do psychologii)","Psychologia (podstawy)","NEW"),
+(r"^(psychologia$|podstawy psychologii|psychologia ogólna|wprowadzenie do psychologii)","Psychologia (podstawy)","NEW"),  # „psychologia$”: społeczna/rozwojowa liczą się osobno
 (r"^psychologia społeczna$","Psychologia społeczna","NEW"),
 (r"^(psychologia rozwojowa|psychologia rozwoju człowieka)","Psychologia rozwojowa","NEW"),
 (r"^(historia filozofii$|wstęp do filozofii|propedeutyka filozofii|philosophy$|filozofia z|filozofia$)","Filozofia / historia filozofii","NEW"),
