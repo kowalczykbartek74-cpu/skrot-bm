@@ -1,0 +1,124 @@
+{
+  "id": "wefiz-log-1-st-2026",
+  "kierunek_id": "wefiz-log-1-st",
+  "prefiks": "log26",
+  "wydzial": "WEFiZ",
+  "kierunek": {
+    "kod": "LOG",
+    "pl": "Logistyka",
+    "en": "Logistics"
+  },
+  "stopien": 1,
+  "tryb": "st",
+  "nabor": 2026,
+  "jezykZajec": "pl",
+  "plan": {
+    "systemNazwa": "Logistyka (L)",
+    "rok": "1 rokI",
+    "plik": "plan/wefiz-log-1-st-2026.json"
+  },
+  "grupy": [
+    "C131",
+    "C132"
+  ],
+  "sylabus": {
+    "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_logistyka_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_logistyka_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "plik": "sylabus-log26.json"
+  },
+  "teams": false,
+  "status": "oczekujacy",
+  "przedmioty": {
+    "etyka-zawodowa": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "ochrona-wlasnosci-intelektualnej-i-przemyslowej": {
+      "bank": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "bm": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-ekonomii": {
+      "bank": [
+        "ekonomia-mikroekonomia"
+      ],
+      "bm": [
+        "ekonomia-biznesu",
+        "makroekonomia"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-logistyki": {
+      "bank": [
+        "logistyka"
+      ],
+      "bm": [
+        "logistyka"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-marketingu": {
+      "bank": [
+        "marketing-podstawy"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    },
+    "podstawy-projektowania-uniwersalnego": {
+      "bank": [
+        "projektowanie-uniwersalne"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    },
+    "podstawy-rachunkowosci": {
+      "bank": [
+        "podstawy-rachunkowosci"
+      ],
+      "bm": [
+        "podstawy-rachunkowosci"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-zarzadzania": {
+      "bank": [
+        "podstawy-zarzadzania"
+      ],
+      "bm": [
+        "podstawy-zarzadzania"
+      ],
+      "koszyk": "K1"
+    },
+    "technologie-informatyczne": {
+      "bank": [
+        "technologie-informacyjne"
+      ],
+      "bm": [
+        "narzedzia-it-w-zarzadzaniu"
+      ],
+      "koszyk": "K1"
+    },
+    "towaroznawstwo": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    }
+  },
+  "role": {
+    "prawne": [
+      "ochrona-wlasnosci-intelektualnej-i-przemyslowej"
+    ],
+    "rachunkowe": [
+      "podstawy-ekonomii",
+      "podstawy-rachunkowosci"
+    ],
+    "jeszczeProsciej": [
+      "podstawy-rachunkowosci"
+    ]
+  }
+}
