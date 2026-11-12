@@ -170,9 +170,16 @@ def kopiuj_k1(K, mapa, bank, paczki):
     for pid, cfg in (K.get("przedmioty") or {}).items():
         if cfg.get("koszyk") != "K1" or not cfg.get("bank"):
             continue
-        og = cfg["bank"][0]
-        for klucz in sorted(k for k in ind if k.split("/", 1)[0] == og and ind[k].get("status") == "zatwierdzone"):
+        # „bank”: pierwszy wpis = cały przedmiot ogólny; dalsze = kolejne przedmioty albo pojedyncze lekcje „przedmiot/NN”
+        # (np. Podstawy ekonomii = mikro + makroekonomia/01–04); numeracja lekcji ciągła w całym przedmiocie
+        klucze = []
+        for og in cfg["bank"]:
+            wyb = sorted(k for k in ind if (k == og if "/" in og else k.split("/", 1)[0] == og) and ind[k].get("status") == "zatwierdzone")
+            klucze += [k for k in wyb if k not in klucze]
+        for nr, klucz in enumerate(klucze, 1):
             src = lekcja_banku(os.path.join(bank, ind[klucz]["plik"]))
+            if len(cfg["bank"]) > 1:
+                src["order"] = nr
             po = {}
             for f, n in ref.get((pid, klucz), []):
                 po.setdefault(f, []).append(n)
