@@ -45,7 +45,11 @@
     },
     "podstawy-ekonomii": {
       "bank": [
-        "ekonomia-mikroekonomia"
+        "ekonomia-mikroekonomia",
+        "makroekonomia/01",
+        "makroekonomia/02",
+        "makroekonomia/03",
+        "makroekonomia/04"
       ],
       "bm": [
         "ekonomia-biznesu",
