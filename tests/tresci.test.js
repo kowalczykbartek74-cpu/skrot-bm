@@ -47,6 +47,13 @@ test("płeć: łapie formy zależne od płci, przepuszcza neutralne", () => {
   for (const s of ["Gotowe!", "Udało się", "masz 3 z 4", "gotowość", "pod stołem", "celem lekcji", "kapitałem"]) assert.deepEqual(T.genderHits(s), [], s);
 });
 
+test("płeć: rzeczowniki w narzędniku i „gotowy” przed rzeczownikiem to nie forma osoby", () => {
+  for (const s of ["jest źródłem danych", "Sygnałem ostrzegawczym", "kanałem dystrybucji", "ogółem 120 zł", "pomysłem na biznes", "przemysłem stoczniowym",
+    "tyłem do okna", "przydziałem zadań", "trójpodziałem władzy", "rękodziełem", "kołem ratunkowym", "Wysyłam raport", "działam szybko",
+    "gotowy przepis", "Gotowy esej do oddania", "Ala jest gotowa zapłacić 900 zł", "Oś hormonalna jest gotowa już w okresie płodowym"]) assert.deepEqual(T.genderHits(s), [], s);
+  for (const s of ["Musiałem to zrobić", "upadłem na lodzie", "zrobiłam wszystko", "Czy jesteś gotowa na test?", "Jestem gotowy", "Gotowy?", "nie miałem czasu", "Bądź gotowy"]) assert.ok(T.genderHits(s).length, s);
+});
+
 test("matematyka: rachunki w tekście liczone ponownie", () => {
   const ok = (s) => T.arithmetic(s).map((r) => r.ok);
   assert.deepEqual(ok("3 × 25 zł = 75 zł"), [true]);

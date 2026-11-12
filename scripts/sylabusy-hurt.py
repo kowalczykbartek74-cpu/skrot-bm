@@ -47,7 +47,8 @@ def z_listy(html, nazwa, stopien, nabor, tryb="st", jezyk="pl"):
     for m in re.finditer(r'href="([^"]+\.pdf)"', html or "", re.I):
         u = m.group(1)
         f = u.rsplit("/", 1)[-1].lower()
-        if f.startswith("sylabus_" + want + "_") and st.lower() in f and lata in f:
+        # pełny wzór „sylabus_<kierunek>_studia_<tryb>_…”: „stacjonarne” jest też w „niestacjonarne”, a „logistyka_” w „logistyka_inzynierskie_”
+        if f.startswith("sylabus_" + want + "_studia_" + st.lower()) and lata in f:
             traf.append((("_ang" in f) != (jezyk == "en"), u))
     return sorted(traf)[0][1] if traf else None
 
@@ -58,6 +59,10 @@ def podstrona(html, nazwa):
     return None if not m else (m.group(1) if m.group(1).startswith("http") else "https://efz.usz.edu.pl" + m.group(1))
 
 
+def warianty_nazwy(nazwa):
+    """Nazwa z planu i zapasowa: strona wydziału pisze „inż.” raz jako „inz”, raz jako „inzynierska” (np. logistyka-inzynierska)."""
+    alt = re.sub(r"\s*inż\.?$", " inżynierska", nazwa, flags=re.I)
+    return [nazwa] + ([alt] if alt != nazwa else [])
 def jezyk_kierunku(nazwa):
     """Język zajęć z kierunki/wspolne/kierunki-nazwy.json (konfiguracja planu z plan-bm go nie ma)."""
     try:
@@ -113,12 +118,16 @@ if __name__ == "__main__":
     for c in cfgs:
         c = {**c, "jezykZajec": jezyk_kierunku(c["kierunek"]["pl"])}   # sylabus-build: karta angielska jak BM albo polska
         pdf, js = os.path.join(OUT, c["kod"] + ".pdf"), os.path.join(OUT, c["kod"] + ".json")
-        url = z_listy(lista, c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"]) if lista else None
-        skad = "lista wydziału" if url else "wzór adresu"
-        pod = podstrona(lista, c["kierunek"]["pl"]) if lista and not url else None
-        if pod:   # np. Economics and IT Applications: PDF-y tylko na podstronie kierunku (i „IT” wielkimi literami w nazwie pliku)
-            url = z_listy((pobierz(pod)[0] or b"").decode("utf-8", "replace"), c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"])
-            skad = "podstrona kierunku" if url else skad
+        url, skad = None, "wzór adresu"
+        for nazwa in warianty_nazwy(c["kierunek"]["pl"]):
+            url = z_listy(lista, nazwa, c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"]) if lista else None
+            skad = "lista wydziału" if url else "wzór adresu"
+            pod = podstrona(lista, nazwa) if lista and not url else None
+            if pod:   # np. Economics and IT Applications: PDF-y tylko na podstronie kierunku (i „IT” wielkimi literami w nazwie pliku)
+                url = z_listy((pobierz(pod)[0] or b"").decode("utf-8", "replace"), nazwa, c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"])
+                skad = "podstrona kierunku" if url else skad
+            if url:
+                break
         if url and url.startswith("/"):
             url = "https://efz.usz.edu.pl" + url
         url = url or adresy(c["kierunek"]["pl"], c["stopien"], c["nabor"], c.get("tryb", "st"), c["jezykZajec"])["pdf"]

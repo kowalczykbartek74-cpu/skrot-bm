@@ -116,3 +116,25 @@ print(json.dumps([m.podstrona(${JSON.stringify(lista)},"Economics and IT Applica
   assert.strictEqual(out[1], null);
   assert.match(out[2], /economics_and_IT_applications_.*_ang\.pdf$/);
 });
+
+test("sylabusy-hurt: stacjonarne ≠ niestacjonarne, Logistyka ≠ Logistyka inż. (pełny wzór nazwy PDF-u)", () => {
+  const pod = ["sylabus_logistyka_studia_niestacjonarne_I_stopnia_2026_2027.pdf", "sylabus_logistyka_inzynierskie_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "sylabus_logistyka_studia_stacjonarne_I_stopnia_2026_2027.pdf"].map((f) => `<a href="/wp-content/uploads/sylabusy/26-27/${f}">x</a>`).join("");
+  const out = JSON.parse(execFileSync("python3", ["-c", `import json,importlib.util as u
+s=u.spec_from_file_location("h","sylabusy-hurt.py");m=u.module_from_spec(s);s.loader.exec_module(m)
+print(json.dumps([m.z_listy(${JSON.stringify(pod)},"Logistyka",1,2026,"st","pl"), m.z_listy(${JSON.stringify(pod)},"Logistyka inż.",1,2026,"st","pl"),
+  m.z_listy(${JSON.stringify(pod)},"Logistyka",1,2026,"nst","pl")]))`], { cwd: path.join(ROOT, "scripts"), encoding: "utf8" }));
+  assert.match(out[0], /sylabus_logistyka_studia_stacjonarne_/);
+  assert.match(out[1], /sylabus_logistyka_inzynierskie_studia_stacjonarne_/);
+  assert.match(out[2], /sylabus_logistyka_studia_niestacjonarne_/);
+});
+
+test("sylabusy-hurt: zapasowa nazwa „inżynierska” (logistyka-inzynierska na stronie wydziału)", () => {
+  const lista = `<a href="/ksztalcenie/sylabusy/logistyka-inzynierska/">LI</a>`;
+  const out = JSON.parse(execFileSync("python3", ["-c", `import json,importlib.util as u
+s=u.spec_from_file_location("h","sylabusy-hurt.py");m=u.module_from_spec(s);s.loader.exec_module(m)
+print(json.dumps([m.warianty_nazwy("Logistyka inż."), m.warianty_nazwy("Logistyka"), m.podstrona(${JSON.stringify(lista)}, m.warianty_nazwy("Logistyka inż.")[1])]))`], { cwd: path.join(ROOT, "scripts"), encoding: "utf8" }));
+  assert.deepStrictEqual(out[0], ["Logistyka inż.", "Logistyka inżynierska"]);
+  assert.deepStrictEqual(out[1], ["Logistyka"]);
+  assert.strictEqual(out[2], "https://efz.usz.edu.pl/ksztalcenie/sylabusy/logistyka-inzynierska/");
+});
