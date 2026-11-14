@@ -93,6 +93,60 @@
       przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej-i-przemyslowej"], rachunkowe: ["podstawy-ekonomii", "podstawy-rachunkowosci"], jeszczeProsciej: ["podstawy-rachunkowosci"] },
     },
     // ROCZNIK-KONIEC wefiz-log-1-st-2026
+    // ROCZNIK-START wefiz-li-1-st-2026 (kierunki/wefiz-li-1-st-2026.json)
+    {
+      id: "wefiz-li-1-st-2026",
+      status: "oczekujacy",
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "LI", pl: "Logistyka inż.", en: "Logistics (engineering)" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.zdawalni.pl/plan/wefiz-li-1-st-2026.json", strona: "https://plan.zdawalni.pl/?k=li26", skrzynka: null },
+      sylabus: { plik: "sylabus-li26.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_logistyka_inzynierskie_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["C161"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["elementy-prawa", "ochrona-wlasnosci-intelektualnej-i-przemyslowej"], rachunkowe: ["inzynieria-systemow-i-analiza-systemowa", "matematyka"], jeszczeProsciej: ["matematyka"] },
+    },
+    // ROCZNIK-KONIEC wefiz-li-1-st-2026
+    // ROCZNIK-START wefiz-pii-1-st-2026 (kierunki/wefiz-pii-1-st-2026.json)
+    {
+      id: "wefiz-pii-1-st-2026",
+      status: "oczekujacy",
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "PII", pl: "Przedsiębiorczość i Inwestycje", en: "Entrepreneurship and Investment" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.zdawalni.pl/plan/wefiz-pii-1-st-2026.json", strona: "https://plan.zdawalni.pl/?k=pii26", skrzynka: null },
+      sylabus: { plik: "sylabus-pii26.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_przedsiebiorczosc_i_inwestycje_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["C181"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej", "podstawy-prawa-dla-ekonomistow"], rachunkowe: ["podstawy-ekonomiki-przedsiebiorstw", "podstawy-makroekonomii", "podstawy-prawa-dla-ekonomistow"], jeszczeProsciej: [] },
+    },
+    // ROCZNIK-KONIEC wefiz-pii-1-st-2026
+    // ROCZNIK-START wefiz-iwb-1-st-2026 (kierunki/wefiz-iwb-1-st-2026.json)
+    {
+      id: "wefiz-iwb-1-st-2026",
+      status: "oczekujacy",
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "IWB", pl: "Informatyka w Biznesie", en: "Business Informatics" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.zdawalni.pl/plan/wefiz-iwb-1-st-2026.json", strona: "https://plan.zdawalni.pl/?k=iwb26", skrzynka: null },
+      sylabus: { plik: "sylabus-iwb26.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_informatyka_w_biznesie_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["C171"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej"], rachunkowe: ["podstawy-mikroekonomii"], jeszczeProsciej: [] },
+    },
+    // ROCZNIK-KONIEC wefiz-iwb-1-st-2026
   ];
   if (typeof module !== "undefined" && module.exports) module.exports = DANE;
   else root.SKROT_ROCZNIKI_DANE = DANE;

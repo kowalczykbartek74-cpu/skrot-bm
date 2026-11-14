@@ -1,0 +1,124 @@
+{
+  "id": "wefiz-pii-1-st-2026",
+  "kierunek_id": "wefiz-pii-1-st",
+  "prefiks": "pii26",
+  "wydzial": "WEFiZ",
+  "kierunek": {
+    "kod": "PII",
+    "pl": "Przedsiębiorczość i Inwestycje",
+    "en": "Entrepreneurship and Investment"
+  },
+  "stopien": 1,
+  "tryb": "st",
+  "nabor": 2026,
+  "jezykZajec": "pl",
+  "plan": {
+    "systemNazwa": "Przedsiębiorczość i Inwestycje (PiI)",
+    "rok": "1 rokI",
+    "plik": "plan/wefiz-pii-1-st-2026.json"
+  },
+  "grupy": [
+    "C181"
+  ],
+  "sylabus": {
+    "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_przedsiebiorczosc_i_inwestycje_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_przedsiebiorczosc_i_inwestycje_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "plik": "sylabus-pii26.json",
+    "zgadniety": true
+  },
+  "teams": false,
+  "status": "oczekujacy",
+  "przedmioty": {
+    "marketing-w-malej-firmie": {
+      "bank": [
+        "marketing-podstawy/01",
+        "marketing-podstawy/02",
+        "marketing-podstawy/03",
+        "marketing-podstawy/06",
+        "marketing-podstawy/07",
+        "marketing-podstawy/04",
+        "marketing-podstawy/08",
+        "marketing-podstawy/05",
+        "marketing-podstawy/10"
+      ],
+      "bm": [],
+      "koszyk": "K1",
+      "kierunkowe": 4
+    },
+    "metody-tworczego-rozwiazywania-problemow": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "narzedzia-informatyczne-w-malej-firmie": {
+      "bank": [
+        "technologie-informacyjne"
+      ],
+      "bm": [
+        "narzedzia-it-w-zarzadzaniu"
+      ],
+      "koszyk": "K1"
+    },
+    "ochrona-wlasnosci-intelektualnej": {
+      "bank": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "bm": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-ekonomiki-przedsiebiorstw": {
+      "bank": [
+        "nauka-o-przedsiebiorstwie"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    },
+    "podstawy-makroekonomii": {
+      "bank": [
+        "makroekonomia"
+      ],
+      "bm": [
+        "makroekonomia"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-prawa-dla-ekonomistow": {
+      "bank": [
+        "podstawy-prawa"
+      ],
+      "bm": [
+        "prawo"
+      ],
+      "koszyk": "K1"
+    },
+    "problemy-biznesu-w-praktyce": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "sztuka-wystapien-publicznych": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "wyszukiwanie-ocena-wiarygodnosci-informacji-i-bazy-danych": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    }
+  },
+  "role": {
+    "prawne": [
+      "ochrona-wlasnosci-intelektualnej",
+      "podstawy-prawa-dla-ekonomistow"
+    ],
+    "rachunkowe": [
+      "podstawy-ekonomiki-przedsiebiorstw",
+      "podstawy-makroekonomii",
+      "podstawy-prawa-dla-ekonomistow"
+    ],
+    "jeszczeProsciej": []
+  }
+}

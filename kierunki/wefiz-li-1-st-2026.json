@@ -1,0 +1,125 @@
+{
+  "id": "wefiz-li-1-st-2026",
+  "kierunek_id": "wefiz-li-1-st",
+  "prefiks": "li26",
+  "wydzial": "WEFiZ",
+  "kierunek": {
+    "kod": "LI",
+    "pl": "Logistyka inż.",
+    "en": "Logistics (engineering)"
+  },
+  "stopien": 1,
+  "tryb": "st",
+  "nabor": 2026,
+  "jezykZajec": "pl",
+  "plan": {
+    "systemNazwa": "Logistyka inż. (Li)",
+    "rok": "1 rokI",
+    "plik": "plan/wefiz-li-1-st-2026.json"
+  },
+  "grupy": [
+    "C161"
+  ],
+  "sylabus": {
+    "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_logistyka_inzynierskie_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_logistyka_inzynierskie_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "plik": "sylabus-li26.json",
+    "zgadniety": true
+  },
+  "teams": false,
+  "status": "oczekujacy",
+  "przedmioty": {
+    "elementy-prawa": {
+      "bank": [
+        "podstawy-prawa"
+      ],
+      "bm": [
+        "prawo"
+      ],
+      "koszyk": "K1"
+    },
+    "inzynieria-systemow-i-analiza-systemowa": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "ladunkoznawstwo": {
+      "bank": [
+        "towaroznawstwo/03",
+        "towaroznawstwo/04",
+        "towaroznawstwo/08",
+        "towaroznawstwo/09",
+        "towaroznawstwo/10",
+        "towaroznawstwo/07"
+      ],
+      "bm": [],
+      "koszyk": "K1",
+      "kierunkowe": 4
+    },
+    "logistyka-i-zarzadzanie-lancuchem-dostaw": {
+      "bank": [
+        "logistyka"
+      ],
+      "bm": [
+        "logistyka"
+      ],
+      "koszyk": "K1"
+    },
+    "matematyka": {
+      "bank": [
+        "matematyka"
+      ],
+      "bm": [
+        "analiza-matematyczna"
+      ],
+      "koszyk": "K1"
+    },
+    "ochrona-wlasnosci-intelektualnej-i-przemyslowej": {
+      "bank": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "bm": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-projektowania-uniwersalnego": {
+      "bank": [
+        "projektowanie-uniwersalne"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    },
+    "podstawy-zarzadzania": {
+      "bank": [
+        "podstawy-zarzadzania"
+      ],
+      "bm": [
+        "podstawy-zarzadzania"
+      ],
+      "koszyk": "K1"
+    },
+    "technologie-informatyczne": {
+      "bank": [
+        "technologie-informacyjne"
+      ],
+      "bm": [
+        "narzedzia-it-w-zarzadzaniu"
+      ],
+      "koszyk": "K1"
+    }
+  },
+  "role": {
+    "prawne": [
+      "elementy-prawa",
+      "ochrona-wlasnosci-intelektualnej-i-przemyslowej"
+    ],
+    "rachunkowe": [
+      "inzynieria-systemow-i-analiza-systemowa",
+      "matematyka"
+    ],
+    "jeszczeProsciej": [
+      "matematyka"
+    ]
+  }
+}

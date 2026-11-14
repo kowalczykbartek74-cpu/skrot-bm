@@ -1,0 +1,117 @@
+{
+  "id": "wefiz-iwb-1-st-2026",
+  "kierunek_id": "wefiz-iwb-1-st",
+  "prefiks": "iwb26",
+  "wydzial": "WEFiZ",
+  "kierunek": {
+    "kod": "IWB",
+    "pl": "Informatyka w Biznesie",
+    "en": "Business Informatics"
+  },
+  "stopien": 1,
+  "tryb": "st",
+  "nabor": 2026,
+  "jezykZajec": "pl",
+  "plan": {
+    "systemNazwa": "Informatyka w Biznesie (IwB)",
+    "rok": "1 rokI",
+    "plik": "plan/wefiz-iwb-1-st-2026.json"
+  },
+  "grupy": [
+    "C171"
+  ],
+  "sylabus": {
+    "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_informatyka_w_biznesie_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_informatyka_w_biznesie_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "plik": "sylabus-iwb26.json",
+    "zgadniety": true
+  },
+  "teams": false,
+  "status": "oczekujacy",
+  "przedmioty": {
+    "algorytmy-i-struktury-danych": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "logika": {
+      "bank": [
+        "logika"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    },
+    "ochrona-wlasnosci-intelektualnej": {
+      "bank": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "bm": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-mikroekonomii": {
+      "bank": [
+        "ekonomia-mikroekonomia"
+      ],
+      "bm": [
+        "ekonomia-biznesu"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-projektowania-uniwersalnego": {
+      "bank": [
+        "projektowanie-uniwersalne"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    },
+    "podstawy-zarzadzania": {
+      "bank": [
+        "podstawy-zarzadzania"
+      ],
+      "bm": [
+        "podstawy-zarzadzania"
+      ],
+      "koszyk": "K1"
+    },
+    "przedsiebiorczosc": {
+      "bank": [
+        "przedsiebiorczosc"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    },
+    "systemy-operacyjne-i-technologie-sieciowe-w-biznesie": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "wprowadzenie-do-e-biznesu": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "wstep-do-informatyki-w-biznesie": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "zarzadzanie-wlasnym-rozwojem": {
+      "bank": [
+        "zarzadzanie-wlasnym-rozwojem"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    }
+  },
+  "role": {
+    "prawne": [
+      "ochrona-wlasnosci-intelektualnej"
+    ],
+    "rachunkowe": [
+      "podstawy-mikroekonomii"
+    ],
+    "jeszczeProsciej": []
+  }
+}
