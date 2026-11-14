@@ -4995,7 +4995,8 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
       for (const line of lines) {
         const m = line.match(/^\s*[-•]\s+(.*)$/);
         if (m) { if (!ul) { ul = h("ul"); box.append(ul); } ul.append(h("li", {}, inline(m[1]))); }
-        else { ul = null; box.append(h("p", {}, inline(line))); }
+        // wcięcie na początku linii (kod w lekcjach, np. blok pod if/for w Pythonie) — przeglądarka zjadłaby spacje
+        else { ul = null; const ind = (line.match(/^ +/) || [""])[0].length; box.append(h("p", ind ? { class: "ind", style: "padding-left:" + (ind / 2) + "em" } : {}, inline(ind ? line.slice(ind) : line))); }
       }
     }
     return box;
