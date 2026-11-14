@@ -70,7 +70,9 @@
     },
     "podstawy-ekonomiki-przedsiebiorstw": {
       "bank": [
-        "nauka-o-przedsiebiorstwie"
+        "nauka-o-przedsiebiorstwie",
+        "przedsiebiorczosc/01",
+        "przedsiebiorczosc/13"
       ],
       "bm": [],
       "koszyk": "K1"
