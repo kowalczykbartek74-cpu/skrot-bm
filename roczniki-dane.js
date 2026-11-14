@@ -147,6 +147,42 @@
       przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej"], rachunkowe: ["podstawy-mikroekonomii"], jeszczeProsciej: [] },
     },
     // ROCZNIK-KONIEC wefiz-iwb-1-st-2026
+    // ROCZNIK-START wefiz-zloz-1-st-2026 (kierunki/wefiz-zloz-1-st-2026.json)
+    {
+      id: "wefiz-zloz-1-st-2026",
+      status: "oczekujacy",
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "ZLOZ", pl: "Zarządzanie Logistyczne w Ochronie Zdrowia", en: "Logistics Management in Healthcare" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.zdawalni.pl/plan/wefiz-zloz-1-st-2026.json", strona: "https://plan.zdawalni.pl/?k=zloz26", skrzynka: null },
+      sylabus: { plik: "sylabus-zloz26.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_logistyczne_w_ochronie_zdrowia_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["C101"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej-i-przemyslowej"], rachunkowe: ["ekonomika-zdrowia"], jeszczeProsciej: [] },
+    },
+    // ROCZNIK-KONIEC wefiz-zloz-1-st-2026
+    // ROCZNIK-START wefiz-zoze-1-st-2026 (kierunki/wefiz-zoze-1-st-2026.json)
+    {
+      id: "wefiz-zoze-1-st-2026",
+      status: "oczekujacy",
+      wydzial: { kod: "WEFiZ", pl: "Wydział Ekonomii, Finansów i Zarządzania", en: "Faculty of Economics, Finance and Management" },
+      kierunek: { kod: "ZOZE", pl: "Zarządzanie odnawialnymi źródłami energii", en: "Renewable Energy Management" },
+      stopien: 1,
+      tryb: "st",
+      nabor: 2026,
+      jezykZajec: "pl",
+      plan: { json: "https://plan.zdawalni.pl/plan/wefiz-zoze-1-st-2026.json", strona: "https://plan.zdawalni.pl/?k=zoze26", skrzynka: null },
+      sylabus: { plik: "sylabus-zoze26.json", pojecia: null, pdf: { pl: "Sylabusy WEFiZ 2026/27 (PDF)", url: "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_odnawialnymi_zrodlami_energii_studia_stacjonarne_I_stopnia_2026_2027.pdf" } },
+      grupy: ["C141"],
+      teams: false,
+      zasadyZaliczen: false,
+      przedmioty: { prawne: ["ochrona-wlasnosci-intelektualnej-i-przemyslowej", "podstawy-prawa"], rachunkowe: ["ekonomia", "funkcjonowanie-rynku-energii-w-polsce", "matematyka-w-zarzadzaniu", "zarzadzanie-finansami-przedsiebiorstwa"], jeszczeProsciej: ["matematyka-w-zarzadzaniu"] },
+    },
+    // ROCZNIK-KONIEC wefiz-zoze-1-st-2026
   ];
   if (typeof module !== "undefined" && module.exports) module.exports = DANE;
   else root.SKROT_ROCZNIKI_DANE = DANE;

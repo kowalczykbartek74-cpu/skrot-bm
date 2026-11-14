@@ -1,0 +1,160 @@
+{
+  "id": "wefiz-zoze-1-st-2026",
+  "kierunek_id": "wefiz-zoze-1-st",
+  "prefiks": "zoze26",
+  "wydzial": "WEFiZ",
+  "kierunek": {
+    "kod": "ZOZE",
+    "pl": "Zarządzanie odnawialnymi źródłami energii",
+    "en": "Renewable Energy Management"
+  },
+  "stopien": 1,
+  "tryb": "st",
+  "nabor": 2026,
+  "jezykZajec": "pl",
+  "plan": {
+    "systemNazwa": "Zarządzanie odnawialnymi źródłami energii (ZOZE)",
+    "rok": "1 rokI",
+    "plik": "plan/wefiz-zoze-1-st-2026.json"
+  },
+  "grupy": [
+    "C141"
+  ],
+  "sylabus": {
+    "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_odnawialnymi_zrodlami_energii_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_zarzadzanie_odnawialnymi_zrodlami_energii_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "plik": "sylabus-zoze26.json",
+    "zgadniety": true
+  },
+  "teams": false,
+  "status": "oczekujacy",
+  "przedmioty": {
+    "ekonomia": {
+      "bank": [
+        "ekonomia-mikroekonomia",
+        "makroekonomia/01",
+        "makroekonomia/02",
+        "makroekonomia/03",
+        "makroekonomia/04"
+      ],
+      "bm": [
+        "ekonomia-biznesu",
+        "makroekonomia"
+      ],
+      "koszyk": "K1"
+    },
+    "funkcjonowanie-rynku-energii-w-polsce": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "infrastruktura-energetyczna": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "krajowy-system-elektroenergetyczny": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "logistyka-w-energetyce": {
+      "bank": [
+        "logistyka/01",
+        "logistyka/07",
+        "logistyka/02",
+        "logistyka/03",
+        "logistyka/05",
+        "logistyka/11",
+        "logistyka/12"
+      ],
+      "bm": [],
+      "koszyk": "K1",
+      "kierunkowe": 4
+    },
+    "matematyka-w-zarzadzaniu": {
+      "bank": [
+        "matematyka"
+      ],
+      "bm": [
+        "analiza-matematyczna"
+      ],
+      "koszyk": "K1"
+    },
+    "ochrona-wlasnosci-intelektualnej-i-przemyslowej": {
+      "bank": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "bm": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-energetyki": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "podstawy-prawa": {
+      "bank": [
+        "podstawy-prawa"
+      ],
+      "bm": [
+        "prawo"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-zarzadzania": {
+      "bank": [
+        "podstawy-zarzadzania"
+      ],
+      "bm": [
+        "podstawy-zarzadzania"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-zrownowazonego-rozwoju": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "technologie-informatyczne": {
+      "bank": [
+        "technologie-informacyjne"
+      ],
+      "bm": [
+        "narzedzia-it-w-zarzadzaniu"
+      ],
+      "koszyk": "K1"
+    },
+    "zarzadzanie-finansami-przedsiebiorstwa": {
+      "bank": [
+        "podstawy-finansow/01",
+        "podstawy-finansow/08",
+        "podstawy-finansow/03",
+        "podstawy-finansow/09",
+        "podstawy-finansow/04",
+        "podstawy-finansow/06",
+        "podstawy-finansow/07"
+      ],
+      "bm": [],
+      "koszyk": "K1",
+      "kierunkowe": 3
+    }
+  },
+  "role": {
+    "prawne": [
+      "ochrona-wlasnosci-intelektualnej-i-przemyslowej",
+      "podstawy-prawa"
+    ],
+    "rachunkowe": [
+      "ekonomia",
+      "funkcjonowanie-rynku-energii-w-polsce",
+      "matematyka-w-zarzadzaniu",
+      "zarzadzanie-finansami-przedsiebiorstwa"
+    ],
+    "jeszczeProsciej": [
+      "matematyka-w-zarzadzaniu"
+    ]
+  }
+}

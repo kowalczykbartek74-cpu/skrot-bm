@@ -1,0 +1,88 @@
+{
+  "id": "wefiz-zloz-1-st-2026",
+  "kierunek_id": "wefiz-zloz-1-st",
+  "prefiks": "zloz26",
+  "wydzial": "WEFiZ",
+  "kierunek": {
+    "kod": "ZLOZ",
+    "pl": "Zarządzanie Logistyczne w Ochronie Zdrowia",
+    "en": "Logistics Management in Healthcare"
+  },
+  "stopien": 1,
+  "tryb": "st",
+  "nabor": 2026,
+  "jezykZajec": "pl",
+  "plan": {
+    "systemNazwa": "Zarządzanie Logistyczne w Ochronie Zdrowia (ZLOZ)",
+    "rok": "1 rokI",
+    "plik": "plan/wefiz-zloz-1-st-2026.json"
+  },
+  "grupy": [
+    "C101"
+  ],
+  "sylabus": {
+    "pdf": "https://efz.usz.edu.pl/wp-content/uploads/sylabusy/26-27/sylabus_zarzadzanie_logistyczne_w_ochronie_zdrowia_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "planStudiow": "https://efz.usz.edu.pl/wp-content/uploads/plany_studiow/2026-27/plany_studiow_zarzadzanie_logistyczne_w_ochronie_zdrowia_studia_stacjonarne_I_stopnia_2026_2027.pdf",
+    "plik": "sylabus-zloz26.json",
+    "zgadniety": true
+  },
+  "teams": false,
+  "status": "oczekujacy",
+  "przedmioty": {
+    "ekonomika-zdrowia": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "ochrona-wlasnosci-intelektualnej-i-przemyslowej": {
+      "bank": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "bm": [
+        "ochrona-wlasnosci-intelektualnej"
+      ],
+      "koszyk": "K1"
+    },
+    "podstawy-logistyki-w-ochronie-zdrowia": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "podstawy-zarzadzania-jakoscia-w-medycynie": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "podstawy-zarzadzania-w-ochronie-zdrowia": {
+      "bank": [
+        "podstawy-zarzadzania"
+      ],
+      "bm": [
+        "podstawy-zarzadzania"
+      ],
+      "koszyk": "K1",
+      "kierunkowe": 4
+    },
+    "procedury-i-standardy-w-chirurgii": {
+      "bank": [],
+      "bm": [],
+      "koszyk": "K3"
+    },
+    "wprowadzenie-do-anatomii-funkcjonalnej-i-fizjologii": {
+      "bank": [
+        "anatomia-czlowieka"
+      ],
+      "bm": [],
+      "koszyk": "K1"
+    }
+  },
+  "role": {
+    "prawne": [
+      "ochrona-wlasnosci-intelektualnej-i-przemyslowej"
+    ],
+    "rachunkowe": [
+      "ekonomika-zdrowia"
+    ],
+    "jeszczeProsciej": []
+  }
+}
