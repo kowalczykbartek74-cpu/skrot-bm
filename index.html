@@ -1457,7 +1457,12 @@ details[open] > summary.tl-head::after { transform: rotate(-135deg) translate(-2
 .ld-lessons { display: grid; gap: 12px; grid-template-columns: 1fr; }
 @media (min-width: 600px) { .ld-lessons { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .ld-tile { cursor: default; padding-bottom: 12px; }
-.ld-tile .nb-badge { bottom: -18px; }
+/* Nazwa przedmiotu na karcie lekcji: pastylka o szerokości tekstu (była kwadratowa odznaka na 2–3 litery, „Logistyka” się nie mieściła).
+   Jasne tło w odcieniu przedmiotu + ciemny tekst: kontrast AA przy każdym kolorze z PALETTE (biały na jasnych zieleniach nie spełniał). */
+.ld-tile .nb-top { margin-bottom: 20px; }
+.ld-subj { position: absolute; left: 16px; bottom: -14px; display: inline-flex; align-items: center; gap: 7px; height: 28px; max-width: calc(100% - 32px); box-sizing: border-box; padding: 0 12px 0 10px; border-radius: 999px; background: color-mix(in srgb, var(--c) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--c) 50%, var(--surface)); color: var(--ink); font-size: .8rem; font-weight: 800; letter-spacing: .01em; line-height: 1; box-shadow: 0 0 0 3px var(--surface); }
+.ld-subj > i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.ld-subj > span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 2px 0; }
 .ld-tile .foot { display: flex; gap: 6px; flex-wrap: wrap; }
 .ld-tile .btn.sk-cta { width: 100%; }
 .ld-done { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -2655,6 +2660,8 @@ button.lv-open:hover .lv-chev, .lv-link:hover .lv-chev { transform: translateX(3
   .ld-hero .ld-step { min-height: 40px; padding: 4px 10px; grid-template-columns: 28px minmax(0, 1fr) auto; }
   .ld-hero .ld-step .t { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
   .ld-tile { gap: 6px; }
+  .ld-tile .nb-top { margin-bottom: 18px; }
+  .ld-subj { left: 12px; max-width: calc(100% - 24px); bottom: -13px; height: 26px; font-size: .78rem; }
   .ld-tile .foot .sk-chip:nth-child(n+4), .ld-tile > .meta.muted { display: none; }
 }
 .pts-card .panel-head { margin: 0; }
@@ -18933,7 +18940,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const ps = lpStateOf("bm-pl:ld:" + dayN() + ":" + key), segs = p.segmenty || [], pct = left && segs.length ? Math.round((100 * Math.min(segs.length, ps?.seg || 0)) / segs.length) : 0;
     const mechs = [...new Set(segs.map((x) => x.mech))].slice(0, 6);
     return h("section", { class: "nb ld-tile", style: `--c:${s?.color || "var(--accent)"}`, "aria-label": `Lekcja dla Ciebie: ${m?.title || ""}` },
-      h("span", { class: `nb-top pat pat-${s?.pat ?? 1}`, "aria-hidden": "true" }, h("span", { class: "nb-badge", text: s ? subjShort(s.id) : "" })),
+      h("span", { class: `nb-top pat pat-${s?.pat ?? 1}`, "aria-hidden": "true" }, s ? h("span", { class: "ld-subj", title: subjectById(s.id)?.[EN ? "en" : "pl"] || "" }, h("i", { "aria-hidden": "true" }), h("span", { translate: "no", text: subjShort(s.id) })) : null),
       h("h3", { translate: "no", text: m?.title || "" }),
       h("span", { class: "meta num" }, h("span", { text: `ok. ${p.min || 20} min` }), h("span", { text: " · " }), h("span", { text: i === 0 ? "Najważniejsze teraz" : i === 1 ? "Na zmianę" : "Jeszcze jedna" })),
       h("span", { class: "foot" }, mechs.map((id) => h("span", { class: "sk-chip" }, h("span", { "aria-hidden": "true", text: (LD_ICON[id] || "•") + " " }), h("span", { text: LDE.MECH[id]?.nazwa || id })))),

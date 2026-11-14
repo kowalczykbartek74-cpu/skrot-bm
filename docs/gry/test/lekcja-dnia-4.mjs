@@ -32,7 +32,7 @@ ok("admin + ?ld=1: blok „Dla Ciebie na dziś”", (await p.locator(".ld-hero")
 const m0 = await main(p);
 ok("bez starych kart: „Teraz zrób to”, „Ile masz dziś czasu?”, „Powtórka w 5 minut”", !/Teraz zrób to/i.test(m0) && !/Ile masz dziś czasu/i.test(m0) && (await p.locator(".dz-panel, .now-2").count()) === 0, m0.slice(0, 500));
 ok("karta 5 min: te same klasy co „Teraz zrób to”", await p.locator(".ld-hero").evaluate((e) => e.matches("section.sk-hero.sk-now")), "");
-ok("kafelek lekcji: kafelek przedmiotu z okładką i skrótem", (await p.locator(".ld-tile .nb-top.pat").count()) === 2 && (await p.locator(".ld-tile .nb-badge").first().innerText()).length >= 2, "");
+ok("kafelek lekcji: kafelek przedmiotu z okładką i nazwą przedmiotu", (await p.locator(".ld-tile .nb-top.pat").count()) === 2 && (await p.locator(".ld-tile .ld-subj").first().innerText()).length >= 2, "");
 ok("7.11: na górze „Twój postęp” z najbliższymi terminami, potem blok; bez planu zajęć", await p.evaluate(() => { const m = document.querySelector("main"), pts = m.querySelector(".pts-dzis"), ld = m.querySelector(".ld-block"); return !!pts && !!ld && m.querySelector(".greet").nextElementSibling === pts && pts.nextElementSibling === ld && /Najbliższe terminy/.test(pts.innerText) && !m.querySelector(".home-hub, .today"); }), "");
 ok("flaga zapamiętana w przeglądarce", await p.evaluate(() => localStorage.getItem("bm-ld-flag") === "1"), "");
 await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2000);
