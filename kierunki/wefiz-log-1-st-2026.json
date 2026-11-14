@@ -30,9 +30,11 @@
   "status": "oczekujacy",
   "przedmioty": {
     "etyka-zawodowa": {
-      "bank": [],
+      "bank": [
+        "etyka-zawodowa"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     },
     "ochrona-wlasnosci-intelektualnej-i-przemyslowej": {
       "bank": [
@@ -108,9 +110,11 @@
       "koszyk": "K1"
     },
     "towaroznawstwo": {
-      "bank": [],
+      "bank": [
+        "towaroznawstwo"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     }
   },
   "role": {

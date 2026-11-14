@@ -31,9 +31,11 @@
   "status": "oczekujacy",
   "przedmioty": {
     "kultura-organizacyjna": {
-      "bank": [],
+      "bank": [
+        "kultura-organizacyjna"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     },
     "ochrona-wlasnosci-intelektualnej": {
       "bank": [
@@ -46,7 +48,14 @@
     },
     "podstawy-ekonomii": {
       "bank": [
-        "ekonomia-mikroekonomia"
+        "ekonomia-mikroekonomia",
+        "makroekonomia/01",
+        "makroekonomia/02",
+        "makroekonomia/03",
+        "makroekonomia/04",
+        "makroekonomia/05",
+        "podstawy-finansow/02",
+        "makroekonomia/13"
       ],
       "bm": [
         "ekonomia-biznesu",
@@ -92,9 +101,11 @@
       "koszyk": "K1"
     },
     "relacje-miedzyludzkie-w-biznesie": {
-      "bank": [],
+      "bank": [
+        "relacje-miedzyludzkie-w-biznesie"
+      ],
       "bm": [],
-      "koszyk": "K3"
+      "koszyk": "K1"
     },
     "technologie-informacyjne": {
       "bank": [

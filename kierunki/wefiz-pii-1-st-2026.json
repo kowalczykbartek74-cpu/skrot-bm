@@ -77,6 +77,8 @@
     },
     "podstawy-makroekonomii": {
       "bank": [
+        "ekonomia-mikroekonomia/01",
+        "ekonomia-mikroekonomia/02",
         "makroekonomia"
       ],
       "bm": [
