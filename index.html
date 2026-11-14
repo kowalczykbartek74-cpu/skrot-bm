@@ -4977,6 +4977,9 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
   const materialsOf = (sid) => S.materials.filter((m) => m.subjectId === sid);
   const isLesson = (m) => m?.kind === "lesson";
   const lessonsOf = (sid) => materialsOf(sid).filter(isLesson).sort((a, b) => (a.order || 0) - (b.order || 0));
+  // Numer lekcji widoczny dla studenta = miejsce w kursie przedmiotu (zawsze 1, 2, 3…), a nie pole order z bazy.
+  // order tylko układa lekcje (np. uzupełnienia wgrane z order 91+ trafiają na koniec i dostają kolejne numery).
+  const lessonNo = (m) => { const i = m && !m.mine ? lessonsOf(m.subjectId).findIndex((x) => x.id === m.id) : -1; return i >= 0 ? i + 1 : m?.order; };
   const filesOf = (sid) => materialsOf(sid).filter((m) => !isLesson(m));
   // Nowy system (v2): materiały z prezentacji mają własne opracowanie i tylko odsyłacze do slajdów.
   const isV2 = (m, c) => (m?.v || 0) >= 2 || (c?.v || 0) >= 2;
@@ -7928,7 +7931,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
   function nextLesson(sid) {
     const ls = lessonsOf(sid); if (!ls.length) return nextToLearn(sid);
     const l = ls.find((x) => !lessonDone(x) && readable(x));
-    return l ? { m: l, started: seenSet().has(l.id), label: `${seenSet().has(l.id) ? "Kontynuuj" : "Następna lekcja"}: ${l.order}. ${l.title}` } : null;
+    return l ? { m: l, started: seenSet().has(l.id), label: `${seenSet().has(l.id) ? "Kontynuuj" : "Następna lekcja"}: ${lessonNo(l)}. ${l.title}` } : null;
   }
   // Materiały są po angielsku, a studenci często szukają po polsku: „inflacja” → inflation, „PKB” → GDP.
   const PL_EN = {
@@ -8031,7 +8034,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
   // „Kontynuuj” tylko przy materiale, który już był otwarty; nowy to „Następny”.
   function nextToLearn(sid, only) {
     const done = S.progress?.done || {};
-    if (sid && only !== "slides") { const ls = lessonsOf(sid); if (ls.length) { const l = ls.find((x) => !done[x.id] && readable(x)); return l ? { m: l, started: !!done[l.id] || seenSet().has(l.id), label: `${seenSet().has(l.id) ? "Kontynuuj" : "Następna lekcja"}: ${l.order}. ${l.title}` } : null; } }
+    if (sid && only !== "slides") { const ls = lessonsOf(sid); if (ls.length) { const l = ls.find((x) => !done[x.id] && readable(x)); return l ? { m: l, started: !!done[l.id] || seenSet().has(l.id), label: `${seenSet().has(l.id) ? "Kontynuuj" : "Następna lekcja"}: ${lessonNo(l)}. ${l.title}` } : null; } }
     const pool = sid ? filesOf(sid) : SUBJECTS.flatMap((x) => filesOf(x.id));
     const fs = dedupMats(only === "slides" ? pool.filter((m) => !isMap(m)) : noMaps(pool)).filter(readable).sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
     if (!fs.length) return null;
@@ -8168,7 +8171,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
           : h("div", { class: "empty small", text: "W tym przedmiocie nie ma jeszcze rozwiązanych zadań. Pojawią się przy materiałach z obliczeniami." })),
       h("section", { class: "stack" }, h("h2", { text: "Quiz i fiszki z jednego materiału" }),
         h("div", { class: "sk-rows" }, studyMats(s.id).map((m) => h("div", { class: "sk-row-big sk-row-split" },
-          h("span", { class: "ic", "aria-hidden": "true", text: isLesson(m) ? String(m.order) : "📘" }),
+          h("span", { class: "ic", "aria-hidden": "true", text: isLesson(m) ? String(lessonNo(m)) : "📘" }),
           h("span", { class: "t" }, h("b", { text: m.title || m.fileName }), best(m.id) ? h("span", {}, scoreChip(m.id)) : null),
           h("span", { class: "row", style: "gap:6px;flex-wrap:nowrap" },
             locked(m) ? h("span", { class: "lock", text: "🔒" }) : [
@@ -8213,9 +8216,9 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
           const ok = lessonDone(l), lock = locked(l), cur = nextL && nextL.id === l.id;
           const open = () => go({ view: "material", id: l.id, tab: "lekcja" });
           return h("li", { class: "sk-node" + (ok ? " done" : "") + (cur ? " now" : "") + (lock ? " lock" : "") },
-            h("button", { type: "button", class: "sk-dot", "aria-label": `${l.order}. ${l.title}${ok ? ", " + PTS_STATE[r.state === "doing" || r.state === "none" ? "done" : r.state] : ""}${lock ? ", zablokowana" : ""}`, onclick: open }, lock ? "🔒" : ok ? (r.state === "mastered" ? "⭐" : r.state === "kept" ? "✓✓" : "✓") : String(l.order)),
+            h("button", { type: "button", class: "sk-dot", "aria-label": `${lessonNo(l)}. ${l.title}${ok ? ", " + PTS_STATE[r.state === "doing" || r.state === "none" ? "done" : r.state] : ""}${lock ? ", zablokowana" : ""}`, onclick: open }, lock ? "🔒" : ok ? (r.state === "mastered" ? "⭐" : r.state === "kept" ? "✓✓" : "✓") : String(lessonNo(l))),
             h("button", { type: "button", class: "t", onclick: open },
-              h("b", { text: `${l.order}. ${l.title}` }),
+              h("b", { text: `${lessonNo(l)}. ${l.title}` }),
               h("span", { class: "num", text: (l.sylRef ? `sylabus: ${l.sylRef}` : `rozdz. ${l.bookRef}`) + ` · ${lessonMinTxt(l)} · ${l.quizCount || 0} ${plural(l.quizCount || 0, "pytanie", "pytania", "pytań")} w quizie` }),
               !lock || best(l.id) ? h("span", { class: "sk-tags" },
                 !lock ? ptsMeter(r) : null,
@@ -8375,7 +8378,7 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
       h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: mine ? ["Moje materiały", folderOf(m).name, s?.pl].filter(Boolean).join(" · ") : s?.pl || "Materiał" }), m.source === "sylabus" || m.sylRef ? h("span", { class: "chip sun", title: "Opracowane z tematów sylabusa, zanim prowadzący wrzucili slajdy", text: "z sylabusa, nie z wykładu" }) : null),
       h("h1", { text: m.title || m.fileName }),
       h("div", { class: "row muted num", style: "font-size:.86rem" },
-        h("span", { text: mine ? `${m.fileName} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? (m.sylRef ? (m.unit == null ? `Lekcja ${m.order} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}` : `Lekcja ${m.order} · dział ${m.unit}: ${m.unitTitle} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}`) : `Lekcja ${m.order} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ${lessonMinTxt(m, c)}`) : `dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
+        h("span", { text: mine ? `${m.fileName} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? (m.sylRef ? (m.unit == null ? `Lekcja ${lessonNo(m)} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}` : `Lekcja ${lessonNo(m)} · dział ${m.unit}: ${m.unitTitle} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}`) : `Lekcja ${lessonNo(m)} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ${lessonMinTxt(m, c)}`) : `dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
         h("button", { type: "button", class: "link", style: "font-size:.86rem", onclick: () => go({ view: "cheat", id: m.id }) }, "Ściągawka do druku"),
         mine && myFolders().length > 1 ? h("select", { class: "input small-sel", "aria-label": "Przenieś do sekcji", onchange: (e) => moveMine(m, e.target.value) },
           myFolders().map((f) => h("option", { value: f.id, selected: f.id === folderOf(m).id ? true : null, text: f.id === folderOf(m).id ? `Sekcja: ${f.name}` : `Przenieś do: ${f.name}` }))) : null,
@@ -12455,7 +12458,7 @@ ${written}`;
     if (!m && it.d) { const est = topicAt(sid, k, it.d, null); for (const t of est?.topics || []) { m = sylTopicMat(sid, k, t); if (m) break; } }
     return m || lessonTwin({ title: it.t }, lessonsOf(sid)) || null;
   }
-  const lessonLinkTxt = (m) => `Pełna lekcja: ${m.order ? `Lekcja ${m.order}: ` : ""}${m.title || m.fileName}`;
+  const lessonLinkTxt = (m) => `Pełna lekcja: ${m.order ? `Lekcja ${lessonNo(m)}: ` : ""}${m.title || m.fileName}`;
   // Odpowiedź w „Sprawdź się”: dobra = tyle XP co w quizie lekcji (raz dziennie) + punkt i moneta z bazy (nauka_rp_po);
   // zła = pomylone pytanie (wraca w grach z poWrong; bez rewanży, bo nie ma go w materiałach).
   function poAnswer(id, it, q, qi, oi) {
