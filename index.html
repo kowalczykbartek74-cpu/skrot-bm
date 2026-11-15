@@ -4535,34 +4535,65 @@ html.calm :is(.btn, .seg button):active { transform: none !important; }
 /* ===== H2 etap 3: nawigacja i nagłówek ===== */
 html:not([data-theme]) .bar { border-bottom: 2px solid var(--h-line); }
 html:not([data-theme]) .navbtn { transition: background .15s, color .15s; }
-html:not([data-theme]) .navbtn:active .ico, html:not([data-theme]) .navbtn:active { scale: .94; }
-html:not([data-theme]) .navbtn.h-bump .ico, html:not([data-theme]) .navbtn.h-bump { animation: h-hop .55s var(--h-out) both; }
-html:not([data-theme]) .navbtn .badge { border: 2px solid var(--surface); min-width: 20px; line-height: 16px; font-weight: 800; }
+
+html:not([data-theme]) .navbtn .badge { border: 2px solid var(--surface); min-width: 22px; line-height: 18px; font-size: .78rem; font-weight: 800; }
 html:not([data-theme]) .navbtn[data-key="review"] .badge { background: #FF9F43; color: #10231A; }
 html:not([data-theme]) .navbtn .badge.h-pop { animation: h-pop .45s var(--h-spring) both; }
 @media (min-width: 761px) {
+  html:not([data-theme]) .navbtn:active { scale: .95; }
+  html:not([data-theme]) .navbtn.h-bump { animation: h-hop .55s var(--h-out) both; }
   html:not([data-theme]) .navbtn { border: 2px solid transparent; border-radius: 12px; }
   html:not([data-theme]) .navbtn[aria-current="page"] { border-color: color-mix(in srgb, var(--accent) 35%, var(--surface)); border-bottom-width: 4px; padding-bottom: 6px; }
 }
 @media (max-width: 760px) {
   html:not([data-theme]) .nav { border-top: 2px solid var(--h-line); }
+  html:not([data-theme]) .navbtn:active .ico { scale: .92; }
+  html:not([data-theme]) .navbtn.h-bump .ico { animation: h-hop .55s var(--h-out) both; }
   html:not([data-theme]) .navbtn .ico { transition: background .15s; }
   html:not([data-theme]) .navbtn[aria-current="page"] .ico { background: var(--h-acc-soft); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
   html:not([data-theme]) .navbtn[aria-current="page"] .lbl { color: var(--accent-text); }
 }
 /* Poziom, monety, seria: pigułki 3D. */
-html:not([data-theme]) #main .rk-compact .xp-chip, html:not([data-theme]) .rk-compact .xp-chip { min-height: 38px; padding: 4px 12px 4px 8px; gap: 6px; border-radius: 999px; background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--h-line), 0 3px 0 var(--h-edge); }
+html:not([data-theme]) #main .greet .greet-badges .rk { min-height: 44px; padding: 3px 12px 3px 4px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 2px var(--h-line), 0 3px 0 var(--h-edge); }
+html:not([data-theme]) #main .greet .greet-badges .rk:hover, html:not([data-theme]) #main .greet .greet-badges .rk:focus-visible { background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+html:not([data-theme]) #main .greet .greet-badges .rk:active { translate: 0 3px; box-shadow: inset 0 0 0 2px var(--h-line); }
+html:not([data-theme]) #main .rk-compact .xp-chip, html:not([data-theme]) .rk-compact .xp-chip { min-height: 44px; padding: 4px 12px 4px 8px; gap: 6px; border-radius: 999px; background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--h-line), 0 3px 0 var(--h-edge); }
 html:not([data-theme]) #main .rk-compact .xp-chip.off, html:not([data-theme]) .rk-compact .xp-chip.off { color: var(--muted); }
 html:not([data-theme]) .rk-compact .xp-chip.off .h2-flame { filter: grayscale(1); opacity: .55; }
 html:not([data-theme]) #main .rk-compact button.xp-chip:active, html:not([data-theme]) .rk-compact button.xp-chip:active { translate: 0 3px; box-shadow: inset 0 0 0 2px var(--h-line); }
 html:not([data-theme]) .h2-ico { display: inline-grid; place-items: center; line-height: 0; }
 html:not([data-theme]) .xp-chip:not(.off) .h2-flame svg { transform-origin: 50% 90%; animation: h-flame 1.6s ease-in-out infinite; }
 html:not([data-theme]) .hud-coin { position: relative; overflow: hidden; }
-html:not([data-theme]) .hud-coin::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 30%; background: rgba(255,255,255,.55); transform: skewX(-20deg); animation: h-shine 3.2s ease-in-out 1s 2 both; pointer-events: none; }
+html:not([data-theme]) .hud-coin.h-shine::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 30%; background: rgba(255,255,255,.55); transform: skewX(-20deg); animation: h-shine 3.2s ease-in-out calc(1s - var(--h-sh, 0ms)) 2 both; pointer-events: none; }
 html[data-green="dark"]:not([data-theme]) .hud-coin::after { background: rgba(255,255,255,.18); }
-@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.navbtn, .navbtn .ico, .navbtn .badge, .h2-flame svg, .hud-coin::after) { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.navbtn, .navbtn .ico, .navbtn .badge, .h2-flame svg) { animation: none !important; } html:not([data-theme]) .hud-coin::after { animation: none !important; display: none; } }
 html.calm :is(.navbtn, .navbtn .ico, .navbtn .badge, .h2-flame svg) { animation: none !important; }
 html.calm .hud-coin::after { animation: none !important; display: none; }
+/* ===== H2 etap 4: lekcja i quiz (odtwarzacz .lp) ===== */
+html:not([data-theme]) .lp-x { border: 2px solid var(--h-line); border-bottom-width: 4px; border-radius: 14px; background: var(--surface); }
+html:not([data-theme]) .lp-x:active { translate: 0 2px; border-bottom-width: 2px; }
+html:not([data-theme]) .lp-bar { height: 16px; gap: 5px; }
+html:not([data-theme]) .lp-bar i { background: color-mix(in srgb, var(--line) 45%, var(--surface)); }
+html:not([data-theme]) .lp-bar i::after { background: var(--accent); box-shadow: inset 0 4px 0 rgba(255,255,255,.3); }
+html:not([data-theme]) .lp-bar i.cur { background: color-mix(in srgb, var(--h-lime) 55%, var(--surface)); box-shadow: inset 0 0 0 2px var(--accent); }
+html:not([data-theme]) .lp-chip { border-radius: 999px; box-shadow: inset 0 0 0 2px var(--h-line), 0 3px 0 var(--h-edge); }
+html:not([data-theme]) .lp-combo:not([hidden]) { animation: h-pop .45s var(--h-spring) both; }
+html:not([data-theme]) :is(.lp-card, .sk-card) { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 24px; box-shadow: none; }
+html:not([data-theme]) .lp-fb { border: 2px solid transparent; border-radius: 18px; animation: h-rise .35s var(--h-out) both; }
+html:not([data-theme]) .lp-fb.ok { background: var(--h-acc-soft); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+html:not([data-theme]) .lp-fb.no { background: var(--h-orange-soft); border-color: color-mix(in srgb, var(--h-orange) 40%, transparent); }
+html:not([data-theme]) .lp-fb.ok > :first-child { color: var(--accent-text); }
+html:not([data-theme]) .lp-fb.no > :first-child { color: var(--h-orange); }
+html:not([data-theme]) .lp-bottom { border-top: 2px solid var(--h-line); background: var(--surface); }
+html:not([data-theme]) .lp-cta { border-radius: 16px; letter-spacing: .01em; }
+html:not([data-theme]) .lp-float { padding: 4px 12px; border-radius: 999px; background: var(--h-lime); color: var(--h-lime-ink); text-shadow: none; box-shadow: 0 3px 0 var(--h-lime-edge); }
+html:not([data-theme]) .lp-float.coin { background: #FFE7A3; color: #6A3B00; box-shadow: 0 3px 0 #E0A20F; }
+html:not([data-theme]) .lp-stat { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: 18px; background: var(--surface); }
+html:not([data-theme]) .lp-stat b { color: var(--accent-text); font-variant-numeric: tabular-nums; }
+html:not([data-theme]) .lp-stas { width: 112px; height: 112px; }
+html:not([data-theme]) .lp-fresh .lp-stas { animation: h-pop .5s var(--h-spring) both; }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; } }
+html.calm :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -9175,7 +9206,12 @@ html.calm .hud-coin::after { animation: none !important; display: none; }
         h("button", { type: "button", class: "btn ghost", onclick: () => { close(); go({ view: "shop" }); } }, "Sklep i Zadania dnia")),
     ], "lv-how-modal");
   }
-  const coinChip = (cls) => coinsOn() ? h("button", { type: "button", class: "xp-chip hud-coin" + (cls ? " " + cls : ""), title: "Monety: wydajesz je w sklepie na motywy", "aria-label": `Monety: ${fmtN(coinsShown())}. Otwórz sklep`, onclick: (e) => { e.stopPropagation(); if (LP.open) lpClose(); go({ view: "shop" }); } },
+  // Połysk monety (wygląd H2): przy pierwszym pokazaniu w sesji i przy zmianie liczby, nie przy każdym render(). Ekran rysuje się
+  // przy wczytywaniu kilka razy, więc przez 7,5 s od zmiany nowy chip dostaje ujemne opóźnienie (animacja jedzie dalej).
+  const H2C = { n: null, at: 0 };
+  const h2Shine = () => { const n = coinsShown(), t = performance.now(); if (H2C.n !== n) { H2C.n = n; H2C.at = t; } return t - H2C.at < 7500 ? " h-shine" : ""; };
+  const h2ShineStyle = () => `--h-sh:${Math.round(performance.now() - H2C.at)}ms`;
+  const coinChip = (cls) => coinsOn() ? h("button", { type: "button", class: "xp-chip hud-coin" + h2Shine() + (cls ? " " + cls : ""), style: h2ShineStyle(), title: "Monety: wydajesz je w sklepie na motywy", "aria-label": `Monety: ${fmtN(coinsShown())}. Otwórz sklep`, onclick: (e) => { e.stopPropagation(); if (LP.open) lpClose(); go({ view: "shop" }); } },
     h2Ico("coin", "🪙"), h("b", { class: "num", text: fmtN(coinsShown()) })) : null;
   // Wygląd H2: w jasnym/ciemnym zielonym ikony SVG zamiast emoji (wyglądają tak samo na każdym telefonie); inne motywy bez zmian.
   const H2_ICO = {
@@ -9540,7 +9576,7 @@ html.calm .hud-coin::after { animation: none !important; display: none; }
     el.xp = h("span", { class: "lp-chip lp-xpchip", title: "Punkty doświadczenia", text: "⚡ " + LP.st.xp });
     el.combo = h("span", { class: "lp-chip lp-combo", hidden: true });
     // Monety w odtwarzaczu: saldo, które rośnie przy odpowiedziach dających pkt (gainCoins). Bez konta z monetami ukryte.
-    el.coin = h("span", { class: "lp-chip lp-coinchip hud-coin", title: "Monety", hidden: !coinsOn() }, h("span", { "aria-hidden": "true", text: "🪙" }), h("b", { class: "num", text: fmtN(coinsShown()) }));
+    el.coin = h("span", { class: "lp-chip lp-coinchip hud-coin", title: "Monety", hidden: !coinsOn() }, h2Ico("coin", "🪙"), h("b", { class: "num", text: fmtN(coinsShown()) }));
     LP.coin0 = MONV.sess; LP.xp0 = lpXpTotal();
     el.stage = h("div", { class: "lp-stage", "aria-live": "polite" });
     el.help = h("button", { type: "button", class: "btn lp-help", hidden: true, onclick: lpSheetOpen }, "🤔 Nie łapię");
@@ -10381,7 +10417,8 @@ html.calm .hud-coin::after { animation: none !important; display: none; }
       const res = S.progress?.mastery?.[LP.m.id], stars = S.progress?.lp?.[LP.m.id]?.last || 0;
       const weak = res?.weak || [];
       LP.el.cta.textContent = "Wróć do mapy lekcji"; LP.el.ctaFn = () => lpClose(); LP.el.cta.disabled = false; LP.el.cta.hidden = false;
-      return h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") },
+      return h2Done(fresh, h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") },
+        h2DoneStas(res?.ok ? "ok" : "think"),
         h("div", { class: "lp-bigstars", "aria-label": `${stars} z 3 gwiazdek` }, [1, 2, 3].map((i) => h("span", { class: "lp-star" + (i <= stars ? "" : " off"), style: `--i:${i - 1}`, text: "⭐" }))),
         h("h2", { text: res?.ok ? "Lekcja zrobiona! 🎉" : "Lekcja przerobiona" }),
         lpBeforeAfter(res),
@@ -10391,11 +10428,11 @@ html.calm .hud-coin::after { animation: none !important; display: none; }
         lpLevelBar(lpXpTotal(), "lp-rank", { from: fresh ? LP.xp0 : null }),
         weak.length ? h("div", { class: "lp-actions" }, weak.map((k) => { const i = bites.findIndex((x) => x.sec === k); return i >= 0 ? h("button", { type: "button", class: "btn", onclick: () => goTo(i) }, `Powtórz część ${bites[i].no}: ${bites[i].title}`) : null; })) : null,
         h("div", { class: "lp-actions" }, !res?.ok ? h("button", { type: "button", class: "btn", onclick: () => { LP.deck.bites[bi].cards.forEach((x) => { delete st.ans[x.id]; }); bs.closed = false; goTo(bi); } }, "Spróbuj biletu jeszcze raz") : null,
-          h("button", { type: "button", class: "btn", onclick: () => { const id = LP.m.id; lpClose(true); go({ view: "material", id, tab: "fiszki" }); } }, "⚡ Wszystkie fiszki z lekcji")));
+          h("button", { type: "button", class: "btn", onclick: () => { const id = LP.m.id; lpClose(true); go({ view: "material", id, tab: "fiszki" }); } }, "⚡ Wszystkie fiszki z lekcji"))));
     }
     const nextB = nextI >= 0 ? bites[nextI] : null;
     LP.el.cta.textContent = nextB ? `Dalej: ${nextB.title} →` : "Wróć do mapy lekcji"; LP.el.ctaFn = nextB ? () => goTo(nextI) : () => lpClose(); LP.el.cta.disabled = false; LP.el.cta.hidden = false;
-    return h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") }, check,
+    return h2Done(fresh, h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") }, h2DoneStas("ok"), check,
       h("h2", { text: b.kind === "warm" ? "Rozgrzewka zrobiona!" : `${b.title}: zrobione!` }),
       LP.src.kind === "lesson" ? h("p", { class: "pts-gain small num", text: `Lekcja: ${lessonPct(LP.m)}% zrobione` }) : null,
       h("div", { class: "lp-stats" }, lpStat("+" + bs.xp, "XP"), lpCoinStat(), lpStat(bs.tot ? `${bs.ok}/${bs.tot}` : "—", "z pierwszej próby"), lpStat(sec >= 60 ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}` : sec + " s", "czas")),
@@ -10403,13 +10440,27 @@ html.calm .hud-coin::after { animation: none !important; display: none; }
       h("p", { class: "muted", style: "margin:0", text: `Dziś: +${xpDay} XP. Możesz teraz zrobić przerwę, wszystko jest zapisane.` }),
       h("div", { class: "lp-actions" },
         nextAny >= 0 && bites[nextAny].optional && nextAny !== nextI ? h("button", { type: "button", class: "btn", onclick: () => goTo(nextAny) }, `${bites[nextAny].icon} ${bites[nextAny].title}`) : null,
-        h("button", { type: "button", class: "btn ghost", onclick: () => lpClose() }, "Przerwa, wrócę później")));
+        h("button", { type: "button", class: "btn ghost", onclick: () => lpClose() }, "Przerwa, wrócę później"))));
   }
   // Przed i po (B3): haczyk z biletu na początku lekcji kontra wynik biletu teraz.
   function lpBeforeAfter(res) {
     const hk = LP.deck.bites[0]?.cards.find((x) => x.id === "w-h"), pick = LP.st.ans["w-h"], x0 = LP.c?.lesson?.exit?.[0];
     if (!hk?.fromExit || pick == null || !x0 || !res) return null;
     return h("p", { class: "num lp-ba", style: "margin:0;font-weight:700", text: `Na początku: haczyk ${pick === x0.correct ? "✓" : "✗"}. Teraz: ${res.score} z ${res.total}${res.score === res.total ? " ✓" : ""}` });
+  }
+  // Wygląd H2: na świeżym ekranie końcowym Staś (radość albo „myślę”) i liczby w statystykach liczone w górę (tylko zielone
+  // motywy, bez reduced-motion i html.calm). Liczenie zmienia sam tekst przez ~0,8 s, bez układu i bez animacji CSS.
+  function h2Calm() { const r = document.documentElement; return !!r.getAttribute("data-theme") || r.classList.contains("calm") || matchMedia("(prefers-reduced-motion: reduce)").matches; }
+  function h2DoneStas(mood) { if (document.documentElement.getAttribute("data-theme")) return null; const f = stasFace(mood); f.classList.add("lp-stas"); return f; }
+  function h2Done(fresh, el) {
+    if (fresh && !h2Calm()) requestAnimationFrame(() => el.querySelectorAll(".lp-stat b").forEach((b, i) => {
+      const m = /^([+]?)(\d+)(.*)$/.exec(b.textContent); if (!m || +m[2] < 2) return;
+      const to = +m[2], t0 = performance.now() + 250 + i * 120, dur = 800;
+      b.textContent = m[1] + "0" + m[3];
+      const tick = (t) => { const k = Math.max(0, Math.min(1, (t - t0) / dur)), e = 1 - (1 - k) ** 3; b.textContent = m[1] + Math.round(to * e) + m[3]; if (k < 1 && b.isConnected) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }));
+    return el;
   }
   const lpStat = (v, l) => h("div", { class: "lp-stat" }, h("b", { text: String(v) }), h("span", { text: l }));
   // Monety zdobyte od otwarcia odtwarzacza (tylko gdy coś wpadło).
@@ -10725,15 +10776,15 @@ html.calm .hud-coin::after { animation: none !important; display: none; }
     let top;
     if (d.top) top = d.top;
     else if (d.stars != null) top = h("div", { class: "lp-bigstars", "aria-label": `${d.stars} z 3 gwiazdek` }, [1, 2, 3].map((i) => h("span", { class: "lp-star" + (i <= d.stars ? "" : " off"), style: `--i:${i - 1}`, text: "⭐" })));
-    else { top = h("div", {}); top.innerHTML = `<svg class="lp-bigcheck" viewBox="0 0 104 104" aria-hidden="true"><circle cx="52" cy="52" r="50"/><path class="lp-draw" d="M30 54 L46 69 L76 38"/></svg>`; }
-    return h("div", { class: "lp-done-screen sk-done" + (fresh ? " lp-fresh" : "") }, top,
+    else if (!(top = h2DoneStas("ok"))) { top = h("div", {}); top.innerHTML = `<svg class="lp-bigcheck" viewBox="0 0 104 104" aria-hidden="true"><circle cx="52" cy="52" r="50"/><path class="lp-draw" d="M30 54 L46 69 L76 38"/></svg>`; }
+    return h2Done(fresh, h("div", { class: "lp-done-screen sk-done" + (fresh ? " lp-fresh" : "") }, top,
       h("h2", { text: d.title }),
       d.text ? h("p", { class: "muted", style: "margin:0", text: d.text }) : null,
       d.el || null,
       h("div", { class: "lp-stats" }, d.stats.map(([v, l]) => lpStat(v, l)), lpCoinStat()),
       lpLevelBar(lpXpTotal(), "lp-rank", { from: fresh ? LP.xp0 : null }),
       h("p", { class: "muted", style: "margin:0", text: `Dziś: +${xpDay} XP` }),
-      d.actions?.length ? h("div", { class: "lp-actions" }, d.actions.map((a) => h("button", { type: "button", class: "btn" + (a.cls ? " " + a.cls : ""), onclick: a.fn }, a.label))) : null);
+      d.actions?.length ? h("div", { class: "lp-actions" }, d.actions.map((a) => h("button", { type: "button", class: "btn" + (a.cls ? " " + a.cls : ""), onclick: a.fn }, a.label))) : null));
   }
   // Karta startowa ćwiczenia w treści strony: nadtytuł, liczba, jeden duży przycisk i link do starego widoku.
   function practiceStart({ kick: k, title, sub, chip, btn, onStart, alt, altLabel }) {

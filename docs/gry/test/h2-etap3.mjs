@@ -13,8 +13,15 @@ for (const dark of [false, true]) for (const [w, hh] of [[375, 812], [1280, 900]
   ok(`${n}: moneta i płomień jako SVG (bez emoji)`, await p.locator(".greet .h2-coin svg").count() === 1 && await p.locator(".greet .h2-flame svg").count() === 1 && !/🪙|🔥/.test(await p.locator(".greet").innerText()), await p.locator(".greet").innerText());
   const chip = await p.locator(".greet .xp-chip").first().evaluate((e) => { const c = getComputedStyle(e); return [c.color, c.backgroundColor, c.boxShadow]; });
   ok(`${n}: pigułki statystyk 3D i czytelne`, /px/.test(chip[2]) && cr(chip[0], chip[1]) >= 4.5, chip);
-  ok(`${n}: na starcie żadna zakładka nie podskakuje`, await p.locator(".navbtn.h-bump").count() === 0, "");
+  ok(`${n}: na starcie żadna zakładka nie podskakuje i żadna plakietka nie wyskakuje`, await p.locator(".navbtn.h-bump, .navbtn .badge.h-pop").count() === 0, "");
+  const rk = await p.locator(".greet .rk").evaluate((e) => [getComputedStyle(e).boxShadow, e.getBoundingClientRect().height]);
+  ok(`${n}: poziom też jako pigułka 3D (≥ 44 px)`, /px/.test(rk[0]) && rk[0] !== "none" && rk[1] >= 44, rk);
+  const coinH = await p.locator(".greet .hud-coin").evaluate((e) => e.getBoundingClientRect().height);
+  ok(`${n}: pigułka monet ≥ 44 px`, coinH >= 44, coinH);
+  ok(`${n}: połysk monety przy pierwszym pokazaniu`, await p.locator(".greet .hud-coin.h-shine").count() === 1, "");
   await p.locator('.navbtn[data-key="terms"]').click(); await p.waitForTimeout(250);
+  const iconOnly = await p.locator('.navbtn[data-key="terms"]').evaluate((e) => [getComputedStyle(e).animationName, getComputedStyle(e.querySelector(".ico")).animationName]);
+  ok(`${n}: podskakuje tylko jedno (${w < 761 ? "ikona" : "przycisk"}), nie oba`, w < 761 ? iconOnly[0] === "none" && iconOnly[1] === "h-hop" : iconOnly[0] === "h-hop" && iconOnly[1] !== "h-hop", iconOnly);
   ok(`${n}: po zmianie zakładki nowa ikona podskakuje`, await p.locator('.navbtn.h-bump[data-key="terms"]').count() === 1, "");
   await p.evaluate(() => window.dispatchEvent(new Event("resize"))); await p.locator("main").click({ position: { x: 5, y: 5 } }).catch(() => {});
   await p.waitForTimeout(800);
@@ -22,6 +29,8 @@ for (const dark of [false, true]) for (const [w, hh] of [[375, 812], [1280, 900]
   await p.evaluate(() => { location.hash = "#/terms"; }); await p.waitForTimeout(300);
   const act = await p.locator('.navbtn[aria-current="page"]').evaluate((e) => { const c = getComputedStyle(e), l = e.querySelector(".lbl"); const lc = l ? getComputedStyle(l).color : c.color; return [lc, getComputedStyle(document.querySelector(".nav")).backgroundColor === "rgba(0, 0, 0, 0)" ? getComputedStyle(document.body).backgroundColor : getComputedStyle(document.querySelector(".nav")).backgroundColor]; });
   ok(`${n}: podpis aktywnej zakładki czytelny`, cr(act[0], act[1]) >= 4.5, act);
+  await p.waitForTimeout(7000); await p.evaluate(() => { location.hash = "#/"; }); await p.waitForTimeout(600);
+  ok(`${n}: po powrocie na Dziś (ta sama liczba monet) połysk nie gra drugi raz`, await p.locator(".greet .hud-coin.h-shine").count() === 0, "");
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();
 }
