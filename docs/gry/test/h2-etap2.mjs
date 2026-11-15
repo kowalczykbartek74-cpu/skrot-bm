@@ -56,7 +56,7 @@ for (const dark of [false, true]) {
     await p.screenshot({ path: `${OUT}/h2e2-${n}-okno.png` });
     ok(`${n}: okno na telefonie jako arkusz przy dolnej krawędzi`, m && Math.abs(m.y + m.height - 812) <= 2 && m.width >= 370, m);
     await p.keyboard.press("Escape"); await p.waitForTimeout(60);
-    ok(`${n}: zamykanie okna z animacją (chwilę jeszcze widać), potem znika`, await p.locator(".scrim.h-out").count() === 1, "");
+    ok(`${n}: zamykanie okna z animacją (chwilę jeszcze widać), warstwa #layer od razu pusta`, await p.locator(".scrim.h-out").count() === 1 && await p.evaluate(() => document.getElementById("layer").childElementCount === 0 && document.querySelector(".scrim.h-out").inert), "");
     await p.waitForTimeout(300);
     ok(`${n}: po animacji okno usunięte`, await p.locator(".scrim").count() === 0, "");
   } else ok(`${n}: znaleziono przycisk otwierający okno`, false, await p.locator("main").innerText());

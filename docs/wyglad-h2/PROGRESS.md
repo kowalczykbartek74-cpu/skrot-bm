@@ -16,3 +16,10 @@ ponownym renderze = bez migania, backwards + czasomierz zdejmuje klasę). Ciemny
 obrysy pól ≥ 3:1 (--h-field). Test h2-etap1.mjs 25/25, ~53 fps przy CPU 4×.
 Zasady na kolejne etapy (z oceny): nowe reguły z tekstem na akcencie → var(--accent-ink), nie #fff; elementy fixed/sticky
 w sekcjach <main> sprawdzać w oknie 1,4 s (translate tworzy blok zawierający); dopisać test reduced-motion/html.calm.
+
+### Etap 2 – elementy bazowe – ZALICZONY 8/10 (próba 2; próba 1: 7/10)
+Przyciski 3D (obrys 2px, brzeg --h-edge, wciśnięcie), karty .panel/.list/.empty/.modal (dół 5px; karta w karcie 2px),
+.seg jako klawisze, pola .input z pierścieniem fokusu, .notice, toast (sprężyste wejście), okno na telefonie jako arkusz
+(88dvh, uchwyt sticky, wejście i zamykanie z animacją; zamykane okno poza #layer, inert, fokus wraca do przycisku),
+puste stany ze Stasiem (SVG w ::before, tylko zwykłe .empty), pole dotyku małych przycisków ≥ 44 px. Test h2-etap2.mjs 33/33, ~60 fps.
+Na później: #main .gs2 .seg.pick bez stylu H2; tokeny --h-red-edge/--h-acc-edge zamiast color-mix.

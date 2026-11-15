@@ -5173,15 +5173,20 @@ html.calm :is(.btn, .seg button):active { transform: none !important; }
 
   function toast(msg) { document.querySelectorAll(".toast").forEach((x) => x.remove()); const t = h("div", { class: "toast", role: "status", text: msg }); document.body.append(t); setTimeout(() => t.remove(), 3200); }
   function modal(build, cls) {
-    // Wygląd H2: okno znika z krótką animacją (jasny/ciemny zielony, bez reduced-motion i html.calm). Czyścimy warstwę tylko,
-    // jeśli to wciąż to samo okno (ktoś mógł w tym czasie otworzyć następne).
+    // Wygląd H2: okno znika z krótką animacją (jasny/ciemny zielony, bez reduced-motion i html.calm). Warstwę #layer czyścimy
+    // od razu (skróty, Escape i kolejne okna działają jak dawniej), a znikające okno dogrywa animację poza nią, bez reakcji
+    // na klawiaturę (inert). Fokus wraca do przycisku, który otworzył okno.
+    const opener = document.activeElement;
     const close = () => {
       document.removeEventListener("keydown", onKey);
       const L = $("layer"), sc = L.firstElementChild, root = document.documentElement;
       const anim = sc && !root.getAttribute("data-theme") && !root.classList.contains("calm") && !matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (!anim) { L.replaceChildren(); return; }
-      sc.classList.add("h-out"); sc.style.pointerEvents = "none";
-      setTimeout(() => { if (L.firstElementChild === sc) L.replaceChildren(); }, 180);
+      L.replaceChildren();
+      if (anim) {
+        sc.inert = true; sc.classList.add("h-out"); document.body.append(sc);
+        const gone = () => sc.remove(); sc.addEventListener("animationend", gone, { once: true }); setTimeout(gone, 400);
+      }
+      if (opener && opener.isConnected && opener !== document.body) try { opener.focus({ preventScroll: true }); } catch {}
     };
     const onKey = (e) => { if (e.key === "Escape") close(); };
     const box = h("div", { class: "modal" + (cls ? " " + cls : ""), role: "dialog", "aria-modal": "true" }, build(close));
