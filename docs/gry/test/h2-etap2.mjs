@@ -29,6 +29,13 @@ for (const dark of [false, true]) {
   ok(`${n}: komunikat błędu czytelny (≥ 4.5:1)`, cr(no.color, no.bg) >= 4.5, no);
   const to = await probe(p, '<div class="toast" style="position:static;transform:none">Zapisano</div>', ".toast");
   ok(`${n}: toast czytelny (≥ 4.5:1)`, cr(to.color, to.bg) >= 4.5, to);
+  const nest = await probe(p, '<section class="panel"><div class="list"><button class="item">a</button></div></section>', ".list");
+  ok(`${n}: lista w panelu bez drugiego grubego dołu`, nest.bb === "2px", nest);
+  const sm = await probe(p, '<div class="empty small">Krótko</div>', ".empty");
+  ok(`${n}: mały pusty stan bez Stasia`, !/data:image/.test(sm.before), sm);
+  // Pole dotyku małego przycisku ≥ 44 px (klik 6 px nad i pod przyciskiem trafia w przycisk).
+  await p.waitForTimeout(1500); const hit = await p.evaluate(() => { const box = document.createElement("div"); box.style.padding = "30px"; const bt = document.createElement("button"); bt.className = "btn small"; bt.textContent = "Mały"; box.append(bt); document.querySelector("main").prepend(box); const r = bt.getBoundingClientRect(); const up = document.elementFromPoint(r.x + 8, r.top - 5), dn = document.elementFromPoint(r.x + 8, r.bottom + 5); box.remove(); return { h: r.height, ok: up === bt && dn === bt }; });
+  ok(`${n}: mały przycisk ma pole dotyku ≥ 44 px`, hit.ok && hit.h + 12 >= 40, hit);
   // Wciśnięcie przycisku: przesuwa się w dół i chowa brzeg.
   await p.evaluate(() => { const bt = document.createElement("button"); bt.className = "btn primary"; bt.id = "h2press"; bt.textContent = "Naciśnij"; document.querySelector("main").prepend(bt); });
   const bt = p.locator("#h2press"), bb = await bt.boundingBox();
@@ -48,7 +55,10 @@ for (const dark of [false, true]) {
     const m = await p.locator(".modal").boundingBox();
     await p.screenshot({ path: `${OUT}/h2e2-${n}-okno.png` });
     ok(`${n}: okno na telefonie jako arkusz przy dolnej krawędzi`, m && Math.abs(m.y + m.height - 812) <= 2 && m.width >= 370, m);
-    await p.keyboard.press("Escape");
+    await p.keyboard.press("Escape"); await p.waitForTimeout(60);
+    ok(`${n}: zamykanie okna z animacją (chwilę jeszcze widać), potem znika`, await p.locator(".scrim.h-out").count() === 1, "");
+    await p.waitForTimeout(300);
+    ok(`${n}: po animacji okno usunięte`, await p.locator(".scrim").count() === 0, "");
   } else ok(`${n}: znaleziono przycisk otwierający okno`, false, await p.locator("main").innerText());
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();
