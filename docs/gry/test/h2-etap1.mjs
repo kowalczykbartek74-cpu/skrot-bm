@@ -23,7 +23,29 @@ for (const dark of [false, true]) {
   ok(`${n}: kolejny render (kliknięcie) nic nie animuje`, await p.locator("main.h-ent").count() === 0, "");
   await p.evaluate(() => { location.hash = "#/terms"; }); await p.waitForTimeout(300);
   ok(`${n}: przejście na inny ekran znowu animuje raz`, await p.locator("main.h-ent").count() === 1, await p.evaluate(() => location.hash));
+  await p.waitForTimeout(1700);
+  ok(`${n}: po 1,4 s klasa zdjęta sama (bez renderu), sekcje bez animacji i bez translate`, await p.evaluate(() => !document.querySelector("main").classList.contains("h-ent") && [...document.querySelector("main").children].every((c) => c.getAnimations().length === 0 && getComputedStyle(c).translate === "none")), "");
+  await p.goBack(); await p.waitForTimeout(150);
+  ok(`${n}: „wstecz” na Dziś animuje wejście raz`, await p.locator("main.h-ent").count() === 1 && /#\/?$/.test(await p.evaluate(() => location.hash)), await p.evaluate(() => location.hash));
+  await p.evaluate(() => { localStorage.setItem("skrot-green", document.documentElement.getAttribute("data-green") === "dark" ? "light" : "dark"); });
+  await p.waitForTimeout(1700);
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
+  await p.close();
+}
+{
+  const p = await open(b, { dark: true });
+  const res = await p.evaluate(() => {
+    const probe = (cls, tag = "span") => { const el = document.createElement(tag); el.className = cls; el.textContent = "Aa"; document.querySelector("main").append(el); const c = getComputedStyle(el); const r = [cls, c.color, c.backgroundColor]; el.remove(); return r; };
+    return [probe("pk-dot on"), probe("lv-here"), probe("tv-chip hot"), probe("pts-state st-done")];
+  });
+  const bad = res.filter(([, c, bg]) => !/rgba\(0, 0, 0, 0\)/.test(bg) && cr(c, bg) < 4.5);
+  ok("ciemny: tekst na jasnym akcencie ≥ 4.5:1 (pk-dot, lv-here, tv-chip, pts-state)", bad.length === 0, res);
+  ok("ciemny: obrys pól formularza ≥ 3:1", await p.evaluate(() => { const i = document.createElement("input"); i.className = "input"; document.querySelector("main").append(i); const c = getComputedStyle(i).borderTopColor; i.remove(); return c; }).then((c) => cr(c, "rgb(23, 39, 30)") >= 3), "");
+  await p.close();
+}
+{
+  const p = await open(b);
+  ok("jasny: obrys pól formularza ≥ 3:1", await p.evaluate(() => { const i = document.createElement("input"); i.className = "input"; document.querySelector("main").append(i); const c = getComputedStyle(i).borderTopColor; i.remove(); return c; }).then((c) => cr(c, "rgb(255, 255, 255)") >= 3), "");
   await p.close();
 }
 for (const th of ["riwiera", "pink", "noc"]) {
