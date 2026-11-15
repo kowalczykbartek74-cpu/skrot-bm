@@ -19,6 +19,12 @@ const docs = {
   meta: { po: { items: {} }, stas: { items: {} } },
 };
 const ls0 = { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: {} }) };
+const openFast = async (o = {}) => {
+  const p = await page(b, { konto: "starosta", w: o.w || 375, h: o.h || 812, ls: { ...ls0, "bm-ld-flag": "1" } });
+  await p.clock.setFixedTime(new Date("2026-11-06T17:00:00+01:00"));
+  await p.goto(BASE + "index.html?ld=1#/"); await p.locator(".ld-block").waitFor({ timeout: 15000 });
+  return p;
+};
 const open = async (o = {}) => {
   const p = await page(b, { konto: "starosta", w: o.w || 375, h: o.h || 812, lang: o.lang || "pl", ls: { ...ls0, "bm-ld-flag": "1" }, ctx: o.dark ? { colorScheme: "dark" } : {} });
   await p.clock.setFixedTime(new Date("2026-11-06T17:00:00+01:00"));
@@ -35,10 +41,15 @@ for (const [w, h] of [[375, 812], [1280, 900]]) {
   const cta = await p.locator(".zh-hero .zh-go.sk-start").boundingBox();
   ok(`${w}: przycisk „Zaczynamy” na pierwszym ekranie`, cta && cta.y + cta.height <= h, cta);
   ok(`${w}: kafle mają rodzaj, „Temat X z Y” i „Zaczynamy”`, (await p.locator(".ld-tile .zh-kind").count()) >= 2 && (await p.locator(".ld-tile .zh-tbar b").count()) >= 1 && (await p.locator(".ld-tile").getByRole("button", { name: /^Zaczynamy/ }).count()) >= 1, "");
+  
+  await p.locator(".zh-hero").getByRole("button", { name: /Mam więcej czasu/ }).click(); await p.waitForTimeout(300);
+  ok(`${w}: po kliknięciu (render) karta nie animuje się od nowa`, await p.locator(".ld-block.zh-anim").count() === 0 && await p.locator(".zh-bubble").evaluate((e) => getComputedStyle(e).animationName === "none"), "");
+  await p.locator(".zh-hero").getByRole("button", { name: /Mam więcej czasu/ }).click(); await p.waitForTimeout(300);
   ok(`${w}: bez poziomego przewijania strony`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "");
   ok(`${w}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();
 }
+{ const f = await openFast(); ok("animacje wejścia przy pierwszym pokazaniu tematu", await f.locator(".ld-block.zh-anim").count() === 1, ""); await f.close(); }
 // Ciemny i angielski
 const d = await open({ dark: true });
 await d.screenshot({ path: `${OUT}/h-dzis-375-ciemny.png` });

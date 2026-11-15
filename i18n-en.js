@@ -1,6 +1,7 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Zacznijmy od pierwszego tematu. Dziś wystarczy 5 minut.": "Let's start with the first topic. 5 minutes is enough today.",
 "2 pytania": "2 questions",
 "Temat:": "Topic:",
 "Do zaliczenia z {0} zostało": "Your {0} exam is in",
