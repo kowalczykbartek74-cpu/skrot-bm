@@ -4532,6 +4532,37 @@ html.calm :is(.toast, .scrim, .modal) { animation: none !important; }
 html.calm :is(.btn, .seg button) { transition: none; }
 html.calm :is(.btn, .seg button):active { transform: none !important; }
 @media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.btn, .seg button):active { transform: none !important; } }
+/* ===== H2 etap 3: nawigacja i nagłówek ===== */
+html:not([data-theme]) .bar { border-bottom: 2px solid var(--h-line); }
+html:not([data-theme]) .navbtn { transition: background .15s, color .15s; }
+html:not([data-theme]) .navbtn:active .ico, html:not([data-theme]) .navbtn:active { scale: .94; }
+html:not([data-theme]) .navbtn.h-bump .ico, html:not([data-theme]) .navbtn.h-bump { animation: h-hop .55s var(--h-out) both; }
+html:not([data-theme]) .navbtn .badge { border: 2px solid var(--surface); min-width: 20px; line-height: 16px; font-weight: 800; }
+html:not([data-theme]) .navbtn[data-key="review"] .badge { background: #FF9F43; color: #10231A; }
+html:not([data-theme]) .navbtn .badge.h-pop { animation: h-pop .45s var(--h-spring) both; }
+@media (min-width: 761px) {
+  html:not([data-theme]) .navbtn { border: 2px solid transparent; border-radius: 12px; }
+  html:not([data-theme]) .navbtn[aria-current="page"] { border-color: color-mix(in srgb, var(--accent) 35%, var(--surface)); border-bottom-width: 4px; padding-bottom: 6px; }
+}
+@media (max-width: 760px) {
+  html:not([data-theme]) .nav { border-top: 2px solid var(--h-line); }
+  html:not([data-theme]) .navbtn .ico { transition: background .15s; }
+  html:not([data-theme]) .navbtn[aria-current="page"] .ico { background: var(--h-acc-soft); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
+  html:not([data-theme]) .navbtn[aria-current="page"] .lbl { color: var(--accent-text); }
+}
+/* Poziom, monety, seria: pigułki 3D. */
+html:not([data-theme]) #main .rk-compact .xp-chip, html:not([data-theme]) .rk-compact .xp-chip { min-height: 38px; padding: 4px 12px 4px 8px; gap: 6px; border-radius: 999px; background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--h-line), 0 3px 0 var(--h-edge); }
+html:not([data-theme]) #main .rk-compact .xp-chip.off, html:not([data-theme]) .rk-compact .xp-chip.off { color: var(--muted); }
+html:not([data-theme]) .rk-compact .xp-chip.off .h2-flame { filter: grayscale(1); opacity: .55; }
+html:not([data-theme]) #main .rk-compact button.xp-chip:active, html:not([data-theme]) .rk-compact button.xp-chip:active { translate: 0 3px; box-shadow: inset 0 0 0 2px var(--h-line); }
+html:not([data-theme]) .h2-ico { display: inline-grid; place-items: center; line-height: 0; }
+html:not([data-theme]) .xp-chip:not(.off) .h2-flame svg { transform-origin: 50% 90%; animation: h-flame 1.6s ease-in-out infinite; }
+html:not([data-theme]) .hud-coin { position: relative; overflow: hidden; }
+html:not([data-theme]) .hud-coin::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 30%; background: rgba(255,255,255,.55); transform: skewX(-20deg); animation: h-shine 3.2s ease-in-out 1s 2 both; pointer-events: none; }
+html[data-green="dark"]:not([data-theme]) .hud-coin::after { background: rgba(255,255,255,.18); }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.navbtn, .navbtn .ico, .navbtn .badge, .h2-flame svg, .hud-coin::after) { animation: none !important; } }
+html.calm :is(.navbtn, .navbtn .ico, .navbtn .badge, .h2-flame svg) { animation: none !important; }
+html.calm .hud-coin::after { animation: none !important; display: none; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -5397,11 +5428,16 @@ html.calm :is(.btn, .seg button):active { transform: none !important; }
     const soonN = PAID() ? termItems().filter((x) => !x.done && x.date && x.n >= 0 && x.n <= 7).length : 0;
     const adminN = S.canEdit ? (S.reports.length || 0) + (S.aiMissing || 0) : 0;
     const badge = { review: dueN, terms: soonN, more: adminN };
+    // Wygląd H2: ikona nowej zakładki podskakuje tylko przy zmianie zakładki, plakietka wyskakuje tylko przy zmianie liczby
+    // (renderNav() idzie przy każdym render(), więc bez tego animacje grałyby przy każdym kliknięciu).
+    const bump = NAVB.a != null && NAVB.a !== active ? active : null, popB = {};
+    for (const k of Object.keys(badge)) { if (NAVB.b[k] != null && badge[k] && badge[k] !== NAVB.b[k]) popB[k] = 1; NAVB.b[k] = badge[k]; }
+    NAVB.a = active;
     const badgeLbl = { review: "do powtórki", terms: "w tym tygodniu", more: "do sprawdzenia" };
     $("nav").replaceChildren(...NAV_ITEMS.map(([key, label]) => h("button", {
-      type: "button", class: "navbtn", "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
+      type: "button", class: "navbtn" + (bump === key ? " h-bump" : ""), "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
       "aria-label": label + (badge[key] ? `, ${badge[key]} ${badgeLbl[key]}` : ""),
-    }, icon(NAV_ICON[key]), h("span", { class: "lbl", text: label }), badge[key] ? h("span", { class: "badge num", text: badge[key] > 99 ? "99+" : badge[key], "aria-label": `${badge[key]} ${badgeLbl[key]}` }) : null)));
+    }, icon(NAV_ICON[key]), h("span", { class: "lbl", text: label }), badge[key] ? h("span", { class: "badge num" + (popB[key] ? " h-pop" : ""), text: badge[key] > 99 ? "99+" : badge[key], "aria-label": `${badge[key]} ${badgeLbl[key]}` }) : null)));
     const mb = $("moreBtn");
     if (mb) {
       mb.setAttribute("aria-label", "Więcej" + (badge.more ? `, ${badge.more} ${badgeLbl.more}` : ""));
@@ -5421,6 +5457,7 @@ html.calm :is(.btn, .seg button):active { transform: none !important; }
     if (S.canEdit && !band) document.body.insertBefore(h("div", { class: "staroband", id: "staroband" }, h("div", { class: "wrap" }, h("b", { text: "Tryb starosty" }), h("span", { text: "Widzisz narzędzia do zarządzania rokiem." }), h("button", { type: "button", class: "link", onclick: () => setStarosta(false) }, "Wyłącz"))), $("main"));
     else if (!S.canEdit && band) band.remove();
   }
+  const NAVB = { a: null, b: {} };
   const NAV_ICON = { home: "home", materials: "materials", review: "review", terms: "tasks", calendar: "calendar", more: "menu" };
   function setStarosta(on) {
     ls.set("bm-starosta", on ? "1" : "0");
@@ -9139,7 +9176,16 @@ html.calm :is(.btn, .seg button):active { transform: none !important; }
     ], "lv-how-modal");
   }
   const coinChip = (cls) => coinsOn() ? h("button", { type: "button", class: "xp-chip hud-coin" + (cls ? " " + cls : ""), title: "Monety: wydajesz je w sklepie na motywy", "aria-label": `Monety: ${fmtN(coinsShown())}. Otwórz sklep`, onclick: (e) => { e.stopPropagation(); if (LP.open) lpClose(); go({ view: "shop" }); } },
-    h("span", { "aria-hidden": "true", text: "🪙" }), h("b", { class: "num", text: fmtN(coinsShown()) })) : null;
+    h2Ico("coin", "🪙"), h("b", { class: "num", text: fmtN(coinsShown()) })) : null;
+  // Wygląd H2: w jasnym/ciemnym zielonym ikony SVG zamiast emoji (wyglądają tak samo na każdym telefonie); inne motywy bez zmian.
+  const H2_ICO = {
+    coin: '<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="#FFC83D"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#E0A20F" stroke-width="2"/><path d="M8 8.5L9.6 7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+    flame: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2.5C13.3 6.3 18 8.6 18 14.2A6 6 0 0 1 6 14.2C6 11.5 7.4 9.8 8.7 8.8C8.7 11 9.8 12.3 11 12.7C10.4 9.4 11 5.5 12 2.5Z" fill="#FF8A1F"/><path d="M12 13.3C13.5 14.5 14.5 15.6 14.5 17A2.5 2.5 0 0 1 9.5 17C9.5 15.6 10.5 14.5 12 13.3Z" fill="#FFD23F"/></svg>',
+  };
+  function h2Ico(k, emoji) {
+    if (document.documentElement.getAttribute("data-theme")) return h("span", { "aria-hidden": "true", text: emoji });
+    const el = h("span", { class: "h2-ico h2-" + k, "aria-hidden": "true" }); el.innerHTML = H2_ICO[k]; return el;
+  }
   // xp = XP łącznie; o.from = XP sprzed nagrody (pasek rośnie od tej wartości); cls "greet-badges" = wersja zwarta na Dziś.
   function lpLevelBar(xp, cls, o = {}) {
     const L = lpLevel(xp), sk = streakN(), compact = /greet-badges/.test(cls || "");
@@ -15775,7 +15821,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   // Płomień serii: emoji albo płomień w kolorze ze sklepu.
   function kFlame() {
     const p = kEq("plomien", "p");
-    if (!p || !KOSM?.flameSvg) return h("span", { "aria-hidden": "true", text: "🔥" });
+    if (!p || !KOSM?.flameSvg) return h2Ico("flame", "🔥");
     const el = h("span", { class: "kflame", "aria-hidden": "true" }); el.innerHTML = KOSM.flameSvg(p); return el;
   }
   // Zamrożenie serii: dzień (numer dayN) na datę, jak w bazie.
