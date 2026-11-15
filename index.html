@@ -4418,6 +4418,39 @@ html[data-green=dark]:not([data-theme]) .zh-o .zh-ico, html[data-green=dark]:not
 }
 @media (prefers-reduced-motion: reduce) { .zh-bubble, .zh-step, .zh-card.nb, .zh-segs i, .zh-arrow, :is(.quiz, .lp-opts) .opt.wrong { animation: none !important; } .btn.primary, .zh-card.nb, :is(.quiz, .lp-opts) .opt { transition: none; } }
 html.calm .zh-bubble, html.calm .zh-step, html.calm .zh-card.nb, html.calm .zh-segs i, html.calm .zh-arrow, html.calm :is(.quiz, .lp-opts) .opt.wrong { animation: none !important; }
+/* ===== Wygląd H2 (16.11.2026): cała strona w stylu H, tylko jasny i ciemny zielony (html:not([data-theme])). =====
+   Etap 1: paleta, biblioteka ruchu, wejście ekranu raz. Ruch tylko transform/opacity; wyłączany przez reduced-motion i html.calm. */
+html:not([data-theme]) {
+  --h-paper: #F7F8F4; --h-card: #FFFFFF; --h-raised: #FFFFFF; --h-line: #E1E8DD; --h-edge: #D3DCCF;
+  --h-ink: #10231A; --h-muted: #3E5046; --h-acc: #1A7F45; --h-acc-edge: #0F5A2F; --h-acc-ink: #FFFFFF; --h-acc-soft: #DDF3D0;
+  --h-lime: #CDF25E; --h-lime-ink: #10231A; --h-lime-edge: #8FB52A;
+  --h-orange: #B35400; --h-orange-soft: #FFE8CC; --h-blue: #1C6FB8; --h-blue-soft: #E3F0FD; --h-red: #A3261E; --h-red-soft: #FDE4E1;
+  --h-r: 22px; --h-spring: cubic-bezier(.3, 1.5, .5, 1); --h-out: cubic-bezier(.2, .8, .2, 1);
+  --paper: var(--h-paper); --surface: var(--h-card); --ink: var(--h-ink); --muted: var(--h-muted); --line: #CBD6C6;
+}
+html[data-green="dark"]:not([data-theme]) {
+  --h-paper: #0F1A14; --h-card: #17271E; --h-raised: #1D3126; --h-line: #2A3D31; --h-edge: #0A130E;
+  --h-ink: #E8F2EC; --h-muted: #A9BDB1; --h-acc: #4ADE8B; --h-acc-edge: #1F8F52; --h-acc-ink: #0B2A18; --h-acc-soft: #183324;
+  --h-orange: #FF9F43; --h-orange-soft: #33240F; --h-blue: #8CC2F5; --h-blue-soft: #14283A; --h-red: #FF7A70; --h-red-soft: #3A1518;
+  --paper: var(--h-paper); --surface: var(--h-card); --sunk: #132119; --ink: var(--h-ink); --muted: var(--h-muted); --line: #33493C;
+  --accent: var(--h-acc); --accent-hover: #6BE6A1; --accent-ink: var(--h-acc-ink); --good: var(--h-acc);
+}
+/* Wejście ekranu: sekcje wjeżdżają po kolei (co 60 ms), raz. */
+html:not([data-theme]) main.h-ent > *:not(footer) { animation: h-rise .5s var(--h-out) both; animation-delay: calc(var(--i, 0) * 60ms - var(--h-el, 0ms)); }
+@keyframes h-rise { 0% { opacity: 0; translate: 0 14px; } 100% { opacity: 1; translate: 0 0; } }
+@keyframes h-pop { 0% { opacity: 0; scale: .9; } 100% { opacity: 1; scale: 1; } }
+@keyframes h-hop { 0%, 100% { translate: 0 0; } 30% { translate: 0 -10px; } 60% { translate: 0 0; } 80% { translate: 0 -4px; } }
+@keyframes h-shake { 0%, 100% { translate: 0 0; } 20% { translate: -7px 0; } 40% { translate: 6px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }
+@keyframes h-fill { 0% { scale: 0 1; } 100% { scale: 1 1; } }
+@keyframes h-shine { 0%, 70% { translate: -160% 0; } 100% { translate: 360% 0; } }
+@keyframes h-flame { 0%, 100% { scale: 1 1; } 50% { scale: 1.08 .94; } }
+@keyframes h-sheet { 0% { translate: 0 100%; } 100% { translate: 0 0; } }
+@keyframes h-confetti { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 100% { opacity: 0; transform: translate(var(--dx, 0), var(--dy, 120px)) rotate(var(--r, 180deg)); } }
+html:not([data-theme]) .h-pop { animation: h-pop .45s var(--h-spring) both; }
+html:not([data-theme]) .h-hop { animation: h-hop .7s var(--h-out) both; }
+html:not([data-theme]) .h-shake { animation: h-shake .45s ease-in-out both; }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) main.h-ent > *, html:not([data-theme]) .h-pop, html:not([data-theme]) .h-hop, html:not([data-theme]) .h-shake { animation: none !important; } }
+html.calm main.h-ent > *, html.calm .h-pop, html.calm .h-hop, html.calm .h-shake { animation: none !important; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -4640,7 +4673,7 @@ html.calm .zh-bubble, html.calm .zh-step, html.calm .zh-card.nb, html.calm .zh-s
     const root = document.documentElement, mq = matchMedia("(prefers-color-scheme: dark)");
     const pref = () => { const g = ls.get("skrot-green"); return g === "light" || g === "dark" ? g : ""; };
     const cur = () => (root.getAttribute("data-green") === "dark" ? "dark" : "light");
-    const color = () => (cur() === "dark" ? "#0B120E" : "#1A7F45");
+    const color = () => (cur() === "dark" ? "#0F1A14" : "#1A7F45");
     function apply() {
       root.setAttribute("data-green", pref() || (mq.matches ? "dark" : "light"));
       if (!root.getAttribute("data-theme")) document.querySelector('meta[name="theme-color"]')?.setAttribute("content", color());
@@ -5308,6 +5341,18 @@ html.calm .zh-bubble, html.calm .zh-step, html.calm .zh-card.nb, html.calm .zh-s
   $("moreBtn").addEventListener("click", () => go({ view: "more" }));
 
   let lastRenderSig = "";
+  // Wygląd H2 (jasny i ciemny zielony): animacja wejścia ekranu po zmianie adresu, gdy dane są wczytane. render() przebudowuje
+  // cały <main> (dociąganie danych, rozwinięcia), więc w oknie 1,4 s nowe elementy dostają ujemne opóźnienie = czas, który minął:
+  // animacja jedzie dalej, zamiast zaczynać od zera (bez migania). Po oknie i przy kolejnych kliknięciach nic się nie animuje.
+  const H2 = { key: null, at: 0 };
+  function h2Enter(v) {
+    const m = $("main"), key = JSON.stringify([v, S.route.id, S.route.tab]), now = performance.now();
+    if (!S.ready || document.documentElement.getAttribute("data-theme")) { m.classList.remove("h-ent"); return; }
+    if (key !== H2.key) { H2.key = key; H2.at = now; }
+    const el = now - H2.at, on = el < 1400;
+    m.classList.toggle("h-ent", on);
+    if (on) { m.style.setProperty("--h-el", Math.round(el) + "ms"); [...m.children].slice(0, 14).forEach((c, i) => c.style.setProperty("--i", i)); }
+  }
   function render() {
     if (ptsBfState === 0) queueMicrotask(ptsBackfill);
     if (v4SeedState === 0) queueMicrotask(v4Seed);
@@ -5335,6 +5380,7 @@ html.calm .zh-bubble, html.calm .zh-step, html.calm .zh-card.nb, html.calm .zh-s
     const openDetails = sig === lastRenderSig ? [...$("main").querySelectorAll("details")].map((d) => d.open) : null;
     lastRenderSig = sig;
     $("main").replaceChildren(...[fn()].flat(Infinity).filter((x) => x != null && x !== false), siteFoot());
+    h2Enter(v);
     if (openDetails) $("main").querySelectorAll("details").forEach((d, i) => { if (openDetails[i]) d.open = true; });
     for (const k of kept) { const el = document.getElementById(k.id); if (el) { el.value = k.v; if (k.f) el.focus(); } }
     typeset($("main"));
