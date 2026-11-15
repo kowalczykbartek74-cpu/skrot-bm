@@ -4456,8 +4456,7 @@ html[data-green="dark"]:not([data-theme]) .lv-row.lv-done .lv-badge .n,
 html[data-green="dark"]:not([data-theme]) .lv-here,
 html[data-green="dark"]:not([data-theme]) .pts-state.st-done,
 html[data-green="dark"]:not([data-theme]) main[data-view="syllabus"] .syl-tcol li::before,
-html[data-green="dark"]:not([data-theme]) :is(.quiz,
-html[data-green="dark"]:not([data-theme]) .lp-opts) .opt.right .k { color: var(--accent-ink); }
+html[data-green="dark"]:not([data-theme]) :is(.quiz, .lp-opts) .opt.right .k { color: var(--accent-ink); }
 html[data-green="dark"]:not([data-theme]) { --good-soft: #183324; }
 /* Linie: zwykłe separatory jak dotąd, obrysy pól formularza z kontrastem ≥ 3:1 (WCAG 1.4.11). */
 html:not([data-theme]) { --line: #BFCEC5; --h-field: #7F9286; }
@@ -5375,7 +5374,7 @@ html.calm main.h-ent > *, html.calm .h-pop, html.calm .h-hop, html.calm .h-shake
   // animacja jedzie dalej, zamiast zaczynać od zera (bez migania). Po oknie i przy kolejnych kliknięciach nic się nie animuje.
   const H2 = { key: null, at: 0 };
   function h2Enter(v) {
-    const m = $("main"), key = JSON.stringify([v, S.route.id, S.route.tab]), now = performance.now();
+    const m = $("main"), key = JSON.stringify([v, S.route.id]), now = performance.now(); // zmiana zakładki nie animuje całego ekranu
     if (!S.ready || document.documentElement.getAttribute("data-theme")) { m.classList.remove("h-ent"); return; }
     if (key !== H2.key) { H2.key = key; H2.at = now; }
     const el = now - H2.at, on = el < 1400;

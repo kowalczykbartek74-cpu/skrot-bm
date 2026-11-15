@@ -8,3 +8,11 @@ Gałąź wyglad/h2, worktree ~/skrot-bm-h2. Bez wdrożenia na zdawalni.pl do dec
 Cały nowy CSS pod html:not([data-theme]); testy: docs/gry/test/h2-*.mjs (wspólne: h2-lib.mjs, w tym pomiar fps przy CPU 4×).
 
 ## Etapy
+
+### Etap 1 – fundament – ZALICZONY 8/10 (próba 2; próba 1: 6,5/10)
+Paleta jasnego i ciemnego zielonego (--h-*), biblioteka ruchu (h-rise/pop/hop/shake/fill/shine/flame/sheet/confetti),
+wejście ekranu raz: h2Enter() w render() (klasa .h-ent na <main> przez 1,4 s od zmiany adresu, ujemne --h-el przy
+ponownym renderze = bez migania, backwards + czasomierz zdejmuje klasę). Ciemny: jasny akcent z ciemnym tuszem (22 reguły),
+obrysy pól ≥ 3:1 (--h-field). Test h2-etap1.mjs 25/25, ~53 fps przy CPU 4×.
+Zasady na kolejne etapy (z oceny): nowe reguły z tekstem na akcencie → var(--accent-ink), nie #fff; elementy fixed/sticky
+w sekcjach <main> sprawdzać w oknie 1,4 s (translate tworzy blok zawierający); dopisać test reduced-motion/html.calm.
