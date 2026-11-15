@@ -29,7 +29,7 @@ for (const [w, h] of [[1280, 900], [1024, 800], [390, 844], [360, 740]]) {
   // każda odznaka: tekst mieści się (scrollWidth ≤ clientWidth) i nie wychodzi poza kartę
   const bad = await p.evaluate(() => [...document.querySelectorAll(".ld-tile")].flatMap((t) => {
     const tr = t.getBoundingClientRect(), out = [];
-    for (const el of t.querySelectorAll(".nb-badge, .ld-subj, .ld-subj > span, .sk-chip, h3, .meta, .btn")) {
+    for (const el of t.querySelectorAll(".nb-badge, .ld-subj, .ld-subj > span, .sk-chip, h3, .meta, .btn, .zh-kt b, .zh-kt small, .zh-tbar b")) {
       const r = el.getBoundingClientRect();
       if (!r.width) continue; // ukryte na telefonie (display: none)
       if (el.scrollWidth > el.clientWidth + 1 && getComputedStyle(el).textOverflow !== "ellipsis") out.push(["przycięte", el.className, el.textContent]);
@@ -38,9 +38,9 @@ for (const [w, h] of [[1280, 900], [1024, 800], [390, 844], [360, 740]]) {
     return out;
   }));
   ok(`${w}px: nic nie przycięte i nic poza kartą`, bad.length === 0, bad);
-  // nazwa przedmiotu cała widoczna (najdłuższe w tym teście: „Logistyka”, „OWI”, „Analiza matematyczna”…)
-  const names = await p.evaluate(() => [...document.querySelectorAll(".ld-subj > span")].map((e) => [e.textContent, e.scrollWidth <= e.clientWidth]));
-  ok(`${w}px: nazwa przedmiotu w pastylce widoczna w całości`, names.length && names.every((x) => x[1]), names);
+  // nazwa przedmiotu cała widoczna (wygląd H: w linijce pod rodzajem karty; najdłuższe: „Logistyka”, „OWI”, „Analiza matematyczna”…)
+  const names = await p.evaluate(() => [...document.querySelectorAll(".ld-tile .zh-kt small")].map((e) => [e.textContent, e.scrollWidth <= e.clientWidth && e.getBoundingClientRect().right <= e.closest(".ld-tile").getBoundingClientRect().right + 0.5]));
+  ok(`${w}px: nazwa przedmiotu pod rodzajem karty widoczna w całości`, names.length && names.every((x) => x[1]), names);
   ok(`${w}px: bez poziomego przewijania`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "");
   ok(`${w}px: konsola bez błędów`, p.errors.length === 0, p.errors);
   if (n) { await tiles.first().scrollIntoViewIfNeeded(); await p.locator(".ld-lessons").screenshot({ path: `/tmp/gry-shots/ld-odznaki-${lang}-${w}.png` }); }

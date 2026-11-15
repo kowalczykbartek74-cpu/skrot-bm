@@ -1,6 +1,17 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"2 pytania": "2 questions",
+"Temat:": "Topic:",
+"Do zaliczenia z {0} zostało": "Your {0} exam is in",
+"Zaliczenie z {0} jest dziś.": "Your {0} exam is today.",
+"Umiesz {0} z {1} tematów. Dziś wystarczy 5 minut.": "You know {0} of {1} topics. 5 minutes is enough today.",
+"Dziś wystarczy 5 minut.": "5 minutes is enough today.",
+"Zaczynamy · 5 min": "Let's go · 5 min",
+"Staś. Pierścień postępu: umiesz {0} z {1} tematów ({2}).": "Staś. Progress ring: you know {0} of {1} topics ({2}).",
+"Temat {0} z {1}": "Topic {0} of {1}",
+"Temat {0} z {1} · {2} przerobione": "Topic {0} of {1} · {2} done",
+"Zaczynamy: {0}": "Let's go: {0}",
 "Rocznik przestanie być do kupienia (dostęp kupionych zostaje). Na pewno?": "The cohort will no longer be available to buy (existing access stays). Are you sure?",
 "Tak, wstrzymaj sprzedaż": "Yes, pause selling",
 "Wybierz paczki (JSON, można kilka)": "Choose packs (JSON, several at once)",

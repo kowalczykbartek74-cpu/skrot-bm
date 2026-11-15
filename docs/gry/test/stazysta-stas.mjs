@@ -59,7 +59,7 @@ await S_(2).click(); await S_(5).click(); await S_(0).click(); await S_(3).click
 ok("limit długopisów: 3", (await p.locator(".stas-s.flag").count()) === 3 && !(await S_(3).getAttribute("class")).includes("flag"), "");
 await S_(0).click(); await S_(0).click(); // odznacz i zaznacz ponownie
 ok("odznaczanie działa", (await p.locator(".stas-s.flag").count()) === 3, "");
-ok("Staś: postać SVG, mina think przy zaznaczaniu", (await p.locator(".stas-face svg .sf-glass").count()) === 1 && (await p.locator(".stas-face").getAttribute("data-mood")) === "think", "");
+ok("Staś: postać SVG, mina think przy zaznaczaniu", (await p.locator(".stas-face svg .sf-head").count()) === 1 && (await p.locator(".stas-face").getAttribute("data-mood")) === "think", "");
 await shot(p, "stas-zaznaczone"); await p.locator(".stas-hero").screenshot({ path: OUT + "/stas-mina.png" });
 await p.getByRole("button", { name: "Sprawdź ✓" }).click(); await p.waitForTimeout(300);
 ok("po sprawdzeniu: 2 trafione, 1 przegapione, 1 fałszywe", (await p.locator(".stas-s.hit").count()) === 2 && (await p.locator(".stas-s.miss").count()) === 1 && (await p.locator(".stas-s.false").count()) === 1, "");
