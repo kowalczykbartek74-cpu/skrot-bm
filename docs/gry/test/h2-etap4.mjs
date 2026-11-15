@@ -3,6 +3,7 @@
 import { chromium, OUT, open, tester, fps } from "./h2-lib.mjs";
 const { ok, end } = tester();
 const b = await chromium.launch();
+const finals = {};
 const lum = (c) => { const m = c.match(/\d+(\.\d+)?/g).map(Number).slice(0, 3).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]; };
 const cr = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05);
 // Przechodzi karty: zaznacza pierwszą odpowiedź, gdy są, i klika główny przycisk na dole, aż pojawi się ekran końcowy.
@@ -26,22 +27,26 @@ for (const dark of [false, true]) {
   ok(`${n}: pasek postępu gruby (16 px)`, (await p.locator(".lp-bar").evaluate((e) => getComputedStyle(e).height)) === "16px", "");
   ok(`${n}: przycisk zamknięcia 3D`, (await p.locator(".lp-x").first().evaluate((e) => getComputedStyle(e).borderBottomWidth)) === "4px", "");
   ok(`${n}: moneta w odtwarzaczu jako SVG`, await p.locator(".lp-coinchip .h2-coin svg").count() === 1 || await p.locator(".lp-coinchip[hidden]").count() === 1, "");
-  let fbSeen = null;
+  let fbSeen = null, wide = { sw: 0, bar: 999 };
   const done = await play(p, 60, async () => {
     if (fbSeen) return;
     const r = await p.locator(".lp-fb").first().evaluate((e) => { const c = getComputedStyle(e), f = getComputedStyle(e.firstElementChild || e); return { cls: e.className, bg: c.backgroundColor, bw: c.borderTopWidth, col: f.color }; });
     fbSeen = r; await p.screenshot({ path: `${OUT}/h2e4-${n}-odpowiedz.png` });
+    wide = await p.evaluate(() => ({ sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width) }));
   });
+  ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px`, (wide.sw <= 376) && wide.bar >= 72, wide);
   ok(`${n}: informacja zwrotna jako kolorowy panel z obrysem i czytelnym nagłówkiem`, fbSeen && fbSeen.bw === "2px" && cr(fbSeen.col, fbSeen.bg) >= 4.5, fbSeen);
   ok(`${n}: lekcję da się przejść do ekranu końcowego`, done, await p.locator(".lp-stage").innerText().catch(() => ""));
   if (done) {
     await p.waitForTimeout(150);
     const mid = await p.locator(".lp-stat b").allInnerTexts();
     await p.waitForTimeout(1600);
-    const fin = await p.locator(".lp-stat b").allInnerTexts();
+    const fin = await p.locator(".lp-stat b").evaluateAll((bs) => bs.map((b) => (b.querySelector('[aria-hidden="true"]') || b).textContent.trim()));
     await p.screenshot({ path: `${OUT}/h2e4-${n}-koniec.png` });
     ok(`${n}: ekran końcowy ze Stasiem`, await p.locator(".lp-done-screen .lp-stas svg").count() === 1, "");
-    ok(`${n}: statystyki kończą na właściwych liczbach (liczenie w górę nie zmienia wyniku)`, fin.length > 0 && fin.every((t) => /\d|—/.test(t)), { mid, fin });
+    finals[n] = fin;
+    ok(`${n}: w trakcie liczenia czytnik dostaje wynik końcowy (ukryty tekst), liczba animowana ukryta`, await p.locator(".lp-stat b .h2-sr").count() === 0 || await p.locator('.lp-stat b > [aria-hidden="true"]').count() >= 1, "");
+    ok(`${n}: Staś zamiast ptaszka (bez obu naraz)`, await p.locator(".lp-done-screen .lp-bigcheck").count() === 0, "");
     const st = await p.locator(".lp-stat").first().evaluate((e) => { const c = getComputedStyle(e), bb = getComputedStyle(e.querySelector("b")); return [c.borderBottomWidth, bb.color, c.backgroundColor]; });
     ok(`${n}: kafelki statystyk 3D i czytelne`, st[0] === "4px" && cr(st[1], st[2]) >= 4.5, st);
   }
@@ -52,7 +57,8 @@ for (const dark of [false, true]) {
   const p = await open(b, { ctx: undefined, ls: { "skrot-calm": "1" } });
   await p.locator(".zh-hero .zh-go").click(); await p.locator(".lp").waitFor({ timeout: 15000 });
   const done = await play(p, 60);
-  if (done) { await p.waitForTimeout(100); const t = await p.locator(".lp-stat b").allInnerTexts(); await p.waitForTimeout(900); const t2 = await p.locator(".lp-stat b").allInnerTexts(); ok("html.calm: liczby od razu końcowe (bez liczenia)", JSON.stringify(t) === JSON.stringify(t2), { t, t2 }); }
+  if (done) { await p.waitForTimeout(100); const t = await p.locator(".lp-stat b").allInnerTexts(); await p.waitForTimeout(900); const t2 = await p.locator(".lp-stat b").allInnerTexts(); ok("html.calm: liczby od razu końcowe (bez liczenia)", JSON.stringify(t) === JSON.stringify(t2), { t, t2 });
+    ok("liczenie w górę kończy na tych samych liczbach co ekran bez animacji", JSON.stringify(finals.jasny) === JSON.stringify(t2), { anim: finals.jasny, calm: t2 }); }
   else ok("html.calm: dojście do końca", false, "");
   await p.close();
 }

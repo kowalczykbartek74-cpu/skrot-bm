@@ -4538,17 +4538,17 @@ html:not([data-theme]) .navbtn { transition: background .15s, color .15s; }
 
 html:not([data-theme]) .navbtn .badge { border: 2px solid var(--surface); min-width: 22px; line-height: 18px; font-size: .78rem; font-weight: 800; }
 html:not([data-theme]) .navbtn[data-key="review"] .badge { background: #FF9F43; color: #10231A; }
-html:not([data-theme]) .navbtn .badge.h-pop { animation: h-pop .45s var(--h-spring) both; }
+html:not([data-theme]) .navbtn .badge.h-pop { animation: h-pop .45s var(--h-spring) calc(0ms - var(--h-bd, 0ms)) both; }
 @media (min-width: 761px) {
   html:not([data-theme]) .navbtn:active { scale: .95; }
-  html:not([data-theme]) .navbtn.h-bump { animation: h-hop .55s var(--h-out) both; }
+  html:not([data-theme]) .navbtn.h-bump { animation: h-hop .55s var(--h-out) calc(0ms - var(--h-bd, 0ms)) both; }
   html:not([data-theme]) .navbtn { border: 2px solid transparent; border-radius: 12px; }
   html:not([data-theme]) .navbtn[aria-current="page"] { border-color: color-mix(in srgb, var(--accent) 35%, var(--surface)); border-bottom-width: 4px; padding-bottom: 6px; }
 }
 @media (max-width: 760px) {
   html:not([data-theme]) .nav { border-top: 2px solid var(--h-line); }
   html:not([data-theme]) .navbtn:active .ico { scale: .92; }
-  html:not([data-theme]) .navbtn.h-bump .ico { animation: h-hop .55s var(--h-out) both; }
+  html:not([data-theme]) .navbtn.h-bump .ico { animation: h-hop .55s var(--h-out) calc(0ms - var(--h-bd, 0ms)) both; }
   html:not([data-theme]) .navbtn .ico { transition: background .15s; }
   html:not([data-theme]) .navbtn[aria-current="page"] .ico { background: var(--h-acc-soft); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
   html:not([data-theme]) .navbtn[aria-current="page"] .lbl { color: var(--accent-text); }
@@ -4579,7 +4579,7 @@ html:not([data-theme]) .lp-bar i.cur { background: color-mix(in srgb, var(--h-li
 html:not([data-theme]) .lp-chip { border-radius: 999px; box-shadow: inset 0 0 0 2px var(--h-line), 0 3px 0 var(--h-edge); }
 html:not([data-theme]) .lp-combo:not([hidden]) { animation: h-pop .45s var(--h-spring) both; }
 html:not([data-theme]) :is(.lp-card, .sk-card) { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 24px; box-shadow: none; }
-html:not([data-theme]) .lp-fb { border: 2px solid transparent; border-radius: 18px; animation: h-rise .35s var(--h-out) both; }
+html:not([data-theme]) .lp-fb { border: 2px solid transparent; border-radius: 18px; }
 html:not([data-theme]) .lp-fb.ok { background: var(--h-acc-soft); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 html:not([data-theme]) .lp-fb.no { background: var(--h-orange-soft); border-color: color-mix(in srgb, var(--h-orange) 40%, transparent); }
 html:not([data-theme]) .lp-fb.ok > :first-child { color: var(--accent-text); }
@@ -4592,8 +4592,15 @@ html:not([data-theme]) .lp-stat { border: 2px solid var(--h-line); border-bottom
 html:not([data-theme]) .lp-stat b { color: var(--accent-text); font-variant-numeric: tabular-nums; }
 html:not([data-theme]) .lp-stas { width: 112px; height: 112px; }
 html:not([data-theme]) .lp-fresh .lp-stas { animation: h-pop .5s var(--h-spring) both; }
-@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; } }
-html.calm :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; }
+/* Górny pasek odtwarzacza mieści się w 375 px: pigułki nie ściskają paska postępu poniżej 72 px, nazwa części się skraca. */
+html:not([data-theme]) .lp-top { gap: 8px; min-width: 0; }
+html:not([data-theme]) .lp-top > * { min-width: 0; }
+html:not([data-theme]) .lp-top .lp-bar { min-width: 72px; }
+html:not([data-theme]) .lp-top .lp-chip { flex: none; padding: 4px 9px; }
+@media (max-width: 420px) { html:not([data-theme]) .lp-top .lp-chip.lp-xpchip { display: none; } html:not([data-theme]) .lp-top .ld-seg { max-width: 26%; } }
+.h2-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.lp-combo, .lp-stas) { animation: none !important; } }
+html.calm :is(.lp-combo, .lp-stas) { animation: none !important; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -5461,14 +5468,23 @@ html.calm :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; }
     const badge = { review: dueN, terms: soonN, more: adminN };
     // Wygląd H2: ikona nowej zakładki podskakuje tylko przy zmianie zakładki, plakietka wyskakuje tylko przy zmianie liczby
     // (renderNav() idzie przy każdym render(), więc bez tego animacje grałyby przy każdym kliknięciu).
-    const bump = NAVB.a != null && NAVB.a !== active ? active : null, popB = {};
-    for (const k of Object.keys(badge)) { if (NAVB.b[k] != null && badge[k] && badge[k] !== NAVB.b[k]) popB[k] = 1; NAVB.b[k] = badge[k]; }
+    // Kolejne render() w ciągu 0,6 s (dociąganie danych) zachowują klasę z ujemnym opóźnieniem, żeby animacja nie urwała się w połowie.
+    // Przez pierwsze 3 s po wczytaniu danych liczby plakietek tylko się ustalają (bez wyskoku).
+    const now = performance.now();
+    if (NAVB.a != null && NAVB.a !== active) { NAVB.bk = active; NAVB.bt = now; }
+    for (const k of Object.keys(badge)) {
+      if (NAVB.b[k] != null && badge[k] && badge[k] !== NAVB.b[k] && S.ready && NAVB.r0 && now - NAVB.r0 > 3000) NAVB.p[k] = now;
+      NAVB.b[k] = badge[k];
+    }
+    if (S.ready && !NAVB.r0) NAVB.r0 = now;
     NAVB.a = active;
+    const bump = NAVB.bk === active && now - NAVB.bt < 600 ? active : null, popB = {};
+    for (const k of Object.keys(NAVB.p)) if (now - NAVB.p[k] < 600) popB[k] = now - NAVB.p[k];
     const badgeLbl = { review: "do powtórki", terms: "w tym tygodniu", more: "do sprawdzenia" };
     $("nav").replaceChildren(...NAV_ITEMS.map(([key, label]) => h("button", {
-      type: "button", class: "navbtn" + (bump === key ? " h-bump" : ""), "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
+      type: "button", class: "navbtn" + (bump === key ? " h-bump" : ""), style: bump === key ? `--h-bd:${Math.round(now - NAVB.bt)}ms` : null, "data-key": key, "aria-current": active === key ? "page" : null, onclick: () => go({ view: key }),
       "aria-label": label + (badge[key] ? `, ${badge[key]} ${badgeLbl[key]}` : ""),
-    }, icon(NAV_ICON[key]), h("span", { class: "lbl", text: label }), badge[key] ? h("span", { class: "badge num" + (popB[key] ? " h-pop" : ""), text: badge[key] > 99 ? "99+" : badge[key], "aria-label": `${badge[key]} ${badgeLbl[key]}` }) : null)));
+    }, icon(NAV_ICON[key]), h("span", { class: "lbl", text: label }), badge[key] ? h("span", { class: "badge num" + (popB[key] != null ? " h-pop" : ""), style: popB[key] != null ? `--h-bd:${Math.round(popB[key])}ms` : null, text: badge[key] > 99 ? "99+" : badge[key], "aria-label": `${badge[key]} ${badgeLbl[key]}` }) : null)));
     const mb = $("moreBtn");
     if (mb) {
       mb.setAttribute("aria-label", "Więcej" + (badge.more ? `, ${badge.more} ${badgeLbl.more}` : ""));
@@ -5488,7 +5504,7 @@ html.calm :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; }
     if (S.canEdit && !band) document.body.insertBefore(h("div", { class: "staroband", id: "staroband" }, h("div", { class: "wrap" }, h("b", { text: "Tryb starosty" }), h("span", { text: "Widzisz narzędzia do zarządzania rokiem." }), h("button", { type: "button", class: "link", onclick: () => setStarosta(false) }, "Wyłącz"))), $("main"));
     else if (!S.canEdit && band) band.remove();
   }
-  const NAVB = { a: null, b: {} };
+  const NAVB = { a: null, b: {}, p: {}, bk: null, bt: 0, r0: 0 };
   const NAV_ICON = { home: "home", materials: "materials", review: "review", terms: "tasks", calendar: "calendar", more: "menu" };
   function setStarosta(on) {
     ls.set("bm-starosta", on ? "1" : "0");
@@ -10432,7 +10448,7 @@ html.calm :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; }
     }
     const nextB = nextI >= 0 ? bites[nextI] : null;
     LP.el.cta.textContent = nextB ? `Dalej: ${nextB.title} →` : "Wróć do mapy lekcji"; LP.el.ctaFn = nextB ? () => goTo(nextI) : () => lpClose(); LP.el.cta.disabled = false; LP.el.cta.hidden = false;
-    return h2Done(fresh, h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") }, h2DoneStas("ok"), check,
+    return h2Done(fresh, h("div", { class: "lp-done-screen" + (fresh ? " lp-fresh" : "") }, h2DoneStas("ok") || check,
       h("h2", { text: b.kind === "warm" ? "Rozgrzewka zrobiona!" : `${b.title}: zrobione!` }),
       LP.src.kind === "lesson" ? h("p", { class: "pts-gain small num", text: `Lekcja: ${lessonPct(LP.m)}% zrobione` }) : null,
       h("div", { class: "lp-stats" }, lpStat("+" + bs.xp, "XP"), lpCoinStat(), lpStat(bs.tot ? `${bs.ok}/${bs.tot}` : "—", "z pierwszej próby"), lpStat(sec >= 60 ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}` : sec + " s", "czas")),
@@ -10453,11 +10469,13 @@ html.calm :is(.lp-fb, .lp-combo, .lp-stas) { animation: none !important; }
   function h2Calm() { const r = document.documentElement; return !!r.getAttribute("data-theme") || r.classList.contains("calm") || matchMedia("(prefers-reduced-motion: reduce)").matches; }
   function h2DoneStas(mood) { if (document.documentElement.getAttribute("data-theme")) return null; const f = stasFace(mood); f.classList.add("lp-stas"); return f; }
   function h2Done(fresh, el) {
+    // Liczymy tylko czyste liczby („28”, „+28”); „1/3”, „1:05”, „1 200 🪙” zostają bez zmian. Czytnik ekranu (.lp-stage ma
+    // aria-live) słyszy od razu wynik końcowy z ukrytego tekstu, a liczba w trakcie liczenia jest dla niego ukryta.
     if (fresh && !h2Calm()) requestAnimationFrame(() => el.querySelectorAll(".lp-stat b").forEach((b, i) => {
-      const m = /^([+]?)(\d+)(.*)$/.exec(b.textContent); if (!m || +m[2] < 2) return;
-      const to = +m[2], t0 = performance.now() + 250 + i * 120, dur = 800;
-      b.textContent = m[1] + "0" + m[3];
-      const tick = (t) => { const k = Math.max(0, Math.min(1, (t - t0) / dur)), e = 1 - (1 - k) ** 3; b.textContent = m[1] + Math.round(to * e) + m[3]; if (k < 1 && b.isConnected) requestAnimationFrame(tick); };
+      const m = /^([+]?)(\d+)$/.exec(b.textContent.trim()); if (!m || +m[2] < 2) return;
+      const to = +m[2], t0 = performance.now() + 250 + i * 120, dur = 800, fin = b.textContent;
+      const num = h("span", { "aria-hidden": "true", text: m[1] + "0" }); b.replaceChildren(num, h("span", { class: "h2-sr", text: fin }));
+      const tick = (t) => { const k = Math.max(0, Math.min(1, (t - t0) / dur)), e = 1 - (1 - k) ** 3; num.textContent = m[1] + Math.round(to * e); if (k < 1 && b.isConnected) requestAnimationFrame(tick); else num.textContent = fin; };
       requestAnimationFrame(tick);
     }));
     return el;
