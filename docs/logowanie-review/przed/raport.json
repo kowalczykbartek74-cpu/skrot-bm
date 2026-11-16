@@ -1,0 +1,214 @@
+{
+ "przypadki": [
+  {
+   "n": "pl-375-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 64,
+   "ponizejAA": [],
+   "cele": [
+    "BUTTON „English” 73×35"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-375-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 33,
+   "ponizejAA": [
+    {
+     "tekst": "2. rok",
+     "kontrast": 4.18,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "3. rok",
+     "kontrast": 4.18,
+     "wymagany": 4.5
+    }
+   ],
+   "cele": [
+    "BUTTON „English” 73×35"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-375-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 35,
+   "ponizejAA": [
+    {
+     "tekst": "Masz już konto?",
+     "kontrast": 4.47,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "Zakładając konto, akceptujesz",
+     "kontrast": 4.47,
+     "wymagany": 4.5
+    }
+   ],
+   "cele": [
+    "BUTTON „English” 73×35",
+    "A „regulamin” 61×16",
+    "A „politykę prywatności” 205×36"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 71,
+   "ponizejAA": [
+    {
+     "tekst": "Uniwersytet Szczeciński · rok akademicki",
+     "kontrast": 4.1,
+     "wymagany": 4.5
+    }
+   ],
+   "cele": [
+    "BUTTON „English” 73×35"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 40,
+   "ponizejAA": [
+    {
+     "tekst": "Uniwersytet Szczeciński · rok akademicki",
+     "kontrast": 4.1,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "2. rok",
+     "kontrast": 4.18,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "3. rok",
+     "kontrast": 4.18,
+     "wymagany": 4.5
+    }
+   ],
+   "cele": [
+    "BUTTON „English” 73×35"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 42,
+   "ponizejAA": [
+    {
+     "tekst": "Uniwersytet Szczeciński · rok akademicki",
+     "kontrast": 4.1,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "Masz już konto?",
+     "kontrast": 4.47,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "Zakładając konto, akceptujesz",
+     "kontrast": 4.47,
+     "wymagany": 4.5
+    }
+   ],
+   "cele": [
+    "BUTTON „English” 73×35",
+    "A „regulamin” 61×16",
+    "A „politykę prywatności” 205×36"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 64,
+   "ponizejAA": [],
+   "cele": [
+    "BUTTON „Polski” 65×35"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 33,
+   "ponizejAA": [
+    {
+     "tekst": "2nd year",
+     "kontrast": 4.18,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "3rd year",
+     "kontrast": 4.18,
+     "wymagany": 4.5
+    }
+   ],
+   "cele": [
+    "BUTTON „Polski” 65×35"
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 35,
+   "ponizejAA": [
+    {
+     "tekst": "Already have an account?",
+     "kontrast": 4.47,
+     "wymagany": 4.5
+    },
+    {
+     "tekst": "By creating an account, you accept the",
+     "kontrast": 4.47,
+     "wymagany": 4.5
+    }
+   ],
+   "cele": [
+    "BUTTON „Polski” 65×35",
+    "A „terms of service” 238×36",
+    "A „privacy policy” 84×16"
+   ],
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "ruch": [
+  {
+   "nazwa": "zwykle",
+   "karta_kierunku": "none / przejście 0.08s, 0.08s, 0.15s",
+   "naglowek": "none / przejście 0s",
+   "tlo": "none / przejście 0s",
+   "ozdoba": "brak"
+  },
+  {
+   "nazwa": "reduced-motion",
+   "karta_kierunku": "none / przejście 0s",
+   "naglowek": "none / przejście 0s",
+   "tlo": "none / przejście 0s",
+   "ozdoba": "brak"
+  },
+  {
+   "nazwa": "Mniej animacji",
+   "karta_kierunku": "none / przejście 0.001s",
+   "naglowek": "none / przejście 0.001s",
+   "tlo": "none / przejście 0.001s",
+   "ozdoba": "brak"
+  }
+ ]
+}

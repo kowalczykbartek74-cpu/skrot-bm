@@ -1,0 +1,108 @@
+{
+ "przypadki": [
+  {
+   "n": "pl-375-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 64,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-375-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 33,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-375-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 35,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 72,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 41,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 43,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 64,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 33,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 35,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "ruch": [
+  {
+   "nazwa": "zwykle",
+   "karta_kierunku": "lg-rise / przejście 0.2s, 0.2s",
+   "naglowek": "lg-rise / przejście 0s",
+   "tlo": "none / przejście 0s",
+   "ozdoba": "brak"
+  },
+  {
+   "nazwa": "reduced-motion",
+   "karta_kierunku": "none / przejście 0s",
+   "naglowek": "none / przejście 0s",
+   "tlo": "none / przejście 0s",
+   "ozdoba": "brak"
+  },
+  {
+   "nazwa": "Mniej animacji",
+   "karta_kierunku": "none / przejście 0s",
+   "naglowek": "none / przejście 0s",
+   "tlo": "none / przejście 0s",
+   "ozdoba": "brak"
+  }
+ ]
+}

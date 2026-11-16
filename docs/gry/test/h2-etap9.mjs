@@ -46,17 +46,18 @@ for (const dark of [false, true]) for (const w of [360, 1280]) {
   await p.screenshot({ path: `${OUT}/h2e9-${n}-logowanie.png`, fullPage: true });
   const lg = await p.evaluate(() => { const q = (s) => document.querySelector(s), cs = (e) => e && getComputedStyle(e);
     const btn = q("#loginBox .btn.primary"), trial = q("#login .lg-trial"), demo = q("#login .lg-demo-btn"), ghost = q("#loginBox .btn.ghost");
-    return { btn: cs(btn)?.boxShadow, btnCol: cs(btn)?.color, btnBg: cs(btn)?.backgroundColor, trial: cs(trial)?.borderBottomWidth, demo: cs(demo)?.borderBottomWidth, ghost: ghost ? cs(ghost).boxShadow : "none", bg: getComputedStyle(document.body).backgroundColor }; });
-  ok(`${n}: logowanie: główny przycisk 3D i czytelny`, /4px 0px/.test(lg.btn) && cr(lg.btnCol, lg.btnBg) >= 4.5, lg);
-  ok(`${n}: logowanie: karta próby i przycisk przykładowej lekcji 3D`, (!lg.trial || lg.trial === "6px") && lg.demo === "4px", lg);
+    return { btn: cs(btn)?.boxShadow, btnR: cs(btn)?.borderTopLeftRadius, btnCol: cs(btn)?.color, btnBg: cs(btn)?.backgroundColor, trial: cs(trial)?.borderBottomWidth, trialBg: cs(trial)?.backgroundColor, demo: cs(demo)?.borderBottomWidth, ghost: ghost ? cs(ghost).boxShadow : "none", bg: getComputedStyle(document.body).backgroundColor }; });
+  // Ekran wejścia w stylu nowego „Dziś” (gałąź logowanie-h): pastylki z miękkim cieniem zamiast brzegu 3D, próba jako ciemny panel Stasia.
+  ok(`${n}: logowanie: główny przycisk – pastylka z miękkim cieniem, czytelny`, /\d+px -\d+px/.test(lg.btn) && parseFloat(lg.btnR) >= 26 && cr(lg.btnCol, lg.btnBg) >= 4.5, lg);
+  ok(`${n}: logowanie: karta próby jako ciemny panel, przykładowa lekcja bez obrysu`, (!lg.trial || lg.trialBg === "rgb(19, 59, 42)") && lg.demo === "0px", lg);
   ok(`${n}: logowanie: przyciski-linki bez cienia`, lg.ghost === "none", lg.ghost);
-  const tb = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => { const c = getComputedStyle(t); return { bb: c.borderBottomWidth, sel: t.getAttribute("aria-selected"), col: c.color, bg: c.backgroundColor }; }));
-  ok(`${n}: logowanie: zakładki „Kod z maila / Hasło” jako pigułki 3D, czytelne`, tb.length === 2 && tb.every((t) => t.bb === "4px" && cr(t.col, t.bg) >= 4.5) && tb[0].bg !== tb[1].bg, tb);
+  const tb = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => { const c = getComputedStyle(t), bg = c.backgroundColor === "rgba(0, 0, 0, 0)" ? getComputedStyle(t.parentElement).backgroundColor : c.backgroundColor; return { r: c.borderTopLeftRadius, sel: t.getAttribute("aria-selected"), col: c.color, bg }; }));
+  ok(`${n}: logowanie: zakładki „Kod z maila / Hasło” jako przełącznik w pastylce, czytelne`, tb.length === 2 && tb.every((t) => parseFloat(t.r) >= 22 && cr(t.col, t.bg) >= 4.5) && tb[0].bg !== tb[1].bg, tb);
   const tw = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().width)));
   ok(`${n}: obie zakładki logowania równej szerokości`, tw.length === 2 && Math.abs(tw[0] - tw[1]) <= 2, tw);
   const th1 = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().height)));
   ok(`${n}: zakładki logowania w jednej linii`, th1.every((x) => x <= 50), th1);
-  ok(`${n}: logowanie zawsze jasne`, lg.bg === "rgb(255, 255, 255)", lg.bg);
+  ok(`${n}: logowanie zawsze jasne`, lg.bg === "rgb(244, 245, 240)", lg.bg);
   ok(`${n}: logowanie bez poziomego przewijania i błędów`, (await noH(p)) && p.errors.length === 0, p.errors);
   await p.close();
 }
