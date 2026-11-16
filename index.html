@@ -4704,8 +4704,13 @@ html:not([data-theme]) .term { border: 2px solid var(--h-line); border-bottom: 4
 html:not([data-theme]) .tl { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: 18px; box-shadow: inset 6px 0 0 var(--tc); padding-left: 16px; }
 /* 4. Bez odhaczania (konto bez uprawnień) nie zostaje pusta kolumna; meta-linia bez wiszącej kropki przy zawijaniu. */
 html:not([data-theme]) .tl:has(> .tl-tick-none) { grid-template-columns: minmax(0, 1fr) auto; }
-html:not([data-theme]) .tl > .tl-tick-none { display: none; }
-html:not([data-theme]) .tl-meta { gap: 2px 10px; }
+html:not([data-theme]) .tl:has(> .tl-tick-none) > .tl-tick-none { display: none; }
+html:not([data-theme]) .tl:focus-within { box-shadow: inset 6px 0 0 var(--tc), 0 0 0 3px var(--accent-soft); }
+html:not([data-theme]) .tl.flash { animation: h-tlflash 1.4s ease-out; }
+@keyframes h-tlflash { 0%, 30% { box-shadow: inset 6px 0 0 var(--tc), 0 0 0 4px color-mix(in srgb, var(--tc) 40%, transparent); } 100% { box-shadow: inset 6px 0 0 var(--tc), 0 0 0 0 transparent; } }
+html:not([data-theme]) .pts-card.pts-dzis .term { padding-left: 18px; }
+html:not([data-theme]) .tl-meta { gap: 2px 14px; }
+html:not([data-theme]) .tl-meta .tl-date { color: var(--h-ink); font-weight: 700; }
 html:not([data-theme]) .tl-meta > :not(:last-child)::after { content: none; }
 html:not([data-theme]) .tl-tick { border-bottom-width: 4px; transition: transform .08s ease, border-bottom-width .08s ease; }
 html:not([data-theme]) .tl-tick:active { transform: translateY(2px); border-bottom-width: 2px; }
@@ -4725,7 +4730,7 @@ html:not([data-theme]) .day.has-exam { border-color: color-mix(in srgb, var(--t)
    (pasek zaliczenia .has-exam zostaje). Wybrany dzień: zielone tło i obrys, bez cienia. */
 html:not([data-theme]) .day.today { border-color: var(--accent); border-bottom-color: var(--h-acc-edge); }
 html:not([data-theme]) .day.today::after { content: ""; position: absolute; inset: 2px; border: 3px solid #CDF25E; border-radius: 10px; pointer-events: none; opacity: .9; animation: h-today 1.8s ease-in-out .6s 3; }
-html:not([data-theme]) .day.sel { background: var(--h-acc-soft); border-color: var(--accent); }
+html:not([data-theme]) .day.sel { background: var(--h-acc-soft); border-color: var(--accent); box-shadow: none; }
 html:not([data-theme]) .day.sel.has-exam { background: color-mix(in srgb, var(--t) 14%, var(--h-acc-soft)); }
 @keyframes h-today { 0%, 100% { opacity: .9; } 50% { opacity: .25; } }
 html:not([data-theme]) .exam-card { border: 2px solid color-mix(in srgb, var(--t) 40%, var(--h-line)); border-bottom: 5px solid color-mix(in srgb, var(--t) 55%, var(--h-edge)); border-radius: 18px; transition: transform .08s ease, border-bottom-width .08s ease; }

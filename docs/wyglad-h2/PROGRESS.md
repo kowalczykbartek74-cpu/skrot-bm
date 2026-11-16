@@ -63,3 +63,11 @@ Kafle przedmiotów i okładka jako karty 3D z dołem w kolorze przedmiotu, grubs
 okrągłe przystanki 3D (64 px) ułożone falą (przesuwa się tylko kółko, tytuły w jednej linii), zrobione zielone, następny
 limonkowy z poświatą, Stasiem i pigułką „Teraz” (+ „, następna” dla czytnika), zablokowane szare; przystanki wyskakują po kolei raz.
 Test h2-etap6.mjs 27/27, ~62 fps. Na później: „Teraz” zależy od motywu w chwili rysowania; „rozdz. undefined” gdy brak bookRef (dane).
+
+### Etap 7 – Terminy i Kalendarz – ZALICZONY 8/10 (próba 2; próba 1: 7/10)
+Karta „Najbliższe” 3D z licznikiem dni w kółku, wiersze terminów i kafle „Dziś” jako karty 3D z płaskim paskiem koloru (inset),
+filtry 3D, bez pustej kolumny przy braku odhaczania (tylko z :has, bez :has zostaje stary układ), meta-linia bez kropek z datą
+pogrubioną; kalendarz: dni jako małe klawisze (na telefonie cieńsze), dziś z limonkowym pierścieniem ::after pulsującym 3×
+(tylko opacity), wybrany dzień zielony, zaliczenia z obrysem w kolorze typu, karty zaliczeń 3D. Po ocenie dopięte: pierścień
+fokusu i błysk .tl razem z paskiem, .day.sel bez cienia bazowego, odstęp w „Dziś”. Test h2-etap7.mjs 47/47, ~61 fps.
+Na szlif: limonkowy pierścień „dziś” słabo widoczny na jasnym tle (trzyma go obrys accent); siatka miesiąca na 375 px do obejrzenia.
