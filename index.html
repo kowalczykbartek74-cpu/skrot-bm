@@ -4742,10 +4742,29 @@ html.calm :is(.day, .term .tick, .tchip, .exam-card):active { transform: none; }
 /* ===== H2 etap 8: Gry, Hasło dnia, ranking, sklep ===== */
 /* Gry: kafle jako karty 3D, ikona gry w kolorowym „klocku” z dołem, kafle wskakują po kolei przy wejściu. */
 html:not([data-theme]) .gry-tile { transition: transform .15s var(--h-out); }
-html:not([data-theme]) .gry-tile-art { width: 60px; height: 60px; border-radius: 18px; background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom: 5px solid color-mix(in srgb, var(--accent) 50%, var(--h-edge)); }
+html:not([data-theme]) .gry-tile-art { width: 60px; height: 60px; font-size: 32px; line-height: 1; border-radius: 18px; background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom: 5px solid color-mix(in srgb, var(--accent) 50%, var(--h-edge)); }
 html:not([data-theme]) .gry-tiles > :nth-child(3n+2) .gry-tile-art { background: var(--h-orange-soft); border-color: color-mix(in srgb, var(--h-orange) 40%, var(--h-line)); border-bottom-color: color-mix(in srgb, var(--h-orange) 60%, var(--h-edge)); }
 html:not([data-theme]) .gry-tiles > :nth-child(3n) .gry-tile-art { background: var(--h-blue-soft); border-color: color-mix(in srgb, var(--h-blue) 40%, var(--h-line)); border-bottom-color: color-mix(in srgb, var(--h-blue) 60%, var(--h-edge)); }
 @media (hover: hover) { html:not([data-theme]) .gry-tile:not(.soon):not(.few):hover { transform: translateY(-3px); } html:not([data-theme]) .gry-tile:not(.soon):not(.few):hover .gry-tile-art { animation: h-wiggle .5s ease; } }
+@media (max-width: 520px) {
+  html:not([data-theme]) .gry-tiles { gap: 10px; }
+  html:not([data-theme]) .gry-tile { grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 12px 12px 12px 14px; }
+  html:not([data-theme]) .gry-tile > .gry-tile-art { grid-column: 1; grid-row: 1 / span 3; width: 52px; height: 52px; font-size: 28px; border-radius: 16px; }
+  html:not([data-theme]) .gry-tile > :is(h2, p) { grid-column: 2; }
+  html:not([data-theme]) .gry-tile > h2 { font-size: 1.08rem; }
+  html:not([data-theme]) .gry-tile > p.muted { font-size: .86rem; line-height: 1.35; }
+  html:not([data-theme]) .gry-tile > :is(.btn, .chip) { grid-column: 3; grid-row: 1 / span 3; align-self: center; }
+  html:not([data-theme]) .gry-tile > .btn { min-width: 72px; padding-inline: 14px; }
+  html:not([data-theme]) :is(.kshop-grid, .shop-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  html:not([data-theme]) .shop-sw { height: 84px; }
+  html:not([data-theme]) .shop-body { padding: 8px 10px 10px; gap: 6px; }
+  html:not([data-theme]) .shop-body > p { font-size: .84rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  html:not([data-theme]) .shop-title { font-size: .98rem; }
+  html:not([data-theme]) .shop-act .btn { width: 100%; white-space: normal; padding-inline: 8px; }
+  html:not([data-theme]) .kcard-pv { min-height: 84px; }
+  html:not([data-theme]) .kcard-body { padding: 8px 10px 10px; }
+  html:not([data-theme]) .kcard-desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+}
 @keyframes h-wiggle { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-8deg); } 60% { transform: rotate(6deg); } }
 html:not([data-theme]) main.h-ent .gry-tiles > * { animation: h-pop .45s var(--h-spring) backwards; }
 html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(1) { animation-delay: calc(120ms - var(--h-el, 0ms)); }
@@ -4759,7 +4778,8 @@ html:not([data-theme]) .gry-ic:active { transform: translateY(2px); border-botto
    grubszy jest tylko dół. Wpisana litera „wskakuje” (tylko transform). */
 html:not([data-theme]) .hd-t { border-radius: 12px; border-bottom-width: 5px; border-color: var(--h-line); }
 html:not([data-theme]) .hd-row.cur .hd-t { border-color: color-mix(in srgb, var(--accent) 45%, var(--h-line)); }
-html:not([data-theme]) .hd-t.fill, html:not([data-theme]) .hd-row.cur .hd-t.fill { border-color: var(--h-muted); border-bottom-color: var(--h-ink); animation: h-tpop .16s ease-out; }
+html:not([data-theme]) .hd-t.fill, html:not([data-theme]) .hd-row.cur .hd-t.fill { border-color: var(--h-muted); border-bottom-color: var(--h-ink); }
+html:not([data-theme]) .hd-t.fill.h2-typed { animation: h-tpop .16s ease-out; }
 @keyframes h-tpop { 50% { transform: scale(1.1); } }
 html:not([data-theme]) .hd-t.s2 { border-color: var(--h-acc-edge); border-bottom-width: 6px; }
 html:not([data-theme]) .hd-t.s1 { background: var(--h-lime); color: #1B2A10; border-color: #3F5A12; border-bottom-width: 5px; }
@@ -4794,12 +4814,15 @@ html:not([data-theme]) .kshop-tab:active { transform: translateY(2px); border-bo
 html:not([data-theme]) .kshop-tab[aria-selected="true"] { border-color: var(--h-acc-edge); }
 html:not([data-theme]) :is(.kcard, .shop-card, .shop-mission) { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 20px; box-shadow: none; }
 html:not([data-theme]) :is(.kcard, .shop-card).is-on { border-color: var(--accent); border-bottom-color: var(--h-acc-edge); }
-html:not([data-theme]) :is(.kcard, .shop-card).flash { animation: h-pop .45s var(--h-spring); }
+
 html:not([data-theme]) .kcard-pv { border-bottom: 2px solid var(--h-line); }
 html:not([data-theme]) :is(.kcard-lock, .kcard-zoom) { box-shadow: none; border: 2px solid var(--h-line); }
 html:not([data-theme]) .shop-mission.week { background: var(--h-lime); color: #1B2A10; border-color: #7FA51A; border-bottom-color: #5E7D0C; }
-html:not([data-theme]) .shop-mission.week :is(.muted, small, .shop-prize) { color: #1B2A10; }
+html:not([data-theme]) .shop-mission.week { --ink: #1B2A10; --muted: #34491A; --h-ink: #1B2A10; --h-muted: #34491A; --accent-text: #1B2A10; --surface: #F5FCE0; --h-card: #F5FCE0; --h-raised: #F5FCE0; --sunk: rgba(27, 42, 16, .16); --line: #8DB322; --h-line: #8DB322; --h-edge: #5E7D0C; }
+html:not([data-theme]) .shop-mission.week :is(.muted, small, .shop-prize, .eyebrow) { color: #1B2A10; }
 html:not([data-theme]) main.h-ent .kshop-grid > * { animation: h-pop .4s var(--h-spring) calc(180ms - var(--h-el, 0ms)) backwards; }
+html:not([data-theme]) main :is(.kcard, .shop-card).flash.flash { box-shadow: 0 0 0 4px var(--accent); animation: h-flash .6s var(--h-spring); }
+@keyframes h-flash { 40% { transform: scale(1.04); } }
 @media (hover: hover) { html:not([data-theme]) .kcard:hover { transform: translateY(-2px); } html:not([data-theme]) .kcard { transition: transform .15s var(--h-out), border-color .2s; } }
 @media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.gry-tiles > *, .gry-tile-art, .hd-t, .rk-pos, .kshop-grid > *, .kcard, .shop-card) { animation: none !important; } html:not([data-theme]) :is(.gry-tile, .kcard, .hd-k, .gry-ic, .fchip, .kshop-tab) { transition: none; transform: none !important; } }
 html.calm :is(.gry-tiles > *, .gry-tile-art, .hd-t, .rk-pos, .kshop-grid > *, .kcard, .shop-card) { animation: none !important; }
@@ -11589,7 +11612,7 @@ html.calm :is(.gry-tile, .kcard, .hd-k, .gry-ic, .fchip, .kshop-tab) { transform
   // Wpisywanie przepisuje tylko bieżący wiersz (bez przebudowy widoku).
   function hdPaintRow() {
     const d = HD.d, tiles = $("main").querySelectorAll(".hd-row.cur .hd-t");
-    tiles.forEach((t, i) => { const L = HD.wpis[i] || ""; t.textContent = L; t.classList.toggle("fill", !!L); t.setAttribute("aria-label", hdLabel(L)); });
+    tiles.forEach((t, i) => { const L = HD.wpis[i] || ""; t.classList.toggle("h2-typed", !!L && !t.textContent); t.textContent = L; t.classList.toggle("fill", !!L); t.setAttribute("aria-label", hdLabel(L)); });
     hdSave();
     if (d && HD.wpis.length < d.dlugosc) hdSay("");
   }
