@@ -28,6 +28,10 @@ for (const dark of [false, true]) {
   ok(`${n}: karta „Dziś do powtórki” 3D w pomarańczowym, liczba i nadtytuł czytelne`, hero.bb === "6px" && cr(hero.num, hero.bg) >= 4.5 && cr(hero.ey, hero.bg) >= 4.5, hero);
   const cut = await p.locator(".rv-box span").evaluateAll((ss) => ss.filter((s) => s.scrollWidth > s.clientWidth + 1).map((s) => s.textContent));
   ok(`${n}: podpisy pudełek nie są ucięte`, cut.length === 0, cut);
+  const hy = await p.locator(".rv-box span").evaluateAll((ss) => ss.filter((s) => { const r = document.createRange(); r.selectNodeContents(s); return r.getClientRects().length > 1 && s.textContent.trim().split(/\s+/).length === 1; }).map((s) => s.textContent));
+  ok(`${n}: podpisy pudełek bez dzielenia wyrazów`, hy.length === 0, hy);
+  const gm = await p.locator(".gry-mini-b").first().evaluate((e) => getComputedStyle(e).borderBottomWidth).catch(() => "brak");
+  ok(`${n}: kafle „Powtarzaj grając” 3D`, gm === "5px" || gm === "brak", gm);
   await p.getByRole("button", { name: /Zaczynamy/ }).first().click(); await p.locator(".lp").waitFor({ timeout: 15000 }); await p.waitForTimeout(500);
   const face = await p.locator(".lp-sw.top .face").first().evaluate((e) => getComputedStyle(e).borderBottomWidth);
   ok(`${n}: fiszka jako karta 3D (dół 6 px)`, face === "6px", face);

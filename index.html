@@ -4622,12 +4622,18 @@ html:not([data-theme]) .rv-hero .eyebrow { color: var(--h-rv-ink); }
 html:not([data-theme]) .rv-hero .sk-bignum b { color: var(--h-rv-num); font-size: 3rem; }
 html:not([data-theme]) .rv-hero .rv-meta { border-top: 2px dashed var(--h-rv-line); }
 html:not([data-theme]) .rv-box { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: 16px; background: var(--surface); }
-html:not([data-theme]) .rv-box.top { background: color-mix(in srgb, var(--h-lime) 35%, var(--surface)); border-color: color-mix(in srgb, var(--h-lime) 70%, var(--h-line)); }
+html:not([data-theme]) .rv-box.top { background: color-mix(in srgb, var(--h-lime) 45%, var(--surface)); border-color: color-mix(in srgb, var(--h-lime) 75%, var(--h-line)); }
+html:not([data-theme]) .rv-box.top b, html:not([data-theme]) .rv-box.top span { color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) .rv-box.top { background: #2B3A12; border-color: #5D7A1E; }
+html[data-green="dark"]:not([data-theme]) .rv-box.top b { color: #CDF25E; }
 html:not([data-theme]) .rv-box.new { border-style: dashed; border-bottom-style: solid; }
 html:not([data-theme]) .rv-box { padding-left: 1px; padding-right: 1px; min-width: 0; }
-html:not([data-theme]) .rv-box span { white-space: normal; line-height: 1.15; font-size: .68rem; text-align: center; overflow-wrap: anywhere; hyphens: auto; }
+html:not([data-theme]) .rv-box span { white-space: normal; line-height: 1.15; font-size: .7rem; text-align: center; }
+/* Na telefonie pudełka w dwóch rzędach (4 + 3), żeby podpisy mieściły się całymi wyrazami. */
+@media (max-width: 520px) { html:not([data-theme]) .rv-track { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; } html:not([data-theme]) .rv-track::before { display: none; } html:not([data-theme]) .rv-box { padding: 8px 2px 6px; } html:not([data-theme]) .rv-box span { font-size: .74rem; } }
 /* Fiszka: karta 3D (grubszy dół), odwrotna strona w zieleni, stos kart pod spodem. Obrót zostaje jak był (rotateY). */
 html:not([data-theme]) .lp-sw .face { border: 2px solid var(--h-line); border-bottom: 6px solid var(--h-edge); border-radius: 24px; }
+html[data-green="dark"]:not([data-theme]) .lp-sw .face.back { background-color: #1D4A30 !important; border-color: #2F7A4D !important; border-bottom-color: #1F8F52 !important; }
 html:not([data-theme]) .lp-sw .face.back { background-color: var(--h-acc-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom-color: color-mix(in srgb, var(--accent) 55%, var(--h-edge)); }
 html:not([data-theme]) .lp-sw.under, html:not([data-theme]) .lp-sw.under2 { border: 2px solid var(--h-line); border-radius: 24px; }
 /* Oceny: cztery kolorowe klawisze 3D (nie pamiętam → łatwe). */
@@ -4639,8 +4645,18 @@ html:not([data-theme]) .sk-grade4 .opt.g-easy { --c: var(--h-blue); --cs: var(--
 html:not([data-theme]) .sk-grade4 .opt .k { background: var(--c); color: var(--surface); border: 0; }
 html[data-green="dark"]:not([data-theme]) .sk-grade4 .opt .k { color: #10231A; }
 html:not([data-theme]) .sk-grade4 .opt.right { background: var(--cs); color: var(--ink); border-color: var(--c); box-shadow: inset 0 0 0 2px var(--c); }
-html:not([data-theme]) .sk-grade4 .opt.right .k, html:not([data-theme]) .sk-grade4 .opt .k { background: var(--c); border-color: var(--c); }
-html:not([data-theme]) .sk-grade4 .opt:active:not([disabled]) { transform: translateY(3px); border-bottom-width: 2px; margin-top: 3px; }
+html:not([data-theme]) .sk-grade4 .opt.right .k { background: var(--c); border-color: var(--c); }
+html:not([data-theme]) .sk-grade4 .opt:active:not([disabled]) { transform: translateY(3px); }
+html:not([data-theme]) .sk-grade4:has(.opt.right) .opt:not(.right) { opacity: .5; }
+html:not([data-theme]) .sk-grade4 .opt.right { position: relative; }
+html:not([data-theme]) .sk-grade4 .opt.right::after { content: "✓"; position: absolute; top: 6px; right: 10px; font-weight: 800; color: var(--c); }
+html:not([data-theme]) .sk-grade4 .opt:focus-visible { outline: 3px solid var(--c); outline-offset: 3px; }
+/* Stos kart pod fiszką także w zwykłej powtórce (gdy nie ma prawdziwych kart pod spodem). */
+html:not([data-theme]) .lp-swipe:not(:has(.lp-sw.under))::before { content: ""; position: absolute; inset: 0; border: 2px solid var(--h-line); border-radius: 24px; background: var(--surface); translate: 0 12px; scale: .94; opacity: .8; }
+/* „Powtarzaj grając”: kafle gier 3D. */
+html:not([data-theme]) .gry-mini-b { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 18px; transition: transform .08s ease, border-color .15s; }
+html:not([data-theme]) .gry-mini-b:active:not([disabled]) { transform: translateY(3px); }
+html:not([data-theme]) .gry-mini-b .ic { font-size: 1.8rem; }
 </style>
 
 <header class="bar"><div class="wrap">
