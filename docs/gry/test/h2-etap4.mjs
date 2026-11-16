@@ -10,9 +10,9 @@ const cr = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b
 async function play(p, max = 60, onFb) {
   for (let i = 0; i < max; i++) {
     if (await p.locator(".lp-done-screen").count()) return true;
-    const opt = p.locator(".lp-opts .opt:not([disabled])").first();
-    if (await opt.count()) { await opt.click(); await p.waitForTimeout(250); if (onFb && await p.locator(".lp-fbar .v").count()) await onFb(); }
-    const own = p.locator(".lp-stage button:not([disabled])").filter({ hasText: /^(Wiedziałem|Pokaż|Sprawdź|Odsłoń|Gotowe|Rozumiem)/ }).first();
+    const opt = p.locator(".lp-opts .opt:not([disabled]):not(.sel), .lp-bank .opt:not([disabled]):not(.sel)").first();
+    if (await opt.count()) { await opt.click(); await p.waitForTimeout(120); const ck = p.locator('.lp-bottom [data-conf="1"]:not([disabled]), .lp-bottom .lp-cta:not([disabled]):not([hidden])').filter({ hasText: /^(Sprawdź|Pewny)/ }).first(); if (await ck.count()) await ck.click(); /* UX-3 etap 3: zaznacz + Sprawdź */ await p.waitForTimeout(250); if (onFb && await p.locator(".lp-fbar .v").count()) await onFb(); }
+    const own = p.locator(".lp-stage button:not([disabled]), .lp-bottom .lp-barx button:not([disabled])").filter({ hasText: /^(Wiedziałem|Pokaż|Sprawdź|Odsłoń|Gotowe|Rozumiem)/ }).first(); /* UX-3: przyciski karty w dolnym pasku */
     if (!(await p.locator(".lp-opts .opt").count()) && await own.count()) { await own.click(); await p.waitForTimeout(250); }
     const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])").first();
     if (await cta.count()) { await cta.click(); await p.waitForTimeout(250); } else await p.waitForTimeout(200);
@@ -33,9 +33,9 @@ for (const dark of [false, true]) {
     // UX-3: werdykt jest w dolnym pasku (.lp-fbar w .lp-bottom), pasek barwi się na zielono / czerwono.
     const r = await p.locator(".lp-bottom").evaluate((e) => { const c = getComputedStyle(e), f = getComputedStyle(e.querySelector(".lp-fbar .v")); return { cls: e.className, bg: c.backgroundColor, bw: c.borderTopWidth, col: f.color }; });
     fbSeen = r; await p.screenshot({ path: `${OUT}/h2e4-${n}-odpowiedz.png` });
-    wide = await p.evaluate(() => { const xp = document.querySelector(".lp-xpchip"); return { sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), xp: !!xp && xp.getBoundingClientRect().width > 0 }; });
+    wide = await p.evaluate(() => { const xp = document.querySelector(".lp-xpchip"); return { sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), xp: !!xp && xp.getBoundingClientRect().width > 2 }; });
   });
-  ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px, pigułka XP widoczna`, (wide.sw <= 376) && wide.bar >= 72 && wide.xp, wide);
+  ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px (UX-3: bez stałej pigułki XP w nagłówku)`, (wide.sw <= 376) && wide.bar >= 72 && !wide.xp, wide);
   ok(`${n}: informacja zwrotna jako kolorowy dolny pasek z obrysem i czytelnym nagłówkiem`, fbSeen && fbSeen.bw === "2px" && cr(fbSeen.col, fbSeen.bg) >= 4.5, fbSeen);
   ok(`${n}: lekcję da się przejść do ekranu końcowego`, done, await p.locator(".lp-stage").innerText().catch(() => ""));
   if (done) {
@@ -74,7 +74,7 @@ for (const dark of [false, true]) {
     if (await p.locator(".lp-done-screen .lp-bigstars").count()) { stars = true; break; }
     if (!part && await p.locator(".lp-done-screen").count()) { part = await p.locator(".lp-done-screen .lp-stas").getAttribute("data-mood").catch(() => null); await p.screenshot({ path: `${OUT}/h2e4-quiz-czesc.png` }); }
     const bad = p.locator(".lp-opts .opt:not([disabled])").filter({ hasText: /Zła/ }).first();
-    if (await bad.count()) { await bad.click(); await p.waitForTimeout(200); }
+    if (await bad.count()) { await bad.click(); await p.waitForTimeout(120); const g = p.locator('.lp-bottom [data-conf="0"]:not([disabled])'); if (await g.count()) await g.click(); /* UX-3: pewność w dolnym pasku */ await p.waitForTimeout(200); }
     const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])").first();
     if (await cta.count()) { await cta.click(); await p.waitForTimeout(200); } else await p.waitForTimeout(150);
   }
