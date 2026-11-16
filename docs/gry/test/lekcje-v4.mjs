@@ -75,7 +75,7 @@ while (guard++ < 30) {
     let pick = -1;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (!wrongDone ? /Zła/.test(t) : /OK /.test(t)) { pick = i; break; } }
     await opts.nth(pick).click(); await P.waitForTimeout(350);
-    if (!wrongDone) { wrongDone = true; const fb = await card.innerText(); ok("zła odpowiedź: why + „Czemu nie” + wróci", /Bo B\./.test(fb) && /Czemu nie/.test(fb) && /wróci jeszcze w tej sesji/.test(fb), fb); await shotX(P, "v4-rvmc-zle"); }
+    if (!wrongDone) { wrongDone = true; const fb = (await card.innerText()) + "\n" + (await P.locator(".lp-fbar").innerText()); /* UX-3: werdykt w dolnym pasku */ ok("zła odpowiedź: why + „Czemu nie” + wróci", /Bo B\./.test(fb) && /Czemu nie/.test(fb) && /wróci jeszcze w tej sesji/.test(fb), fb); await shotX(P, "v4-rvmc-zle"); }
     else if (!shotMc) { shotMc = true; await shotX(P, "v4-rvmc-dobrze"); }
     await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
   } else if (type === "grade4") {
@@ -190,7 +190,7 @@ while (guard++ < 40) {
     const task = await card.locator(".q").innerText(); numSeen.push(task);
     await card.locator("input.lp-num").fill(numSeen.length === 1 ? "1" : String(solve(task)).replace(".", ","));
     await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
-    if (numSeen.length === 1) { ok("num: zła odpowiedź pokazuje wynik i drugą szansę", /Wynik: \d+ zł/.test(await card.innerText()) && /nowymi liczbami/.test(await card.innerText()), await card.innerText()); await shotX(P, "v4-num-zle"); }
+    if (numSeen.length === 1) { const fbn = await P.locator(".lp-fbar").innerText(); /* UX-3: werdykt w dolnym pasku */ ok("num: zła odpowiedź pokazuje wynik i drugą szansę", /Wynik: \d+ zł/.test(fbn) && /nowymi liczbami/.test(fbn), await card.innerText()); await shotX(P, "v4-num-zle"); }
   } else if (type === "recap") {
     await card.locator("textarea").fill("Coś tam."); await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
   }
@@ -225,7 +225,7 @@ while (guard++ < 60) {
   } else if (type === "num") {
     rvNum = await card.locator(".q").innerText();
     await card.locator("input.lp-num").fill(String(solve(rvNum))); await P.locator(".lp-cta").click(); await P.waitForTimeout(300);
-    if (!/Dobrze/.test(await card.innerText())) rvTypes.push("NUM-ZLE:" + await card.innerText());
+    if (!/Dobrze/.test((await card.innerText()) + (await P.locator(".lp-fbar").innerText()))) /* UX-3: werdykt w dolnym pasku */ rvTypes.push("NUM-ZLE:" + await card.innerText());
     await shotX(P, "v4-rv-num"); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
   } else if (type === "grade4") { await P.locator(".lp-cta").click(); await P.waitForTimeout(250); await P.getByRole("button", { name: /Pamiętam/ }).first().click(); await P.waitForTimeout(600); }
   else break;

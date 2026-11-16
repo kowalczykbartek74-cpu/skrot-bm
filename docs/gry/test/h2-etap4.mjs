@@ -11,7 +11,7 @@ async function play(p, max = 60, onFb) {
   for (let i = 0; i < max; i++) {
     if (await p.locator(".lp-done-screen").count()) return true;
     const opt = p.locator(".lp-opts .opt:not([disabled])").first();
-    if (await opt.count()) { await opt.click(); await p.waitForTimeout(250); if (onFb && await p.locator(".lp-fb").count()) await onFb(); }
+    if (await opt.count()) { await opt.click(); await p.waitForTimeout(250); if (onFb && await p.locator(".lp-fbar .v").count()) await onFb(); }
     const own = p.locator(".lp-stage button:not([disabled])").filter({ hasText: /^(Wiedziałem|Pokaż|Sprawdź|Odsłoń|Gotowe|Rozumiem)/ }).first();
     if (!(await p.locator(".lp-opts .opt").count()) && await own.count()) { await own.click(); await p.waitForTimeout(250); }
     const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])").first();
@@ -30,12 +30,13 @@ for (const dark of [false, true]) {
   let fbSeen = null, wide = { sw: 0, bar: 999 };
   const done = await play(p, 60, async () => {
     if (fbSeen) return;
-    const r = await p.locator(".lp-fb").first().evaluate((e) => { const c = getComputedStyle(e), f = getComputedStyle(e.firstElementChild || e); return { cls: e.className, bg: c.backgroundColor, bw: c.borderTopWidth, col: f.color }; });
+    // UX-3: werdykt jest w dolnym pasku (.lp-fbar w .lp-bottom), pasek barwi się na zielono / czerwono.
+    const r = await p.locator(".lp-bottom").evaluate((e) => { const c = getComputedStyle(e), f = getComputedStyle(e.querySelector(".lp-fbar .v")); return { cls: e.className, bg: c.backgroundColor, bw: c.borderTopWidth, col: f.color }; });
     fbSeen = r; await p.screenshot({ path: `${OUT}/h2e4-${n}-odpowiedz.png` });
     wide = await p.evaluate(() => { const xp = document.querySelector(".lp-xpchip"); return { sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), xp: !!xp && xp.getBoundingClientRect().width > 0 }; });
   });
   ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px, pigułka XP widoczna`, (wide.sw <= 376) && wide.bar >= 72 && wide.xp, wide);
-  ok(`${n}: informacja zwrotna jako kolorowy panel z obrysem i czytelnym nagłówkiem`, fbSeen && fbSeen.bw === "2px" && cr(fbSeen.col, fbSeen.bg) >= 4.5, fbSeen);
+  ok(`${n}: informacja zwrotna jako kolorowy dolny pasek z obrysem i czytelnym nagłówkiem`, fbSeen && fbSeen.bw === "2px" && cr(fbSeen.col, fbSeen.bg) >= 4.5, fbSeen);
   ok(`${n}: lekcję da się przejść do ekranu końcowego`, done, await p.locator(".lp-stage").innerText().catch(() => ""));
   if (done) {
     await p.waitForTimeout(150);
