@@ -35,7 +35,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   ok(`${w} Dziś: bez poziomego przewijania`, sw);
   await p.evaluate(() => { location.hash = "#/profil"; }); await p.waitForTimeout(900);
   const m = await txt(p, ".sk-profile");
-  ok(`${w} Więcej: karta rangi z XP do poziomu 6 i nagrodą na poziomie 6 (UX-5: wybór Kokardka/Nokturn)`, /Ogarnięty/.test(m) && /250 \/ 500 XP do poziomu 6/.test(m) && /Następna nagroda: motyw (Kokardka|Nokturn)/.test(m) && /brakuje 250 XP/.test(m), m);
+  ok(`${w} Więcej: karta rangi z XP do poziomu 6 i nagrodą na poziomie 6 (UX-5: wybór Kokardka/Nokturn)`, /Ogarnięty/.test(m) && /250 \/ 500 XP do poziomu 6/.test(m) && /Poziom 6: wybierz Kokardka albo Nokturn/.test(m) && /brakuje 250 XP/.test(m), m);
   await shot(p, `wiecej-${w}`);
   if (w === 390) {
     await p.locator(".lv-howlink").click(); await p.waitForTimeout(400);
@@ -109,7 +109,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   const p = await page(b, { lang: "en", ls: { "mock-progress": prog(1250), "mock-saldo": "85" } });
   await p.goto(BASE + "index.html#/profil"); await p.waitForTimeout(2500);
   const m = await txt(p, ".sk-profile");
-  ok("EN: karta rangi po angielsku", /Your level/i.test(m) && /lvl 5/.test(m) && /Next reward/.test(m) && !/Następna|poziomu|brakuje/.test(m), m);
+  ok("EN: karta rangi po angielsku", /Your level/i.test(m) && /lvl 5/.test(m) && /Level 6: pick Bow or Nocturne/.test(m) && !/Następna|poziomu|brakuje/.test(m), m);
   await shot(p, "en-wiecej-390");
   await p.locator(".lv-howlink").click(); await p.waitForTimeout(400);
   const how = await txt(p, ".lv-how-modal");
