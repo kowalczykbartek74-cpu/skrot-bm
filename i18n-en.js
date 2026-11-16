@@ -5577,9 +5577,14 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wszystkie kamienie milowe zdobyte.": "All milestones reached.",
 "Karta 5 minut": "5-minute card",
 "Seria +1": "Streak +1",
-"{0} z rzędu!": "{0} in a row!",
 "Kamień milowy: {0} dni": "Milestone: {0} days",
-"Seria: {0}": "Streak: {0}"
+"Seria: {0}": "Streak: {0}",
+"bez nauki": "no studying",
+"dziś do zrobienia": "today, still to do",
+"Bez nauki dziś i bez zamrożenia seria spada do 0 o północy. Zamrożenia chronią do 2 dni z rzędu (np. weekend), a przerwy w zajęciach nie zrywają serii.": "No studying today and no freeze, and your streak drops to 0 at midnight. Freezes protect up to 2 days in a row (e.g. a weekend), and breaks from classes don't break your streak.",
+"Wróć jutro, a seria urośnie do {0}.": "Come back tomorrow and your streak grows to {0}.",
+"dzień z rzędu!": "day in a row!",
+"dni z rzędu!": "days in a row!"
 // koniec ux-2
 },
 "plural": {

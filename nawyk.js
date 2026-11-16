@@ -23,6 +23,10 @@
     lgZamroz: "zamrożony",
     lgPrzerwa: "przerwa w zajęciach",
     lgDzis: "dziś",
+    lgBrak: "bez nauki",
+    lgDzisTodo: "dziś do zrobienia",
+    zasady: "Bez nauki dziś i bez zamrożenia seria spada do 0 o północy. Zamrożenia chronią do 2 dni z rzędu (np. weekend), a przerwy w zajęciach nie zrywają serii.",
+    jutroSeria: "Wróć jutro, a seria urośnie do {0}.",
     dzienNauka: "{0}: nauka",
     dzienZamroz: "{0}: chroniony zamrożeniem",
     dzienPrzerwa: "{0}: przerwa",
@@ -40,7 +44,6 @@
     zamknij: "Zamknij",
     uczSie: "Karta 5 minut",
     seriaPlus: "Seria +1",
-    seriaZRzedu: "{0} z rzędu!",
     kamienMilowy: "Kamień milowy: {0} dni",
     tydzienTen: "Ten tydzień",
     seriaN: "Seria: {0}",
@@ -65,18 +68,34 @@
       const x = (progress && progress.xp) || {};
       return { xp: x.d === t ? Math.max(0, x.n || 0) : 0, cel };
     },
-    // Dni nauki: zapisane w progress.nd (od tej pętli) + ostatni dzień XP + przybliżenie z serii (dni od streak.d − n + 1
-    // do streak.d bez dni zamrożonych i przerw), dla kont sprzed progress.nd.
+    // Dni nauki: zapisane w progress.nd (od tej pętli) + ostatni dzień XP + uzupełnienie bieżącej serii (niżej).
     dniNauki(progress, zamrozone = [], przerwa = () => false) {
       const set = new Set((progress && Array.isArray(progress.nd) ? progress.nd : []).filter(Number.isFinite));
       const x = progress && progress.xp, st = progress && progress.streak;
       if (x && Number.isFinite(x.d) && (x.n || 0) > 0) set.add(x.d);
-      if (st && Number.isFinite(st.d) && st.n > 0 && !(progress.nd && progress.nd.length)) {
-        const zam = new Set(zamrozone);
+      // Bieżąca seria ma zawsze dokładnie streak.n dni nauki: wstecz od streak.d bierzemy dni z nd, a gdy nd ich nie zna
+      // (konto sprzed progress.nd), dni, które nie są zamrożone ani przerwą. Dzięki temu kalendarz zgadza się z liczbą serii.
+      if (st && Number.isFinite(st.d) && st.n > 0) {
+        const zam = new Set(zamrozone), znane = new Set(set);
         let left = st.n;
-        for (let d = st.d; left > 0 && d > st.d - 400; d--) { if (zam.has(d) || przerwa(d)) continue; set.add(d); left--; }
+        for (let d = st.d; left > 0 && d > st.d - 400; d--) {
+          if (znane.has(d)) { left--; continue; }
+          if (zam.has(d) || przerwa(d)) continue;
+          set.add(d); left--;
+        }
       }
       return set;
+    },
+    // Ile dni nauki ma bieżąca seria w kalendarzu (do sprawdzenia zgodności z liczbą serii).
+    dniSerii(progress, nauka, zamrozone = [], przerwa = () => false) {
+      const st = progress && progress.streak; if (!st || !(st.n > 0)) return 0;
+      const zam = new Set(zamrozone); let k = 0;
+      for (let d = st.d; d > st.d - 400; d--) { if (nauka.has(d)) k++; else if (!(zam.has(d) || przerwa(d))) break; }
+      return k;
+    },
+    // Godzina w Warszawie (stan „do północy” od 18:00 czasu polskiego, niezależnie od strefy telefonu).
+    godzinaPL(now = new Date()) {
+      try { return +new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Europe/Warsaw" }).format(now); } catch (e) { return now.getHours(); }
     },
     // Dopisanie dnia do progress.nd (najwyżej 120 ostatnich) i najlepszej serii; null = nic do zmiany.
     seriaPatch(progress, t, sn) {
@@ -124,6 +143,7 @@
     snow: '<path d="M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5"/><path d="M9.5 3.5L12 6l2.5-2.5M9.5 20.5L12 18l2.5 2.5"/>',
     check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.5"/>',
     lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    "ux2-klepsydra": '<path d="M6 3h12M6 21h12"/><path d="M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/>',
     "ux2-medal": '<circle cx="12" cy="14" r="6"/><path d="M8.5 9L6 2h4l2 5M15.5 9L18 2h-4l-2 5"/><path d="M12 11.5v5"/>',
   };
   const progress = () => A().S?.progress || {};
@@ -155,7 +175,7 @@
   function stanTeraz() {
     const ap = A(), t = today(), p = progress(), sk = ap.streakN ? ap.streakN() : 0;
     const doneToday = !!(p.streak && p.streak.d === t && (p.streak.n || 0) > 0);
-    return { t, sk, doneToday, stan: L.stanDnia(sk, doneToday, new Date().getHours()) };
+    return { t, sk, doneToday, stan: L.stanDnia(sk, doneToday, L.godzinaPL()) };
   }
 
   // ---------------------------------------------------------------- pierścień celu dnia (20 px)
@@ -181,6 +201,7 @@
     return h("button", { type: "button", class: cls, title: tytul, "aria-haspopup": "dialog", onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
       ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
       stan === "risk" ? h("span", { class: "nw-risk", text: " " + PL.doPolnocy }) : null,
+      stan === "todo" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : null,
       rg);
   }
 
@@ -205,7 +226,7 @@
     return h("div", { class: "nw-cal", role: "group", "aria-label": PL.ostatnie4 },
       h("div", { class: "nw-cal-row nw-cal-head", "aria-hidden": "true" }, lt.map((x) => h("span", { text: x }))),
       cal.map((row) => h("div", { class: "nw-cal-row" }, row.map((c) => {
-        const el = h("span", { class: `nw-day s-${c.s}${c.dzis ? " dzis" : ""}`, role: "img", "aria-label": fmt(lab[c.s], dzienLabel(c.d)) + (c.dzis ? ` (${PL.lgDzis})` : "") });
+        const el = h("span", { class: `nw-day s-${c.s}${c.dzis ? " dzis" + (c.s === "brak" ? " todo" : "") : ""}`, role: "img", "aria-label": fmt(lab[c.s], dzienLabel(c.d)) + (c.dzis ? ` (${PL.lgDzis})` : "") });
         if (c.s === "nauka") el.append(svg('<path d="M7 12.5l3.2 3.2L17 9"/>', 14));
         else if (c.s === "zamroz") el.append(svg(IKONY.snow, 14));
         return el;
@@ -213,7 +234,9 @@
       h("div", { class: "nw-legend" },
         h("span", {}, h("i", { class: "nw-day s-nauka mini", "aria-hidden": "true" }), h("span", { text: PL.lgNauka })),
         h("span", {}, h("i", { class: "nw-day s-zamroz mini", "aria-hidden": "true" }), h("span", { text: PL.lgZamroz })),
-        h("span", {}, h("i", { class: "nw-day s-przerwa mini", "aria-hidden": "true" }), h("span", { text: PL.lgPrzerwa }))));
+        h("span", {}, h("i", { class: "nw-day s-przerwa mini", "aria-hidden": "true" }), h("span", { text: PL.lgPrzerwa })),
+        h("span", {}, h("i", { class: "nw-day s-brak mini", "aria-hidden": "true" }), h("span", { text: PL.lgBrak })),
+        h("span", {}, h("i", { class: "nw-day s-brak dzis todo mini", "aria-hidden": "true" }), h("span", { text: PL.lgDzisTodo }))));
   }
   function kamienieEl(n) {
     const { h } = A(), nx = L.nastepnyKamien(n);
@@ -234,6 +257,7 @@
           h("div", { class: "nw-okno-h" }, h("span", { class: "eyebrow", text: PL.oknoTytul }), h("h2", { class: "nw-okno-n" }, h("span", { class: "num", text: String(sk) }), " ", h("span", { class: "nw-okno-w", text: ap.plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu") })))),
         h("p", { class: "nw-okno-opis" + (stan === "risk" ? " risk" : ""), text: opis }),
         h("div", { class: "nw-goal" }, ring(g.xp / g.cel, 28), h("span", { text: fmt(PL.celDnia, g.xp, g.cel) })),
+        h("p", { class: "nw-zasady" }, svg(IKONY["ux2-klepsydra"], 18), h("span", { text: PL.zasady })),
         h("h3", { class: "nw-sub", text: PL.ostatnie4 }), kalendarzEl(t, 4),
         h("div", { class: "nw-zam" },
           svg(IKONY.snow, 22, "nw-zam-ico"),
@@ -270,11 +294,12 @@
     const box = h("section", { class: "nw-seria" + (first && !reduced() ? " anim" : "") + (km ? " km" : ""), role: "status", "aria-label": PL.seriaPlus },
       h("span", { class: "nw-seria-flame", "aria-hidden": "true" }, ap.kFlame()),
       h("b", { class: "nw-seria-n num", text: String(n) }),
-      h("p", { class: "nw-seria-t", text: fmt(PL.seriaZRzedu, dni(n)) }),
+      h("p", { class: "nw-seria-t", text: ap.plural(n, "dzień z rzędu!", "dni z rzędu!", "dni z rzędu!") }),
       h("div", { class: "nw-week", role: "group", "aria-label": PL.tydzienTen }, week.map((c, i) => h("span", { class: "nw-wd" },
         h("i", { class: `nw-dot s-${c.s}${c.dzis ? " dzis" : ""}`, role: "img", "aria-label": fmt(lab[c.s], dzienLabel(c.d)), style: `--i:${i}` }),
         h("small", { "aria-hidden": "true", text: lt[i] })))),
       km ? h("p", { class: "nw-km" }, svg(IKONY["ux2-medal"], 18), h("span", { text: fmt(PL.kamienMilowy, n) })) : null,
+      h("p", { class: "nw-jutro", text: fmt(PL.jutroSeria, dni(n + 1)) }),
       kamienieEl(n));
     if (first && km) setTimeout(() => konfetti(box), 250);
     return box;
@@ -300,6 +325,21 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
   #main .greet .rk-compact .rk-lv { display: none; }
   #main .greet .rk-compact .rk-name { display: inline-block; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
 }
+/* < 400 px: ranga jako sama odznaka z poziomem (nazwa zostaje dla czytników i w oknie rang), seria i monety w tym samym wierszu */
+@media (max-width: 399px) {
+  #main .greet .rk-compact .rk-main { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  #main .greet .rk-compact .rk { padding: 0 !important; min-width: 44px; justify-content: center; }
+  #main .greet .rk-compact .rk-badge .n { display: grid !important; font-size: 12px; min-width: 20px; height: 20px; right: -7px; bottom: -6px; }
+  #main .greet .xp-chip.nw-streak { gap: 4px; padding-left: 8px !important; padding-right: 8px !important; }
+  main[data-view="home"] .greet .rk-line, main[data-view="home"] .greet .rk-chips { gap: 5px; }
+}
+.xp-chip.nw-streak .nw-klep { color: inherit; opacity: .85; }
+.nw-zasady { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-size: .85rem; color: var(--muted); }
+.nw-zasady .nw-ico { margin-top: 1px; }
+.nw-day.s-brak:not(.s-przyszly) { background: var(--sunk, var(--h-line)); }
+.nw-day.dzis.todo { outline: 2.5px dashed var(--warn); outline-offset: 2px; background: var(--warn-soft); }
+.nw-day.mini.dzis.todo { outline-width: 1.5px; outline-offset: 1px; }
+.nw-jutro { margin: 2px 0 0; font-weight: 700; color: var(--h-acc, var(--accent-text)); }
 main[data-view="home"] .greet .rk-line.rk-compact { flex-wrap: wrap; row-gap: 8px; }
 #main .greet .rk-compact .rk-lv { font-size: 12px; }
 main[data-view="home"] .greet .rk-compact .rk-chips { flex-wrap: nowrap; }
@@ -361,10 +401,11 @@ main[data-view="home"] .greet .rk-compact .rk-chips { flex-wrap: nowrap; }
 .nw-seria .nw-steps-box { width: 100%; max-width: 360px; margin-top: 6px; }
 .nw-seria.anim .nw-seria-flame { animation: nw-pop .6s var(--h-spring, ease-out) both; }
 .nw-seria.anim .nw-seria-n { animation: nw-up .5s .15s var(--h-out, ease-out) both; }
-.nw-seria.anim .nw-dot.s-nauka.dzis { animation: nw-pop .5s calc(.35s + var(--i) * .05s) var(--h-spring, ease-out) both; }
+.nw-seria.anim .nw-dot.s-nauka.dzis { animation: nw-dot .5s calc(.35s + var(--i) * .05s) var(--h-spring, ease-out) both; }
 .nw-conf { position: absolute; inset: 0; pointer-events: none; }
 .nw-conf i { position: absolute; top: -10px; width: 8px; height: 12px; border-radius: 2px; animation: nw-fall 2.2s var(--d) ease-in forwards; }
 .nw-conf i.c0 { background: var(--h-acc, var(--accent)); } .nw-conf i.c1 { background: var(--h-lime, var(--accent-soft)); } .nw-conf i.c2 { background: var(--h-orange, var(--warn)); } .nw-conf i.c3 { background: var(--h-blue, var(--accent-text)); }
+@keyframes nw-dot { from { transform: scale(.4); } to { transform: none; } }
 @keyframes nw-pop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes nw-up { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes nw-fall { to { transform: translate(var(--x), 320px) rotate(var(--r)); opacity: 0; } }
@@ -381,6 +422,17 @@ html.calm .nw-conf { display: none; }
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
   W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki });
+  // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
+  let stanKey = null;
+  function tik() {
+    const ap = A(); if (!ap.S || !document.querySelector(".nw-streak")) return;
+    const s = stanTeraz(), k = s.t + ":" + s.stan;
+    if (stanKey && stanKey.split(":")[0] !== String(s.t)) { stanKey = k; try { ap.render?.(); } catch (e) {} return; }
+    if (k !== stanKey) { stanKey = k; odswiezPigulki(); }
+  }
+  setInterval(tik, 60000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") tik(); });
+  W.ZD_NAWYK.tik = tik;
   // Aplikacja mogła już narysować ekran ze starą pigułką (plik wczytuje się po niej).
   try { A().render?.(); } catch (e) {}
 })();

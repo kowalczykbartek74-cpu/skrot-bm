@@ -21,7 +21,8 @@ export async function open(b, o = {}) {
   if (o.fonts !== false) await p.context().route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//, (r) => r.continue());
   if (o.motion) await p.emulateMedia({ reducedMotion: o.motion });
   await p.goto(BASE + "index.html" + (o.query || "?ld=1") + "#" + (o.hash || "/"));
-  await p.waitForTimeout(o.wait ?? 2600);
+  if (o.wait !== 0) await p.locator(o.czekaj || "#main .greet .nw-streak, #main .greet").first().waitFor({ timeout: 20000 }).catch(() => {});
+  await p.waitForTimeout(o.wait ?? 1800);
   if (o.calm) await p.evaluate(() => document.documentElement.classList.add("calm"));
   return p;
 }

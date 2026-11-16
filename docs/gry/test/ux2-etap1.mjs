@@ -25,6 +25,8 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
     ok(`K1 ${w}px 17:00: pigułka szara (streak-todo) z title`, a && /streak-todo/.test(a.cls) && a.title === "Ucz się dziś, żeby seria nie spadła" && /grayscale/.test(a.flameFilter), a);
     ok(`K2 ${w}px: pierścień celu 20 px z aria-label „Cel dnia: 0/30 XP”`, a?.ring && a.ring.label === "Cel dnia: 0/30 XP" && a.ring.role === "img" && a.ring.w === 20 && a.ring.h === 20, a?.ring);
     ok(`K3 ${w}px: pigułka to button ≥ 44×44`, a?.tag === "BUTTON" && a.w >= 44 && a.h >= 44, a);
+    ok(`K1 ${w}px 17:00: klepsydra w pigułce (stan czytelny bez koloru)`, await p.evaluate(() => !!document.querySelector("#main .greet .nw-streak .nw-klep svg")));
+    ok(`K4 ${w}px 17:00: ranga, monety i seria w jednym wierszu`, await p.evaluate(() => { const t = [...document.querySelectorAll("#main .greet .rk-line > .rk, #main .greet .rk-chips > *")].map((e) => Math.round(e.getBoundingClientRect().top)); return t.length >= 3 && new Set(t).size === 1; }));
     ok(`K4 ${w}px 17:00 ranga „Systematyczny poz. 4”: nic poza ekranem`, (await pozaEkranem(p, "#main .greet, #main .greet *")).length === 0 && !(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)), await pozaEkranem(p, "#main .greet *"));
   }
   await shot(p, `dzis-17-${tag}`);
@@ -35,6 +37,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
   const kr = await kontrast(p, "#main .greet .nw-streak");
   if (w !== 1280) {
     ok(`K1 ${tag} 19:00: streak-risk z „· do północy”, kolory --warn/--warn-soft, kontrast AA`, r && /streak-risk/.test(r.cls) && /· do północy/.test(r.txt) && kr.out.length === 0 && kr.n >= 3, { r, kr });
+    ok(`K4 ${tag} 19:00: „do północy” w tym samym wierszu co ranga i monety`, await p.evaluate(() => { const t = [...document.querySelectorAll("#main .greet .rk-line > .rk, #main .greet .rk-chips > *")].map((e) => Math.round(e.getBoundingClientRect().top)); return new Set(t).size === 1; }));
     ok(`K4 ${tag} 19:00: nic poza ekranem`, (await pozaEkranem(p, "#main .greet *")).length === 0 && !(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)), await pozaEkranem(p, "#main .greet *"));
   }
   await shot(p, `dzis-19-${tag}`);
@@ -77,9 +80,11 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   await p.click("#main .greet .nw-streak"); await p.waitForTimeout(700);
   const m = await p.evaluate(() => { const o = document.querySelector("#layer .nw-okno"); if (!o) return null;
     return { txt: o.innerText.replace(/\s+/g, " "), dni: o.querySelectorAll(".nw-cal .nw-day:not(.mini)").length, nauka: o.querySelectorAll(".nw-cal .s-nauka:not(.mini)").length, zamroz: o.querySelectorAll(".nw-cal .s-zamroz:not(.mini)").length,
-      shop: [...o.querySelectorAll("button")].map((x) => x.innerText.trim()), labels: [...o.querySelectorAll(".nw-cal .nw-day[aria-label]")].slice(-3).map((x) => x.getAttribute("aria-label")) }; });
+      shop: [...o.querySelectorAll("button")].map((x) => x.innerText.trim()), zgodnosc: (() => { const N = window.ZD_NAWYK, p = window.ZD_APP.S.progress, z = window.skrot.sklep.zamrozenia.dni.map((k) => window.ZD_APP.dayN(k)); return [N.L.dniSerii(p, N.L.dniNauki(p, z, N.przerwa), z, N.przerwa), window.ZD_APP.streakN()]; })(), legenda: o.querySelector(".nw-legend").innerText.replace(/\s+/g, " "), labels: [...o.querySelectorAll(".nw-cal .nw-day[aria-label]")].slice(-3).map((x) => x.getAttribute("aria-label")) }; });
   if (lang === "pl" && w === 390 && !dark) {
-    ok("K3 okno „Twoja seria”: seria 6, kalendarz 28 dni (nauka + zamrożony), „Masz 1/2” z przyciskiem do sklepu, najlepsza seria 9", m && /Twoja seria/i.test(m.txt) && /6 dni z rzędu/.test(m.txt) && m.dni === 28 && m.nauka === 5 && m.zamroz === 1 && /Masz 1\/2/.test(m.txt) && m.shop.includes("Kup w sklepie") && /Najlepsza seria: 9 dni/.test(m.txt), m);
+    ok("K3 okno „Twoja seria”: seria 6, kalendarz 28 dni (nauka + zamrożony), „Masz 1/2” z przyciskiem do sklepu, najlepsza seria 9", m && /Twoja seria/i.test(m.txt) && /6 dni z rzędu/.test(m.txt) && m.dni === 28 && m.nauka === 6 && m.zamroz === 1 && /Masz 1\/2/.test(m.txt) && m.shop.includes("Kup w sklepie") && /Najlepsza seria: 9 dni/.test(m.txt), m);
+    ok("K3 kalendarz zgadza się z liczbą serii (dni nauki w bieżącej serii = 6), choć progress.nd nie zna jednego dnia", m.zgodnosc[0] === 6 && m.zgodnosc[1] === 6, m.zgodnosc);
+    ok("K3 legenda: nauka, zamrożony, przerwa, bez nauki, dziś do zrobienia; jedna linia zasad", /bez nauki/.test(m.legenda) && /dziś do zrobienia/.test(m.legenda) && /spada do 0 o północy/.test(m.txt) && /przerwy w zajęciach nie zrywają serii/.test(m.txt), m.legenda);
     ok("K3 każdy dzień kalendarza ma aria-label", m.labels.length === 3 && m.labels.every((x) => /: /.test(x)), m.labels);
   }
   if (lang === "en") ok("EN okno serii: bez polskich tekstów", m && /Your streak/i.test(m.txt) && /days in a row/.test(m.txt) && /You have 1\/2/.test(m.txt) && /Last 4 weeks/.test(m.txt) && !/[ąćęłńóśźż]/i.test(m.txt), m?.txt);
@@ -97,17 +102,17 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   const p = await open(b, { prog: P6done, ...o });
   const r = await p.evaluate(async () => {
     const N = window.ZD_NAWYK, el = N.ekranSerii(); if (!el) return null;
-    const wrap = document.createElement("div"); wrap.id = "nw-test"; wrap.style.cssText = "padding:16px"; wrap.append(el); document.querySelector("#main").prepend(wrap);
-    await new Promise((r) => setTimeout(r, 900));
+    const wrap = document.createElement("div"); wrap.id = "nw-test"; wrap.style.cssText = "padding:16px"; wrap.append(el); document.body.prepend(wrap);
+    await new Promise((r) => setTimeout(r, 1300));
     const fl = el.querySelector(".nw-seria-flame svg").getBoundingClientRect();
     const out = { n: el.querySelector(".nw-seria-n").textContent, t: el.querySelector(".nw-seria-t").textContent, dots: el.querySelectorAll(".nw-dot").length, nauka: el.querySelectorAll(".nw-dot.s-nauka").length,
-      km: el.querySelector(".nw-km")?.textContent || null, steps: [...el.querySelectorAll(".nw-step")].map((s) => s.textContent + (s.classList.contains("on") ? "✓" : "")), flame: [Math.round(fl.width), Math.round(fl.height)],
+      km: el.querySelector(".nw-km")?.textContent || null, jutro: el.querySelector(".nw-jutro")?.textContent, dzisBg: getComputedStyle(el.querySelector(".nw-dot.dzis")).backgroundColor, steps: [...el.querySelectorAll(".nw-step")].map((s) => s.textContent + (s.classList.contains("on") ? "✓" : "")), flame: [Math.round(fl.width), Math.round(fl.height)],
       conf: !!el.querySelector(".nw-conf"), anim: getComputedStyle(el.querySelector(".nw-seria-flame")).animationName, labels: [...el.querySelectorAll(".nw-dot")].every((d) => d.getAttribute("aria-label")),
       drugi: !!N.ekranSerii(), cel: N.celDnia() };
     return out;
   });
   if (nazwa === "zwykle") {
-    ok("K5 ekranSerii(): 7 dni z rzędu, płomień 64 px, 7 kropek z aria-label, kamień milowy 7 z konfetti", r && r.n === "7" && r.t === "7 dni z rzędu!" && r.dots === 7 && r.nauka === 4 && r.labels && r.flame[0] === 64 && r.km === "Kamień milowy: 7 dni" && r.conf && r.steps.join(",") === "3✓,7✓,14,30,50,100", r);
+    ok("K5 ekranSerii(): 7 dni z rzędu, płomień 64 px, 7 kropek z aria-label, kamień milowy 7 z konfetti", r && r.n === "7" && r.t === "dni z rzędu!" && r.jutro === "Wróć jutro, a seria urośnie do 8 dni." && !/rgba\(0, 0, 0, 0\)/.test(r.dzisBg) && r.dots === 7 && r.nauka === 4 && r.labels && r.flame[0] === 64 && r.km === "Kamień milowy: 7 dni" && r.conf && r.steps.join(",") === "3✓,7✓,14,30,50,100", r);
     ok("K5 celDnia() → { xp: 12, cel: 30 }", r && r.cel.xp === 12 && r.cel.cel === 30, r?.cel);
     await shot(p, "ekran-seria-plus1-390-jasny");
     R.pomiary.push(await pomiar(p, "Ekran „Seria +1” 390 jasny", "#nw-test", "#nw-test"));
@@ -119,11 +124,26 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
 }
 {
   const p = await open(b, { prog: { ...P6done, streak: { d: T, n: 5 } }, dark: true });
-  const r = await p.evaluate(async () => { const el = window.ZD_NAWYK.ekranSerii(); const w = document.createElement("div"); w.id = "nw-test"; w.style.cssText = "padding:16px"; w.append(el); document.querySelector("#main").prepend(w); await new Promise((r) => setTimeout(r, 400)); return { km: !!el.querySelector(".nw-km"), conf: !!el.querySelector(".nw-conf") }; });
+  const r = await p.evaluate(async () => { const el = window.ZD_NAWYK.ekranSerii(); const w = document.createElement("div"); w.id = "nw-test"; w.style.cssText = "padding:16px"; w.append(el); document.body.prepend(w); await new Promise((r) => setTimeout(r, 1300)); const dot = el.querySelector(".nw-dot.dzis"); return { km: !!el.querySelector(".nw-km"), conf: !!el.querySelector(".nw-conf"), bg: getComputedStyle(dot).backgroundColor, op: getComputedStyle(dot).opacity }; });
   ok("K5 seria 5 (nie kamień milowy): bez konfetti i bez napisu kamienia", !r.km && !r.conf, r);
+  ok("K5 ciemny: dzisiejsza kropka widoczna (kolor nauki, pełna)", r.bg !== "rgba(0, 0, 0, 0)" && r.op === "1", r);
   await shot(p, "ekran-seria-plus1-390-ciemny");
   R.pomiary.push(await pomiar(p, "Ekran „Seria +1” 390 ciemny", "#nw-test", "#nw-test"));
   await p.close();
+}
+// Zmiana stanu w czasie: 17:59 → 18:01 bez przeładowania; godzina liczona w Europe/Warsaw (telefon w innej strefie)
+{
+  const p = await open(b, { prog: P6, czas: "2026-11-06T17:59:00+01:00" });
+  const a = await pill(p);
+  await p.clock.setFixedTime(new Date("2026-11-06T18:01:00+01:00"));
+  await p.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  await p.waitForTimeout(300);
+  const b2 = await pill(p);
+  ok("K1 17:59 → 18:01 bez przeładowania: todo → risk (odświeżenie co minutę i po powrocie do karty)", /streak-todo/.test(a.cls) && /streak-risk/.test(b2.cls), { a: a.cls, b: b2.cls });
+  await p.close();
+  const q = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ctx: { timezoneId: "America/New_York" } });
+  ok("K1 telefon w strefie Nowy Jork (13:00), w Polsce 19:00: risk", /streak-risk/.test((await pill(q))?.cls), await pill(q));
+  await q.close();
 }
 // EN: pigułka i ekran
 {

@@ -6,7 +6,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import crypto from "crypto";
 const ROOT = new URL("../../../", import.meta.url).pathname;
-const sh = (c) => execSync(c, { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20 });
+const sh = (c) => execSync(c, { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20, stdio: ["ignore", "pipe", "ignore"] });
 const out = [], problemy = [];
 const P = (...l) => out.push(...l);
 
@@ -76,7 +76,7 @@ for (const l of added) {
   const code = l.slice(1);
   if (/^\s*\/\//.test(code)) continue; // komentarz
   if (/i18n-en\.js$/.test(file)) continue; // słownik
-  if (/^docs\/gry\/test\//.test(file) && !/atrapa/.test(file)) continue; // testy (asercje na istniejących tekstach)
+  if ((/^docs\/gry\/test\//.test(file) && !/atrapa/.test(file)) || /^docs\/audyt-ux\//.test(file)) continue; // testy (asercje na istniejących tekstach)
   const m = code.match(new RegExp(EMO.source, "gu"));
   if (m) emo.push(`${file}: ${m.join(" ")} · \`${code.trim().slice(0, 120)}\``);
 }
