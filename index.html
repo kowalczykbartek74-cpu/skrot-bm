@@ -9846,7 +9846,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   // LEKCJE V3 — odtwarzacz lekcji w krótkich krokach (z docs/lekcje-v3/prototyp.html, część B).
   // =====================================================================
   // ---------- stałe ----------
-  const LP_DAILY_GOAL = 50; // XP dziennie
+  const LP_DAILY_GOAL = 30; // XP dziennie (pętla UX-2, D5: seria za dowolne XP, cel dnia osobno)
   // Poziomy za XP z całej nauki (S.progress.xp.t). Próg poziomu n = 50·n·(n−1): 0, 100, 300, 600, 1000…, każdy kolejny o 100 XP dłuższy.
   // Poziom, od którego odblokowuje się różowy motyw „Jednorożec”.
   const PINK_LEVEL = 3;
@@ -10045,7 +10045,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const chips = [
       compact ? null : h("span", { class: "xp-chip", title: "XP łącznie: za każdą część lekcji, odpowiedź i powtórkę" }, h("span", { "aria-hidden": "true", text: "⚡" }), h("b", { class: "num", text: fmtN(xp) }), h("span", { text: " XP" })),
       coinChip(),
-      h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) }))];
+      // ux-2: pigułka serii jako przycisk (stan dnia, „do północy”, pierścień celu dnia, okno „Twoja seria”) z nawyk.js.
+      window.ZD_NAWYK?.pigulka?.(compact) ?? h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) }))];
     return h("div", { class: "xp-line rk-line" + (compact ? " rk-compact" : "") + (cls ? " " + cls : "") }, rank, h("span", { class: "rk-chips" }, chips));
   }
 
@@ -10627,6 +10628,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const t = dayN(), x = S.progress?.xp || {};
     const patch = { xp: { t: (x.t || 0) + n, d: t, n: (x.d === t ? x.n || 0 : 0) + n } };
     const sn = streakNext(t); if (sn) patch.streak = sn;
+    // ux-2: dzień nauki w progress.nd (kalendarz serii) i najlepsza seria (progress.streakBest).
+    Object.assign(patch, window.ZD_NAWYK?.poXp?.(S.progress, t, patch.streak || S.progress?.streak) || {});
     const before = lpLevel(x.t || 0), after = lpLevel(patch.xp.t);
     progSoon(patch);
     // Poza odtwarzaczem i grą „+N XP” pokazuje dymek (w odtwarzaczu XP lata przy każdej karcie, gra ma własny licznik).
@@ -22918,7 +22921,11 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
     else S.mineLoaded = true;
     if (S.isStarosta) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
+  // === most ux-2 ===
+  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
+  // === koniec mostu ux-2 ===
 })();
 </script>
+<script src="nawyk.js?v=20261117-ux2"></script>
 
 </body></html>
