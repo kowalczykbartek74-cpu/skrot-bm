@@ -4647,8 +4647,8 @@ html:not([data-theme]) .sk-grade4 .opt.g-hard { --c: var(--h-orange); --cs: var(
 html:not([data-theme]) .sk-grade4 .opt.g-easy { --c: var(--h-blue); --cs: var(--h-blue-soft); }
 html:not([data-theme]) .sk-grade4 .opt .k { background: var(--c); color: var(--surface); border: 0; }
 html[data-green="dark"]:not([data-theme]) .sk-grade4 .opt .k { color: #10231A; }
-html:not([data-theme]) .sk-grade4 .opt:is(.right, .h2-picked) { background: var(--cs); color: var(--ink); border-color: var(--c); box-shadow: inset 0 0 0 2px var(--c); }
-html:not([data-theme]) .sk-grade4 .opt:is(.right, .h2-picked) .k { background: var(--c); border-color: var(--c); }
+html:not([data-theme]) .sk-grade4 .opt.h2-picked { background: var(--cs); color: var(--ink); border-color: var(--c); box-shadow: inset 0 0 0 2px var(--c); }
+html:not([data-theme]) .sk-grade4 .opt.h2-picked .k { background: var(--c); border-color: var(--c); }
 /* Wciśnięcie „w brzeg”: dół chudnie o 3 px, a margines u góry to wyrównuje (sąsiedzi nie skaczą). */
 html:not([data-theme]) .sk-grade4 .opt:active:not([disabled]), html:not([data-theme]) .gry-mini-b:active:not([disabled]) { transform: none; border-bottom-width: 2px; margin-top: 3px; }
 html:not([data-theme]) .sk-grade4:has(.opt.h2-picked) .opt:not(.h2-picked) { opacity: .5; }
@@ -4663,7 +4663,7 @@ html:not([data-theme]) .gry-mini-b { border: 2px solid var(--h-line); border-bot
 html:not([data-theme]) .gry-mini-b .ic { font-size: 1.8rem; }
 /* Wygląd fiszek wybrany przez ucznia (kf-*): kolory z kf, ale gruby dół 3D zostaje; stos pod spodem w kolorach kf. */
 html:not([data-theme]) .lp[class*="kf-"] .lp-sw .face { border-width: 2px; border-bottom-width: 6px; border-radius: 24px; }
-html:not([data-theme]) .lp[class*="kf-"] .lp-swipe:not(:has(.lp-sw.under))::before { background: var(--kf-bg2, var(--kf-bg)); border-color: var(--kf-edge); border-bottom-color: var(--kf-edge); opacity: .85; }
+html:not([data-theme]) .lp[class*="kf-"] .lp-swipe:not(:has(.lp-sw.under))::before { background: var(--kf-bg2, var(--kf-bg)); border-color: var(--kf-edge); border-bottom-color: var(--kf-edge); }
 </style>
 
 <header class="bar"><div class="wrap">

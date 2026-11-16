@@ -51,3 +51,9 @@ motywach. Pozostałe uwagi z próby 3: ocena gestem bez .right (znaleźć przyci
 „wybrane Nie pamiętam zostaje czerwone”.
 Uwaga o commitach: na gałęzi są też commity „przed oceną” (WIP) dla etapów 3–5; zielone etapy 1–4 mają osobne commity z oceną.
 Etapy 6–10 (przedmioty i ścieżka, terminy, gry, więcej, szlif) nie zaczęte.
+
+### Etap 5 – Powtórki – ZALICZONY 8/10 (wznowiony na prośbę Bartka; próby: 7, 7,5, 7 [stop], 7,5, 8)
+Domknięte: reguły karty fiszki tylko dla `.lp:not([class*="kf-"])` (wygląd fiszek ucznia wygrywa), przy kf-* gruby dół 3D
+i stos w kolorach kf, zaznaczenie oceny osobną klasą .h2-picked tylko w zielonych motywach (także przy ocenie gestem).
+Test h2-etap5.mjs 36/36 (w tym kf-papier/nocny/kreda w obu motywach i motyw różowy), ~62 fps.
+Na szlif (etap 10): karta „Na dziś” (hintPanel) płaska z gradientem; pudełka 4+3 – pusta kolumna; mapa postępów (kwadraty, legenda).
