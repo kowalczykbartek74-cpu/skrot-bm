@@ -82,3 +82,14 @@ zadanie tygodnia limonkowe z lokalnymi kolorami (czytelne w ciemnym); na telefon
 jeden przycisk w każdej karcie („🔒 Poziom N” tylko w zielonych na telefonie), krótkie notki z liczbą XP, zwarte zadania dnia.
 Test h2-etap8.mjs 85/85 (starosta, płatne, darmowe, 360/375/1280), ~60 fps. Stary etap8.mjs: 1 znany błąd (rozmiar gry.js), sprzed etapu.
 Na szlif: kafle kshop (.kcard) – atrapa bez katalogu, nieobejrzane; obrys fokusu na obrazku przy kolorowych podglądach.
+
+### Etap 9 – Więcej, profil, ustawienia, logowanie – ZALICZONY 8/10 (próby: 7, 8)
+Więcej: wiersze, kafle i profil jako karty 3D, ikony w kolorowych kafelkach (zielony/pomarańczowy/niebieski), kafle wskakują
+po kolei; na telefonie zwarte (ok. 2050 px zamiast 2270), opisy do 2 linii (kafle do 3) bez ucinania w pół słowa.
+Ustawienia: zakładki jako pigułki 3D w jednym rzędzie od 360 px (PL i EN), kafle motywów 3D (na telefonie 3 w rzędzie,
+samotny ostatni na całą szerokość), wybrany motyw podskakuje, przełącznik większy z gałką 3D i sprężynką. Profil: gablotka
+odznak 3D. Logowanie (zawsze jasne): przyciski, karta próby, „Zobacz przykładową lekcję”, karty kierunku, „Zmień” i zakładki
+„Kod z maila / Hasło” 3D; fokus ciemnym obrysem; calm/reduced-motion także tu. Globalnie: brzeg 3D w ciemnym jaśniejszy
+(--h-edge #36503F zamiast #0A130E), bo był niewidoczny; testy H2 1–8 po zmianie zielone.
+Test h2-etap9.mjs 92/92, ~62 fps. Stary ustawienia.mjs pada na `.staro .more-row` (2 wiersze od Panelu kierunków) – błąd testu.
+Na szlif: brzeg pustych kafli Hasła w ciemnym słabo widoczny.

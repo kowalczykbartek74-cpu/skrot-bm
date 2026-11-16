@@ -16,7 +16,9 @@ for (const dark of [false, true]) for (const w of [360, 1280]) {
   ok(`${n}: ikony w co najmniej 3 kolorach`, new Set(rows.map((r) => r.ic)).size >= 3, [...new Set(rows.map((r) => r.ic))]);
   const edge = await p.locator("main .more-row").first().evaluate((e) => [getComputedStyle(e).borderBottomColor, getComputedStyle(document.body).backgroundColor, getComputedStyle(e).backgroundColor]);
   ok(`${n}: dolny brzeg 3D odcina się od tła i karty (≥ 1,4:1)`, cr(edge[0], edge[1]) >= 1.4 && cr(edge[0], edge[2]) >= 1.3, edge);
-  if (w < 500) { const H = await p.evaluate(() => document.documentElement.scrollHeight); ok(`${n}: Więcej na telefonie krótsze (≤ 2000 px)`, H <= 2000, H);
+  if (w < 500) { const H = await p.evaluate(() => document.documentElement.scrollHeight); ok(`${n}: Więcej na telefonie krótsze (≤ 2150 px)`, H <= 2150, H);
+    const clip = await p.locator("main .more-row .more-txt small, main .more-tile small").evaluateAll((es) => es.filter((e) => e.scrollHeight > e.clientHeight + 2).map((e) => e.textContent));
+    ok(`${n}: opisy w Więcej nie ucięte`, clip.length === 0, clip);
     const tl = await p.locator(".more-tile-t").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().height / parseFloat(getComputedStyle(t).lineHeight || 20))));
     ok(`${n}: tytuły kafli najwyżej w 2 liniach`, tl.every((x) => x <= 2), tl); }
   ok(`${n}: Więcej bez poziomego przewijania`, await noH(p), "");
@@ -52,6 +54,8 @@ for (const dark of [false, true]) for (const w of [360, 1280]) {
   ok(`${n}: logowanie: zakładki „Kod z maila / Hasło” jako pigułki 3D, czytelne`, tb.length === 2 && tb.every((t) => t.bb === "4px" && cr(t.col, t.bg) >= 4.5) && tb[0].bg !== tb[1].bg, tb);
   const tw = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().width)));
   ok(`${n}: obie zakładki logowania równej szerokości`, tw.length === 2 && Math.abs(tw[0] - tw[1]) <= 2, tw);
+  const th1 = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().height)));
+  ok(`${n}: zakładki logowania w jednej linii`, th1.every((x) => x <= 50), th1);
   ok(`${n}: logowanie zawsze jasne`, lg.bg === "rgb(255, 255, 255)", lg.bg);
   ok(`${n}: logowanie bez poziomego przewijania i błędów`, (await noH(p)) && p.errors.length === 0, p.errors);
   await p.close();

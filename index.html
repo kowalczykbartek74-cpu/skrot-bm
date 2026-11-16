@@ -4895,7 +4895,8 @@ html:not([data-theme]) main.h-ent .set-themes > * { animation: h-pop .4s var(--h
   html:not([data-theme]) .more-tile > .ico svg { width: 16px; height: 16px; }
   html:not([data-theme]) .more-row { min-height: 48px; padding: 5px 10px; gap: 10px; }
   html:not([data-theme]) .more-row > .ico:first-child { width: 34px; height: 34px; }
-  html:not([data-theme]) main[data-view="more"] .more-row .more-txt small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  html:not([data-theme]) main[data-view="more"] .more-row .more-txt small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+  html:not([data-theme]) .more-tile small { white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   html:not([data-theme]) .more-row .more-txt > span { font-size: .95rem; }
   html:not([data-theme]) .set-theme { padding: 8px 4px 7px; gap: 2px; border-radius: 16px; }
   html:not([data-theme]) .set-theme .e { font-size: 24px; }
@@ -4914,7 +4915,7 @@ html:not([data-theme]) #login #loginBox .btn.primary:not([disabled]):active { bo
 html:not([data-theme]) #login .input { border: 2px solid #8FA397; border-radius: 14px; }
 html:not([data-theme]) #login .input:focus { border-color: #1A7F45; box-shadow: 0 0 0 2px #fff, 0 0 0 5px #1A7F45; outline: none; }
 html:not([data-theme]) #login #loginBox [role="tablist"] { background: transparent; padding: 0; gap: 6px !important; }
-html:not([data-theme]) #login #loginBox [role="tab"] { width: 100% !important; justify-self: stretch !important; min-height: 44px; border: 2px solid #D6E2DB !important; border-bottom-width: 4px !important; border-radius: 999px; background: #fff !important; color: #1F2D25 !important; font-weight: 700; box-shadow: none !important; transition: transform .08s ease, border-bottom-width .08s ease; }
+html:not([data-theme]) #login #loginBox [role="tab"] { width: 100% !important; justify-self: stretch !important; min-height: 44px; white-space: nowrap; padding-inline: 6px !important; font-size: clamp(13px, 3.8vw, 14px); border: 2px solid #D6E2DB !important; border-bottom-width: 4px !important; border-radius: 999px; background: #fff !important; color: #1F2D25 !important; font-weight: 700; box-shadow: none !important; transition: transform .08s ease, border-bottom-width .08s ease; }
 html:not([data-theme]) #login #loginBox [role="tab"][aria-selected="true"] { background: #DDF3D0 !important; border-color: #1A7F45 !important; border-bottom-color: #0F5A2F !important; color: #0E5A30 !important; }
 html:not([data-theme]) #login #loginBox [role="tab"]:active { transform: translateY(2px); border-bottom-width: 2px !important; }
 html:not([data-theme]) #login .lk-chip button { border: 2px solid #CFE8D8; border-bottom: 4px solid #8CCBA6; border-radius: 12px; transition: transform .08s ease, border-bottom-width .08s ease; }
