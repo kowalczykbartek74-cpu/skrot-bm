@@ -40,7 +40,7 @@ for (const scheme of ["light", "dark"]) for (const w of [375, 1280]) for (const 
     return { t: e.textContent.trim().slice(0, 25), h: Math.round(hgt) };
   }).filter((x) => x.h < 44));
   ok(`${tag}: cele dotyku ≥ 44 px`, male.length === 0, male);
-  const tagi = await p.evaluate(() => [...document.querySelectorAll("#lgKierunek .lk-card")].map((c) => { const a = c.querySelector(".lk-tag").getBoundingClientRect(), t = c.querySelector(".lk-txt").getBoundingClientRect(); return { zachodzi: a.left < t.right - 1 && a.right > t.left + 1 && a.top < t.bottom - 1 && a.bottom > t.top + 1, wEkranie: a.right <= innerWidth }; }));
+  const tagi = await p.evaluate(() => [...document.querySelectorAll("#lgKierunek .lk-card")].map((c) => { /* Pętla UX-1 (etap 2): tag „Wkrótce” stoi w linii podpisu, więc sprawdzamy, że nie zasłania nazwy kierunku (b). */ const a = c.querySelector(".lk-tag").getBoundingClientRect(), t = (c.classList.contains("lk-wkr") ? c.querySelector(".lk-txt b") : c.querySelector(".lk-txt")).getBoundingClientRect(); return { zachodzi: a.left < t.right - 1 && a.right > t.left + 1 && a.top < t.bottom - 1 && a.bottom > t.top + 1, wEkranie: a.right <= innerWidth }; }));
   ok(`${tag}: plakietka nie zasłania nazwy kierunku`, tagi.every((x) => !x.zachodzi && x.wEkranie), tagi);
   const k1 = await p.evaluate(kontrast("#login .lg-form-in"), "#login .lg-form-in");
   ok(`${tag}: kontrast ekranu wejścia ≥ 4.5`, k1[0].r >= 4.5, k1);
