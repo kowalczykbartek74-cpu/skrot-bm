@@ -71,9 +71,7 @@ window.skrotKierunekBM=function(){if(root.classList.contains("lk-on")){P(K,"bm")
 /* Lista oczekujących (etap 5): link z maila, wejście z plan.skrotbm.pl (?zapisz=plan) */
 var ZL=window.SKROT_ZAPISY&&window.SKROT_ZAPISY.zLinku(location.hash);
 if(ZL)zLinkiem(ZL);else if(/[?&]zapisz=/.test(location.search))wkrotce();else if(znany)gotowe(false);else krok1()})()</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600&display=swap">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/pjs-latin.woff2">
 <style>
 /* Motyw: jeden, jasny, biało-zielony. Paleta opisana w PALETA.md. */
 :root {
@@ -5373,6 +5371,7 @@ html:not([data-theme]) #login #loginBox:has(.lg-trial) h2 { font-size: 22px; }
 html:not([data-theme]) #login .lg-demo-btn { background: transparent !important; box-shadow: none !important; color: #0E5A30; text-decoration: underline; text-decoration-color: rgba(14,90,48,.35); text-underline-offset: 4px; }
 html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decoration-color: currentColor; }
 </style>
+<link rel="stylesheet" href="wyglad-ux.css?v=20261117-ux4e">
 
 <header class="bar"><div class="wrap">
   <button class="morebtn" id="moreBtn" type="button" aria-label="Więcej"></button>
@@ -5683,12 +5682,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const bowOk = () => themeOwned("bow");
     const liliaOk = () => themeOwned("lilia");
     const lockedNow = (t) => (t === "pink" && !pinkOk()) || (t === "bow" && !bowOk()) || (t === "lilia" && !liliaOk()) || (t === "riwiera" && !themeOwned("riwiera")) || (t === "klub" && !themeOwned("klub"));
-    function font() {
-      if (cur() === "riwiera" && !document.getElementById("noc-font")) document.head.append(h("link", { id: "noc-font", rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" }));
-      if (cur() === "klub" && !document.getElementById("klub-font")) document.head.append(h("link", { id: "klub-font", rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" }));
-      if (cur() !== "bow" || document.getElementById("bow-font")) return;
-      document.head.append(h("link", { id: "bow-font", rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" }));
-    }
+    // Kroje motywów (Cormorant, Playfair) są w repo (wyglad-ux.css, fonts/): przeglądarka pobiera je sama, dopiero gdy motyw ich użyje.
+    function font() {}
     let mascot = null, lastSpark = 0;
     function burst(x, y, n = 10, spread = 70) {
       if (root.classList.contains("calm")) return;
@@ -5917,7 +5912,6 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       sheets(); paint(document.body);
       mo.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ATTR });
       if (silver) {
-        if (!document.getElementById("noc-font")) document.head.append(h("link", { id: "noc-font", rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" }));
         // niebo: migające gwiazdy, gałęzie we mgle, płatki wiśni i księżyc na nitce (pod treścią)
         horizon = h("div", { class: "noc-sky", "aria-hidden": "true" },
           h("div", { class: "noc-twinkle" }), h("div", { class: "noc-branches" }),
@@ -7381,7 +7375,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   function tlSection(b, today) {
     const label = b.kind === "mon" ? cap1(MONTHS[+b.ym.slice(5, 7) - 1]) + (b.ym.slice(0, 4) !== today.slice(0, 4) ? " " + b.ym.slice(0, 4) : "") : TL_LABEL[b.kind];
     const cls = "tl-sec k-" + b.kind;
-    const head = [h("span", { text: label }), h("span", { class: "tl-n num", text: b.items.length })];
+    const head = [h("span", { text: label }), h("span", { class: "vh", text: ", " }), h("span", { class: "tl-n num", text: b.items.length })]; // ux-4: przecinek dla czytnika („Styczeń 2027, 6”)
     const list = h("div", { class: "tl-list" }, b.items.map(tlRow));
     // Bez daty i miesiące dalsze niż 2 miesiące: zwinięte, chyba że ktoś je rozwinął.
     if (b.kind === "nodate" || b.far) {
@@ -7394,14 +7388,14 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   function pastBox(list) {
     if (!list.length) return null;
     return h("details", { class: "tl-sec k-past", open: S.tlOpen?.past ? true : null, ontoggle: (e) => { (S.tlOpen ||= {}).past = e.currentTarget.open; } },
-      h("summary", { class: "tl-head" }, h("span", { text: "Minione" }), h("span", { class: "tl-n num", text: list.length })),
+      h("summary", { class: "tl-head" }, h("span", { text: "Minione" }), h("span", { class: "vh", text: ", " }), h("span", { class: "tl-n num", text: list.length })),
       h("p", { class: "muted tl-note", text: "Kolokwia i egzaminy, które już były, oraz terminy sprzed Twojego dołączenia. Nie liczą się do „po terminie”." }),
       h("div", { class: "tl-list" }, list.map(tlRow)));
   }
   function estBox(est) {
     if (!est.length) return null;
     return h("section", { class: "tl-sec k-est" },
-      h("h2", { class: "tl-head" }, h("span", { text: "Szacowane terminy" }), h("span", { class: "tl-n num", text: est.length }), estBadge()),
+      h("h2", { class: "tl-head" }, h("span", { text: "Szacowane terminy" }), h("span", { class: "vh", text: ", " }), h("span", { class: "tl-n num", text: est.length }), h("span", { class: "vh", text: ", " }), estBadge()),
       h("p", { class: "muted", style: "margin:0 0 8px;font-size:.88rem", text: "Tych dat prowadzący jeszcze nie ogłosili. Pokazujemy ostatnie zajęcia z planu albo okres sesji, żeby było wiadomo, kiedy mniej więcej się uczyć. Gdy data zostanie ogłoszona, termin przejdzie wyżej." }),
       h("div", { class: "tl-list" }, est.map(tlRow)));
   }
@@ -20998,7 +20992,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     if (!GL.terms && !GL.loading && S.ready) loadGlossary().then(render);
     const sid = S.route.sid || "";
     const head = h("section", { class: "stack" }, backLink({ view: "materials" }),
-      h("span", { class: "eyebrow", text: "Angielski ↔ polski" }), h("h1", { text: "Słowniczek" }),
+      h("span", { class: "eyebrow", text: "Angielski ↔ polski" }), h("h1", { class: "ptitle", text: "Słowniczek" }),
       leadHelp("Pojęcia ze wszystkich materiałów i z sylabusa: angielski termin, polskie tłumaczenie i jedno zdanie wyjaśnienia.", "Znaczek EN albo PL mówi, w jakim języku jest opis (materiały z zajęć są po angielsku, tematy z sylabusa często po polsku). Szukaj w obu językach, ogonki nie są potrzebne.", "max-width:62ch"));
     if (!GL.terms) return [head, h("p", { class: "muted", text: "Ładuję pojęcia…" })];
     const box = h("div", { class: "gl-list" });

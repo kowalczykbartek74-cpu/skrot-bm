@@ -1,0 +1,7 @@
+# Pętla UX-4 – uwagi dla innych pętli
+
+Rzeczy zauważone poza obszarem pętli 4 (nie poprawiane tutaj).
+
+- **Pętla 1 (logowanie):** CSS logowania w linii 1 używa `"Plus Jakarta Sans",system-ui` bez czcionki zastępczej o dopasowanych wymiarach; od pętli 4 jest `"PJS-fallback"` (zdefiniowana w `wyglad-ux.css`), którą można dopisać w `font:` logowania. Sama zamiana kroju po dociągnięciu czcionki nie przesuwa układu logowania (0,000).
+- **Pętla 1 (logowanie) – przeskok pola logowania, CLS ≈ 0,25:** `#loginBox` maluje się najpierw jako „Ładowanie…” (23 px wysokości), a po ~60 ms (ok. 165 ms od startu) skrypt wstawia formularz (656 px przy 390 px), więc „Zobacz przykładową lekcję” i stopka zjeżdżają w dół (`lg-demo`, `lg-foot`, 0,251). Na `main` przesunięcie było schowane, bo blokujący arkusz `fonts.googleapis.com` opóźniał pierwsze malowanie; po przeniesieniu czcionek do repo (pętla 4, W1) strona maluje się wcześniej i przeskok widać. Poprawka w obszarze pętli 1: zarezerwować wysokość pola na czas ładowania (np. `#login #loginBox:has(> p:only-child){min-height:656px}` dopasowane do formularza, albo szkielet formularza w HTML zamiast „Ładowanie…”). Pomiar: `docs/gry/test/ux4-etapW1.mjs` (K4 logowanie, lista przesunięć w logu).
+- **Pętla 2 (pusty stan Powtórek):** „Jeszcze nic tu nie ma.” (karta `.rv-hero`, pętla 3; pusty stan pętla 2) jest zwykłym tekstem Plus Jakarta, a obok „Powtarzaj grając” ma krój nagłówków (Bricolage 700). Przy przebudowie pustego stanu warto dać tytułowi znacznik `h2`/`h3` (dostanie krój nagłówków z `wyglad-ux.css`).
