@@ -5547,7 +5547,20 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Inny przedmiot na zmianę lepiej utrwala": "Switching to another subject helps it stick",
 "Mieszanka tematów z zakresu": "A mix of topics from the test scope",
 "Przed snem: same powtórki, spokojnie": "Before sleep: only reviews, nice and calm",
-"Dziś lżej: powtórki bez nowego materiału": "Lighter today: reviews, no new material"
+"Dziś lżej: powtórki bez nowego materiału": "Lighter today: reviews, no new material",
+// ux-3
+"Tak jest!": "That's it!",
+"Brawo!": "Well done!",
+"Trafione!": "Spot on!",
+"Teraz siedzi.": "Now it sticks.",
+"To pytanie wróci na końcu tej części.": "This one comes back at the end of this part.",
+"To pytanie wróci jeszcze w tej sesji.": "This question will come back later in this session.",
+"Za chwilę to samo zadanie wróci z nowymi liczbami.": "The same task will come back soon with new numbers.",
+"Idealna kolejność!": "Perfect order!",
+"Dobrze! To prawda.": "Correct! It's true.",
+"Dobrze! To fałsz.": "Correct! It's false.",
+"Uwaga, pułapka! To prawda.": "Watch out, it's a trap! It's true.",
+"Uwaga, pułapka! To fałsz.": "Watch out, it's a trap! It's false."
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],
