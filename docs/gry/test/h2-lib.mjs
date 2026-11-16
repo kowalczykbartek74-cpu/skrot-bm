@@ -18,6 +18,9 @@ export const ls0 = { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.st
 export async function open(b, o = {}) {
   const p = await page(b, { konto: o.konto || "starosta", w: o.w || 375, h: o.h || 812, lang: o.lang || "pl", ls: { ...ls0, "bm-ld-flag": "1", ...(o.theme ? { "skrot-theme": o.theme } : {}), ...(o.ls || {}) }, ctx: o.dark ? { colorScheme: "dark" } : {} });
   await p.clock.setFixedTime(new Date("2026-11-06T17:00:00+01:00"));
+  // o.fonts: prawdziwe czcionki z Google Fonts (inaczej lib.mjs blokuje wszystko spoza 127.0.0.1 i zrzuty mają czcionkę systemową).
+  if (o.fonts) await p.context().route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//, (r) => r.continue());
+  if (o.motion) await p.emulateMedia({ reducedMotion: o.motion });
   await p.goto(BASE + "index.html?ld=1#" + (o.hash || "/")); await p.waitForTimeout(o.wait ?? 3000);
   return p;
 }

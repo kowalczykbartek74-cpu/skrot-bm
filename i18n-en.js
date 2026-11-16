@@ -1,6 +1,18 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Otwórz lekcję": "Open lesson",
+"Otwórz lekcję: {0}": "Open lesson: {0}",
+"Inny temat": "Another topic",
+"Wybierz temat": "Pick a topic",
+"Mam więcej czasu": "I have more time",
+"Wszystkie terminy": "All deadlines",
+"{0}/{1} umiesz": "{0}/{1} known",
+" · {0} w drodze": " · {0} in progress",
+"· {0} w drodze": "· {0} in progress",
+" · do nauki: {0} {1}": " · to learn: {0} {1}",
+"Nic w najbliższym czasie.": "Nothing coming up soon.",
+"Terminy zaliczeń zobaczysz z pełnym dostępem.": "You'll see exam dates with full access.",
 "{0}. {1}, następna": "{0}. {1}, next",
 "{0}. {1}, {2}, następna": "{0}. {1}, {2}, next",
 "Teraz": "Now",

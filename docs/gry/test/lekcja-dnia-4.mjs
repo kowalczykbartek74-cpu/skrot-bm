@@ -33,8 +33,8 @@ const m0 = await main(p);
 ok("bez starych kart: „Teraz zrób to”, „Ile masz dziś czasu?”, „Powtórka w 5 minut”", !/Teraz zrób to/i.test(m0) && !/Ile masz dziś czasu/i.test(m0) && (await p.locator(".dz-panel, .now-2").count()) === 0, m0.slice(0, 500));
 ok("karta 5 min: te same klasy co „Teraz zrób to”", await p.locator(".ld-hero").evaluate((e) => e.matches("section.sk-hero.sk-now")), "");
 // Wygląd H (15.11.2026): kafelek = co to jest (rodzaj + przedmiot · czas), tytuł, „Temat X z Y”, przycisk „Zaczynamy”.
-ok("kafelek lekcji H: rodzaj, przedmiot, Temat X z Y, Zaczynamy", (await p.locator(".ld-tile .zh-kind").count()) === 2 && (await p.locator(".ld-tile .zh-kt small").first().innerText()).length >= 2 && /^Temat \d+ z \d+/.test(await p.locator(".ld-tile .zh-tbar b").first().innerText()) && (await p.locator(".ld-tile").first().getByRole("button", { name: /Zaczynamy/ }).count()) === 1, await p.locator(".ld-tile").first().innerText());
-ok("wygląd H: na górze blok „Dziś · 5 min”, potem „Twój postęp” z najbliższymi terminami; bez planu zajęć", await p.evaluate(() => { const m = document.querySelector("main"), pts = m.querySelector(".pts-dzis"), ld = m.querySelector(".ld-block"); return !!pts && !!ld && m.querySelector(".greet").nextElementSibling === ld && ld.nextElementSibling === pts && /Najbliższe terminy/.test(pts.innerText) && !m.querySelector(".home-hub, .today"); }), "");
+ok("kafelek lekcji H: rodzaj, przedmiot, Temat X z Y, Zaczynamy", (await p.locator(".ld-tile .zh-kind").count()) === 2 && (await p.locator(".ld-tile .zh-kt small").first().innerText()).length >= 2 && /^Temat \d+ z \d+/.test(await p.locator(".ld-tile .zh-tbar b").first().innerText()) && (await p.locator(".ld-tile").first().getByRole("button", { name: /Otwórz lekcję/ }).count()) === 1, await p.locator(".ld-tile").first().innerText());
+ok("wygląd H: na górze blok „Dziś · 5 min”, potem „Twój postęp” z najbliższymi terminami; bez planu zajęć", await p.evaluate(() => { const m = document.querySelector("main"), pts = m.querySelector(".pts-dzis"), ld = m.querySelector(".ld-block"); return !!pts && !!ld && m.querySelector(".greet").nextElementSibling === ld && ld.nextElementSibling === pts && !!pts.querySelector(".pz-terms") && !m.querySelector(".home-hub, .today"); }), "");
 ok("flaga zapamiętana w przeglądarce", await p.evaluate(() => localStorage.getItem("bm-ld-flag") === "1"), "");
 await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2000);
 ok("po wejściu bez ?ld=1 blok zostaje", (await p.locator(".ld-hero").count()) === 1, "");
@@ -60,7 +60,7 @@ await p.locator(".ld-time").getByRole("button", { name: "30 min" }).click(); awa
 const plan30 = await p.locator(".ld-plan li").allInnerTexts();
 ok("„Mam więcej czasu” → 30 min: karta 5 min i lekcja", plan30.length >= 2 && /Dziś · 5 min/i.test(plan30[0]), plan30);
 await shot(p, "ld4-czas");
-await p.locator(".ld-hero").getByRole("button", { name: "Inny temat ↻" }).click(); await p.waitForTimeout(300);
+await p.locator(".ld-hero").getByRole("button", { name: "Inny temat" }).click(); await p.waitForTimeout(300);
 const t2 = await p.locator(".ld-hero h2").innerText();
 const tiles = await p.locator(".ld-tile h3").allInnerTexts();
 ok("„Inny temat ↻”: nowy temat, różny od lekcji", t2 !== t1 && !tiles.includes(t2), [t1, t2, tiles]);

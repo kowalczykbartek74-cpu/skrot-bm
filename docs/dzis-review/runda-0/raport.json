@@ -1,0 +1,1184 @@
+{
+ "runda": 0,
+ "przypadki": [
+  {
+   "n": "starosta-375-jasny",
+   "ptsH": 395,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2695,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 8,
+     "nodes": [
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "color-contrast (panel calm)",
+     "n": 2,
+     "nodes": [
+      {
+       "cel": ".zh-date > span:nth-child(1)",
+       "html": "<span>Dziś · 5 min</span>",
+       "info": "Element has insufficient color contrast of 1.12 (foreground color: #e8f5ec, background color: #ffffff, font size: 9.4pt (12.48px), font weight: bold). Expected "
+      },
+      {
+       "cel": ".zh-date > span:nth-child(3)",
+       "html": "<span>Utrwalanie</span>",
+       "info": "Element has insufficient color contrast of 1.12 (foreground color: #e8f5ec, background color: #ffffff, font size: 9.4pt (12.48px), font weight: bold). Expected "
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel calm)",
+     "n": 15,
+     "nodes": [
+      {
+       "cel": "SPAN",
+       "info": "„Dziś · 5 min” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„·” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Utrwalanie” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": ".zh-h",
+       "info": "„Lekcja 1: Pochodne funkcji” 1:1 < 3:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Inny temat ↻” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Wybierz temat ▾” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Mam więcej czasu ▾” 1:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel warn)",
+     "n": 12,
+     "nodes": [
+      {
+       "cel": ".zh-h",
+       "info": "„Lekcja 1: Pochodne funkcji” 1.07:1 < 3:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Inny temat ↻” 1.07:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Wybierz temat ▾” 1.07:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Mam więcej czasu ▾” 1.07:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "starosta-375-ciemny",
+   "ptsH": 395,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2695,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel calm)",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "color-contrast (panel warn)",
+     "n": 2,
+     "nodes": [
+      {
+       "cel": ".zh-date > span:nth-child(1)",
+       "html": "<span>Dziś · 5 min</span>",
+       "info": "Element has insufficient color contrast of 3.9 (foreground color: #ffc37a, background color: #15703c, font size: 9.4pt (12.48px), font weight: bold). Expected c"
+      },
+      {
+       "cel": ".zh-date > span:nth-child(3)",
+       "html": "<span>Utrwalanie</span>",
+       "info": "Element has insufficient color contrast of 3.9 (foreground color: #ffc37a, background color: #15703c, font size: 9.4pt (12.48px), font weight: bold). Expected c"
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel warn)",
+     "n": 4,
+     "nodes": [
+      {
+       "cel": "SPAN",
+       "info": "„Dziś · 5 min” 3.91:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„·” 3.91:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Utrwalanie” 3.91:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "starosta-1280-jasny",
+   "ptsH": 514,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2311,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 9,
+     "nodes": [
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "color-contrast (panel calm)",
+     "n": 2,
+     "nodes": [
+      {
+       "cel": ".zh-date > span:nth-child(1)",
+       "html": "<span>Dziś · 5 min</span>",
+       "info": "Element has insufficient color contrast of 1.12 (foreground color: #e8f5ec, background color: #ffffff, font size: 9.4pt (12.48px), font weight: bold). Expected "
+      },
+      {
+       "cel": ".zh-date > span:nth-child(3)",
+       "html": "<span>Utrwalanie</span>",
+       "info": "Element has insufficient color contrast of 1.12 (foreground color: #e8f5ec, background color: #ffffff, font size: 9.4pt (12.48px), font weight: bold). Expected "
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel calm)",
+     "n": 16,
+     "nodes": [
+      {
+       "cel": "SPAN",
+       "info": "„Dziś · 5 min” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„·” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Utrwalanie” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": ".zh-h",
+       "info": "„Lekcja 1: Pochodne funkcji” 1:1 < 3:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Inny temat ↻” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Wybierz temat ▾” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Mam więcej czasu ▾” 1:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel warn)",
+     "n": 13,
+     "nodes": [
+      {
+       "cel": ".zh-h",
+       "info": "„Lekcja 1: Pochodne funkcji” 1.07:1 < 3:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Inny temat ↻” 1.07:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Wybierz temat ▾” 1.07:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.ghost",
+       "info": "„Mam więcej czasu ▾” 1.07:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "starosta-1280-ciemny",
+   "ptsH": 514,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2311,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 2,
+     "nodes": [
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel calm)",
+     "n": 2,
+     "nodes": [
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    },
+    {
+     "id": "color-contrast (panel warn)",
+     "n": 2,
+     "nodes": [
+      {
+       "cel": ".zh-date > span:nth-child(1)",
+       "html": "<span>Dziś · 5 min</span>",
+       "info": "Element has insufficient color contrast of 3.9 (foreground color: #ffc37a, background color: #15703c, font size: 9.4pt (12.48px), font weight: bold). Expected c"
+      },
+      {
+       "cel": ".zh-date > span:nth-child(3)",
+       "html": "<span>Utrwalanie</span>",
+       "info": "Element has insufficient color contrast of 3.9 (foreground color: #ffc37a, background color: #15703c, font size: 9.4pt (12.48px), font weight: bold). Expected c"
+      }
+     ]
+    },
+    {
+     "id": "kontrast-wlasny (panel warn)",
+     "n": 5,
+     "nodes": [
+      {
+       "cel": "SPAN",
+       "info": "„Dziś · 5 min” 3.91:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„·” 3.91:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Utrwalanie” 3.91:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "platne-375-jasny",
+   "ptsH": 395,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2695,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 8,
+     "nodes": [
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "platne-375-ciemny",
+   "ptsH": 395,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2695,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "platne-1280-jasny",
+   "ptsH": 514,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2311,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 9,
+     "nodes": [
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.27:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.43:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.27:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "platne-1280-ciemny",
+   "ptsH": 514,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2311,
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 2,
+     "nodes": [
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": []
+  }
+ ],
+ "motywy": [
+  {
+   "theme": "pink",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 17,
+     "nodes": [
+      {
+       "cel": "SPAN",
+       "info": "„Dziś · 5 min” 4.19:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„·” 4.19:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Utrwalanie” 4.19:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„1 min” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„3 min” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„1 min” 2.51:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.17:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 1.92:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 1.92:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 1.92:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.17:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.4:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.05:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2675
+  },
+  {
+   "theme": "bow",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 14,
+     "nodes": [
+      {
+       "cel": ".num",
+       "info": "„1 min” 3.1:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„3 min” 3.1:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„1 min” 3.1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.19:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 1.88:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 1.88:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 1.88:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.19:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 2.15:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.04:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2675
+  },
+  {
+   "theme": "lilia",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 11,
+     "nodes": [
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 1.7:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 1.7:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 1.7:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.12:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 1.56:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.05:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2675
+  },
+  {
+   "theme": "meadow",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 11,
+     "nodes": [
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1.02:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.24:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.06:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.06:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.06:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.24:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 1.8:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1.02:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2679
+  },
+  {
+   "theme": "sea",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 5,
+     "nodes": [
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1.05:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1.12:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.04:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1.05:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2675
+  },
+  {
+   "theme": "noc",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 5,
+     "nodes": [
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1.03:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1.06:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.02:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1.03:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2681
+  },
+  {
+   "theme": "riwiera",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 11,
+     "nodes": [
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1.25:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.13:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.11:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.11:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.11:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.13:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 1.87:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.19:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1.25:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2681
+  },
+  {
+   "theme": "klub",
+   "axe": [
+    {
+     "id": "kontrast-wlasny",
+     "n": 11,
+     "nodes": [
+      {
+       "cel": ".btn.primary.sk-cta.zh-go",
+       "info": "„Zaczynamy” 1.06:1 < 4.5:1"
+      },
+      {
+       "cel": "B",
+       "info": "„Na zmianę” 1.2:1 < 4.5:1"
+      },
+      {
+       "cel": "SPAN",
+       "info": "„Logistyka” 2.14:1 < 4.5:1"
+      },
+      {
+       "cel": "SMALL",
+       "info": "„·” 2.14:1 < 4.5:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„ok. 20 min” 2.14:1 < 4.5:1"
+      },
+      {
+       "cel": "H3",
+       "info": "„Lekcja 1: Łańcuch dostaw” 1.2:1 < 3:1"
+      },
+      {
+       "cel": ".num",
+       "info": "„Temat 1 z 2” 3.99:1 < 4.5:1"
+      },
+      {
+       "cel": ".link.ld-why",
+       "info": "„Dlaczego to?” 1.33:1 < 4.5:1"
+      },
+      {
+       "cel": ".typechip",
+       "info": "„Kolokwium” 1:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.primary.bs-strike",
+       "info": "„Zadaj cios →” 1.04:1 < 4.5:1"
+      },
+      {
+       "cel": ".btn.small.primary",
+       "info": "„Otwórz przewodnik” 1.06:1 < 4.5:1"
+      }
+     ]
+    }
+   ],
+   "bledy": [],
+   "ptsH": 387,
+   "haslo": true,
+   "poziomo": false,
+   "wys": 2683
+  }
+ ],
+ "przewijanie": [
+  {
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "en": {
+  "pl": [
+   "Staś"
+  ],
+  "ptsH": 370,
+  "haslo": true,
+  "poziomo": false,
+  "wys": 2713,
+  "axe": [],
+  "bledy": []
+ }
+}

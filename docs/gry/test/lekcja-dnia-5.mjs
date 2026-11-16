@@ -37,7 +37,7 @@ ok("„Dlaczego to?” przy lekcji: z Twojego Profilu nauki", /Lekcja ok\. 15 mi
 await shot(p, "ld5-profil");
 
 // ---- 2. porzucenie w połowie segmentu, zdarzenia „ld” do bazy, licznik „przed czasem” ----
-await p.locator(".ld-tile").first().getByRole("button", { name: /^Zaczynamy/ }).click(); await p.locator(".ld-seg").waitFor({ timeout: 15000 }); await p.waitForTimeout(500);
+await p.locator(".ld-tile").first().getByRole("button", { name: /^Otwórz lekcję/ }).click(); await p.locator(".ld-seg").waitFor({ timeout: 15000 }); await p.waitForTimeout(500);
 await p.locator(".ld-skip").click(); await p.waitForTimeout(500); // haczyk (gra) pomijamy
 for (let i = 0; i < 2; i++) { const c = p.locator(".lp-cta"); if (await c.isEnabled()) await c.click(); await p.waitForTimeout(350); }
 await p.locator(".lp-x").click(); await p.waitForTimeout(600);
@@ -73,7 +73,7 @@ await q4.close();
 
 // ---- 5. propozycja przerwy po bloku skupienia z profilu (12 min) ----
 const q5 = await open({ profil: PROFIL({ blok: 12 }) });
-await q5.locator(".ld-tile").first().getByRole("button", { name: /^Zaczynamy/ }).click(); await q5.locator(".ld-seg").waitFor({ timeout: 15000 }); await q5.waitForTimeout(400);
+await q5.locator(".ld-tile").first().getByRole("button", { name: /^Otwórz lekcję/ }).click(); await q5.locator(".ld-seg").waitFor({ timeout: 15000 }); await q5.waitForTimeout(400);
 await q5.locator(".ld-skip").click(); await q5.waitForTimeout(400);
 await q5.clock.setFixedTime(new Date("2026-11-06T17:14:00+01:00"));
 // do pierwszej oceniane odpowiedzi

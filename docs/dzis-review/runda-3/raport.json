@@ -1,0 +1,252 @@
+{
+ "runda": 3,
+ "przypadki": [
+  {
+   "n": "starosta-375-jasny",
+   "ptsH": 463,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2698,
+   "axe": [],
+   "tekstow": 297,
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "starosta-375-ciemny",
+   "ptsH": 463,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2698,
+   "axe": [],
+   "tekstow": 297,
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "starosta-1280-jasny",
+   "ptsH": 264,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2137,
+   "axe": [],
+   "tekstow": 303,
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "starosta-1280-ciemny",
+   "ptsH": 264,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2137,
+   "axe": [],
+   "tekstow": 303,
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-375-jasny",
+   "ptsH": 463,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2698,
+   "axe": [],
+   "tekstow": 99,
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-375-ciemny",
+   "ptsH": 463,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2698,
+   "axe": [],
+   "tekstow": 99,
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-1280-jasny",
+   "ptsH": 264,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2137,
+   "axe": [],
+   "tekstow": 101,
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-1280-ciemny",
+   "ptsH": 264,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2137,
+   "axe": [],
+   "tekstow": 101,
+   "cele44": [],
+   "bledy": []
+  }
+ ],
+ "motywy": [
+  {
+   "theme": "pink",
+   "axe": [],
+   "tekstow": 104,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2703
+  },
+  {
+   "theme": "bow",
+   "axe": [],
+   "tekstow": 104,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2703
+  },
+  {
+   "theme": "lilia",
+   "axe": [],
+   "tekstow": 104,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2703
+  },
+  {
+   "theme": "meadow",
+   "axe": [],
+   "tekstow": 104,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2707
+  },
+  {
+   "theme": "sea",
+   "axe": [],
+   "tekstow": 103,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2703
+  },
+  {
+   "theme": "noc",
+   "axe": [],
+   "tekstow": 103,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2709
+  },
+  {
+   "theme": "riwiera",
+   "axe": [],
+   "tekstow": 104,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2709
+  },
+  {
+   "theme": "klub",
+   "axe": [],
+   "tekstow": 104,
+   "cele44": [],
+   "bledy": [],
+   "ptsH": 454,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2711
+  }
+ ],
+ "przewijanie": [
+  {
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "en": {
+  "pl": [
+   "Staś"
+  ],
+  "ptsH": 479,
+  "haslo": false,
+  "poziomo": false,
+  "wys": 2709,
+  "axe": [],
+  "bledy": []
+ },
+ "ruch": [
+  {
+   "nazwa": "zwykle",
+   "calm": false,
+   "wejscie_kafelka": "dz-in",
+   "wejscie_wiersza": "dz-in",
+   "wejscie_lekcji": "dz-in",
+   "wejscie_ekranu": "h-rise",
+   "hover_lekcji": "transform, box-shadow 0.2s, 0.2s",
+   "hover_kafelka": "transform, box-shadow 0.2s, 0.2s"
+  },
+  {
+   "nazwa": "reduced-motion",
+   "calm": false,
+   "wejscie_kafelka": "none",
+   "wejscie_wiersza": "none",
+   "wejscie_lekcji": "none",
+   "wejscie_ekranu": "none",
+   "hover_lekcji": "none 0s",
+   "hover_kafelka": "none 0s"
+  },
+  {
+   "nazwa": "Mniej animacji (html.calm)",
+   "calm": true,
+   "wejscie_kafelka": "none",
+   "wejscie_wiersza": "none",
+   "wejscie_lekcji": "none",
+   "wejscie_ekranu": "none",
+   "hover_lekcji": "none 0s",
+   "hover_kafelka": "none 0s"
+  }
+ ]
+}

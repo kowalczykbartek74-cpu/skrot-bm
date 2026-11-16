@@ -40,7 +40,7 @@ for (const [w, h] of [[375, 812], [1280, 900]]) {
   ok(`${w}: Staś w pierścieniu postępu (SVG z segmentami, aria-label)`, await p.locator(".zh-hero .stas-ring svg circle.sr-on, .zh-hero .stas-ring svg circle.sr-off, .zh-hero .stas-ring svg circle.sr-next").count() > 0 && /Pierścień postępu/.test(await p.locator(".zh-hero .stas-ring").getAttribute("aria-label")), "");
   const cta = await p.locator(".zh-hero .zh-go.sk-start").boundingBox();
   ok(`${w}: przycisk „Zaczynamy” na pierwszym ekranie`, cta && cta.y + cta.height <= h, cta);
-  ok(`${w}: kafle mają rodzaj, „Temat X z Y” i „Zaczynamy”`, (await p.locator(".ld-tile .zh-kind").count()) >= 2 && (await p.locator(".ld-tile .zh-tbar b").count()) >= 1 && (await p.locator(".ld-tile").getByRole("button", { name: /^Zaczynamy/ }).count()) >= 1, "");
+  ok(`${w}: kafle mają rodzaj, „Temat X z Y” i „Zaczynamy”`, (await p.locator(".ld-tile .zh-kind").count()) >= 2 && (await p.locator(".ld-tile .zh-tbar b").count()) >= 1 && (await p.locator(".ld-tile").getByRole("button", { name: /^Otwórz lekcję/ }).count()) >= 1, "");
   
   await p.locator(".zh-hero").getByRole("button", { name: /Mam więcej czasu/ }).click(); await p.waitForTimeout(300);
   ok(`${w}: po kliknięciu (render) karta nie animuje się od nowa`, await p.locator(".ld-block.zh-anim").count() === 0 && await p.locator(".zh-bubble").evaluate((e) => getComputedStyle(e).animationName === "none"), "");
@@ -53,7 +53,7 @@ for (const [w, h] of [[375, 812], [1280, 900]]) {
 // Ciemny i angielski
 const d = await open({ dark: true });
 await d.screenshot({ path: `${OUT}/h-dzis-375-ciemny.png` });
-ok("ciemny: karta ciemnozielona z białym tekstem", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor) === "rgb(21, 112, 60)", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor));
+ok("ciemny: karta ciemnozielona z białym tekstem", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor) === "rgb(19, 59, 42)", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor));
 await d.close();
 const e = await open({ lang: "en" });
 await e.screenshot({ path: `${OUT}/h-dzis-375-en.png` });

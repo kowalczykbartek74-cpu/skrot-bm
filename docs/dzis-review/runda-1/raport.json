@@ -1,0 +1,188 @@
+{
+ "runda": 1,
+ "przypadki": [
+  {
+   "n": "starosta-375-jasny",
+   "ptsH": 429,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2640,
+   "axe": [],
+   "bledy": []
+  },
+  {
+   "n": "starosta-375-ciemny",
+   "ptsH": 429,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2640,
+   "axe": [],
+   "bledy": []
+  },
+  {
+   "n": "starosta-1280-jasny",
+   "ptsH": 271,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2055,
+   "axe": [],
+   "bledy": []
+  },
+  {
+   "n": "starosta-1280-ciemny",
+   "ptsH": 271,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2055,
+   "axe": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-375-jasny",
+   "ptsH": 429,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2640,
+   "axe": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-375-ciemny",
+   "ptsH": 429,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2640,
+   "axe": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-1280-jasny",
+   "ptsH": 271,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2055,
+   "axe": [],
+   "bledy": []
+  },
+  {
+   "n": "platne-1280-ciemny",
+   "ptsH": 271,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2055,
+   "axe": [],
+   "bledy": []
+  }
+ ],
+ "motywy": [
+  {
+   "theme": "pink",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2632
+  },
+  {
+   "theme": "bow",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2632
+  },
+  {
+   "theme": "lilia",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2632
+  },
+  {
+   "theme": "meadow",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2636
+  },
+  {
+   "theme": "sea",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2632
+  },
+  {
+   "theme": "noc",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2638
+  },
+  {
+   "theme": "riwiera",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2638
+  },
+  {
+   "theme": "klub",
+   "axe": [],
+   "bledy": [],
+   "ptsH": 420,
+   "haslo": false,
+   "poziomo": false,
+   "wys": 2641
+  }
+ ],
+ "przewijanie": [
+  {
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "en": {
+  "pl": [
+   "Staś"
+  ],
+  "ptsH": 429,
+  "haslo": false,
+  "poziomo": false,
+  "wys": 2684,
+  "axe": [],
+  "bledy": []
+ }
+}
