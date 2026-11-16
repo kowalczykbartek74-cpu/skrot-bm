@@ -27,7 +27,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
     ok(`K3 ${w}px: pigułka to button ≥ 44×44`, a?.tag === "BUTTON" && a.w >= 44 && a.h >= 44, a);
     ok(`K4 ${w}px 17:00: wiersz 1 ranga (z nazwą) + monety, wiersz 2 pasek serii na całą szerokość z celem „0/30”`, await p.evaluate(() => { const rk = document.querySelector("#main .greet .rk"), c = document.querySelector("#main .greet .hud-coin"), s = document.querySelector("#main .greet .nw-streak"), line = document.querySelector("#main .greet .rk-line");
       const a = rk.getBoundingClientRect(), b = c.getBoundingClientRect(), d = s.getBoundingClientRect(), l = line.getBoundingClientRect();
-      return Math.round(a.top) === Math.round(b.top) && d.top >= a.bottom && Math.abs(d.width - l.width) < 2 && /Systematy/.test(rk.innerText) && rk.querySelector(".rk-name").getBoundingClientRect().width > 40 && s.querySelector(".nw-goal-t")?.textContent === "0/30"; }));
+      return Math.round(a.top) === Math.round(b.top) && d.top >= a.bottom && Math.abs(d.width - l.width) < 2 && /Systematy/.test(rk.innerText) && rk.querySelector(".rk-name").getBoundingClientRect().width > 40 && s.querySelector(".nw-goal-t")?.textContent === "0/30 XP"; }));
     ok(`K4 ${w}px 17:00 ranga „Systematyczny poz. 4”: nic poza ekranem`, (await pozaEkranem(p, "#main .greet, #main .greet *")).length === 0 && !(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)), await pozaEkranem(p, "#main .greet *"));
   }
   await shot(p, `dzis-17-${tag}`);
@@ -46,7 +46,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
   await p.close();
   p = await open(b, { w, h: hh, dark, prog: P6done, czas: "2026-11-06T19:00:00+01:00" });
   const d = await pill(p);
-  if (w !== 1280 && !dark) ok(`K1 ${w}px po nauce: streak-done, pełny płomień, pierścień 12/30`, d && /streak-done/.test(d.cls) && !/grayscale/.test(d.flameFilter) && d.ring?.label === "Cel dnia: 12/30 XP", d);
+  if (w !== 1280 && !dark) ok(`K1 ${w}px po nauce: streak-done, pełny płomień, „· dziś ✓”, pierścień „12/30 XP”`, d && /streak-done/.test(d.cls) && !/grayscale/.test(d.flameFilter) && d.ring?.label === "Cel dnia: 12/30 XP" && /· dziś ✓/.test(d.txt) && /12\/30 XP/.test(d.txt), d);
   await shot(p, `dzis-po-nauce-${tag}`);
   R.pomiary.push(await pomiar(p, `Dziś po nauce seria 7 ${tag}`, "#main .greet"));
   // K6: Dziś nie mówi „najdłuższa seria”
@@ -65,7 +65,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
   await p.evaluate(() => window.ZD_APP.xpFlush(25));
   await p.waitForTimeout(300);
   const b2 = await pill(p);
-  ok("K2 cel dnia po 37 XP: pierścień pełny (37/30)", b2.ring.label === "Cel dnia: 37/30 XP" && /full/.test(await p.evaluate(() => document.querySelector("#main .nw-ring").className)), b2.ring);
+  ok("K2 cel dnia po 37 XP: pierścień pełny (37/30) i „cel ✓”", b2.ring.label === "Cel dnia: 37/30 XP" && /full/.test(await p.evaluate(() => document.querySelector("#main .nw-ring").className)) && /cel ✓/.test(b2.txt), b2);
   await p.close();
   const q = await open(b, { prog: { xp: { t: 100, d: T - 1, n: 5 }, streak: { d: T - 1, n: 9 }, streakBest: 4 } });
   await q.evaluate(() => window.ZD_APP.xpFlush(5)); await q.waitForTimeout(300);
@@ -82,10 +82,13 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   const m = await p.evaluate(() => { const o = document.querySelector("#layer .nw-okno"); if (!o) return null;
     return { txt: o.innerText.replace(/\s+/g, " "), dni: o.querySelectorAll(".nw-cal .nw-day:not(.mini)").length, nauka: o.querySelectorAll(".nw-cal .s-nauka:not(.mini)").length, zamroz: o.querySelectorAll(".nw-cal .s-zamroz:not(.mini)").length,
       shop: [...o.querySelectorAll("button")].map((x) => x.innerText.trim()), zgodnosc: (() => { const N = window.ZD_NAWYK, p = window.ZD_APP.S.progress, z = window.skrot.sklep.zamrozenia.dni.map((k) => window.ZD_APP.dayN(k)); return [N.L.dniSerii(p, N.L.dniNauki(p, z, N.przerwa), z, N.przerwa), window.ZD_APP.streakN()]; })(), legenda: o.querySelector(".nw-legend").innerText.replace(/\s+/g, " "), labels: [...o.querySelectorAll(".nw-cal .nw-day[aria-label]")].slice(-3).map((x) => x.getAttribute("aria-label")) }; });
+  const vis = await p.evaluate(() => { const hd = document.querySelector("#layer .nw-okno-n"), md = document.querySelector("#layer .nw-okno-modal"), r = hd?.getBoundingClientRect(), m = md?.getBoundingClientRect();
+    return { top: md?.scrollTop, inView: !!r && !!m && r.top >= m.top && r.bottom <= m.bottom, focus: document.activeElement === hd }; });
+  ok(`K3 okno ${tag}: otwiera się od góry, nagłówek serii widoczny i z fokusem (nie „Kup w sklepie”)`, vis.top === 0 && vis.inView && vis.focus, vis);
   if (lang === "pl" && w === 390 && !dark) {
     ok("K3 okno „Twoja seria”: seria 6, kalendarz 28 dni (nauka + zamrożony), „Masz 1/2” z przyciskiem do sklepu, najlepsza seria 9", m && /Twoja seria/i.test(m.txt) && /6 dni z rzędu/.test(m.txt) && m.dni === 28 && m.nauka === 6 && m.zamroz === 1 && /Masz 1\/2/.test(m.txt) && m.shop.includes("Kup w sklepie") && /Najlepsza seria: 9 dni/.test(m.txt), m);
     ok("K3 kalendarz zgadza się z liczbą serii (dni nauki w bieżącej serii = 6), choć progress.nd nie zna jednego dnia", m.zgodnosc[0] === 6 && m.zgodnosc[1] === 6, m.zgodnosc);
-    ok("K3 legenda: nauka, zamrożony, przerwa, bez nauki, dziś do zrobienia; jedna linia zasad", /bez nauki/.test(m.legenda) && /dziś do zrobienia/.test(m.legenda) && /spada do 0 o północy/.test(m.txt) && /przerwy w zajęciach nie zrywają serii/.test(m.txt), m.legenda);
+    ok("K3 legenda: nauka, zamrożony, przerwa, bez nauki, dziś do zrobienia; jedna linia zasad", /bez nauki/.test(m.legenda) && /dziś (do zrobienia|chroni zamrożenie)/.test(m.legenda) && /spada do 0 o północy/.test(m.txt) && /przerwy w zajęciach nie zrywają serii/.test(m.txt), m.legenda);
     ok("K3 każdy dzień kalendarza ma aria-label", m.labels.length === 3 && m.labels.every((x) => /: /.test(x)), m.labels);
   }
   if (lang === "en") ok("EN okno serii: bez polskich tekstów", m && /Your streak/i.test(m.txt) && /days in a row/.test(m.txt) && /You have 1\/2/.test(m.txt) && /Last 4 weeks/.test(m.txt) && !/[ąćęłńóśźż]/i.test(m.txt), m?.txt);
@@ -109,11 +112,13 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
     const out = { n: el.querySelector(".nw-seria-n").textContent, t: el.querySelector(".nw-seria-t").textContent, dots: el.querySelectorAll(".nw-dot").length, nauka: el.querySelectorAll(".nw-dot.s-nauka").length,
       km: el.querySelector(".nw-km")?.textContent || null, jutro: el.querySelector(".nw-jutro")?.textContent, h: el.querySelector(".nw-seria-h")?.textContent, dzisBg: getComputedStyle(el.querySelector(".nw-dot.dzis")).backgroundColor, steps: [...el.querySelectorAll(".nw-step")].map((s) => s.textContent + (s.classList.contains("on") ? "✓" : "")), flame: [Math.round(fl.width), Math.round(fl.height)],
       conf: !!el.querySelector(".nw-conf"), anim: getComputedStyle(el.querySelector(".nw-seria-flame")).animationName, labels: [...el.querySelectorAll(".nw-dot")].every((d) => d.getAttribute("aria-label")),
-      drugi: !!N.ekranSerii(), cel: N.celDnia() };
+      drugi: !!N.ekranSerii(), cel: N.celDnia(), jt: el.querySelector(".nw-jutro-t")?.textContent || null };
     return out;
   });
   if (nazwa === "zwykle") {
     ok("K5 ekranSerii(): 7 dni z rzędu, płomień 64 px, 7 kropek z aria-label, kamień milowy 7 z konfetti", r && r.n === "7" && r.t === "dni z rzędu!" && r.h === "Seria przedłużona!" && r.jutro === "Wróć jutro, a seria urośnie do 8 dni." && !/rgba\(0, 0, 0, 0\)/.test(r.dzisBg) && r.dots === 7 && r.nauka === 4 && r.labels && r.flame[0] === 64 && r.km === "Kamień milowy: 7 dni" && r.conf && r.steps.join(",") === "3✓,7✓,14,30,50,100", r);
+    ok("K5 zapowiedź jutra: „Jutro: {temat}, 5 min”, gdy jest następny temat", r && (r.jt === null || /^Jutro: .+, 5 min$/.test(r.jt)), r?.jt);
+    R.dodatkowe.push(`Ekran „Seria +1”, wiersz jutra: ${r?.jt}`);
     ok("K5 celDnia() → { xp: 12, cel: 30 }", r && r.cel.xp === 12 && r.cel.cel === 30, r?.cel);
     await shot(p, "ekran-seria-plus1-390-jasny");
     R.pomiary.push(await pomiar(p, "Ekran „Seria +1” 390 jasny", "#nw-test", "#nw-test"));
@@ -137,15 +142,21 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   const zam = (reqs) => ({ "mock-v24": "1", "mock-mon": JSON.stringify({ start: 0, ksiega: [], pos: [], zam: { reqs, dni: [] }, zal: {}, gab: [] }) });
   let p = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ls: zam(["a1"]) });
   const a = await pill(p);
-  ok("K1 19:00 z 1 zamrożeniem: „· zamrożenie: zostanie 0”, szary płomień, bez alarmu „do północy”, nic poza ekranem", (await pozaEkranem(p, "#main .greet *")).length === 0 && /streak-chroni/.test(a.cls) && /zamrożenie: zostanie 0/.test(a.txt) && !/północy/.test(a.txt) && /grayscale/.test(a.flameFilter), a);
+  ok("K1 19:00 z 1 zamrożeniem: „· chroni zamrożenie (ostatnie)”, szary płomień, bez alarmu „do północy”, nic poza ekranem", (await pozaEkranem(p, "#main .greet *")).length === 0 && /streak-chroni/.test(a.cls) && /chroni zamrożenie \(ostatnie\)/.test(a.txt) && !/północy/.test(a.txt) && /grayscale/.test(a.flameFilter), a);
   await shot(p, "dzis-19-chroni-390-jasny");
+  await p.click("#main .greet .nw-streak"); await p.waitForTimeout(700);
+  const ok2 = await p.evaluate(() => ({ dzis: document.querySelector("#layer .nw-cal .nw-day.dzis")?.className, leg: document.querySelector("#layer .nw-legend")?.innerText }));
+  ok("K3 okno przy zamrożeniu: dzisiejsza kratka „chroni” (niebieska), legenda „dziś chroni zamrożenie”", /chroni/.test(ok2.dzis) && /dziś chroni zamrożenie/.test(ok2.leg), ok2);
+  await shot(p, "okno-serii-chroni-390-jasny");
+  const db = await p.evaluate(async () => (await window.skrot.sb.rpc("nauka_seria", {})).data?.seria);
+  ok("K3 seria w bazie (nauka_seria) = seria w pigułce (6)", db === 6 && (await p.evaluate(() => window.ZD_APP.streakN())) === 6, db);
   R.pomiary.push(await pomiar(p, "Dziś 19:00 chroni zamrożenie 390", "#main .greet"));
   await p.close();
   const PON = "2026-11-09T19:00:00+01:00", t = dayN(PON);
   const PW = { xp: { t: 900, d: t - 3, n: 20 }, streak: { d: t - 3, n: 10 }, nd: [t - 7, t - 6, t - 5, t - 4, t - 3] };
   p = await open(b, { prog: PW, czas: "2026-11-09T10:00:00+01:00", ls: zam(["a1", "a2"]) });
   const rano = await pill(p);
-  ok("K3 poniedziałek rano przed nauką: widać, że weekend czeka na zamrożenie („· 2 dni pod zamrożeniem”)", /streak-todo/.test(rano.cls) && /· 2 dni pod zamrożeniem/.test(rano.txt), rano);
+  ok("K3 poniedziałek rano przed nauką: widać, że weekend czeka na zamrożenie („· weekend: zużyje 2 z 2”)", /streak-todo/.test(rano.cls) && /· weekend: zużyje 2 z 2/.test(rano.txt) && rano.h === 44 && (await pozaEkranem(p, "#main .greet *")).length === 0, rano);
   await shot(p, "dzis-pon-rano-zamrozenia-390-jasny");
   R.pomiary.push(await pomiar(p, "Dziś poniedziałek rano, weekend pod zamrożeniem 390", "#main .greet"));
   await p.close();

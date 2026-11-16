@@ -5600,7 +5600,14 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "zostało {0}/2": "{0}/2 left",
 "Seria {0} się skończyła: zabrakło zamrożeń. Dziś zaczynasz nową.": "Your {0} streak ended: not enough freezes. Today you start a new one.",
 "przed Tobą": "still ahead",
-"Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.": "You got a free streak freeze. One missed day won't break your streak."
+"Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.": "You got a free streak freeze. One missed day won't break your streak.",
+"· chroni zamrożenie (zostanie {0})": "· freeze covers today ({0} left)",
+"· chroni zamrożenie (ostatnie)": "· freeze covers today (last one)",
+"· weekend: zużyje {0} z {1}": "· weekend: uses {0} of {1}",
+"· dziś ✓": "· done today",
+"cel ✓": "goal ✓",
+"dziś chroni zamrożenie": "today covered by a freeze",
+"Jutro: {0}, 5 min": "Tomorrow: {0}, 5 min"
 // koniec ux-2
 },
 "plural": {

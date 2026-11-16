@@ -28,7 +28,10 @@ const pg = await run("node", ["supabase/test/pglite.mjs"]);
 wyniki.push({ f: "node supabase/test/pglite.mjs", code: pg.code, ok: (pg.out.match(/^✓/gm) || []).length, zle: (pg.out.match(/^✗/gm) || []).length + (pg.code ? 1 : 0), out: pg.out });
 const changed = execSync("git diff --name-only origin/main -- '*.js' ; git ls-files --others --exclude-standard -- '*.js'", { cwd: ROOT, encoding: "utf8" }).split("\n").filter((f) => f && fs.existsSync(ROOT + f));
 for (const f of changed) { const r = await run("node", ["--check", f]); wyniki.push({ f: "node --check " + f, code: r.code, ok: r.code ? 0 : 1, zle: r.code ? 1 : 0, out: r.out }); }
-const kolejka = process.argv.includes("--szybko") ? PW.filter((f) => /ux2-|h2-etap(3|1)\b/.test(f)) : PW.slice();
+// Ciężkie testy (pomiar klatek, długie przejścia) idą na końcu pojedynczo: przy 3 naraz przekraczają czas albo próg fps.
+const SAMO = /h2-etap3|paczka\.mjs|kosmetyki\/test\/etap4|h2-etap7|h2-etap8|ux2-etap/;
+const wszystkie = process.argv.includes("--szybko") ? PW.filter((f) => /ux2-|h2-etap(3|1)\b/.test(f)) : PW.slice();
+const kolejka = wszystkie.filter((f) => !SAMO.test(f)), pojedynczo = wszystkie.filter((f) => SAMO.test(f));
 const N = 3;
 await Promise.all(Array.from({ length: N }, async () => {
   while (kolejka.length) {
@@ -39,6 +42,12 @@ await Promise.all(Array.from({ length: N }, async () => {
     console.error(`${r.code || zle ? "✗" : "✓"} ${f} (${ok}/${ok + zle}, ${r.s}s)`);
   }
 }));
+for (const f of pojedynczo) {
+  const r = await run("node", [f]);
+  const ok = (r.out.match(/^✓/gm) || []).length, zle = (r.out.match(/^✗/gm) || []).length;
+  wyniki.push({ f: f + " (pojedynczo)", code: r.code, ok, zle: zle + (r.code && !zle ? 1 : 0), s: r.s, out: r.out });
+  console.error(`${r.code || zle ? "✗" : "✓"} ${f} (${ok}/${ok + zle}, ${r.s}s, pojedynczo)`);
+}
 const zle = wyniki.filter((w) => w.code || w.zle);
 console.log("| test | ✓ | ✗ | kod |\n|---|---|---|---|");
 for (const w of wyniki) console.log(`| ${w.f} | ${w.ok} | ${w.zle} | ${w.code} |`);

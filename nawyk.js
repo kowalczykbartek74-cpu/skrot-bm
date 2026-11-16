@@ -25,7 +25,13 @@
     lgDzis: "dziś",
     seriaChroni: "Dziś bez nauki? Zamrożenie ochroni serię. Ale 5 minut wystarczy, żeby zostało na później.",
     seriaPauza: "Przerwa w zajęciach: seria czeka i nie spada.",
-    chroniZam: "· zamrożenie: zostanie {0}",
+    chroniZam: "· chroni zamrożenie (zostanie {0})",
+    chroniOst: "· chroni zamrożenie (ostatnie)",
+    czekaKoszt: "· weekend: zużyje {0} z {1}",
+    dzisOk: "· dziś ✓",
+    celOk: "cel ✓",
+    lgDzisChroni: "dziś chroni zamrożenie",
+    jutroTemat: "Jutro: {0}, 5 min",
     dzisJeszcze: "· dziś jeszcze nie",
     czekaZam: "· {0} pod zamrożeniem",
     zostalo: "zostało {0}/2",
@@ -264,18 +270,18 @@
   // compact = wersja pod powitaniem na Dziś; zwraca <button>, który otwiera okno „Twoja seria”.
   function pigulka(compact) {
     const ap = A(), { h } = ap; if (!h) return null;
-    const { sk, stan, czeka, zostanie } = stanTeraz(), g = celDnia();
+    const { sk, stan, czeka, zostanie, ma } = stanTeraz(), g = celDnia();
     const tytul = { done: PL.seriaDone, risk: PL.seriaRisk, todo: PL.seriaTodo, chroni: PL.seriaChroni, pauza: PL.seriaPauza }[stan] || PL.seriaStart;
     const word = compact ? ap.plural(sk, "dzień", "dni", "dni") : ap.plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu");
     const rg = ring(g.xp / g.cel); rg.setAttribute("role", "img"); rg.setAttribute("aria-label", fmt(PL.celDnia, g.xp, g.cel)); rg.removeAttribute("aria-hidden");
     rg.title = fmt(PL.celDnia, g.xp, g.cel);
     const cls = "xp-chip nw-streak streak-" + stan + (sk ? "" : " off");
-    const dop = stan === "todo" && czeka ? fmt(PL.czekaZam, dni(czeka)) : { todo: PL.dzisJeszcze, risk: PL.doPolnocy, chroni: fmt(PL.chroniZam, zostanie), pauza: PL.pauzaTxt }[stan];
+    const dop = stan === "todo" && czeka ? fmt(PL.czekaKoszt, czeka, ma) : { todo: PL.dzisJeszcze, risk: PL.doPolnocy, chroni: zostanie ? fmt(PL.chroniZam, zostanie) : PL.chroniOst, pauza: PL.pauzaTxt, done: PL.dzisOk }[stan];
     return h("button", { type: "button", class: cls, title: tytul, "aria-haspopup": "dialog", onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
       h("span", { class: "nw-s-l" }, ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
         stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" || (stan === "todo" && czeka) ? svg(IKONY.snow, 16, "nw-klep") : null,
         dop ? h("span", { class: "nw-risk", text: " " + dop }) : null),
-      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true", text: `${g.xp}/${g.cel}` }) : null));
+      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true", text: g.xp >= g.cel ? PL.celOk : `${g.xp}/${g.cel} XP` }) : null));
   }
 
   // Po XP (xpFlush): dopisanie dnia nauki i najlepszej serii; pigułki na ekranie odświeżamy w miejscu (xpFlush nie rysuje ekranu).
@@ -337,13 +343,13 @@
   }
   // ---------------------------------------------------------------- okno „Twoja seria”
   function kalendarzEl(t, tygodni) {
-    const ap = A(), { h } = ap, p = progress(), zam = zamDni();
+    const ap = A(), { h } = ap, p = progress(), zam = zamDni(), st = stanTeraz().stan;
     const nauka = L.dniNauki(p, zam, przerwa), cal = L.kalendarz(t, tygodni, nauka, zam, przerwa), lt = dowLetters();
     const lab = { nauka: PL.dzienNauka, zamroz: PL.dzienZamroz, przerwa: PL.dzienPrzerwa, brak: PL.dzienBrak, przyszly: PL.dzienPrzyszly };
     return h("div", { class: "nw-cal", role: "group", "aria-label": PL.ostatnie4 },
       h("div", { class: "nw-cal-row nw-cal-head", "aria-hidden": "true" }, lt.map((x) => h("span", { text: x }))),
       cal.map((row) => h("div", { class: "nw-cal-row" }, row.map((c) => {
-        const el = h("span", { class: `nw-day s-${c.s}${c.dzis ? " dzis" + (c.s === "brak" ? " todo" : "") : ""}`, role: "img", "aria-label": fmt(lab[c.s], dzienLabel(c.d)) + (c.dzis ? ` (${PL.lgDzis})` : "") });
+        const el = h("span", { class: `nw-day s-${c.s}${c.dzis ? " dzis" + (c.s === "brak" ? (st === "chroni" ? " chroni" : " todo") : "") : ""}`, role: "img", "aria-label": fmt(lab[c.s], dzienLabel(c.d)) + (c.dzis ? ` (${PL.lgDzis})` : "") });
         if (c.s === "nauka") el.append(svg('<path d="M7 12.5l3.2 3.2L17 9"/>', 14));
         else if (c.s === "zamroz") el.append(svg(IKONY.snow, 14));
         return el;
@@ -353,7 +359,8 @@
         h("span", {}, h("i", { class: "nw-day s-zamroz mini", "aria-hidden": "true" }), h("span", { text: PL.lgZamroz })),
         h("span", {}, h("i", { class: "nw-day s-przerwa mini", "aria-hidden": "true" }), h("span", { text: PL.lgPrzerwa })),
         h("span", {}, h("i", { class: "nw-day s-brak mini", "aria-hidden": "true" }), h("span", { text: PL.lgBrak })),
-        h("span", {}, h("i", { class: "nw-day s-brak dzis todo mini", "aria-hidden": "true" }), h("span", { text: PL.lgDzisTodo })),
+        st === "chroni" ? h("span", {}, h("i", { class: "nw-day s-brak dzis chroni mini", "aria-hidden": "true" }), h("span", { text: PL.lgDzisChroni }))
+          : h("span", {}, h("i", { class: "nw-day s-brak dzis todo mini", "aria-hidden": "true" }), h("span", { text: PL.lgDzisTodo })),
         h("span", {}, h("i", { class: "nw-day s-przyszly mini", "aria-hidden": "true" }), h("span", { text: PL.lgPrzyszly }))));
   }
   function kamienieEl(n) {
@@ -388,8 +395,28 @@
           stan !== "done" && ap.ldOpen ? h("button", { type: "button", class: "btn primary", onclick: () => { close(); if (ap.S?.route?.view !== "home") ap.go?.({ view: "home" }); setTimeout(() => ap.ldOpen("karta"), 60); } }, PL.uczSie) : null,
           h("button", { type: "button", class: "btn ghost", onclick: close }, PL.zamknij))),
     ], "nw-okno-modal");
+    // Fokus na nagłówku (nie na „Kup w sklepie”), okno od góry: najpierw seria, cel i zasady.
+    const hd = document.querySelector("#layer .nw-okno-n"), md = document.querySelector("#layer .nw-okno-modal");
+    if (hd) { hd.setAttribute("tabindex", "-1"); try { hd.focus({ preventScroll: true }); } catch (e) {} }
+    if (md) md.scrollTop = 0;
+    requestAnimationFrame(() => { if (md) md.scrollTop = 0; });
   }
 
+  // Wiersz „Jutro: {temat}, 5 min” (ekran końca, pętla 3): karta 5 min z tematu spoza dzisiejszych, jak „Jeszcze 5 min”.
+  function jutroTytul() {
+    try {
+      const ap = A(), LDE = ap.LDE; if (!LDE || !ap.ldTematy) return null;
+      const st = ap.ldDay.get(), d = st.dzien || {};
+      const skip = new Set([...(st.tem || []), ...(d.lekcje || []).map((l) => l.temat), d.karta && d.karta.temat, ...(st.karty || [])].filter(Boolean));
+      const r = LDE.ulozDzien(ap.ldTematy().filter((x) => !skip.has(x.id)), ap.ldKontekst());
+      const m = r && r.karta && ap.materialById(r.karta.temat);
+      return m ? m.title || null : null;
+    } catch (e) { return null; }
+  }
+  function jutro() {
+    const { h } = A(), t = jutroTytul(); if (!h || !t) return null;
+    return h("p", { class: "nw-jutro-t" }, svg('<path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/>', 18), h("span", { text: fmt(PL.jutroTemat, t) }));
+  }
   // ---------------------------------------------------------------- ekran „Seria +1” (dla ekranu końca, pętla 3)
   let ekranSesja = null; // dzień, w którym ekran pokazano w tej karcie przeglądarki (kolejne render() rysują go bez konfetti)
   function konfetti(box) {
@@ -419,6 +446,7 @@
         h("small", { "aria-hidden": "true", text: lt[i] })))),
       km ? h("p", { class: "nw-km" }, svg(IKONY["ux2-medal"], 18), h("span", { text: fmt(PL.kamienMilowy, n) })) : null,
       h("p", { class: "nw-jutro", text: fmt(PL.jutroSeria, dni(n + 1)) }),
+      jutro(),
       kamienieEl(n));
     if (first && km) setTimeout(() => konfetti(box), 250);
     return box;
@@ -453,12 +481,20 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
   #main .greet .rk-compact .xp-chip.nw-streak { order: 9; flex: 1 0 100%; justify-content: space-between; }
 }
 .xp-chip.nw-streak .nw-s-l, .xp-chip.nw-streak .nw-s-r { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
-.xp-chip.nw-streak .nw-goal-t { font-size: .8rem; font-weight: 700; }
+.xp-chip.nw-streak .nw-goal-t { font-size: .8rem; font-weight: 700; white-space: nowrap; }
+.xp-chip.nw-streak .nw-s-l { flex: 1 1 auto; flex-wrap: wrap; row-gap: 0; }
+.xp-chip.nw-streak .nw-s-r { flex: none; }
+.xp-chip.nw-streak.streak-chroni .nw-risk { white-space: normal; text-align: left; line-height: 1.25; }
 .xp-chip.nw-streak.streak-chroni { outline: 2px dashed var(--h-blue, var(--accent-text)); outline-offset: -2px; background: var(--h-blue-soft, var(--accent-soft)) !important; color: var(--h-ink, var(--ink)) !important; }
 .xp-chip.nw-streak.streak-pauza { outline: 2px dashed var(--h-edge, var(--line)); outline-offset: -2px; }
 .xp-chip.nw-streak:is(.streak-chroni, .streak-pauza) .h2-flame svg { animation: none !important; }
 .xp-chip.nw-streak:is(.streak-chroni, .streak-pauza) :is(.h2-flame, .kflame) { filter: grayscale(1); opacity: .55; }
 .nw-okno-top { margin-top: 10px; }
+.nw-okno-n:focus { outline: none; }
+.nw-day.dzis.chroni { outline: 2.5px dashed var(--h-blue, var(--accent-text)); outline-offset: 2px; background: var(--h-blue-soft, var(--accent-soft)); }
+.nw-day.mini.dzis.chroni { outline-width: 1.5px; outline-offset: 1px; }
+.xp-chip.nw-streak.streak-done .nw-risk { color: var(--h-acc, var(--accent-text)); }
+.nw-jutro-t { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; color: var(--muted); }
 .nw-day.s-przyszly { box-shadow: inset 0 0 0 1.5px var(--h-edge, var(--line)); }
 .nw-okno-modal::before { position: static !important; margin: -6px auto 4px !important; }
 .nw-seria-h { color: var(--h-acc, var(--accent-text)); }
@@ -556,7 +592,7 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro });
   // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
   let stanKey = null;
   function tik() {

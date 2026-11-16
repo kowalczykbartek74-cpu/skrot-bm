@@ -6,7 +6,7 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 ## Etapy
 | etap | runda | wynik | twarde błędy | stan | commit |
 |---|---|---|---|---|---|
-| 1 Seria i cel dnia na Dziś | 3 | r1 7,5 · r2 6,5 · r3 … | brak | w toku | ccc103b (r2) |
+| 1 Seria i cel dnia na Dziś | 5 | **8/10** (r1 7,5 · r2 6,5 · r3 7,5 · r4 7,5 · r5 8) | brak | **ZALICZONY** | (commit tej rundy) |
 | 2 Zasady serii | — | — | — | — | — |
 | 3 Powroty | — | — | — | — | — |
 | 4 Kanał poza stroną | — | — | — | — | — |
@@ -27,3 +27,11 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - Stan „chroni zamrożenie” (spokojny, niebieski) zamiast alarmu „do północy”, gdy zamrożenie ochroni dzisiejszy dzień; „przerwa, seria czeka” w dni przerw z kalendarza uczelni.
 - Runda 4 etapu 1: zamrożenia „wszystkie albo żaden” (SQL i atrapa), błąd sieci nie zeruje serii (prośba czeka w `skrot-zam-czeka`, ponowienie po 4 s i co minutę), utrata serii z banerem, daty do bazy po kalendarzu warszawskim, prezent podłączony (po zapisie postępu), test zgodności przerw SQL z `CAL_DEFAULT`.
 - Optymistyczne n+1 w `streakNext` zostaje (funkcja musi zwrócić wynik od razu); mignięcie tylko przy rozbieżnym zapasie zamrożeń między urządzeniami — wtedy baner wyjaśnia koniec serii.
+- Runda 5 etapu 1: v56 (`nauka_dni`, dzień nauki z XP w bazie) wciągnięta do etapu 1 (recenzent: dzień nauki w bazie = tylko punkty rankingu). Fokus okna na nagłówku, kratka „dziś chroni zamrożenie”, teksty „chroni zamrożenie (ostatnie)”, „weekend: zużyje 2 z 2”, „dziś ✓”, cel „x/30 XP” / „cel ✓”, `ZD_NAWYK.jutro()` („Jutro: {temat}, 5 min”) w ekranie „Seria +1”. Regresja: ciężkie testy (fps, długie przejścia) pojedynczo.
+- Strefa czasu (decyzja): pigułka, „do północy” i granica dnia liczą się w czasie telefonu (jak `dayN` całej aplikacji; zmiana `dayN` to nie obszar tej pętli); do bazy daty idą po kalendarzu warszawskim. Dla studentów w Polsce wszystko = Europe/Warsaw. Zapis w RAPORT.
+- Na nowy rok akademicki (przed 1.10.2027): dopisać przerwy i dni wolne w `nauka_przerwa` (v55) i w `CAL_DEFAULT`; test `tests/nawyk.test.js` pilnuje, że są takie same.
+
+## Do przeniesienia z recenzji etapu 1 (runda 5)
+- Etap 2: v56 nie liczy dni z `progress.nd` (tylko `xp.d` z bieżącego zapisu i punkty), bo klient mógłby dopisać dni; prezent dopiero przy `nauka_seria_na(u, dzis) >= 2`; dzień nauki w wyzwalaczu v56 po kalendarzu telefonu vs Warszawa (test NY po nauce o 19:30); „zamrożenie chroni (ostatnie)” w jednej linii przy 390 px; mocniejszy stan risk; banery pod paskiem serii, nie na powitaniu.
+- Etap 3: koniec serii trwały (`progress.seriaKoniec`) w oknie i na Dziś do zamknięcia przez studenta (K5 etapu 3).
+- Etap 5: hero „Dziś · 5 min” po nauce zgodny ze stanem dnia, wiersz „Jutro: …” na Dziś.
