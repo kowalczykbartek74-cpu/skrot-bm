@@ -4612,6 +4612,8 @@ html:not([data-theme]) .lp-done-screen .btn.ghost { border: 2px solid var(--line
 @media (max-width: 420px) { html:not([data-theme]) .lp-stats:has(> :nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 html[data-green="dark"]:not([data-theme]) .lp-bar i.cur { background: #CDF25E; box-shadow: inset 0 0 0 2px #0F5A2F; }
 html:not([data-theme]) .lp-stat b .h2-coin { vertical-align: -3px; }
+html:not([data-theme]) .lp-done-screen { padding-bottom: 24px; }
+html:not([data-theme]) .lp-stage:has(.lp-done-screen) { padding-bottom: 32px; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -10430,7 +10432,9 @@ html:not([data-theme]) .lp-stat b .h2-coin { vertical-align: -3px; }
       // W Powtórkach konfetti tylko przy awansie lekcji (Utrwalone / Opanowane).
       const quizEnd = LP.src.kind === "quiz" && !bites.some((x, i) => i > bi && x.kind !== "final" && !st.done[x.id]);
       // Mini-sprawdzian (etap 9): konfetti tylko po zdanym.
-      if ((LP.src.kind !== "review" || st.lvUp?.length) && !(LP.src.kind === "spr" && !st.res?.passed)) setTimeout(() => { if (!(quizEnd && kEffect())) lpConfetti(b.kind === "final" ? 46 : 18); }, 250);
+      // Wygląd H2: przy słabym wyniku (< 60% z pierwszej próby) Staś „myśli”, więc bez konfetti (zielone motywy).
+      const h2Weak = !document.documentElement.getAttribute("data-theme") && bs.tot >= 3 && bs.ok / bs.tot < 0.6;
+      if (!h2Weak && (LP.src.kind !== "review" || st.lvUp?.length) && !(LP.src.kind === "spr" && !st.res?.passed)) setTimeout(() => { if (!(quizEnd && kEffect())) lpConfetti(b.kind === "final" ? 46 : 18); }, 250);
     }
     LP.el.xp.textContent = "⚡ " + st.xp; LP.el.help.hidden = true;
     const sec = Math.max(1, Math.round((Date.now() - (bs.t0 || Date.now())) / 1000));

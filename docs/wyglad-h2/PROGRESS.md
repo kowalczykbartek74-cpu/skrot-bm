@@ -30,3 +30,11 @@ Zakładki: podskok ikony (telefon) / przycisku (komputer) tylko przy zmianie zak
 poziom, monety, seria jako pigułki 3D ≥ 44 px; moneta i płomień SVG (h2Ico) tylko w zielonych motywach; płomień migocze przy serii > 0;
 połysk monety raz na sesję / przy zmianie liczby (okno 7,5 s). Test h2-etap3.mjs 48/48, ~50 fps przy przełączaniu zakładek.
 Na później: plakietka na #moreBtn bez .h-pop; --h-edge w ciemnym słabo widoczny; h2Ico w otwartych oknach przy zmianie motywu.
+
+### Etap 4 – lekcja i quiz (odtwarzacz) – ZALICZONY 8/10 (próba 4; wcześniej 7, 6, 7)
+Odtwarzacz: zamknięcie i pigułki 3D, pasek postępu 16 px z połyskiem i limonkowym bieżącym segmentem, karty z grubszym dołem,
+panel odpowiedzi ok/no z obrysem, „+XP” jako limonkowa pastylka, kafelki statystyk 3D (2×2 przy 4 na telefonie), moneta SVG,
+Staś na wszystkich ekranach końcowych z nastrojem wg wyniku, liczenie liczb w górę (czytnik dostaje wynik od razu, html.calm bez),
+przygaszone gwiazdki (role=img), jeden główny przycisk na końcu, bez konfetti przy słabym wyniku; górny pasek mieści się w 375 px.
+Test h2-etap4.mjs 33/33, ~62 fps. Na później (logika, nie wygląd): 1 gwiazdka za 0/15; mianownik „z pierwszej próby” (kroki zamiast pytań);
+„Zrobione ✓” z ptaszkiem w tekście; pasek egzaminu nie sprawdzony w 375 px.
