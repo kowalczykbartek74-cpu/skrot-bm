@@ -105,7 +105,9 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
 {
   const p = await open(b, { konto: "starosta", w: 375, h: 812, lang: "en", ls: { "skrot-green": "light" } });
   await p.waitForTimeout(2600);
+  await p.evaluate(() => document.querySelectorAll("body *").forEach((e) => { const c = getComputedStyle(e); if (c.position === "fixed" || c.position === "sticky") e.style.visibility = "hidden"; }));
   await p.screenshot({ path: `${DIR}en-starosta-375-jasny.png`, fullPage: true });
+  await p.evaluate(() => document.querySelectorAll("body *").forEach((e) => { e.style.visibility = ""; }));
   // Polskie znaki w tekście ekranu po EN = brak tłumaczenia (poza nazwami własnymi z translate=no / lang=pl).
   const pl = await p.evaluate(() => {
     const out = [], w = document.createTreeWalker(document.querySelector("#main"), NodeFilter.SHOW_TEXT);

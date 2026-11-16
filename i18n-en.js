@@ -1,6 +1,8 @@
 /* Słownik PL→EN dla i18n.js. Poprawki: zmień albo dopisz parę "polski": "English" w "exact" ({0}, {1} = wstawiane wartości). */
 window.SKROT_I18N && window.SKROT_I18N.load({
 "exact": {
+"Otwórz lekcję": "Open lesson",
+"Otwórz lekcję: {0}": "Open lesson: {0}",
 "Inny temat": "Another topic",
 "Wybierz temat": "Pick a topic",
 "Mam więcej czasu": "I have more time",
