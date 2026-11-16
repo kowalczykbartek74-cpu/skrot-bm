@@ -12,10 +12,43 @@ fs.mkdirSync(DIR, { recursive: true });
 const isCheck = (c) => c.type === "mc" && c.check && !c.again && !c.done;
 const toWrong = async (p) => { await startLesson(p); await goToCard(p, isCheck); await answer(p, false); await p.waitForTimeout(500); };
 const toRight = async (p) => { await startLesson(p); await goToCard(p, isCheck); await answer(p, true); await p.waitForTimeout(500); };
+import { docsBold, docsWith, lesson as lessonL } from "../../gry/test/ux3-lib.mjs";
+const isExit3 = (c) => c.type === "mc" && c.exit && !c.done;
+const toSel = async (p) => { await startLesson(p); await goToCard(p, isCheck); await p.locator(".lp-opts .opt").filter({ hasText: "Błędnie" }).first().click(); await p.waitForTimeout(300); };
+const toConf = async (p) => { await startLesson(p); await goToCard(p, isExit3, 60); await p.locator(".lp-opts .opt").first().click(); await p.waitForTimeout(300); };
+const toBank = async (p) => { await startLesson(p); await goToCard(p, (c) => c.type === "recall" && !c.done); await p.waitForTimeout(300); };
+const toSecond = async (p) => { await startLesson(p); await goToCard(p, isCheck); await answer(p, true); await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400); await goToCard(p, isCheck); await answer(p, false); await p.waitForTimeout(400); };
+const FL = Array.from({ length: 5 }, (_, i) => ({ q: `Fiszka ${i + 1}: co to jest pojęcie numer ${i + 1}?`, a: `Odpowiedź ${i + 1}.` }));
+const DFL = (() => { const d = docsWith([["U1", "Lekcja 1: Fiszki", lessonL(1)]]); d.materialContent.U1.flashcards = FL; d.materials.U1.flashcardCount = 5; return d; })();
+const HS = (s) => { let x = 2166136261; for (const ch of String(s)) { x ^= ch.codePointAt(0); x = Math.imul(x, 16777619) >>> 0; } return x.toString(36); };
+const SRS = Object.fromEntries(FL.map((f) => ["U1:" + HS(f.q), [1, 0]]));
+const toGrade = async (p) => { await p.locator(".rv-hero .sk-start").click(); await p.waitForTimeout(800); await p.locator(".lp-bottom .lp-cta").filter({ hasText: /Odwróć|Flip|Turn/ }).click(); await p.waitForTimeout(500); };
+const toSwipe = async (p) => { await startLesson(p); await goToCard(p, (c) => c.type === "swipe", 30); await p.locator(".lp-bottom .lp-cta").filter({ hasText: "Odwróć" }).click(); await p.waitForTimeout(500); };
 const isQ = (c) => c.type === "mc" && (c.check || c.exit || c.again) && !c.done;
 const toCombo = (n) => async (p) => { await startLesson(p); for (let k = 0; k < n; k++) { await goToCard(p, isQ); await answer(p, true); if (k < n - 1) { await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400); } } await p.waitForTimeout(300); };
 const toAsk = async (p) => { await startLesson(p); for (let i = 0; i < 30 && !(await p.locator(".lp-snd-ask").count()); i++) await goToCard(p, () => false, 1); };
 const SC = {
+  3: [
+    { n: "360-jasny-zaznaczona", o: {}, run: toSel, scope: ".lp" },
+    { n: "360-ciemny-zaznaczona", o: { dark: true }, run: toSel, scope: ".lp" },
+    { n: "360-jasny-pewnosc", o: {}, run: toConf, scope: ".lp" },
+    { n: "360-ciemny-pewnosc", o: { dark: true }, run: toConf, scope: ".lp" },
+    { n: "360-jasny-bank", o: { docs: docsBold }, run: toBank, scope: ".lp" },
+    { n: "360-ciemny-bank", o: { docs: docsBold, dark: true }, run: toBank, scope: ".lp" },
+    { n: "360-jasny-blad-druga-szansa-pozniej", o: { docs: docsBold }, run: toSecond, scope: ".lp" },
+    { n: "360-jasny-grade4", o: { docs: DFL, hash: "/review", progress: { srs: SRS } }, run: toGrade, scope: ".lp" },
+    { n: "360-ciemny-grade4", o: { docs: DFL, hash: "/review", progress: { srs: SRS }, dark: true }, run: toGrade, scope: ".lp" },
+    { n: "390-jasny-grade4", o: { docs: DFL, hash: "/review", progress: { srs: SRS }, w: 390, h: 844 }, run: toGrade, scope: ".lp" },
+    { n: "360-jasny-swipe", o: { docs: DFL }, run: toSwipe, scope: ".lp" },
+    { n: "1280-jasny-pewnosc", o: { w: 1280, h: 900 }, run: toConf, scope: ".lp" },
+    { n: "1280-ciemny-grade4", o: { docs: DFL, hash: "/review", progress: { srs: SRS }, w: 1280, h: 900, dark: true }, run: toGrade, scope: ".lp" },
+    { n: "390-en-pewnosc", o: { w: 390, h: 844, lang: "en" }, run: toConf, scope: ".lp" },
+    { n: "390-en-grade4", o: { docs: DFL, hash: "/review", progress: { srs: SRS }, w: 390, h: 844, lang: "en" }, run: toGrade, scope: ".lp" },
+    { n: "360-reduced-pewnosc", o: { motion: "reduce" }, run: toConf, scope: ".lp", motion: true },
+    { n: "360-calm-bank", o: { docs: docsBold, ls: { "skrot-calm": "1" } }, run: toBank, scope: ".lp", motion: true },
+    { n: "390-pink-pewnosc", o: { w: 390, h: 844, theme: "pink" }, run: toConf, scope: ".lp", other: true },
+    { n: "390-noc-grade4", o: { docs: DFL, hash: "/review", progress: { srs: SRS }, w: 390, h: 844, theme: "noc" }, run: toGrade, scope: ".lp", other: true },
+  ],
   2: [
     { n: "360-jasny-zla-stas", o: {}, run: toWrong, scope: ".lp" },
     { n: "360-ciemny-zla-stas", o: { dark: true }, run: toWrong, scope: ".lp" },

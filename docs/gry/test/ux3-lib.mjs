@@ -68,7 +68,7 @@ export async function textContrast(p, sel) {
     return out;
   }, sel);
 }
-export const contrastFails = (list) => list.filter((x) => x.bg !== "gradient").map((x) => ({ ...x, r: Math.round(cr(x.fg, x.bg) * 100) / 100 })).filter((x) => x.r < ((x.fs >= 24 || (x.fs >= 18.66 && x.fw >= 700)) ? 3 : 4.5));
+export const contrastFails = (list) => list.filter((x) => x.bg !== "gradient" && !/rgba\([^)]*,\s*0\)$/.test(x.fg)).map((x) => ({ ...x, r: Math.round(cr(x.fg, x.bg) * 100) / 100 })).filter((x) => x.r < ((x.fs >= 24 || (x.fs >= 18.66 && x.fw >= 700)) ? 3 : 4.5));
 // Przechodzi do karty spełniającej warunek (np. mc z kontrolą części), klikając „Dalej” na kartach do czytania.
 export async function goToCard(p, test, max = 40) {
   for (let i = 0; i < max; i++) {
@@ -78,6 +78,15 @@ export async function goToCard(p, test, max = 40) {
     if (await p.locator(".lp-done-screen, .lp-step").count()) { const c = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])"); if (await c.count()) { await c.click(); await p.waitForTimeout(450); continue; } }
     if (info.type === "hook" && !info.done) { await p.locator(".lp-opts .opt").first().click(); await p.waitForTimeout(200); }
     else if ((info.type === "mc" || info.type === "rvmc") && !info.done) { await answer(p, true); }
+    else if (info.type === "recall" && !info.done) {
+      const bank = p.locator(".lp-bank .opt:not([disabled])");
+      if (await bank.count()) { const r = await p.evaluate(() => window.ZD_APP.lpCur().answer); await bank.filter({ hasText: r }).first().click(); await p.waitForTimeout(120); }
+      else { const sh = p.locator(".lp-bottom .lp-cta").filter({ hasText: /Pokaż odpowiedź|Show answer/ }); if (await sh.count()) { await sh.click(); await p.waitForTimeout(250); } const w = p.locator(".lp-bottom .lp-barx .btn.primary"); if (await w.count()) { await w.click(); await p.waitForTimeout(500); continue; } }
+    }
+    else if ((info.type === "swipe" || info.type === "grade4") && !info.done) {
+      const f = p.locator(".lp-bottom .lp-cta").filter({ hasText: /Odwróć|Flip/ }); if (await f.count()) { await f.click(); await p.waitForTimeout(350); }
+      const w = p.locator(".lp-bottom .lp-barx .btn.primary, .lp-bottom .lp-barx .opt.g-good").first(); if (await w.count()) { await w.click(); await p.waitForTimeout(500); continue; }
+    }
     const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])");
     if (await cta.count()) { await cta.click(); await p.waitForTimeout(420); } else await p.waitForTimeout(250);
   }

@@ -14,7 +14,9 @@ const untracked = sh("git ls-files --others --exclude-standard").trim();
 if (untracked) { P("Nowe pliki (jeszcze nie w git):"); P("```"); P(untracked); P("```"); }
 
 // 2. zmienione funkcje w index.html i skrot-supabase.js vs lista z B3
-const MINE = ["playerOpen", "lpOpen", "lpBuild", "lpBuildDeck", "lpCards", "lpSectionCards", "LPR", "lpAward", "lpBuzz", "lpFloat", "lpTop", "lpKeys", "kick", "lpConfChips", "lpBiteDone", "lpSrcDone", "lpFinishLesson", "ldSource", "kSound", "kSoundOn", "xpFlush", "rv-hero", "lp-css", "lpLoad", "lpBonus"];
+const MINE = ["playerOpen", "lpOpen", "lpBuild", "lpBuildDeck", "lpCards", "lpSectionCards", "LPR", "lpAward", "lpBuzz", "lpFloat", "lpTop", "lpKeys", "kick", "lpConfChips", "lpBiteDone", "lpSrcDone", "lpFinishLesson", "ldSource", "kSound", "kSoundOn", "xpFlush", "rv-hero", "lp-css", "lpLoad", "lpBonus",
+  // nowe funkcje odtwarzacza tej pętli (dopisane obok LPR, bez zmian w cudzym kodzie)
+  "lpSel", "lpRetryAdd", "lpGapFor", "lpBank", "lpRetryLater", "lpBanner", "lpStep", "lpNextLesson", "lpDoneUx"];
 const ALLOWED_EXTRA = ["most ux-3", "skrypt lekcja-ux.js", "?v= w linii skryptów", "?v= w linii 1 (tylko i18n.js)", "Ustawienia: jeden wiersz (D3)"];
 function changedFns(file) {
   let diff = ""; try { diff = sh(`git diff -U0 ${BASE} -- ${file}`); } catch { return []; }
@@ -30,6 +32,7 @@ function changedFns(file) {
       else if (/lekcja-ux\.js\?v=/.test(txt)) name = "skrypt lekcja-ux.js";
       else if (/<script src="kopie\.js/.test(txt)) name = "?v= w linii skryptów";
       else if (ln === 1) name = "?v= w linii 1 (tylko i18n.js)";
+      else if (/ZD_LEKCJA\?\.ustawienia/.test(txt)) name = "Ustawienia: jeden wiersz (D3)";
       else {
         for (let i = ln - 1; i >= 0; i--) {
           const l = lines[i];

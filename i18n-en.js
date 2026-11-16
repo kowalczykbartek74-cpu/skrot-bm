@@ -5575,7 +5575,13 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wibracje": "Vibration",
 "Włączone: krótka wibracja przy odpowiedzi (Android)": "On: a short vibration when you answer (Android)",
 "krótka wibracja przy odpowiedzi (Android)": "a short vibration when you answer (Android)",
-"najlepsza passa": "best run"
+"najlepsza passa": "best run",
+"Pewny ✓": "Sure ✓",
+"Wiedziałem": "I knew it",
+"To pytanie wróci w następnej części, w innej formie.": "This one comes back in the next part, in a different form.",
+"Które pojęcie pasuje? Najpierw spróbuj w myślach.": "Which term fits? Try in your head first.",
+"Pojęcia do wyboru": "Terms to choose from",
+"Nie tym razem. Poprawne pojęcie: {0}.": "Not this time. The right term: {0}."
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],

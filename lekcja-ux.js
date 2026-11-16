@@ -34,8 +34,9 @@
   };
   const RYS = { ...IKONY_WSPOLNE, ...IKONY_UX3 };
   const svg = (k) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${RYS[k]}</svg>`;
+  const ANY_THEME = new Set(["bolt", "check", "cross", "retry"]); // proste znaki w currentColor: także w innych motywach
   function ico(k, cls) {
-    if (!green() || !RYS[k]) return null;
+    if (!RYS[k] || (!green() && !ANY_THEME.has(k))) return null;
     const s = document.createElement("span");
     s.className = "lp-ux-ico" + (cls ? " " + cls : ""); s.setAttribute("aria-hidden", "true"); s.innerHTML = svg(k);
     return s;
@@ -69,7 +70,7 @@
     const kids = [];
     if (green() && stasFace) {
       const f = stasFace(fb.ok ? "ok" : "oops"); f.classList.add("lp-fb-stas"); if (cm && cm.n >= 3) f.classList.add("lp-fb-hop"); kids.push(f);
-      if (!fb.ok) main.insertBefore(h("p", { class: "lp-fb-say", text: SAY[hashN(card?.id) % SAY.length] }), v.nextSibling);
+      if (!fb.ok) { LP.sayN = ((LP.sayN ?? hashN(card?.id)) + (LP.sayFor === card?.id ? 0 : 1)) % SAY.length; LP.sayFor = card?.id; main.insertBefore(h("p", { class: "lp-fb-say", text: SAY[LP.sayN] }), v.nextSibling); }
     }
     bar.replaceChildren(...kids, main);
     root.dataset.fb = fb.ok ? "ok" : "no";
@@ -90,6 +91,8 @@
   // Pytanie o dźwięki: raz, po pierwszej skończonej części (bm-dzwieki = "1" / "0").
   function pytanieDzwieki() {
     const { h, ls } = A(); if (!h || ls.get("bm-dzwieki") != null) return null;
+    // Najwyżej dwa razy (zamknięte bez wyboru wraca jeszcze raz po kolejnej części), potem cisza = „Nie teraz”.
+    const n = +(ls.get("bm-dzwieki-ask") || 0); if (n >= 2) { ls.set("bm-dzwieki", "0"); return null; } ls.set("bm-dzwieki-ask", String(n + 1));
     const box = h("div", { class: "lp-snd-ask", role: "group", "aria-label": "Dźwięki przy odpowiedziach" },
       ico("ux3-glos", "lp-snd-ico"), h("p", { text: "Włączyć krótkie dźwięki przy odpowiedziach?" }),
       h("div", { class: "lp-snd-btns" },
@@ -101,11 +104,11 @@
   function ustawienia() {
     const { h, ls, render } = A(); if (!h) return [];
     const row = (key, k, label, on, sub, flip) => h("button", { type: "button", class: "mi more-row", role: "switch", "aria-checked": String(on), "data-ux3": key, onclick: () => { flip(); render(); } },
-      ico(k) || h("span", { class: "ico", "aria-hidden": "true" }), h("span", { class: "more-txt" }, h("span", { text: label }), h("small", { text: sub })),
+      (() => { const sp = h("span", { class: "ico", "aria-hidden": "true" }); sp.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${RYS[k]}</svg>`; return sp; })(), h("span", { class: "more-txt" }, h("span", { text: label }), h("small", { text: sub })),
       h("span", { class: "switch", "aria-hidden": "true", "aria-checked": String(on), style: "margin-left:auto" }, h("i")));
     const snd = ls.get("bm-dzwieki") === "1", vib = ls.get("bm-wibracje") !== "0";
-    return [row("dzwieki", "ux3-glos", "Dźwięki przy odpowiedziach", snd, snd ? "Włączone: krótki dźwięk przy dobrej i złej odpowiedzi" : "krótki dźwięk przy dobrej i złej odpowiedzi", () => ls.set("bm-dzwieki", snd ? "0" : "1")),
-      row("wibracje", "ux3-wibr", "Wibracje", vib, vib ? "Włączone: krótka wibracja przy odpowiedzi (Android)" : "krótka wibracja przy odpowiedzi (Android)", () => ls.set("bm-wibracje", vib ? "0" : "1"))];
+    return [row("dzwieki", "ux3-glos", "Dźwięki przy odpowiedziach", snd, "krótki dźwięk przy dobrej i złej odpowiedzi", () => ls.set("bm-dzwieki", snd ? "0" : "1")),
+      row("wibracje", "ux3-wibr", "Wibracje", vib, "krótka wibracja przy odpowiedzi (Android)", () => ls.set("bm-wibracje", vib ? "0" : "1"))];
   }
 
   // ---------- CSS (tylko .lp-* i .rv-hero; ruch wyłączany przez reduced-motion i html.calm) ----------
@@ -152,7 +155,25 @@ html.calm :is(.lp, .lp *, .lp-map, .lp-map *, .lp-float, .lp-banner) { animation
 .lp-fb-stas svg { width: 48px; height: 48px; display: block; }
 @keyframes lpux-hop { 0%, 100% { transform: none; } 40% { transform: translateY(-6px); } }
 @media (prefers-reduced-motion: no-preference) { html:not(.calm) .lp-fb-stas.lp-fb-hop { animation: lpux-hop .35s ease-out 1; } }
-.lp-fb-say { font-size: .9rem; font-weight: 700; color: var(--ink); background: var(--surface); border-radius: 12px; padding: 4px 10px; justify-self: start; position: relative; }
+.lp-fb-say { font-size: .9rem; font-weight: 700; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 4px 10px; justify-self: start; position: relative; margin-left: 6px !important; }
+.lp-fb-say::before { content: ""; position: absolute; left: -7px; top: 50%; width: 10px; height: 10px; background: inherit; border-left: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); transform: translateY(-50%) rotate(45deg); }
+/* Etap 3: zaznaczona opcja, przyciski w dolnym pasku, oceny, bank pojęć. */
+.lp .lp-opts .opt.sel, .lp .lp-bank .opt.sel { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent) inset; background: var(--accent-soft); }
+html:not([data-theme]) .lp .lp-opts .opt.sel, html:not([data-theme]) .lp .lp-bank .opt.sel { background: var(--h-acc-soft); }
+.lp-barx { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.lp-barx[hidden] { display: none; }
+.lp-barx > .btn { flex: 1 1 0; min-height: 54px; justify-content: center; font-size: 1.04rem; border-radius: 16px; }
+.lp-barx > .lp-confbtn { min-height: 54px; }
+.lp-conf-ask { flex: 1 0 100%; margin: 0; font-size: .86rem; font-weight: 700; color: var(--muted); text-align: center; }
+.lp-barx .sk-grade4 { flex: 1 1 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.lp-barx .sk-grade4 .opt { min-height: 56px; flex-direction: column; justify-content: center; gap: 2px; padding: 6px 4px; text-align: center; font-size: .92rem; }
+.lp-barx .sk-grade4 .opt .k { margin: 0; }
+.lp-barx .g-short { display: none; }
+@media (max-width: 400px) { .lp-barx .g-long { display: none; } .lp-barx .g-short { display: inline; } }
+.lp-bank { display: grid; gap: 8px; }
+.lp .lp-row.sk-links .btn, .lp .lp-row.sk-links .slide-ref { min-height: 44px; }
+.lp .lp-bank .opt { display: flex; grid-template-columns: none; justify-content: center; text-align: center; min-height: 48px; font-weight: 700; }
+.lp .lp-bank .opt > span { flex: 0 1 auto; }
 .lp-fbar .v { flex-wrap: wrap; row-gap: 4px; }
 .lp-fbar .v .lp-fb-t { flex: 1 1 0; min-width: 65%; }
 .lp-fb-combo { display: inline-flex; align-items: center; gap: 4px; font-size: .92rem; padding: 2px 10px; border-radius: 999px; background: var(--lime-100); color: var(--ink); }
