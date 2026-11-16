@@ -101,6 +101,26 @@ for (const dark of [false, true]) { // wąski telefon 360 px: karty sklepu i kaf
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();
 }
+for (const konto of ["platne", "darmowe"]) { // zwykły uczeń (nie starosta): monety, poziomy, notki
+  const n = `${konto}-360`;
+  const p = await open(b, { konto, w: 360, h: 740, hash: "/shop" });
+  await p.screenshot({ path: `${OUT}/h2e8-${n}-sklep.png`, fullPage: true });
+  const c = await p.locator(".shop-grid .shop-card").evaluateAll((cs) => cs.map((x) => { const bt = [...x.querySelectorAll(".shop-act .btn")].filter((e) => e.offsetParent), sm = x.querySelector(".shop-note");
+    return { h: Math.round(x.getBoundingClientRect().height), btns: bt.length, btnH: bt.map((e) => Math.round(e.getBoundingClientRect().height)), cut: sm ? sm.scrollHeight > sm.clientHeight + 1 : false, note: sm?.innerText }; }));
+  ok(`${n}: każda karta motywu ma dokładnie jeden widoczny przycisk`, c.length && c.every((x) => x.btns === 1), c);
+  ok(`${n}: przyciski w jednej linii (≤ 48 px)`, c.every((x) => x.btnH.every((v) => v <= 48)), c.map((x) => x.btnH));
+  ok(`${n}: notki nie ucięte (widać, ile XP brakuje)`, c.every((x) => !x.cut), c.map((x) => x.note));
+  ok(`${n}: karty ≤ 330 px`, c.every((x) => x.h <= 330), c.map((x) => x.h));
+  for (let i = 0; i < 80; i++) { await p.keyboard.press("Tab"); if (await p.evaluate(() => document.activeElement?.classList.contains("shop-sw-btn"))) break; }
+  const fr = await p.evaluate(() => { const e = document.activeElement; if (!e?.classList.contains("shop-sw-btn")) return null; const a = getComputedStyle(e, "::after"), r = e.getBoundingClientRect(); return { bw: a.borderTopWidth, z: a.zIndex, bottom: Math.round(r.bottom), nav: Math.round([...document.querySelectorAll("nav")].find((x) => getComputedStyle(x).position === "fixed")?.getBoundingClientRect().top ?? innerHeight) }; });
+  ok(`${n}: obrazek-podgląd osiągalny Tabem, z widocznym obrysem nad obrazkiem, nie pod dolnym paskiem`, fr && fr.bw === "3px" && +fr.z >= 2 && fr.bottom <= fr.nav, fr);
+  ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
+  await p.close();
+}
+{ const p = await open(b, { konto: "platne", w: 1280, h: 900, hash: "/shop" });
+  const t = await p.locator(".shop-sw-btn").first().getAttribute("tabindex");
+  ok("komputer: obrazek bez drugiego przystanku Taba (jest przycisk „Podgląd”)", t === "-1" && await p.locator(".shop-pv:visible").count() >= 1, t);
+  await p.close(); }
 for (const th of ["riwiera", "pink"]) {
   const p = await open(b, { theme: th, hash: "/haslo", ls: HLS });
   for (let i = 0; i < 40 && !(await p.locator(".hd-board").count()); i++) await p.waitForTimeout(100);
