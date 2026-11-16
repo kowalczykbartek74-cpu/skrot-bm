@@ -4739,6 +4739,71 @@ html:not([data-theme]) .exam-card.soon { box-shadow: inset 6px 0 0 var(--t); }
 @media (prefers-reduced-motion: reduce) { html:not([data-theme]) main.h-ent .th-big, html:not([data-theme]) .day.today::after { animation: none !important; } html:not([data-theme]) :is(.day, .term .tick, .tchip, .exam-card) { transition: none; } html:not([data-theme]) :is(.day, .term .tick, .tchip, .exam-card):active { transform: none; } }
 html.calm main.h-ent .th-big, html.calm .day.today::after { animation: none !important; }
 html.calm :is(.day, .term .tick, .tchip, .exam-card):active { transform: none; }
+/* ===== H2 etap 8: Gry, Hasło dnia, ranking, sklep ===== */
+/* Gry: kafle jako karty 3D, ikona gry w kolorowym „klocku” z dołem, kafle wskakują po kolei przy wejściu. */
+html:not([data-theme]) .gry-tile { transition: transform .15s var(--h-out); }
+html:not([data-theme]) .gry-tile-art { width: 60px; height: 60px; border-radius: 18px; background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom: 5px solid color-mix(in srgb, var(--accent) 50%, var(--h-edge)); }
+html:not([data-theme]) .gry-tiles > :nth-child(3n+2) .gry-tile-art { background: var(--h-orange-soft); border-color: color-mix(in srgb, var(--h-orange) 40%, var(--h-line)); border-bottom-color: color-mix(in srgb, var(--h-orange) 60%, var(--h-edge)); }
+html:not([data-theme]) .gry-tiles > :nth-child(3n) .gry-tile-art { background: var(--h-blue-soft); border-color: color-mix(in srgb, var(--h-blue) 40%, var(--h-line)); border-bottom-color: color-mix(in srgb, var(--h-blue) 60%, var(--h-edge)); }
+@media (hover: hover) { html:not([data-theme]) .gry-tile:not(.soon):not(.few):hover { transform: translateY(-3px); } html:not([data-theme]) .gry-tile:not(.soon):not(.few):hover .gry-tile-art { animation: h-wiggle .5s ease; } }
+@keyframes h-wiggle { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-8deg); } 60% { transform: rotate(6deg); } }
+html:not([data-theme]) main.h-ent .gry-tiles > * { animation: h-pop .45s var(--h-spring) backwards; }
+html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(1) { animation-delay: calc(120ms - var(--h-el, 0ms)); }
+html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(2) { animation-delay: calc(190ms - var(--h-el, 0ms)); }
+html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(3) { animation-delay: calc(260ms - var(--h-el, 0ms)); }
+html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(n+4) { animation-delay: calc(330ms - var(--h-el, 0ms)); }
+html:not([data-theme]) .gry-badge { border: 2px solid var(--h-line); border-bottom-width: 4px; background: var(--h-acc-soft); }
+html:not([data-theme]) .gry-ic { border: 2px solid var(--h-line); border-bottom-width: 4px; transition: transform .08s ease, border-bottom-width .08s ease; }
+html:not([data-theme]) .gry-ic:active { transform: translateY(2px); border-bottom-width: 2px; }
+/* Hasło dnia: kafle i klawisze jak klawisze 3D. Górne obwódki bez zmian (daltonizm: stan 1 przerywana, stan 2 ciągła gruba),
+   grubszy jest tylko dół. Wpisana litera „wskakuje” (tylko transform). */
+html:not([data-theme]) .hd-t { border-radius: 12px; border-bottom-width: 5px; border-color: var(--h-line); }
+html:not([data-theme]) .hd-row.cur .hd-t { border-color: color-mix(in srgb, var(--accent) 45%, var(--h-line)); }
+html:not([data-theme]) .hd-t.fill, html:not([data-theme]) .hd-row.cur .hd-t.fill { border-color: var(--h-muted); border-bottom-color: var(--h-ink); animation: h-tpop .16s ease-out; }
+@keyframes h-tpop { 50% { transform: scale(1.1); } }
+html:not([data-theme]) .hd-t.s2 { border-color: var(--h-acc-edge); border-bottom-width: 6px; }
+html:not([data-theme]) .hd-t.s1 { background: var(--h-lime); color: #1B2A10; border-color: #3F5A12; border-bottom-width: 5px; }
+html:not([data-theme]) .hd-t.s0 { border-bottom-color: color-mix(in srgb, var(--h-muted) 35%, var(--sunk)); }
+html:not([data-theme]) .hd-k { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: 10px; transition: transform .07s ease, border-bottom-width .07s ease; }
+html:not([data-theme]) .hd-k:active { transform: translateY(2px); border-bottom-width: 2px; }
+html:not([data-theme]) .hd-k.s2 { border: 2px solid var(--h-acc-edge); border-bottom-width: 4px; }
+html:not([data-theme]) .hd-k.s1 { background: var(--h-lime); color: #1B2A10; border: 2px dashed #3F5A12; border-bottom: 4px solid #3F5A12; }
+html:not([data-theme]) .hd-k.s0 { border-bottom-color: color-mix(in srgb, var(--h-muted) 30%, var(--sunk)); }
+/* Pigułka przedmiotu i podpowiedź: dół 3D cieniem wewnętrznym, żeby nie zmieniać wysokości (telefon: plansza + klawiatura na jednym ekranie). */
+html:not([data-theme]) .hd-subj { box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--c, var(--accent)) 35%, transparent); }
+html:not([data-theme]) .hd-hint { border-radius: 16px; box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--h-orange) 35%, var(--h-line)), inset 0 -4px 0 color-mix(in srgb, var(--h-orange) 35%, var(--h-line)); }
+/* Ranking: wiersze jako karty, podium jako medale 3D, „Ty” limonkowe; miejsce gracza dużą liczbą w kółku. */
+html:not([data-theme]) .rk-list { gap: 6px; }
+html:not([data-theme]) .rk-row { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: 16px; background: var(--surface); }
+html:not([data-theme]) .rk-row.me { background: var(--h-acc-soft); border-color: var(--accent); border-bottom-color: var(--h-acc-edge); }
+html:not([data-theme]) .rk-pos { width: 34px; height: 34px; background: var(--sunk); border-bottom: 3px solid var(--h-line); }
+html:not([data-theme]) .rk-pos.m1 { background: #FFD84D; color: #3A2A00; border-bottom-color: #C79A00; }
+html:not([data-theme]) .rk-pos.m2 { background: #DCE3E8; color: #22303A; border-bottom-color: #9AA8B2; }
+html:not([data-theme]) .rk-pos.m3 { background: #F2B98A; color: #3A1E08; border-bottom-color: #B9763F; }
+html:not([data-theme]) main.h-ent .rk-row:nth-child(-n+3) .rk-pos { animation: h-pop .5s var(--h-spring) calc(260ms - var(--h-el, 0ms)) backwards; }
+html:not([data-theme]) .rk-place b { display: inline-grid; place-items: center; min-width: 64px; height: 64px; padding: 0 10px; border-radius: 999px; background: var(--h-lime); color: #1B2A10; border-bottom: 5px solid #7FA51A; }
+html:not([data-theme]) .rk-hidden { border: 2px solid var(--h-line); border-bottom-width: 4px; border-radius: 16px; }
+html:not([data-theme]) .rk-bar { height: 12px; border-radius: 999px; }
+html:not([data-theme]) .rk-bar i { border-radius: 999px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .12); }
+html:not([data-theme]) .fchip { border: 2px solid var(--h-line); border-bottom-width: 4px; min-height: 40px; padding: 5px 14px; transition: transform .08s ease, border-bottom-width .08s ease; }
+html:not([data-theme]) .fchip:active { transform: translateY(2px); border-bottom-width: 2px; }
+html:not([data-theme]) .fchip[aria-pressed="true"] { border-color: var(--accent); background: var(--h-acc-soft); color: var(--accent-text); }
+/* Sklep: zakładki jak pigułki 3D, karty rzeczy i zadań jako karty 3D; włączona rzecz z zielonym dołem. */
+html:not([data-theme]) .kshop-tab { border: 2px solid var(--h-line); border-bottom-width: 4px; min-height: 44px; transition: transform .08s ease, border-bottom-width .08s ease; }
+html:not([data-theme]) .kshop-tab:active { transform: translateY(2px); border-bottom-width: 2px; }
+html:not([data-theme]) .kshop-tab[aria-selected="true"] { border-color: var(--h-acc-edge); }
+html:not([data-theme]) :is(.kcard, .shop-card, .shop-mission) { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 20px; box-shadow: none; }
+html:not([data-theme]) :is(.kcard, .shop-card).is-on { border-color: var(--accent); border-bottom-color: var(--h-acc-edge); }
+html:not([data-theme]) :is(.kcard, .shop-card).flash { animation: h-pop .45s var(--h-spring); }
+html:not([data-theme]) .kcard-pv { border-bottom: 2px solid var(--h-line); }
+html:not([data-theme]) :is(.kcard-lock, .kcard-zoom) { box-shadow: none; border: 2px solid var(--h-line); }
+html:not([data-theme]) .shop-mission.week { background: var(--h-lime); color: #1B2A10; border-color: #7FA51A; border-bottom-color: #5E7D0C; }
+html:not([data-theme]) .shop-mission.week :is(.muted, small, .shop-prize) { color: #1B2A10; }
+html:not([data-theme]) main.h-ent .kshop-grid > * { animation: h-pop .4s var(--h-spring) calc(180ms - var(--h-el, 0ms)) backwards; }
+@media (hover: hover) { html:not([data-theme]) .kcard:hover { transform: translateY(-2px); } html:not([data-theme]) .kcard { transition: transform .15s var(--h-out), border-color .2s; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.gry-tiles > *, .gry-tile-art, .hd-t, .rk-pos, .kshop-grid > *, .kcard, .shop-card) { animation: none !important; } html:not([data-theme]) :is(.gry-tile, .kcard, .hd-k, .gry-ic, .fchip, .kshop-tab) { transition: none; transform: none !important; } }
+html.calm :is(.gry-tiles > *, .gry-tile-art, .hd-t, .rk-pos, .kshop-grid > *, .kcard, .shop-card) { animation: none !important; }
+html.calm :is(.gry-tile, .kcard, .hd-k, .gry-ic, .fchip, .kshop-tab) { transform: none !important; }
 </style>
 
 <header class="bar"><div class="wrap">
