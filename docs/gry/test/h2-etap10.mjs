@@ -18,7 +18,8 @@ for (const dark of [false, true]) {
   const mini = await p.locator(".gry-mini-b .ic").evaluateAll((es) => es.map((e) => !!e.querySelector("svg")));
   ok(`${n}: małe kafle gier w Powtórkach też z SVG`, mini.length >= 2 && mini.every(Boolean), mini);
   const sq = await p.locator(".pm-grid .pm-sq").first().evaluate((e) => { const c = getComputedStyle(e); return { bb: c.borderBottomWidth, w: e.getBoundingClientRect().width }; }).catch(() => null);
-  ok(`${n}: mapa postępów – kwadraty 3D (24 px, dół 4 px)`, sq && sq.bb === "4px" && sq.w === 24, sq);
+  // UX-4 W2: kwadrat mapy 28 px co 44 px (pole trafienia ≥ 44 px bez nakładania sąsiadów); wcześniej 24 px.
+  ok(`${n}: mapa postępów – kwadraty 3D (28 px, dół 4 px)`, sq && sq.bb === "4px" && sq.w === 28, sq);
   const pm = await p.evaluate(() => { const q = (sel) => { const e = document.querySelector(sel); if (!e) return null; const c = getComputedStyle(e); return { w: Math.round(e.getBoundingClientRect().width), st: c.borderTopStyle, bi: c.backgroundImage }; };
     const leg = document.querySelector(".pm-legend"); const ls = leg ? [...leg.children].map((x) => Math.round(x.getBoundingClientRect().top)) : [];
     return { extra: q(".pm-sq.extra"), lk: q(".pm-sq.lk"), leg: q("i.pm-sq"), legRows: new Set(ls).size }; });
