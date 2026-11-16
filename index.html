@@ -4938,14 +4938,23 @@ html.calm .switch i { transition: none; }
 .h2-now { display: none; }
 html:not([data-theme]) :is(.gry-tile-art, .gry-mini-b .ic) .h2-ico { display: grid; place-items: center; }
 html:not([data-theme]) .gry-tile-art .h2-ico svg { width: 36px; height: 36px; }
-html:not([data-theme]) .gry-mini-b .ic .h2-ico svg { width: 30px; height: 30px; }
+html:not([data-theme]) .gry-mini-b .ic .h2-ico svg { width: 28px; height: 28px; }
+html:not([data-theme]) .gry-mini-b .ic:has(.h2-ico) { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 15px; background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom-width: 4px; margin-bottom: 4px; }
+html:not([data-theme]) .gry-mini > :nth-child(3n+2) .ic:has(.h2-ico) { background: var(--h-orange-soft); border-color: color-mix(in srgb, var(--h-orange) 40%, var(--h-line)); }
+html:not([data-theme]) .gry-mini > :nth-child(3n) .ic:has(.h2-ico) { background: var(--h-blue-soft); border-color: color-mix(in srgb, var(--h-blue) 40%, var(--h-line)); }
+html:not([data-theme]) .more-tile > .ico.h2g svg { width: 22px; height: 22px; }
 @media (max-width: 520px) { html:not([data-theme]) .gry-tile-art .h2-ico svg { width: 32px; height: 32px; } }
 html:not([data-theme]) .gry-mini-b:not([disabled]):hover .ic .h2-ico { animation: h-wiggle .5s ease; }
 /* Mapa postępów: kwadraty jako małe klawisze w kolorach H, legenda w tym samym stylu. */
-html:not([data-theme]) .pm-sq { width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--h-line); border-bottom-width: 4px; background: var(--surface); transition: transform .08s ease; }
-html:not([data-theme]) .pm-sq.st-good { background: var(--accent); border-color: var(--h-acc-edge); }
-html:not([data-theme]) .pm-sq.st-mid { background: #FFC83D; border-color: #C78F00; }
-html:not([data-theme]) .pm-sq.st-weak { background: var(--h-red); border-color: color-mix(in srgb, var(--h-red) 60%, #000); }
+html:not([data-theme]) .pm-sq { border-color: var(--h-line); border-width: 2px; border-bottom-width: 3px; }
+html:not([data-theme]) button.pm-sq:not(.extra) { width: 24px; height: 24px; border-radius: 7px; border-bottom-width: 4px; transition: transform .08s ease; }
+html:not([data-theme]) .pm-sq.extra { border-style: dashed; }
+html:not([data-theme]) i.pm-sq { border-width: 1.5px; border-bottom-width: 3px; }
+html:not([data-theme]) .pm-legend { gap: 6px 9px; font-size: .8rem; }
+html:not([data-theme]) .pm-legend span { gap: 5px; }
+html:not([data-theme]) .pm-sq.st-good { background-color: var(--accent); border-color: var(--h-acc-edge); }
+html:not([data-theme]) .pm-sq.st-mid { background-color: #FFC83D; border-color: #C78F00; }
+html:not([data-theme]) .pm-sq.st-weak { background-color: var(--h-red); border-color: color-mix(in srgb, var(--h-red) 60%, #000); }
 html:not([data-theme]) button.pm-sq:active { transform: translateY(2px); border-bottom-width: 2px; }
 html:not([data-theme]) .pm-grid { gap: 6px; }
 html:not([data-theme]) .pm-tip-st .pm-sq { width: 12px; height: 12px; border-width: 1.5px; border-bottom-width: 2.5px; border-radius: 4px; }
@@ -4953,6 +4962,8 @@ html:not([data-theme]) main.h-ent .pm-grid > .pm-sq { animation: h-pop .35s var(
 /* Karta „Na dziś” (podpowiedź): limonkowa karta 3D zamiast płaskiego gradientu. */
 html:not([data-theme]) .hint { background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom: 5px solid color-mix(in srgb, var(--accent) 55%, var(--h-edge)); border-radius: var(--h-r); }
 html:not([data-theme]) .hint .eyebrow { color: var(--accent-text); }
+/* Przedmioty na telefonie: plakietka terminu w kafelku najwyżej w 2 liniach, zaokrąglona (nie owal). */
+@media (max-width: 520px) { html:not([data-theme]) .nb .foot .chip { border-radius: 12px; font-size: .74rem; line-height: 1.25; padding: 4px 8px; text-align: left; } }
 /* Hasło dnia: puste kafle z widocznym dołem w ciemnym; kalendarz: pierścień „dziś” widoczny też na jasnym. */
 html:not([data-theme]) .hd-t:not(.s0):not(.s1):not(.s2):not(.fill) { border-bottom-color: var(--h-edge); }
 html:not([data-green="dark"]):not([data-theme]) .day.today::after { border-color: #8FB52A; }
@@ -9596,9 +9607,9 @@ html.calm .pm-sq { transform: none !important; }
   Object.assign(H2_ICO, {
     frun: '<svg viewBox="0 0 32 32" width="32" height="32"><path d="M6 25C6 13 13 6 27 5C27 18 20 26 8 26Z" fill="#58C25C"/><path d="M6 25C6 13 13 6 27 5C25 9 21 12 17 14C13 16 9 19 6 25Z" fill="#3E9E44"/><path d="M5 27C10 20 15 15 22 10" stroke="#1F6B2A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>',
     pary: '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="4" y="7" width="15" height="20" rx="3.5" transform="rotate(-10 11.5 17)" fill="#8CC2F5" stroke="#1C6FB8" stroke-width="2"/><rect x="13" y="5" width="15" height="20" rx="3.5" transform="rotate(8 20.5 15)" fill="#fff" stroke="#1A7F45" stroke-width="2"/><path d="M17.5 15.5l2.3 2.3 4.4-4.6" transform="rotate(8 20.5 15)" stroke="#1A7F45" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    przejdz: '<svg viewBox="0 0 32 32" width="32" height="32"><ellipse cx="11" cy="11" rx="4.2" ry="6" transform="rotate(-12 11 11)" fill="#FF9F43"/><circle cx="8.4" cy="20.3" r="2.4" fill="#FF9F43"/><ellipse cx="21" cy="17" rx="4.2" ry="6" transform="rotate(12 21 17)" fill="#E07A12"/><circle cx="23.6" cy="26.3" r="2.4" fill="#E07A12"/></svg>',
+    przejdz: '<svg viewBox="0 0 32 32" width="32" height="32"><g fill="#E07A12"><path d="M7.5 13.5C5.5 9.5 6.8 6 9.6 6s3.8 3.6 2.6 7.6C11.4 16.4 9 16.6 7.5 13.5Z"/><rect x="7.2" y="17" width="5.4" height="4.6" rx="2.3"/><circle cx="7.4" cy="4.2" r="1.3"/><circle cx="10" cy="3.4" r="1.3"/><circle cx="12.5" cy="4.3" r="1.2"/></g><g fill="#FF9F43"><path d="M19.8 21.5C17.8 17.5 19.1 14 21.9 14s3.8 3.6 2.6 7.6C23.7 24.4 21.3 24.6 19.8 21.5Z"/><rect x="19.5" y="25" width="5.4" height="4.6" rx="2.3"/><circle cx="19.7" cy="12.2" r="1.3"/><circle cx="22.3" cy="11.4" r="1.3"/><circle cx="24.8" cy="12.3" r="1.2"/></g></svg>',
     drabina: '<svg viewBox="0 0 32 32" width="32" height="32"><path d="M10 3L8 29M22 3L24 29" stroke="#B35400" stroke-width="3" stroke-linecap="round"/><path d="M9.4 9H22.6M9 15H23M8.6 21H23.4" stroke="#FF9F43" stroke-width="3" stroke-linecap="round"/><circle cx="25" cy="6" r="3.5" fill="#CDF25E" stroke="#5E7D0C" stroke-width="1.5"/></svg>',
-    haslo: '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="3" y="8" width="12" height="13" rx="3" fill="#1A7F45"/><rect x="3" y="18" width="12" height="3" rx="1.5" fill="#0F5A2F"/><rect x="17" y="8" width="12" height="13" rx="3" fill="#CDF25E"/><rect x="17" y="18" width="12" height="3" rx="1.5" fill="#8FB52A"/><text x="9" y="17.5" text-anchor="middle" font-size="9" font-weight="800" font-family="system-ui, sans-serif" fill="#fff">A</text><text x="23" y="17.5" text-anchor="middle" font-size="9" font-weight="800" font-family="system-ui, sans-serif" fill="#10231A">B</text></svg>',
+    haslo: '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="4" y="4" width="24" height="24" rx="6" fill="#CDF25E" stroke="#5E7D0C" stroke-width="2"/><rect x="5" y="22" width="22" height="5" rx="2.5" fill="#8FB52A"/><text x="16" y="21" text-anchor="middle" font-size="17" font-weight="900" font-family="system-ui, sans-serif" fill="#10231A">A</text></svg>',
   });
   function h2Ico(k, emoji) {
     if (document.documentElement.getAttribute("data-theme")) return h("span", { "aria-hidden": "true", text: emoji });
@@ -13894,8 +13905,10 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   function moreGroup(title, rows, tour) { return h("section", { class: "panel sk-panel more-group", "data-tour": tour || null }, h("h2", { text: title }), h("div", { class: "more-list" }, rows.filter(Boolean))); }
   // Kafelek nauki: ikona i nazwa, opis tylko w podpowiedzi; sub = krótki stan (np. Hasło dnia, miejsce w rankingu).
   function moreTile(ic, label, sub, fn, title) {
+    // Gry mają te same kolorowe ikony co w #/gry (tylko w zielonych motywach).
+    const g = !document.documentElement.getAttribute("data-theme") && { "Graj i powtarzaj": "frun", "Hasło dnia": "haslo" }[label];
     return h("button", { type: "button", class: "more-tile", title: title || null, onclick: fn },
-      icon(ic), h("span", { class: "more-tile-txt" }, h("span", { class: "more-tile-t", text: label }), sub ? h("small", { class: "num", text: sub }) : null));
+      g ? h("span", { class: "ico h2g", "aria-hidden": "true" }, h2Ico(g, "")) : icon(ic), h("span", { class: "more-tile-txt" }, h("span", { class: "more-tile-t", text: label }), sub ? h("small", { class: "num", text: sub }) : null));
   }
   function themeName() {
     return { pink: "Jednorożec", bow: "Kokardka", meadow: "Łąka", lilia: "Nenufary", sea: "Nocny rejs", noc: "Nokturn", riwiera: "Riwiera", klub: "Jachtklub" }[document.documentElement.getAttribute("data-theme") || ""]

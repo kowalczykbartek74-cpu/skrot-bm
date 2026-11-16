@@ -19,6 +19,15 @@ for (const dark of [false, true]) {
   ok(`${n}: małe kafle gier w Powtórkach też z SVG`, mini.length >= 2 && mini.every(Boolean), mini);
   const sq = await p.locator(".pm-grid .pm-sq").first().evaluate((e) => { const c = getComputedStyle(e); return { bb: c.borderBottomWidth, w: e.getBoundingClientRect().width }; }).catch(() => null);
   ok(`${n}: mapa postępów – kwadraty 3D (24 px, dół 4 px)`, sq && sq.bb === "4px" && sq.w === 24, sq);
+  const pm = await p.evaluate(() => { const q = (sel) => { const e = document.querySelector(sel); if (!e) return null; const c = getComputedStyle(e); return { w: Math.round(e.getBoundingClientRect().width), st: c.borderTopStyle, bi: c.backgroundImage }; };
+    const leg = document.querySelector(".pm-legend"); const ls = leg ? [...leg.children].map((x) => Math.round(x.getBoundingClientRect().top)) : [];
+    return { extra: q(".pm-sq.extra"), lk: q(".pm-sq.lk"), leg: q("i.pm-sq"), legRows: new Set(ls).size }; });
+  ok(`${n}: mapa: „dodatkowe” mniejsze i przerywane, legenda drobna w jednym rzędzie, zablokowane kreskowane`, (!pm.extra || (pm.extra.w <= 18 && pm.extra.st === "dashed")) && (!pm.leg || pm.leg.w <= 16) && pm.legRows <= 1 && (!pm.lk || /gradient/.test(pm.lk.bi)), pm);
+  const mc = await p.locator(".gry-mini-b .ic").evaluateAll((es) => es.map((e) => getComputedStyle(e).backgroundColor));
+  ok(`${n}: małe kafle gier z kolorowym tłem ikony (≥ 2 kolory)`, new Set(mc).size >= 2, mc);
+  await p.evaluate(() => { const x = document.createElement("section"); x.className = "hint"; x.innerHTML = '<span class="eyebrow">Na dziś</span><p>Test</p>'; document.querySelector("main").prepend(x); });
+  const hint = await p.locator("main > .hint").first().evaluate((e) => { const c = getComputedStyle(e); return { bb: c.borderBottomWidth, bi: c.backgroundImage, col: getComputedStyle(e.querySelector("p")).color, bg: c.backgroundColor, ey: getComputedStyle(e.querySelector(".eyebrow")).color }; });
+  ok(`${n}: karta „Na dziś” 3D bez gradientu, czytelna`, hint.bb === "5px" && hint.bi === "none" && cr(hint.col, hint.bg) >= 4.5 && cr(hint.ey, hint.bg) >= 4.5, hint);
   ok(`${n}: Powtórki bez błędów`, p.errors.length === 0, p.errors);
   await p.close();
   p = await open(b, { dark, hash: "/calendar" });
@@ -31,6 +40,9 @@ for (const dark of [false, true]) {
   ok(`${n}: puste kafle Hasła z widocznym dołem (≥ 1,3:1 do tła)`, !em || cr(em[0], em[1]) >= 1.3, em);
   await p.close();
 }
+for (const dark of [false, true]) { const p = await open(b, { dark, hash: "/more", konto: "platne" });
+  const g = await p.locator(".more-tile .ico.h2g svg").count();
+  ok(`${dark ? "ciemny" : "jasny"}: w Więcej gry mają te same kolorowe ikony co w #/gry`, g >= 2, g); await p.close(); }
 { // Teraz: zmiana motywu po narysowaniu ścieżki nie zostawia pigułki w innym motywie (i odwrotnie)
   const prog = JSON.stringify({ [UID]: { done: { A1: true } } });
   const p = await open(b, { hash: "/subject/" + A, ls: { "mock-progress": prog } });
