@@ -25,6 +25,11 @@ for (const dark of [false, true]) {
   ok(`${n}: następny przystanek limonkowy ze Stasiem`, now && now.bg === "rgb(205, 242, 94)" && /data:image\/svg/.test(now.stas), now);
   const lbl = await p.locator(".sk-course .sk-node .t b").first().evaluate((e) => [getComputedStyle(e).color, getComputedStyle(document.body).backgroundColor]);
   ok(`${n}: tytuły lekcji czytelne`, cr(lbl[0], lbl[1]) >= 4.5, lbl);
+  const starts = await p.locator(".sk-course .sk-node .t").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().left)));
+  ok(`${n}: tytuły lekcji zaczynają się w jednej linii (fala przesuwa tylko kółka)`, new Set(starts).size === 1, starts);
+  ok(`${n}: następna lekcja ma etykietę „Teraz” i „następna” dla czytnika`, await p.locator(".sk-course .sk-node.now .h2-now").count() === 1 && /następna/.test(await p.locator(".sk-course .sk-node.now .sk-dot").getAttribute("aria-label")), "");
+  const rowBg = await p.locator(".sk-course .sk-node.now").evaluate((e) => getComputedStyle(e).backgroundImage);
+  ok(`${n}: wiersz następnej lekcji bez prostokąta w tle`, rowBg === "none", rowBg);
   ok(`${n}: bez poziomego przewijania`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "");
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();
