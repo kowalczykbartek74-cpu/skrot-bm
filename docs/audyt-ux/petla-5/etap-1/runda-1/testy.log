@@ -1,0 +1,66 @@
+# Log testów – etap G1 runda 1
+
+## node --test tests/*.test.js
+ℹ tests 369
+ℹ pass 368
+ℹ fail 0
+
+## istniejące testy H2 (BASE=:8815)
+h2-etap1.mjs 0 25/25
+h2-etap10.mjs 0 24/24
+h2-etap2.mjs 0 33/33
+h2-etap3.mjs 0 48/48
+h2-etap4.mjs 0 33/33
+h2-etap5.mjs 0 36/36
+h2-etap6.mjs 0 27/27
+h2-etap7.mjs 0 47/47
+h2-etap8.mjs 0 85/85
+h2-etap9.mjs 0 92/92
+
+## PGlite
+✗ skrot-v12-zabezpieczenia.sql → function public.limit_wpisow() does not exist
+✓ skrot-v58-nagroda-dzial.sql
+✓ skrot-v58-nagroda-dzial.sql
+    OK V58 D1 bez logowania: not_logged_in
+    OK V58 D1 bez dostępu: no_access
+    OK V58 D2 jedna z dwóch lekcji: nie_wszystkie (brak 1)
+    OK V58 D2 bez wpisu monet za dział
+    OK V58 D3 dział 1 zaliczony: +20
+    OK V58 D4 drugi raz: juz, 0 monet
+    OK V58 D4 jeden wpis +20 z kluczem misja:dzial:ux5-makro:1
+    OK V58 D5 dział 2 bez lekcji: nie_wszystkie
+    OK V58 D5 dział bez lekcji w bazie: no_unit
+    OK V58 D6 inny rocznik: liczy tylko swoje lekcje (1)
+    OK V58 D7 cfg niedostępne dla zalogowanego
+✓ test/v58.sql
+(✗ v12 limit_wpisow – oczekiwany, opis w pglite.mjs)
+
+## ux5-etap1.mjs
+```
+✓ K1 darmowe 360px: 10 przedmiotów bez przewijania w bok
+✓ K1 darmowe 390px: 10 przedmiotów bez przewijania w bok
+✓ K1 proba-koniec 360px: 10 przedmiotów bez przewijania w bok
+✓ K1 proba-koniec 390px: 10 przedmiotów bez przewijania w bok
+✓ K2 przedmiot: bez undefined/null
+✓ K2 materiał: bez undefined/null
+✓ K2 bez „rozdz.” przy lekcji bez numeru rozdziału
+✓ K3 lekcja 1: „✓ Zrobiona · utrwal w Powtórkach”
+✓ K3 pasek tylko przy lekcji w trakcie (2), bez starych mierników %
+✓ K3 karta przedmiotu: „Opanowanie N%” i „1 z 3 lekcji zrobione”
+✓ K3 jeden procent w karcie przedmiotu i na ścieżce
+✓ K3 bez „pkt”, „Lekcje: k z n” i „Umiesz z zakresu” na ekranie przedmiotu
+✓ K3 ✓✓ Utrwalona i Opanowana (ikona SVG w kropce)
+✓ K4 dział 1 zrobiony → +20 z bazy (wpis misja:dzial:…:1)
+✓ K4 skrzynka działu 1: „Dział 1 zaliczony” i „Odebrane”
+✓ K4 dział 2 (niezrobiony): „Nagroda za dział 2” i ile zostało
+✓ K4 po przeładowaniu bez drugiej nagrody
+✓ K4 konsola bez błędów
+✓ K4 bez v58 w bazie: ścieżka działa, bez błędów, bez banera
+✓ K4 PGlite: v58 2× + testy D1–D7
+✓ EN: stany i nagroda po angielsku
+✓ EN: bez polskich tekstów w kursie
+✓ K4 przejście: po ostatniej lekcji działu baner „Dział 1 zaliczony: +20”
+```
+
+## Ruch (nazwa animacji / czas)
+- zwykle: `.sk-node.now .sk-dot` h-pop 0.45s · `.g-path2 .sk-node` brak · `.lp-banner` brak

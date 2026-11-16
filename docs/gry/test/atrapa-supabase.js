@@ -483,6 +483,24 @@
     nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid && !PROBA ? "2027-07-11" : null, plan: paid && !PROBA ? "rok" : null,
       proba_do: PROBA ? probaDo : null, proba_mozna: KONTO === "darmowe", proba_dni: 3 }),
     nauka_ping: () => ({ stan: "ok" }),
+    // === ux-5 ===
+    // v58: nagroda za dział. Lekcja działu „ma punkt lekcja”, gdy w RP.rows jest l:<id> albo w postępie jest zdany bilet (mastery.ok).
+    //   mock-v58 = "0" → brak funkcji (PGRST202) · wywołania w window.__ux5
+    nauka_dzial_nagroda: (a) => {
+      (window.__ux5 ||= []).push({ fn: "dzial", a });
+      if (!paid) return { ok: false, code: "no_access" };
+      const ls2 = Object.entries(DOCS.materials).filter(([, m]) => m.kind === "lesson" && m.subjectId === a.p_sid && String(m.unit) === String(a.p_unit));
+      if (!ls2.length) return { ok: false, code: "no_unit" };
+      const pr = DOCS.progress?.[UID] || {};
+      const brak = ls2.filter(([id]) => !RP.rows.some((r) => r.klucz === "l:" + id) && !pr.mastery?.[id]?.ok).length;
+      if (brak) return { ok: false, code: "nie_wszystkie", brak, lekcji: ls2.length };
+      const klucz = "misja:dzial:" + a.p_sid + ":" + a.p_unit;
+      if (MON.ksiega.some((w) => w.klucz === klucz)) return { ok: true, juz: true, monety: 0 };
+      MON.ksiega.push({ delta: 20, zrodlo: "misja", klucz, opis: "Dział " + a.p_unit + " zaliczony", dzien: dzis() }); monZapisz();
+      return { ok: true, juz: false, monety: 20, lekcji: ls2.length };
+    },
+    nauka_dzial_cfg: () => ({ monety: +ls("mock-dzial-monety", "20") }),
+    // === koniec ux-5 ===
   };
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
@@ -502,6 +520,7 @@
     else if (/^nauka_(paczka|duet)/.test(fn) && ls("mock-paczka", "") === "off") out = brak; // v37 jeszcze nie w bazie
     else if (/^nauka_(admin_karnet|zrodlo_ustaw)/.test(fn) && ls("mock-v38", "") === "0") out = brak; // v38 jeszcze nie w bazie
     else if (fn === "nauka_rocznik_do_kupienia" && ls("mock-v45", "1") === "0") out = brak;
+    else if (/^nauka_dzial_/.test(fn) && ls("mock-v58", "1") === "0") out = brak; // ux-5: v58 jeszcze nie w bazie
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;

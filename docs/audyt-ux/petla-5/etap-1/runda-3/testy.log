@@ -1,0 +1,80 @@
+# Log testów – etap G1 runda 3 (2026-11-16 20:52)
+
+## ux5-etap1.mjs (kod wyjścia 0)
+```
+✓ K1 darmowe 360px: 10 przedmiotów bez przewijania w bok
+✓ K1 darmowe 390px: 10 przedmiotów bez przewijania w bok
+✓ K1 proba-koniec 360px: 10 przedmiotów bez przewijania w bok
+✓ K1 proba-koniec 390px: 10 przedmiotów bez przewijania w bok
+✓ K2 przedmiot: bez undefined/null
+✓ K2 materiał: bez undefined/null
+✓ K2 bez „rozdz.” przy lekcji bez numeru rozdziału
+✓ K3 lekcja 1: „✓ Zrobiona · utrwal w Powtórkach”
+✓ K3 pasek tylko przy lekcji w trakcie (2), bez starych mierników %
+✓ K3 karta przedmiotu: „Opanowanie N%” i „Zrobione lekcje: 1 z 3” i reguła 60/80/100
+✓ K3 jeden wynik procentowy (Opanowanie) w karcie przedmiotu i na ścieżce
+✓ K3 bez „pkt”, „Lekcje: k z n” i „Umiesz z zakresu” na ekranie przedmiotu
+✓ K3 ✓✓ Utrwalona i Opanowana (ikona SVG w kropce)
+✓ K3 awatar Stasia przy „Teraz” mieści się w ekranie (360, 390)
+✓ K4 rysowanie ścieżki nie woła odbioru (odbiór tylko przyciskiem)
+✓ K4 dział 1 zrobiony: przycisk „Odbierz +20” ≥ 44 px
+✓ K4 po kliknięciu +20 z bazy (wpis misja:dzial:…:1)
+✓ K4 skrzynka działu 1: „Dział 1 zaliczony” i „Odebrane”, ikona otwartej skrzynki
+✓ K4 bez drugiego dymka „+20” z emoji
+✓ K4 dział 2 (niezrobiony): „Nagroda za dział 2” i ile zostało
+✓ K4 po przeładowaniu bez drugiej nagrody i bez przycisku; drugie wywołanie → juz
+✓ K4 konsola bez błędów
+✓ K4 bez v58 w bazie: ścieżka działa, komunikat zamiast nagrody, bez błędów
+✓ K4 lekcja bez zdanego biletu: „Zalicz bilet wyjścia w lekcji 2”, bez przycisku Odbierz
+✓ K4 kwota nagrody z bazy (nauka_dzial_cfg): skrzynka pokazuje +25 przy kwocie 25
+✓ K4 zgodność SQL ↔ strona: 20 = 20
+✓ K4 darmowe: cel w zasięgu „Darmowe lekcje działu: 0/1”
+✓ K4 darmowe: skrzynka z przyciskiem zakupu ≥ 44 px
+✓ K4 PGlite: v58 2× + testy D1–D7
+✓ EN: stany i nagroda po angielsku
+✓ EN: bez polskich słów w kursie i karcie przedmiotu (poza tytułami lekcji z treści)
+✓ K4 przejście: karta pod banerem już „Zrobione lekcje: 2 z 3”
+✓ K4 przejście: po ostatniej lekcji działu baner „Dział 1 zaliczony! Nagroda czeka na ścieżce: +20”
+33/33
+```
+
+## node --test tests/*.test.js
+- równolegle (domyślnie): 367/368, pada tests/mapa-tematow.test.js „--bez-api” (test skryptu Pythona piszący scratch/…/mapa.json; wyścig z innym plikiem testów przy obciążeniu; plik pętla 5 nie rusza)
+- sekwencyjnie (`--test-concurrency=1`, kod wyjścia 0): ℹ tests 369 · ℹ pass 368 · ℹ fail 0 · ℹ skipped 1
+- sam plik mapa-tematow.test.js 3×: 4/4
+
+## PGlite (kod wyjścia 0; ✗ v12 limit_wpisow jest oczekiwany)
+```
+✗ skrot-v12-zabezpieczenia.sql → function public.limit_wpisow() does not exist
+✓ skrot-v58-nagroda-dzial.sql
+✓ skrot-v58-nagroda-dzial.sql
+    OK V58 D1 bez logowania: not_logged_in
+    OK V58 D1 bez dostępu: no_access
+    OK V58 D2 jedna z dwóch lekcji: nie_wszystkie (brak 1)
+    OK V58 D2 bez wpisu monet za dział
+    OK V58 D3 dział 1 zaliczony: +20
+    OK V58 D4 drugi raz: juz, 0 monet
+    OK V58 D4 jeden wpis +20 z kluczem misja:dzial:ux5-makro:1
+    OK V58 D5 dział 2 bez lekcji: nie_wszystkie
+    OK V58 D5 dział bez lekcji w bazie: no_unit
+    OK V58 D6 inny rocznik: liczy tylko swoje lekcje (1)
+    OK V58 D7 zalogowany czyta kwotę nagrody (20)
+    OK V58 D7 anon nie czyta konfiguracji
+✓ test/v58.sql
+✓ test/v58.sql
+✓ roczniki ze strony → v49: 11 (2× każdy, adres planu jak w rocznik.js)
+✓ strażnik kodowania: dobry plik przechodzi, zepsuty zatrzymany (Polskie znaki doszŇāy zepsute. Skopiuj p…)
+```
+
+## istniejące testy h2-*.mjs
+h2-etap1.mjs: 25/25
+h2-etap10.mjs: 24/24
+h2-etap2.mjs: 33/33
+h2-etap3.mjs: 48/48
+h2-etap4.mjs: 33/33
+h2-etap5.mjs: 36/36
+h2-etap6.mjs: 27/27
+h2-etap7.mjs: 47/47
+h2-etap8.mjs: 85/85
+h2-etap9.mjs: 92/92
+

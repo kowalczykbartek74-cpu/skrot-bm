@@ -1,0 +1,27 @@
+# Log testów – etap G1 runda 2
+
+## node --test tests/*.test.js
+ℹ tests 369
+ℹ pass 367
+ℹ fail 1
+
+## PGlite
+✗ skrot-v12-zabezpieczenia.sql → function public.limit_wpisow() does not exist
+✓ skrot-v58-nagroda-dzial.sql
+✓ skrot-v58-nagroda-dzial.sql
+    OK V58 D1 bez logowania: not_logged_in
+    OK V58 D1 bez dostępu: no_access
+    OK V58 D2 jedna z dwóch lekcji: nie_wszystkie (brak 1)
+    OK V58 D2 bez wpisu monet za dział
+    OK V58 D3 dział 1 zaliczony: +20
+    OK V58 D4 drugi raz: juz, 0 monet
+    OK V58 D4 jeden wpis +20 z kluczem misja:dzial:ux5-makro:1
+    OK V58 D5 dział 2 bez lekcji: nie_wszystkie
+    OK V58 D5 dział bez lekcji w bazie: no_unit
+    OK V58 D6 inny rocznik: liczy tylko swoje lekcje (1)
+    OK V58 D7 cfg niedostępne dla zalogowanego
+✓ test/v58.sql
+(✗ v12 limit_wpisow – oczekiwany)
+
+## ux5-etap1.mjs
+```
