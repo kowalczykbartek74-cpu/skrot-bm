@@ -24,13 +24,18 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 - Etap 1 (po rundzie 1): cała ścieżka próby ma jeden wygląd głównego przycisku – limonkowa pastylka z ciemnym tekstem („Zacznij 3 dni za darmo”, „Wyślij kod i zacznij”, przycisk po kodzie, „Tak, zaczynam 3 dni”).
 - Etap 1 (po rundzie 1): EN przycisku na pasku „Masz jeszcze 3 dni za darmo · Włącz” to „Start” (jak w C1); „Włącz” ma w słowniku ogólne „Turn on”, więc tekst EN ustawia `ux-wejscie.js` (`data-noi18n`).
 - Etap 1: na Dziś, gdy jest pigułka „Masz jeszcze 3 dni za darmo”, dolna karta próby (`buyBanner`) się nie pokazuje (jedna akcja).
+- Etap 2: „Kup dostęp” najwyżej raz na Dziś: pierwszy rysujący (pasek nad panelem, potem `ldBlock`, `ptsDzis`, `buyBanner`) dostaje zielony przycisk, kolejne `przyciskZakupu()` – link „Zobacz plany”. Licznik zeruje `pasekProby()` (pierwsza rzecz w `viewHome`).
+- Etap 2: dzień próby liczony z `trialUntil − 3 dni` (bez zmiany `nauka_ja`, która nie należy do żadnej pętli).
+- Etap 2: status rocznika z bazy zapisywany w nowym kluczu `skrot-roczniki-status` (format `skrot-roczniki-baza` bez zmian, czyta go `rocznik.js`); bez odpowiedzi bazy – `STATUS_DANYCH` z `roczniki-dane.js`. Rocznik nie-`platny` → `trialCan = false` (bez przycisków próby), v52 i tak odrzuca start.
+- Etap 2: na Dziś bez dostępu i bez możliwej próby pasek nad panelem: po próbie „Próba minęła · 199 zł do 11 lipca 2027 albo 35 zł / mies. · Kup dostęp”, w pozostałych przypadkach „Pełny dostęp · …” (nie dla kierunku oczekującego).
+- Etap 2: tekst pigułki próby w EN składany w `ux-wejscie.js` (data i godzina w jednym kawałku bez łamania); pary PL→EN i tak w słowniku.
 - Etap 1: przycisk przykładowej lekcji dostaje ikonę `play` (A4d) już teraz; przeniesienie nad formularz i prawdziwa lekcja to etap 5.
 
 ## Etapy
 | etap | stan | rundy | ostatni wynik | twarde błędy | ostatni commit |
 |---|---|---|---|---|---|
 | 1 Pierwszy ekran i jedna ścieżka | **ZALICZONY** | 2 | 9,0 | brak | (ten commit) |
-| 2 Widoczna próba i przyciski zakupu | w toku | 0 | – | – | – |
+| 2 Widoczna próba i przyciski zakupu | w toku | 1 | 5 (twardy błąd) | „Napisz do nas” w kolorze linku przeglądarki | – |
 | 3 Koniec próby jako wydarzenie | – | – | – | – | – |
 | 4 Paywall, odzyskiwanie, zaufanie | – | – | – | – | – |
 | 5 Lekcja dla gościa | – | – | – | – | – |
@@ -44,3 +49,6 @@ Poprawione: reguła w `ux-wejscie.css` + zapas 2,5 s, limit 0,6 s; Staś 96 px w
 ### Etap 1 · runda 2 – 9,0/10, twarde błędy: brak, K1–K6 = true → ZALICZONY
 Przed rundą 2 dodatkowo: bramka widoczności czeka na faktyczne załadowanie czcionek (Bricolage + Plus Jakarta, najwyżej 2,5 s; `document.fonts.ready` rozwiązywało się wcześniej, niż czcionki były zadeklarowane), nagłówek panelu na komputerze zawsze w 2 liniach (`min(44px, 3vw)`, podział przed „zdanych”) – CLS logowania z prawdziwymi czcionkami ≈ 0 we wszystkich rozmiarach.
 Uwagi recenzenta przeniesione do etapu 2 (te same elementy): „Włącz” na pasku limonkowe jak reszta ścieżki próby; pasek w jednej linii przy 360 px; „Kup dostęp” w „Twój postęp” przez `przyciskZakupu()`; pierścień fokusu w arkuszu tylko przy klawiaturze; odstęp Stasia od nagłówka w arkuszu; przyciski powitania próby ≥ 44 px; tekst lewego panelu zależny od stanu; krótszy przycisk przykładowej lekcji z ikoną w linii; jedna wzmianka o spamie; „6-cyfrowy” z łącznikiem; mniej pustego miejsca pod „Wyślij ponownie”.
+
+### Etap 2 · runda 1 – 5/10 (twardy błąd), K1–K6 = true → poprawki
+Twardy błąd: „Napisz do nas” (`<a class="btn">`) w oknie błędu próby miało niebieski kolor linku przeglądarki. Poprawki recenzenta: stan „po próbie” widoczny w 1. ekranie (pasek „Próba minęła · … · Kup dostęp”, jedyny „Kup dostęp”); w ostatnich 24 h pigułka mówi też „zostało N godz.”; data i godzina bez łamania; arkusz 24 h z kafelkami postępu i jednym głównym „Wybierz 199 zł”; lista oczekujących z zaznaczonym kierunkiem; po błędzie „wykorzystany/urządzenie” próba znika z Dziś; gotowe kierunki na górze z tagiem „Dostępne”; na Dziś „Wypróbuj 3 dni” jako link, gdy jest pasek; temat maila w EN. Do tego: po wczytaniu `ux-wejscie.js` jedno przerysowanie aplikacji (gdy ekran powstał wcześniej, zostawały zapasowe przyciski – złapane przez test).

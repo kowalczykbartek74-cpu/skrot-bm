@@ -227,6 +227,9 @@
     if (!l) return;
     const ok = [R.DOMYSLNY, ...l.filter((r) => r.status === "oczekujacy" || r.status === "platny").map((r) => r.id)];
     R.ustawWBazie(ok);
+    // ux-1: statusy roczników (oczekujacy / platny) dla ekranu wejścia („Wkrótce”) i przycisków próby.
+    try { ls.set("skrot-roczniki-status", JSON.stringify(Object.fromEntries(l.map((r) => [r.id, r.status])))); } catch {}
+    window.skrotKrok1Odswiez?.();
     if (skrot.realAdmin) return;
     document.querySelectorAll(".lk-card[data-k]").forEach((b) => { if (!ok.includes(b.dataset.k)) b.remove(); });
     if (cur && !ok.includes(cur.id) && !ED) {
@@ -236,6 +239,15 @@
     }
   }
 
+  // ux-1: status rocznika: najpierw z bazy (skrot-roczniki-status, zapisuje rocznikiBaza), potem z danych strony (roczniki-dane.js).
+  function rocznikStatus(id) {
+    const R = window.SKROT_ROCZNIKI;
+    if (!id || !R || id === R.DOMYSLNY) return "platny";
+    let m = null; try { m = JSON.parse(ls.get("skrot-roczniki-status") || "null"); } catch {}
+    return (m && m[id]) || R.STATUS_DANYCH?.[id] || "platny";
+  }
+  const rocznikRuszyl = () => rocznikStatus(window.SKROT_ROCZNIK?.id) === "platny";
+  skrot.rocznikStatus = rocznikStatus;
   async function refreshMe() {
     // Najpierw sygnał urządzenia: rejestruje je na liście konta (jeśli jest miejsce) i zajmuje sesję.
     const dev = await ping();
@@ -249,8 +261,12 @@
     skrot.plan = me?.plan || null;
     // Okres próbny (supabase/skrot-v16-proba.sql): trialUntil tylko wtedy, gdy to on daje dostęp.
     skrot.trialUntil = me?.proba_do || null;
-    skrot.trialCan = !!me?.proba_mozna && !skrot.paid;
+    // ux-1 (etap 2, K6): kierunek, który jeszcze nie ruszył (status inny niż „platny”), nie dostaje przycisków próby (v52 i tak odrzuci start).
+    skrot.trialCan = !!me?.proba_mozna && !skrot.paid && rocznikRuszyl();
     skrot.trialDays = me?.proba_dni || 3;
+    // ux-1 (etap 3): koniec próby zapamiętany w przeglądarce; gdy minął, a dostępu nie ma → skrot.trialEnded (ekran „Twoje 3 dni minęły”).
+    if (skrot.trialUntil) ls.set("skrot-proba-do", skrot.trialUntil);
+    { const pd = Date.parse(ls.get("skrot-proba-do") || ""); skrot.trialEnded = !skrot.trialUntil && !skrot.paid && !skrot.trialCan && pd > 0 && pd < Date.now(); }
     skrot.realAdmin = skrot.admin;
     // „Edytuję rocznik” tylko dla administratora: ktoś inny z ręcznie wpisanym kluczem wraca do swojego rocznika
     if (!skrot.admin && edKasuj() && ED) { location.reload(); return me; }
@@ -1329,6 +1345,7 @@
     if (!window.SKROT_ROCZNIKI || ROK_ID === window.SKROT_ROCZNIKI.DOMYSLNY) return true;
     try { const { data, error } = await sb.rpc("nauka_rocznik_do_kupienia", { p_rocznik: ROK_ID }); return error ? true : data !== false; } catch { return true; }
   }
+  skrot.listaOczekujacych = () => listaOczekujacych();
   function listaOczekujacych() {
     const R = window.SKROT_ROCZNIK, Z = window.SKROT_ZAPISY;
     const nazwa = R ? (window.SKROT_LANG === "en" ? R.kierunek.en || R.kierunek.pl : R.kierunek.pl) : "";
@@ -1496,7 +1513,7 @@
           el("button", { type: "button", class: "btn ghost uxw-big", onclick: close }, "Później, zostawię na kolokwium"))));
     layer.append(scrim);
     document.addEventListener("keydown", onKey);
-    setTimeout(() => yes.focus({ preventScroll: true }), 30);
+    setTimeout(() => { const h2 = scrim.querySelector("h2"); h2.setAttribute("tabindex", "-1"); h2.focus({ preventScroll: true }); }, 30);
     return scrim;
   }
   skrot.trialOffer = trialOffer;
@@ -1504,6 +1521,7 @@
     ma_dostep: "Masz już pełny dostęp, okres próbny nie jest potrzebny.",
     wykorzystany: "Okres próbny na tym koncie został już wykorzystany. Pełny dostęp możesz kupić od 35 zł miesięcznie.",
     urzadzenie: "Na tym urządzeniu okres próbny został już wykorzystany (także z innego konta).",
+    rocznik: "Ten kierunek jeszcze nie ruszył. Zapisz się na listę, a próba poczeka na Ciebie.",
   };
   skrot.startTrial = async () => {
     if (skrot.state !== "in") {
@@ -1517,6 +1535,8 @@
     if (error) {
       const code = Object.keys(TRIAL_ERR).find((k) => (error.message || "").includes(k));
       const noSql = /function|does not exist|schema cache|Could not find/i.test(error.message || "");
+      // ux-1 (etap 2, K5): wykorzystany / urządzenie / rocznik → okno z dalszą drogą (plan, kontakt), nie ślepa uliczka.
+      if (code && code !== "ma_dostep") { const w = window.ZD_WEJSCIE?.bladProby?.(code); if (w) return w; }
       return info("Okres próbny", code ? TRIAL_ERR[code] : noSql ? "Okres próbny ruszy wkrótce." : "Nie udało się włączyć okresu próbnego. Spróbuj za chwilę.");
     }
     skrot.trialUntil = data?.do_kiedy || null;

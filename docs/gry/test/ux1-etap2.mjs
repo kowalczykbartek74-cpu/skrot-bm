@@ -52,6 +52,7 @@ for (const [time, d, warn] of [["2026-11-17T10:00:00+01:00", 1, false], ["2026-1
   // < 24 h: raz dziennie arkusz z podsumowaniem i planami (199 zł na górze)
   const time = "2026-11-19T13:00:00+01:00";
   const p = await open({ konto: "proba", time, ls: { "mock-proba-do": DO } });
+  await p.waitForSelector(".uxw-ost", { timeout: 6000 }).catch(() => {});
   const sh = await p.evaluate(() => { const d = document.querySelector(".uxw-ost"); return d && { h2: d.querySelector("h2")?.textContent, txt: d.innerText, plany: [...d.querySelectorAll(".uxw-plan")].map((x) => x.innerText.replace(/\s+/g, " ")), prim: d.querySelectorAll(".btn.primary, .uxw-plan.on").length }; });
   ok("K2 < 24 h: arkusz „Zostało 4 godz. próby” z dwoma planami, 199 zł pierwszy i zaznaczony", sh && sh.h2 === "Zostało 4 godz. próby" && sh.plany.length === 2 && /199 zł/.test(sh.plany[0]) && /35 zł/.test(sh.plany[1]), sh);
   await p.reload(); await ready(p);
@@ -87,7 +88,8 @@ for (const ld of [true, false]) {
 }
 {
   const p = await open({ konto: "darmowe" });
-  const r = await p.evaluate(() => ({ s: window.ZD_WEJSCIE?.stan?.(), a: window.ZD_WEJSCIE.przyciskZakupu("test").innerText }));
+  // Nowy ekran zaczyna się od pasekProby() (zeruje „Kup dostęp” na ekranie), potem pierwszy przyciskZakupu() ma link „Kup dostęp”.
+  const r = await p.evaluate(() => { window.ZD_WEJSCIE.pasekProby(); const x = window.ZD_WEJSCIE.przyciskZakupu("test"); document.body.append(x); const t = x.innerText; x.remove(); return { s: window.ZD_WEJSCIE?.stan?.(), a: t }; });
   ok("K3 API: przyciskZakupu() przy możliwej próbie → „Wypróbuj 3 dni” + „Kup dostęp”", /Wypróbuj 3 dni/.test(r.a) && /Kup dostęp/.test(r.a), r);
   await p.click(".uxw-wyprobuj"); await p.waitForTimeout(3500);
   ok("K3: „Wypróbuj 3 dni” z Dziś włącza próbę", (await p.evaluate(() => localStorage.getItem("mock-konto"))) === "proba");
@@ -125,6 +127,8 @@ for (const [err, re] of [["wykorzystany", /Na tym koncie okres próbny już był
   const m = await p.evaluate(() => { const d = document.querySelector(".uxw-blad"); return d && { txt: d.innerText, btn: [...d.querySelectorAll("button, a")].map((x) => ({ t: x.textContent.trim(), prim: x.classList.contains("primary"), href: x.getAttribute("href"), h: Math.round(x.getBoundingClientRect().height) })) }; });
   ok(`K5 ${err}: tekst z C2`, m && re.test(m.txt), m?.txt);
   ok(`K5 ${err}: przyciski „Wybierz plan” (główny), „Napisz do nas” (mailto z tematem), „Zamknij”, każdy ≥ 44 px`, m && m.btn[0]?.t === "Wybierz plan" && m.btn[0].prim && m.btn.some((x) => x.t === "Napisz do nas" && /^mailto:.+\?subject=Okres%20pr%C3%B3bny%20%E2%80%93%20student%40x\.pl/.test(x.href || "")) && m.btn.some((x) => x.t === "Zamknij") && m.btn.every((x) => x.h >= 44), m?.btn);
+  const mail = await p.evaluate(() => { const a = document.querySelector(".uxw-blad a.btn"); const c = getComputedStyle(a); return { col: c.color, dec: c.textDecorationLine }; });
+  ok(`K5 ${err}: „Napisz do nas” jak drugorzędny przycisk H2 (tusz #10231A, bez podkreślenia linku)`, mail.col === "rgb(16, 35, 26)" && mail.dec === "none", mail);
   await p.click(".uxw-blad .btn.primary"); await p.waitForTimeout(500);
   ok(`K5 ${err}: „Wybierz plan” otwiera wybór planu`, (await p.evaluate(() => !!document.querySelector('[aria-label="Wybierz plan"]'))));
   await p.close();
@@ -145,10 +149,14 @@ for (const lang of ["pl", "en"]) {
   const z = r["wefiz-zarz-1-st-2026"], bm = r["wefiz-bm-1-st-2026"];
   ok(`K6 ${lang}: kierunek oczekujący ma widoczny tag „${lang === "pl" ? "Wkrótce" : "Coming soon"}” i opis`, z && z.tagVis && (lang === "pl" ? z.tag === "Wkrótce" && /Lekcje w przygotowaniu · zapisz się na start/.test(z.small) : /Coming soon/.test(z.tag) && /Lessons in progress · join the launch list/.test(z.small)), z);
   ok(`K6 ${lang}: BM (platny) bez tagu „Wkrótce”`, bm && !/Wkrótce|Coming soon/.test(bm.tag || ""), bm);
+  const kol = await p.evaluate(() => [...document.querySelectorAll(".lk-card[data-k]")].map((c) => c.classList.contains("gotowe") ? "g" : "w").join(""));
+  ok(`K6 ${lang}: kierunki gotowe na górze listy, przed „Wkrótce”`, /^g+w+$/.test(kol), kol);
   if (lang === "pl") {
     await p.click('.lk-card[data-k="wefiz-zarz-1-st-2026"]'); await p.waitForTimeout(600);
     const w = await p.evaluate(() => ({ h2: document.querySelector("#lgKierunek h2")?.textContent, txt: document.querySelector("#lgKierunek")?.innerText }));
     ok("K6: klik w kierunek oczekujący → lista oczekujących z tym kierunkiem", /jeszcze nie ruszył|jeszcze nie ma/.test(w.h2 || "") && /Zarządzanie/.test(w.txt || ""), w);
+    const sel = await p.evaluate(() => { const s = document.querySelector("#lk-kier"); return s && { v: s.value, t: s.options[s.selectedIndex]?.textContent }; });
+    ok("K6: na liście oczekujących kliknięty kierunek jest już zaznaczony w polu „Kierunek”", sel && sel.v === "wefiz-zarz-1-st" && /Zarządzanie/.test(sel.t), sel);
   }
   ok(`K6 ${lang}: konsola bez błędów`, !p.errors.length, p.errors);
   await p.close();

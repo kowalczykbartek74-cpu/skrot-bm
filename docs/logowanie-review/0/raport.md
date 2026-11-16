@@ -4,13 +4,13 @@ Kontrast: każdy widoczny tekst w #login (tekst ≥ 4,5:1, duży ≥ 3:1; tło z
 
 | zrzut | krok | sprawdzone teksty | < AA | cele < 44 px | poziome przewijanie | błędy konsoli |
 |---|---|---|---|---|---|---|
-| pl-375-1-kierunek | 1. kierunek | 42 | 0 | 0 | nie | 0 |
+| pl-375-1-kierunek | 1. kierunek | 62 | 0 | 0 | TAK | 0 |
 | pl-375-2-grupa | 2. rok i grupa | 30 | 0 | 0 | nie | 0 |
 | pl-375-3-logowanie | 3. logowanie | 33 | 0 | 0 | nie | 0 |
-| pl-1280-1-kierunek | 1. kierunek | 50 | 0 | 0 | nie | 0 |
+| pl-1280-1-kierunek | 1. kierunek | 70 | 0 | 0 | nie | 0 |
 | pl-1280-2-grupa | 2. rok i grupa | 41 | 0 | 0 | nie | 0 |
 | pl-1280-3-logowanie | 3. logowanie | 43 | 0 | 0 | nie | 0 |
-| en-375-1-kierunek | 1. kierunek | 42 | 0 | 0 | nie | 0 |
+| en-375-1-kierunek | 1. kierunek | 62 | 0 | 0 | nie | 0 |
 | en-375-2-grupa | 2. rok i grupa | 30 | 0 | 0 | nie | 0 |
 | en-375-3-logowanie | 3. logowanie | 33 | 0 | 0 | nie | 0 |
 

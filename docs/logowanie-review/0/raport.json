@@ -3,10 +3,10 @@
   {
    "n": "pl-375-1-kierunek",
    "krok": "1. kierunek",
-   "teksty": 42,
+   "teksty": 62,
    "ponizejAA": [],
    "cele": [],
-   "poziomo": false,
+   "poziomo": true,
    "bledy": []
   },
   {
@@ -30,7 +30,7 @@
   {
    "n": "pl-1280-1-kierunek",
    "krok": "1. kierunek",
-   "teksty": 50,
+   "teksty": 70,
    "ponizejAA": [],
    "cele": [],
    "poziomo": false,
@@ -57,7 +57,7 @@
   {
    "n": "en-375-1-kierunek",
    "krok": "1. kierunek",
-   "teksty": 42,
+   "teksty": 62,
    "ponizejAA": [],
    "cele": [],
    "poziomo": false,

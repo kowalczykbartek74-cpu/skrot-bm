@@ -131,3 +131,68 @@ html.calm .uxw-pasek .uxw-pasek-b:active { transform: none; }
   html:not([data-theme]) #login .lg-side h1 { white-space: nowrap; font-size: min(44px, 3vw); }
   html:not([data-theme]) #login .lg-side h1 em::before { content: "\A"; white-space: pre; }
 }
+
+/* ===== Etap 2: widoczna próba i uczciwe przyciski zakupu ===== */
+/* Pasek „Masz jeszcze 3 dni” w jednej linii od 360 px; „Włącz” limonkowe jak cała ścieżka próby. */
+@media (max-width: 380px) { .uxw-pasek { gap: 8px; padding-left: 12px; font-size: 14px; } .uxw-pasek .uxw-pasek-b { padding: 0 14px; } }
+html:not([data-theme]) .uxw-pasek .uxw-pasek-b.uxw-lime { background: var(--h-lime); color: var(--h-lime-ink, #10231A); box-shadow: 0 3px 0 var(--h-lime-edge); }
+/* Pigułka „Próba · dzień X z 3 · do czw 17:00 · Plany”; w ostatnich 24 h kolor ostrzeżenia (tekst tuszem, ≥ 4,5:1). */
+.uxw-pasek.uxw-proba { background: var(--h-acc-soft, #DDF3D0); }
+.uxw-pasek.uxw-proba.warn { background: var(--h-orange-soft, #FFE8CC); box-shadow: inset 0 0 0 2px var(--h-orange, #B35400); }
+.uxw-pasek.uxw-proba.warn .uxw-ico { color: var(--h-orange, #B35400); }
+.uxw-pasek .uxw-pasek-link { flex: none; min-height: 44px; min-width: 44px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--h-card, #FFFFFF); color: var(--h-ink, #10231A);
+  font: inherit; font-weight: 800; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.uxw-pasek .uxw-pasek-link:focus-visible { outline: 3px solid var(--h-ink, #10231A); outline-offset: 2px; }
+/* przyciskZakupu(): „Wypróbuj 3 dni” (limonka) + link „Kup dostęp”; po próbie zielony „Kup dostęp” albo link „Zobacz plany”. */
+.uxw-zakup { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; vertical-align: middle; }
+.uxw-zakup .btn { min-height: 48px; padding: 0 20px; }
+.uxw-zakup .link { min-height: 44px; display: inline-flex; align-items: center; padding: 0 4px; font-weight: 700; }
+html:not([data-theme]) .uxw-zakup .btn.primary.uxw-kup { background: var(--accent); color: var(--accent-ink); border: 0; box-shadow: 0 4px 0 var(--h-acc-edge); border-radius: 999px; font-weight: 800; }
+/* Karty planu (arkusz ostatnich 24 h, ekran końca próby): 199 zł na górze i zaznaczony. */
+.uxw-plany { display: grid; gap: 10px; }
+.uxw-plan { display: grid; gap: 2px; width: 100%; min-height: 64px; padding: 14px 16px; text-align: left; font: inherit; cursor: pointer; border-radius: 20px;
+  background: var(--h-card, #FFFFFF); color: var(--h-ink, #10231A); border: 2px solid var(--h-line, #E1E8DD); }
+.uxw-plan.on { background: var(--h-acc-soft, #DDF3D0); border-color: var(--h-acc, #1A7F45); }
+.uxw-plan .uxw-plan-t { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.uxw-plan .uxw-plan-tag { padding: 2px 10px; border-radius: 999px; background: var(--h-acc, #1A7F45); color: var(--h-acc-ink, #FFFFFF); font-size: 12px; font-weight: 800; }
+.uxw-plan .uxw-plan-c { font-size: 24px; font-weight: 800; }
+.uxw-plan .uxw-plan-p { color: var(--h-muted, #3E5046); font-size: 14px; }
+.uxw-plan:focus-visible { outline: 3px solid var(--h-ink, #10231A); outline-offset: 2px; }
+.uxw-ost .uxw-ost-p { margin: 0; color: var(--h-muted, #3E5046); }
+:is(.uxw-ost, .uxw-blad) .btn.uxw-big { width: 100%; min-height: 52px; justify-content: center; text-align: center; }
+.uxw-blad .uxw-actions, .uxw-sheet .uxw-actions { display: grid; gap: 8px; }
+/* Okna: fokus na nagłówku (bez grubego pierścienia), pierścień tylko przy klawiaturze. */
+:is(.uxw-sheet, .uxw-ost, .uxw-blad) h2:focus { outline: none; }
+.uxw-sheet .uxw-face { margin-bottom: 8px; }
+@media (min-width: 900px) { .uxw-sheet .uxw-face .stas-face { width: 80px; height: 80px; } }
+/* Powitanie próby: przyciski kroków ≥ 44 px. */
+.welcome-step .btn { min-height: 44px; }
+@media (prefers-reduced-motion: reduce) { .uxw-plan, .uxw-zakup * { transition: none !important; animation: none !important; } }
+html.calm .uxw-plan, html.calm .uxw-zakup * { transition: none !important; animation: none !important; }
+/* Kierunki „Wkrótce” na ekranie wejścia: podpis zawija się (bez poziomego przewijania przy 360 px), tag widoczny. */
+html:not([data-theme]) #login .lk-card.lk-wkr { min-width: 0; }
+html:not([data-theme]) #login .lk-card.lk-wkr .lk-txt { flex: 1; min-width: 0; }
+html:not([data-theme]) #login .lk-card.lk-wkr .lk-txt small { display: block; white-space: normal; overflow-wrap: anywhere; color: var(--h-muted); }
+html:not([data-theme]) #login .lk-card.lk-wkr .lk-tag { position: static !important; display: inline-block; margin: 2px 6px 0 0; padding: 1px 8px; font-size: 12px; box-shadow: none; vertical-align: baseline; }
+
+/* ===== Etap 2 · runda 2 ===== */
+/* „Napisz do nas” (link mailto w oknie błędu) wygląda jak drugorzędny przycisk H2, nie jak link przeglądarki. */
+html:not([data-theme]) :is(.uxw-blad, .uxw-ost, .uxw-koniec) a.btn { display: flex; align-items: center; justify-content: center; color: var(--h-ink); text-decoration: none; background: var(--h-card); border: 2px solid var(--h-edge); border-radius: 999px; font-weight: 700; }
+html:not([data-theme]) :is(.uxw-blad, .uxw-ost, .uxw-koniec) a.btn:hover { border-color: var(--h-acc); }
+html:not([data-theme]) :is(.uxw-blad, .uxw-ost, .uxw-koniec) a.btn:focus-visible { outline: 3px solid var(--h-ink); outline-offset: 2px; }
+/* Pigułka próby: data i godzina nie rozdzielają się między linie; w ostatnich 24 h pozostały czas pogrubiony. */
+.uxw-pasek .uxw-nowrap { white-space: nowrap; }
+.uxw-pasek.warn .uxw-pasek-t b { font-weight: 800; }
+/* Pasek po próbie / bez dostępu nad panelem: „Kup dostęp” w kolorze akcentu (jedyny na Dziś). */
+.uxw-pasek:is(.uxw-po, .uxw-pelny) { background: var(--h-card, #FFFFFF); box-shadow: 0 1px 2px rgba(16,35,26,.06), 0 10px 28px -14px rgba(16,35,26,.24); font-size: 14px; }
+.uxw-pasek.uxw-po { box-shadow: inset 0 0 0 2px var(--h-orange, #B35400); background: var(--h-orange-soft, #FFE8CC); }
+.uxw-pasek:is(.uxw-po, .uxw-pelny) .uxw-ico { color: var(--h-muted, #3E5046); }
+html:not([data-theme]) .uxw-pasek .btn.primary.uxw-pasek-kup { flex: none; min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); box-shadow: 0 3px 0 var(--h-acc-edge); font-weight: 800; white-space: nowrap; }
+/* Kafelki postępu w arkuszach (lekcje · fiszki · XP). */
+.uxw-staty { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.uxw-stat { display: grid; justify-items: center; gap: 2px; padding: 10px 4px; border-radius: 16px; background: var(--h-acc-soft, #DDF3D0); color: var(--h-ink, #10231A); }
+.uxw-stat b { font-size: 22px; font-weight: 800; line-height: 1.1; }
+.uxw-stat small { font-size: 13px; color: var(--h-ink, #10231A); }
+html:not([data-theme]) :is(.uxw-ost, .uxw-koniec) .btn.primary.uxw-kup { background: var(--accent); color: var(--accent-ink); border: 0; box-shadow: 0 4px 0 var(--h-acc-edge); border-radius: 999px; font-weight: 800; }
+/* Ekran kierunków: gotowe kierunki z zielonym tagiem „Dostępne” (na górze listy). */
+html:not([data-theme]) #login .lk-card.gotowe .lk-tag { display: inline-block; flex: none; }
