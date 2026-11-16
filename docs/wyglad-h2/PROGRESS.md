@@ -107,3 +107,5 @@ Zostawione na później: ikony SVG w h2Ico liczone przy rysowaniu (po zmianie mo
 kafle kshop (.kcard) nieobejrzane (atrapa bez katalogu); karta „Dziś do powtórki” w ciemnym trochę mętna;
 stare testy: ustawienia.mjs (`.staro .more-row` = 2 od Panelu kierunków), etap8.mjs (rozmiar gry.js), etap7.mjs (motyw różowy
 w atrapie, „próba” w EN) – błędy sprzed H2.
+
+## WDROŻONE 16.11.2026 na zdawalni.pl (main 5930b7a, fast-forward).
