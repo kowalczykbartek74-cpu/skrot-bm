@@ -3341,6 +3341,9 @@ html[data-theme="lilia"] .uni-mascot .uni-bubble { border-color: #DCCDF2; color:
 .shop-card.flash { box-shadow: 0 0 0 4px var(--accent); }
 .shop-sw { height: 110px; overflow: hidden; }
 .shop-sw > * { display: block; width: 100%; height: 100%; object-fit: cover; }
+.shop-sw-btn { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: zoom-in; }
+.shop-sw-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.shop-sw > .shop-sw-zoom { position: absolute; right: 8px; bottom: 8px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--surface); font-size: 15px; box-shadow: 0 1px 3px rgba(5, 10, 7, .2); }
 .shop-body { display: grid; gap: 8px; padding: 12px 14px 14px; align-content: start; }
 .shop-body p { margin: 0; font-size: .9rem; }
 .shop-title { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 1.05rem; }
@@ -4749,18 +4752,29 @@ html:not([data-theme]) .gry-tiles > :nth-child(3n) .gry-tile-art { background: v
 @media (max-width: 520px) {
   html:not([data-theme]) .gry-tiles { gap: 10px; }
   html:not([data-theme]) .gry-tile { grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 12px 12px 12px 14px; }
-  html:not([data-theme]) .gry-tile > .gry-tile-art { grid-column: 1; grid-row: 1 / span 3; width: 52px; height: 52px; font-size: 28px; border-radius: 16px; }
-  html:not([data-theme]) .gry-tile > :is(h2, p) { grid-column: 2; }
+  html:not([data-theme]) .gry-tile > .gry-tile-art { grid-column: 1; grid-row: 1 / span 2; width: 52px; height: 52px; font-size: 28px; border-radius: 16px; }
+  html:not([data-theme]) .gry-tile > h2 { grid-column: 2; grid-row: 1; align-self: center; }
+  html:not([data-theme]) .gry-tile > p { grid-column: 2 / -1; justify-self: stretch; }
   html:not([data-theme]) .gry-tile > h2 { font-size: 1.08rem; }
   html:not([data-theme]) .gry-tile > p.muted { font-size: .86rem; line-height: 1.35; }
-  html:not([data-theme]) .gry-tile > :is(.btn, .chip) { grid-column: 3; grid-row: 1 / span 3; align-self: center; }
+  html:not([data-theme]) .gry-tile > :is(.btn, .chip) { grid-column: 3; grid-row: 1; align-self: center; }
   html:not([data-theme]) .gry-tile > .btn { min-width: 72px; padding-inline: 14px; }
   html:not([data-theme]) :is(.kshop-grid, .shop-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   html:not([data-theme]) .shop-sw { height: 84px; }
   html:not([data-theme]) .shop-body { padding: 8px 10px 10px; gap: 6px; }
   html:not([data-theme]) .shop-body > p { font-size: .84rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   html:not([data-theme]) .shop-title { font-size: .98rem; }
-  html:not([data-theme]) .shop-act .btn { width: 100%; white-space: normal; padding-inline: 8px; }
+  html:not([data-theme]) .shop-act { display: grid; gap: 6px; }
+  html:not([data-theme]) .shop-act .btn { width: 100%; justify-content: center; text-align: center; white-space: normal; padding-inline: 6px; font-size: .88rem; }
+  html:not([data-theme]) .shop-act .shop-pv { display: none; }
+  html:not([data-theme]) .shop-act small { font-size: .76rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  html:not([data-theme]) .shop-sw > .shop-sw-zoom { width: 28px; height: 28px; right: 6px; bottom: 6px; border: 2px solid var(--h-line); box-shadow: none; }
+  html:not([data-theme]) .kcard-zoom { display: none; }
+  html:not([data-theme]) .kcard-lock { font-size: .68rem; padding: 1px 7px; top: 6px; right: 6px; }
+  html:not([data-theme]) .shop-mission { padding: 10px 12px; gap: 5px; }
+  html:not([data-theme]) .shop-mission > b { font-size: .95rem; }
+  html:not([data-theme]) .shop-mission .lp-lvbar { height: 8px; }
+  html:not([data-theme]) .shop-mission .shop-mrow .btn { min-height: 38px; padding-block: 4px; }
   html:not([data-theme]) .kcard-pv { min-height: 84px; }
   html:not([data-theme]) .kcard-body { padding: 8px 10px 10px; }
   html:not([data-theme]) .kcard-desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -15597,9 +15611,11 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     else if (!it) { btn = sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: signIn }, "Zaloguj się, żeby kupić") : null; note = `Za darmo od poziomu ${t.lvl} · brakuje ${fmtN(need)} XP`; }
     else if (coins() >= it.cena) { btn = h("button", { type: "button", class: "btn primary", onclick: () => shopBuy(t) }, `Kup za ${fmtN(it.cena)} 🪙`); note = lvlTxt; }
     else { btn = h("button", { type: "button", class: "btn", disabled: true }, `Brakuje ${fmtN(it.cena - coins())} 🪙`); note = lvlTxt; }
-    const pv = on ? null : h("button", { type: "button", class: "btn", onclick: () => themePreview(t.id) }, "👁 Podgląd");
+    const pv = on ? null : h("button", { type: "button", class: "btn shop-pv", onclick: () => themePreview(t.id) }, "👁 Podgląd");
     return h("article", { class: "shop-card" + (on ? " is-on" : ""), id: "shop-" + t.id },
-      h("div", { class: "shop-sw" }, themeSwatch(t.id)),
+      // Podgląd także po kliknięciu w obrazek (na telefonie w zielonych motywach zamiast osobnego przycisku).
+      on ? h("div", { class: "shop-sw" }, themeSwatch(t.id))
+        : h("button", { type: "button", class: "shop-sw shop-sw-btn", "aria-label": `Podgląd: ${t.name}`, onclick: () => themePreview(t.id) }, themeSwatch(t.id), h("span", { class: "shop-sw-zoom", "aria-hidden": "true", text: "🔍" })),
       h("div", { class: "shop-body" },
         h("div", { class: "shop-title" }, h("b", { text: `${t.ico} ${t.name}` }), chip),
         h("p", { class: "muted", text: THEME_TXT[t.id] }),

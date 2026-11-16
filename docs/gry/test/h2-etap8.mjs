@@ -81,6 +81,26 @@ for (const dark of [false, true]) {
 { const p = await open(b, { hash: "/shop", ls: { "skrot-calm": "1" } });
   const fl = await p.evaluate(async () => { const el = document.querySelector(".kshop-grid .kcard, .shop-grid .shop-card"); el.classList.add("flash"); await new Promise((r) => setTimeout(r, 400)); return getComputedStyle(el).boxShadow; });
   ok("Mniej animacji: wskazana karta nadal wyróżniona pierścieniem", /4px/.test(fl), fl); await p.close(); }
+for (const dark of [false, true]) { // wąski telefon 360 px: karty sklepu i kafle gier zwarte
+  const n = (dark ? "ciemny" : "jasny") + "-360";
+  let p = await open(b, { dark, w: 360, h: 740, hash: "/shop" });
+  await p.screenshot({ path: `${OUT}/h2e8-${n}-sklep.png`, fullPage: true });
+  const cards = await p.locator(".shop-grid .shop-card").evaluateAll((cs) => cs.map((c) => Math.round(c.getBoundingClientRect().height)));
+  ok(`${n}: karty motywów ≤ 330 px wysokości`, cards.length && cards.every((x) => x <= 330), cards);
+  ok(`${n}: podgląd motywu po kliknięciu obrazka (przycisk z nazwą)`, await p.locator(".shop-sw-btn[aria-label^='Podgląd']").count() >= 1, "");
+  const btnCut = await p.locator(".shop-act .btn:visible").evaluateAll((bs) => bs.filter((x) => x.scrollWidth > x.clientWidth + 1).length);
+  ok(`${n}: napisy na przyciskach sklepu się mieszczą`, btnCut === 0, btnCut);
+  ok(`${n}: Sklep bez poziomego przewijania`, await noHScroll(p), "");
+  await p.close();
+  p = await open(b, { dark, w: 360, h: 740, hash: "/gry" });
+  await p.screenshot({ path: `${OUT}/h2e8-${n}-gry.png`, fullPage: true });
+  const tx = await p.locator(".gry-tile > p.muted").evaluateAll((ps) => ps.map((x) => Math.round(x.getBoundingClientRect().width)));
+  ok(`${n}: opis gry ma szeroką kolumnę (≥ 230 px)`, tx.length && tx.every((w) => w >= 230), tx);
+  const th = await p.locator(".gry-tile").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().height)));
+  ok(`${n}: kafle gier ≤ 170 px`, th.every((x) => x <= 170), th);
+  ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
+  await p.close();
+}
 for (const th of ["riwiera", "pink"]) {
   const p = await open(b, { theme: th, hash: "/haslo", ls: HLS });
   for (let i = 0; i < 40 && !(await p.locator(".hd-board").count()); i++) await p.waitForTimeout(100);
