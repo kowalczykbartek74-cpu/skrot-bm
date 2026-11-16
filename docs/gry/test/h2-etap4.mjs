@@ -64,6 +64,35 @@ for (const dark of [false, true]) {
   else ok("html.calm: dojście do końca", false, "");
   await p.close();
 }
+{ // Quiz z całego przedmiotu, same złe odpowiedzi: ekran części ze Stasiem „myślę”, potem gwiazdki
+  const p = await open(b, { wait: 2500 });
+  await p.evaluate((A) => { location.hash = "#/subjectQuiz/" + A; }, "analiza-matematyczna"); await p.waitForTimeout(2500);
+  await p.locator("main").getByRole("button", { name: /^Zaczynamy/ }).first().click(); await p.locator(".lp").waitFor({ timeout: 15000 });
+  let part = null, stars = null;
+  for (let i = 0; i < 120 && !stars; i++) {
+    if (await p.locator(".lp-done-screen .lp-bigstars").count()) { stars = true; break; }
+    if (!part && await p.locator(".lp-done-screen").count()) { part = await p.locator(".lp-done-screen .lp-stas").getAttribute("data-mood").catch(() => null); await p.screenshot({ path: `${OUT}/h2e4-quiz-czesc.png` }); }
+    const bad = p.locator(".lp-opts .opt:not([disabled])").filter({ hasText: /Zła/ }).first();
+    if (await bad.count()) { await bad.click(); await p.waitForTimeout(200); }
+    const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])").first();
+    if (await cta.count()) { await cta.click(); await p.waitForTimeout(200); } else await p.waitForTimeout(150);
+  }
+  ok("quiz, złe odpowiedzi: na końcu części Staś „myślę” (nie radość)", part === "think", part);
+  if (stars) {
+    await p.waitForTimeout(1200); await p.screenshot({ path: `${OUT}/h2e4-quiz-gwiazdki.png` });
+    const off = await p.locator(".lp-bigstars .off").evaluateAll((e) => e.map((x) => +getComputedStyle(x).opacity));
+    ok("gwiazdki: nieaktywne przygaszone (≤ 0.3)", off.length > 0 && off.every((o) => o <= 0.3), off);
+    ok("gwiazdki: czytane jako jeden obraz (role=img)", await p.locator(".lp-bigstars[role=img]").count() === 1, "");
+    const prim = await p.locator(".lp-done-screen .lp-actions .btn.primary").count();
+    const ctaBg = await p.locator(".lp-bottom .lp-cta").evaluate((e) => getComputedStyle(e).backgroundColor);
+    const surf = await p.evaluate(() => getComputedStyle(document.querySelector(".lp-card, .lp-stat") || document.body).backgroundColor);
+    ok("ekran końcowy: jeden główny przycisk (dolny drugorzędny, gdy w treści jest główny)", !prim || ctaBg === surf, { prim, ctaBg, surf });
+    const cols = await p.locator(".lp-done-screen .lp-stats").first().evaluate((e) => [e.children.length, getComputedStyle(e).gridTemplateColumns.split(" ").length]);
+    ok("statystyki: przy 4 kafelkach układ 2×2 na telefonie", cols[0] < 4 || cols[1] === 2, cols);
+  } else ok("quiz: dojście do gwiazdek", false, await p.locator(".lp-stage").innerText().catch(() => ""));
+  ok("quiz: bez błędów w konsoli", p.errors.length === 0, p.errors);
+  await p.close();
+}
 const f = await open(b);
 await f.locator(".zh-hero .zh-go").click(); await f.locator(".lp").waitFor({ timeout: 15000 });
 const v = await fps(f, async () => { await play(f, 6); }, 2500);
