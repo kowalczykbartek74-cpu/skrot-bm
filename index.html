@@ -4544,7 +4544,7 @@ html:not([data-theme]) .navbtn { transition: background .15s, color .15s; }
 
 html:not([data-theme]) .navbtn .badge { border: 2px solid var(--surface); min-width: 22px; line-height: 18px; font-size: .78rem; font-weight: 800; }
 html:not([data-theme]) .navbtn[data-key="review"] .badge { background: #FF9F43; color: #10231A; }
-html:not([data-theme]) .navbtn .badge.h-pop { animation: h-pop .45s var(--h-spring) calc(0ms - var(--h-bd, 0ms)) both; }
+html:not([data-theme]) :is(.navbtn, .morebtn) .badge.h-pop { animation: h-pop .45s var(--h-spring) calc(0ms - var(--h-bd, 0ms)) both; }
 @media (min-width: 761px) {
   html:not([data-theme]) .navbtn:active { scale: .95; }
   html:not([data-theme]) .navbtn.h-bump { animation: h-hop .55s var(--h-out) calc(0ms - var(--h-bd, 0ms)) both; }
@@ -4934,6 +4934,31 @@ html:not([data-theme]) #login .lg-trial { animation: h-rise .5s var(--h-out) .1s
 html.calm :is(.more-tiles > *, .set-themes > *, .set-theme .e, #login .lg-trial) { animation: none !important; }
 html.calm :is(.more-row, .more-tile, .more-prof, .set-theme, .set-tabs .tab, #loginBox .btn, #login .lg-demo-btn, #login .lk-card, #login .lk-chip button, #loginBox [role="tab"]) { transform: none !important; }
 html.calm .switch i { transition: none; }
+/* ===== H2 etap 10: szlif (ikony gier SVG, mapa postępów, karta „Na dziś”, drobiazgi) ===== */
+.h2-now { display: none; }
+html:not([data-theme]) :is(.gry-tile-art, .gry-mini-b .ic) .h2-ico { display: grid; place-items: center; }
+html:not([data-theme]) .gry-tile-art .h2-ico svg { width: 36px; height: 36px; }
+html:not([data-theme]) .gry-mini-b .ic .h2-ico svg { width: 30px; height: 30px; }
+@media (max-width: 520px) { html:not([data-theme]) .gry-tile-art .h2-ico svg { width: 32px; height: 32px; } }
+html:not([data-theme]) .gry-mini-b:not([disabled]):hover .ic .h2-ico { animation: h-wiggle .5s ease; }
+/* Mapa postępów: kwadraty jako małe klawisze w kolorach H, legenda w tym samym stylu. */
+html:not([data-theme]) .pm-sq { width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--h-line); border-bottom-width: 4px; background: var(--surface); transition: transform .08s ease; }
+html:not([data-theme]) .pm-sq.st-good { background: var(--accent); border-color: var(--h-acc-edge); }
+html:not([data-theme]) .pm-sq.st-mid { background: #FFC83D; border-color: #C78F00; }
+html:not([data-theme]) .pm-sq.st-weak { background: var(--h-red); border-color: color-mix(in srgb, var(--h-red) 60%, #000); }
+html:not([data-theme]) button.pm-sq:active { transform: translateY(2px); border-bottom-width: 2px; }
+html:not([data-theme]) .pm-grid { gap: 6px; }
+html:not([data-theme]) .pm-tip-st .pm-sq { width: 12px; height: 12px; border-width: 1.5px; border-bottom-width: 2.5px; border-radius: 4px; }
+html:not([data-theme]) main.h-ent .pm-grid > .pm-sq { animation: h-pop .35s var(--h-spring) calc(260ms - var(--h-el, 0ms)) backwards; }
+/* Karta „Na dziś” (podpowiedź): limonkowa karta 3D zamiast płaskiego gradientu. */
+html:not([data-theme]) .hint { background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom: 5px solid color-mix(in srgb, var(--accent) 55%, var(--h-edge)); border-radius: var(--h-r); }
+html:not([data-theme]) .hint .eyebrow { color: var(--accent-text); }
+/* Hasło dnia: puste kafle z widocznym dołem w ciemnym; kalendarz: pierścień „dziś” widoczny też na jasnym. */
+html:not([data-theme]) .hd-t:not(.s0):not(.s1):not(.s2):not(.fill) { border-bottom-color: var(--h-edge); }
+html:not([data-green="dark"]):not([data-theme]) .day.today::after { border-color: #8FB52A; }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.pm-grid > .pm-sq, .gry-mini-b .ic .h2-ico) { animation: none !important; } html:not([data-theme]) .pm-sq { transition: none; transform: none !important; } }
+html.calm :is(.pm-grid > .pm-sq, .gry-mini-b .ic .h2-ico) { animation: none !important; }
+html.calm .pm-sq { transform: none !important; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -5823,7 +5848,7 @@ html.calm .switch i { transition: none; }
       mb.setAttribute("aria-label", "Więcej" + (badge.more ? `, ${badge.more} ${badgeLbl.more}` : ""));
       mb.title = "Więcej: grupa, konto, słowniczek, ustawienia";
       if (active === "more") mb.setAttribute("aria-current", "page"); else mb.removeAttribute("aria-current");
-      mb.replaceChildren(...[icon(NAV_ICON.more), badge.more ? h("span", { class: "badge num", text: badge.more > 99 ? "99+" : badge.more }) : null].filter(Boolean));
+      mb.replaceChildren(...[icon(NAV_ICON.more), badge.more ? h("span", { class: "badge num" + (popB.more != null ? " h-pop" : ""), style: popB.more != null ? `--h-bd:${Math.round(popB.more)}ms` : null, text: badge.more > 99 ? "99+" : badge.more }) : null].filter(Boolean));
     }
     const sk = window.skrot || {};
     $("barRight").replaceChildren(...[
@@ -8879,7 +8904,7 @@ html.calm .switch i { transition: none; }
           return h("li", { class: "sk-node" + (ok ? " done" : "") + (cur ? " now" : "") + (lock ? " lock" : ""), style: `--i:${Math.min(ri, 8)}` },
             h("button", { type: "button", class: "sk-dot", "aria-label": `${lessonNo(l)}. ${l.title}${ok ? ", " + PTS_STATE[r.state === "doing" || r.state === "none" ? "done" : r.state] : ""}${lock ? ", zablokowana" : ""}${cur ? ", następna" : ""}`, onclick: open }, lock ? "🔒" : ok ? (r.state === "mastered" ? "⭐" : r.state === "kept" ? "✓✓" : "✓") : String(lessonNo(l))),
             h("button", { type: "button", class: "t", onclick: open },
-              h("b", {}, `${lessonNo(l)}. ${l.title}`, cur && !document.documentElement.getAttribute("data-theme") ? h("span", { class: "h2-now", "aria-hidden": "true", text: "Teraz" }) : null),
+              h("b", {}, `${lessonNo(l)}. ${l.title}`, cur ? h("span", { class: "h2-now", "aria-hidden": "true", text: "Teraz" }) : null),
               h("span", { class: "num", text: (l.sylRef ? `sylabus: ${l.sylRef}` : `rozdz. ${l.bookRef}`) + ` · ${lessonMinTxt(l)} · ${l.quizCount || 0} ${plural(l.quizCount || 0, "pytanie", "pytania", "pytań")} w quizie` }),
               !lock || best(l.id) ? h("span", { class: "sk-tags" },
                 !lock ? ptsMeter(r) : null,
@@ -9567,6 +9592,14 @@ html.calm .switch i { transition: none; }
     coin: '<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="#FFC83D"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#E0A20F" stroke-width="2"/><path d="M8 8.5L9.6 7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
     flame: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2.5C13.3 6.3 18 8.6 18 14.2A6 6 0 0 1 6 14.2C6 11.5 7.4 9.8 8.7 8.8C8.7 11 9.8 12.3 11 12.7C10.4 9.4 11 5.5 12 2.5Z" fill="#FF8A1F"/><path d="M12 13.3C13.5 14.5 14.5 15.6 14.5 17A2.5 2.5 0 0 1 9.5 17C9.5 15.6 10.5 14.5 12 13.3Z" fill="#FFD23F"/></svg>',
   };
+  // Ikony gier (zielone motywy): płaskie, dwukolorowe, w stylu H.
+  Object.assign(H2_ICO, {
+    frun: '<svg viewBox="0 0 32 32" width="32" height="32"><path d="M6 25C6 13 13 6 27 5C27 18 20 26 8 26Z" fill="#58C25C"/><path d="M6 25C6 13 13 6 27 5C25 9 21 12 17 14C13 16 9 19 6 25Z" fill="#3E9E44"/><path d="M5 27C10 20 15 15 22 10" stroke="#1F6B2A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>',
+    pary: '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="4" y="7" width="15" height="20" rx="3.5" transform="rotate(-10 11.5 17)" fill="#8CC2F5" stroke="#1C6FB8" stroke-width="2"/><rect x="13" y="5" width="15" height="20" rx="3.5" transform="rotate(8 20.5 15)" fill="#fff" stroke="#1A7F45" stroke-width="2"/><path d="M17.5 15.5l2.3 2.3 4.4-4.6" transform="rotate(8 20.5 15)" stroke="#1A7F45" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    przejdz: '<svg viewBox="0 0 32 32" width="32" height="32"><ellipse cx="11" cy="11" rx="4.2" ry="6" transform="rotate(-12 11 11)" fill="#FF9F43"/><circle cx="8.4" cy="20.3" r="2.4" fill="#FF9F43"/><ellipse cx="21" cy="17" rx="4.2" ry="6" transform="rotate(12 21 17)" fill="#E07A12"/><circle cx="23.6" cy="26.3" r="2.4" fill="#E07A12"/></svg>',
+    drabina: '<svg viewBox="0 0 32 32" width="32" height="32"><path d="M10 3L8 29M22 3L24 29" stroke="#B35400" stroke-width="3" stroke-linecap="round"/><path d="M9.4 9H22.6M9 15H23M8.6 21H23.4" stroke="#FF9F43" stroke-width="3" stroke-linecap="round"/><circle cx="25" cy="6" r="3.5" fill="#CDF25E" stroke="#5E7D0C" stroke-width="1.5"/></svg>',
+    haslo: '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="3" y="8" width="12" height="13" rx="3" fill="#1A7F45"/><rect x="3" y="18" width="12" height="3" rx="1.5" fill="#0F5A2F"/><rect x="17" y="8" width="12" height="13" rx="3" fill="#CDF25E"/><rect x="17" y="18" width="12" height="3" rx="1.5" fill="#8FB52A"/><text x="9" y="17.5" text-anchor="middle" font-size="9" font-weight="800" font-family="system-ui, sans-serif" fill="#fff">A</text><text x="23" y="17.5" text-anchor="middle" font-size="9" font-weight="800" font-family="system-ui, sans-serif" fill="#10231A">B</text></svg>',
+  });
   function h2Ico(k, emoji) {
     if (document.documentElement.getAttribute("data-theme")) return h("span", { "aria-hidden": "true", text: emoji });
     const el = h("span", { class: "h2-ico h2-" + k, "aria-hidden": "true" }); el.innerHTML = H2_ICO[k]; return el;
@@ -11379,7 +11412,7 @@ html.calm .switch i { transition: none; }
       const few = g.id === "pary" ? pairsN != null && pairsN < 6 : tooFew;
       const meta = g.id === "pary" ? [pairsN == null ? "ładuję pojęcia…" : few ? "za mało pojęć" : `${pairsN} ${plural(pairsN, "pojęcie", "pojęcia", "pojęć")}`, g.min] : [rec ? `rekord ${rec}` : null, g.min];
       return h("section", { class: "sk-card gry-tile" + (g.soon ? " soon" : few ? " few" : ""), id: "gra-" + g.id },
-        h("div", { class: "gry-tile-art", "aria-hidden": "true", text: g.ic }),
+        h("div", { class: "gry-tile-art", "aria-hidden": "true" }, h2Ico(g.id, g.ic)),
         h("h2", { text: g.name }), h("p", { class: "muted", text: g.text }),
         g.soon ? h("span", { class: "chip plain", text: "wkrótce" })
           : [h("p", { class: "gry-tile-meta small", text: meta.filter(Boolean).join(" · ") }),
@@ -11620,7 +11653,7 @@ html.calm .switch i { transition: none; }
     const sid = grySid();
     return h("section", { class: "panel gry-strip" }, h("div", { class: "panel-head" }, h("h2", { text: "Powtarzaj grając" }), h("button", { type: "button", class: "link", onclick: () => go({ view: "gry" }) }, "Wszystkie gry →")),
       h("div", { class: "gry-mini" }, GRY_TILES.map((g) => h("button", { type: "button", class: "gry-mini-b" + (g.soon ? " soon" : ""), disabled: g.soon ? true : null, onclick: () => gryOpenTile(g.id, sid) },
-        h("span", { class: "ic", "aria-hidden": "true", text: g.ic }), h("b", { text: g.name }), h("small", { text: g.soon ? "wkrótce" : g.min })))));
+        h("span", { class: "ic", "aria-hidden": "true" }, h2Ico(g.id, g.ic)), h("b", { text: g.name }), h("small", { text: g.soon ? "wkrótce" : g.min })))));
   }
   let gryHomeCounted = false;
   function gryHomeRow() {
@@ -11695,7 +11728,7 @@ html.calm .switch i { transition: none; }
     const d = HD.d; if (!d) return null;
     const chip = d.koniec ? hdRes(d) : d.proby.length ? `próba ${Math.min(d.proby.length + 1, d.max)} z ${d.max}` : "nowe";
     return h("section", { class: "sk-card gry-tile hd-tile", id: "gra-haslo" },
-      h("div", { class: "gry-tile-art", "aria-hidden": "true", text: "🔤" }),
+      h("div", { class: "gry-tile-art", "aria-hidden": "true" }, h2Ico("haslo", "🔤")),
       h("h2", {}, h("span", { text: "Hasło dnia" }), " ", h("span", { class: "chip" + (d.koniec && d.wynik > 0 ? " good" : ""), text: chip })),
       h("p", { class: "muted", text: "Jedno pojęcie EN dziennie, to samo dla całego roku. 6 prób." }),
       h("p", { class: "gry-tile-meta small", text: [`${d.dlugosc} liter`, hdSubj(d.sid)].filter(Boolean).join(" · ") }),
