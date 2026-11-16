@@ -4635,9 +4635,9 @@ html:not([data-theme]) .rv-box span { white-space: normal; line-height: 1.15; fo
 /* Na telefonie pudełka w dwóch rzędach (4 + 3), żeby podpisy mieściły się całymi wyrazami. */
 @media (max-width: 520px) { html:not([data-theme]) .rv-track { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; } html:not([data-theme]) .rv-track::before { display: none; } html:not([data-theme]) .rv-box { padding: 8px 2px 6px; } html:not([data-theme]) .rv-box span { font-size: .74rem; } }
 /* Fiszka: karta 3D (grubszy dół), odwrotna strona w zieleni, stos kart pod spodem. Obrót zostaje jak był (rotateY). */
-html:not([data-theme]) .lp-sw .face { border: 2px solid var(--h-line); border-bottom: 6px solid var(--h-edge); border-radius: 24px; }
-html[data-green="dark"]:not([data-theme]) .lp-sw .face.back { background-color: #1D4A30; border-color: #2F7A4D; border-bottom-color: #1F8F52; }
-html:not([data-theme]) .lp-sw .face.back { background-color: var(--h-acc-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom-color: color-mix(in srgb, var(--accent) 55%, var(--h-edge)); }
+html:not([data-theme]) .lp:not([class*="kf-"]) .lp-sw .face { border: 2px solid var(--h-line); border-bottom: 6px solid var(--h-edge); border-radius: 24px; }
+html[data-green="dark"]:not([data-theme]) .lp:not([class*="kf-"]) .lp-sw .face.back { background-color: #1D4A30; border-color: #2F7A4D; border-bottom-color: #1F8F52; }
+html:not([data-theme]) .lp:not([class*="kf-"]) .lp-sw .face.back { background-color: var(--h-acc-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom-color: color-mix(in srgb, var(--accent) 55%, var(--h-edge)); }
 html:not([data-theme]) .lp-sw.under, html:not([data-theme]) .lp-sw.under2 { border: 2px solid var(--h-line); border-radius: 24px; }
 /* Oceny: cztery kolorowe klawisze 3D (nie pamiętam → łatwe). */
 html:not([data-theme]) .sk-grade4 { gap: 10px; }
@@ -4656,8 +4656,8 @@ html:not([data-theme]) .sk-grade4 .opt.right { position: relative; }
 html:not([data-theme]) .sk-grade4 .opt.right::after { content: "✓"; position: absolute; top: 6px; right: 10px; font-weight: 800; color: var(--c); }
 html:not([data-theme]) .sk-grade4 .opt:focus-visible { outline: 3px solid var(--c); outline-offset: 3px; }
 /* Stos kart pod fiszką także w zwykłej powtórce (gdy nie ma prawdziwych kart pod spodem). */
-html:not([data-theme]) .lp-swipe:not(:has(.lp-sw.under))::before { content: ""; position: absolute; inset: 0; border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 24px; background: var(--surface); translate: 0 12px; scale: .94; pointer-events: none; }
-html[data-green="dark"]:not([data-theme]) .lp-swipe:not(:has(.lp-sw.under))::before { background: var(--h-raised); border-color: #33493C; }
+html:not([data-theme]) .lp-swipe:not(:has(.lp-sw.under))::before { content: ""; position: absolute; inset: 0; border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 24px; background: var(--surface); translate: 0 14px; scale: .92; pointer-events: none; }
+html[data-green="dark"]:not([data-theme]) .lp-swipe:not(:has(.lp-sw.under))::before { background: #22382B; border-color: #3A5444; border-bottom-color: #0A130E; }
 /* „Powtarzaj grając”: kafle gier 3D. */
 html:not([data-theme]) .gry-mini-b { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 18px; transition: transform .08s ease, border-color .15s; }
 html:not([data-theme]) .gry-mini-b .ic { font-size: 1.8rem; }
@@ -10328,6 +10328,7 @@ html:not([data-theme]) .gry-mini-b .ic { font-size: 1.8rem; }
         lpAward(card.again ? 0 : g >= 2 ? lpXv("rvGood") : g === 1 ? lpXv("rvHard") : 0, { graded: true, ok: g > 0, at: btn || LP.el.cta });
         if (g === 0 && LP.src.retry !== false) rvRequeue(card);
         LP.st.ans[card.id] = g; lpSave();
+        btn = btn || LP.el.stage.querySelector(".sk-grade4 .opt.g-" + ["again", "hard", "good", "easy"][g]); // ocena gestem: przycisk po g
         btn?.classList.add("right"); // wygląd H2: na chwilę widać, która ocena została wybrana (✓, reszta przygaszona)
         setTimeout(() => lpNext(), lpReduced() ? 0 : 280);
       };

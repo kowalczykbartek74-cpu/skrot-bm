@@ -39,16 +39,23 @@ for (const dark of [false, true]) {
   await p.locator(".lp-sw.top").click(); await p.waitForTimeout(600);
   ok(`${n}: dotknięcie odwraca fiszkę`, await p.locator(".lp-sw.top.flip").count() === 1, "");
   await p.screenshot({ path: `${OUT}/h2e5-${n}-oceny.png` });
+  // Wybrany przez ucznia wygląd fiszek (kf-*) wygrywa z kolorami H2 (tył i obrys), w obu motywach.
+  for (const kf of ["kf-papier", "kf-nocny"]) {
+    const r = await p.evaluate((kf) => { const lp = document.querySelector(".lp"); lp.classList.add(kf); const f = document.querySelector(".lp-sw.top .face.back"), c = getComputedStyle(f), v = getComputedStyle(lp); const out = { bg: c.backgroundColor, bc: c.borderTopColor, ink: c.color }; lp.classList.remove(kf); return out; }, kf);
+    const want = await p.evaluate((kf) => { const lp = document.querySelector(".lp"); lp.classList.add(kf); const d = document.createElement("i"); d.style.cssText = "color: var(--kf-bg2, var(--kf-bg)); border-color: var(--kf-edge)"; lp.append(d); const c = getComputedStyle(d); const out = { bg: c.color, bc: c.borderTopColor }; d.remove(); lp.classList.remove(kf); return out; }, kf);
+    ok(`${n}: ${kf}: tył fiszki w kolorach wybranego wyglądu (tło i obrys), tekst czytelny`, r.bg === want.bg && r.bc === want.bc && cr(r.ink, r.bg) >= 4.5, { r, want });
+  }
   const g = await p.locator(".sk-grade4 .opt").evaluateAll((os) => os.map((o) => { const c = getComputedStyle(o); return { cls: o.className, bg: c.backgroundColor, col: c.color, bb: c.borderBottomWidth }; }));
   const bgs = new Set(g.map((x) => x.bg));
   ok(`${n}: cztery oceny jako różnokolorowe klawisze 3D, tekst czytelny`, g.length === 4 && bgs.size === 4 && g.every((x) => x.bb === "5px" && cr(x.col, x.bg) >= 4.5), g);
   const pe = await p.evaluate(() => { const sw = document.querySelector(".lp-swipe"); return sw ? getComputedStyle(sw, "::before").pointerEvents : "brak"; });
   ok(`${n}: stos kart pod fiszką nie łapie dotyku`, pe === "none" || pe === "brak", pe);
   await p.locator(".sk-grade4 .opt.g-again").click(); await p.waitForTimeout(80);
+  const picked = await p.locator(".sk-grade4 .opt.g-again").evaluate((e) => getComputedStyle(e).backgroundColor).catch(() => null);
   const dim = await p.locator(".sk-grade4 .opt.g-good").evaluate((e) => +getComputedStyle(e).opacity).catch(() => null);
   ok(`${n}: po wyborze pozostałe oceny przygaszone (wybrana z ✓)`, dim != null && dim <= 0.6, dim);
-  const picked = await p.locator(".sk-grade4 .opt.g-again").evaluate((e) => getComputedStyle(e).backgroundColor).catch(() => null);
-  ok(`${n}: wybrane „Nie pamiętam” zostaje czerwone (nie zielone)`, !picked || picked === g.find((x) => /g-again/.test(x.cls)).bg, { picked });
+  const goodBg = g.find((x) => /g-good/.test(x.cls)).bg;
+  ok(`${n}: wybrane „Nie pamiętam” zostaje czerwone (nie zielone)`, picked && picked === g.find((x) => /g-again/.test(x.cls)).bg && picked !== goodBg, { picked, goodBg });
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();
 }
