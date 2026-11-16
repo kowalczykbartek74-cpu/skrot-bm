@@ -35,7 +35,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   ok(`${w} Dziś: bez poziomego przewijania`, sw);
   await p.evaluate(() => { location.hash = "#/profil"; }); await p.waitForTimeout(900);
   const m = await txt(p, ".sk-profile");
-  ok(`${w} Więcej: karta rangi z XP do poziomu 6 i nagrodą na poziomie 6 (UX-5: wybór Kokardka/Nokturn)`, /Ogarnięty/.test(m) && /250 \/ 500 XP do poziomu 6/.test(m) && /Poziom 6: wybierz Kokardka albo Nokturn/.test(m) && /brakuje 250 XP/.test(m), m);
+  ok(`${w} Więcej: karta rangi z XP do poziomu 6 i nagrodą na poziomie 6 (UX-5: wybór Kokardka/Nokturn)`, /Ogarnięty/.test(m) && /250 \/ 500 XP do poziomu 6/.test(m) && /Poziom 6: wybór Kokardka albo Nokturn/.test(m) && /brakuje 250 XP/.test(m), m);
   await shot(p, `wiecej-${w}`);
   if (w === 390) {
     await p.locator(".lv-howlink").click(); await p.waitForTimeout(400);
