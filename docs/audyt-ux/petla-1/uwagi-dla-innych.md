@@ -7,3 +7,4 @@ Rzeczy zauważone poza obszarem pętli 1 (nie poprawiane tutaj).
 - **Pętla 2/3 (Dziś, karta 5 min):** przyciski „5 min” / „15 min” na Dziś mają 66×36 i 72×36 px (< 44 px). Istnieją na `main`.
 - **Pętla 2 (`ldBlock`, układ):** wiersz „Codziennie dwie lekcje… [Kup dostęp]” (`.row.ld-done`) nie ma tła karty (C2 P0 pkt 5) – tekst przyklejony do lewej krawędzi. Pętla 1 podmienia tylko wyrażenie przycisku.
 - **`docs/gry/test/scalanie.mjs`:** 4 asercje padają także na czystym `main` (ranga/monety pod powitaniem, Zadania dnia) – do poprawy przez właściciela Sklepu/Dziś.
+- **Pętla 2/5 (Dziś, karta „Zadanie dnia” `.jz-card`):** po ok. 2–3 s karta zmienia wysokość (134→112 px) i przesuwa sąsiadów: CLS ok. 0,06 na Dziś 390 px (konto darmowe). Istnieje na `main`.

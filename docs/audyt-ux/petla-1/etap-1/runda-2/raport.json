@@ -1,0 +1,1719 @@
+{
+ "etap": 1,
+ "runda": 2,
+ "data": "2026-11-16T19:58:26.467Z",
+ "przypadki": [
+  {
+   "n": "logowanie-360-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "cta „Zacznij 3 dni”": {
+     "top": 512,
+     "bottom": 564,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (telefon)": {
+     "top": 104,
+     "bottom": 152,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 32,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-360-ciemny",
+   "y": 0,
+   "cls": 0.0003,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "cta „Zacznij 3 dni”": {
+     "top": 512,
+     "bottom": 564,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (telefon)": {
+     "top": 104,
+     "bottom": 152,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 32,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-390-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "cta „Zacznij 3 dni”": {
+     "top": 501,
+     "bottom": 553,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (telefon)": {
+     "top": 112,
+     "bottom": 160,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 32,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-390-jasny-en",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "cta „Zacznij 3 dni”": {
+     "top": 501,
+     "bottom": 553,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (telefon)": {
+     "top": 112,
+     "bottom": 160,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 32,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-390-ciemny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "cta „Zacznij 3 dni”": {
+     "top": 501,
+     "bottom": 553,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (telefon)": {
+     "top": 112,
+     "bottom": 160,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 32,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-1280-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "cta „Zacznij 3 dni”": {
+     "top": 409,
+     "bottom": 461,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (telefon)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 276,
+     "bottom": 359,
+     "h": 83,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 28,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-1280-ciemny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "cta „Zacznij 3 dni”": {
+     "top": 409,
+     "bottom": 461,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (telefon)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 276,
+     "bottom": 359,
+     "h": 83,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 28,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-bez-grupy-390-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "nagłówek (telefon)": {
+     "top": 118,
+     "bottom": 204,
+     "h": 86,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 42,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-bez-grupy-390-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "nagłówek (telefon)": {
+     "top": 118,
+     "bottom": 204,
+     "h": 86,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 42,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-bez-grupy-1280-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "nagłówek (telefon)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 276,
+     "bottom": 359,
+     "h": 83,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 36,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-bez-grupy-1280-ciemny",
+   "y": 0,
+   "cls": 0.0029,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "nagłówek (telefon)": {
+     "top": 0,
+     "bottom": 0,
+     "h": 0,
+     "w_pierwszym_ekranie": true
+    },
+    "nagłówek (komputer)": {
+     "top": 270,
+     "bottom": 353,
+     "h": 83,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 36,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-tryb-proby-390-jasny",
+   "y": 0,
+   "cls": 0.0002,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 26,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-tryb-proby-390-jasny-en",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 26,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-tryb-proby-390-ciemny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 26,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-tryb-proby-390-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-tryb-proby-390-jasny-en",
+   "y": 0,
+   "cls": 0.0003,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-tryb-proby-390-ciemny",
+   "y": 0,
+   "cls": 0.0002,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-tryb-proby-1280-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 22,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-tryb-proby-1280-ciemny",
+   "y": 0,
+   "cls": 0.0028,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 22,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-po-60s-360-jasny",
+   "y": 390,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-po-60s-360-ciemny",
+   "y": 390,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-po-60s-390-jasny",
+   "y": 163,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-po-60s-390-jasny-en",
+   "y": 197,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "kod-po-60s-390-ciemny",
+   "y": 163,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-limitu-390-jasny",
+   "y": 508,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 33,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-limitu-390-jasny-en",
+   "y": 530,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 33,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-limitu-390-ciemny",
+   "y": 508,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 33,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-proby-360-jasny",
+   "y": 0,
+   "cls": 0.0102,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "arkusz": {
+     "top": 242,
+     "bottom": 640,
+     "h": 398,
+     "w_pierwszym_ekranie": true
+    },
+    "„Tak, zaczynam 3 dni”": {
+     "top": 508,
+     "bottom": 560,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 4,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-proby-360-ciemny",
+   "y": 0,
+   "cls": 0.0104,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "arkusz": {
+     "top": 242,
+     "bottom": 640,
+     "h": 398,
+     "w_pierwszym_ekranie": true
+    },
+    "„Tak, zaczynam 3 dni”": {
+     "top": 508,
+     "bottom": 560,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 4,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-proby-390-jasny",
+   "y": 0,
+   "cls": 0.0689,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "arkusz": {
+     "top": 467,
+     "bottom": 844,
+     "h": 377,
+     "w_pierwszym_ekranie": true
+    },
+    "„Tak, zaczynam 3 dni”": {
+     "top": 712,
+     "bottom": 764,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 4,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-proby-390-jasny-en",
+   "y": 0,
+   "cls": 0.0061,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "arkusz": {
+     "top": 467,
+     "bottom": 844,
+     "h": 377,
+     "w_pierwszym_ekranie": true
+    },
+    "„Tak, zaczynam 3 dni”": {
+     "top": 712,
+     "bottom": 764,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 4,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-proby-390-ciemny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "arkusz": {
+     "top": 467,
+     "bottom": 844,
+     "h": 377,
+     "w_pierwszym_ekranie": true
+    },
+    "„Tak, zaczynam 3 dni”": {
+     "top": 712,
+     "bottom": 764,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 4,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-proby-1280-jasny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "arkusz": {
+     "top": 278,
+     "bottom": 622,
+     "h": 344,
+     "w_pierwszym_ekranie": true
+    },
+    "„Tak, zaczynam 3 dni”": {
+     "top": 483,
+     "bottom": 535,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 4,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-proby-1280-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "arkusz": {
+     "top": 278,
+     "bottom": 622,
+     "h": 344,
+     "w_pierwszym_ekranie": true
+    },
+    "„Tak, zaczynam 3 dni”": {
+     "top": 483,
+     "bottom": 535,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 4,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-360-jasny",
+   "y": 0,
+   "cls": 0.0104,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Włącz”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-360-ciemny",
+   "y": 0,
+   "cls": 0.0104,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Włącz”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-390-jasny",
+   "y": 0,
+   "cls": 0.0689,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Włącz”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-390-jasny-en",
+   "y": 0,
+   "cls": 0.0061,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Włącz”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "lvl 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-390-ciemny",
+   "y": 0,
+   "cls": 0.082,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Włącz”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-1280-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 231,
+     "bottom": 283,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Włącz”": {
+     "top": 235,
+     "bottom": 279,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-1280-ciemny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 231,
+     "bottom": 283,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Włącz”": {
+     "top": 235,
+     "bottom": 279,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-platne-bez-paska-390-jasny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek (ma go nie być)": null
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-platne-bez-paska-390-ciemny",
+   "y": 0,
+   "cls": 0.0062,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek (ma go nie być)": null
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  }
+ ],
+ "przejscia": [
+  {
+   "nazwa": "nowa-osoba-proba",
+   "opis": "konto brak, grupa wybrana: „Zacznij 3 dni za darmo” → e-mail → kod (przycisk „Zacznij 3 dni za darmo”)",
+   "kroki": [
+    {
+     "krok": "ekran wejścia (od góry, bez fokusu)",
+     "zrzut": "przejscie-nowa-osoba-proba-1.png",
+     "stan": {
+      "y": 0,
+      "fokus": "BODY"
+     }
+    },
+    {
+     "krok": "klik „Zacznij 3 dni za darmo” → formularz e-mail w trybie próby",
+     "zrzut": "przejscie-nowa-osoba-proba-2.png",
+     "stan": {
+      "h2": "3 dni za darmo",
+      "przycisk": "Wyślij kod i zacznij",
+      "fokus": "skrot-login-email"
+     }
+    },
+    {
+     "krok": "wpisany e-mail i „Wyślij kod i zacznij” → krok kodu",
+     "zrzut": "przejscie-nowa-osoba-proba-3.png",
+     "stan": {
+      "przycisk": "Zacznij 3 dni za darmo",
+      "notka": "Po wpisaniu kodu od razu włączy się 3 dni pełnego dostępu za darmo.",
+      "ponownie": "Wyślij ponownie za 60 s"
+     }
+    },
+    {
+     "krok": "wpisany kod → logowanie (znacznik skrot-z-logowania)",
+     "zrzut": "przejscie-nowa-osoba-proba-4.png",
+     "stan": {
+      "z_logowania": "1",
+      "proba": "1"
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "Zacznij 3 dni za darmo",
+     "cel": "BUTTON.btn.primary.uxw-lime",
+     "kontrast": 4.03,
+     "wymagany": 4.5
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "darmowe-arkusz-tak",
+   "opis": "konto darmowe po pierwszym logowaniu z pełnego ekranu: arkusz → „Tak, zaczynam 3 dni” → powitanie próby",
+   "kroki": [
+    {
+     "krok": "arkusz „Włączyć teraz 3 dni pełnego dostępu?”",
+     "zrzut": "przejscie-darmowe-arkusz-tak-1.png",
+     "stan": {
+      "h2": "Włączyć teraz 3 dni pełnego dostępu?",
+      "fokus": "Tak, zaczynam 3 dni"
+     }
+    },
+    {
+     "krok": "klik „Tak, zaczynam 3 dni” → próba i powitanie",
+     "zrzut": "przejscie-darmowe-arkusz-tak-2.png",
+     "stan": {
+      "konto": "proba",
+      "h2": "Masz 3 dni pełnego dostępu"
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "darmowe-arkusz-pozniej",
+   "opis": "konto darmowe: arkusz → „Później…” → Dziś z paskiem; po przeładowaniu bez arkusza",
+   "kroki": [
+    {
+     "krok": "arkusz",
+     "zrzut": "przejscie-darmowe-arkusz-pozniej-1.png",
+     "stan": true
+    },
+    {
+     "krok": "klik „Później, zostawię na kolokwium” → Dziś z paskiem",
+     "zrzut": "przejscie-darmowe-arkusz-pozniej-2.png",
+     "stan": {
+      "arkusz": false,
+      "pasek": "Masz jeszcze 3 dni za darmo\nWłącz"
+     }
+    },
+    {
+     "krok": "przeładowanie → bez arkusza, pasek zostaje",
+     "zrzut": "przejscie-darmowe-arkusz-pozniej-3.png",
+     "stan": {
+      "arkusz": false,
+      "pasek": "Masz jeszcze 3 dni za darmo\nWłącz"
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "darmowe-pasek-wlacz",
+   "opis": "konto darmowe bez znacznika: pasek na Dziś → „Włącz” → próba",
+   "kroki": [
+    {
+     "krok": "Dziś z paskiem",
+     "zrzut": "przejscie-darmowe-pasek-wlacz-1.png",
+     "stan": "Masz jeszcze 3 dni za darmo\nWłącz"
+    },
+    {
+     "krok": "klik „Włącz” → próba i powitanie",
+     "zrzut": "przejscie-darmowe-pasek-wlacz-2.png",
+     "stan": {
+      "konto": "proba",
+      "h2": "Masz 3 dni pełnego dostępu"
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "kod-wyslij-ponownie",
+   "opis": "krok kodu: odliczanie 60 s → notka o spamie i „Wyślij ponownie” → nowy kod",
+   "kroki": [
+    {
+     "krok": "e-mail wysłany, krok kodu (odliczanie)",
+     "zrzut": "przejscie-kod-wyslij-ponownie-1.png",
+     "stan": {
+      "ponownie": "Wyślij ponownie za 60 s",
+      "aktywny": false
+     }
+    },
+    {
+     "krok": "po 61 s: notka i aktywne „Wyślij ponownie”",
+     "zrzut": "przejscie-kod-wyslij-ponownie-2.png",
+     "stan": {
+      "notka": "Kod nie dochodzi? Sprawdź folder Oferty/Spam albo wpisz inny adres (np. prywatny Gmail).",
+      "ponownie": "Wyślij ponownie",
+      "aktywny": true
+     }
+    },
+    {
+     "krok": "klik „Wyślij ponownie” → komunikat i nowe odliczanie",
+     "zrzut": "przejscie-kod-wyslij-ponownie-3.png",
+     "stan": {
+      "komunikat": "Wysłaliśmy nowy kod na nowy@stud.usz.edu.pl.",
+      "ponownie": "Wyślij ponownie za 60 s",
+      "wyslano": 2
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [],
+   "bledy": []
+  }
+ ],
+ "ruch": [
+  {
+   "ekran": "logowanie",
+   "tryb": "zwykle",
+   "#login .lg-trial": {
+    "animacja": "lg-rise",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-trial .btn.primary": {
+    "animacja": "none",
+    "przejscie": "0.15s, 0.15s, 0.15s",
+    "after": "uxw-shine"
+   },
+   "#login .lg-intro > .stas-face": {
+    "animacja": "lg-hop, lg-wave",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#loginBox form": {
+    "animacja": "lg-rise",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-demo": {
+    "animacja": "lg-rise",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "arkusz-proby",
+   "tryb": "zwykle",
+   ".uxw-sheet": {
+    "animacja": "h-sheet",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-sheet .btn.primary": {
+    "animacja": "none",
+    "przejscie": "0.08s, 0.08s, 0.15s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "logowanie",
+   "tryb": "reduced-motion",
+   "#login .lg-trial": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-trial .btn.primary": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-intro > .stas-face": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#loginBox form": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-demo": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "arkusz-proby",
+   "tryb": "reduced-motion",
+   ".uxw-sheet": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-sheet .btn.primary": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "logowanie",
+   "tryb": "Mniej animacji (html.calm)",
+   "#login .lg-trial": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-trial .btn.primary": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-intro > .stas-face": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#loginBox form": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   "#login .lg-demo": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "arkusz-proby",
+   "tryb": "Mniej animacji (html.calm)",
+   ".uxw-sheet": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-sheet .btn.primary": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  }
+ ],
+ "przewijanie": [
+  {
+   "ekran": "logowanie",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-bez-grupy",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-darmowe",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "arkusz-proby",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-bez-grupy",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-darmowe",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "arkusz-proby",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-bez-grupy",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-darmowe",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "arkusz-proby",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-bez-grupy",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-darmowe",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "arkusz-proby",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  }
+ ]
+}

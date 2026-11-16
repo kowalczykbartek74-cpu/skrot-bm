@@ -29,8 +29,8 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 ## Etapy
 | etap | stan | rundy | ostatni wynik | twarde błędy | ostatni commit |
 |---|---|---|---|---|---|
-| 1 Pierwszy ekran i jedna ścieżka | w toku | 1 | 8,5 (K4 ✗) | brak | – |
-| 2 Widoczna próba i przyciski zakupu | – | – | – | – | – |
+| 1 Pierwszy ekran i jedna ścieżka | **ZALICZONY** | 2 | 9,0 | brak | (ten commit) |
+| 2 Widoczna próba i przyciski zakupu | w toku | 0 | – | – | – |
 | 3 Koniec próby jako wydarzenie | – | – | – | – | – |
 | 4 Paywall, odzyskiwanie, zaufanie | – | – | – | – | – |
 | 5 Lekcja dla gościa | – | – | – | – | – |
@@ -40,3 +40,7 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 ### Etap 1 · runda 1 – 8,5/10, twarde błędy: brak, K4 = false → poprawki
 Recenzent: reguła bramki widoczności w głównym `<style>` (poza `ux-wejscie.css`) → K4 ✗; Staś w arkuszu za duży; różne kolory przycisku na ścieżce próby; pusta przestrzeń i osierocone „Zmień e-mail” w kroku kodu; za dużo wezwań na Dziś (pasek + dolna karta); EN „Start”; brak zdania „czym jest Zdawalni” w wariancie z grupą; bramka 1 s; Staś na telefonie 48 px bez machania.
 Poprawione: reguła w `ux-wejscie.css` + zapas 2,5 s, limit 0,6 s; Staś 96 px wyśrodkowany; limonkowy przycisk na całej ścieżce; „Zmień e-mail” jako link w akapicie; `buyBanner` znika przy pasku; EN „Start”; podtytuł `.lg-sub` w wariancie z grupą; Staś 56 px z machaniem; ciemny wariant przykładowej lekcji (zmienne aplikacji w `#login`). Stara asercja `h2-etap9` „logowanie zawsze jasne” poprawiona osobnym commitem „test: …”.
+
+### Etap 1 · runda 2 – 9,0/10, twarde błędy: brak, K1–K6 = true → ZALICZONY
+Przed rundą 2 dodatkowo: bramka widoczności czeka na faktyczne załadowanie czcionek (Bricolage + Plus Jakarta, najwyżej 2,5 s; `document.fonts.ready` rozwiązywało się wcześniej, niż czcionki były zadeklarowane), nagłówek panelu na komputerze zawsze w 2 liniach (`min(44px, 3vw)`, podział przed „zdanych”) – CLS logowania z prawdziwymi czcionkami ≈ 0 we wszystkich rozmiarach.
+Uwagi recenzenta przeniesione do etapu 2 (te same elementy): „Włącz” na pasku limonkowe jak reszta ścieżki próby; pasek w jednej linii przy 360 px; „Kup dostęp” w „Twój postęp” przez `przyciskZakupu()`; pierścień fokusu w arkuszu tylko przy klawiaturze; odstęp Stasia od nagłówka w arkuszu; przyciski powitania próby ≥ 44 px; tekst lewego panelu zależny od stanu; krótszy przycisk przykładowej lekcji z ikoną w linii; jedna wzmianka o spamie; „6-cyfrowy” z łącznikiem; mniej pustego miejsca pod „Wyślij ponownie”.

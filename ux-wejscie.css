@@ -124,3 +124,10 @@ html:not([data-theme]) .uxw-sheet .btn.primary.uxw-big { border-radius: 999px; }
 @media (prefers-reduced-motion: reduce) { .uxw-pasek, .uxw-pasek *, .uxw-sheet, .uxw-sheet * { animation: none !important; transition: none !important; } .uxw-pasek .uxw-pasek-b:active { transform: none; } }
 html.calm .uxw-pasek, html.calm .uxw-pasek *, html.calm .uxw-sheet, html.calm .uxw-sheet * { animation: none !important; transition: none !important; }
 html.calm .uxw-pasek .uxw-pasek-b:active { transform: none; }
+
+/* Komputer: nagłówek „Mniej szukania. Więcej / zdanych zaliczeń.” zawsze w 2 liniach (podział przed „zdanych”, także w EN),
+   żeby dochodzące po kolei czcionki nie zmieniały liczby linii i nie przesuwały panelu (CLS). */
+@media (min-width: 900px) {
+  html:not([data-theme]) #login .lg-side h1 { white-space: nowrap; font-size: min(44px, 3vw); }
+  html:not([data-theme]) #login .lg-side h1 em::before { content: "\A"; white-space: pre; }
+}
