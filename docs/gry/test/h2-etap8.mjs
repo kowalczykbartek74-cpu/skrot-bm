@@ -112,14 +112,18 @@ for (const konto of ["platne", "darmowe"]) { // zwykły uczeń (nie starosta): m
   ok(`${n}: notki nie ucięte (widać, ile XP brakuje)`, c.every((x) => !x.cut), c.map((x) => x.note));
   ok(`${n}: karty ≤ 330 px`, c.every((x) => x.h <= 330), c.map((x) => x.h));
   for (let i = 0; i < 80; i++) { await p.keyboard.press("Tab"); if (await p.evaluate(() => document.activeElement?.classList.contains("shop-sw-btn"))) break; }
-  const fr = await p.evaluate(() => { const e = document.activeElement; if (!e?.classList.contains("shop-sw-btn")) return null; const a = getComputedStyle(e, "::after"), r = e.getBoundingClientRect(); return { bw: a.borderTopWidth, z: a.zIndex, bottom: Math.round(r.bottom), nav: Math.round([...document.querySelectorAll("nav")].find((x) => getComputedStyle(x).position === "fixed")?.getBoundingClientRect().top ?? innerHeight) }; });
-  ok(`${n}: obrazek-podgląd osiągalny Tabem, z widocznym obrysem nad obrazkiem, nie pod dolnym paskiem`, fr && fr.bw === "3px" && +fr.z >= 2 && fr.bottom <= fr.nav, fr);
+  const fr = await p.evaluate(() => { const e = document.activeElement; if (!e?.classList.contains("shop-sw-btn")) return null; const a = getComputedStyle(e, "::after"), r = e.getBoundingClientRect(); return { bw: /3px/.test(a.boxShadow) && /6px/.test(a.boxShadow) ? "ok" : a.boxShadow, z: a.zIndex, bottom: Math.round(r.bottom), nav: Math.round([...document.querySelectorAll("nav")].find((x) => getComputedStyle(x).position === "fixed")?.getBoundingClientRect().top ?? innerHeight) }; });
+  ok(`${n}: obrazek-podgląd osiągalny Tabem, z widocznym obrysem nad obrazkiem, nie pod dolnym paskiem`, fr && fr.bw === "ok" && +fr.z >= 2 && fr.bottom <= fr.nav, fr);
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();
 }
 { const p = await open(b, { konto: "platne", w: 1280, h: 900, hash: "/shop" });
   const t = await p.locator(".shop-sw-btn").first().getAttribute("tabindex");
   ok("komputer: obrazek bez drugiego przystanku Taba (jest przycisk „Podgląd”)", t === "-1" && await p.locator(".shop-pv:visible").count() >= 1, t);
+  ok("komputer: przycisk „🔒 Poziom” ukryty (jest długa notka)", await p.locator(".shop-lockbtn:visible").count() === 0, "");
+  await p.setViewportSize({ width: 375, height: 812 }); await p.waitForTimeout(200);
+  const t2 = await p.locator(".shop-sw-btn").first().getAttribute("tabindex");
+  ok("po zwężeniu okna do telefonu obrazek wraca do kolejki Taba", t2 === null, t2);
   await p.close(); }
 for (const th of ["riwiera", "pink"]) {
   const p = await open(b, { theme: th, hash: "/haslo", ls: HLS });

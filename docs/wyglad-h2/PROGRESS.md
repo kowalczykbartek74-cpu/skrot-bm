@@ -71,3 +71,14 @@ pogrubioną; kalendarz: dni jako małe klawisze (na telefonie cieńsze), dziś z
 (tylko opacity), wybrany dzień zielony, zaliczenia z obrysem w kolorze typu, karty zaliczeń 3D. Po ocenie dopięte: pierścień
 fokusu i błysk .tl razem z paskiem, .day.sel bez cienia bazowego, odstęp w „Dziś”. Test h2-etap7.mjs 47/47, ~61 fps.
 Na szlif: limonkowy pierścień „dziś” słabo widoczny na jasnym tle (trzyma go obrys accent); siatka miesiąca na 375 px do obejrzenia.
+
+### Etap 8 – Gry, Hasło dnia, ranking, sklep – ZALICZONY 8/10 (próby: 6, 7, 7, 8)
+Gry: kafle 3D, ikony w kolorowych klockach 3D (zielony/pomarańczowy/niebieski), wskakują po kolei, na telefonie zwarte
+(ikona | tytuł | „Graj”, opis pod spodem na całą szerokość). Hasło dnia: kafle i klawisze jako klawisze 3D (grubszy tylko dół,
+górne obwódki dla daltonistów bez zmian), wpisana litera wskakuje (tylko nowo wpisana), dół pigułki i podpowiedzi cieniem
+(plansza + klawiatura nadal mieszczą się na niskim telefonie). Ranking: wiersze-karty, podium jako medale 3D, „Ty” limonkowe,
+miejsce w limonkowym kółku. Sklep: zakładki i karty 3D, pierścień wskazanej karty z podskokiem (zostaje przy „Mniej animacji”),
+zadanie tygodnia limonkowe z lokalnymi kolorami (czytelne w ciemnym); na telefonie motywy w 2 kolumnach, podgląd z obrazka,
+jeden przycisk w każdej karcie („🔒 Poziom N” tylko w zielonych na telefonie), krótkie notki z liczbą XP, zwarte zadania dnia.
+Test h2-etap8.mjs 85/85 (starosta, płatne, darmowe, 360/375/1280), ~60 fps. Stary etap8.mjs: 1 znany błąd (rozmiar gry.js), sprzed etapu.
+Na szlif: kafle kshop (.kcard) – atrapa bez katalogu, nieobejrzane; obrys fokusu na obrazku przy kolorowych podglądach.

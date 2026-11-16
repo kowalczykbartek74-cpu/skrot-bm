@@ -2163,6 +2163,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Poziom {0} · brakuje {1} XP": "Level {0} · {1} XP to go",
 "Albo poziom {0} · brakuje {1} XP": "Or level {0} · {1} XP to go",
 "🔒 Poziom {0}": "🔒 Level {0}",
+"Brakuje {0} XP": "{0} XP to go",
 "Kup za {0} 🪙": "Buy for {0} 🪙",
 "Brakuje {0} 🪙": "{0} 🪙 short",
 "kupiony w sklepie · kokardki, koronka i kwiaty": "bought in the shop · bows, lace and flowers",

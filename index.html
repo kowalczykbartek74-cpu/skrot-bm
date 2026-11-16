@@ -3343,9 +3343,9 @@ html[data-theme="lilia"] .uni-mascot .uni-bubble { border-color: #DCCDF2; color:
 .shop-sw > * { display: block; width: 100%; height: 100%; object-fit: cover; }
 .shop-sw-btn { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: zoom-in; }
 .shop-sw-btn:focus-visible { outline: none; }
-.shop-sw-btn:focus-visible::after { content: ""; position: absolute; inset: 0; z-index: 2; border: 3px solid var(--accent); pointer-events: none; }
+.shop-sw-btn:focus-visible::after { content: ""; position: absolute; inset: 0; z-index: 2; box-shadow: inset 0 0 0 3px var(--accent), inset 0 0 0 6px #0B1A10; pointer-events: none; }
 .shop-note .sn-s, .shop-lockbtn { display: none; }
-html:not([data-theme]) .shop-lockbtn { display: inline-flex; }
+@media (max-width: 520px) { html:not([data-theme]) .shop-lockbtn { display: inline-flex; } }
 .shop-sw > .shop-sw-zoom { position: absolute; z-index: 1; left: 8px; bottom: 8px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--surface); font-size: 15px; box-shadow: 0 1px 3px rgba(5, 10, 7, .2); }
 .shop-body { display: grid; gap: 8px; padding: 12px 14px 14px; align-content: start; }
 .shop-body p { margin: 0; font-size: .9rem; }
@@ -15608,6 +15608,10 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
         h("div", { class: "row" }, buy, cancel))];
     }, "bow-modal");
   }
+  // Obrazek karty motywu jest przystankiem Taba tylko na telefonie w zielonych motywach (tam nie ma przycisku „Podgląd”);
+  // przy obrocie ekranu / zmianie szerokości przełączamy tabindex bez przerysowania.
+  const shopSwTab = () => !document.documentElement.dataset.theme && matchMedia("(max-width: 520px)").matches;
+  matchMedia("(max-width: 520px)").addEventListener?.("change", () => document.querySelectorAll(".shop-sw-btn").forEach((b) => (shopSwTab() ? b.removeAttribute("tabindex") : b.setAttribute("tabindex", "-1"))));
   function shopThemeCard(t) {
     const sk = window.skrot || {}, it = shopItem(t), on = themeCur() === t.id;
     const need = Math.max(0, lpLevelAt(t.lvl) - lpXpTotal()), lvlTxt = `albo za darmo od poziomu ${t.lvl} (brakuje ${fmtN(need)} XP)`;
@@ -15616,14 +15620,14 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     if (on) { chip = h("span", { class: "chip", text: "Włączony" }); btn = h("button", { type: "button", class: "btn", onclick: (e) => pinkTheme.set("", e) }, "Wyłącz"); note = ownTxt; }
     else if (themeOwned(t.id)) { btn = h("button", { type: "button", class: "btn primary", onclick: (e) => themeSet(t.id, e) }, "Włącz"); note = ownTxt; }
     // Przycisk „🔒 Poziom N” widać tylko w zielonych motywach (każda karta ma przycisk w tym samym miejscu).
-    else if (!it) { btn = sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: signIn }, "Zaloguj się, żeby kupić") : h("button", { type: "button", class: "btn shop-lockbtn", disabled: true }, `🔒 Poziom ${t.lvl}`); note = `Za darmo od poziomu ${t.lvl} · brakuje ${fmtN(need)} XP`; noteS = `Poziom ${t.lvl} · brakuje ${fmtN(need)} XP`; }
+    else if (!it) { btn = sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: signIn }, "Zaloguj się, żeby kupić") : h("button", { type: "button", class: "btn shop-lockbtn", disabled: true }, `🔒 Poziom ${t.lvl}`); note = `Za darmo od poziomu ${t.lvl} · brakuje ${fmtN(need)} XP`; noteS = `Brakuje ${fmtN(need)} XP`; }
     else if (coins() >= it.cena) { btn = h("button", { type: "button", class: "btn primary", onclick: () => shopBuy(t) }, `Kup za ${fmtN(it.cena)} 🪙`); note = lvlTxt; noteS = `Albo poziom ${t.lvl} · brakuje ${fmtN(need)} XP`; }
     else { btn = h("button", { type: "button", class: "btn shop-short", disabled: true }, `Brakuje ${fmtN(it.cena - coins())} 🪙`); note = lvlTxt; noteS = `Albo poziom ${t.lvl} · brakuje ${fmtN(need)} XP`; }
     const pv = on ? null : h("button", { type: "button", class: "btn shop-pv", onclick: () => themePreview(t.id) }, "👁 Podgląd");
     return h("article", { class: "shop-card" + (on ? " is-on" : ""), id: "shop-" + t.id },
       // Podgląd także po kliknięciu w obrazek (na telefonie w zielonych motywach zamiast osobnego przycisku).
       on ? h("div", { class: "shop-sw" }, themeSwatch(t.id))
-        : h("button", { type: "button", class: "shop-sw shop-sw-btn", "aria-label": `Podgląd: ${t.name}`, tabindex: !document.documentElement.dataset.theme && matchMedia("(max-width: 520px)").matches ? null : "-1", onclick: () => themePreview(t.id) }, themeSwatch(t.id), h("span", { class: "shop-sw-zoom", "aria-hidden": "true", text: "🔍" })),
+        : h("button", { type: "button", class: "shop-sw shop-sw-btn", "aria-label": `Podgląd: ${t.name}`, tabindex: shopSwTab() ? null : "-1", onclick: () => themePreview(t.id) }, themeSwatch(t.id), h("span", { class: "shop-sw-zoom", "aria-hidden": "true", text: "🔍" })),
       h("div", { class: "shop-body" },
         h("div", { class: "shop-title" }, h("b", { text: `${t.ico} ${t.name}` }), chip),
         h("p", { class: "muted", text: THEME_TXT[t.id] }),
