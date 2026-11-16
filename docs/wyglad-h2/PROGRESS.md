@@ -38,3 +38,16 @@ Staś na wszystkich ekranach końcowych z nastrojem wg wyniku, liczenie liczb w 
 przygaszone gwiazdki (role=img), jeden główny przycisk na końcu, bez konfetti przy słabym wyniku; górny pasek mieści się w 375 px.
 Test h2-etap4.mjs 33/33, ~62 fps. Na później (logika, nie wygląd): 1 gwiazdka za 0/15; mianownik „z pierwszej próby” (kroki zamiast pytań);
 „Zrobione ✓” z ptaszkiem w tekście; pasek egzaminu nie sprawdzony w 375 px.
+
+### Etap 5 – Powtórki – NIEZALICZONY, STOP (próby: 7, 7,5, 7)
+Zrobione (w gałęzi, bez zielonej oceny): karta „Dziś do powtórki” w pomarańczowym akcencie 3D, pudełka 3D (na telefonie 4+3,
+bez dzielenia wyrazów), fiszka jako karta 3D z zielonym tyłem i stosem pod spodem, 4 oceny jako kolorowe klawisze 3D
+(wciśnięcie „w brzeg”, wybrana z ✓, reszta przygaszona), kafle „Powtarzaj grając” 3D. Test h2-etap5.mjs 23/23, ~63 fps.
+Stop wg zasady „ten sam błąd wraca 2×”: konflikt stylu H z wybieranym przez ucznia wyglądem fiszek (kf-*):
+próba 2 – !important przebijał kf-*; próba 3 – po usunięciu nadal reguła H (0,5,1) wygrywa z kf-* (0,5,0) w ciemnym,
+a w jasnym obrys H nadpisuje obrys kf (kf-nocny/kreda dostaje zielony obrys).
+Co blokuje: nic trudnego – poprawka to wykluczenie `.lp:not([class*="kf-"])` w regułach tyłu/obrysu fiszki + test kf-* w obu
+motywach. Pozostałe uwagi z próby 3: ocena gestem bez .right (znaleźć przycisk po g), słabo widoczny stos w ciemnym, słaby test
+„wybrane Nie pamiętam zostaje czerwone”.
+Uwaga o commitach: na gałęzi są też commity „przed oceną” (WIP) dla etapów 3–5; zielone etapy 1–4 mają osobne commity z oceną.
+Etapy 6–10 (przedmioty i ścieżka, terminy, gry, więcej, szlif) nie zaczęte.
