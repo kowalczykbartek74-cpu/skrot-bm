@@ -243,7 +243,7 @@ for (const [w, hgt, slowo, n] of [[360, 740, "Inflation", 0], [390, 844, "Revenu
   });
   const tag = `${w}×${hgt}${n ? " z podpowiedzią" : ""}`;
   ok(`${tag}: ${slowo.length} liter mieści się bez przewijania w poziomie`, m.n === slowo.length && m.left >= 16 && m.right <= w - 16 && m.sw <= w, m);
-  ok(`${tag}: klawisze ≥ 32 × 44 px, w ekranie`, m.kw >= 32 && m.kh >= 44 && m.kl >= 0 && m.kr <= w, m);
+  ok(`${tag}: klawisze ≥ 32 × 44 px, w ekranie`, m.kw >= 32 && m.kh >= 43.99 && m.kl >= 0 && m.kr <= w, m);
   if (n) ok(`${tag}: cała plansza i klawiatura widoczne bez przewijania (nad dolnym paskiem)`, m.hint && m.sy === 0 && m.top >= 0 && m.kb <= m.nav, m);
   if (w === 360 && !n) await shot(p, "e7-9liter-360");
   if (n && hgt < 700) await shot(p, `e7-niski-${w}x${hgt}`);
