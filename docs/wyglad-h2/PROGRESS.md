@@ -57,3 +57,9 @@ Domknięte: reguły karty fiszki tylko dla `.lp:not([class*="kf-"])` (wygląd fi
 i stos w kolorach kf, zaznaczenie oceny osobną klasą .h2-picked tylko w zielonych motywach (także przy ocenie gestem).
 Test h2-etap5.mjs 36/36 (w tym kf-papier/nocny/kreda w obu motywach i motyw różowy), ~62 fps.
 Na szlif (etap 10): karta „Na dziś” (hintPanel) płaska z gradientem; pudełka 4+3 – pusta kolumna; mapa postępów (kwadraty, legenda).
+
+### Etap 6 – Przedmioty i ścieżka tematów – ZALICZONY 8/10 (próba 2; próba 1: 7/10)
+Kafle przedmiotów i okładka jako karty 3D z dołem w kolorze przedmiotu, grubszy pasek postępu; kurs przedmiotu jako ścieżka:
+okrągłe przystanki 3D (64 px) ułożone falą (przesuwa się tylko kółko, tytuły w jednej linii), zrobione zielone, następny
+limonkowy z poświatą, Stasiem i pigułką „Teraz” (+ „, następna” dla czytnika), zablokowane szare; przystanki wyskakują po kolei raz.
+Test h2-etap6.mjs 27/27, ~62 fps. Na później: „Teraz” zależy od motywu w chwili rysowania; „rozdz. undefined” gdy brak bookRef (dane).
