@@ -93,3 +93,17 @@ odznak 3D. Logowanie (zawsze jasne): przyciski, karta próby, „Zobacz przykła
 (--h-edge #36503F zamiast #0A130E), bo był niewidoczny; testy H2 1–8 po zmianie zielone.
 Test h2-etap9.mjs 92/92, ~62 fps. Stary ustawienia.mjs pada na `.staro .more-row` (2 wiersze od Panelu kierunków) – błąd testu.
 Na szlif: brzeg pustych kafli Hasła w ciemnym słabo widoczny.
+
+### Etap 10 – Szlif – ZALICZONY 8/10 (próby: 7, 8)
+Ikony gier jako płaskie SVG w stylu H (Fruń, Pary, Przejdź, Drabina, Hasło; „Graj i powtarzaj” – pad) w #/gry, w „Powtarzaj
+grając” (kolorowe kafelki pod ikoną) i w Więcej; w innych motywach emoji bez zmian. Mapa postępów: kwadraty tematów 3D
+(24 px) w kolorach H, „dodatkowe” i zablokowane bez zmian w znaczeniu, legenda w jednym rzędzie, kwadraty wskakują przy wejściu.
+Karta „Na dziś” jako limonkowa karta 3D. Plakietka na przycisku Więcej wskakuje jak w dolnym pasku. „Teraz” sterowane CSS
+(bez zależności od motywu w chwili rysowania). Pierścień „dziś” na jasnym ciemniejszy, puste kafle Hasła z widocznym dołem
+w ciemnym, plakietki terminów w Przedmiotach na telefonie zwarte. Test h2-etap10.mjs 24/24, ~62 fps; testy H2 1–9 zielone.
+
+## KONIEC H2 (16.11.2026) – etapy 1–10 zaliczone, gałąź wyglad/h2, NIE wdrożone (czeka na decyzję Bartka).
+Zostawione na później: ikony SVG w h2Ico liczone przy rysowaniu (po zmianie motywu przerysowanie załatwia themePaint);
+kafle kshop (.kcard) nieobejrzane (atrapa bez katalogu); karta „Dziś do powtórki” w ciemnym trochę mętna;
+stare testy: ustawienia.mjs (`.staro .more-row` = 2 od Panelu kierunków), etap8.mjs (rozmiar gry.js), etap7.mjs (motyw różowy
+w atrapie, „próba” w EN) – błędy sprzed H2.

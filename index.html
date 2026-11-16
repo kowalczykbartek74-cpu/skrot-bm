@@ -4946,7 +4946,7 @@ html:not([data-theme]) .more-tile > .ico.h2g svg { width: 22px; height: 22px; }
 @media (max-width: 520px) { html:not([data-theme]) .gry-tile-art .h2-ico svg { width: 32px; height: 32px; } }
 html:not([data-theme]) .gry-mini-b:not([disabled]):hover .ic .h2-ico { animation: h-wiggle .5s ease; }
 /* Mapa postępów: kwadraty jako małe klawisze w kolorach H, legenda w tym samym stylu. */
-html:not([data-theme]) .pm-sq { border-color: var(--h-line); border-width: 2px; border-bottom-width: 3px; }
+html:not([data-theme]) .pm-sq { border-color: color-mix(in srgb, var(--h-muted) 55%, var(--h-line)); border-width: 2px; border-bottom-width: 3px; }
 html:not([data-theme]) button.pm-sq:not(.extra) { width: 24px; height: 24px; border-radius: 7px; border-bottom-width: 4px; transition: transform .08s ease; }
 html:not([data-theme]) .pm-sq.extra { border-style: dashed; }
 html:not([data-theme]) i.pm-sq { border-width: 1.5px; border-bottom-width: 3px; }
@@ -9609,7 +9609,8 @@ html.calm .pm-sq { transform: none !important; }
     pary: '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="4" y="7" width="15" height="20" rx="3.5" transform="rotate(-10 11.5 17)" fill="#8CC2F5" stroke="#1C6FB8" stroke-width="2"/><rect x="13" y="5" width="15" height="20" rx="3.5" transform="rotate(8 20.5 15)" fill="#fff" stroke="#1A7F45" stroke-width="2"/><path d="M17.5 15.5l2.3 2.3 4.4-4.6" transform="rotate(8 20.5 15)" stroke="#1A7F45" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     przejdz: '<svg viewBox="0 0 32 32" width="32" height="32"><g fill="#E07A12"><path d="M7.5 13.5C5.5 9.5 6.8 6 9.6 6s3.8 3.6 2.6 7.6C11.4 16.4 9 16.6 7.5 13.5Z"/><rect x="7.2" y="17" width="5.4" height="4.6" rx="2.3"/><circle cx="7.4" cy="4.2" r="1.3"/><circle cx="10" cy="3.4" r="1.3"/><circle cx="12.5" cy="4.3" r="1.2"/></g><g fill="#FF9F43"><path d="M19.8 21.5C17.8 17.5 19.1 14 21.9 14s3.8 3.6 2.6 7.6C23.7 24.4 21.3 24.6 19.8 21.5Z"/><rect x="19.5" y="25" width="5.4" height="4.6" rx="2.3"/><circle cx="19.7" cy="12.2" r="1.3"/><circle cx="22.3" cy="11.4" r="1.3"/><circle cx="24.8" cy="12.3" r="1.2"/></g></svg>',
     drabina: '<svg viewBox="0 0 32 32" width="32" height="32"><path d="M10 3L8 29M22 3L24 29" stroke="#B35400" stroke-width="3" stroke-linecap="round"/><path d="M9.4 9H22.6M9 15H23M8.6 21H23.4" stroke="#FF9F43" stroke-width="3" stroke-linecap="round"/><circle cx="25" cy="6" r="3.5" fill="#CDF25E" stroke="#5E7D0C" stroke-width="1.5"/></svg>',
-    haslo: '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="4" y="4" width="24" height="24" rx="6" fill="#CDF25E" stroke="#5E7D0C" stroke-width="2"/><rect x="5" y="22" width="22" height="5" rx="2.5" fill="#8FB52A"/><text x="16" y="21" text-anchor="middle" font-size="17" font-weight="900" font-family="system-ui, sans-serif" fill="#10231A">A</text></svg>',
+    haslo: '<svg viewBox="0 0 32 32" width="32" height="32"><path fill-rule="evenodd" d="M7 25L14 5H18L25 25H20.6L19 20.4H13L11.4 25ZM14.2 16.8H17.8L16 11.2Z" fill="#2E9E5B"/><rect x="6" y="26.5" width="20" height="3.5" rx="1.75" fill="#CDF25E" stroke="#5E7D0C" stroke-width="1"/></svg>',
+    gry: '<svg viewBox="0 0 32 32" width="32" height="32"><path d="M9 9H23C27 9 29.5 13 29.5 18.5C29.5 23 27.5 25 25.5 25C23.5 25 22 22.5 20.5 21H11.5C10 22.5 8.5 25 6.5 25C4.5 25 2.5 23 2.5 18.5C2.5 13 5 9 9 9Z" fill="#8CC2F5" stroke="#1C6FB8" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 13.5V18.5M7 16H12" stroke="#1C6FB8" stroke-width="2.4" stroke-linecap="round"/><circle cx="21" cy="14.5" r="1.9" fill="#CDF25E" stroke="#5E7D0C" stroke-width="1"/><circle cx="24.5" cy="17.8" r="1.9" fill="#FF9F43" stroke="#B35400" stroke-width="1"/></svg>',
   });
   function h2Ico(k, emoji) {
     if (document.documentElement.getAttribute("data-theme")) return h("span", { "aria-hidden": "true", text: emoji });
@@ -13906,7 +13907,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   // Kafelek nauki: ikona i nazwa, opis tylko w podpowiedzi; sub = krótki stan (np. Hasło dnia, miejsce w rankingu).
   function moreTile(ic, label, sub, fn, title) {
     // Gry mają te same kolorowe ikony co w #/gry (tylko w zielonych motywach).
-    const g = !document.documentElement.getAttribute("data-theme") && { "Graj i powtarzaj": "frun", "Hasło dnia": "haslo" }[label];
+    const g = !document.documentElement.getAttribute("data-theme") && { "Graj i powtarzaj": "gry", "Hasło dnia": "haslo" }[label];
     return h("button", { type: "button", class: "more-tile", title: title || null, onclick: fn },
       g ? h("span", { class: "ico h2g", "aria-hidden": "true" }, h2Ico(g, "")) : icon(ic), h("span", { class: "more-tile-txt" }, h("span", { class: "more-tile-t", text: label }), sub ? h("small", { class: "num", text: sub }) : null));
   }
