@@ -4647,13 +4647,13 @@ html:not([data-theme]) .sk-grade4 .opt.g-hard { --c: var(--h-orange); --cs: var(
 html:not([data-theme]) .sk-grade4 .opt.g-easy { --c: var(--h-blue); --cs: var(--h-blue-soft); }
 html:not([data-theme]) .sk-grade4 .opt .k { background: var(--c); color: var(--surface); border: 0; }
 html[data-green="dark"]:not([data-theme]) .sk-grade4 .opt .k { color: #10231A; }
-html:not([data-theme]) .sk-grade4 .opt.right { background: var(--cs); color: var(--ink); border-color: var(--c); box-shadow: inset 0 0 0 2px var(--c); }
-html:not([data-theme]) .sk-grade4 .opt.right .k { background: var(--c); border-color: var(--c); }
+html:not([data-theme]) .sk-grade4 .opt:is(.right, .h2-picked) { background: var(--cs); color: var(--ink); border-color: var(--c); box-shadow: inset 0 0 0 2px var(--c); }
+html:not([data-theme]) .sk-grade4 .opt:is(.right, .h2-picked) .k { background: var(--c); border-color: var(--c); }
 /* Wciśnięcie „w brzeg”: dół chudnie o 3 px, a margines u góry to wyrównuje (sąsiedzi nie skaczą). */
 html:not([data-theme]) .sk-grade4 .opt:active:not([disabled]), html:not([data-theme]) .gry-mini-b:active:not([disabled]) { transform: none; border-bottom-width: 2px; margin-top: 3px; }
-html:not([data-theme]) .sk-grade4:has(.opt.right) .opt:not(.right) { opacity: .5; }
-html:not([data-theme]) .sk-grade4 .opt.right { position: relative; }
-html:not([data-theme]) .sk-grade4 .opt.right::after { content: "✓"; position: absolute; top: 6px; right: 10px; font-weight: 800; color: var(--c); }
+html:not([data-theme]) .sk-grade4:has(.opt.h2-picked) .opt:not(.h2-picked) { opacity: .5; }
+html:not([data-theme]) .sk-grade4 .opt.h2-picked { position: relative; }
+html:not([data-theme]) .sk-grade4 .opt.h2-picked::after { content: "✓"; position: absolute; top: 6px; right: 10px; font-weight: 800; color: var(--c); }
 html:not([data-theme]) .sk-grade4 .opt:focus-visible { outline: 3px solid var(--c); outline-offset: 3px; }
 /* Stos kart pod fiszką także w zwykłej powtórce (gdy nie ma prawdziwych kart pod spodem). */
 html:not([data-theme]) .lp-swipe:not(:has(.lp-sw.under))::before { content: ""; position: absolute; inset: 0; border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 24px; background: var(--surface); translate: 0 14px; scale: .92; pointer-events: none; }
@@ -4661,6 +4661,9 @@ html[data-green="dark"]:not([data-theme]) .lp-swipe:not(:has(.lp-sw.under))::bef
 /* „Powtarzaj grając”: kafle gier 3D. */
 html:not([data-theme]) .gry-mini-b { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: 18px; transition: transform .08s ease, border-color .15s; }
 html:not([data-theme]) .gry-mini-b .ic { font-size: 1.8rem; }
+/* Wygląd fiszek wybrany przez ucznia (kf-*): kolory z kf, ale gruby dół 3D zostaje; stos pod spodem w kolorach kf. */
+html:not([data-theme]) .lp[class*="kf-"] .lp-sw .face { border-width: 2px; border-bottom-width: 6px; border-radius: 24px; }
+html:not([data-theme]) .lp[class*="kf-"] .lp-swipe:not(:has(.lp-sw.under))::before { background: var(--kf-bg2, var(--kf-bg)); border-color: var(--kf-edge); border-bottom-color: var(--kf-edge); opacity: .85; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -10329,7 +10332,7 @@ html:not([data-theme]) .gry-mini-b .ic { font-size: 1.8rem; }
         if (g === 0 && LP.src.retry !== false) rvRequeue(card);
         LP.st.ans[card.id] = g; lpSave();
         btn = btn || LP.el.stage.querySelector(".sk-grade4 .opt.g-" + ["again", "hard", "good", "easy"][g]); // ocena gestem: przycisk po g
-        btn?.classList.add("right"); // wygląd H2: na chwilę widać, która ocena została wybrana (✓, reszta przygaszona)
+        if (!document.documentElement.getAttribute("data-theme")) btn?.classList.add("h2-picked"); // wygląd H2: na chwilę widać wybraną ocenę (✓, reszta przygaszona); inne motywy bez zmian
         setTimeout(() => lpNext(), lpReduced() ? 0 : 280);
       };
       const top = h("div", { class: "lp-sw top" + (flipped ? " flip" : ""), role: "button", tabindex: "0", "aria-label": flipped ? "Odpowiedź: " + card.a : "Pytanie: " + card.q + ". Dotknij, żeby odwrócić.", onclick: () => !flipped && lpRefresh({ flip: true }) },

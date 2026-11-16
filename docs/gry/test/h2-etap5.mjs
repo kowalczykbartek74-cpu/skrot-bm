@@ -40,10 +40,12 @@ for (const dark of [false, true]) {
   ok(`${n}: dotknięcie odwraca fiszkę`, await p.locator(".lp-sw.top.flip").count() === 1, "");
   await p.screenshot({ path: `${OUT}/h2e5-${n}-oceny.png` });
   // Wybrany przez ucznia wygląd fiszek (kf-*) wygrywa z kolorami H2 (tył i obrys), w obu motywach.
-  for (const kf of ["kf-papier", "kf-nocny"]) {
+  for (const kf of ["kf-papier", "kf-nocny", "kf-kreda"]) {
     const r = await p.evaluate((kf) => { const lp = document.querySelector(".lp"); lp.classList.add(kf); const f = document.querySelector(".lp-sw.top .face.back"), c = getComputedStyle(f), v = getComputedStyle(lp); const out = { bg: c.backgroundColor, bc: c.borderTopColor, ink: c.color }; lp.classList.remove(kf); return out; }, kf);
     const want = await p.evaluate((kf) => { const lp = document.querySelector(".lp"); lp.classList.add(kf); const d = document.createElement("i"); d.style.cssText = "color: var(--kf-bg2, var(--kf-bg)); border-color: var(--kf-edge)"; lp.append(d); const c = getComputedStyle(d); const out = { bg: c.color, bc: c.borderTopColor }; d.remove(); lp.classList.remove(kf); return out; }, kf);
     ok(`${n}: ${kf}: tył fiszki w kolorach wybranego wyglądu (tło i obrys), tekst czytelny`, r.bg === want.bg && r.bc === want.bc && cr(r.ink, r.bg) >= 4.5, { r, want });
+    const st = await p.evaluate((kf) => { const lp = document.querySelector(".lp"); lp.classList.add(kf); const f = document.querySelector(".lp-sw.top .face"), sw = document.querySelector(".lp-swipe"); const d = document.createElement("i"); d.style.color = "var(--kf-bg2, var(--kf-bg))"; lp.append(d); const out = { bb: getComputedStyle(f).borderBottomWidth, stack: getComputedStyle(sw, "::before").backgroundColor, want: getComputedStyle(d).color }; d.remove(); lp.classList.remove(kf); return out; }, kf);
+    ok(`${n}: ${kf}: karta zachowuje gruby dół 3D, stos w kolorze wyglądu fiszek`, st.bb === "6px" && st.stack === st.want, st);
   }
   const g = await p.locator(".sk-grade4 .opt").evaluateAll((os) => os.map((o) => { const c = getComputedStyle(o); return { cls: o.className, bg: c.backgroundColor, col: c.color, bb: c.borderBottomWidth }; }));
   const bgs = new Set(g.map((x) => x.bg));
@@ -57,6 +59,18 @@ for (const dark of [false, true]) {
   const goodBg = g.find((x) => /g-good/.test(x.cls)).bg;
   ok(`${n}: wybrane „Nie pamiętam” zostaje czerwone (nie zielone)`, picked && picked === g.find((x) => /g-again/.test(x.cls)).bg && picked !== goodBg, { picked, goodBg });
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
+  await p.close();
+}
+{ // inny motyw (różowy): wybrana ocena bez zaznaczenia H2 (nie robi się zielona)
+  const p = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: { srs } }), "skrot-theme": "pink" } });
+  await p.clock.install({ time: new Date(now) }); await p.goto(BASE + "index.html#/review"); await p.waitForTimeout(2500);
+  await p.getByRole("button", { name: /Zaczynamy/ }).first().click(); await p.locator(".lp").waitFor({ timeout: 15000 }); await p.waitForTimeout(400);
+  await p.evaluate(() => document.documentElement.setAttribute("data-theme", "pink")); // motyw może wymagać poziomu: ustawiamy go wprost
+  await p.locator(".lp-sw.top").click(); await p.waitForTimeout(500);
+  const before = await p.locator(".sk-grade4 .opt.g-again").evaluate((e) => getComputedStyle(e).backgroundColor);
+  await p.locator(".sk-grade4 .opt.g-again").click(); await p.waitForTimeout(80);
+  const after = await p.locator(".sk-grade4 .opt.g-again").evaluate((e) => [getComputedStyle(e).backgroundColor, e.className]).catch(() => [before, ""]);
+  ok("motyw różowy: „Nie pamiętam” po wyborze bez zmiany koloru i bez klas H2", after[0] === before && !/h2-picked|right/.test(after[1]), { before, after });
   await p.close();
 }
 const f = await open(false);
