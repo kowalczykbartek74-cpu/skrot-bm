@@ -94,7 +94,7 @@ if (SH) for (const v of [{ n: "390-jasny", w: 390, h: 844 }, { n: "390-ciemny", 
   const p = await open(b, { w: v.w, h: v.h, dark: v.dark, theme: v.theme });
   await startLesson(p); await goToCard(p, isCheck); await answer(p, false); await p.waitForTimeout(500);
   await shot(p, `${v.n}-zla`);
-  if (v.theme) ok(`${v.n}: inny motyw: odtwarzacz działa, bez błędów`, p.errors.length === 0 && (await p.locator(".lp-fbar .v").count()) === 1, p.errors);
+  if (v.theme) ok(`${v.n}: inny motyw (data-theme=${v.theme}): werdykt w dolnym pasku, pasek w kolorze motywu, bez błędów`, p.errors.length === 0 && (await p.evaluate(() => document.documentElement.getAttribute("data-theme"))) === v.theme && (await p.locator(".lp-fbar .v").count()) === 1 && (await p.locator(".lp-bottom").evaluate((e) => getComputedStyle(e).backgroundColor)) !== "rgba(0, 0, 0, 0)", p.errors);
   await p.close();
 }
 await b.close();

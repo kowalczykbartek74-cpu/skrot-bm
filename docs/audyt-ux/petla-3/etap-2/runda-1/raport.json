@@ -1,0 +1,498 @@
+{
+  "etap": 2,
+  "runda": 1,
+  "sceny": [
+    {
+      "scena": "360-jasny-zla-stas",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-shake",
+        "lp-ok",
+        "sf-float",
+        "sf-nope",
+        "sf-blink"
+      ],
+      "animacje_teraz": [
+        "sf-float",
+        "sf-blink",
+        "sf-blink",
+        "sf-glint"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "360-ciemny-zla-stas",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-shake",
+        "lp-ok",
+        "sf-float",
+        "sf-nope",
+        "sf-blink"
+      ],
+      "animacje_teraz": [
+        "sf-float",
+        "sf-blink",
+        "sf-blink",
+        "sf-glint"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "360-jasny-combo3",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-ok",
+        "lp-float",
+        "lpux-hop"
+      ],
+      "animacje_teraz": [
+        "sf-glint"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "360-ciemny-combo5",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-ok",
+        "lp-float",
+        "lpux-hop"
+      ],
+      "animacje_teraz": [
+        "sf-glint",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "360-jasny-pytanie-dzwieki",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [
+        {
+          "el": "xp-chip hud-coin h-shine",
+          "t": "0",
+          "w": 53,
+          "h": 30
+        }
+      ],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall"
+      ],
+      "animacje_teraz": [
+        "CSSTransition",
+        "sf-glint",
+        "h-shine",
+        "h-flame",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "360-ciemny-pytanie-dzwieki",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [
+        {
+          "el": "xp-chip hud-coin h-shine",
+          "t": "0",
+          "w": 53,
+          "h": 30
+        }
+      ],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall"
+      ],
+      "animacje_teraz": [
+        "CSSTransition",
+        "sf-glint",
+        "h-shine",
+        "h-flame",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall",
+        "lp-fall"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "390-jasny-ustawienia",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "h-hop"
+      ],
+      "animacje_teraz": [],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "390-ciemny-ustawienia",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "h-hop"
+      ],
+      "animacje_teraz": [],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "390-jasny-combo3",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-ok",
+        "lp-float",
+        "lpux-hop"
+      ],
+      "animacje_teraz": [
+        "sf-glint"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "1280-jasny-zla-stas",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-shake",
+        "lp-ok",
+        "sf-float",
+        "sf-nope",
+        "sf-blink"
+      ],
+      "animacje_teraz": [
+        "sf-float",
+        "sf-blink",
+        "sf-blink",
+        "sf-glint"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "1280-ciemny-combo3",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-ok",
+        "lp-float",
+        "lpux-hop"
+      ],
+      "animacje_teraz": [
+        "sf-glint"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "390-en-zla-stas",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-ring",
+        "lp-pop",
+        "h-pop",
+        "sf-hop",
+        "sf-glint",
+        "h-flame",
+        "h-shine",
+        "lp-fall",
+        "lp-out",
+        "lpux-fbin",
+        "lp-shake",
+        "lp-ok",
+        "sf-float",
+        "sf-nope",
+        "sf-blink"
+      ],
+      "animacje_teraz": [
+        "sf-float",
+        "sf-blink",
+        "sf-blink",
+        "sf-glint"
+      ],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "390-en-ustawienia",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "h-hop"
+      ],
+      "animacje_teraz": [],
+      "ruch_wylaczony": null,
+      "inny_motyw": false
+    },
+    {
+      "scena": "360-reduced-combo3",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [],
+      "animacje_teraz": [],
+      "ruch_wylaczony": true,
+      "inny_motyw": false
+    },
+    {
+      "scena": "360-calm-combo3",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [],
+      "animacje_teraz": [],
+      "ruch_wylaczony": true,
+      "inny_motyw": false
+    },
+    {
+      "scena": "390-pink-zla",
+      "axe": [],
+      "kontrast_ponizej_AA": [],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-pop",
+        "lp-fall",
+        "lp-draw",
+        "lp-out",
+        "lpux-fbin",
+        "lp-shake",
+        "lp-ok"
+      ],
+      "animacje_teraz": [],
+      "ruch_wylaczony": null,
+      "inny_motyw": true
+    },
+    {
+      "scena": "390-noc-combo3",
+      "axe": [],
+      "kontrast_ponizej_AA": [
+        {
+          "t": "C",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(168, 216, 185)",
+          "fs": 14.4,
+          "fw": 800,
+          "r": 1.59
+        }
+      ],
+      "cele_ponizej_44": [],
+      "przewijanie_w_bok": false,
+      "konsola": [],
+      "animacje": [
+        "lp-in",
+        "lp-pop",
+        "lp-fall",
+        "lp-draw",
+        "lp-out",
+        "lpux-fbin",
+        "lp-ok",
+        "lp-float",
+        "lp-ring"
+      ],
+      "animacje_teraz": [],
+      "ruch_wylaczony": null,
+      "inny_motyw": true
+    }
+  ]
+}

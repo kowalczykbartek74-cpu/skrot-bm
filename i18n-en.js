@@ -5560,7 +5560,22 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Dobrze! To prawda.": "Correct! It's true.",
 "Dobrze! To fałsz.": "Correct! It's false.",
 "Uwaga, pułapka! To prawda.": "Watch out, it's a trap! It's true.",
-"Uwaga, pułapka! To fałsz.": "Watch out, it's a trap! It's false."
+"Uwaga, pułapka! To fałsz.": "Watch out, it's a trap! It's false.",
+"×{0} z rzędu": "{0} in a row",
+"{0} z rzędu!": "{0} in a row!",
+"{0} z rzędu! +{1} XP": "{0} in a row! +{1} XP",
+"Spokojnie, ten błąd się przyda.": "No worries, this mistake is useful.",
+"Prawie. Spójrz na wyjaśnienie.": "Close. Check the explanation.",
+"To częsta pułapka.": "It's a common trap.",
+"Włączyć krótkie dźwięki przy odpowiedziach?": "Turn on short answer sounds?",
+"Dźwięki włączone. Zmienisz to w Ustawieniach.": "Sounds on. You can change this in Settings.",
+"Dźwięki przy odpowiedziach": "Answer sounds",
+"Włączone: krótki dźwięk przy dobrej i złej odpowiedzi": "On: a short sound for right and wrong answers",
+"krótki dźwięk przy dobrej i złej odpowiedzi": "a short sound for right and wrong answers",
+"Wibracje": "Vibration",
+"Włączone: krótka wibracja przy odpowiedzi (Android)": "On: a short vibration when you answer (Android)",
+"krótka wibracja przy odpowiedzi (Android)": "a short vibration when you answer (Android)",
+"najlepsza passa": "best run"
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],

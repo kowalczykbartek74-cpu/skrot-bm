@@ -12,7 +12,29 @@ fs.mkdirSync(DIR, { recursive: true });
 const isCheck = (c) => c.type === "mc" && c.check && !c.again && !c.done;
 const toWrong = async (p) => { await startLesson(p); await goToCard(p, isCheck); await answer(p, false); await p.waitForTimeout(500); };
 const toRight = async (p) => { await startLesson(p); await goToCard(p, isCheck); await answer(p, true); await p.waitForTimeout(500); };
+const isQ = (c) => c.type === "mc" && (c.check || c.exit || c.again) && !c.done;
+const toCombo = (n) => async (p) => { await startLesson(p); for (let k = 0; k < n; k++) { await goToCard(p, isQ); await answer(p, true); if (k < n - 1) { await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400); } } await p.waitForTimeout(300); };
+const toAsk = async (p) => { await startLesson(p); for (let i = 0; i < 30 && !(await p.locator(".lp-snd-ask").count()); i++) await goToCard(p, () => false, 1); };
 const SC = {
+  2: [
+    { n: "360-jasny-zla-stas", o: {}, run: toWrong, scope: ".lp" },
+    { n: "360-ciemny-zla-stas", o: { dark: true }, run: toWrong, scope: ".lp" },
+    { n: "360-jasny-combo3", o: { ls: { "bm-dzwieki": "0" } }, run: toCombo(3), scope: ".lp" },
+    { n: "360-ciemny-combo5", o: { dark: true, ls: { "bm-dzwieki": "0" } }, run: toCombo(5), scope: ".lp" },
+    { n: "360-jasny-pytanie-dzwieki", o: {}, run: toAsk, scope: ".lp" },
+    { n: "360-ciemny-pytanie-dzwieki", o: { dark: true }, run: toAsk, scope: ".lp" },
+    { n: "390-jasny-ustawienia", o: { w: 390, h: 844, hash: "/ustawienia" }, run: async (p) => { await p.locator('[data-ux3="dzwieki"]').scrollIntoViewIfNeeded(); }, scope: '.more-list' },
+    { n: "390-ciemny-ustawienia", o: { w: 390, h: 844, hash: "/ustawienia", dark: true }, run: async (p) => { await p.locator('[data-ux3="dzwieki"]').scrollIntoViewIfNeeded(); }, scope: '.more-list' },
+    { n: "390-jasny-combo3", o: { w: 390, h: 844, ls: { "bm-dzwieki": "0" } }, run: toCombo(3), scope: ".lp" },
+    { n: "1280-jasny-zla-stas", o: { w: 1280, h: 900 }, run: toWrong, scope: ".lp" },
+    { n: "1280-ciemny-combo3", o: { w: 1280, h: 900, dark: true, ls: { "bm-dzwieki": "0" } }, run: toCombo(3), scope: ".lp" },
+    { n: "390-en-zla-stas", o: { w: 390, h: 844, lang: "en" }, run: toWrong, scope: ".lp" },
+    { n: "390-en-ustawienia", o: { w: 390, h: 844, lang: "en", hash: "/ustawienia" }, run: async (p) => { await p.locator('[data-ux3="dzwieki"]').scrollIntoViewIfNeeded(); }, scope: '.more-list' },
+    { n: "360-reduced-combo3", o: { motion: "reduce", ls: { "bm-dzwieki": "0" } }, run: toCombo(3), scope: ".lp", motion: true },
+    { n: "360-calm-combo3", o: { ls: { "skrot-calm": "1", "bm-dzwieki": "0" } }, run: toCombo(3), scope: ".lp", motion: true },
+    { n: "390-pink-zla", o: { w: 390, h: 844, theme: "pink" }, run: toWrong, scope: ".lp", other: true },
+    { n: "390-noc-combo3", o: { w: 390, h: 844, theme: "noc", ls: { "bm-dzwieki": "0" } }, run: toCombo(3), scope: ".lp", other: true },
+  ],
   1: [
     { n: "360-jasny-zla", o: {}, run: toWrong, scope: ".lp" },
     { n: "360-ciemny-zla", o: { dark: true }, run: toWrong, scope: ".lp" },

@@ -28,7 +28,10 @@
     snow:   '<path d="M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5"/><path d="M9.5 3.5L12 6l2.5-2.5M9.5 20.5L12 18l2.5 2.5"/>',
     share:  '<path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'
   };
-  const IKONY_UX3 = {};
+  const IKONY_UX3 = {
+    "ux3-glos": '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',
+    "ux3-wibr": '<rect x="8" y="3" width="8" height="18" rx="2"/><path d="M4 8v8M20 8v8M11 18h2"/>'
+  };
   const RYS = { ...IKONY_WSPOLNE, ...IKONY_UX3 };
   const svg = (k) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${RYS[k]}</svg>`;
   function ico(k, cls) {
@@ -43,26 +46,66 @@
     for (const k of Object.keys(RYS)) if (!I[k]) I[k] = svg(k);
   }
 
-  // ---------- etap 1: werdykt w dolnym pasku ----------
+  // ---------- etap 1–2: werdykt w dolnym pasku, Staś, combo ----------
+  const SAY = ["Spokojnie, ten błąd się przyda.", "Prawie. Spójrz na wyjaśnienie.", "To częsta pułapka."];
+  const hashN = (s) => { let x = 0; for (const c of String(s || "")) x = (x * 31 + c.charCodeAt(0)) >>> 0; return x; };
   function fbar(fb, card) {
-    const { h, LP, lpReduced, lpFloat } = A();
+    const { h, LP, lpReduced, lpFloat, stasFace } = A();
     if (!h || !LP?.el?.fbar) return false;
     icons();
     const bar = LP.el.fbar, root = LP.el.root;
-    if (!fb) { if (bar.childNodes.length) bar.replaceChildren(); delete root.dataset.fb; LP.floatPending = null; return true; }
+    if (!fb) { if (bar.childNodes.length) bar.replaceChildren(); delete root.dataset.fb; bar.classList.remove("lp-fbar-more"); LP.floatPending = null; return true; }
     const gain = LP.gain && LP.gain.id === card?.id ? LP.gain.n : 0;
+    const cm = fb.ok && LP.comboMsg && LP.comboMsg.id === card?.id ? LP.comboMsg : null;
     const t = h("span", { class: "lp-fb-t", text: fb.title });
     const v = h("p", { class: "v" }, ico(fb.ok ? "check" : "cross", "lp-fb-ico") || h("span", { class: "lp-fb-ico", "aria-hidden": "true", text: fb.ok ? "✓" : "✗" }), t,
-      gain > 0 && lpReduced() ? h("span", { class: "lp-fb-xp", text: ` · +${gain} XP` }) : null);
-    const main = h("div", { class: "lp-fb-main" }, v, ...(fb.body || []).filter(Boolean));
-    bar.replaceChildren(main);
-    bar.dataset.ok = fb.ok ? "1" : "0";
+      cm ? h("span", { class: "lp-fb-combo" }, ico("bolt"), h("span", { text: cm.bonus ? `${cm.n} z rzędu! +${cm.bonus} XP` : `${cm.n} z rzędu!` })) : null,
+      gain > 0 && lpReduced() ? h("span", { class: "lp-fb-xp", text: `+${gain} XP` }) : null);
+    // Kolejność: werdykt, „Czemu nie X?” i informacja o drugiej szansie, na końcu pełne „Dlaczego”.
+    const body = (fb.body || []).filter(Boolean), why = body.filter((x) => x.classList?.contains("lp-fb-why")), rest = body.filter((x) => !why.includes(x));
+    // Po dobrej odpowiedzi „Dlaczego” zwinięte do 2 linii z „Więcej”; po złej całe.
+    if (fb.ok) why.forEach((w) => { if ((w.textContent || "").length > 110) { w.classList.add("lp-fb-clamp"); const more = h("button", { type: "button", class: "btn ghost lp-fb-more", "aria-expanded": "false", onclick: () => { w.classList.remove("lp-fb-clamp"); more.remove(); } }, "Więcej"); w.after?.(more); w._more = more; } });
+    const main = h("div", { class: "lp-fb-main" }, v, ...rest, ...why.flatMap((w) => [w, w._more].filter(Boolean)));
+    const kids = [];
+    if (green() && stasFace) {
+      const f = stasFace(fb.ok ? "ok" : "oops"); f.classList.add("lp-fb-stas"); if (cm && cm.n >= 3) f.classList.add("lp-fb-hop"); kids.push(f);
+      if (!fb.ok) main.insertBefore(h("p", { class: "lp-fb-say", text: SAY[hashN(card?.id) % SAY.length] }), v.nextSibling);
+    }
+    bar.replaceChildren(...kids, main);
     root.dataset.fb = fb.ok ? "ok" : "no";
     bar.scrollTop = 0;
-    // Poprawna odpowiedź zostaje widoczna nad panelem (karta przewija się do niej, bez animacji przy ograniczonym ruchu).
-    requestAnimationFrame(() => { try { LP.el.stage.querySelector(".lp-card .opt.right")?.scrollIntoView({ block: "nearest", behavior: lpReduced() ? "auto" : "smooth" }); } catch {} });
     if (LP.floatPending) { const txt = LP.floatPending; LP.floatPending = null; if (!lpReduced()) lpFloat(txt, t, ""); }
+    requestAnimationFrame(() => {
+      bar.classList.toggle("lp-fbar-more", bar.scrollHeight > bar.clientHeight + 4);
+      // Wybrana zła i poprawna odpowiedź widoczne nad panelem (gdy obie się nie mieszczą, ważniejsza jest poprawna).
+      try {
+        const st = LP.el.stage, r = st.querySelector(".lp-card .opt.right"), w = st.querySelector(".lp-card .opt.wrong");
+        if (r) { const sr = st.getBoundingClientRect(), a = [r, w].filter(Boolean).map((e) => e.getBoundingClientRect()), top = Math.min(...a.map((x) => x.top)), bot = Math.max(...a.map((x) => x.bottom));
+          let d = 0; if (bot - top <= sr.height - 8) { if (top < sr.top) d = top - sr.top - 4; else if (bot > sr.bottom) d = bot - sr.bottom + 4; } else { const rr = r.getBoundingClientRect(); if (rr.top < sr.top || rr.bottom > sr.bottom) d = rr.top - sr.top - 4; }
+          if (d) st.scrollBy({ top: d, behavior: lpReduced() ? "auto" : "smooth" }); }
+      } catch {}
+    });
     return true;
+  }
+  // Pytanie o dźwięki: raz, po pierwszej skończonej części (bm-dzwieki = "1" / "0").
+  function pytanieDzwieki() {
+    const { h, ls } = A(); if (!h || ls.get("bm-dzwieki") != null) return null;
+    const box = h("div", { class: "lp-snd-ask", role: "group", "aria-label": "Dźwięki przy odpowiedziach" },
+      ico("ux3-glos", "lp-snd-ico"), h("p", { text: "Włączyć krótkie dźwięki przy odpowiedziach?" }),
+      h("div", { class: "lp-snd-btns" },
+        h("button", { type: "button", class: "btn primary", onclick: () => { ls.set("bm-dzwieki", "1"); try { window.SKROT_KOSM?.sound?.("ok"); } catch {} box.replaceChildren(h("p", { text: "Dźwięki włączone. Zmienisz to w Ustawieniach." })); } }, "Włącz"),
+        h("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("bm-dzwieki", "0"); box.remove(); } }, "Nie teraz")));
+    return box;
+  }
+  // Ustawienia → Animacje: dwa przełączniki (dźwięki odpowiedzi, wibracje).
+  function ustawienia() {
+    const { h, ls, render } = A(); if (!h) return [];
+    const row = (key, k, label, on, sub, flip) => h("button", { type: "button", class: "mi more-row", role: "switch", "aria-checked": String(on), "data-ux3": key, onclick: () => { flip(); render(); } },
+      ico(k) || h("span", { class: "ico", "aria-hidden": "true" }), h("span", { class: "more-txt" }, h("span", { text: label }), h("small", { text: sub })),
+      h("span", { class: "switch", "aria-hidden": "true", "aria-checked": String(on), style: "margin-left:auto" }, h("i")));
+    const snd = ls.get("bm-dzwieki") === "1", vib = ls.get("bm-wibracje") !== "0";
+    return [row("dzwieki", "ux3-glos", "Dźwięki przy odpowiedziach", snd, snd ? "Włączone: krótki dźwięk przy dobrej i złej odpowiedzi" : "krótki dźwięk przy dobrej i złej odpowiedzi", () => ls.set("bm-dzwieki", snd ? "0" : "1")),
+      row("wibracje", "ux3-wibr", "Wibracje", vib, vib ? "Włączone: krótka wibracja przy odpowiedzi (Android)" : "krótka wibracja przy odpowiedzi (Android)", () => ls.set("bm-wibracje", vib ? "0" : "1"))];
   }
 
   // ---------- CSS (tylko .lp-* i .rv-hero; ruch wyłączany przez reduced-motion i html.calm) ----------
@@ -102,6 +145,33 @@ html[data-green="dark"]:not([data-theme]) .lp-opts .opt.wrong .k { color: var(--
 /* Ograniczony ruch: w odtwarzaczu i na mapie lekcji żadnych animacji ani przejść (także starych lp-in, lp-pop, lp-ok). */
 @media (prefers-reduced-motion: reduce) { .lp, .lp *, .lp-map, .lp-map *, .lp-float, .lp-banner { animation: none !important; transition: none !important; } }
 html.calm :is(.lp, .lp *, .lp-map, .lp-map *, .lp-float, .lp-banner) { animation: none !important; transition: none !important; }
+/* Nagłówek: pasek postępu ma pierwszeństwo; stałe liczniki XP i monet poza widokiem (nagroda jest przy werdykcie, lpFloat dalej je widzi). */
+.lp-top .lp-xpchip, .lp-top .lp-coinchip { position: absolute !important; width: 1px; height: 1px; padding: 0 !important; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; box-shadow: none !important; }
+/* Etap 2: Staś w panelu, dymek, combo, pytanie o dźwięki. */
+.lp-fbar .stas-face.lp-fb-stas { width: 48px; height: 48px; min-width: 48px; flex: none; display: block; }
+.lp-fb-stas svg { width: 48px; height: 48px; display: block; }
+@keyframes lpux-hop { 0%, 100% { transform: none; } 40% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: no-preference) { html:not(.calm) .lp-fb-stas.lp-fb-hop { animation: lpux-hop .35s ease-out 1; } }
+.lp-fb-say { font-size: .9rem; font-weight: 700; color: var(--ink); background: var(--surface); border-radius: 12px; padding: 4px 10px; justify-self: start; position: relative; }
+.lp-fbar .v { flex-wrap: wrap; row-gap: 4px; }
+.lp-fbar .v .lp-fb-t { flex: 1 1 0; min-width: 65%; }
+.lp-fb-combo { display: inline-flex; align-items: center; gap: 4px; font-size: .92rem; padding: 2px 10px; border-radius: 999px; background: var(--lime-100); color: var(--ink); }
+html:not([data-theme]) .lp-fb-combo { background: var(--h-lime); color: var(--h-lime-ink); }
+.lp-fb-xp { font-size: .92rem; padding: 2px 10px; border-radius: 999px; background: var(--surface); color: var(--ink); }
+.lp-fb-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lp-fbar .lp-fb-more { justify-self: start; min-height: 44px; padding: 6px 14px; }
+.lp-fbar.lp-fbar-more { -webkit-mask-image: linear-gradient(#000 82%, transparent); mask-image: linear-gradient(#000 82%, transparent); }
+.lp-combo { background: var(--lime-100); color: var(--lime-700); display: inline-flex; align-items: center; gap: 3px; }
+html:not([data-theme]) .lp-combo { background: var(--h-lime); color: var(--h-lime-ink); }
+.lp-combo .lp-ux-ico svg { width: 16px; height: 16px; }
+.lp-snd-ask { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; padding: 12px 14px; border-radius: 18px; background: var(--surface); border: 2px solid var(--line); text-align: left; }
+.lp-snd-ask > p { margin: 0; font-weight: 700; }
+.lp-snd-ask > p:only-child { grid-column: 1 / -1; }
+.lp-snd-btns { grid-column: 1 / -1; display: flex; gap: 10px; }
+.lp-snd-btns .btn { flex: 1; min-height: 44px; justify-content: center; }
+/* Inne motywy: dolny pasek też barwi się werdyktem (kolory motywu). */
+html[data-theme] .lp[data-fb="ok"] .lp-bottom { background: var(--good-soft); }
+html[data-theme] .lp[data-fb="no"] .lp-bottom { background: var(--bad-soft); }
 /* Karta „Dziś do powtórki” w limonce H2 (zamiast pomarańczu), w ciemnym bez brązu. */
 html:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100); --h-rv-line: color-mix(in srgb, var(--h-lime) 70%, var(--h-line)); --h-rv-edge: var(--lime-400); --h-rv-num: var(--ink); --h-rv-ink: var(--h-muted); }
 html[data-green="dark"]:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100); --h-rv-line: color-mix(in srgb, var(--lime-400) 30%, var(--h-line)); --h-rv-edge: color-mix(in srgb, var(--lime-400) 45%, var(--h-paper)); --h-rv-num: var(--ink); --h-rv-ink: var(--h-muted); }
@@ -112,5 +182,5 @@ html[data-green="dark"]:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100);
     document.head.append(s);
   }
   css();
-  window.ZD_LEKCJA = { fbar, ico, icons, IKONY: RYS };
+  window.ZD_LEKCJA = { fbar, ico, icons, pytanieDzwieki, ustawienia, IKONY: RYS };
 })();

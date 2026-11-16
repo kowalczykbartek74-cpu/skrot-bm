@@ -31,8 +31,11 @@ export async function open(b, o = {}) {
   const ls = { "mock-docs": JSON.stringify(d), "mock-progress": JSON.stringify({ [UID]: o.progress || {} }), "bm-ld-flag": "1", ...(o.theme ? { "skrot-theme": o.theme } : {}), ...(o.ls || {}) };
   const p = await page(b, { konto: o.konto || "platne", w: o.w || 360, h: o.h || 640, lang: o.lang || "pl", ls, ctx: { ...(o.dark ? { colorScheme: "dark" } : {}), ...(o.motion ? { reducedMotion: o.motion } : {}) } });
   if (o.init) await p.addInitScript(o.init);
+  if (o.theme) await p.addInitScript((t) => { const set = () => { if (document.documentElement.getAttribute("data-theme") !== t) document.documentElement.setAttribute("data-theme", t); }; const go = () => { set(); new MutationObserver(set).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); }; if (document.documentElement) go(); else new MutationObserver((_, mo) => { if (document.documentElement) { mo.disconnect(); go(); } }).observe(document, { childList: true }); }, o.theme);
   await p.clock.setFixedTime(new Date(o.now || "2026-11-06T17:00:00+01:00"));
   await p.goto(BASE + "index.html#" + (o.hash || "/material/U1")); await p.waitForTimeout(o.wait ?? 2500);
+  // Motyw ze sklepu (atrapa nie ma posiadania motywów): wymuszony atrybut, żeby naprawdę sprawdzić inny motyw.
+  if (o.theme) { await p.evaluate((t) => document.documentElement.setAttribute("data-theme", t), o.theme); await p.waitForTimeout(200); }
   for (let i = 0; i < 3 && await p.locator("#layer .scrim").count(); i++) { await p.keyboard.press("Escape"); await p.waitForTimeout(300); }
   return p;
 }
@@ -52,7 +55,7 @@ export const cr = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, 
 export async function textContrast(p, sel) {
   return p.evaluate((sel) => {
     const out = [];
-    const bgOf = (e) => { for (let x = e; x; x = x.parentElement) { const c = getComputedStyle(x).backgroundColor; const m = c.match(/[\d.]+/g); if (m && (m.length < 4 || +m[3] > 0.9)) return c; } return "rgb(255,255,255)"; };
+    const bgOf = (e) => { for (let x = e; x; x = x.parentElement) { if (/gradient/.test(getComputedStyle(x).backgroundImage)) return "gradient"; const c = getComputedStyle(x).backgroundColor; const m = c.match(/[\d.]+/g); if (m && (m.length < 4 || +m[3] > 0.9)) return c; } return "rgb(255,255,255)"; };
     document.querySelectorAll(sel).forEach((root) => {
       const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       for (let n = w.nextNode(); n; n = w.nextNode()) {
@@ -65,7 +68,7 @@ export async function textContrast(p, sel) {
     return out;
   }, sel);
 }
-export const contrastFails = (list) => list.map((x) => ({ ...x, r: Math.round(cr(x.fg, x.bg) * 100) / 100 })).filter((x) => x.r < ((x.fs >= 24 || (x.fs >= 18.66 && x.fw >= 700)) ? 3 : 4.5));
+export const contrastFails = (list) => list.filter((x) => x.bg !== "gradient").map((x) => ({ ...x, r: Math.round(cr(x.fg, x.bg) * 100) / 100 })).filter((x) => x.r < ((x.fs >= 24 || (x.fs >= 18.66 && x.fw >= 700)) ? 3 : 4.5));
 // Przechodzi do karty spełniającej warunek (np. mc z kontrolą części), klikając „Dalej” na kartach do czytania.
 export async function goToCard(p, test, max = 40) {
   for (let i = 0; i < max; i++) {
@@ -92,3 +95,7 @@ export async function answer(p, good, conf) {
 }
 export function shotsDir() { const d = process.env.SHOTS; if (d) fs.mkdirSync(d, { recursive: true }); return d; }
 export async function noHScroll(p) { return p.evaluate(() => ({ sw: Math.max(document.documentElement.scrollWidth, document.querySelector(".lp")?.scrollWidth || 0), w: innerWidth })); }
+// Lekcja z pogrubionymi pojęciami (karty „Szybkie przypomnienie” z bankiem pojęć) i biletem z pewnością.
+const TERMS = ["elastyczność cenowa", "koszt alternatywny", "nadwyżka konsumenta", "dobro Giffena"];
+export const lessonBold = () => ({ ...lesson(4), sections: TERMS.map((t, i) => ({ h: `${i + 1}. Pojęcie ${i + 1}`, body: `Pierwszy akapit części ${i + 1} wprowadza temat i mówi, po co się go uczymy na kolokwium.\n\nW ekonomii **${t}** to pojęcie, które opisuje ważną zależność na rynku dóbr i usług.\n\nTrzeci akapit dodaje przykład z życia studenta, żeby pojęcie łatwiej było zapamiętać.`, check: { q: `Pytanie ${i + 1}: co opisuje to pojęcie?`, options: ["Właściwie: zależność na rynku", "Błędnie: kolor opakowania", "Błędnie: godzinę zajęć", "Błędnie: numer sali"], correct: 0, why: "Bo tak mówi definicja." } })) });
+export const docsBold = docsWith([["U1", "Lekcja 1: Pojęcia rynku", lessonBold()], ["U2", "Lekcja 2: Podaż", lesson(4)]]);
