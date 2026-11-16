@@ -6,7 +6,7 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 ## Etapy
 | etap | runda | wynik | twarde błędy | stan | commit |
 |---|---|---|---|---|---|
-| 1 Seria i cel dnia na Dziś | 5 | **8/10** (r1 7,5 · r2 6,5 · r3 7,5 · r4 7,5 · r5 8) | brak | **ZALICZONY** | (commit tej rundy) |
+| 1 Seria i cel dnia na Dziś | 5 | **8/10** (r1 7,5 · r2 6,5 · r3 7,5 · r4 7,5 · r5 8) | brak | **ZALICZONY** | e3084da |
 | 2 Zasady serii | — | — | — | — | — |
 | 3 Powroty | — | — | — | — | — |
 | 4 Kanał poza stroną | — | — | — | — | — |
