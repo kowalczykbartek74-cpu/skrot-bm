@@ -7,10 +7,12 @@ const lum = (c) => { const m = c.match(/\d+(\.\d+)?/g).map(Number).slice(0, 3).m
 const cr = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05);
 // Element wstawiony do <main>, żeby sprawdzić wygląd niezależnie od tego, czy ekran go akurat ma.
 const probe = (p, html, sel) => p.evaluate(([html, sel]) => {
-  const box = document.createElement("div"); box.innerHTML = html; document.querySelector("main").prepend(box);
+  // Dziś ma własny styl kart (gałąź dzis-duolingo): bazowe elementy H2 mierzymy jak na innych ekranach.
+  const m = document.querySelector("main"), v = m.dataset.view; m.dataset.view = "probe";
+  const box = document.createElement("div"); box.innerHTML = html; m.prepend(box);
   const el = box.querySelector(sel), c = getComputedStyle(el), bf = getComputedStyle(el, "::before");
   const r = { color: c.color, bg: c.backgroundColor, shadow: c.boxShadow, bb: c.borderBottomWidth, radius: c.borderTopLeftRadius, before: bf.backgroundImage.slice(0, 30) };
-  box.remove(); return r;
+  box.remove(); m.dataset.view = v; return r;
 }, [html, sel]);
 for (const dark of [false, true]) {
   const n = dark ? "ciemny" : "jasny";
