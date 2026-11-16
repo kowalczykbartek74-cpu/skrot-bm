@@ -25,8 +25,9 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
     ok(`K1 ${w}px 17:00: pigułka szara (streak-todo) z title`, a && /streak-todo/.test(a.cls) && a.title === "Ucz się dziś, żeby seria nie spadła" && /grayscale/.test(a.flameFilter), a);
     ok(`K2 ${w}px: pierścień celu 20 px z aria-label „Cel dnia: 0/30 XP”`, a?.ring && a.ring.label === "Cel dnia: 0/30 XP" && a.ring.role === "img" && a.ring.w === 20 && a.ring.h === 20, a?.ring);
     ok(`K3 ${w}px: pigułka to button ≥ 44×44`, a?.tag === "BUTTON" && a.w >= 44 && a.h >= 44, a);
-    ok(`K1 ${w}px 17:00: klepsydra w pigułce (stan czytelny bez koloru)`, await p.evaluate(() => !!document.querySelector("#main .greet .nw-streak .nw-klep svg")));
-    ok(`K4 ${w}px 17:00: ranga, monety i seria w jednym wierszu`, await p.evaluate(() => { const t = [...document.querySelectorAll("#main .greet .rk-line > .rk, #main .greet .rk-chips > *")].map((e) => Math.round(e.getBoundingClientRect().top)); return t.length >= 3 && new Set(t).size === 1; }));
+    ok(`K4 ${w}px 17:00: wiersz 1 ranga (z nazwą) + monety, wiersz 2 pasek serii na całą szerokość z celem „0/30”`, await p.evaluate(() => { const rk = document.querySelector("#main .greet .rk"), c = document.querySelector("#main .greet .hud-coin"), s = document.querySelector("#main .greet .nw-streak"), line = document.querySelector("#main .greet .rk-line");
+      const a = rk.getBoundingClientRect(), b = c.getBoundingClientRect(), d = s.getBoundingClientRect(), l = line.getBoundingClientRect();
+      return Math.round(a.top) === Math.round(b.top) && d.top >= a.bottom && Math.abs(d.width - l.width) < 2 && /Systematy/.test(rk.innerText) && rk.querySelector(".rk-name").getBoundingClientRect().width > 40 && s.querySelector(".nw-goal-t")?.textContent === "0/30"; }));
     ok(`K4 ${w}px 17:00 ranga „Systematyczny poz. 4”: nic poza ekranem`, (await pozaEkranem(p, "#main .greet, #main .greet *")).length === 0 && !(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)), await pozaEkranem(p, "#main .greet *"));
   }
   await shot(p, `dzis-17-${tag}`);
@@ -37,7 +38,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
   const kr = await kontrast(p, "#main .greet .nw-streak");
   if (w !== 1280) {
     ok(`K1 ${tag} 19:00: streak-risk z „· do północy”, kolory --warn/--warn-soft, kontrast AA`, r && /streak-risk/.test(r.cls) && /· do północy/.test(r.txt) && kr.out.length === 0 && kr.n >= 3, { r, kr });
-    ok(`K4 ${tag} 19:00: „do północy” w tym samym wierszu co ranga i monety`, await p.evaluate(() => { const t = [...document.querySelectorAll("#main .greet .rk-line > .rk, #main .greet .rk-chips > *")].map((e) => Math.round(e.getBoundingClientRect().top)); return new Set(t).size === 1; }));
+    ok(`K1 ${tag} 19:00: klepsydra przy „do północy” (stan czytelny bez koloru)`, await p.evaluate(() => !!document.querySelector("#main .greet .nw-streak.streak-risk .nw-klep svg")));
     ok(`K4 ${tag} 19:00: nic poza ekranem`, (await pozaEkranem(p, "#main .greet *")).length === 0 && !(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)), await pozaEkranem(p, "#main .greet *"));
   }
   await shot(p, `dzis-19-${tag}`);
@@ -106,13 +107,13 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
     await new Promise((r) => setTimeout(r, 1300));
     const fl = el.querySelector(".nw-seria-flame svg").getBoundingClientRect();
     const out = { n: el.querySelector(".nw-seria-n").textContent, t: el.querySelector(".nw-seria-t").textContent, dots: el.querySelectorAll(".nw-dot").length, nauka: el.querySelectorAll(".nw-dot.s-nauka").length,
-      km: el.querySelector(".nw-km")?.textContent || null, jutro: el.querySelector(".nw-jutro")?.textContent, dzisBg: getComputedStyle(el.querySelector(".nw-dot.dzis")).backgroundColor, steps: [...el.querySelectorAll(".nw-step")].map((s) => s.textContent + (s.classList.contains("on") ? "✓" : "")), flame: [Math.round(fl.width), Math.round(fl.height)],
+      km: el.querySelector(".nw-km")?.textContent || null, jutro: el.querySelector(".nw-jutro")?.textContent, h: el.querySelector(".nw-seria-h")?.textContent, dzisBg: getComputedStyle(el.querySelector(".nw-dot.dzis")).backgroundColor, steps: [...el.querySelectorAll(".nw-step")].map((s) => s.textContent + (s.classList.contains("on") ? "✓" : "")), flame: [Math.round(fl.width), Math.round(fl.height)],
       conf: !!el.querySelector(".nw-conf"), anim: getComputedStyle(el.querySelector(".nw-seria-flame")).animationName, labels: [...el.querySelectorAll(".nw-dot")].every((d) => d.getAttribute("aria-label")),
       drugi: !!N.ekranSerii(), cel: N.celDnia() };
     return out;
   });
   if (nazwa === "zwykle") {
-    ok("K5 ekranSerii(): 7 dni z rzędu, płomień 64 px, 7 kropek z aria-label, kamień milowy 7 z konfetti", r && r.n === "7" && r.t === "dni z rzędu!" && r.jutro === "Wróć jutro, a seria urośnie do 8 dni." && !/rgba\(0, 0, 0, 0\)/.test(r.dzisBg) && r.dots === 7 && r.nauka === 4 && r.labels && r.flame[0] === 64 && r.km === "Kamień milowy: 7 dni" && r.conf && r.steps.join(",") === "3✓,7✓,14,30,50,100", r);
+    ok("K5 ekranSerii(): 7 dni z rzędu, płomień 64 px, 7 kropek z aria-label, kamień milowy 7 z konfetti", r && r.n === "7" && r.t === "dni z rzędu!" && r.h === "Seria przedłużona!" && r.jutro === "Wróć jutro, a seria urośnie do 8 dni." && !/rgba\(0, 0, 0, 0\)/.test(r.dzisBg) && r.dots === 7 && r.nauka === 4 && r.labels && r.flame[0] === 64 && r.km === "Kamień milowy: 7 dni" && r.conf && r.steps.join(",") === "3✓,7✓,14,30,50,100", r);
     ok("K5 celDnia() → { xp: 12, cel: 30 }", r && r.cel.xp === 12 && r.cel.cel === 30, r?.cel);
     await shot(p, "ekran-seria-plus1-390-jasny");
     R.pomiary.push(await pomiar(p, "Ekran „Seria +1” 390 jasny", "#nw-test", "#nw-test"));
@@ -131,6 +132,35 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   R.pomiary.push(await pomiar(p, "Ekran „Seria +1” 390 ciemny", "#nw-test", "#nw-test"));
   await p.close();
 }
+// Uczciwe zasady: zamrożenie w zapasie = spokojny stan „chroni zamrożenie” zamiast alarmu; weekend na 2 zamrożeniach; przerwa
+{
+  const zam = (reqs) => ({ "mock-v24": "1", "mock-mon": JSON.stringify({ start: 0, ksiega: [], pos: [], zam: { reqs, dni: [] }, zal: {}, gab: [] }) });
+  let p = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ls: zam(["a1"]) });
+  const a = await pill(p);
+  ok("K1 19:00 z 1 zamrożeniem: „· chroni zamrożenie” (bez „do północy” i bez pomarańczowego alarmu)", /streak-chroni/.test(a.cls) && /chroni zamrożenie/.test(a.txt) && !/północy/.test(a.txt), a);
+  await shot(p, "dzis-19-chroni-390-jasny");
+  R.pomiary.push(await pomiar(p, "Dziś 19:00 chroni zamrożenie 390", "#main .greet"));
+  await p.close();
+  const PON = "2026-11-09T19:00:00+01:00", t = dayN(PON);
+  p = await open(b, { prog: { xp: { t: 900, d: t - 3, n: 20 }, streak: { d: t - 3, n: 10 }, nd: [t - 7, t - 6, t - 5, t - 4, t - 3] }, czas: PON, ls: zam(["a1", "a2"]) });
+  const w0 = await pill(p);
+  await p.evaluate(() => window.ZD_APP.xpFlush(12)); await p.waitForTimeout(1500);
+  const w1 = await pill(p), stw = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak, z: window.skrot.sklep.zamrozenia, ban: document.querySelector(".nw-baner")?.innerText }));
+  ok("K3 zasady działają jak w oknie: poniedziałek po weekendzie z 2 zamrożeniami seria 10 żyje, po nauce 11, oba dni zamrożone, baner bez emoji", /^10 dni/.test(w0.txt) && /streak-done/.test(w1.cls) && stw.s.n === 11 && stw.z.ma === 0 && stw.z.dni.length === 2 && /Zamrożenia uratowały serię: 11 dni/.test(stw.ban || "") && !/\p{Extended_Pictographic}/u.test(stw.ban), { w0, stw });
+  await shot(p, "baner-zamrozenia-390-jasny");
+  R.pomiary.push(await pomiar(p, "Baner zamrożeń 390", ".nw-baner", ".nw-baner"));
+  await p.close();
+  p = await open(b, { prog: { xp: { t: 900, d: t - 3, n: 20 }, streak: { d: t - 3, n: 10 } }, czas: PON, ls: zam(["a1"]) });
+  ok("K3 ten sam weekend z 1 zamrożeniem: seria spada do 0 (zgodnie z zasadą „do 2 dni”)", /^0 dni/.test((await pill(p)).txt));
+  await p.close();
+  const T23 = dayN("2026-12-23");
+  p = await open(b, { prog: { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 } }, czas: "2026-12-28T19:00:00+01:00" });
+  const pz = await pill(p);
+  ok("K3 przerwa świąteczna 28.12: „8 dni · przerwa, seria czeka”, bez alarmu", /streak-pauza/.test(pz.cls) && /^8 dni · przerwa, seria czeka/.test(pz.txt), pz);
+  await shot(p, "dzis-przerwa-28-12-390-jasny");
+  R.pomiary.push(await pomiar(p, "Dziś w przerwie 28.12 390", "#main .greet"));
+  await p.close();
+}
 // Zmiana stanu w czasie: 17:59 → 18:01 bez przeładowania; godzina liczona w Europe/Warsaw (telefon w innej strefie)
 {
   const p = await open(b, { prog: P6, czas: "2026-11-06T17:59:00+01:00" });
@@ -142,7 +172,7 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   ok("K1 17:59 → 18:01 bez przeładowania: todo → risk (odświeżenie co minutę i po powrocie do karty)", /streak-todo/.test(a.cls) && /streak-risk/.test(b2.cls), { a: a.cls, b: b2.cls });
   await p.close();
   const q = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ctx: { timezoneId: "America/New_York" } });
-  ok("K1 telefon w strefie Nowy Jork (13:00), w Polsce 19:00: risk", /streak-risk/.test((await pill(q))?.cls), await pill(q));
+  ok("K1 telefon w Nowym Jorku (13:00 u niego): todo — godzina i granica dnia w tej samej strefie", /streak-todo/.test((await pill(q))?.cls), await pill(q));
   await q.close();
 }
 // EN: pigułka i ekran

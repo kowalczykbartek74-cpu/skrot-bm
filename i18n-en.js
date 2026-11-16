@@ -5584,7 +5584,16 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Bez nauki dziś i bez zamrożenia seria spada do 0 o północy. Zamrożenia chronią do 2 dni z rzędu (np. weekend), a przerwy w zajęciach nie zrywają serii.": "No studying today and no freeze, and your streak drops to 0 at midnight. Freezes protect up to 2 days in a row (e.g. a weekend), and breaks from classes don't break your streak.",
 "Wróć jutro, a seria urośnie do {0}.": "Come back tomorrow and your streak grows to {0}.",
 "dzień z rzędu!": "day in a row!",
-"dni z rzędu!": "days in a row!"
+"dni z rzędu!": "days in a row!",
+"Dziś bez nauki? Zamrożenie ochroni serię. Ale 5 minut wystarczy, żeby zostało na później.": "No studying today? A freeze will protect your streak. But 5 minutes is enough to save it for later.",
+"Przerwa w zajęciach: seria czeka i nie spada.": "Break from classes: your streak is paused and won't drop.",
+"· chroni zamrożenie": "· freeze protects it",
+"· przerwa, seria czeka": "· break, streak paused",
+"Dziś bez nauki? Zamrożenie ochroni ten dzień. Jedna karta 5 minut i zamrożenie zostaje na później.": "No studying today? A freeze will protect this day. One 5-minute card and you keep the freeze for later.",
+"Przerwa w zajęciach: seria czeka. Możesz się uczyć, ale nie musisz.": "Break from classes: your streak is paused. You can study, but you don't have to.",
+"Seria przedłużona!": "Streak extended!",
+"Zamrożenie uratowało serię: {0}": "A freeze saved your streak: {0}",
+"Zamrożenia uratowały serię: {0}": "Freezes saved your streak: {0}"
 // koniec ux-2
 },
 "plural": {

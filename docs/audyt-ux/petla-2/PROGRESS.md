@@ -6,7 +6,7 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 ## Etapy
 | etap | runda | wynik | twarde błędy | stan | commit |
 |---|---|---|---|---|---|
-| 1 Seria i cel dnia na Dziś | 1 | — | — | w toku | — |
+| 1 Seria i cel dnia na Dziś | 3 | r1 7,5 · r2 6,5 · r3 … | brak | w toku | ccc103b (r2) |
 | 2 Zasady serii | — | — | — | — | — |
 | 3 Powroty | — | — | — | — | — |
 | 4 Kanał poza stroną | — | — | — | — | — |
@@ -21,3 +21,7 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - Most wystawia też `xpFlush` (test etapu 1 symuluje pierwszą naukę dnia) i `celXp()` (stała `LP_DAILY_GOAL`).
 - Pigułka serii przy 360 px w stanie „do północy”: rząd powitania łamie się (seria w drugim wierszu), zamiast ucinać; ranga < 420 px bez „poz. N”, nazwa do 9 znaków z wielokropkiem (poziom jest w odznace).
 - `xpFlush` nie rysuje ekranu, więc `ZD_NAWYK.poXp` odświeża pigułki w miejscu (np. gra na Dziś).
+- Runda 2 etapu 1 (recenzent): teksty zasad obiecywały weekend na 2 zamrożeniach i przerwy, a kod chronił 1 dzień. Decyzja: logika zasad serii (`L.seriaDalej`/`seriaZywa`, `streakNext`/`kStreakAlive` przez `ZD_NAWYK`) i migracja v55 (`nauka_zamrozenie_uzyj_dni`, `nauka_przerwa`, `nauka_seria_na`, prezent) weszły już w etap 1, żeby obietnica była prawdziwa. Etap 2 dokłada v56 (`nauka_dni`), prezent po stronie strony, karty zamrożeń i „Ten tydzień”. Bez v55 w bazie strona używa starej `nauka_zamrozenie_uzyj` (tylko wczoraj).
+- Granica dnia i godzina stanu „do północy” w tej samej strefie: czas telefonu (tak liczy `dayN` całej aplikacji). Dla studentów w Polsce = Europe/Warsaw.
+- < 400 px: pierwszy wiersz ranga (z nazwą) + monety, drugi wiersz pasek dnia: seria ze stanem po lewej, cel „x/30” po prawej.
+- Stan „chroni zamrożenie” (spokojny, niebieski) zamiast alarmu „do północy”, gdy zamrożenie ochroni dzisiejszy dzień; „przerwa, seria czeka” w dni przerw z kalendarza uczelni.

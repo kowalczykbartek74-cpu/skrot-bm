@@ -25,6 +25,24 @@ test("stan pigułki: szary bez nauki dziś, ryzyko od 18:00, pełny po nauce, br
   assert.equal(L.stanDnia(1, true, 9), "done");
 });
 
+test("zasady serii: weekend na 2 zamrożeniach, 1 zamrożenie nie starczy, przerwa nie zrywa i nie dodaje dni", () => {
+  const PON = 312; // poniedziałek 9.11.2026; seria do piątku 6.11
+  const sk = { d: PON - 3, n: 10 };
+  assert.deepEqual(L.seriaDalej(sk, PON, { ma: 2 }), { next: { d: PON, n: 11 }, uzyj: [PON - 2, PON - 1], przerwana: 0 });
+  assert.deepEqual(L.seriaDalej(sk, PON, { ma: 1 }), { next: { d: PON, n: 1 }, uzyj: [], przerwana: 10 });
+  assert.equal(L.seriaZywa(sk, PON, { ma: 2 }), true);
+  assert.equal(L.seriaZywa(sk, PON, { ma: 1 }), false);
+  assert.deepEqual(L.seriaDalej(sk, PON, { zamrozone: new Set([PON - 2, PON - 1]) }).uzyj, []);
+  const s23 = { d: 356, n: 8 }, prz = (d) => d >= 357 && d <= 370; // 23.12 → przerwa 24.12–6.01
+  assert.equal(L.seriaZywa(s23, 361, { przerwa: prz }), true, "28.12: seria czeka");
+  assert.deepEqual(L.seriaDalej(s23, 371, { przerwa: prz }), { next: { d: 371, n: 9 }, uzyj: [], przerwana: 0 }, "7.01: +1, bez zamrożeń");
+  assert.equal(L.seriaDalej({ d: 300, n: 5 }, 304, { ma: 2 }).next.n, 1, "3 opuszczone dni: za dużo");
+  assert.equal(L.seriaDalej(sk, PON - 3), null);
+  assert.equal(L.stanDnia(6, false, 19, { chroni: true }), "chroni");
+  assert.equal(L.stanDnia(6, false, 19, { pauza: true }), "pauza");
+  assert.equal(L.godzina(new Date(2026, 10, 6, 19, 5)), 19, "godzina w tej samej strefie co dayN (czas telefonu)");
+});
+
 test("cel dnia: XP tylko z dzisiejszego dnia, cel 30", () => {
   assert.deepEqual(L.celDnia({ xp: { t: 500, d: T, n: 18 } }, T), { xp: 18, cel: 30 });
   assert.deepEqual(L.celDnia({ xp: { t: 500, d: T - 1, n: 40 } }, T), { xp: 0, cel: 30 });

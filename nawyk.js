@@ -23,6 +23,15 @@
     lgZamroz: "zamrożony",
     lgPrzerwa: "przerwa w zajęciach",
     lgDzis: "dziś",
+    seriaChroni: "Dziś bez nauki? Zamrożenie ochroni serię. Ale 5 minut wystarczy, żeby zostało na później.",
+    seriaPauza: "Przerwa w zajęciach: seria czeka i nie spada.",
+    chroniZam: "· chroni zamrożenie",
+    pauzaTxt: "· przerwa, seria czeka",
+    oknoStanChroni: "Dziś bez nauki? Zamrożenie ochroni ten dzień. Jedna karta 5 minut i zamrożenie zostaje na później.",
+    oknoStanPauza: "Przerwa w zajęciach: seria czeka. Możesz się uczyć, ale nie musisz.",
+    seriaPrzedluzona: "Seria przedłużona!",
+    uratowalo1: "Zamrożenie uratowało serię: {0}",
+    uratowalo2: "Zamrożenia uratowały serię: {0}",
     lgBrak: "bez nauki",
     lgDzisTodo: "dziś do zrobienia",
     zasady: "Bez nauki dziś i bez zamrożenia seria spada do 0 o północy. Zamrożenia chronią do 2 dni z rzędu (np. weekend), a przerwy w zajęciach nie zrywają serii.",
@@ -58,12 +67,39 @@
     KAMIENIE, GOAL,
     dow: (t) => (((t + 3) % 7) + 7) % 7,
     poniedzialek: (t) => t - L.dow(t),
-    // Stan pigułki: none (bez serii), todo (seria > 0, dziś bez nauki), risk (to samo od 18:00), done (dziś była nauka).
-    stanDnia(sk, doneToday, godz) {
+    // Stan pigułki: none (bez serii), done (dziś była nauka), pauza (dziś przerwa w zajęciach: seria czeka),
+    // chroni (dziś bez nauki, ale zamrożenie ochroni ten dzień), todo (seria > 0, dziś bez nauki), risk (to samo od 18:00).
+    stanDnia(sk, doneToday, godz, o = {}) {
       if (doneToday) return "done";
       if (!(sk > 0)) return "none";
+      if (o.pauza) return "pauza";
+      if (o.chroni) return "chroni";
       return godz >= 18 ? "risk" : "todo";
     },
+    // ---- etap 2: zasady serii przyjazne studentom ----
+    // c = { zamrozone: Set(dayN) dni już chronionych, ma: zamrożenia w zapasie, przerwa(d) → true w dni przerw z kalendarza uczelni }.
+    // Wynik: null (dziś już liczone) albo { next: { d, n }, uzyj: [dni do zamrożenia], przerwana: n starej serii | 0 }.
+    // Dni przerw i zamrożone nie zrywają serii i nie dodają dni; inne opuszczone dni chronią zamrożenia: najwyżej 2 (weekend),
+    // tylko z ostatnich 3 dni (tyle przyjmuje baza, nauka_zamrozenie_uzyj_dni) i tylko gdy starczy zapasu.
+    seriaDalej(sk, t, c = {}) {
+      if (sk && sk.d === t) return null;
+      if (!sk || !(sk.n > 0) || !Number.isFinite(sk.d) || sk.d > t) return { next: { d: t, n: 1 }, uzyj: [], przerwana: 0 };
+      const zam = c.zamrozone || new Set(), prz = c.przerwa || (() => false), brak = [];
+      for (let d = sk.d + 1; d < t; d++) if (!zam.has(d) && !prz(d)) brak.push(d);
+      if (!brak.length) return { next: { d: t, n: sk.n + 1 }, uzyj: [], przerwana: 0 };
+      if (brak.length <= 2 && brak.length <= (c.ma || 0) && brak.every((d) => d >= t - 3)) return { next: { d: t, n: sk.n + 1 }, uzyj: brak, przerwana: 0 };
+      return { next: { d: t, n: 1 }, uzyj: [], przerwana: sk.n };
+    },
+    // Seria widoczna dziś: dziś już była nauka albo dzisiejsza nauka ją przedłuży (wczoraj, przerwa, zamrożenia).
+    seriaZywa(sk, t, c = {}) {
+      if (!sk || !(sk.n > 0)) return false;
+      if (sk.d === t) return true;
+      const r = L.seriaDalej(sk, t, c);
+      return !!r && r.next.n > 1;
+    },
+    // Ten tydzień: dni nauki od poniedziałku (cel 5 z 7, jak zadanie tygodnia „Ucz się 5 dni”).
+    tydzienNauki(t, nauka) { const p = L.poniedzialek(t); let k = 0; for (let d = p; d <= t; d++) if (nauka.has(d)) k++; return k; },
+
     celDnia(progress, t, cel = GOAL) {
       const x = (progress && progress.xp) || {};
       return { xp: x.d === t ? Math.max(0, x.n || 0) : 0, cel };
@@ -93,10 +129,9 @@
       for (let d = st.d; d > st.d - 400; d--) { if (nauka.has(d)) k++; else if (!(zam.has(d) || przerwa(d))) break; }
       return k;
     },
-    // Godzina w Warszawie (stan „do północy” od 18:00 czasu polskiego, niezależnie od strefy telefonu).
-    godzinaPL(now = new Date()) {
-      try { return +new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Europe/Warsaw" }).format(now); } catch (e) { return now.getHours(); }
-    },
+    // Godzina stanu „do północy”: ta sama strefa co granica dnia serii (dayN w aplikacji liczy dni w czasie telefonu),
+    // więc „do północy” zawsze znaczy północ, o której seria naprawdę się kończy.
+    godzina: (now = new Date()) => now.getHours(),
     // Dopisanie dnia do progress.nd (najwyżej 120 ostatnich) i najlepszej serii; null = nic do zmiany.
     seriaPatch(progress, t, sn) {
       const nd = Array.isArray(progress && progress.nd) ? progress.nd.filter(Number.isFinite) : [];
@@ -162,6 +197,29 @@
     const per = (CAL.PERIODS || []).find((o) => k >= o.od && k <= o.do);
     return !!(per && /przerwa/i.test(per.opis || ""));
   }
+  // ---------------------------------------------------------------- etap 2: zamrożenia, prezent, przerwy, tydzień
+  const kontekstSerii = () => ({ zamrozone: new Set(zamDni()), ma: zamMa(), przerwa });
+  const isoDnia = (d) => dzienKey(d);
+  // Baner na dole ekranu (zamiast lpBanner z emoji): ikona SVG + tekst, role=status, znika po 3,5 s.
+  function baner(ikona, tekst, ms = 3600) {
+    const ap = A(), { h } = ap; if (!h) return;
+    document.querySelectorAll(".nw-baner").forEach((x) => x.remove());
+    const b = h("div", { class: "nw-baner" + (reduced() ? "" : " anim"), role: "status" }, svg(IKONY[ikona] || IKONY.check, 22), h("span", { text: tekst }));
+    document.body.append(b); setTimeout(() => b.remove(), ms);
+  }
+  // Zamrożenia na dni (kFreezeUse): nowa funkcja bazy (v55), bez niej stara (tylko wczoraj).
+  async function zamrozDni(dni) {
+    const sk = W.skrot, sb = sk?.sb;
+    if (!sb || !dni.length) return { ok: false, code: "none" };
+    const { data, error } = await sb.rpc("nauka_zamrozenie_uzyj_dni", { p_dni: dni.map(isoDnia) });
+    if (error && /PGRST202|Could not find/.test((error.code || "") + (error.message || ""))) {
+      if (dni.length === 1 && dni[0] === today() - 1 && sk.zamrozenieUzyj) { const r = await sk.zamrozenieUzyj(); return { ok: !!r?.ok, code: r?.code, stara: true }; }
+      return { ok: false, code: "none", brakV55: true };
+    }
+    if (error || !data) return { ok: false, code: "blad" };
+    try { await sk.sklepStan?.(); } catch (e) {}
+    return data;
+  }
   const dzienLabel = (d) => {
     const dt = new Date(2026, 0, 1 + d);
     return dt.toLocaleDateString(lang() === "en" ? "en-GB" : "pl-PL", { weekday: "short", day: "numeric", month: "short" });
@@ -174,8 +232,10 @@
   const dni = (n) => `${n} ${A().plural ? A().plural(n, "dzień", "dni", "dni") : "dni"}`;
   function stanTeraz() {
     const ap = A(), t = today(), p = progress(), sk = ap.streakN ? ap.streakN() : 0;
-    const doneToday = !!(p.streak && p.streak.d === t && (p.streak.n || 0) > 0);
-    return { t, sk, doneToday, stan: L.stanDnia(sk, doneToday, L.godzinaPL()) };
+    const doneToday = !!(p.streak && p.streak.d === t && (p.streak.n || 0) > 0), c = kontekstSerii();
+    // „chroni”: gdyby dziś minął bez nauki, jutrzejsza nauka i tak przedłuży serię (zamrożenie albo przerwa).
+    const chroni = sk > 0 && !doneToday && !przerwa(t) && L.seriaZywa(p.streak, t + 1, c);
+    return { t, sk, doneToday, ma: c.ma, stan: L.stanDnia(sk, doneToday, L.godzina(), { pauza: sk > 0 && przerwa(t), chroni }) };
   }
 
   // ---------------------------------------------------------------- pierścień celu dnia (20 px)
@@ -193,16 +253,17 @@
   function pigulka(compact) {
     const ap = A(), { h } = ap; if (!h) return null;
     const { sk, stan } = stanTeraz(), g = celDnia();
-    const tytul = stan === "done" ? PL.seriaDone : stan === "risk" ? PL.seriaRisk : stan === "todo" ? PL.seriaTodo : PL.seriaStart;
+    const tytul = { done: PL.seriaDone, risk: PL.seriaRisk, todo: PL.seriaTodo, chroni: PL.seriaChroni, pauza: PL.seriaPauza }[stan] || PL.seriaStart;
     const word = compact ? ap.plural(sk, "dzień", "dni", "dni") : ap.plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu");
     const rg = ring(g.xp / g.cel); rg.setAttribute("role", "img"); rg.setAttribute("aria-label", fmt(PL.celDnia, g.xp, g.cel)); rg.removeAttribute("aria-hidden");
     rg.title = fmt(PL.celDnia, g.xp, g.cel);
     const cls = "xp-chip nw-streak streak-" + stan + (sk ? "" : " off");
+    const dop = { risk: PL.doPolnocy, chroni: PL.chroniZam, pauza: PL.pauzaTxt }[stan];
     return h("button", { type: "button", class: cls, title: tytul, "aria-haspopup": "dialog", onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
-      ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
-      stan === "risk" ? h("span", { class: "nw-risk", text: " " + PL.doPolnocy }) : null,
-      stan === "todo" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : null,
-      rg);
+      h("span", { class: "nw-s-l" }, ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
+        stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" ? svg(IKONY.snow, 16, "nw-klep") : null,
+        dop ? h("span", { class: "nw-risk", text: " " + dop }) : null),
+      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true", text: `${g.xp}/${g.cel}` }) : null));
   }
 
   // Po XP (xpFlush): dopisanie dnia nauki i najlepszej serii; pigułki na ekranie odświeżamy w miejscu (xpFlush nie rysuje ekranu).
@@ -218,6 +279,20 @@
     });
   }
 
+  // streakNext / kStreakAlive (index.html) przez te funkcje: zasady serii z L.seriaDalej (2 zamrożenia, przerwy).
+  function seriaNastepna(t) {
+    const st = progress().streak, r = L.seriaDalej(st, t, kontekstSerii());
+    if (!r) return null;
+    if (r.uzyj.length) zuzyj(t, st, r.uzyj);
+    return r.next;
+  }
+  function seriaZywa(st, t) { return L.seriaZywa(st, t, kontekstSerii()); }
+  async function zuzyj(t, before, dniL) {
+    const r = await zamrozDni(dniL), ap = A(), n = before.n + 1;
+    if (r && r.ok) { setTimeout(() => baner("snow", fmt(dniL.length > 1 ? PL.uratowalo2 : PL.uratowalo1, dni(n))), 600); odswiezPigulki(); return; }
+    // Zamrożeń jednak nie było (inne urządzenie zużyło, baza bez v55 i więcej niż 1 dzień): seria od nowa, jak dawniej.
+    if (ap.S?.progress?.streak?.d === t) { ap.progSoon?.({ streak: { d: t, n: 1 } }); odswiezPigulki(); }
+  }
   // ---------------------------------------------------------------- okno „Twoja seria”
   function kalendarzEl(t, tygodni) {
     const ap = A(), { h } = ap, p = progress(), zam = zamDni();
@@ -249,7 +324,7 @@
     const ap = A(), { h, modal } = ap; if (!h || !modal) return;
     const { t, sk, stan } = stanTeraz(), p = progress(), g = celDnia(), ma = zamMa();
     const best = Math.max(p.streakBest || 0, sk);
-    const opis = stan === "done" ? PL.oknoStanDone : stan === "risk" ? PL.oknoStanRisk : stan === "todo" ? PL.oknoStanTodo : PL.oknoStanZero;
+    const opis = { done: PL.oknoStanDone, risk: PL.oknoStanRisk, todo: PL.oknoStanTodo, chroni: PL.oknoStanChroni, pauza: PL.oknoStanPauza }[stan] || PL.oknoStanZero;
     modal((close) => [
       h("div", { class: "nw-okno nw-st-" + stan },
         h("div", { class: "nw-okno-top" },
@@ -277,7 +352,7 @@
   function konfetti(box) {
     if (reduced()) return;
     const c = document.createElement("div"); c.className = "nw-conf"; c.setAttribute("aria-hidden", "true");
-    for (let i = 0; i < 28; i++) { const e = document.createElement("i"); e.style.cssText = `left:${(i * 37) % 100}%;--d:${(i % 7) * 0.07}s;--x:${((i * 53) % 120) - 60}px;--r:${(i * 97) % 540}deg`; e.className = "c" + (i % 4); c.append(e); }
+    for (let i = 0; i < 28; i++) { const e = document.createElement("i"); e.style.cssText = `left:${i % 2 ? 2 + ((i * 37) % 22) : 76 + ((i * 37) % 22)}%;--d:${(i % 7) * 0.07}s;--x:${((i * 53) % 120) - 60}px;--r:${(i * 97) % 540}deg`; e.className = "c" + (i % 4); c.append(e); }
     box.append(c); setTimeout(() => c.remove(), 2600);
   }
   function ekranSerii() {
@@ -292,6 +367,7 @@
     const lab = { nauka: PL.dzienNauka, zamroz: PL.dzienZamroz, przerwa: PL.dzienPrzerwa, brak: PL.dzienBrak, przyszly: PL.dzienPrzyszly };
     const km = L.kamien(n);
     const box = h("section", { class: "nw-seria" + (first && !reduced() ? " anim" : "") + (km ? " km" : ""), role: "status", "aria-label": PL.seriaPlus },
+      h("span", { class: "eyebrow nw-seria-h", text: PL.seriaPrzedluzona }),
       h("span", { class: "nw-seria-flame", "aria-hidden": "true" }, ap.kFlame()),
       h("b", { class: "nw-seria-n num", text: String(n) }),
       h("p", { class: "nw-seria-t", text: ap.plural(n, "dzień z rzędu!", "dni z rzędu!", "dni z rzędu!") }),
@@ -326,19 +402,31 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
   #main .greet .rk-compact .rk-name { display: inline-block; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
 }
 /* < 400 px: ranga jako sama odznaka z poziomem (nazwa zostaje dla czytników i w oknie rang), seria i monety w tym samym wierszu */
+/* < 400 px: pierwszy wiersz ranga + monety, drugi wiersz to pasek dnia: seria ze stanem po lewej, cel dnia po prawej */
 @media (max-width: 399px) {
-  #main .greet .rk-compact .rk-main { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  #main .greet .rk-compact .rk { padding: 0 !important; min-width: 44px; justify-content: center; }
-  #main .greet .rk-compact .rk-badge .n { display: grid !important; font-size: 12px; min-width: 20px; height: 20px; right: -7px; bottom: -6px; }
-  #main .greet .xp-chip.nw-streak { gap: 4px; padding-left: 8px !important; padding-right: 8px !important; }
-  main[data-view="home"] .greet .rk-line, main[data-view="home"] .greet .rk-chips { gap: 5px; }
+  #main .greet .rk-compact .rk-chips { display: contents; }
+  #main .greet .rk-compact .rk-name { max-width: 14ch; }
+  #main .greet .rk-compact .xp-chip.nw-streak { order: 9; flex: 1 0 100%; justify-content: space-between; }
 }
+.xp-chip.nw-streak .nw-s-l, .xp-chip.nw-streak .nw-s-r { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
+.xp-chip.nw-streak .nw-goal-t { font-size: .8rem; font-weight: 700; }
+.xp-chip.nw-streak.streak-chroni { outline: 2px dashed var(--h-blue, var(--accent-text)); outline-offset: -2px; background: var(--h-blue-soft, var(--accent-soft)) !important; color: var(--h-ink, var(--ink)) !important; }
+.xp-chip.nw-streak.streak-pauza { outline: 2px dashed var(--h-edge, var(--line)); outline-offset: -2px; }
+.xp-chip.nw-streak:is(.streak-chroni, .streak-pauza) .h2-flame svg { animation: none !important; }
+.nw-okno-modal::before { position: static !important; margin: -6px auto 4px !important; }
+.nw-seria-h { color: var(--h-acc, var(--accent-text)); }
+.nw-seria > :not(.nw-conf) { position: relative; z-index: 1; }
 .xp-chip.nw-streak .nw-klep { color: inherit; opacity: .85; }
 .nw-zasady { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-size: .85rem; color: var(--muted); }
 .nw-zasady .nw-ico { margin-top: 1px; }
 .nw-day.s-brak:not(.s-przyszly) { background: var(--sunk, var(--h-line)); }
 .nw-day.dzis.todo { outline: 2.5px dashed var(--warn); outline-offset: 2px; background: var(--warn-soft); }
 .nw-day.mini.dzis.todo { outline-width: 1.5px; outline-offset: 1px; }
+.nw-baner { position: fixed; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 9000; display: flex; align-items: center; gap: 10px; max-width: min(92vw, 440px); padding: 12px 16px; border-radius: 18px; background: var(--h-ink, var(--ink)); color: var(--h-paper, var(--paper)); font-weight: 700; box-shadow: 0 12px 30px -12px rgba(0,0,0,.5); }
+.nw-baner .nw-ico { color: var(--h-lime, var(--accent-soft)); }
+.nw-baner.anim { animation: nw-up .35s var(--h-out, ease-out) both; }
+@media (prefers-reduced-motion: reduce) { .nw-baner { animation: none !important; } }
+html.calm .nw-baner { animation: none !important; }
 .nw-jutro { margin: 2px 0 0; font-weight: 700; color: var(--h-acc, var(--accent-text)); }
 main[data-view="home"] .greet .rk-line.rk-compact { flex-wrap: wrap; row-gap: 8px; }
 #main .greet .rk-compact .rk-lv { font-size: 12px; }
@@ -421,7 +509,7 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii });
   // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
   let stanKey = null;
   function tik() {

@@ -16764,6 +16764,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   // Seria po dzisiejszej nauce. Jeden opuszczony dzień (wczoraj) chroni zamrożenie: baza zaznacza wczoraj jako chroniony,
   // seria rośnie o dzisiejszy dzień. Zamrożony dzień nie daje XP, punktów rankingu ani monet.
   function streakNext(t) {
+    // ux-2: zasady serii w nawyk.js (zamrożenia na 2 dni z rzędu, przerwy w zajęciach nie zrywają serii).
+    if (window.ZD_NAWYK?.seriaNastepna) return window.ZD_NAWYK.seriaNastepna(t);
     const sk = S.progress?.streak;
     if (sk?.d === t) return null;
     if (sk?.d === t - 1) return { d: t, n: (sk.n || 0) + 1 };
@@ -16780,7 +16782,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     });
   }
   // Seria widoczna dziś: także gdy wczoraj jest chroniony albo czeka zamrożenie, które użyje się przy dzisiejszej nauce.
-  function kStreakAlive(st, t) { return st.d === t || st.d === t - 1 || (st.d === t - 2 && st.n > 0 && (kFrozen(t - 1) || (kSk().zamrozenia?.ma || 0) > 0)); }
+  function kStreakAlive(st, t) { if (window.ZD_NAWYK?.seriaZywa) return window.ZD_NAWYK.seriaZywa(st, t); return st.d === t || st.d === t - 1 || (st.d === t - 2 && st.n > 0 && (kFrozen(t - 1) || (kSk().zamrozenia?.ma || 0) > 0)); }
 
   // ---------- sklep: zakładki i karty przedmiotów ----------
   const K_TABS = [["motywy", "Motywy", "🎨"], ["profil", "Profil", "🙂"], ["gry", "Gry", "🎮"], ["nauka", "Nauka", "📚"], ["zestawy", "Zestawy", "🎁"], ["sezon", "Sezonowe", "❄️"]];
