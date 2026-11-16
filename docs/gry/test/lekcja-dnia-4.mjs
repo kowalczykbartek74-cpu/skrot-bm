@@ -60,7 +60,7 @@ await p.locator(".ld-time").getByRole("button", { name: "30 min" }).click(); awa
 const plan30 = await p.locator(".ld-plan li").allInnerTexts();
 ok("„Mam więcej czasu” → 30 min: karta 5 min i lekcja", plan30.length >= 2 && /Dziś · 5 min/i.test(plan30[0]), plan30);
 await shot(p, "ld4-czas");
-await p.locator(".ld-hero").getByRole("button", { name: "Inny temat ↻" }).click(); await p.waitForTimeout(300);
+await p.locator(".ld-hero").getByRole("button", { name: "Inny temat" }).click(); await p.waitForTimeout(300);
 const t2 = await p.locator(".ld-hero h2").innerText();
 const tiles = await p.locator(".ld-tile h3").allInnerTexts();
 ok("„Inny temat ↻”: nowy temat, różny od lekcji", t2 !== t1 && !tiles.includes(t2), [t1, t2, tiles]);

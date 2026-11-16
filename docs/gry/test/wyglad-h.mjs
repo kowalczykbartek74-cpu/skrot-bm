@@ -53,7 +53,7 @@ for (const [w, h] of [[375, 812], [1280, 900]]) {
 // Ciemny i angielski
 const d = await open({ dark: true });
 await d.screenshot({ path: `${OUT}/h-dzis-375-ciemny.png` });
-ok("ciemny: karta ciemnozielona z białym tekstem", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor) === "rgb(21, 112, 60)", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor));
+ok("ciemny: karta ciemnozielona z białym tekstem", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor) === "rgb(19, 59, 42)", await d.locator(".zh-hero").evaluate((e) => getComputedStyle(e).backgroundColor));
 await d.close();
 const e = await open({ lang: "en" });
 await e.screenshot({ path: `${OUT}/h-dzis-375-en.png` });

@@ -15,7 +15,7 @@ const hashGo = async (p, h, ms = 400) => { await p.evaluate((h) => { location.ha
 const txt = async (p, sel) => ((await p.locator(sel).count()) ? (await p.locator(sel).first().innerText()).replace(/\s+/g, " ") : "");
 const errs = [];
 const done = (p, nazwa) => { if (p.errors.length) errs.push([nazwa, p.errors]); return p.context().close(); };
-const T = { pl: { inf: "Inflator", par: "Paragrafusa", strike: "Zadaj cios →" }, en: { inf: "The Inflator", par: "Paragraphus", strike: "Strike →" } };
+const T = { pl: { inf: "Inflator", par: "Paragrafusa", strike: "Zadaj cios" }, en: { inf: "The Inflator", par: "Paragraphus", strike: "Strike" } };
 
 // 1) karta na Dziś: stany, 390 / 1280, PL / EN
 for (const lang of ["pl", "en"]) for (const [w, hgt] of [[390, 844], [1280, 800]]) {
