@@ -102,3 +102,14 @@ test("każdy polski tekst z nawyk.js ma parę EN w i18n-en.js (exact)", () => {
   assert.ok(dict.plural["dzień"]);
   assert.ok(exact["dzień z rzędu"] && exact["dni z rzędu"]);
 });
+
+test("dni przerw w SQL v55 (nauka_przerwa) = CAL_DEFAULT w index.html (okresy z „Przerwa” i dni wolne)", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const cal = JSON.parse(html.match(/const CAL_DEFAULT = (\{.*\});/)[1]);
+  const sql = fs.readFileSync(path.join(__dirname, "..", "supabase", "skrot-v55-seria-zamrozenia.sql"), "utf8");
+  const fn = sql.slice(sql.indexOf("function public.nauka_przerwa"), sql.indexOf("$$;", sql.indexOf("function public.nauka_przerwa")));
+  const wolne = [...fn.match(/array\[([^\]]*)\]/)[1].matchAll(/'(\d{4}-\d\d-\d\d)'/g)].map((m) => m[1]).sort();
+  const okresy = [...fn.matchAll(/between date '([\d-]+)' and date '([\d-]+)'/g)].map((m) => [m[1], m[2]]);
+  assert.deepEqual(wolne, Object.keys(cal.wolne).sort());
+  assert.deepEqual(okresy, cal.okresy.filter((o) => /przerwa/i.test(o.opis)).map((o) => [o.od, o.do]));
+});

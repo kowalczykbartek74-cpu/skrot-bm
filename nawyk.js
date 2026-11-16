@@ -25,7 +25,13 @@
     lgDzis: "dziś",
     seriaChroni: "Dziś bez nauki? Zamrożenie ochroni serię. Ale 5 minut wystarczy, żeby zostało na później.",
     seriaPauza: "Przerwa w zajęciach: seria czeka i nie spada.",
-    chroniZam: "· chroni zamrożenie",
+    chroniZam: "· zamrożenie: zostanie {0}",
+    dzisJeszcze: "· dziś jeszcze nie",
+    czekaZam: "· {0} pod zamrożeniem",
+    zostalo: "zostało {0}/2",
+    koniecSerii: "Seria {0} się skończyła: zabrakło zamrożeń. Dziś zaczynasz nową.",
+    lgPrzyszly: "przed Tobą",
+    prezent: "Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.",
     pauzaTxt: "· przerwa, seria czeka",
     oknoStanChroni: "Dziś bez nauki? Zamrożenie ochroni ten dzień. Jedna karta 5 minut i zamrożenie zostaje na później.",
     oknoStanPauza: "Przerwa w zajęciach: seria czeka. Możesz się uczyć, ale nie musisz.",
@@ -199,7 +205,9 @@
   }
   // ---------------------------------------------------------------- etap 2: zamrożenia, prezent, przerwy, tydzień
   const kontekstSerii = () => ({ zamrozone: new Set(zamDni()), ma: zamMa(), przerwa });
-  const isoDnia = (d) => dzienKey(d);
+  // Dni do bazy po kalendarzu warszawskim (nauka_dzis): to samo „wczoraj” względem dziś, także gdy telefon ma inną strefę.
+  const dzisWaw = () => { try { return A().dayN(new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Warsaw" }).format(new Date())); } catch (e) { return today(); } };
+  const isoDnia = (d) => dzienKey(d + (dzisWaw() - today()));
   // Baner na dole ekranu (zamiast lpBanner z emoji): ikona SVG + tekst, role=status, znika po 3,5 s.
   function baner(ikona, tekst, ms = 3600) {
     const ap = A(), { h } = ap; if (!h) return;
@@ -216,7 +224,7 @@
       if (dni.length === 1 && dni[0] === today() - 1 && sk.zamrozenieUzyj) { const r = await sk.zamrozenieUzyj(); return { ok: !!r?.ok, code: r?.code, stara: true }; }
       return { ok: false, code: "none", brakV55: true };
     }
-    if (error || !data) return { ok: false, code: "blad" };
+    if (error || !data) return { ok: false, code: "blad", siec: true };
     try { await sk.sklepStan?.(); } catch (e) {}
     return data;
   }
@@ -234,8 +242,12 @@
     const ap = A(), t = today(), p = progress(), sk = ap.streakN ? ap.streakN() : 0;
     const doneToday = !!(p.streak && p.streak.d === t && (p.streak.n || 0) > 0), c = kontekstSerii();
     // „chroni”: gdyby dziś minął bez nauki, jutrzejsza nauka i tak przedłuży serię (zamrożenie albo przerwa).
+    // Dni czekające na zamrożenie (np. weekend): zużyją się przy dzisiejszej nauce; czeka = ile ich jest.
+    const r = sk > 0 && !doneToday ? L.seriaDalej(p.streak, t, c) : null, czeka = r ? r.uzyj.length : 0;
+    // „chroni”: dziś też można opuścić, bo jutrzejsza nauka i tak przedłuży serię (zamrożenie albo przerwa).
     const chroni = sk > 0 && !doneToday && !przerwa(t) && L.seriaZywa(p.streak, t + 1, c);
-    return { t, sk, doneToday, ma: c.ma, stan: L.stanDnia(sk, doneToday, L.godzina(), { pauza: sk > 0 && przerwa(t), chroni }) };
+    const zostanie = Math.max(0, c.ma - czeka - 1);
+    return { t, sk, doneToday, ma: c.ma, czeka, zostanie, stan: L.stanDnia(sk, doneToday, L.godzina(), { pauza: sk > 0 && przerwa(t), chroni }) };
   }
 
   // ---------------------------------------------------------------- pierścień celu dnia (20 px)
@@ -252,23 +264,37 @@
   // compact = wersja pod powitaniem na Dziś; zwraca <button>, który otwiera okno „Twoja seria”.
   function pigulka(compact) {
     const ap = A(), { h } = ap; if (!h) return null;
-    const { sk, stan } = stanTeraz(), g = celDnia();
+    const { sk, stan, czeka, zostanie } = stanTeraz(), g = celDnia();
     const tytul = { done: PL.seriaDone, risk: PL.seriaRisk, todo: PL.seriaTodo, chroni: PL.seriaChroni, pauza: PL.seriaPauza }[stan] || PL.seriaStart;
     const word = compact ? ap.plural(sk, "dzień", "dni", "dni") : ap.plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu");
     const rg = ring(g.xp / g.cel); rg.setAttribute("role", "img"); rg.setAttribute("aria-label", fmt(PL.celDnia, g.xp, g.cel)); rg.removeAttribute("aria-hidden");
     rg.title = fmt(PL.celDnia, g.xp, g.cel);
     const cls = "xp-chip nw-streak streak-" + stan + (sk ? "" : " off");
-    const dop = { risk: PL.doPolnocy, chroni: PL.chroniZam, pauza: PL.pauzaTxt }[stan];
+    const dop = stan === "todo" && czeka ? fmt(PL.czekaZam, dni(czeka)) : { todo: PL.dzisJeszcze, risk: PL.doPolnocy, chroni: fmt(PL.chroniZam, zostanie), pauza: PL.pauzaTxt }[stan];
     return h("button", { type: "button", class: cls, title: tytul, "aria-haspopup": "dialog", onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
       h("span", { class: "nw-s-l" }, ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
-        stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" ? svg(IKONY.snow, 16, "nw-klep") : null,
+        stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" || (stan === "todo" && czeka) ? svg(IKONY.snow, 16, "nw-klep") : null,
         dop ? h("span", { class: "nw-risk", text: " " + dop }) : null),
       h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true", text: `${g.xp}/${g.cel}` }) : null));
   }
 
   // Po XP (xpFlush): dopisanie dnia nauki i najlepszej serii; pigułki na ekranie odświeżamy w miejscu (xpFlush nie rysuje ekranu).
+  // Zamrożenie w prezencie: raz na konto, gdy seria osiąga 2 (baza pilnuje „raz”; przeglądarka pamięta, że już było).
+  async function prezent() {
+    const ap = A(), sk = W.skrot, sb = sk?.sb;
+    if (!sb || !ap.S?.uid || ap.ls?.get("skrot-zam-prezent")) return null;
+    const { data, error } = await sb.rpc("nauka_zamrozenie_prezent", {});
+    if (error || !data) return null;
+    if (data.ok) {
+      ap.ls.set("skrot-zam-prezent", "1");
+      if (data.nowe) { try { await sk.sklepStan?.(); } catch (e) {} setTimeout(() => baner("snow", PL.prezent), 900); odswiezPigulki(); }
+    }
+    return data;
+  }
   function poXp(prog, t, sn) {
     const patch = L.seriaPatch(prog, t, sn);
+    // Prezent po zapisie postępu (progSoon zapisuje po 2,5 s), żeby baza widziała już 2 dni nauki; w razie „za wcześnie” ponawia tik.
+    if (sn && sn.n >= 2) setTimeout(() => prezent(), 3500);
     setTimeout(odswiezPigulki, 0);
     return patch;
   }
@@ -284,14 +310,30 @@
     const st = progress().streak, r = L.seriaDalej(st, t, kontekstSerii());
     if (!r) return null;
     if (r.uzyj.length) zuzyj(t, st, r.uzyj);
+    if (r.przerwana > 1) koniecSerii(r.przerwana);
     return r.next;
   }
   function seriaZywa(st, t) { return L.seriaZywa(st, t, kontekstSerii()); }
+  // Zużycie zamrożeń po pierwszej nauce dnia. Błąd sieci: seria zostaje, prośba czeka w przeglądarce i wraca przy następnym
+  // wejściu albo za minutę (nic nie przepada po cichu). Prawdziwy brak zamrożeń: seria od nowa z banerem.
   async function zuzyj(t, before, dniL) {
-    const r = await zamrozDni(dniL), ap = A(), n = before.n + 1;
-    if (r && r.ok) { setTimeout(() => baner("snow", fmt(dniL.length > 1 ? PL.uratowalo2 : PL.uratowalo1, dni(n))), 600); odswiezPigulki(); return; }
-    // Zamrożeń jednak nie było (inne urządzenie zużyło, baza bez v55 i więcej niż 1 dzień): seria od nowa, jak dawniej.
-    if (ap.S?.progress?.streak?.d === t) { ap.progSoon?.({ streak: { d: t, n: 1 } }); odswiezPigulki(); }
+    const ap = A();
+    ap.ls?.set("skrot-zam-czeka", JSON.stringify({ t, n: before.n, dni: dniL }));
+    const r = await zamrozDni(dniL), n = before.n + 1;
+    if (r && r.siec) return; // spróbujemy ponownie (ponow)
+    ap.ls?.set("skrot-zam-czeka", "");
+    if (r && r.ok) { setTimeout(() => baner("snow", fmt(dniL.length > 1 ? PL.uratowalo2 : PL.uratowalo1, dni(n)) + " · " + fmt(PL.zostalo, r.zostalo ?? zamMa())), 600); odswiezPigulki(); return; }
+    if (ap.S?.progress?.streak?.d === t) { ap.progSoon?.({ streak: { d: t, n: 1 } }); koniecSerii(before.n); odswiezPigulki(); }
+  }
+  async function ponow() {
+    const ap = A(); let c = null; try { c = JSON.parse(ap.ls?.get("skrot-zam-czeka") || "null"); } catch (e) {}
+    if (!c || !ap.S?.uid || !W.skrot?.sb) return;
+    if (c.t !== today() || ap.S.progress?.streak?.d !== c.t) { ap.ls.set("skrot-zam-czeka", ""); return; }
+    await zuzyj(c.t, { n: c.n }, c.dni);
+  }
+  function koniecSerii(n) {
+    if (!(n > 1)) return;
+    setTimeout(() => baner("ux2-klepsydra", fmt(PL.koniecSerii, dni(n)), 6000), 700);
   }
   // ---------------------------------------------------------------- okno „Twoja seria”
   function kalendarzEl(t, tygodni) {
@@ -311,7 +353,8 @@
         h("span", {}, h("i", { class: "nw-day s-zamroz mini", "aria-hidden": "true" }), h("span", { text: PL.lgZamroz })),
         h("span", {}, h("i", { class: "nw-day s-przerwa mini", "aria-hidden": "true" }), h("span", { text: PL.lgPrzerwa })),
         h("span", {}, h("i", { class: "nw-day s-brak mini", "aria-hidden": "true" }), h("span", { text: PL.lgBrak })),
-        h("span", {}, h("i", { class: "nw-day s-brak dzis todo mini", "aria-hidden": "true" }), h("span", { text: PL.lgDzisTodo }))));
+        h("span", {}, h("i", { class: "nw-day s-brak dzis todo mini", "aria-hidden": "true" }), h("span", { text: PL.lgDzisTodo })),
+        h("span", {}, h("i", { class: "nw-day s-przyszly mini", "aria-hidden": "true" }), h("span", { text: PL.lgPrzyszly }))));
   }
   function kamienieEl(n) {
     const { h } = A(), nx = L.nastepnyKamien(n);
@@ -385,14 +428,15 @@
   const CSS = `
 .xp-chip.nw-streak { min-height: 44px; min-width: 44px; gap: 6px; }
 .xp-chip.nw-streak .nw-word, .xp-chip.nw-streak .nw-risk { white-space: nowrap; }
-.xp-chip.nw-streak.streak-todo, .xp-chip.nw-streak.streak-risk { outline: 2px dashed var(--h-edge, var(--line)); outline-offset: -2px; }
+.xp-chip.nw-streak.streak-todo, .xp-chip.nw-streak.streak-risk { outline: 2px dashed var(--h-muted, var(--muted)); outline-offset: -2px; }
 .xp-chip.nw-streak:is(.streak-todo, .streak-risk) :is(.h2-flame, .kflame) { filter: grayscale(1); opacity: .55; }
 .xp-chip.nw-streak:is(.streak-todo, .streak-risk) .h2-flame svg { animation: none !important; }
 html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { background: var(--warn-soft) !important; color: var(--warn) !important; outline-color: var(--warn); }
 .xp-chip.nw-streak.streak-risk b { color: inherit; }
 .xp-chip.nw-streak .nw-risk { font-weight: 700; }
 .nw-ring { display: inline-grid; place-items: center; line-height: 0; flex: none; margin-left: 2px; }
-.nw-ring-t { fill: none; stroke: var(--h-line, var(--line)); stroke-width: 3.2; }
+.nw-ring-t { fill: none; stroke: var(--h-edge, var(--line)); stroke-width: 3.2; }
+.streak-chroni .nw-ring-t { stroke: color-mix(in srgb, var(--h-blue, var(--accent-text)) 45%, transparent); }
 .nw-ring-f { fill: none; stroke: var(--h-acc, var(--accent)); stroke-width: 3.2; stroke-linecap: round; }
 .streak-risk .nw-ring-t { stroke: color-mix(in srgb, var(--warn) 25%, transparent); }
 .streak-risk .nw-ring-f { stroke: var(--warn); }
@@ -413,6 +457,9 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 .xp-chip.nw-streak.streak-chroni { outline: 2px dashed var(--h-blue, var(--accent-text)); outline-offset: -2px; background: var(--h-blue-soft, var(--accent-soft)) !important; color: var(--h-ink, var(--ink)) !important; }
 .xp-chip.nw-streak.streak-pauza { outline: 2px dashed var(--h-edge, var(--line)); outline-offset: -2px; }
 .xp-chip.nw-streak:is(.streak-chroni, .streak-pauza) .h2-flame svg { animation: none !important; }
+.xp-chip.nw-streak:is(.streak-chroni, .streak-pauza) :is(.h2-flame, .kflame) { filter: grayscale(1); opacity: .55; }
+.nw-okno-top { margin-top: 10px; }
+.nw-day.s-przyszly { box-shadow: inset 0 0 0 1.5px var(--h-edge, var(--line)); }
 .nw-okno-modal::before { position: static !important; margin: -6px auto 4px !important; }
 .nw-seria-h { color: var(--h-acc, var(--accent-text)); }
 .nw-seria > :not(.nw-conf) { position: relative; z-index: 1; }
@@ -422,7 +469,7 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 .nw-day.s-brak:not(.s-przyszly) { background: var(--sunk, var(--h-line)); }
 .nw-day.dzis.todo { outline: 2.5px dashed var(--warn); outline-offset: 2px; background: var(--warn-soft); }
 .nw-day.mini.dzis.todo { outline-width: 1.5px; outline-offset: 1px; }
-.nw-baner { position: fixed; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 9000; display: flex; align-items: center; gap: 10px; max-width: min(92vw, 440px); padding: 12px 16px; border-radius: 18px; background: var(--h-ink, var(--ink)); color: var(--h-paper, var(--paper)); font-weight: 700; box-shadow: 0 12px 30px -12px rgba(0,0,0,.5); }
+.nw-baner { position: fixed; left: 0; right: 0; margin: 0 auto; width: fit-content; box-sizing: border-box; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 9000; display: flex; align-items: center; gap: 10px; max-width: min(92vw, 440px); padding: 12px 16px; border-radius: 18px; background: var(--h-ink, var(--ink)); color: var(--h-paper, var(--paper)); font-weight: 700; box-shadow: 0 12px 30px -12px rgba(0,0,0,.5); }
 .nw-baner .nw-ico { color: var(--h-lime, var(--accent-soft)); }
 .nw-baner.anim { animation: nw-up .35s var(--h-out, ease-out) both; }
 @media (prefers-reduced-motion: reduce) { .nw-baner { animation: none !important; } }
@@ -509,7 +556,7 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent });
   // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
   let stanKey = null;
   function tik() {
@@ -518,7 +565,8 @@ html.calm .nw-conf { display: none; }
     if (stanKey && stanKey.split(":")[0] !== String(s.t)) { stanKey = k; try { ap.render?.(); } catch (e) {} return; }
     if (k !== stanKey) { stanKey = k; odswiezPigulki(); }
   }
-  setInterval(tik, 60000);
+  setInterval(() => { tik(); ponow(); if ((A().streakN?.() || 0) >= 2) prezent(); }, 60000);
+  setTimeout(ponow, 4000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") tik(); });
   W.ZD_NAWYK.tik = tik;
   // Aplikacja mogła już narysować ekran ze starą pigułką (plik wczytuje się po niej).

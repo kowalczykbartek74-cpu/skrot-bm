@@ -301,12 +301,15 @@
       dzis: dzisL, przerwa,
       uzyjDni(dni) {
         if (!dni.length || dni.length > 3) return { ok: false, code: "bad_days" };
-        const t = dzisL(), out = []; let ok = true;
-        for (const d of [...new Set(dni)].sort()) {
+        const t = dzisL(), out = [], lista = [...new Set(dni)].sort();
+        // wszystkie albo żaden (jak v55): gdy zapasu nie starcza albo dzień za stary, nic się nie zużywa
+        const potrzeba = lista.filter((d) => !(d >= t || d < od(t, -3)) && !zam(d) && !przerwa(d) && !nauka(d));
+        let ok = !lista.some((d) => d >= t || d < od(t, -3)) && potrzeba.length <= MON.zam.reqs.length - MON.zam.dni.length;
+        if (ls("mock-v55-blad", "") === "1") return null; // atrapa zerwanego połączenia (strona dostaje błąd)
+        for (const d of lista) {
           let w;
           if (d >= t || d < od(t, -3)) w = "za_stary"; else if (zam(d)) w = "juz"; else if (przerwa(d)) w = "przerwa"; else if (nauka(d)) w = "nauka";
-          else if (MON.zam.reqs.length - MON.zam.dni.length > 0) { MON.zam.dni.push(d); w = "uzyte"; } else w = "brak";
-          if (w === "brak" || w === "za_stary") ok = false;
+          else if (!ok) w = "brak"; else { MON.zam.dni.push(d); w = "uzyte"; }
           out.push({ dzien: d, wynik: w });
         }
         monZapisz(); (window.__ux2 ||= []).push({ fn: "uzyj_dni", dni, out });
@@ -552,6 +555,7 @@
     else if (fn === "nauka_rocznik_do_kupienia" && ls("mock-v45", "1") === "0") out = brak;
     // === ux-2 === v55 jeszcze nie w bazie
     else if (/^nauka_(zamrozenie_uzyj_dni|zamrozenie_prezent|seria)$/.test(fn) && ls("mock-v55", "1") === "0") out = brak;
+    else if (fn === "nauka_zamrozenie_uzyj_dni" && ls("mock-v55-blad", "") === "1") { window.__rpc.push({ fn, args, res: "Failed to fetch" }); (window.__ux2 ||= []).push({ fn: "uzyj_dni", dni: args.p_dni, blad: true }); return { data: null, error: { message: "TypeError: Failed to fetch", code: "" } }; }
     // === koniec ux-2 ===
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });

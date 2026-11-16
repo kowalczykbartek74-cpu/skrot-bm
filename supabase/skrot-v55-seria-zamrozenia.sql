@@ -3,7 +3,7 @@ do $$ begin
     raise exception 'Polskie znaki doszły zepsute. Skopiuj plik z github.com (Raw), nie przez Terminal.';
   end if;
 end $$;
--- Skrót v55 (pętla UX-2, etap 2): seria przyjazna studentom.
+-- Skrót v55 (pętla UX-2, etapy 1–2): seria przyjazna studentom.
 -- Wklej w Supabase → SQL Editor → Run, po v51 (i po v24 z zamrożeniami serii).
 -- Kopiuj z github.com (przycisk „Copy raw file”), nie przez Terminal. Można uruchomić ponownie (drugi raz nic nie zmienia).
 --
@@ -35,26 +35,37 @@ $$;
 
 -- Zamrożenia na listę dni (strona woła przy pierwszej nauce dnia z dniami opuszczonymi od ostatniej nauki).
 -- Wynik dla każdego dnia: uzyte | juz (już chroniony) | przerwa (dzień przerwy, bez zużycia) | nauka (był dniem nauki) |
--- za_stary (poza ostatnimi 3 dniami) | brak (zabrakło zamrożeń). ok = żaden dzień nie skończył się na „brak” ani „za_stary”.
+-- za_stary (poza ostatnimi 3 dniami) | brak (zabrakło zamrożeń). Wszystkie albo żaden: przy „brak” albo „za_stary” nic nie jest
+-- zużyte (ok = false).
 create or replace function public.nauka_zamrozenie_uzyj_dni(p_dni date[]) returns jsonb
 language plpgsql security definer set search_path = '' as $$
-declare u uuid := auth.uid(); dzis date := public.nauka_dzis(); d date; zid bigint; wyn text; out jsonb := '[]'::jsonb; ok boolean := true;
+declare u uuid := auth.uid(); dzis date := public.nauka_dzis(); d date; wyn text; out jsonb := '[]'::jsonb; ok boolean := true;
+  potrzeba date[] := '{}'; ma int;
 begin
   if u is null then return jsonb_build_object('ok', false, 'code', 'not_logged_in'); end if;
   if p_dni is null or cardinality(p_dni) = 0 or cardinality(p_dni) > 3 then return jsonb_build_object('ok', false, 'code', 'bad_days'); end if;
   perform pg_advisory_xact_lock(hashtext('nauka_mon:' || u::text));
+  -- 1. Które dni naprawdę trzeba chronić. 2. Wszystkie albo żaden: gdy zapasu nie starcza, nic się nie zużywa
+  --    (seria i tak się kończy, a student nie traci jeszcze zamrożeń).
+  for d in select distinct x from unnest(p_dni) x order by 1 loop
+    if d is null or d >= dzis or d < dzis - 3 then ok := false;
+    elsif exists (select 1 from public.nauka_zamrozenia where user_id = u and uzyte_dzien = d) or public.nauka_przerwa(d) or public.nauka_dzien_nauki(u, d) then null;
+    else potrzeba := potrzeba || d;
+    end if;
+  end loop;
+  select count(*) into ma from public.nauka_zamrozenia where user_id = u and uzyte_dzien is null;
+  if cardinality(potrzeba) > ma then ok := false; end if;
   for d in select distinct x from unnest(p_dni) x order by 1 loop
     if d is null or d >= dzis or d < dzis - 3 then wyn := 'za_stary';
     elsif exists (select 1 from public.nauka_zamrozenia where user_id = u and uzyte_dzien = d) then wyn := 'juz';
     elsif public.nauka_przerwa(d) then wyn := 'przerwa';
     elsif public.nauka_dzien_nauki(u, d) then wyn := 'nauka';
+    elsif not ok then wyn := 'brak';
     else
-      select id into zid from public.nauka_zamrozenia where user_id = u and uzyte_dzien is null order by created_at, id limit 1;
-      if zid is null then wyn := 'brak';
-      else update public.nauka_zamrozenia set uzyte_dzien = d, uzyte_at = now() where id = zid; wyn := 'uzyte';
-      end if;
+      update public.nauka_zamrozenia set uzyte_dzien = d, uzyte_at = now()
+       where id = (select id from public.nauka_zamrozenia where user_id = u and uzyte_dzien is null order by created_at, id limit 1);
+      wyn := 'uzyte';
     end if;
-    if wyn in ('brak', 'za_stary') then ok := false; end if;
     out := out || jsonb_build_object('dzien', d, 'wynik', wyn);
   end loop;
   return jsonb_build_object('ok', ok, 'dni', out,

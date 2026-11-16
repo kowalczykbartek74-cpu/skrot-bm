@@ -1,0 +1,60 @@
+✓ K1 360px 17:00: pigułka szara (streak-todo) z title i słowami „· dziś jeszcze nie”
+✓ K2 360px: pierścień celu 20 px z aria-label „Cel dnia: 0/30 XP”
+✓ K3 360px: pigułka to button ≥ 44×44
+✓ K4 360px 17:00: wiersz 1 ranga (z nazwą) + monety, wiersz 2 pasek serii na całą szerokość z celem „0/30”
+✓ K4 360px 17:00 ranga „Systematyczny poz. 4”: nic poza ekranem
+✓ K1 360-jasny 19:00: streak-risk z „· do północy”, kolory --warn/--warn-soft, kontrast AA
+✓ K1 360-jasny 19:00: klepsydra przy „do północy” (stan czytelny bez koloru)
+✓ K4 360-jasny 19:00: nic poza ekranem
+✓ K1 360px po nauce: streak-done, pełny płomień, pierścień 12/30
+✓ K1 360-ciemny 19:00: streak-risk z „· do północy”, kolory --warn/--warn-soft, kontrast AA
+✓ K1 360-ciemny 19:00: klepsydra przy „do północy” (stan czytelny bez koloru)
+✓ K4 360-ciemny 19:00: nic poza ekranem
+✓ K1 390px 17:00: pigułka szara (streak-todo) z title i słowami „· dziś jeszcze nie”
+✓ K2 390px: pierścień celu 20 px z aria-label „Cel dnia: 0/30 XP”
+✓ K3 390px: pigułka to button ≥ 44×44
+✓ K4 390px 17:00: wiersz 1 ranga (z nazwą) + monety, wiersz 2 pasek serii na całą szerokość z celem „0/30”
+✓ K4 390px 17:00 ranga „Systematyczny poz. 4”: nic poza ekranem
+✓ K1 390-jasny 19:00: streak-risk z „· do północy”, kolory --warn/--warn-soft, kontrast AA
+✓ K1 390-jasny 19:00: klepsydra przy „do północy” (stan czytelny bez koloru)
+✓ K4 390-jasny 19:00: nic poza ekranem
+✓ K1 390px po nauce: streak-done, pełny płomień, pierścień 12/30
+✓ K6 Dziś bez „najdłuższa seria” (seria = tylko dni)
+✓ K1 390-ciemny 19:00: streak-risk z „· do północy”, kolory --warn/--warn-soft, kontrast AA
+✓ K1 390-ciemny 19:00: klepsydra przy „do północy” (stan czytelny bez koloru)
+✓ K4 390-ciemny 19:00: nic poza ekranem
+✓ K1 po pierwszym XP dnia: streak-done, seria 7, dzień w progress.nd
+✓ K2 cel dnia po 37 XP: pierścień pełny (37/30)
+✓ K3 najlepsza seria (progress.streakBest) rośnie z serią
+✓ K3 okno „Twoja seria”: seria 6, kalendarz 28 dni (nauka + zamrożony), „Masz 1/2” z przyciskiem do sklepu, najlepsza seria 9
+✓ K3 kalendarz zgadza się z liczbą serii (dni nauki w bieżącej serii = 6), choć progress.nd nie zna jednego dnia
+✓ K3 legenda: nauka, zamrożony, przerwa, bez nauki, dziś do zrobienia; jedna linia zasad
+✓ K3 każdy dzień kalendarza ma aria-label
+✓ K3 „Kup w sklepie” otwiera Sklep
+✓ EN okno serii: bez polskich tekstów
+✓ K5 ekranSerii(): 7 dni z rzędu, płomień 64 px, 7 kropek z aria-label, kamień milowy 7 z konfetti
+✓ K5 celDnia() → { xp: 12, cel: 30 }
+✓ K5 zwykle: po przeładowaniu ekran nie wraca tego samego dnia
+✓ K5 reduced-motion: bez konfetti i bez animacji
+✓ K5 reduced-motion: po przeładowaniu ekran nie wraca tego samego dnia
+✓ K5 calm: bez konfetti i bez animacji
+✓ K5 calm: po przeładowaniu ekran nie wraca tego samego dnia
+✓ K5 seria 5 (nie kamień milowy): bez konfetti i bez napisu kamienia
+✓ K5 ciemny: dzisiejsza kropka widoczna (kolor nauki, pełna)
+✓ K1 19:00 z 1 zamrożeniem: „· zamrożenie: zostanie 0”, szary płomień, bez alarmu „do północy”, nic poza ekranem
+✓ K3 poniedziałek rano przed nauką: widać, że weekend czeka na zamrożenie („· 2 dni pod zamrożeniem”)
+✓ K3 zasady działają jak w oknie: poniedziałek po weekendzie z 2 zamrożeniami seria 10 żyje, po nauce 11, oba dni zamrożone, baner bez emoji
+✓ K3 baner u góry nie zasłania głównego przycisku
+✓ K3 ten sam weekend z 1 zamrożeniem: seria spada do 0 (zgodnie z zasadą „do 2 dni”)
+✓ K3 utrata serii nie jest cicha: baner „Seria 10 dni się skończyła…”, zamrożenie niezużyte, seria 1
+✓ K3 błąd sieci: seria 11 zostaje, prośba czeka; po ponowieniu oba dni zamrożone
+✓ K3 telefon w Nowym Jorku (9.11 19:30 u niego, w Polsce 10.11): do bazy idą „wczoraj i przedwczoraj” po warszawsku (8.11, 9.11)
+✓ D2 prezent: seria 2 → 1 zamrożenie w prezencie i baner
+✓ K3 przerwa świąteczna 28.12: „8 dni · przerwa, seria czeka”, bez alarmu
+✓ K1 17:59 → 18:01 bez przeładowania: todo → risk (odświeżenie co minutę i po powrocie do karty)
+✓ K1 telefon w Nowym Jorku (13:00 u niego): todo — godzina i granica dnia w tej samej strefie
+✓ EN pigułka 19:00: „· until midnight”, title i pierścień po angielsku, nic poza ekranem
+✓ K1 szara pigułka: płomień bez animacji
+✓ K5 test jednostkowy tests/nawyk.test.js
+✓ konsola bez błędów (wszystkie stany)
+59/59

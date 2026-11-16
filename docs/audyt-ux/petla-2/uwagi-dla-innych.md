@@ -10,3 +10,6 @@
 
 ## Pętla 1 / ogólne
 - `docs/gry/test/scalenie-zdawalni.mjs` D (rocznik w profilu, `nauka_rocznik_ustaw`) i `dzien.mjs` (stare karty Dziś, EN „Teraz zrób to”, przyciski 36 px) czerwone też na `origin/main`.
+
+## Pętla 5 (rangi) / pętla 4 (wygląd)
+- Odznaka rangi poziomu 4 („Systematyczny”) ma ikonę kalendarza z liczbą „17”; obok „Dziś piątek…” wygląda jak data (recenzent UX-2 etap 1, runda 3). `lvBadge` / ikony rang to nie obszar pętli 2.

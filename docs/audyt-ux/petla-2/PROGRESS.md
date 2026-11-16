@@ -25,3 +25,5 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - Granica dnia i godzina stanu „do północy” w tej samej strefie: czas telefonu (tak liczy `dayN` całej aplikacji). Dla studentów w Polsce = Europe/Warsaw.
 - < 400 px: pierwszy wiersz ranga (z nazwą) + monety, drugi wiersz pasek dnia: seria ze stanem po lewej, cel „x/30” po prawej.
 - Stan „chroni zamrożenie” (spokojny, niebieski) zamiast alarmu „do północy”, gdy zamrożenie ochroni dzisiejszy dzień; „przerwa, seria czeka” w dni przerw z kalendarza uczelni.
+- Runda 4 etapu 1: zamrożenia „wszystkie albo żaden” (SQL i atrapa), błąd sieci nie zeruje serii (prośba czeka w `skrot-zam-czeka`, ponowienie po 4 s i co minutę), utrata serii z banerem, daty do bazy po kalendarzu warszawskim, prezent podłączony (po zapisie postępu), test zgodności przerw SQL z `CAL_DEFAULT`.
+- Optymistyczne n+1 w `streakNext` zostaje (funkcja musi zwrócić wynik od razu); mignięcie tylko przy rozbieżnym zapasie zamrożeń między urządzeniami — wtedy baner wyjaśnia koniec serii.

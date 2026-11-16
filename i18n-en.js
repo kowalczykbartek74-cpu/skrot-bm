@@ -5593,7 +5593,14 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Przerwa w zajęciach: seria czeka. Możesz się uczyć, ale nie musisz.": "Break from classes: your streak is paused. You can study, but you don't have to.",
 "Seria przedłużona!": "Streak extended!",
 "Zamrożenie uratowało serię: {0}": "A freeze saved your streak: {0}",
-"Zamrożenia uratowały serię: {0}": "Freezes saved your streak: {0}"
+"Zamrożenia uratowały serię: {0}": "Freezes saved your streak: {0}",
+"· zamrożenie: zostanie {0}": "· freeze: {0} left",
+"· dziś jeszcze nie": "· not yet today",
+"· {0} pod zamrożeniem": "· {0} under a freeze",
+"zostało {0}/2": "{0}/2 left",
+"Seria {0} się skończyła: zabrakło zamrożeń. Dziś zaczynasz nową.": "Your {0} streak ended: not enough freezes. Today you start a new one.",
+"przed Tobą": "still ahead",
+"Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.": "You got a free streak freeze. One missed day won't break your streak."
 // koniec ux-2
 },
 "plural": {

@@ -22,7 +22,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
   let p = await open(b, { w, h: hh, dark, prog: P6 });
   const a = await pill(p);
   if (w !== 1280 && !dark) {
-    ok(`K1 ${w}px 17:00: pigułka szara (streak-todo) z title`, a && /streak-todo/.test(a.cls) && a.title === "Ucz się dziś, żeby seria nie spadła" && /grayscale/.test(a.flameFilter), a);
+    ok(`K1 ${w}px 17:00: pigułka szara (streak-todo) z title i słowami „· dziś jeszcze nie”`, a && /streak-todo/.test(a.cls) && /· dziś jeszcze nie/.test(a.txt) && a.title === "Ucz się dziś, żeby seria nie spadła" && /grayscale/.test(a.flameFilter), a);
     ok(`K2 ${w}px: pierścień celu 20 px z aria-label „Cel dnia: 0/30 XP”`, a?.ring && a.ring.label === "Cel dnia: 0/30 XP" && a.ring.role === "img" && a.ring.w === 20 && a.ring.h === 20, a?.ring);
     ok(`K3 ${w}px: pigułka to button ≥ 44×44`, a?.tag === "BUTTON" && a.w >= 44 && a.h >= 44, a);
     ok(`K4 ${w}px 17:00: wiersz 1 ranga (z nazwą) + monety, wiersz 2 pasek serii na całą szerokość z celem „0/30”`, await p.evaluate(() => { const rk = document.querySelector("#main .greet .rk"), c = document.querySelector("#main .greet .hud-coin"), s = document.querySelector("#main .greet .nw-streak"), line = document.querySelector("#main .greet .rk-line");
@@ -137,21 +137,54 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   const zam = (reqs) => ({ "mock-v24": "1", "mock-mon": JSON.stringify({ start: 0, ksiega: [], pos: [], zam: { reqs, dni: [] }, zal: {}, gab: [] }) });
   let p = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ls: zam(["a1"]) });
   const a = await pill(p);
-  ok("K1 19:00 z 1 zamrożeniem: „· chroni zamrożenie” (bez „do północy” i bez pomarańczowego alarmu)", /streak-chroni/.test(a.cls) && /chroni zamrożenie/.test(a.txt) && !/północy/.test(a.txt), a);
+  ok("K1 19:00 z 1 zamrożeniem: „· zamrożenie: zostanie 0”, szary płomień, bez alarmu „do północy”, nic poza ekranem", (await pozaEkranem(p, "#main .greet *")).length === 0 && /streak-chroni/.test(a.cls) && /zamrożenie: zostanie 0/.test(a.txt) && !/północy/.test(a.txt) && /grayscale/.test(a.flameFilter), a);
   await shot(p, "dzis-19-chroni-390-jasny");
   R.pomiary.push(await pomiar(p, "Dziś 19:00 chroni zamrożenie 390", "#main .greet"));
   await p.close();
   const PON = "2026-11-09T19:00:00+01:00", t = dayN(PON);
-  p = await open(b, { prog: { xp: { t: 900, d: t - 3, n: 20 }, streak: { d: t - 3, n: 10 }, nd: [t - 7, t - 6, t - 5, t - 4, t - 3] }, czas: PON, ls: zam(["a1", "a2"]) });
+  const PW = { xp: { t: 900, d: t - 3, n: 20 }, streak: { d: t - 3, n: 10 }, nd: [t - 7, t - 6, t - 5, t - 4, t - 3] };
+  p = await open(b, { prog: PW, czas: "2026-11-09T10:00:00+01:00", ls: zam(["a1", "a2"]) });
+  const rano = await pill(p);
+  ok("K3 poniedziałek rano przed nauką: widać, że weekend czeka na zamrożenie („· 2 dni pod zamrożeniem”)", /streak-todo/.test(rano.cls) && /· 2 dni pod zamrożeniem/.test(rano.txt), rano);
+  await shot(p, "dzis-pon-rano-zamrozenia-390-jasny");
+  R.pomiary.push(await pomiar(p, "Dziś poniedziałek rano, weekend pod zamrożeniem 390", "#main .greet"));
+  await p.close();
+  p = await open(b, { prog: PW, czas: PON, ls: { ...zam(["a1", "a2"]), "skrot-zam-prezent": "1" } });
   const w0 = await pill(p);
   await p.evaluate(() => window.ZD_APP.xpFlush(12)); await p.waitForTimeout(1500);
   const w1 = await pill(p), stw = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak, z: window.skrot.sklep.zamrozenia, ban: document.querySelector(".nw-baner")?.innerText }));
-  ok("K3 zasady działają jak w oknie: poniedziałek po weekendzie z 2 zamrożeniami seria 10 żyje, po nauce 11, oba dni zamrożone, baner bez emoji", /^10 dni/.test(w0.txt) && /streak-done/.test(w1.cls) && stw.s.n === 11 && stw.z.ma === 0 && stw.z.dni.length === 2 && /Zamrożenia uratowały serię: 11 dni/.test(stw.ban || "") && !/\p{Extended_Pictographic}/u.test(stw.ban), { w0, stw });
+  ok("K3 zasady działają jak w oknie: poniedziałek po weekendzie z 2 zamrożeniami seria 10 żyje, po nauce 11, oba dni zamrożone, baner bez emoji", /^10 dni/.test(w0.txt) && /streak-done/.test(w1.cls) && stw.s.n === 11 && stw.z.ma === 0 && stw.z.dni.length === 2 && /Zamrożenia uratowały serię: 11 dni · zostało 0\/2/.test(stw.ban || "") && !/\p{Extended_Pictographic}/u.test(stw.ban), { w0, stw });
+  ok("K3 baner u góry nie zasłania głównego przycisku", await p.evaluate(() => { const a = document.querySelector(".nw-baner")?.getBoundingClientRect(), c = document.querySelector("#main .zh-go")?.getBoundingClientRect(); return !!a && (!c || a.bottom <= c.top || a.top >= c.bottom); }));
   await shot(p, "baner-zamrozenia-390-jasny");
   R.pomiary.push(await pomiar(p, "Baner zamrożeń 390", ".nw-baner", ".nw-baner"));
   await p.close();
   p = await open(b, { prog: { xp: { t: 900, d: t - 3, n: 20 }, streak: { d: t - 3, n: 10 } }, czas: PON, ls: zam(["a1"]) });
   ok("K3 ten sam weekend z 1 zamrożeniem: seria spada do 0 (zgodnie z zasadą „do 2 dni”)", /^0 dni/.test((await pill(p)).txt));
+  await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(1300);
+  const kon = await p.evaluate(() => ({ ban: document.querySelector(".nw-baner")?.innerText, z: window.skrot.sklep.zamrozenia.ma, s: window.ZD_APP.S.progress.streak.n }));
+  ok("K3 utrata serii nie jest cicha: baner „Seria 10 dni się skończyła…”, zamrożenie niezużyte, seria 1", /Seria 10 dni się skończyła/.test(kon.ban || "") && kon.z === 1 && kon.s === 1, kon);
+  await shot(p, "baner-koniec-serii-390-jasny");
+  await p.close();
+  // błąd sieci przy zamrożeniu: seria zostaje, prośba czeka i przechodzi przy ponowieniu
+  p = await open(b, { prog: PW, czas: PON, ls: { ...zam(["a1", "a2"]), "mock-v55-blad": "1", "skrot-zam-prezent": "1" } });
+  await p.evaluate(() => window.ZD_APP.xpFlush(12)); await p.waitForTimeout(1200);
+  const e1 = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak.n, czeka: localStorage.getItem("skrot-zam-czeka"), z: window.skrot.sklep.zamrozenia.ma }));
+  await p.evaluate(async () => { localStorage.setItem("mock-v55-blad", ""); await window.ZD_NAWYK.ponow(); }); await p.waitForTimeout(800);
+  const e2 = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak.n, czeka: localStorage.getItem("skrot-zam-czeka"), z: window.skrot.sklep.zamrozenia.ma }));
+  ok("K3 błąd sieci: seria 11 zostaje, prośba czeka; po ponowieniu oba dni zamrożone", e1.s === 11 && /\[310,311\]/.test(e1.czeka || "") && e1.z === 2 && e2.s === 11 && !e2.czeka && e2.z === 0, { e1, e2 });
+  await p.close();
+  // telefon w innej strefie: do bazy idą dni po kalendarzu warszawskim
+  p = await open(b, { prog: PW, czas: "2026-11-10T01:30:00+01:00", ctx: { timezoneId: "America/New_York" }, ls: zam(["a1", "a2"]) });
+  await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(1200);
+  const iso = await p.evaluate(() => (window.__ux2 || []).find((x) => x.fn === "uzyj_dni")?.dni);
+  ok("K3 telefon w Nowym Jorku (9.11 19:30 u niego, w Polsce 10.11): do bazy idą „wczoraj i przedwczoraj” po warszawsku (8.11, 9.11)", iso && iso.join() === "2026-11-08,2026-11-09", iso);
+  await p.close();
+  // prezent: gdy seria osiąga 2, jedno zamrożenie za darmo z banerem
+  p = await open(b, { prog: { xp: { t: 40, d: dayN("2026-11-06") - 1, n: 9 }, streak: { d: dayN("2026-11-06") - 1, n: 1 }, nd: [dayN("2026-11-06") - 1] }, ls: zam([]) });
+  await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(5200);
+  const pr = await p.evaluate(() => ({ ban: document.querySelector(".nw-baner")?.innerText, z: window.skrot.sklep.zamrozenia.ma }));
+  ok("D2 prezent: seria 2 → 1 zamrożenie w prezencie i baner", pr.z === 1 && /zamrożenie serii w prezencie/.test(pr.ban || ""), pr);
+  await shot(p, "baner-prezent-390-jasny");
   await p.close();
   const T23 = dayN("2026-12-23");
   p = await open(b, { prog: { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 } }, czas: "2026-12-28T19:00:00+01:00" });

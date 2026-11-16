@@ -32,7 +32,9 @@ do $$ begin perform test.chk('Z1 seria po dzisiejszej nauce = 2', public.nauka_s
 select test.jako('seria2@x.pl'); set role authenticated;
 do $$ declare r jsonb; d date := (now() at time zone 'Europe/Warsaw')::date; begin
   r := public.nauka_zamrozenie_uzyj_dni(array[d - 1, d - 2]);
-  perform test.chk('Z2 2 dni, 1 zamrożenie: uzyte + brak, ok = false', not (r->>'ok')::boolean and r->'dni'->0->>'wynik' = 'uzyte' and r->'dni'->1->>'wynik' = 'brak' and (r->>'zostalo')::int = 0, r);
+  perform test.chk('Z2 2 dni, 1 zamrożenie: wszystkie albo żaden – brak + brak, ok = false, zamrożenie zostaje (1)', not (r->>'ok')::boolean and r->'dni'->0->>'wynik' = 'brak' and r->'dni'->1->>'wynik' = 'brak' and (r->>'zostalo')::int = 1, r);
+  r := public.nauka_zamrozenie_uzyj_dni(array[d - 1]);
+  perform test.chk('Z2 jeden dzień, 1 zamrożenie: uzyte, zostało 0', (r->>'ok')::boolean and r->'dni'->0->>'wynik' = 'uzyte' and (r->>'zostalo')::int = 0, r);
   -- Z3: dzisiaj i dni starsze niż 3 dni nie przechodzą; pusta lista i więcej niż 3 dni = bad_days
   r := public.nauka_zamrozenie_uzyj_dni(array[d, d - 4]);
   perform test.chk('Z3 dziś i dzień sprzed 4 dni: za_stary', not (r->>'ok')::boolean and r->'dni'->0->>'wynik' = 'za_stary' and r->'dni'->1->>'wynik' = 'za_stary', r);
