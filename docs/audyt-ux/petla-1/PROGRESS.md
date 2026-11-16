@@ -29,14 +29,15 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 - Etap 2: status rocznika z bazy zapisywany w nowym kluczu `skrot-roczniki-status` (format `skrot-roczniki-baza` bez zmian, czyta go `rocznik.js`); bez odpowiedzi bazy – `STATUS_DANYCH` z `roczniki-dane.js`. Rocznik nie-`platny` → `trialCan = false` (bez przycisków próby), v52 i tak odrzuca start.
 - Etap 2: na Dziś bez dostępu i bez możliwej próby pasek nad panelem: po próbie „Próba minęła · 199 zł do 11 lipca 2027 albo 35 zł / mies. · Kup dostęp”, w pozostałych przypadkach „Pełny dostęp · …” (nie dla kierunku oczekującego).
 - Etap 2: tekst pigułki próby w EN składany w `ux-wejscie.js` (data i godzina w jednym kawałku bez łamania); pary PL→EN i tak w słowniku.
+- Etap 2 (świadome): `nauka_ja().proba_mozna` dalej `true` dla rocznika oczekującego – `nauka_ja` nie należy do pętli 1; ekrany próby biorą `skrot.trialCan`, który uwzględnia status rocznika, a v52 i tak odrzuca start („rocznik”). Do RAPORT.
 - Etap 1: przycisk przykładowej lekcji dostaje ikonę `play` (A4d) już teraz; przeniesienie nad formularz i prawdziwa lekcja to etap 5.
 
 ## Etapy
 | etap | stan | rundy | ostatni wynik | twarde błędy | ostatni commit |
 |---|---|---|---|---|---|
 | 1 Pierwszy ekran i jedna ścieżka | **ZALICZONY** | 2 | 9,0 | brak | (ten commit) |
-| 2 Widoczna próba i przyciski zakupu | w toku | 1 | 5 (twardy błąd) | „Napisz do nas” w kolorze linku przeglądarki | – |
-| 3 Koniec próby jako wydarzenie | – | – | – | – | – |
+| 2 Widoczna próba i przyciski zakupu | **ZALICZONY** | 2 | 8,5 | brak | (ten commit) |
+| 3 Koniec próby jako wydarzenie | w toku | 0 | – | – | – |
 | 4 Paywall, odzyskiwanie, zaufanie | – | – | – | – | – |
 | 5 Lekcja dla gościa | – | – | – | – | – |
 
@@ -52,3 +53,6 @@ Uwagi recenzenta przeniesione do etapu 2 (te same elementy): „Włącz” na pa
 
 ### Etap 2 · runda 1 – 5/10 (twardy błąd), K1–K6 = true → poprawki
 Twardy błąd: „Napisz do nas” (`<a class="btn">`) w oknie błędu próby miało niebieski kolor linku przeglądarki. Poprawki recenzenta: stan „po próbie” widoczny w 1. ekranie (pasek „Próba minęła · … · Kup dostęp”, jedyny „Kup dostęp”); w ostatnich 24 h pigułka mówi też „zostało N godz.”; data i godzina bez łamania; arkusz 24 h z kafelkami postępu i jednym głównym „Wybierz 199 zł”; lista oczekujących z zaznaczonym kierunkiem; po błędzie „wykorzystany/urządzenie” próba znika z Dziś; gotowe kierunki na górze z tagiem „Dostępne”; na Dziś „Wypróbuj 3 dni” jako link, gdy jest pasek; temat maila w EN. Do tego: po wczytaniu `ux-wejscie.js` jedno przerysowanie aplikacji (gdy ekran powstał wcześniej, zostawały zapasowe przyciski – złapane przez test).
+
+### Etap 2 · runda 2 – 8,5/10, twarde błędy: brak, K1–K6 = true → ZALICZONY
+Uwagi przeniesione do etapu 3 (te same elementy): pasek „Próba minęła / Pełny dostęp” nie może ucinać ceny (2 linie zamiast wielokropka); kafelki postępu tylko dla wartości > 0 z poprawną odmianą; panel Stasia po próbie słabszy od „Kup dostęp” (C2 P0 pkt 4 – panel należy do pętli 2/3, w etapie 3 tylko ekran końca próby i pasek); przy pasku próby kolejne `przyciskZakupu()` jednolite; tag „Dostępne” w linii jak „Wkrótce”; po zamknięciu arkusza bez przewinięcia; poprawiona liczba CLS w „Uwagach stałych” (0,06 dotyczy tylko konta darmowego z kartą „Zadanie dnia”).

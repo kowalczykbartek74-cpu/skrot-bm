@@ -1,0 +1,2164 @@
+{
+ "etap": 2,
+ "runda": 2,
+ "data": "2026-11-16T21:40:39.325Z",
+ "przypadki": [
+  {
+   "n": "dzis-proba-dzien2-360-jasny",
+   "y": 0,
+   "cls": 0.0102,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pigułka próby": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Plany”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 101,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-dzien2-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pigułka próby": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Plany”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 101,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-dzien2-390-jasny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pigułka próby": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Plany”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 101,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-dzien2-390-jasny-en",
+   "y": 0,
+   "cls": 0.0117,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pigułka próby": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Plany”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 101,
+   "kontrast_ponizej": [
+    {
+     "tekst": "lvl 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-dzien2-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pigułka próby": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Plany”": {
+     "top": 219,
+     "bottom": 263,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 101,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-dzien2-1280-jasny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "pigułka próby": {
+     "top": 231,
+     "bottom": 283,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Plany”": {
+     "top": 235,
+     "bottom": 279,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 101,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-dzien2-1280-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "pigułka próby": {
+     "top": 231,
+     "bottom": 283,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    },
+    "„Plany”": {
+     "top": 235,
+     "bottom": 279,
+     "h": 44,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 101,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-ostatnie-godziny-360-jasny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pigułka (ostrzeżenie)": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 98,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-ostatnie-godziny-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pigułka (ostrzeżenie)": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 98,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-ostatnie-godziny-390-jasny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pigułka (ostrzeżenie)": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 98,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-ostatnie-godziny-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pigułka (ostrzeżenie)": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 98,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-ostatnie-godziny-360-jasny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "arkusz": {
+     "top": 77,
+     "bottom": 640,
+     "h": 563,
+     "w_pierwszym_ekranie": true
+    },
+    "plan 199 zł": {
+     "top": 320,
+     "bottom": 460,
+     "h": 141,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "info": "Element has insufficient color contrast of 1.57 (foreground color: #cacfcd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 18,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-ostatnie-godziny-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "arkusz": {
+     "top": 77,
+     "bottom": 640,
+     "h": 563,
+     "w_pierwszym_ekranie": true
+    },
+    "plan 199 zł": {
+     "top": 320,
+     "bottom": 460,
+     "h": 141,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "info": "Element has insufficient color contrast of 1.91 (foreground color: #4a5b52, background color: #1d3126, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 18,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-ostatnie-godziny-390-jasny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "arkusz": {
+     "top": 162,
+     "bottom": 844,
+     "h": 682,
+     "w_pierwszym_ekranie": true
+    },
+    "plan 199 zł": {
+     "top": 405,
+     "bottom": 545,
+     "h": 141,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "info": "Element has insufficient color contrast of 1.57 (foreground color: #cacfcd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 18,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-ostatnie-godziny-390-jasny-en",
+   "y": 0,
+   "cls": 0.0061,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "arkusz": {
+     "top": 205,
+     "bottom": 844,
+     "h": 639,
+     "w_pierwszym_ekranie": true
+    },
+    "plan 199 zł": {
+     "top": 448,
+     "bottom": 567,
+     "h": 119,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "info": "Element has insufficient color contrast of 1.57 (foreground color: #cacfcd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 18,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-ostatnie-godziny-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "arkusz": {
+     "top": 162,
+     "bottom": 844,
+     "h": 682,
+     "w_pierwszym_ekranie": true
+    },
+    "plan 199 zł": {
+     "top": 405,
+     "bottom": 545,
+     "h": 141,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "info": "Element has insufficient color contrast of 1.91 (foreground color: #4a5b52, background color: #1d3126, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 18,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-ostatnie-godziny-1280-jasny",
+   "y": 0,
+   "cls": 0.0002,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "arkusz": {
+     "top": 135,
+     "bottom": 765,
+     "h": 630,
+     "w_pierwszym_ekranie": true
+    },
+    "plan 199 zł": {
+     "top": 362,
+     "bottom": 481,
+     "h": 119,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 18,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "arkusz-ostatnie-godziny-1280-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "arkusz": {
+     "top": 135,
+     "bottom": 765,
+     "h": 630,
+     "w_pierwszym_ekranie": true
+    },
+    "plan 199 zł": {
+     "top": 362,
+     "bottom": 481,
+     "h": 119,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 18,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-360-jasny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "„Kup dostęp”": {
+     "top": 219,
+     "bottom": 267,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-360-ciemny",
+   "y": 0,
+   "cls": 0.0104,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "„Kup dostęp”": {
+     "top": 219,
+     "bottom": 267,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-390-jasny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "„Kup dostęp”": {
+     "top": 219,
+     "bottom": 267,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-390-jasny-en",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "„Kup dostęp”": {
+     "top": 219,
+     "bottom": 267,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "lvl 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "„Kup dostęp”": {
+     "top": 219,
+     "bottom": 267,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-1280-jasny",
+   "y": 0,
+   "cls": 0.0002,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "„Kup dostęp”": {
+     "top": 235,
+     "bottom": 283,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-1280-ciemny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "„Kup dostęp”": {
+     "top": 235,
+     "bottom": 283,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 71,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-bez-bloku-lekcji-390-jasny",
+   "y": 0,
+   "cls": 0.0061,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-proba-koniec-bez-bloku-lekcji-390-ciemny",
+   "y": 0,
+   "cls": 0.0061,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 53,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-360-jasny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-390-jasny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-390-jasny-en",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "lvl 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "pasek „Masz jeszcze 3 dni”": {
+     "top": 215,
+     "bottom": 267,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-bez-bloku-lekcji-390-jasny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 54,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-darmowe-bez-bloku-lekcji-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 54,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON",
+     "tekst": "5 min",
+     "w": 66,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "15 min",
+     "w": 72,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "30 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON",
+     "tekst": "60 min",
+     "w": 76,
+     "h": 36,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-konto-proba-390-jasny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 22,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Wygląd",
+     "w": 77,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Przypomnienia",
+     "w": 124,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Konto",
+     "w": 67,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Pomoc",
+     "w": 74,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-konto-proba-390-jasny-en",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 22,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nMore",
+     "w": 84,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Looks",
+     "w": 76,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Reminders",
+     "w": 106,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Account",
+     "w": 93,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Help",
+     "w": 67,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Timetable (free)",
+     "w": 102,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Message box for the year supervisor",
+     "w": 229,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Terms of service",
+     "w": 103,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Privacy policy",
+     "w": 89,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Contact",
+     "w": 53,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-konto-proba-390-ciemny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 22,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Wygląd",
+     "w": 77,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Przypomnienia",
+     "w": 124,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Konto",
+     "w": 67,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.tab",
+     "tekst": "Pomoc",
+     "w": 74,
+     "h": 40,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-konto-proba-1280-jasny",
+   "y": 0,
+   "cls": 0.0006,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 22,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-konto-proba-1280-ciemny",
+   "y": 0,
+   "cls": 0.0006,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 22,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "blad-wykorzystany-360-jasny",
+   "y": 0,
+   "cls": 0.0102,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-wykorzystany-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-wykorzystany-390-jasny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-wykorzystany-390-jasny-en",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-wykorzystany-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-wykorzystany-1280-jasny",
+   "y": 0,
+   "cls": 0.0002,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-wykorzystany-1280-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-urzadzenie-390-jasny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-urzadzenie-390-jasny-en",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "blad-urzadzenie-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 6,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-kierunki-390-jasny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 62,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-kierunki-390-jasny-en",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 62,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-kierunki-390-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 62,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-kierunki-1280-jasny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 56,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-kierunki-1280-ciemny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 56,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  }
+ ],
+ "przejscia": [
+  {
+   "nazwa": "proba-ostatni-dzien",
+   "opis": "próba, 4 h do końca: arkusz raz dziennie → „199 zł” → „Zanim zapłacisz”; po przeładowaniu sama pigułka",
+   "kroki": [
+    {
+     "krok": "arkusz „Zostało 4 godz. próby”",
+     "zrzut": "przejscie-proba-ostatni-dzien-1.png",
+     "stan": {
+      "h2": "Zostało 4 godz. próby",
+      "plany": [
+       "Do końca 2. semestru Najtaniej 199 zł to ok. 25 zł miesięcznie · jednorazowo, BLIK, bez odnawiania",
+       "Co miesiąc 35 zł / mies. kartą, odnawia się co miesiąc, anulujesz w każdej chwili"
+      ]
+     }
+    },
+    {
+     "krok": "klik plan 199 zł → okno zgód przed płatnością",
+     "zrzut": "przejscie-proba-ostatni-dzien-2.png",
+     "stan": "Zanim zapłacisz"
+    },
+    {
+     "krok": "przeładowanie → bez arkusza, pigułka w kolorze ostrzeżenia",
+     "zrzut": "przejscie-proba-ostatni-dzien-3.png",
+     "stan": {
+      "arkusz": false,
+      "pigulka": "uxw-pasek uxw-proba warn"
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "proba-koniec-kup",
+   "opis": "po próbie: jeden zielony „Kup dostęp” na Dziś → wybór planu",
+   "kroki": [
+    {
+     "krok": "Dziś: „Kup dostęp” (jeden, akcent)",
+     "zrzut": "przejscie-proba-koniec-kup-1.png",
+     "stan": [
+      "rgb(26, 127, 69)"
+     ]
+    },
+    {
+     "krok": "klik → „Wybierz plan”",
+     "zrzut": "przejscie-proba-koniec-kup-2.png",
+     "stan": true
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "blad-proby-plan",
+   "opis": "darmowe, próba już wykorzystana: „Włącz” → okno błędu → „Wybierz plan”",
+   "kroki": [
+    {
+     "krok": "Dziś z paskiem",
+     "zrzut": "przejscie-blad-proby-plan-1.png",
+     "stan": "Masz jeszcze 3 dni za darmo\nWłącz"
+    },
+    {
+     "krok": "klik „Włącz” → okno błędu",
+     "zrzut": "przejscie-blad-proby-plan-2.png",
+     "stan": "OKRES PRÓBNY\nOkresu próbnego nie da się włączyć\n\nNa tym koncie okres próbny już był. Twoje postępy z próby czekają. Dostęp: 199 zł do 11 lipca 2027 albo 35 zł / mies.\n\nWybierz plan\nNapisz do nas\nZamknij"
+    },
+    {
+     "krok": "klik „Wybierz plan” → wybór planu",
+     "zrzut": "przejscie-blad-proby-plan-3.png",
+     "stan": true
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "kierunek-wkrotce",
+   "opis": "gość: kierunek oczekujący → „Wkrótce” → lista oczekujących z tym kierunkiem",
+   "kroki": [
+    {
+     "krok": "lista kierunków",
+     "zrzut": "przejscie-kierunek-wkrotce-1.png",
+     "stan": [
+      "Zarządzanie",
+      "Economics and IT Applications",
+      "Komunikacja i psychologia w biznesie",
+      "Logistyka",
+      "Logistyka inż.",
+      "Przedsiębiorczość i Inwestycje",
+      "Informatyka w Biznesie",
+      "Zarządzanie Logistyczne w Ochronie Zdrowia",
+      "Zarządzanie odnawialnymi źródłami energii"
+     ]
+    },
+    {
+     "krok": "klik „Zarządzanie” → lista oczekujących",
+     "zrzut": "przejscie-kierunek-wkrotce-2.png",
+     "stan": "Ten kierunek jeszcze nie ruszył"
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [],
+   "bledy": []
+  }
+ ],
+ "ruch": [
+  {
+   "ekran": "dzis-proba",
+   "tryb": "zwykle",
+   ".uxw-proba": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-kup, .uxw-pasek-link": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "arkusz-ostatnie-godziny",
+   "tryb": "zwykle",
+   ".uxw-ost": {
+    "animacja": "h-sheet",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-plan.on": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "dzis-proba",
+   "tryb": "reduced-motion",
+   ".uxw-proba": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-kup, .uxw-pasek-link": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "arkusz-ostatnie-godziny",
+   "tryb": "reduced-motion",
+   ".uxw-ost": {
+    "animacja": "none",
+    "przejscie": "0.001s",
+    "after": "none"
+   },
+   ".uxw-plan.on": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "dzis-proba",
+   "tryb": "Mniej animacji (html.calm)",
+   ".uxw-proba": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-kup, .uxw-pasek-link": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "arkusz-ostatnie-godziny",
+   "tryb": "Mniej animacji (html.calm)",
+   ".uxw-ost": {
+    "animacja": "none",
+    "przejscie": "0.001s",
+    "after": "none"
+   },
+   ".uxw-plan.on": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   }
+  }
+ ],
+ "przewijanie": [
+  {
+   "ekran": "dzis-proba",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-proba-koniec",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-kierunki",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-proba",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-proba-koniec",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-kierunki",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-proba",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-proba-koniec",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-kierunki",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-proba",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-proba-koniec",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie-kierunki",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  }
+ ]
+}
