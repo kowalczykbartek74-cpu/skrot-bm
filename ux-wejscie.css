@@ -1,0 +1,126 @@
+/* Pętla UX-1: wejście, okres próbny i zakup. Kolory tylko ze zmiennych H2 (--h-*) i panelu Stasia (#133B2A / #1D4A36).
+   Ruch wyłączany przez prefers-reduced-motion i html.calm (na dole pliku). */
+
+/* ===== Ekran logowania ===== */
+/* Ekran logowania widoczny dopiero, gdy główny styl i ten plik są przeczytane, a czcionki gotowe (klasa lg-czcionki ze skryptu
+   logowania, najwyżej po 0,6 s). Dzięki temu nic nie skacze (CLS); bez tego pliku skrypt i tak odsłania ekran po 2,5 s. */
+html.needlogin.lg-czcionki #login { visibility: visible; }
+/* Ścieżka próby ma jeden wygląd głównego przycisku: limonkowa pastylka z ciemnym tekstem (jak „Zacznij 3 dni za darmo”). */
+html:not([data-theme]) .btn.primary.uxw-lime { background: var(--h-lime) !important; border-color: var(--h-lime) !important; color: var(--h-lime-ink, #10231A) !important; box-shadow: 0 4px 0 var(--h-lime-edge) !important; }
+html:not([data-theme]) .btn.primary.uxw-lime:hover { filter: brightness(1.04); }
+html:not([data-theme]) .btn.primary.uxw-lime:focus-visible { outline: 3px solid var(--h-ink) !important; outline-offset: 2px; }
+/* „Zmień e-mail” jako link w zdaniu z adresem (cel dotyku 44 px przez wewnętrzny odstęp). */
+#login #loginBox .lg-zmien { display: inline-block; min-height: 44px; margin: -12px 0; padding: 12px 2px; border: 0; background: none; font: inherit; font-weight: 700; color: var(--h-acc, #1A7F45); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+/* Telefon, kierunek już wybrany: pod hasłem jedno zdanie, czym jest Zdawalni; Staś trochę większy i macha na powitanie. */
+#login .lg-sub { display: none; }
+@media (max-width: 899px) {
+  html:not([data-theme]) #login:has(#lgWybrany:not([hidden])) .lg-intro .lg-sub { display: block; margin: 6px 0 0; color: #E8F5EC; font-size: 14px; line-height: 1.4; }
+  html:not([data-theme]) #login:is(:has(.lk-opts), :has(#lgWybrany:not([hidden]))) .lg-intro > .stas-face { width: 56px !important; height: 56px !important; }
+  html:not([data-theme]) #login .lg-intro > .stas-face { transform-origin: 50% 90%; animation: lg-hop .6s cubic-bezier(.3,1.5,.5,1) .2s backwards, lg-wave 1.2s ease-in-out 1s 1; }
+}
+/* K1: zanim skrot-supabase.js wstawi formularz, #loginBox ma wysokość gotowego formularza (bez skoku układu). */
+/*     (reguła siedzi w krytycznym CSS w linii 1 index.html, bo ten plik dochodzi już po pierwszym malowaniu) */
+/* Połysk na „Zacznij 3 dni za darmo” przez transform zamiast left (left przesuwał układ: CLS). */
+@keyframes uxw-shine { 0% { opacity: 0; transform: translateX(0) skewX(-18deg); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateX(570%) skewX(-18deg); } }
+html:not([data-theme]) #login .lg-trial .btn.primary::after { left: -40%; animation: uxw-shine 1.4s ease-out 1s 1 both; }
+/* K2: „Zaloguj się” jako mniejszy nagłówek, „Wyślij kod” biały z obrysem 2 px (jedyny główny przycisk to „Zacznij 3 dni”). */
+html:not([data-theme]) #login #loginBox .lg-h3 { margin: 0; font: 600 18px/1.3 var(--lg-head, "Plus Jakarta Sans"), system-ui, sans-serif; letter-spacing: -.01em; color: var(--h-ink); }
+html:not([data-theme]) #login #loginBox:has(.lg-trial) form .btn:not(.primary) { background: var(--h-card) !important; color: var(--h-ink) !important; border: 2px solid var(--h-edge) !important; box-shadow: none !important; }
+html:not([data-theme]) #login #loginBox:has(.lg-trial) form .btn:not(.primary):hover { border-color: var(--h-acc) !important; }
+/* Zakładki „Kod z maila / Hasło” na pełnej stronie: wybrana bez klasy primary, wygląd z [aria-selected]. */
+html:not([data-theme]) #login #loginBox [role="tab"].btn { border-radius: 999px !important; }
+/* K5: po 60 s bez kodu: notka o spamie i „Wyślij ponownie”. */
+#login #loginBox .lg-resend-note:not(.on) { visibility: hidden; }
+html:not([data-theme]) #login #loginBox .lg-resend-note { margin: 0; padding: 10px 14px; border-radius: 16px; background: var(--h-orange-soft); color: var(--h-ink); font-size: 14px; }
+html:not([data-theme]) #login #loginBox .lg-resend-msg { margin: 0; color: var(--h-muted); font-size: 14px; text-align: center; }
+html:not([data-theme]) #login #loginBox .btn.lg-resend { background: var(--h-card) !important; color: var(--h-ink) !important; border: 2px solid var(--h-edge) !important; box-shadow: none !important; }
+html:not([data-theme]) #login #loginBox .btn.lg-resend:disabled { opacity: 1; color: var(--h-muted) !important; border-style: dashed !important; }
+/* Przycisk przykładowej lekcji: ikona „play” w kolorze akcentu. */
+#login .lg-demo-btn .lg-eye { color: var(--h-acc, #1A7F45); }
+
+/* K4: ciemny wariant logowania (system w trybie ciemnym → data-green="dark", skrypt w <head>; albo wybór w Ustawieniach). */
+html[data-green="dark"]:not([data-theme]).needlogin, html[data-green="dark"]:not([data-theme]).needlogin body { background: var(--h-paper); }
+html[data-green="dark"]:not([data-theme]) #login { background: var(--h-paper); color: var(--h-ink); color-scheme: dark;
+  /* zmienne aplikacji, które #login wymusza jasne (linia 1), w ciemnym wariancie z ciemnej palety H2 (np. przykładowa lekcja) */
+  --paper: var(--h-paper); --surface: var(--h-card); --sunk: var(--h-raised); --ink: var(--h-ink); --ink-2: var(--h-ink); --muted: var(--h-muted); --line: var(--h-line);
+  --accent: var(--h-acc); --accent-ink: var(--h-acc-ink); --accent-soft: var(--h-acc-soft); --accent-text: var(--h-acc); --good: var(--h-acc); --good-soft: var(--h-acc-soft);
+  --warn: var(--h-orange); --warn-soft: var(--h-orange-soft); --bad: var(--h-red); --bad-soft: var(--h-red-soft); --mark: rgba(74,222,139,.25); --mixk: #FFFFFF; --mixw: #0F1A14;
+  --lg-sh: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7); --lg-sh-up: 0 2px 4px rgba(0,0,0,.35), 0 18px 36px -14px rgba(0,0,0,.8); }
+html[data-green="dark"]:not([data-theme]) #login .lg-main { background: var(--h-paper); }
+html[data-green="dark"]:not([data-theme]) #login .lg-brand { color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lg-lang { background: var(--h-card); color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login :is(.lk h2, #loginBox h2, #loginBox .lg-h3, .lg-intro h1) { color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lg-intro h1 em { color: var(--h-lime); background: none; }
+html[data-green="dark"]:not([data-theme]) #login :is(.lk-p, #loginBox > p, #loginBox p.muted, .lk-hint, .lg-intro li, .lk-txt small, .lg-or, .lg-terms, .lg-foot, .lg-foot a, .lg-demo details p, .lk-lab) { color: var(--h-muted) !important; }
+html[data-green="dark"]:not([data-theme]) #login .lg-or::before, html[data-green="dark"]:not([data-theme]) #login .lg-or::after { background: var(--h-line); }
+html[data-green="dark"]:not([data-theme]) #login :is(.lk-krok, .lk-back, .lg-terms a) { color: var(--h-acc); }
+html[data-green="dark"]:not([data-theme]) #login .lk-bar i { background: var(--h-line); }
+html[data-green="dark"]:not([data-theme]) #login .lk-bar i.on { background: var(--h-acc); }
+html[data-green="dark"]:not([data-theme]) #login :is(.lk-card, .lk-chip, .lk-opt) { background: var(--h-card); color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lk-card b { color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lk-ico { background: var(--h-raised); color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login :is(.lk-card.gotowe, .lk-chip) .lk-ico { background: #133B2A; color: var(--h-lime); box-shadow: inset 0 0 0 1px #1D4A36; }
+html[data-green="dark"]:not([data-theme]) #login .lk-tag { background: var(--h-acc-soft); color: var(--h-acc); box-shadow: 0 0 0 3px var(--h-paper); }
+html[data-green="dark"]:not([data-theme]) #login .lk-tag.wkr { background: var(--h-orange-soft); color: var(--h-orange); }
+html[data-green="dark"]:not([data-theme]) #login .lk-chip button { background: var(--h-raised); color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lk-opt[aria-pressed="true"] { background: #1D4A36; color: #FFFFFF; }
+html[data-green="dark"]:not([data-theme]) #login .lk-opt:disabled { background: var(--h-raised); color: var(--h-muted); }
+html[data-green="dark"]:not([data-theme]) #login .lk-opt:disabled small { color: var(--h-muted); }
+html[data-green="dark"]:not([data-theme]) #login .lk-go { background: var(--h-acc); color: var(--h-acc-ink); }
+html[data-green="dark"]:not([data-theme]) #login #loginBox label { color: var(--h-ink) !important; }
+html[data-green="dark"]:not([data-theme]) #login #loginBox .input { background: var(--h-card); color: var(--h-ink); border-color: var(--h-field, #6B8A76); }
+html[data-green="dark"]:not([data-theme]) #login #loginBox .input::placeholder { color: var(--h-muted); }
+html[data-green="dark"]:not([data-theme]) #login #loginBox .input:focus { border-color: var(--h-acc); box-shadow: 0 0 0 2px var(--h-paper), 0 0 0 5px var(--h-acc); }
+html[data-green="dark"]:not([data-theme]) #login #loginBox .btn:not(.primary):not(.ghost):not([role="tab"]) { background: var(--h-raised) !important; color: var(--h-ink) !important; }
+html[data-green="dark"]:not([data-theme]) #login #loginBox:has(.lg-trial) form .btn:not(.primary), html[data-green="dark"]:not([data-theme]) #login #loginBox .btn.lg-resend { background: var(--h-card) !important; border-color: var(--h-edge) !important; color: var(--h-ink) !important; }
+html[data-green="dark"]:not([data-theme]) #login #loginBox .btn.primary:not(.lg-trial .btn) { background: var(--h-acc) !important; border-color: var(--h-acc) !important; color: var(--h-acc-ink) !important; }
+html[data-green="dark"]:not([data-theme]) #login #loginBox :is(.btn.ghost, form ~ div .btn):not([role="tab"]) { color: var(--h-acc) !important; text-decoration-color: currentColor; }
+html[data-green="dark"]:not([data-theme]) #login #loginBox [role="tablist"] { background: var(--h-raised); }
+html[data-green="dark"]:not([data-theme]) #login #loginBox [role="tab"] { color: var(--h-muted) !important; }
+html[data-green="dark"]:not([data-theme]) #login #loginBox [role="tab"][aria-selected="true"] { background: var(--h-edge) !important; color: var(--h-ink) !important; }
+html[data-green="dark"]:not([data-theme]) #login #loginBox .notice.err { background: var(--h-red-soft); border-color: var(--h-red-soft); color: var(--h-red); }
+html[data-green="dark"]:not([data-theme]) #login .lg-trial { box-shadow: 0 0 0 1px #1D4A36, 0 22px 44px -22px rgba(0,0,0,.8); }
+html[data-green="dark"]:not([data-theme]) #login .lg-intro { box-shadow: 0 0 0 1px #1D4A36, 0 22px 44px -22px rgba(0,0,0,.8); }
+html[data-green="dark"]:not([data-theme]) #login .lg-trial-note { background: var(--h-acc-soft); color: var(--h-acc); }
+html[data-green="dark"]:not([data-theme]) #login #loginBox .lg-resend-note { background: var(--h-orange-soft); color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lg-demo-btn { color: var(--h-acc) !important; }
+html[data-green="dark"]:not([data-theme]) #login .lg-demo details { border-color: var(--h-line); }
+html[data-green="dark"]:not([data-theme]) #login .lg-demo summary { color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lg-demo summary::before { border-color: var(--h-acc); }
+html[data-green="dark"]:not([data-theme]) #login :is(.btn, .lg-demo-btn, .lk-card, .lk-chip button, [role="tab"], .lg-lang, .lk-opt, .lk-go):focus-visible { outline-color: var(--h-acc); }
+/* Przykładowa lekcja w ciemnym wariancie: tło z palety ciemnej (treść korzysta ze zmiennych aplikacji). */
+html[data-green="dark"]:not([data-theme]) #login .lg-pokaz { background: var(--h-paper); color: var(--h-ink); }
+html[data-green="dark"]:not([data-theme]) #login .lg-pokaz-cta { background: var(--h-card); border-top-color: var(--h-line); }
+html[data-green="dark"]:not([data-theme]) #login .lg-pokaz-cta button { background: var(--h-acc); color: var(--h-acc-ink); }
+@media (min-width: 900px) {
+  html[data-green="dark"]:not([data-theme]) #login .lg-form-in { background: var(--h-card); }
+  html[data-green="dark"]:not([data-theme]) #login .lg-form-in :is(.lk-card, .lk-opt:not([aria-pressed="true"]):not(:disabled), .lg-demo-btn, .lk-chip) { background: var(--h-raised); }
+  html[data-green="dark"]:not([data-theme]) #login .lg-form-in .lk-card:hover { background: var(--h-edge); }
+  html[data-green="dark"]:not([data-theme]) #login .lg-form-in .lk-tag { box-shadow: 0 0 0 3px var(--h-card); }
+  html[data-green="dark"]:not([data-theme]) #login #loginBox:has(.lg-trial) form .btn:not(.primary) { background: var(--h-raised) !important; }
+  html[data-green="dark"]:not([data-theme]) #login .lg-side { box-shadow: inset -1px 0 0 #1D4A36; }
+}
+
+/* ===== Arkusz „Włączyć teraz 3 dni?” (po pierwszym logowaniu) ===== */
+.uxw-sheet { text-align: left; }
+.uxw-sheet .uxw-face { display: flex; justify-content: center; }
+.uxw-sheet .uxw-face .stas-face { display: block; width: 96px; height: 96px; border-radius: 50%; box-shadow: 0 0 0 4px var(--h-acc-soft, #DDF3D0); }
+.uxw-sheet h2, .uxw-sheet > p { text-align: center; }
+.uxw-sheet .uxw-actions { display: grid; gap: 8px; margin-top: 4px; }
+.uxw-sheet .btn.uxw-big { width: 100%; min-height: 52px; justify-content: center; }
+html:not([data-theme]) .uxw-sheet .btn.primary.uxw-big { border-radius: 999px; }
+
+/* ===== Pigułka okresu próbnego na Dziś (nad panelem Stasia) ===== */
+.uxw-pasek { display: flex; align-items: center; gap: 10px; min-height: 52px; max-height: 56px; box-sizing: border-box; padding: 4px 4px 4px 14px; border-radius: 999px;
+  background: var(--h-acc-soft, #DDF3D0); color: var(--h-ink, #10231A); font-weight: 700; font-size: 15px; line-height: 1.25; }
+.uxw-pasek .uxw-ico { display: inline-flex; flex: none; color: var(--h-acc, #1A7F45); }
+.uxw-pasek .uxw-pasek-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.uxw-pasek .uxw-pasek-b { flex: none; min-height: 44px; min-width: 64px; padding: 0 18px; border: 0; border-radius: 999px; background: var(--h-acc, #1A7F45); color: var(--h-acc-ink, #FFFFFF);
+  font: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 3px 0 var(--h-acc-edge, #0F5A2F); }
+.uxw-pasek .uxw-pasek-b:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--h-acc-edge, #0F5A2F); }
+.uxw-pasek .uxw-pasek-b:focus-visible { outline: 3px solid var(--h-ink, #10231A); outline-offset: 2px; }
+
+/* ===== Ruch: wyłączany przez reduced-motion i „Mniej animacji” ===== */
+@media (prefers-reduced-motion: reduce) { .uxw-pasek, .uxw-pasek *, .uxw-sheet, .uxw-sheet * { animation: none !important; transition: none !important; } .uxw-pasek .uxw-pasek-b:active { transform: none; } }
+html.calm .uxw-pasek, html.calm .uxw-pasek *, html.calm .uxw-sheet, html.calm .uxw-sheet * { animation: none !important; transition: none !important; }
+html.calm .uxw-pasek .uxw-pasek-b:active { transform: none; }

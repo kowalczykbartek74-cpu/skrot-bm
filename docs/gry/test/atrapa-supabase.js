@@ -483,7 +483,14 @@
     nauka_ja: () => ({ email: EMAIL, admin: KONTO === "starosta", platny: paid, czytelnik: paid, platny_konto: paid, dostep_do: paid && !PROBA ? "2027-07-11" : null, plan: paid && !PROBA ? "rok" : null,
       proba_do: PROBA ? probaDo : null, proba_mozna: KONTO === "darmowe", proba_dni: 3 }),
     nauka_ping: () => ({ stan: "ok" }),
+    // === ux-1 ===
+    // (funkcje pętli UX-1 dochodzą tu w kolejnych etapach)
+    // === koniec ux-1 ===
   };
+  // === ux-1 === logowanie: mock-otp-blad = "rate" (limit maili/IP) | "sekundy" (kod przed chwilą) | inny tekst → błąd signInWithOtp
+  const UX1_OTP = async () => { const e = ls("mock-otp-blad", ""); window.__otp = (window.__otp || 0) + 1;
+    return e ? { error: { message: e === "rate" ? "email rate limit exceeded" : e === "sekundy" ? "For security purposes, you can only request this after 58 seconds." : e } } : {}; };
+  // === koniec ux-1 ===
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
     await new Promise((r) => setTimeout(r, 30));
@@ -556,7 +563,7 @@
   const session = KONTO === "brak" ? null : { access_token: "t", user: { id: UID, email: EMAIL, user_metadata: {} } };
   window.supabase = { createClient: () => ({
     auth: { getSession: async () => ({ data: { session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}),
-      signInWithOtp: async () => ({}), signInWithPassword: async () => ({}), verifyOtp: async () => ({}), updateUser: async () => ({}), reauthenticate: async () => ({}) },
+      signInWithOtp: UX1_OTP, signInWithPassword: async () => ({}), verifyOtp: async () => ({}), updateUser: async () => ({}), reauthenticate: async () => ({}) },
     rpc, from: () => table(),
     functions: { invoke: async () => ({ data: null, error: { message: "atrapa" } }) },
   }) };
