@@ -23,3 +23,10 @@ Przyciski 3D (obrys 2px, brzeg --h-edge, wciśnięcie), karty .panel/.list/.empt
 (88dvh, uchwyt sticky, wejście i zamykanie z animacją; zamykane okno poza #layer, inert, fokus wraca do przycisku),
 puste stany ze Stasiem (SVG w ::before, tylko zwykłe .empty), pole dotyku małych przycisków ≥ 44 px. Test h2-etap2.mjs 33/33, ~60 fps.
 Na później: #main .gs2 .seg.pick bez stylu H2; tokeny --h-red-edge/--h-acc-edge zamiast color-mix.
+
+### Etap 3 – nawigacja i nagłówek – ZALICZONY 8,5/10 (próba 2; próba 1: 7/10)
+Zakładki: podskok ikony (telefon) / przycisku (komputer) tylko przy zmianie zakładki, plakietka wyskakuje przy zmianie liczby
+(okno 0,6 s z ujemnym opóźnieniem, bez wyskoku w pierwszych 3 s wczytywania); aktywna zakładka w zielonej pastylce; pasek .bar 2px;
+poziom, monety, seria jako pigułki 3D ≥ 44 px; moneta i płomień SVG (h2Ico) tylko w zielonych motywach; płomień migocze przy serii > 0;
+połysk monety raz na sesję / przy zmianie liczby (okno 7,5 s). Test h2-etap3.mjs 48/48, ~50 fps przy przełączaniu zakładek.
+Na później: plakietka na #moreBtn bez .h-pop; --h-edge w ciemnym słabo widoczny; h2Ico w otwartych oknach przy zmianie motywu.

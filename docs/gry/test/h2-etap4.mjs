@@ -32,9 +32,9 @@ for (const dark of [false, true]) {
     if (fbSeen) return;
     const r = await p.locator(".lp-fb").first().evaluate((e) => { const c = getComputedStyle(e), f = getComputedStyle(e.firstElementChild || e); return { cls: e.className, bg: c.backgroundColor, bw: c.borderTopWidth, col: f.color }; });
     fbSeen = r; await p.screenshot({ path: `${OUT}/h2e4-${n}-odpowiedz.png` });
-    wide = await p.evaluate(() => ({ sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width) }));
+    wide = await p.evaluate(() => { const xp = document.querySelector(".lp-xpchip"); return { sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), xp: !!xp && xp.getBoundingClientRect().width > 0 }; });
   });
-  ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px`, (wide.sw <= 376) && wide.bar >= 72, wide);
+  ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px, pigułka XP widoczna`, (wide.sw <= 376) && wide.bar >= 72 && wide.xp, wide);
   ok(`${n}: informacja zwrotna jako kolorowy panel z obrysem i czytelnym nagłówkiem`, fbSeen && fbSeen.bw === "2px" && cr(fbSeen.col, fbSeen.bg) >= 4.5, fbSeen);
   ok(`${n}: lekcję da się przejść do ekranu końcowego`, done, await p.locator(".lp-stage").innerText().catch(() => ""));
   if (done) {
@@ -46,6 +46,8 @@ for (const dark of [false, true]) {
     ok(`${n}: ekran końcowy ze Stasiem`, await p.locator(".lp-done-screen .lp-stas svg").count() === 1, "");
     finals[n] = fin;
     ok(`${n}: w trakcie liczenia czytnik dostaje wynik końcowy (ukryty tekst), liczba animowana ukryta`, await p.locator(".lp-stat b .h2-sr").count() === 0 || await p.locator('.lp-stat b > [aria-hidden="true"]').count() >= 1, "");
+    const fs = await p.locator(".lp-stat b").evaluateAll((bs) => bs.map((b) => parseFloat(getComputedStyle(b.querySelector(".h2-cnt") || b).fontSize)));
+    ok(`${n}: liczona liczba ma ten sam rozmiar co pozostałe (np. „1/3”)`, fs.length > 1 && fs.every((v) => Math.abs(v - fs[fs.length - 1]) < 0.5), fs);
     ok(`${n}: Staś zamiast ptaszka (bez obu naraz)`, await p.locator(".lp-done-screen .lp-bigcheck").count() === 0, "");
     const st = await p.locator(".lp-stat").first().evaluate((e) => { const c = getComputedStyle(e), bb = getComputedStyle(e.querySelector("b")); return [c.borderBottomWidth, bb.color, c.backgroundColor]; });
     ok(`${n}: kafelki statystyk 3D i czytelne`, st[0] === "4px" && cr(st[1], st[2]) >= 4.5, st);

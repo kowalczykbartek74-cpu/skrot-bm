@@ -4597,10 +4597,13 @@ html:not([data-theme]) .lp-top { gap: 8px; min-width: 0; }
 html:not([data-theme]) .lp-top > * { min-width: 0; }
 html:not([data-theme]) .lp-top .lp-bar { min-width: 72px; }
 html:not([data-theme]) .lp-top .lp-chip { flex: none; padding: 4px 9px; }
-@media (max-width: 420px) { html:not([data-theme]) .lp-top .lp-chip.lp-xpchip { display: none; } html:not([data-theme]) .lp-top .ld-seg { max-width: 26%; } }
+/* Na wąskim ekranie z nazwy części zostaje ikona (pełna nazwa w title i dla czytnika), pigułka XP zostaje (stąd wylatuje „+XP”). */
+@media (max-width: 420px) { html:not([data-theme]) .lp-top .ld-seg { flex: none; padding: 4px 9px; } html:not([data-theme]) .lp-top .ld-seg > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+html:not([data-theme]) .lp-stat b .h2-cnt { font: inherit; color: inherit; }
 .h2-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.lp-combo, .lp-stas) { animation: none !important; } }
 html.calm :is(.lp-combo, .lp-stas) { animation: none !important; }
+html:not([data-theme]) .h2-donetop { display: grid; justify-items: center; gap: 10px; }
 </style>
 
 <header class="bar"><div class="wrap">
@@ -10474,7 +10477,7 @@ html.calm :is(.lp-combo, .lp-stas) { animation: none !important; }
     if (fresh && !h2Calm()) requestAnimationFrame(() => el.querySelectorAll(".lp-stat b").forEach((b, i) => {
       const m = /^([+]?)(\d+)$/.exec(b.textContent.trim()); if (!m || +m[2] < 2) return;
       const to = +m[2], t0 = performance.now() + 250 + i * 120, dur = 800, fin = b.textContent;
-      const num = h("span", { "aria-hidden": "true", text: m[1] + "0" }); b.replaceChildren(num, h("span", { class: "h2-sr", text: fin }));
+      const num = h("span", { class: "h2-cnt", "aria-hidden": "true", text: m[1] + "0" }); b.replaceChildren(num, h("span", { class: "h2-sr", text: fin }));
       const tick = (t) => { const k = Math.max(0, Math.min(1, (t - t0) / dur)), e = 1 - (1 - k) ** 3; num.textContent = m[1] + Math.round(to * e); if (k < 1 && b.isConnected) requestAnimationFrame(tick); else num.textContent = fin; };
       requestAnimationFrame(tick);
     }));
@@ -10793,7 +10796,7 @@ html.calm :is(.lp-combo, .lp-stas) { animation: none !important; }
     LP.el.cta.textContent = d.cta?.label || "Wróć"; LP.el.ctaFn = d.cta?.fn || (() => lpClose()); LP.el.cta.disabled = false; LP.el.cta.hidden = false; LP.el.help.hidden = true;
     let top;
     if (d.top) top = d.top;
-    else if (d.stars != null) top = h("div", { class: "lp-bigstars", "aria-label": `${d.stars} z 3 gwiazdek` }, [1, 2, 3].map((i) => h("span", { class: "lp-star" + (i <= d.stars ? "" : " off"), style: `--i:${i - 1}`, text: "⭐" })));
+    else if (d.stars != null) { const st = h("div", { class: "lp-bigstars", "aria-label": `${d.stars} z 3 gwiazdek` }, [1, 2, 3].map((i) => h("span", { class: "lp-star" + (i <= d.stars ? "" : " off"), style: `--i:${i - 1}`, text: "⭐" }))), sf = h2DoneStas(d.stars >= 2 ? "ok" : "think"); top = sf ? h("div", { class: "h2-donetop" }, sf, st) : st; }
     else if (!(top = h2DoneStas("ok"))) { top = h("div", {}); top.innerHTML = `<svg class="lp-bigcheck" viewBox="0 0 104 104" aria-hidden="true"><circle cx="52" cy="52" r="50"/><path class="lp-draw" d="M30 54 L46 69 L76 38"/></svg>`; }
     return h2Done(fresh, h("div", { class: "lp-done-screen sk-done" + (fresh ? " lp-fresh" : "") }, top,
       h("h2", { text: d.title }),
@@ -19026,7 +19029,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       onShow() {
         LD.cardT = Date.now();
         const st = LP.st, n = lpCards().length, end = st.idx >= n, i = end ? segs.length : segOf(st.idx), s = segs[i];
-        if (LP.el.ldSeg) { LP.el.ldSeg.replaceChildren(...(s ? ldChipIn(s) : [])); LP.el.ldSeg.hidden = !s; }
+        if (LP.el.ldSeg) { LP.el.ldSeg.replaceChildren(...(s ? ldChipIn(s) : [])); LP.el.ldSeg.hidden = !s; LP.el.ldSeg.title = LP.el.ldSeg.textContent.trim(); }
         if (LP.el.ldSkip) LP.el.ldSkip.hidden = end;
         if (st.seg !== i) {
           const prev = st.seg ?? 0;
