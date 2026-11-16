@@ -4435,7 +4435,7 @@ html:not([data-theme]) {
   --paper: var(--h-paper); --surface: var(--h-card); --ink: var(--h-ink); --muted: var(--h-muted);
 }
 html[data-green="dark"]:not([data-theme]) {
-  --h-paper: #0F1A14; --h-card: #17271E; --h-raised: #1D3126; --h-line: #2A3D31; --h-edge: #0A130E;
+  --h-paper: #0F1A14; --h-card: #17271E; --h-raised: #1D3126; --h-line: #2A3D31; --h-edge: #36503F;
   --h-ink: #E8F2EC; --h-muted: #A9BDB1; --h-acc: #4ADE8B; --h-acc-edge: #1F8F52; --h-acc-ink: #0B2A18; --h-acc-soft: #183324;
   --h-orange: #FF9F43; --h-orange-soft: #33240F; --h-blue: #8CC2F5; --h-blue-soft: #14283A; --h-red: #FF7A70; --h-red-soft: #3A1518;
   --paper: var(--h-paper); --surface: var(--h-card); --sunk: #132119; --ink: var(--h-ink); --muted: var(--h-muted);
@@ -4885,8 +4885,18 @@ html:not([data-theme]) main.h-ent .set-themes > * { animation: h-pop .4s var(--h
 @media (max-width: 520px) {
   html:not([data-theme]) .set-tabs { gap: 4px; }
   html:not([data-theme]) .set-tabs .tab { flex: 1 1 auto; padding: 5px 7px; min-height: 40px; font-size: .84rem; }
-  @media (max-width: 380px) { html:not([data-theme]) .set-tabs .tab { padding: 5px 5px; font-size: .78rem; letter-spacing: -.01em; } }
+  @media (max-width: 380px) { html:not([data-theme]) .set-tabs .tab { padding: 5px 3px; } }
   html:not([data-theme]) .set-themes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  html:not([data-theme]) .set-theme:last-child:nth-child(3n+1) { grid-column: 1 / -1; grid-template-columns: auto auto; grid-template-rows: auto auto; justify-content: center; column-gap: 10px; text-align: left; }
+  html:not([data-theme]) .set-theme:last-child:nth-child(3n+1) .e { grid-row: 1 / span 2; }
+  html:not([data-theme]) .more-tiles { gap: 6px; }
+  html:not([data-theme]) .more-tile { gap: 6px; min-height: 54px; padding: 6px 6px 6px 7px; font-size: .9rem; line-height: 1.2; letter-spacing: -.005em; }
+  html:not([data-theme]) .more-tile > .ico { width: 28px; height: 28px; }
+  html:not([data-theme]) .more-tile > .ico svg { width: 16px; height: 16px; }
+  html:not([data-theme]) .more-row { min-height: 48px; padding: 5px 10px; gap: 10px; }
+  html:not([data-theme]) .more-row > .ico:first-child { width: 34px; height: 34px; }
+  html:not([data-theme]) main[data-view="more"] .more-row .more-txt small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  html:not([data-theme]) .more-row .more-txt > span { font-size: .95rem; }
   html:not([data-theme]) .set-theme { padding: 8px 4px 7px; gap: 2px; border-radius: 16px; }
   html:not([data-theme]) .set-theme .e { font-size: 24px; }
   html:not([data-theme]) .set-theme b { font-size: .82rem; }
@@ -4902,19 +4912,26 @@ html:not([data-theme]) #login #loginBox .btn.primary { box-shadow: 0 4px 0 #0E5A
 html:not([data-theme]) #login #loginBox .btn:not(.ghost):not([disabled]):active { transform: translateY(3px); box-shadow: 0 1px 0 #BFCBBA; }
 html:not([data-theme]) #login #loginBox .btn.primary:not([disabled]):active { box-shadow: 0 1px 0 #0E5A30; }
 html:not([data-theme]) #login .input { border: 2px solid #8FA397; border-radius: 14px; }
-html:not([data-theme]) #login .input:focus { border-color: #1A7F45; box-shadow: 0 0 0 3px #CDF25E; outline: none; }
+html:not([data-theme]) #login .input:focus { border-color: #1A7F45; box-shadow: 0 0 0 2px #fff, 0 0 0 5px #1A7F45; outline: none; }
+html:not([data-theme]) #login #loginBox [role="tablist"] { background: transparent; padding: 0; gap: 6px !important; }
+html:not([data-theme]) #login #loginBox [role="tab"] { width: 100% !important; justify-self: stretch !important; min-height: 44px; border: 2px solid #D6E2DB !important; border-bottom-width: 4px !important; border-radius: 999px; background: #fff !important; color: #1F2D25 !important; font-weight: 700; box-shadow: none !important; transition: transform .08s ease, border-bottom-width .08s ease; }
+html:not([data-theme]) #login #loginBox [role="tab"][aria-selected="true"] { background: #DDF3D0 !important; border-color: #1A7F45 !important; border-bottom-color: #0F5A2F !important; color: #0E5A30 !important; }
+html:not([data-theme]) #login #loginBox [role="tab"]:active { transform: translateY(2px); border-bottom-width: 2px !important; }
+html:not([data-theme]) #login .lk-chip button { border: 2px solid #CFE8D8; border-bottom: 4px solid #8CCBA6; border-radius: 12px; transition: transform .08s ease, border-bottom-width .08s ease; }
+html:not([data-theme]) #login .lk-chip button:active { transform: translateY(2px); border-bottom-width: 2px; }
+html:not([data-theme]) #login :is(.btn, .lg-demo-btn, .lk-card, .lk-chip button, [role="tab"], .lg-lang):focus-visible { outline: 3px solid #0E5A30; outline-offset: 2px; }
 html:not([data-theme]) #login .lg-trial { border: 2px solid #BFE3CD; border-bottom: 6px solid #8CCBA6; border-radius: 22px; }
 html:not([data-theme]) #login .lg-trial-note { border-width: 2px; border-radius: 14px; }
 html:not([data-theme]) #login .lg-demo-btn { border: 2px solid #BFE3CD; border-bottom: 4px solid #8CCBA6; border-radius: 14px; transition: transform .08s ease, border-bottom-width .08s ease; }
 html:not([data-theme]) #login .lg-demo-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
-html:not([data-theme]) #login .lk-card { border-width: 2px; border-bottom-width: 4px; border-radius: 18px; }
+html:not([data-theme]) #login .lk-card { border-width: 2px; border-bottom-width: 4px; border-radius: 18px; transition: transform .08s ease, border-bottom-width .08s ease, border-color .15s; }
 html:not([data-theme]) #login .lk-chip { box-shadow: inset 0 -3px 0 #BFE3CD; }
 html:not([data-theme]) #login .lk-card:active { transform: translateY(2px); border-bottom-width: 2px; }
 html:not([data-theme]) #login .lg-lang { border-width: 2px; border-bottom-width: 3px; }
 html:not([data-theme]) #login .lg-trial { animation: h-rise .5s var(--h-out) .1s backwards; }
-@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.more-tiles > *, .set-themes > *, .set-theme .e, #login .lg-trial) { animation: none !important; } html:not([data-theme]) :is(.more-row, .more-tile, .more-prof, .set-theme, .set-tabs .tab, #login #loginBox .btn, #login .lg-demo-btn, #login .lk-card) { transform: none !important; transition: none; } html:not([data-theme]) .switch i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-theme]) :is(.more-tiles > *, .set-themes > *, .set-theme .e, #login .lg-trial) { animation: none !important; } html:not([data-theme]) :is(.more-row, .more-tile, .more-prof, .set-theme, .set-tabs .tab, #login #loginBox .btn, #login .lg-demo-btn, #login .lk-card, #login .lk-chip button, #loginBox [role="tab"]) { transform: none !important; transition: none; } html:not([data-theme]) .switch i { transition: none; } }
 html.calm :is(.more-tiles > *, .set-themes > *, .set-theme .e, #login .lg-trial) { animation: none !important; }
-html.calm :is(.more-row, .more-tile, .more-prof, .set-theme, .set-tabs .tab) { transform: none !important; }
+html.calm :is(.more-row, .more-tile, .more-prof, .set-theme, .set-tabs .tab, #loginBox .btn, #login .lg-demo-btn, #login .lk-card, #login .lk-chip button, #loginBox [role="tab"]) { transform: none !important; }
 html.calm .switch i { transition: none; }
 </style>
 
