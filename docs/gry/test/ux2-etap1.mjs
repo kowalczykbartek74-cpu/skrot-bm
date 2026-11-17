@@ -142,7 +142,7 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   const zam = (reqs) => ({ "mock-v24": "1", "mock-mon": JSON.stringify({ start: 0, ksiega: [], pos: [], zam: { reqs, dni: [] }, zal: {}, gab: [] }) });
   let p = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ls: zam(["a1"]) });
   const a = await pill(p);
-  ok("K1 19:00 z 1 zamrożeniem: „· chroni zamrożenie (ostatnie)”, szary płomień, bez alarmu „do północy”, nic poza ekranem", (await pozaEkranem(p, "#main .greet *")).length === 0 && /streak-chroni/.test(a.cls) && /chroni zamrożenie \(ostatnie\)/.test(a.txt) && !/północy/.test(a.txt) && /grayscale/.test(a.flameFilter), a);
+  ok("K1 19:00 z 1 zamrożeniem: „· zamrożenie chroni (ostatnie)”, szary płomień, bez alarmu „do północy”, nic poza ekranem", (await pozaEkranem(p, "#main .greet *")).length === 0 && /streak-chroni/.test(a.cls) && /zamrożenie chroni \(ostatnie\)/.test(a.txt) && !/północy/.test(a.txt) && /grayscale/.test(a.flameFilter), a);
   await shot(p, "dzis-19-chroni-390-jasny");
   await p.click("#main .greet .nw-streak"); await p.waitForTimeout(700);
   const ok2 = await p.evaluate(() => ({ dzis: document.querySelector("#layer .nw-cal .nw-day.dzis")?.className, leg: document.querySelector("#layer .nw-legend")?.innerText }));
@@ -165,7 +165,8 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   await p.evaluate(() => window.ZD_APP.xpFlush(12)); await p.waitForTimeout(1500);
   const w1 = await pill(p), stw = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak, z: window.skrot.sklep.zamrozenia, ban: document.querySelector(".nw-baner")?.innerText }));
   ok("K3 zasady działają jak w oknie: poniedziałek po weekendzie z 2 zamrożeniami seria 10 żyje, po nauce 11, oba dni zamrożone, baner bez emoji", /^10 dni/.test(w0.txt) && /streak-done/.test(w1.cls) && stw.s.n === 11 && stw.z.ma === 0 && stw.z.dni.length === 2 && /Zamrożenia uratowały serię: 11 dni · zostało 0\/2/.test(stw.ban || "") && !/\p{Extended_Pictographic}/u.test(stw.ban), { w0, stw });
-  ok("K3 baner u góry nie zasłania głównego przycisku", await p.evaluate(() => { const a = document.querySelector(".nw-baner")?.getBoundingClientRect(), c = document.querySelector("#main .zh-go")?.getBoundingClientRect(); return !!a && (!c || a.bottom <= c.top || a.top >= c.bottom); }));
+  const pos = await p.evaluate(() => { const r = (q) => document.querySelector(q)?.getBoundingClientRect(); const a = r(".nw-baner"), c = r("#main .zh-go"), g = r("#main .greet"); return a && { a: [a.top, a.bottom], c: c && [c.top, c.bottom], g: [g.top, g.bottom] }; });
+  ok("K3 baner nad dolnym paskiem: nie zasłania powitania z serią ani głównego przycisku", pos && pos.a[0] >= pos.g[1] && (!pos.c || pos.a[1] <= pos.c[0] || pos.a[0] >= pos.c[1]), pos);
   await shot(p, "baner-zamrozenia-390-jasny");
   R.pomiary.push(await pomiar(p, "Baner zamrożeń 390", ".nw-baner", ".nw-baner"));
   await p.close();

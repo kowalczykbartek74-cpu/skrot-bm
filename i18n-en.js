@@ -5601,13 +5601,24 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Seria {0} się skończyła: zabrakło zamrożeń. Dziś zaczynasz nową.": "Your {0} streak ended: not enough freezes. Today you start a new one.",
 "przed Tobą": "still ahead",
 "Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.": "You got a free streak freeze. One missed day won't break your streak.",
-"· chroni zamrożenie (zostanie {0})": "· freeze covers today ({0} left)",
-"· chroni zamrożenie (ostatnie)": "· freeze covers today (last one)",
 "· weekend: zużyje {0} z {1}": "· weekend: uses {0} of {1}",
 "· dziś ✓": "· done today",
 "cel ✓": "goal ✓",
 "dziś chroni zamrożenie": "today covered by a freeze",
-"Jutro: {0}, 5 min": "Tomorrow: {0}, 5 min"
+"Jutro: {0}, 5 min": "Tomorrow: {0}, 5 min",
+"Kup za": "Buy for",
+"Chroń serię": "Protect your streak",
+"Chroń serię: zamrożenie za {0}": "Protect your streak: freeze for {0}",
+"Masz serię {0}. Zamrożenie ochroni ją, gdy opuścisz dzień (np. w weekend).": "You're on a {0} streak. A freeze protects it when you miss a day (e.g. at the weekend).",
+"Ten tydzień: {0}/5 dni": "This week: {0}/5 days",
+"5 dni nauki w tygodniu wystarczy: pasuje do zajęć od poniedziałku do piątku.": "5 study days a week is enough: it fits classes from Monday to Friday.",
+"Masz {0}: dziś możesz odpuścić, jutro już nie.": "You have {0}: you can skip today, but not tomorrow.",
+"Zamrożenia: {0}/2": "Freezes: {0}/2",
+"· zamrożenie chroni (ostatnie)": "· freeze covers today (last one)",
+"· zamrożenie chroni (zostanie {0})": "· freeze covers today ({0} left)",
+"1 zamrożenie": "1 freeze",
+"{0} zamrożenia": "{0} freezes",
+"{0} zamrożeń": "{0} freezes"
 // koniec ux-2
 },
 "plural": {

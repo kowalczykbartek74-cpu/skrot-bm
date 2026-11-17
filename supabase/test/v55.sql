@@ -81,7 +81,9 @@ do $$ begin
   perform test.chk('Z6 jeden wpis prezentu z ceną 0, bez wpisu w księdze monet',
     (select count(*) = 1 and min(cena) = 0 from public.nauka_zamrozenia where user_id = '55555555-0000-4000-8000-000000000004' and req = 'prezent:konto')
     and not exists (select 1 from public.nauka_monety where user_id = '55555555-0000-4000-8000-000000000004'), null);
-  perform test.rp55('55555555-0000-4000-8000-000000000005', (now() at time zone 'Europe/Warsaw')::date); perform test.rp55('55555555-0000-4000-8000-000000000005', (now() at time zone 'Europe/Warsaw')::date - 2);
+  perform test.rp55('55555555-0000-4000-8000-000000000005', (now() at time zone 'Europe/Warsaw')::date); perform test.rp55('55555555-0000-4000-8000-000000000005', (now() at time zone 'Europe/Warsaw')::date - 1);
+  insert into auth.users (id, email) values ('55555555-0000-4000-8000-000000000006', 'seria6@x.pl') on conflict do nothing;
+  perform test.rp55('55555555-0000-4000-8000-000000000006', (now() at time zone 'Europe/Warsaw')::date); perform test.rp55('55555555-0000-4000-8000-000000000006', (now() at time zone 'Europe/Warsaw')::date - 5);
   perform test.zam55('55555555-0000-4000-8000-000000000005', 2);
 end $$;
 select test.jako('seria5@x.pl'); set role authenticated;
@@ -90,6 +92,11 @@ do $$ declare r jsonb; begin
   perform test.chk('Z6 pełny zapas (2/2): pelne, bez wpisu', r->>'code' = 'pelne', r);
 end $$;
 
+reset role; select test.jako('seria6@x.pl'); set role authenticated;
+do $$ declare r jsonb; begin
+  r := public.nauka_zamrozenie_prezent();
+  perform test.chk('Z6 2 dni nauki, ale nie z rzędu (seria 1): bez prezentu', r->>'code' = 'za_wczesnie', r);
+end $$;
 -- Z7: nauka_seria() dla zalogowanego
 reset role; select test.jako('seria1@x.pl'); set role authenticated;
 do $$ declare r jsonb := public.nauka_seria(); begin

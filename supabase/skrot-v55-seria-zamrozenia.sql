@@ -12,7 +12,7 @@ end $$;
 --     w index.html (rok 2026/27). W te dni seria czeka: nie spada i nie rośnie, zamrożenie się nie zużywa.
 --  2. nauka_zamrozenie_uzyj_dni(dni): zamrożenia na kilka opuszczonych dni naraz (weekend = 2 zamrożenia). Tylko ostatnie 3 dni,
 --     tylko dni bez nauki, dzień przerwy bez zużycia. Stara nauka_zamrozenie_uzyj() (wczoraj) zostaje bez zmian.
---  3. nauka_zamrozenie_prezent(): jedno zamrożenie w prezencie, raz na konto, gdy są już 2 dni nauki (seria osiąga 2).
+--  3. nauka_zamrozenie_prezent(): jedno zamrożenie w prezencie, raz na konto, gdy seria osiąga 2 (nauka_seria_na).
 --     Wpis do nauka_zamrozenia (req „prezent:konto”, cena 0). Bez zmian w nauka_kosm_cfg i katalogu sklepu (pętla 5).
 --  4. nauka_seria_na(osoba, dzień) i nauka_seria(): seria liczona w bazie tak samo jak na stronie (dni nauki, zamrożone i przerwy
 --     nie zrywają; zamrożone i przerwy nie dodają dni), np. do rankingu.
@@ -72,7 +72,7 @@ begin
     'zostalo', (select count(*) from public.nauka_zamrozenia where user_id = u and uzyte_dzien is null));
 end $$;
 
--- Zamrożenie w prezencie: raz na konto, gdy są co najmniej 2 dni nauki. Gdy zapas jest pełny (max z nauka_kosm_cfg),
+-- Zamrożenie w prezencie: raz na konto, gdy seria (nauka_seria_na) osiąga 2. Gdy zapas jest pełny (max z nauka_kosm_cfg),
 -- prezent czeka (code „pelne”) i przyjdzie przy następnym wywołaniu, kiedy zwolni się miejsce.
 create or replace function public.nauka_zamrozenie_prezent() returns jsonb
 language plpgsql security definer set search_path = '' as $$
@@ -83,9 +83,8 @@ begin
   if exists (select 1 from public.nauka_zamrozenia where user_id = u and req = 'prezent:konto') then
     return jsonb_build_object('ok', true, 'juz', true, 'zostalo', (select count(*) from public.nauka_zamrozenia where user_id = u and uzyte_dzien is null));
   end if;
-  select count(*) into dni from (select 1 from generate_series(public.nauka_dzis() - 400, public.nauka_dzis(), interval '1 day') g(d)
-    where public.nauka_dzien_nauki(u, g.d::date) limit 2) x;
-  if dni < 2 then return jsonb_build_object('ok', false, 'code', 'za_wczesnie', 'dni', dni); end if;
+  dni := public.nauka_seria_na(u, public.nauka_dzis());
+  if dni < 2 then return jsonb_build_object('ok', false, 'code', 'za_wczesnie', 'seria', dni); end if;
   mx := coalesce((public.nauka_kosm_cfg()->>'zamrozenia_max')::int, 2);
   select count(*) into ma from public.nauka_zamrozenia where user_id = u and uzyte_dzien is null;
   if ma >= mx then return jsonb_build_object('ok', false, 'code', 'pelne', 'zostalo', ma); end if;

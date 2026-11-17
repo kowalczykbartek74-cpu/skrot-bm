@@ -294,6 +294,7 @@
     const od = (k, n) => { const [y, m, d] = k.split("-").map(Number); return iso(new Date(y, m - 1, d + n)); };
     const zDayN = (n) => iso(new Date(2026, 0, 1 + n));
     const przerwa = (k) => ["2026-10-01", "2026-11-02", "2026-11-11"].includes(k) || (k >= "2026-12-24" && k <= "2027-01-06") || (k >= "2027-02-16" && k <= "2027-02-21");
+    // progress.nd zastępuje tu historię nauka_dni z poprzednich dni (w bazie powstaje z codziennych xp.d i punktów).
     const dniNauki = () => { const s = new Set(RP.rows.map((r) => r.d)); const p = DOCS.progress?.[UID] || {}; if (p.xp && p.xp.n > 0 && Number.isFinite(p.xp.d)) s.add(zDayN(p.xp.d)); (p.nd || []).forEach((d) => Number.isFinite(d) && s.add(zDayN(d))); return s; };
     const nauka = (k) => dniNauki().has(k);
     const zam = (k) => MON.zam.dni.includes(k);
@@ -318,7 +319,7 @@
       prezent() {
         (window.__ux2 ||= []).push({ fn: "prezent" });
         if (MON.zam.reqs.includes("prezent:konto")) return { ok: true, juz: true, zostalo: MON.zam.reqs.length - MON.zam.dni.length };
-        if (dniNauki().size < 2) return { ok: false, code: "za_wczesnie", dni: dniNauki().size };
+        if (this.seriaNa(dzisL()) < 2) return { ok: false, code: "za_wczesnie" };
         if (MON.zam.reqs.length - MON.zam.dni.length >= 2) return { ok: false, code: "pelne" };
         MON.zam.reqs.push("prezent:konto"); monZapisz();
         return { ok: true, nowe: true, zostalo: MON.zam.reqs.length - MON.zam.dni.length };

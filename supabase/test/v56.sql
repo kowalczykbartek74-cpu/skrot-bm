@@ -23,7 +23,7 @@ do $$ declare r jsonb; d date := (now() at time zone 'Europe/Warsaw')::date; beg
   perform test.chk('D2 nauka_seria(): wczoraj = dzień nauki, seria 1', (public.nauka_seria()->>'seria')::int = 1, public.nauka_seria());
 end $$;
 
--- D3: progress.nd dopisuje kilka dni (najwyżej 7 wstecz), starsze i przyszłe pomija; XP = 0 nie jest dniem nauki
+-- D3: lista progress.nd z dokumentu NIE tworzy dni nauki (klient mógłby je dopisać); XP = 0 nie jest dniem nauki
 reset role; select test.jako('dni2@x.pl'); set role authenticated;
 insert into public.nauka_docs (kolekcja, id, data) values ('progress', '56565656-0000-4000-8000-000000000002',
   jsonb_build_object('xp', jsonb_build_object('t', 0, 'd', test.dayn56((now() at time zone 'Europe/Warsaw')::date), 'n', 0),
@@ -32,8 +32,7 @@ insert into public.nauka_docs (kolekcja, id, data) values ('progress', '56565656
 on conflict (kolekcja, id) do update set data = excluded.data;
 reset role;
 do $$ declare u uuid := '56565656-0000-4000-8000-000000000002'; d date := (now() at time zone 'Europe/Warsaw')::date; begin
-  perform test.chk('D3 nd: d−2 i d−3 zapisane; d−30, d+5 i tekst pominięte; XP 0 dziś nie jest dniem nauki',
-    (select array_agg(dzien order by dzien) from public.nauka_dni where user_id = u) = array[d - 3, d - 2], (select jsonb_agg(dzien) from public.nauka_dni where user_id = u));
+  perform test.chk('D3 nd z dokumentu i XP 0 dziś: żadnego dnia nauki', not exists (select 1 from public.nauka_dni where user_id = u), (select jsonb_agg(dzien) from public.nauka_dni where user_id = u));
 end $$;
 
 -- D4: punkt rankingu też jest dniem nauki (wyzwalacz na nauka_rp), bez dubli

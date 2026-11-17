@@ -9,8 +9,10 @@ end $$;
 -- Problem: strona liczy serię z XP (każde XP > 0 to dzień nauki, także samo czytanie lekcji bez punktów), a zamrożenie w bazie
 -- patrzyło na punkty rankingu (nauka_rp). Dzień z samym czytaniem był dla bazy „opuszczony”, więc zamrożenie mogło się zużyć
 -- mimo nauki, a seria na stronie i w bazie mogły się rozjechać.
--- Rozwiązanie: tabela nauka_dni (osoba, dzień). Wpis robią dwa wyzwalacze: zapis postępu (progress.xp.d z XP > 0 i dni z progress.nd,
--- najwyżej 7 dni wstecz) i każdy punkt rankingu. nauka_dzien_nauki (v55) od teraz pyta tę tabelę, więc zamrożenia
+-- Rozwiązanie: tabela nauka_dni (osoba, dzień). Wpis robią dwa wyzwalacze: zapis postępu (progress.xp.d z XP > 0, najwyżej 7 dni
+-- wstecz; listy progress.nd celowo NIE liczymy, bo klient mógłby dopisać sobie dowolne dni) i każdy punkt rankingu.
+-- Uwaga: progress.xp.d to dzień według zegara telefonu; dla telefonu poza Polską może różnić się o 1 od nauka_dzis(). Dlatego seria
+-- z bazy (nauka_seria) służy do zamrożeń i podglądu, a nie do nagród ani rankingu z monetami. nauka_dzien_nauki (v55) od teraz pyta tę tabelę, więc zamrożenia
 -- (nauka_zamrozenie_uzyj_dni), prezent i seria w bazie (nauka_seria_na) liczą dzień nauki tak samo jak strona.
 -- Monet, punktów, XP ani starej nauka_zamrozenie_uzyj() to nie zmienia.
 
@@ -24,7 +26,7 @@ create table if not exists public.nauka_dni (
 alter table public.nauka_dni enable row level security;
 revoke all on public.nauka_dni from anon, authenticated;
 
--- Dzień nauki z dokumentu postępu: progress.xp = { d: dzień od 1.01.2026, n: XP tego dnia }, progress.nd = [dni nauki].
+-- Dzień nauki z dokumentu postępu: progress.xp = { d: dzień od 1.01.2026, n: XP tego dnia } (bez progress.nd).
 create or replace function public.nauka_dni_z_postepu() returns trigger
 language plpgsql security definer set search_path = '' as $$
 declare u uuid; dzis date := public.nauka_dzis(); d date; x jsonb;
@@ -35,12 +37,6 @@ begin
   if jsonb_typeof(x) = 'object' and jsonb_typeof(x->'d') = 'number' and coalesce((x->>'n')::numeric, 0) > 0 then
     d := date '2026-01-01' + floor((x->>'d')::numeric)::int;
     if d between dzis - 7 and dzis + 1 then insert into public.nauka_dni (user_id, dzien, zrodlo) values (u, d, 'xp') on conflict do nothing; end if;
-  end if;
-  if jsonb_typeof(new.data->'nd') = 'array' then
-    insert into public.nauka_dni (user_id, dzien, zrodlo)
-    select u, date '2026-01-01' + floor(e::text::numeric)::int, 'xp' from jsonb_array_elements(new.data->'nd') e
-    where jsonb_typeof(e) = 'number' and date '2026-01-01' + floor(e::text::numeric)::int between dzis - 7 and dzis + 1
-    on conflict do nothing;
   end if;
   return null;
 end $$;

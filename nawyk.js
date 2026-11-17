@@ -25,8 +25,8 @@
     lgDzis: "dziś",
     seriaChroni: "Dziś bez nauki? Zamrożenie ochroni serię. Ale 5 minut wystarczy, żeby zostało na później.",
     seriaPauza: "Przerwa w zajęciach: seria czeka i nie spada.",
-    chroniZam: "· chroni zamrożenie (zostanie {0})",
-    chroniOst: "· chroni zamrożenie (ostatnie)",
+    chroniZam: "· zamrożenie chroni (zostanie {0})",
+    chroniOst: "· zamrożenie chroni (ostatnie)",
     czekaKoszt: "· weekend: zużyje {0} z {1}",
     dzisOk: "· dziś ✓",
     celOk: "cel ✓",
@@ -37,6 +37,15 @@
     zostalo: "zostało {0}/2",
     koniecSerii: "Seria {0} się skończyła: zabrakło zamrożeń. Dziś zaczynasz nową.",
     lgPrzyszly: "przed Tobą",
+    kupZa: "Kup za",
+    ofertaTytul: "Chroń serię",
+    ofertaTytulCena: "Chroń serię: zamrożenie za {0}",
+    ofertaOpis: "Masz serię {0}. Zamrożenie ochroni ją, gdy opuścisz dzień (np. w weekend).",
+    nieTeraz: "Nie teraz",
+    tydzienK: "Ten tydzień: {0}/5 dni",
+    tydzienTitle: "5 dni nauki w tygodniu wystarczy: pasuje do zajęć od poniedziałku do piątku.",
+    reguleChroni: "Masz {0}: dziś możesz odpuścić, jutro już nie.",
+    zamTeraz: "Zamrożenia: {0}/2",
     prezent: "Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.",
     pauzaTxt: "· przerwa, seria czeka",
     oknoStanChroni: "Dziś bez nauki? Zamrożenie ochroni ten dzień. Jedna karta 5 minut i zamrożenie zostaje na później.",
@@ -189,6 +198,7 @@
   const IKONY = {
     snow: '<path d="M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5"/><path d="M9.5 3.5L12 6l2.5-2.5M9.5 20.5L12 18l2.5 2.5"/>',
     check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.5"/>',
+    cross: '<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
     lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
     "ux2-klepsydra": '<path d="M6 3h12M6 21h12"/><path d="M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/>',
     "ux2-medal": '<circle cx="12" cy="14" r="6"/><path d="M8.5 9L6 2h4l2 5M15.5 9L18 2h-4l-2 5"/><path d="M12 11.5v5"/>',
@@ -215,11 +225,16 @@
   const dzisWaw = () => { try { return A().dayN(new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Warsaw" }).format(new Date())); } catch (e) { return today(); } };
   const isoDnia = (d) => dzienKey(d + (dzisWaw() - today()));
   // Baner na dole ekranu (zamiast lpBanner z emoji): ikona SVG + tekst, role=status, znika po 3,5 s.
+  // ms = 0: baner zostaje, dopóki student go nie zamknie (koniec serii).
   function baner(ikona, tekst, ms = 3600) {
     const ap = A(), { h } = ap; if (!h) return;
     document.querySelectorAll(".nw-baner").forEach((x) => x.remove());
-    const b = h("div", { class: "nw-baner" + (reduced() ? "" : " anim"), role: "status" }, svg(IKONY[ikona] || IKONY.check, 22), h("span", { text: tekst }));
-    document.body.append(b); setTimeout(() => b.remove(), ms);
+    const b = h("div", { class: "nw-baner" + (reduced() ? "" : " anim"), role: "status" }, svg(IKONY[ikona] || IKONY.check, 22), h("span", { text: tekst }),
+      ms ? null : h("button", { type: "button", class: "nw-baner-x", "aria-label": PL.zamknij, onclick: () => b.remove() }, svg(IKONY.cross, 20)));
+    // Pod paskiem serii (powitanie widać, główny przycisk karty niżej zostaje odkryty); gdy powitania nie widać, nad dolnym paskiem.
+    const g = document.querySelector("#main .greet")?.getBoundingClientRect();
+    if (g && g.bottom > 40 && g.bottom < innerHeight - 160) { b.style.top = Math.round(g.bottom + 8) + "px"; b.style.bottom = "auto"; }
+    document.body.append(b); if (ms) setTimeout(() => b.remove(), ms);
   }
   // Zamrożenia na dni (kFreezeUse): nowa funkcja bazy (v55), bez niej stara (tylko wczoraj).
   async function zamrozDni(dni) {
@@ -281,7 +296,7 @@
       h("span", { class: "nw-s-l" }, ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
         stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" || (stan === "todo" && czeka) ? svg(IKONY.snow, 16, "nw-klep") : null,
         dop ? h("span", { class: "nw-risk", text: " " + dop }) : null),
-      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true", text: g.xp >= g.cel ? PL.celOk : `${g.xp}/${g.cel} XP` }) : null));
+      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true" }, g.xp >= g.cel ? PL.celOk : [`${g.xp}/${g.cel}`, h("span", { class: "nw-xp", text: " XP" })]) : null));
   }
 
   // Po XP (xpFlush): dopisanie dnia nauki i najlepszej serii; pigułki na ekranie odświeżamy w miejscu (xpFlush nie rysuje ekranu).
@@ -339,7 +354,7 @@
   }
   function koniecSerii(n) {
     if (!(n > 1)) return;
-    setTimeout(() => baner("ux2-klepsydra", fmt(PL.koniecSerii, dni(n)), 6000), 700);
+    setTimeout(() => baner("ux2-klepsydra", fmt(PL.koniecSerii, dni(n)), 0), 700);
   }
   // ---------------------------------------------------------------- okno „Twoja seria”
   function kalendarzEl(t, tygodni) {
@@ -381,6 +396,8 @@
           h("span", { class: "nw-big-flame" + (stan === "done" ? "" : " off"), "aria-hidden": "true" }, ap.kFlame()),
           h("div", { class: "nw-okno-h" }, h("span", { class: "eyebrow", text: PL.oknoTytul }), h("h2", { class: "nw-okno-n" }, h("span", { class: "num", text: String(sk) }), " ", h("span", { class: "nw-okno-w", text: ap.plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu") })))),
         h("p", { class: "nw-okno-opis" + (stan === "risk" ? " risk" : ""), text: opis }),
+        h("p", { class: "nw-okno-zam" }, svg(IKONY.snow, 16), h("span", { class: "num", text: fmt(PL.zamTeraz, ma) }),
+          stan === "chroni" ? h("span", { text: " · " + fmt(PL.reguleChroni, ap.plural(ma, "1 zamrożenie", `${ma} zamrożenia`, `${ma} zamrożeń`)) }) : null),
         h("div", { class: "nw-goal" }, ring(g.xp / g.cel, 28), h("span", { text: fmt(PL.celDnia, g.xp, g.cel) })),
         h("p", { class: "nw-zasady" }, svg(IKONY["ux2-klepsydra"], 18), h("span", { text: PL.zasady })),
         h("h3", { class: "nw-sub", text: PL.ostatnie4 }), kalendarzEl(t, 4),
@@ -402,6 +419,41 @@
     requestAnimationFrame(() => { if (md) md.scrollTop = 0; });
   }
 
+  const zamItem = () => (A().kSk?.().katalog || []).find((x) => x.id === "zamrozenie") || null;
+  const saldo = () => { const ap = A(); return ap.coins ? ap.coins() : (ap.kSk?.().saldo || 0); };
+  const coinIco = () => { const ap = A(); const el = ap.h2Ico ? ap.h2Ico("coin", "") : null; if (el) { el.classList.add("nw-coin"); el.setAttribute("aria-hidden", "true"); } return el; };
+  // Karta zamrożenia dla Sklepu (sekcja „Ochrona serii”, wstawia pętla 5): opis, stan „Masz N/2”, kupno przez kBuy.
+  function kartaZamrozenia() {
+    const ap = A(), { h } = ap, it = zamItem(); if (!h || !it) return null;
+    const ma = zamMa(), mx = it.max || 2, cena = ap.kPrice ? ap.kPrice(it) : it.cena;
+    return h("section", { class: "nw-zcard", "aria-label": PL.zamTytul },
+      svg(IKONY.snow, 26, "nw-zam-ico"),
+      h("div", { class: "nw-zam-t" }, h("b", { text: PL.zamTytul }), h("span", { class: "num", text: fmt(PL.zamMasz, ma) }), h("small", { class: "muted", text: PL.zamOpis })),
+      ma >= mx ? h("span", { class: "chip plain nw-zam-full", text: PL.zamKomplet })
+        : h("button", { type: "button", class: "btn primary nw-zbuy", onclick: () => ap.kBuy?.(it) }, h("span", { text: PL.kupZa }), h("b", { class: "num", text: String(cena) }), coinIco()));
+  }
+  // Propozycja na ekranie końca (wstawia pętla 3): seria ≥ 3, saldo ≥ cena (40), brak zamrożenia, „Nie teraz” chowa na 7 dni.
+  function ofertaZamrozenia() {
+    const ap = A(), { h } = ap, it = zamItem(); if (!h || !it || !ap.S?.uid) return null;
+    const sk = ap.streakN ? ap.streakN() : 0, cena = ap.kPrice ? ap.kPrice(it) : it.cena, t = today();
+    const nie = +(ap.ls?.get("skrot-zam-oferta-nie") || -99);
+    if (sk < 3 || saldo() < cena || zamMa() > 0 || t - nie < 7) return null;
+    const box = h("section", { class: "nw-oferta", "aria-label": PL.ofertaTytul },
+      svg(IKONY.snow, 26, "nw-zam-ico"),
+      h("div", { class: "nw-zam-t" }, h("b", {}, h("span", { text: fmt(PL.ofertaTytulCena, cena) }), " ", coinIco()), h("small", { class: "muted", text: fmt(PL.ofertaOpis, dni(sk)) })),
+      h("div", { class: "row nw-oferta-btns" },
+        h("button", { type: "button", class: "btn primary", onclick: () => ap.kBuy?.(it) }, h("span", { text: PL.kupZa }), h("b", { class: "num", text: String(cena) }), coinIco()),
+        h("button", { type: "button", class: "btn ghost", onclick: () => { ap.ls?.set("skrot-zam-oferta-nie", String(t)); box.remove(); } }, PL.nieTeraz)));
+    return box;
+  }
+  // „Ten tydzień: k/5 dni” w rzędzie z rangą (7 kropek pon–nd); klik otwiera okno serii.
+  function tydzienMini() {
+    const ap = A(), { h } = ap; if (!h) return null;
+    const t = today(), zam = zamDni(), nauka = L.dniNauki(progress(), zam, przerwa), week = L.tydzien(t, nauka, zam, przerwa), k = L.tydzienNauki(t, nauka);
+    return h("button", { type: "button", class: "xp-chip nw-tyg" + (k >= 5 ? " pelny" : ""), "aria-haspopup": "dialog", title: PL.tydzienTitle, onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
+      h("span", { class: "nw-tyg-dots", "aria-hidden": "true" }, week.map((c) => h("i", { class: `s-${c.s}${c.dzis ? " dzis" : ""}` }))),
+      h("span", { class: "nw-tyg-t", text: fmt(PL.tydzienK, k) }));
+  }
   // Wiersz „Jutro: {temat}, 5 min” (ekran końca, pętla 3): karta 5 min z tematu spoza dzisiejszych, jak „Jeszcze 5 min”.
   function jutroTytul() {
     try {
@@ -482,15 +534,36 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 }
 .xp-chip.nw-streak .nw-s-l, .xp-chip.nw-streak .nw-s-r { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
 .xp-chip.nw-streak .nw-goal-t { font-size: .8rem; font-weight: 700; white-space: nowrap; }
-.xp-chip.nw-streak .nw-s-l { flex: 1 1 auto; flex-wrap: wrap; row-gap: 0; }
+.xp-chip.nw-streak .nw-s-l { flex: 1 1 auto; }
+@media (max-width: 420px) { .xp-chip.nw-streak.streak-chroni .nw-xp { display: none; } }
 .xp-chip.nw-streak .nw-s-r { flex: none; }
-.xp-chip.nw-streak.streak-chroni .nw-risk { white-space: normal; text-align: left; line-height: 1.25; }
+.xp-chip.nw-streak.streak-chroni .nw-risk { white-space: normal; text-align: left; line-height: 1.2; }
 .xp-chip.nw-streak.streak-chroni { outline: 2px dashed var(--h-blue, var(--accent-text)); outline-offset: -2px; background: var(--h-blue-soft, var(--accent-soft)) !important; color: var(--h-ink, var(--ink)) !important; }
 .xp-chip.nw-streak.streak-pauza { outline: 2px dashed var(--h-edge, var(--line)); outline-offset: -2px; }
 .xp-chip.nw-streak:is(.streak-chroni, .streak-pauza) .h2-flame svg { animation: none !important; }
 .xp-chip.nw-streak:is(.streak-chroni, .streak-pauza) :is(.h2-flame, .kflame) { filter: grayscale(1); opacity: .55; }
 .nw-okno-top { margin-top: 10px; }
 .nw-okno-n:focus { outline: none; }
+.nw-okno-zam { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: -6px 0 0; font-weight: 700; color: var(--h-blue, var(--accent-text)); }
+@media (max-width: 420px) { .xp-chip.nw-streak.streak-chroni .nw-word { display: none; } }
+.xp-chip.nw-streak.streak-risk :is(.h2-flame, .kflame) { filter: none !important; opacity: 1 !important; }
+.xp-chip.nw-streak.streak-risk b { font-size: 1.05em; }
+.xp-chip.nw-tyg { min-height: 44px; min-width: 44px; gap: 6px; }
+.nw-tyg-dots { display: inline-flex; gap: 3px; }
+.nw-tyg-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--h-edge, var(--line)); }
+.nw-tyg-dots i.s-nauka { background: var(--h-acc, var(--accent)); }
+.nw-tyg-dots i.s-zamroz { background: var(--h-blue, var(--accent-text)); }
+.nw-tyg-dots i.s-przyszly { background: transparent; box-shadow: inset 0 0 0 1.5px var(--h-edge, var(--line)); }
+.nw-tyg-dots i.dzis { outline: 1.5px solid var(--h-ink, var(--ink)); outline-offset: 1px; }
+.nw-tyg-t { font-size: .85rem; font-weight: 700; white-space: nowrap; }
+/* < 400 px: ranga + monety, pod spodem pasek serii, a „Ten tydzień” w trzecim wierszu tego samego rzędu (nie mieści się obok rangi) */
+@media (max-width: 399px) { #main .greet .rk-compact .xp-chip.nw-tyg { order: 10; } }
+.nw-zcard, .nw-oferta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 12px; align-items: center; padding: 14px 16px; border-radius: 22px; background: var(--h-blue-soft, var(--accent-soft)); color: var(--ink); }
+.nw-zcard > .btn, .nw-zcard > .nw-zam-full, .nw-oferta-btns { grid-column: 1 / -1; }
+.nw-zcard .btn, .nw-oferta .btn { min-height: 48px; display: inline-flex; align-items: center; gap: 6px; }
+.nw-oferta-btns { gap: 8px; }
+.nw-coin { display: inline-grid; line-height: 0; vertical-align: middle; }
+.nw-coin svg { width: 18px; height: 18px; }
 .nw-day.dzis.chroni { outline: 2.5px dashed var(--h-blue, var(--accent-text)); outline-offset: 2px; background: var(--h-blue-soft, var(--accent-soft)); }
 .nw-day.mini.dzis.chroni { outline-width: 1.5px; outline-offset: 1px; }
 .xp-chip.nw-streak.streak-done .nw-risk { color: var(--h-acc, var(--accent-text)); }
@@ -505,8 +578,9 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 .nw-day.s-brak:not(.s-przyszly) { background: var(--sunk, var(--h-line)); }
 .nw-day.dzis.todo { outline: 2.5px dashed var(--warn); outline-offset: 2px; background: var(--warn-soft); }
 .nw-day.mini.dzis.todo { outline-width: 1.5px; outline-offset: 1px; }
-.nw-baner { position: fixed; left: 0; right: 0; margin: 0 auto; width: fit-content; box-sizing: border-box; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 9000; display: flex; align-items: center; gap: 10px; max-width: min(92vw, 440px); padding: 12px 16px; border-radius: 18px; background: var(--h-ink, var(--ink)); color: var(--h-paper, var(--paper)); font-weight: 700; box-shadow: 0 12px 30px -12px rgba(0,0,0,.5); }
+.nw-baner { position: fixed; left: 0; right: 0; margin: 0 auto; width: fit-content; box-sizing: border-box; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 9000; display: flex; align-items: center; gap: 10px; max-width: min(92vw, 440px); padding: 12px 16px; border-radius: 18px; background: var(--h-ink, var(--ink)); color: var(--h-paper, var(--paper)); font-weight: 700; box-shadow: 0 12px 30px -12px rgba(0,0,0,.5); }
 .nw-baner .nw-ico { color: var(--h-lime, var(--accent-soft)); }
+.nw-baner-x { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin: -8px -10px -8px 0; border: 0; background: none; color: inherit; cursor: pointer; }
 .nw-baner.anim { animation: nw-up .35s var(--h-out, ease-out) both; }
 @media (prefers-reduced-motion: reduce) { .nw-baner { animation: none !important; } }
 html.calm .nw-baner { animation: none !important; }
@@ -592,7 +666,7 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, kartaZamrozenia, ofertaZamrozenia, tydzienMini });
   // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
   let stanKey = null;
   function tik() {

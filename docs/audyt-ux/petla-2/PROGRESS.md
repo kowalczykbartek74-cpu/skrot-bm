@@ -35,3 +35,5 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - Etap 2: v56 nie liczy dni z `progress.nd` (tylko `xp.d` z bieżącego zapisu i punkty), bo klient mógłby dopisać dni; prezent dopiero przy `nauka_seria_na(u, dzis) >= 2`; dzień nauki w wyzwalaczu v56 po kalendarzu telefonu vs Warszawa (test NY po nauce o 19:30); „zamrożenie chroni (ostatnie)” w jednej linii przy 390 px; mocniejszy stan risk; banery pod paskiem serii, nie na powitaniu.
 - Etap 3: koniec serii trwały (`progress.seriaKoniec`) w oknie i na Dziś do zamknięcia przez studenta (K5 etapu 3).
 - Etap 5: hero „Dziś · 5 min” po nauce zgodny ze stanem dnia, wiersz „Jutro: …” na Dziś.
+- Etap 2 K4: „Ten tydzień: k/5 dni” jest w tym samym rzędzie (`.rk-line`) co ranga; przy < 400 px nie mieści się obok rangi i monet (ok. 200 px), więc zawija się do trzeciego wiersza pod paskiem serii. Bez nowego bloku.
+- Etap 2: v56 nie liczy `progress.nd` (tylko `xp.d` bieżącego zapisu i punkty), prezent dopiero przy serii ≥ 2 (`nauka_seria_na`). Seria z bazy nie zasila nagród ani rankingu z monetami (dzień telefonu vs Warszawa).
