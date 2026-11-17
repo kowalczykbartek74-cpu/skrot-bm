@@ -21,6 +21,8 @@ async function dobrze(p) {
   const opts = await p.locator(".lp-opts .opt").allInnerTexts();
   const k = opts.findIndex((t) => { const m = t.match(/Odpowiedź ([ABCD])(\d+)/); return m && "ABCD".indexOf(m[1]) === +m[2] % 4; });
   await p.locator(".lp-opts .opt").nth(k).click();
+  // UX-3 etap 3: zaznaczenie + „Sprawdź” / „Pewny ✓” w dolnym pasku
+  const c = p.locator('.lp-bottom [data-conf="1"]:not([disabled]), .lp-bottom .lp-cta:not([disabled]):not([hidden])').filter({ hasText: /^(Sprawdź|Pewny)/ }).first(); if (await c.count()) await c.click();
 }
 const dalej = async (p) => { await p.locator(".lp-cta").click({ timeout: 4000 }).catch(() => {}); await p.waitForTimeout(300); };
 

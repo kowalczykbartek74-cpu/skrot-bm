@@ -6,6 +6,8 @@
 //   E. drugi przedmiot (dowolny z rocznika) i EN.
 // BASE=http://127.0.0.1:8811/ node docs/gry/test/rewanze.mjs
 import { chromium, page, BASE, shot } from "./lib.mjs";
+// UX-3 etap 3: dotknięcie opcji ją zaznacza, zatwierdza „Sprawdź” albo „Pewny ✓” w dolnym pasku.
+const zatwierdz = async (P) => { await P.waitForTimeout(80); const c = P.locator('.lp-bottom [data-conf="1"]:not([disabled]), .lp-bottom .lp-cta:not([disabled]):not([hidden])').filter({ hasText: /^(Sprawdź|Pewny|Check|Sure)/ }).first(); if (await c.count()) await c.click(); };
 const b = await chromium.launch();
 const wyniki = []; const ok = (n, w, i) => wyniki.push([w ? "✓" : "✗", n, w ? "" : JSON.stringify(i)?.slice(0, 700)]);
 const UID = "00000000-0000-4000-8000-000000000001";
@@ -35,7 +37,7 @@ async function wybierz(p, want, zle = false) {
   const n = await opts.count();
   for (let i = 0; i < n; i++) {
     const t = await opts.nth(i).textContent(), orig = ["Pierwsza", "Druga", "Trzecia", "Czwarta"].findIndex((w) => t.includes(w));
-    if (zle ? orig !== want : orig === want) { await opts.nth(i).click(); return orig; }
+    if (zle ? orig !== want : orig === want) { await opts.nth(i).click(); await zatwierdz(opts.page()); return orig; }
   }
   throw new Error("brak opcji");
 }

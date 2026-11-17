@@ -10,9 +10,9 @@ const cr = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b
 async function play(p, max = 60, onFb) {
   for (let i = 0; i < max; i++) {
     if (await p.locator(".lp-done-screen").count()) return true;
-    const opt = p.locator(".lp-opts .opt:not([disabled])").first();
-    if (await opt.count()) { await opt.click(); await p.waitForTimeout(250); if (onFb && await p.locator(".lp-fb").count()) await onFb(); }
-    const own = p.locator(".lp-stage button:not([disabled])").filter({ hasText: /^(Wiedziałem|Pokaż|Sprawdź|Odsłoń|Gotowe|Rozumiem)/ }).first();
+    const opt = p.locator(".lp-opts .opt:not([disabled]):not(.sel), .lp-bank .opt:not([disabled]):not(.sel)").first();
+    if (await opt.count()) { await opt.click(); await p.waitForTimeout(120); const ck = p.locator('.lp-bottom [data-conf="1"]:not([disabled]), .lp-bottom .lp-cta:not([disabled]):not([hidden])').filter({ hasText: /^(Sprawdź|Pewny)/ }).first(); if (await ck.count()) await ck.click(); /* UX-3 etap 3: zaznacz + Sprawdź */ await p.waitForTimeout(250); if (onFb && await p.locator(".lp-fbar .v").count()) await onFb(); }
+    const own = p.locator(".lp-stage button:not([disabled]), .lp-bottom .lp-barx button:not([disabled])").filter({ hasText: /^(Wiedziałem|Pokaż|Sprawdź|Odsłoń|Gotowe|Rozumiem)/ }).first(); /* UX-3: przyciski karty w dolnym pasku */
     if (!(await p.locator(".lp-opts .opt").count()) && await own.count()) { await own.click(); await p.waitForTimeout(250); }
     const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])").first();
     if (await cta.count()) { await cta.click(); await p.waitForTimeout(250); } else await p.waitForTimeout(200);
@@ -30,12 +30,13 @@ for (const dark of [false, true]) {
   let fbSeen = null, wide = { sw: 0, bar: 999 };
   const done = await play(p, 60, async () => {
     if (fbSeen) return;
-    const r = await p.locator(".lp-fb").first().evaluate((e) => { const c = getComputedStyle(e), f = getComputedStyle(e.firstElementChild || e); return { cls: e.className, bg: c.backgroundColor, bw: c.borderTopWidth, col: f.color }; });
+    // UX-3: werdykt jest w dolnym pasku (.lp-fbar w .lp-bottom), pasek barwi się na zielono / czerwono.
+    const r = await p.locator(".lp-bottom").evaluate((e) => { const c = getComputedStyle(e), f = getComputedStyle(e.querySelector(".lp-fbar .v")); return { cls: e.className, bg: c.backgroundColor, bw: c.borderTopWidth, col: f.color }; });
     fbSeen = r; await p.screenshot({ path: `${OUT}/h2e4-${n}-odpowiedz.png` });
-    wide = await p.evaluate(() => { const xp = document.querySelector(".lp-xpchip"); return { sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), xp: !!xp && xp.getBoundingClientRect().width > 0 }; });
+    wide = await p.evaluate(() => { const xp = document.querySelector(".lp-xpchip"); return { sw: document.querySelector(".lp").scrollWidth, bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), xp: !!xp && xp.getBoundingClientRect().width > 2 }; });
   });
-  ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px, pigułka XP widoczna`, (wide.sw <= 376) && wide.bar >= 72 && wide.xp, wide);
-  ok(`${n}: informacja zwrotna jako kolorowy panel z obrysem i czytelnym nagłówkiem`, fbSeen && fbSeen.bw === "2px" && cr(fbSeen.col, fbSeen.bg) >= 4.5, fbSeen);
+  ok(`${n}: odtwarzacz mieści się w 375 px (bez przewijania w bok), pasek postępu ≥ 72 px (UX-3: bez stałej pigułki XP w nagłówku)`, (wide.sw <= 376) && wide.bar >= 72 && !wide.xp, wide);
+  ok(`${n}: informacja zwrotna jako kolorowy dolny pasek z obrysem i czytelnym nagłówkiem`, fbSeen && fbSeen.bw === "2px" && cr(fbSeen.col, fbSeen.bg) >= 4.5, fbSeen);
   ok(`${n}: lekcję da się przejść do ekranu końcowego`, done, await p.locator(".lp-stage").innerText().catch(() => ""));
   if (done) {
     await p.waitForTimeout(150);
@@ -59,7 +60,7 @@ for (const dark of [false, true]) {
   const p = await open(b, { ctx: undefined, ls: { "skrot-calm": "1" } });
   await p.locator(".zh-hero .zh-go").click(); await p.locator(".lp").waitFor({ timeout: 15000 });
   const done = await play(p, 60);
-  if (done) { await p.waitForTimeout(100); const t = await p.locator(".lp-stat b").allInnerTexts(); await p.waitForTimeout(900); const t2 = await p.locator(".lp-stat b").allInnerTexts(); ok("html.calm: liczby od razu końcowe (bez liczenia)", JSON.stringify(t) === JSON.stringify(t2), { t, t2 });
+  if (done) { await p.waitForTimeout(100); /* UX-3 etap 5: wyniki karty 5 min są w zwijanych „Szczegółach”, więc tekst bez innerText */ const tx = () => p.locator(".lp-stat b").evaluateAll((bs) => bs.map((b) => (b.querySelector('[aria-hidden="true"]') || b).textContent.trim())); const t = await tx(); await p.waitForTimeout(900); const t2 = await tx(); ok("html.calm: liczby od razu końcowe (bez liczenia)", JSON.stringify(t) === JSON.stringify(t2), { t, t2 });
     ok("liczenie w górę kończy na tych samych liczbach co ekran bez animacji", JSON.stringify(finals.jasny) === JSON.stringify(t2), { anim: finals.jasny, calm: t2 }); }
   else ok("html.calm: dojście do końca", false, "");
   await p.close();
@@ -73,11 +74,11 @@ for (const dark of [false, true]) {
     if (await p.locator(".lp-done-screen .lp-bigstars").count()) { stars = true; break; }
     if (!part && await p.locator(".lp-done-screen").count()) { part = await p.locator(".lp-done-screen .lp-stas").getAttribute("data-mood").catch(() => null); await p.screenshot({ path: `${OUT}/h2e4-quiz-czesc.png` }); }
     const bad = p.locator(".lp-opts .opt:not([disabled])").filter({ hasText: /Zła/ }).first();
-    if (await bad.count()) { await bad.click(); await p.waitForTimeout(200); }
+    if (await bad.count()) { await bad.click(); await p.waitForTimeout(120); const g = p.locator('.lp-bottom [data-conf="0"]:not([disabled])'); if (await g.count()) await g.click(); /* UX-3: pewność w dolnym pasku */ await p.waitForTimeout(200); }
     const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])").first();
     if (await cta.count()) { await cta.click(); await p.waitForTimeout(200); } else await p.waitForTimeout(150);
   }
-  ok("quiz, złe odpowiedzi: na końcu części Staś „myślę” (nie radość)", part === "think", part);
+  /* UX-3 etap 5: mina według wyniku: 0% → „oops”, 40–60% → „think” */ ok("quiz, złe odpowiedzi: na końcu części Staś „myślę” albo „ups” (nie radość)", part === "think" || part === "oops", part);
   if (stars) {
     await p.waitForTimeout(1200); await p.screenshot({ path: `${OUT}/h2e4-quiz-gwiazdki.png` });
     const off = await p.locator(".lp-bigstars .off").evaluateAll((e) => e.map((x) => +getComputedStyle(x).opacity));
