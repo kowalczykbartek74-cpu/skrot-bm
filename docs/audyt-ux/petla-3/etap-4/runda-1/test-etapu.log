@@ -1,0 +1,51 @@
+✓ K1 360 px: pasek postępu ≥ 200 px
+✓ K1 stałe chipy XP i monet zdjęte z nagłówka (w DOM, niewidoczne)
+✓ K1 przy combo pasek nadal ≥ 200 px (w nagłówku krótko „×3”, pełny tekst w DOM i aria-label)
+✓ K1 lpFloat dalej działa (pastylka „+N” przy werdykcie)
+✓ bez przewijania w bok
+✓ bez błędów (K1)
+✓ K1 w serii fiszek pasek rośnie po każdej fiszce
+✓ bez błędów (fiszki)
+✓ 360: K2 „Pomiń krok” w dolnym pasku, ≥ 44 px
+✓ 360: K2 w nagłówku nie ma już „Pomiń”
+✓ 360: segment karty jako cienki napis pod paskiem
+✓ 360: K2 toast „Pominięto. Cofnij”
+✓ 360: K2 „Cofnij” przywraca kartę
+✓ 360: K2 toast znika po ok. 4 s
+✓ 360: bez przewijania w bok (Dziś 5 min)
+✓ 360: bez błędów (pomiń)
+✓ 390: K2 „Pomiń krok” w dolnym pasku, ≥ 44 px
+✓ 390: K2 w nagłówku nie ma już „Pomiń”
+✓ 390: segment karty jako cienki napis pod paskiem
+✓ 390: K2 toast „Pominięto. Cofnij”
+✓ 390: K2 „Cofnij” przywraca kartę
+✓ 390: K2 toast znika po ok. 4 s
+✓ 390: bez przewijania w bok (Dziś 5 min)
+✓ 390: bez błędów (pomiń)
+✓ 360: K3 karta wyśrodkowana w pionie (odstęp góra ≈ dół)
+✓ 360: K3 tekst 20 px
+✓ 360: K3 dół karty → przycisk < 30% wysokości ekranu
+✓ 360: K3 mały Staś przy karcie
+✓ 360: bez błędów (czytaj)
+✓ 390: K3 karta wyśrodkowana w pionie (odstęp góra ≈ dół)
+✓ 390: K3 tekst 20 px
+✓ 390: K3 dół karty → przycisk < 30% wysokości ekranu
+✓ 390: K3 mały Staś przy karcie
+✓ 390: bez błędów (czytaj)
+✓ 1280: K3 karta wyśrodkowana w pionie (odstęp góra ≈ dół)
+✓ 1280: K3 tekst 20 px
+✓ 1280: K3 dół karty → przycisk < 30% wysokości ekranu
+✓ 1280: K3 mały Staś przy karcie
+✓ 1280: K3 ≥ 900 px karta ≤ 720 px, Staś obok
+✓ 1280: bez błędów (czytaj)
+✓ 390-ciemny: K3 karta wyśrodkowana w pionie (odstęp góra ≈ dół)
+✓ 390-ciemny: K3 tekst 20 px
+✓ 390-ciemny: K3 dół karty → przycisk < 30% wysokości ekranu
+✓ 390-ciemny: K3 mały Staś przy karcie
+✓ 390-ciemny: bez błędów (czytaj)
+✓ K4 zielony motyw: w odtwarzaczu (poza treścią lekcji) brak emoji
+✓ K4 ikony dopisane do H2_ICO (Object.assign)
+✓ bez błędów (K4)
+✓ pink: odtwarzacz działa (kicker z tekstem), bez błędów
+✓ EN: bez błędów
+50/50

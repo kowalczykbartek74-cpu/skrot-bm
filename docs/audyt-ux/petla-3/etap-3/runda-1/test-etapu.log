@@ -1,0 +1,51 @@
+✓ K1 przed wyborem „Sprawdź” nieaktywne, na dole
+✓ K1 klik w opcję tylko ją zaznacza (.opt.sel, bez odpowiedzi, bez werdyktu)
+✓ K1 wybór można zmienić
+✓ K1 „Sprawdź” zatwierdza
+✓ K1 klawiatura: 2 zaznacza, Enter sprawdza
+✓ bez błędów (K1)
+✓ doszliśmy do biletu
+✓ K1 dwa przyciski „Zgaduję” / „Pewny ✓” w dolnym pasku, ≥ 48 px, nieaktywne do wyboru
+✓ K1 bez starych chipów pewności w karcie
+✓ K1 po wyborze oba aktywne
+✓ K1 + K2 klawisz G = „Zgaduję”, conf = 0 zapisane
+✓ K2 „Pewny ✓” zapisuje conf = 1
+✓ K2 dobra odpowiedź zgadnięta (conf 0) trafia do rewanży (rewAnswer z wynikiem 0)
+✓ bez błędów (K2)
+✓ abcd: K3 przy błędzie od razu „Poprawna:” i zapowiedź drugiej szansy później
+✓ abcd: K3 druga szansa ≥ 2 karty po błędzie, w następnej części (nie jako kolejna karta)
+✓ abcd: K3 sukces drugiej szansy „Teraz siedzi.”
+✓ abcd: bez błędów (K3)
+✓ luka: K3 przy błędzie od razu „Poprawna:” i zapowiedź drugiej szansy później
+✓ luka: K3 druga szansa ≥ 2 karty po błędzie, w następnej części (nie jako kolejna karta)
+✓ luka: K3 druga szansa jako luka z bankiem pojęć zamiast tego samego ABCD
+✓ luka: K3 sukces drugiej szansy „Teraz siedzi.”
+✓ luka: bez błędów (K3)
+✓ K5 karta „Szybkie przypomnienie” w lekcji z ≥ 3 pojęciami
+✓ K5 3 przyciski-pojęcia pod luką
+✓ K5 wybór pojęcia tylko zaznacza
+✓ K5 złe pojęcie → data-fb=no, bez XP
+✓ K5 przyciski banku ≥ 44 px
+✓ bez błędów (K5 bank)
+✓ K5/K4 < 3 pojęć: karta samooceny
+✓ K4 recall: „Nie wiedziałem / Wiedziałem” w dolnym pasku (top > 0,75 × wysokość), nie w karcie
+✓ K5 „Wiedziałem” bez XP za samą samoocenę
+✓ bez błędów (samoocena)
+✓ 360: doszliśmy do serii fiszek
+✓ 360: K4 swipe: „← Nie wiem / Wiem →” w dolnym pasku
+✓ 360: doszliśmy do oceny w Powtórkach
+✓ 360: K4 grade4: 4 oceny w dolnym pasku (top > 0,75 × wysokość, ≥ 52 px), nie w karcie
+✓ 360: K4 krótkie etykiety ocen
+✓ 360: bez przewijania w bok (oceny)
+✓ 360: K4 klawisz 3 ocenia (Pamiętam)
+✓ 360: bez błędów (fiszki, Powtórki)
+✓ 390: doszliśmy do serii fiszek
+✓ 390: K4 swipe: „← Nie wiem / Wiem →” w dolnym pasku
+✓ 390: doszliśmy do oceny w Powtórkach
+✓ 390: K4 grade4: 4 oceny w dolnym pasku (top > 0,75 × wysokość, ≥ 52 px), nie w karcie
+✓ 390: bez przewijania w bok (oceny)
+✓ 390: K4 klawisz 3 ocenia (Pamiętam)
+✓ 390: bez błędów (fiszki, Powtórki)
+✓ EN: „Guessing” i „Sure ✓”
+✓ EN: bez błędów
+50/50

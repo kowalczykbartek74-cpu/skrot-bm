@@ -45,9 +45,12 @@ async function przejdz(p, { zle = () => false, conf = () => null, max = 8 } = {}
     // Przerwa między częściami („Start →”): dalej; koniec talii: stop.
     if (!(await p.locator(".lp-opts .opt").count())) { if (await p.locator(".lp-done-screen").count() || !(await p.locator(".lp-cta:visible").count())) break; await dalej(p); continue; }
     i++;
-    const has = (await p.locator(".lp-confrow").count()) > 0; chips.push(has);
-    const c = conf(i - 1); if (has && c != null) { await p.locator(`.lp-conf[data-conf="${c}"]`).click(); await p.waitForTimeout(150); }
-    await wybierz(p, (await idxOf(p)) % 4, zle(i - 1)); await p.waitForTimeout(250); await dalej(p);
+    // UX-3 etap 3: „Pewny / Zgaduję” to przyciski w dolnym pasku (zatwierdzają odpowiedź); bez nich zatwierdza „Sprawdź”.
+    const has = (await p.locator('.lp-bottom [data-conf]').count()) > 0; chips.push(has);
+    const c = conf(i - 1);
+    await wybierz(p, (await idxOf(p)) % 4, zle(i - 1)); await p.waitForTimeout(150);
+    if (has) await p.locator(`.lp-bottom [data-conf="${c ?? 1}"]`).click(); else await p.locator(".lp-bottom .lp-cta").filter({ hasText: "Sprawdź" }).click().catch(() => {});
+    await p.waitForTimeout(250); await dalej(p);
   }
   return chips;
 }

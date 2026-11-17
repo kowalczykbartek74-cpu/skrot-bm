@@ -1,0 +1,62 @@
+✓ K1 dobra odpowiedź gra darmowy dźwięk „ok” (createOscillator)
+✓ K2 wibracja 18 ms przy dobrej, także przy reduced-motion
+✓ K1 zła odpowiedź gra darmowy dźwięk „no”
+✓ K2 wibracja [24, 50, 24] przy złej
+✓ bez błędów w konsoli (dźwięki)
+✓ K1 przy bm-dzwieki=0 żaden dźwięk
+✓ K2 przy bm-wibracje=0 bez wibracji
+✓ K1 pytanie „Włączyć krótkie dźwięki…” po pierwszej części
+✓ K1 treść pytania i dwa przyciski
+✓ przyciski pytania ≥ 44 px
+✓ K1 „Włącz” zapisuje bm-dzwieki=1
+✓ K1 pytanie tylko raz
+✓ jasny: K3 Staś 48 px w panelu, mina „oops” przy złej
+✓ jasny: K3 dymek z jednym z 3 tekstów
+✓ jasny: K3 mina „ok” przy dobrej
+✓ jasny: K4 „3 z rzędu!” w tytule panelu, chip „×3 z rzędu” z błyskawicą
+✓ jasny: K4 chip bez słowa „seria” i bez 🔥, w limonce
+✓ jasny: K4 „5 z rzędu! +5 XP” w tytule, bez banera zasłaniającego kartę
+✓ jasny: K3 podskok Stasia przy 3 z rzędu (lp-fb-hop)
+✓ jasny: kontrast nagłówka (chip combo) AA
+✓ jasny: bez przewijania w bok
+✓ jasny: bez błędów w konsoli
+✓ ciemny: K3 Staś 48 px w panelu, mina „oops” przy złej
+✓ ciemny: K3 dymek z jednym z 3 tekstów
+✓ ciemny: K3 mina „ok” przy dobrej
+✓ ciemny: K4 „3 z rzędu!” w tytule panelu, chip „×3 z rzędu” z błyskawicą
+✓ ciemny: K4 chip bez słowa „seria” i bez 🔥, w limonce
+✓ ciemny: K4 „5 z rzędu! +5 XP” w tytule, bez banera zasłaniającego kartę
+✓ ciemny: K3 podskok Stasia przy 3 z rzędu (lp-fb-hop)
+✓ ciemny: kontrast nagłówka (chip combo) AA
+✓ ciemny: bez przewijania w bok
+✓ ciemny: bez błędów w konsoli
+✓ calm: K3 Staś 48 px w panelu, mina „oops” przy złej
+✓ calm: K3 dymek z jednym z 3 tekstów
+✓ calm: K3 mina „ok” przy dobrej
+✓ calm: K4 „3 z rzędu!” w tytule panelu, chip „×3 z rzędu” z błyskawicą
+✓ calm: K4 chip bez słowa „seria” i bez 🔥, w limonce
+✓ calm: K4 „5 z rzędu! +5 XP” w tytule, bez banera zasłaniającego kartę
+✓ calm: K3 podskok przy 3 z rzędu wyłączony
+✓ calm: kontrast nagłówka (chip combo) AA
+✓ calm: bez przewijania w bok
+✓ calm: bez błędów w konsoli
+✓ reduced: K3 Staś 48 px w panelu, mina „oops” przy złej
+✓ reduced: K3 dymek z jednym z 3 tekstów
+✓ reduced: K3 mina „ok” przy dobrej
+✓ reduced: K4 „3 z rzędu!” w tytule panelu, chip „×3 z rzędu” z błyskawicą
+✓ reduced: K4 chip bez słowa „seria” i bez 🔥, w limonce
+✓ reduced: K4 „5 z rzędu! +5 XP” w tytule, bez banera zasłaniającego kartę
+✓ reduced: K3 podskok przy 3 z rzędu wyłączony
+✓ reduced: kontrast nagłówka (chip combo) AA
+✓ reduced: bez przewijania w bok
+✓ reduced: bez błędów w konsoli
+✓ pink: K3 bez Stasia w panelu (tylko zielone motywy)
+✓ pink: bez błędów
+✓ Ustawienia: przełączniki „Dźwięki przy odpowiedziach” i „Wibracje”
+✓ Ustawienia: „Wibracje” wyłącza bm-wibracje=0
+✓ Ustawienia: „Dźwięki” włącza bm-dzwieki=1
+✓ Ustawienia: wiersze ≥ 44 px
+✓ Ustawienia: bez błędów
+✓ EN: dymek Stasia po angielsku
+✓ EN: bez błędów
+61/61

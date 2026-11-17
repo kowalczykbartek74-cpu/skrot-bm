@@ -1,0 +1,59 @@
+✓ K3 rozgrzewka (≤ 2 karty) bez osobnej części
+✓ K3 karta przejścia: „Część k z n ✓” + „+XP · wynik z pierwszej próby”, bez Stasia
+✓ K3 dokładnie 1 pełny ekran końca, między częściami karty przejścia
+✓ K3 konfetti tylko na finale
+✓ K3 okno awansu dopiero na finale
+✓ K4 główny przycisk „Następna lekcja: Lekcja 2: Podaż →”
+✓ K4 „Wróć do mapy lekcji” jako drugorzędny
+✓ K6 bez kafli „+0” i „—”
+✓ K6 pasek poziomu jest, XP bez powtórek (najwyżej 2 wystąpienia „XP”: licznik i pasek)
+✓ K3 okno awansu pokazane na finale (przekroczony próg w tej lekcji)
+✓ K4 „Następna lekcja” otwiera odtwarzacz lekcji U2
+✓ bez błędów (lekcja)
+✓ K6 przy < 3 gwiazdkach linia „3. gwiazdka: … (masz 75%)”
+✓ K6 przycisk „Popraw część 2”
+✓ K4 bez następnej lekcji: „Powtórki: N kart” albo „Wróć do mapy lekcji”
+✓ bez błędów (2 gwiazdki)
+✓ K4 niezdany bilet: główny „Spróbuj biletu jeszcze raz”
+✓ K2 słaby wynik: tytuł bez „✓”, Staś „oops” albo „think”
+✓ bez przewijania w bok (koniec)
+✓ K1 karta przejścia części z błędem: „0/1 z pierwszej próby”
+✓ K1 „+1 poprawione w drugiej szansie” przy części z drugą szansą
+✓ bez-nawyku-zle: ekran końca karty 5 min
+✓ bez-nawyku-zle: K5 bez ZD_NAWYK: Staś + tytuł → pasek celu z LP_DAILY_GOAL
+✓ bez-nawyku-zle: K5 jeden główny przycisk „Jeszcze 5 min do celu” / „Gotowe na dziś”
+✓ bez-nawyku-zle: K5 wynik i passa w zwijanych „Szczegółach”
+✓ bez-nawyku-zle: K5 premia +10 XP za kartę dnia (XP ≥ 10 nawet przy złych odpowiedziach)
+✓ bez-nawyku-zle: K2 słaby wynik: tytuł „Dobrze, że to wyszło teraz, a nie na kolokwium”, Staś „oops”
+✓ bez-nawyku-zle: K2 pierwszy przycisk „Powtórz błędne (N)”
+✓ bez-nawyku-zle: najwyżej 2 przyciski na widoku (główny + „Powtórz błędne”)
+✓ bez-nawyku-zle: K6 bez kafli „+0” i „—”
+✓ bez-nawyku-zle: K2 „Powtórz błędne” uruchamia błędne pytania tej sesji
+✓ bez-nawyku-zle: bez błędów
+✓ nawyk-zle: ekran końca karty 5 min
+✓ nawyk-zle: K5 kolejność: Staś + tytuł → seria → zamrożenie → cel dnia → jutro → przypomnienie → zadania
+✓ nawyk-zle: K5 jeden główny przycisk „Jeszcze 5 min do celu” / „Gotowe na dziś”
+✓ nawyk-zle: K5 wynik i passa w zwijanych „Szczegółach”
+✓ nawyk-zle: K5 premia +10 XP za kartę dnia (XP ≥ 10 nawet przy złych odpowiedziach)
+✓ nawyk-zle: K2 słaby wynik: tytuł „Dobrze, że to wyszło teraz, a nie na kolokwium”, Staś „oops”
+✓ nawyk-zle: K2 pierwszy przycisk „Powtórz błędne (N)”
+✓ nawyk-zle: najwyżej 2 przyciski na widoku (główny + „Powtórz błędne”)
+✓ nawyk-zle: K6 bez kafli „+0” i „—”
+✓ nawyk-zle: bez błędów
+✓ nawyk-dobrze: ekran końca karty 5 min
+✓ nawyk-dobrze: K5 kolejność: Staś + tytuł → seria → zamrożenie → cel dnia → jutro → przypomnienie → zadania
+✓ nawyk-dobrze: K5 jeden główny przycisk „Jeszcze 5 min do celu” / „Gotowe na dziś”
+✓ nawyk-dobrze: K5 wynik i passa w zwijanych „Szczegółach”
+✓ nawyk-dobrze: K5 premia +10 XP za kartę dnia (XP ≥ 10 nawet przy złych odpowiedziach)
+✓ nawyk-dobrze: K2 dobry wynik: „Świetnie! ✓”, Staś „ok”, bez „Powtórz błędne”
+✓ nawyk-dobrze: K6 bez kafli „+0” i „—”
+✓ nawyk-dobrze: bez błędów
+✓ ciemny-dobrze: ekran końca karty 5 min
+✓ ciemny-dobrze: K5 bez ZD_NAWYK: Staś + tytuł → pasek celu z LP_DAILY_GOAL
+✓ ciemny-dobrze: K5 jeden główny przycisk „Jeszcze 5 min do celu” / „Gotowe na dziś”
+✓ ciemny-dobrze: K5 wynik i passa w zwijanych „Szczegółach”
+✓ ciemny-dobrze: K5 premia +10 XP za kartę dnia (XP ≥ 10 nawet przy złych odpowiedziach)
+✓ ciemny-dobrze: K2 dobry wynik: „Świetnie! ✓”, Staś „ok”, bez „Powtórz błędne”
+✓ ciemny-dobrze: K6 bez kafli „+0” i „—”
+✓ ciemny-dobrze: bez błędów
+58/58
