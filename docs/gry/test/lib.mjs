@@ -17,6 +17,13 @@ try {
   const m = fs.readFileSync(DIR + "../../../supabase/skrot-v59-motywy-ceny.sql", "utf8").match(/nauka_motywy_cfg\(\) returns jsonb[\s\S]*?select '(\{[\s\S]*?\})'::jsonb/);
   export_cfg: { const cfg = JSON.parse(m[1]); for (const it of KATALOG24) if (it.typ === "motyw" && cfg[it.theme]) Object.assign(it, cfg[it.theme]); }
 } catch {}
+// ux-5: v60 – bez miejsc gabloty w sklepie, nagrody za poziomy 15/17/20 za Złotą ramką.
+try {
+  const m = fs.readFileSync(DIR + "../../../supabase/skrot-v60-start-gablota.sql", "utf8").match(/dodaj jsonb := '(\[[\s\S]*?\])'::jsonb/);
+  for (let i = KATALOG24.length - 1; i >= 0; i--) if (/^gablota:[23]$/.test(KATALOG24[i].id)) KATALOG24.splice(i, 1);
+  const za = KATALOG24.findIndex((x) => x.id === "ramka:zlota") + 1;
+  if (m && !KATALOG24.some((x) => x.id === "ramka:platynowa")) KATALOG24.splice(za || KATALOG24.length, 0, ...JSON.parse(m[1]));
+} catch {}
 const ATRAPA = fs.readFileSync(DIR + "atrapa-supabase.js", "utf8").replace("/*KATALOG_V24*/null", JSON.stringify(KATALOG24));
 export async function page(browser, { konto = "platne", v13 = "1", lang = "pl", w = 390, h = 844, ls = {}, ctx: more = {} } = {}) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, ...more });

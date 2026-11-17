@@ -1,0 +1,111 @@
+# Log testów – etap G3 runda 2 (2026-11-17 16:02)
+
+## ux5-etap3.mjs (przebieg końcowy rundy 2)
+```
+✓ K1 sekcja „Na start”: Pierwszy krok, Trzy dni, Pierwsza powtórka, Pierwszy cios, Cel 3 razy
+✓ K1 sekcja „Nauka”: Seria, Lekcje, Przedmiot przerobiony, Boss pokonany, Przygotowany, Rekord dnia, Duet tygodnia
+✓ K1 odznaki z gier w osobnej sekcji „Gry” (zwiniętej)
+✓ K1 z postępu przyznane: start1, seria3, pow1, lekcje1, cel3, rekord60, przygotowany
+✓ K1 baner przy zdobyciu (kilka naraz: „Nowe odznaki: N”)
+✓ K1 „Pierwszy cios” po ciosie w bossa (bsLoad)
+✓ K2 każda odznaka to przycisk ≥ 44×44 px
+✓ K2 arkusz „Seria”: nazwa, data zdobycia, jak zdobyć, postęp „Seria 5/7”, stopnie
+✓ K2 ZD_NAGRODY.odznaka(id) przyznaje raz i pokazuje baner „Odznaka: Duet tygodnia”
+✓ K3 PGlite: v60 (start +100 raz przez wyzwalacze na próbie i dostępie, gablota 3, zwrot, nagrody 15/17/20)
+✓ K3 Sklep przy 100 monetach bez zakupów: „Kup coś za monety z prezentu” (zamrożenie i kolor pseudonimu)
+✓ K3 sklep bez miejsc gabloty do kupienia
+✓ K3 przy 30 monetach karty prezentu nie ma
+✓ K3 gablota: 3 miejsca bez dopłaty (bez kłódek)
+✓ K4 ranking: plakietka poziomu przy nicku (ikona SVG + numer)
+✓ K4 „Poziomy i rangi”: nagrody na 15 (Platynowa ramka), 17 (Prezes roku), 20 (Ramka Geniusza)
+✓ K4 ikony poziomów: 20 SVG, bez emoji
+✓ K4 zablokowane poziomy: przerywany obrys, bez przezroczystości
+✓ K4 nagroda w jednej (najwyżej dwóch) liniach
+✓ K4 awans na 15: okno pokazuje „Nagroda: Platynowa ramka”
+✓ EN odznaki: bez polskich tekstów
+✓ EN arkusz odznaki: bez polskich tekstów
+✓ EN karta prezentu
+23/23
+```
+
+## node --test tests/*.test.js (kod wyjścia 0)
+ℹ tests 369
+ℹ pass 368
+ℹ fail 0
+ℹ skipped 1
+
+## PGlite (kod wyjścia 0; ✗ v12 limit_wpisow jest oczekiwany)
+```
+✗ skrot-v12-zabezpieczenia.sql → function public.limit_wpisow() does not exist
+✓ skrot-v58-nagroda-dzial.sql
+✓ skrot-v58-nagroda-dzial.sql
+    OK V58 D1 bez logowania: not_logged_in
+    OK V58 D1 bez dostępu: no_access
+    OK V58 D2 jedna z dwóch lekcji: nie_wszystkie (brak 1)
+    OK V58 D2 bez wpisu monet za dział
+    OK V58 D3 dział 1 zaliczony: +20
+    OK V58 D4 drugi raz: juz, 0 monet
+    OK V58 D4 jeden wpis +20 z kluczem misja:dzial:ux5-makro:1
+    OK V58 D5 dział 2 bez lekcji: nie_wszystkie
+    OK V58 D5 dział bez lekcji w bazie: no_unit
+    OK V58 D6 inny rocznik: liczy tylko swoje lekcje (1)
+    OK V58 D7 zalogowany czyta kwotę nagrody (20)
+    OK V58 D7 anon nie czyta konfiguracji
+✓ test/v58.sql
+✓ skrot-v59-motywy-ceny.sql
+✓ skrot-v59-motywy-ceny.sql
+    OK V59 M1 motyw pink w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw sea w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw bow w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw noc w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw meadow w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw lilia w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw riwiera w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw klub w katalogu: cena i poziom jak w cfg
+    OK V59 M2 ceny: 80/450/200/600/200/350/750/900
+    OK V59 M2 poziomy: 4/4/6/6/8/9/14/16, niewybrane 10 i 12
+    OK V59 M3 pozostałe pozycje katalogu zostały
+    OK V59 M4 Jednorożec za 80 kupiony, saldo 20
+    OK V59 M4 Nocny rejs za 450: brak monet
+    OK V59 M5 zalogowany czyta cfg motywów
+✓ test/v59.sql
+✓ skrot-v60-start-gablota.sql
+✓ skrot-v60-start-gablota.sql
+    OK V60 S1 próba: +100 na start
+    OK V60 S2 zakup po próbie: nadal jeden wpis start
+    OK V60 S3 zakup bez próby (po e-mailu): +100
+    OK V60 S4 user_id dopisany później: +100 raz
+    OK V60 S5 gablota: 3 miejsca bazowo
+    OK V60 S5 katalog bez gablota:2 i gablota:3
+    OK V60 S6 nagrody 15/17/20 w katalogu, tylko za poziom
+    OK V60 S6 Złota ramka zostaje (poziom 10), motywy z v59 zostają
+✓ test/v60.sql
+✓ skrot-v60-start-gablota.sql
+    OK V60 S7 zwrot 600 za gablota:2 (klucz zwrot:gablota:2)
+    OK V60 S8 trzecie uruchomienie: nagrody 15/17/20 bez dubli
+✓ test/v60b.sql
+✓ test/v60b.sql
+✓ roczniki ze strony → v49: 11 (2× każdy, adres planu jak w rocznik.js)
+✓ strażnik kodowania: dobry plik przechodzi, zepsuty zatrzymany (Polskie znaki doszŇāy zepsute. Skopiuj p…)
+```
+
+## istniejące testy h2-*.mjs
+h2-etap1.mjs: 25/25
+h2-etap10.mjs: 24/24
+h2-etap2.mjs: 33/33
+h2-etap3.mjs: 48/48
+h2-etap4.mjs: 33/33
+h2-etap5.mjs: 36/36
+h2-etap6.mjs: 27/27
+h2-etap7.mjs: 47/47
+h2-etap8.mjs: 85/85
+h2-etap9.mjs: 92/92
+
+## wcześniejsze etapy pętli 5
+ux5-etap1.mjs: 32/33 → po poprawce testu (czekanie na kolejkę banerów) 33/33
+ux5-etap2.mjs: 32/32
+
+## stare testy gier
+- etap9.mjs: 82/82
+- poziomy.mjs: 3 ✗ – te same co na origin/main
+- h2-etap5.mjs: 36/36 po commicie „test: h2-etap5 – dane z motywem Jednorożec zdobytym”

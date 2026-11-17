@@ -140,8 +140,8 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
   const p = await open(b, { w: 390, h: 844, hash: "/subject/" + A, progress: prog({ done: { A1: 1 }, mastery: { A1: { ok: true } } }) });
   await p.screenshot({ path: DIR + "przejscie-1-przed.png" });
   await p.evaluate(() => { const Z = window.ZD_APP; Z.progSoon({ done: { ...(Z.S.progress.done || {}), A2: 1 }, mastery: { ...(Z.S.progress.mastery || {}), A2: { ok: true } } }); setTimeout(() => window.ZD_NAGRODY.dzialSprawdz("analiza-matematyczna"), 50); });
-  await p.waitForTimeout(400);
-  const ban = await p.evaluate(() => document.querySelector(".ux5-banner")?.innerText || "");
+  await p.waitForFunction(() => /Dział 1 zaliczony/.test([...document.querySelectorAll(".ux5-banner")].map((e) => e.innerText).join(" ")), null, { timeout: 9000 }).catch(() => {});
+  const ban = await p.evaluate(() => [...document.querySelectorAll(".ux5-banner")].map((e) => e.innerText).find((t) => /Dział 1/.test(t)) || "");
   await p.screenshot({ path: DIR + "przejscie-2-baner.png" });
   const karta = await tekst(p, ".sk-hero");
   T.ok("K4 przejście: karta pod banerem już „Zrobione lekcje: 2 z 3”", /Zrobione lekcje: 2 z 3/.test(karta), karta);

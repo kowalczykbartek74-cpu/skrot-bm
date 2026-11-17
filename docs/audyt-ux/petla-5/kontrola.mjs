@@ -18,7 +18,7 @@ const B3 = ["viewSubject", "subjectHero", "subjectLearn", "courseSection", "subj
   "bsClaim", "bsLoad", "bsAnnText", "viewBoss", "viewPaczka", "viewPolec", "THEME_SHOP", "PINK_LEVEL", "BOW_LEVEL", "MEADOW_LV", "LILIA_LEVEL", "SEA_LEVEL", "NOC_LEVEL", "RIWIERA_LEVEL", "KLUB_LEVEL", "themeOwned", "viewMaterial", "materialHead",
   "THEME_CHOICE", "shopBuy", "kosmShop", "rankGroups", "coinTxt"];
 // Obszary z B3 opisane słownie (Hasło, Boss, Sklep, motywy, poziomy, ranking, gry, paczka): funkcje pomocnicze tych ekranów.
-const B3_PRE = /^(hd[A-Z]|HD_|bs[A-Z]|BS_|shop[A-Z]|SHOP|kShop|K_TABS|K_GROUPS|kCard|kActs|theme[A-Z]|THEME_|lv[A-Z]|LP_LEVEL|rank[A-Z]|RANK|gry(Badge|Records)|ODZNAKI|pk[A-Z]|paczka|misja)/;
+const B3_PRE = /^(hd[A-Z]|HD_|bs[A-Z]|BS_|shop[A-Z]|SHOP|kShop|kGablota|K_TABS|K_GROUPS|kCard|kActs|theme[A-Z]|THEME_|lv[A-Z]|LP_LEVEL|rank[A-Z]|RANK|gry(Badge|Records)|ODZNAKI|pk[A-Z]|paczka|misja)/;
 const funkcje = (plik) => {
   let diff = ""; try { diff = sh(`git diff -U0 ${BAZA} -- ${plik}`); } catch { return null; }
   if (!diff) return { zmiany: [] };

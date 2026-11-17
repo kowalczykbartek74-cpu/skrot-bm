@@ -322,7 +322,7 @@
       if (!ma24(a.p_item)) return { ok: false, code: "not_owned" };
       MON.zal[a.p_slot] = a.p_item; monZapisz(); return { ok: true, slot: a.p_slot, item: a.p_item }; },
     nauka_gablota_ustaw: (a) => {
-      const m = 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length, lista = [...new Set(a.p_odznaki || [])];
+      const m = (ls("mock-v60", "1") === "1" ? 3 : 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length), lista = [...new Set(a.p_odznaki || [])];
       if (lista.length > m) return { ok: false, code: "too_many", miejsca: m };
       if (lista.some((x) => !(x in (prog24().odznaki || {})))) return { ok: false, code: "not_earned" };
       MON.gab = lista; monZapisz(); return { ok: true, odznaki: lista, miejsca: m }; },
@@ -335,7 +335,7 @@
       ja: { zalozone: zal24(), gablota: MON.gab, poziom: lv24() } }),
   };
   const stan24 = () => (V24 ? { katalog: KAT24, dzis: dzis(), poziom: lv24(), zalozone: zal24(), tytuly: Object.keys(prog24().tytuly || {}),
-    gablota: { miejsca: 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length, odznaki: MON.gab },
+    gablota: { miejsca: (ls("mock-v60", "1") === "1" ? 3 : 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length), odznaki: MON.gab },
     zamrozenia: { ma: zamMa(), max: 2, dni: MON.zam.dni }, sezony: SEZ24 } : {});
   // aktywność dla panelu starosty (v11) – tylko tyle, żeby dało się otworzyć zakładkę Monety
   const AKT = { nauka_admin_aktywnosc: () => (KONTO === "starosta" ? { online: [], logowania: [], wizyty: [], konta: [

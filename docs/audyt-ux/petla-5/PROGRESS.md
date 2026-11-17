@@ -23,7 +23,10 @@ Gałąź `ux/5-nagrody`, katalog `~/zdawalni/ux-5`, port 8815. Wznowienie: „Ko
 | G1 ścieżka | 3 | **8/10** | – | **ZALICZONY** (K1–K4 ✓) | e1eab44 |
 | G2 jedna miara | 1 | 6/10 | – (K5 ✗: okno „Jak zdobywać” z Dziś z emoji) | poprawki | |
 | G2 jedna miara | 2 | 7,5/10 | – | poprawki | |
-| G2 jedna miara | 3 | **8/10** | – | **ZALICZONY** (K1–K5 ✓) | commit „UX-5 etap G2 runda 3” |
+| G2 jedna miara | 3 | **8/10** | – | **ZALICZONY** (K1–K5 ✓) | b112932 |
+| G3 odznaki, start, ranga | 1 | (bez recenzji: poprawki po teście) | – | | |
+| G3 odznaki, start, ranga | 2 | 7,5/10 | – | poprawki | |
+| G3 odznaki, start, ranga | 3 | **8/10** | – | **ZALICZONY** (K1–K4 ✓) | commit „UX-5 etap G3 runda 3” |
 
 ## Uwagi do etapów
 - G1: rundy 1–2 bez osobnych commitów (wszystko w commicie rundy 3; oceny w `etap-1/runda-N/ocena.json`).
@@ -33,3 +36,6 @@ Gałąź `ux/5-nagrody`, katalog `~/zdawalni/ux-5`, port 8815. Wznowienie: „Ko
 - G2: motywy z poziomu po starych progach zostają (`S.progress.motywyZPoz`, migracja raz: `motywyMig`); motyw z pary zachowany ze starych progów liczy się jak wybór.
 - G2: testy `etap9.mjs` i `poziomy.mjs` dostosowane osobnymi commitami „test: …”; `poziomy.mjs` ma 3 ✗ identyczne jak na origin/main, `etap7.mjs` TimeoutError także na main.
 - G2 do zrobienia przy okazji (poprawki rundy 3, nieblokujące): linia „XP od poniedziałku, nie łączne” w Rankingu (G4), obie karty wyboru widoczne przy 360 px, „Masz 120 z 200” zamiast „Brakuje 80”, etykieta pary w Sklepie, `ico` motywów bez emoji, potwierdzenie serii po Haśle, cena przy wyborze w Profilu.
+- G3: odznaki za naukę w `nagrody.js` (`ODZ`), zapis w `progress.odznaki` (gablota w bazie je przyjmuje), sprawdzanie po przerysowaniu #main i po zapisie postępu; banery w kolejce, ustępują banerowi aplikacji. 100 monet na start: wyzwalacze v60 + jednorazowe okno „Prezent na start”. Nagrody za poziomy: Złota ramka zostaje na 10 (kto ma, nie traci), nowe: Platynowa ramka 15, „Prezes roku” 17, Ramka Geniusza 20 (ramki w `kosmetyki.js`, kolory z palety H2).
+- G3: test `h2-etap5.mjs` dostał dane z zdobytym motywem (commit „test: …”), bo zapis postępu teraz egzekwuje prawo do motywu.
+- G3 → G4 (do zrobienia przy rankingu): wiersze 360 px (tytuł na XP), plakietka w linii nicku bez podwójnego obrysu, link „Jak zdobywać” w osobnej linii, test zwrotu gablota:3.

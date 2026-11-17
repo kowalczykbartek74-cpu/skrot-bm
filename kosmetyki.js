@@ -58,6 +58,18 @@
       `<circle cx="32" cy="32" r="26.4" fill="none" stroke="url(#kz-g)" stroke-width="4.6"/><circle cx="32" cy="32" r="23.3" fill="none" stroke="#9A7212" stroke-width=".9"/>` +
       `<path d="M23.5 8.6 L26.6 3.6 L29.3 7 L32 2 L34.7 7 L37.4 3.6 L40.5 8.6 Z" fill="url(#kz-g)" stroke="#9A7212" stroke-width=".7" stroke-linejoin="round"/>` +
       [0.7, 2.44, 3.88, 5.45].map((a) => { const [x, y] = pt(26.4, a + Math.PI / 2); return `<circle cx="${x}" cy="${y}" r="1.6" fill="#fff8de" stroke="#9A7212" stroke-width=".5"/>`; }).join(""),
+    // ux-5 (pętla 5): nagrody za poziom 15 i 20, tylko kolory z palety H2.
+    platyna: () => {
+      let s = `<circle cx="32" cy="32" r="26.2" fill="none" stroke="#BFCBBA" stroke-width="4.4"/><circle cx="32" cy="32" r="23.4" fill="none" stroke="#3E5046" stroke-width=".9"/><circle cx="32" cy="32" r="28.6" fill="none" stroke="#3E5046" stroke-width=".7"/>`;
+      for (let i = 0; i < 12; i++) { const [x, y] = pt(26.2, (i / 12) * PI2 - Math.PI / 2); s += `<circle cx="${x}" cy="${y}" r="${i % 3 ? .7 : 1.4}" fill="#FFFFFF"/>`; }
+      return s;
+    },
+    geniusz: () => {
+      let s = `<circle cx="32" cy="32" r="26" fill="none" stroke="#1A7F45" stroke-width="5"/>`;
+      for (let i = 0; i < 10; i++) { const a = (i / 10) * PI2 - Math.PI / 2, [x0, y0] = pt(23.6, a), [x1, y1] = pt(28.4, a + .16), [x2, y2] = pt(28.4, a - .16), [x3, y3] = pt(31, a);
+        s += `<path d="M${x0} ${y0} L${x1} ${y1} L${x3} ${y3} L${x2} ${y2} Z" fill="#CDF25E" stroke="#10231A" stroke-width=".6" stroke-linejoin="round"/>`; }
+      return s;
+    },
     szron: () => {
       let s = `<circle cx="32" cy="32" r="25.6" fill="none" stroke="#8EC1E3" stroke-width="2"/>`;
       for (let i = 0; i < 8; i++) {

@@ -22,6 +22,26 @@
   };
   const IKONY_UX5 = {
     "ux5-chest-open": '<path d="M4 12h16v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 12L6 5h12l2 7"/><path d="M9 12v2h6v-2"/><path d="M12 2v1M8 3l.6.9M16 3l-.6.9"/>',
+    "ux5-sprout":  '<path d="M12 21v-9"/><path d="M12 12C12 7 8.5 4.5 4 5c0 4.5 3.5 7 8 7z"/><path d="M12 14c0-4 3-6.5 8-6 0 4-3 6.5-8 6z"/>',
+    "ux5-target":  '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    "ux5-cap":     '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/><path d="M22 9v6"/>',
+    "ux5-duo":     '<circle cx="8.5" cy="8" r="3.2"/><circle cx="16" cy="9" r="2.6"/><path d="M2.5 20c.8-3.6 3-5.5 6-5.5s5.2 1.9 6 5.5"/><path d="M15 14.6c2.8-.3 5 1.4 6.2 4.6"/>',
+    "ux5-heart":   '<path d="M12 20s-7.5-4.6-9-9.3C2 7.5 4 4.5 7.2 4.5c2 0 3.6 1.2 4.8 3 1.2-1.8 2.8-3 4.8-3 3.2 0 5.2 3 4.2 6.2C19.5 15.4 12 20 12 20z"/>',
+    "ux5-search":  '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/>',
+    "ux5-cal":     '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    "ux5-chart":   '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+    "ux5-chess":   '<path d="M8 21h8M9 18h6l-1-6h-4z"/><path d="M10 12l-2-4 4-3 4 3-2 4"/>',
+    "ux5-compass": '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+    "ux5-rocket":  '<path d="M12 15c-2-2-3-6 0-11 3 5 2 9 0 11z"/><path d="M9.5 13L6 16l1.5 3L10 16.5M14.5 13l3.5 3-1.5 3L14 16.5"/><circle cx="12" cy="9" r="1.2"/>',
+    "ux5-scope":   '<path d="M3 13l12-6 2 4-12 6z"/><path d="M15 7l3-1.5 2 4-3 1.5"/><path d="M9 15l-2 6M10 14.5L13 21"/>',
+    "ux5-owl":     '<path d="M5 20V9a7 7 0 0 1 14 0v11z"/><circle cx="9" cy="10" r="2"/><circle cx="15" cy="10" r="2"/><path d="M11 14l1 1.5 1-1.5"/>',
+    "ux5-case":    '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3M3 12h18"/>',
+    "ux5-office":  '<path d="M4 21V5l8-2v18M12 8l8 2v11M3 21h18"/><path d="M7 8h2M7 12h2M7 16h2M15 13h2M15 17h2"/>',
+    "ux5-tie":     '<path d="M9 3h6l-1.5 3L16 17l-4 4-4-4 2.5-11z"/>',
+    "ux5-crown":   '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+    "ux5-gem":     '<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l3 18M15 3l-3 18"/>',
+    "ux5-flame":   '<path d="M12 3c1 3.5 5 5.5 5 10.5a5 5 0 0 1-10 0c0-2.4 1.2-3.9 2.3-4.8.1 1.8 1 2.8 2 3.1-.4-2.8 0-6 .7-8.8z"/>',
+    "ux5-bulb":    '<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
     "ux5-word":    '<path d="M5 20L10.5 4h3L19 20"/><path d="M7.5 13h9"/>',
     "ux5-palette": '<path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>',
     "ux5-user":    '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
@@ -39,7 +59,7 @@
     el.innerHTML = k === "coin" || k === "flame" ? (A().H2_ICO?.[k] || "") : ikony[k] ? SVG(ikony[k]) : "";
     return el;
   }
-  // „N [moneta]” jako tekst z ikoną SVG (zamiast emoji 🪙). Zwraca span: liczba czytana przez czytnik + „monet”.
+  // „N [moneta]” jako tekst z ikoną SVG (zamiast emoji monety). Zwraca span: liczba czytana przez czytnik + „monet”.
   function coinTxt(n, o = {}) {
     const el = document.createElement("span"); el.className = "ux5-coin num" + (o.cls ? " " + o.cls : "");
     const t = document.createElement("span"); t.textContent = (o.plus && n > 0 ? "+" : "") + String(n);
@@ -98,6 +118,63 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
 #main .shop-hero .shop-how > summary, #main .shop-hist > summary, #main .shop-card .btn, #main .sk-misje .btn, #main .misja .btn, #main .shop-misje .btn, #main .shop-mission .btn, #main .kshop .btn, #main .kshop-tab, #layer .lvup .btn { min-height: 44px; }
 #main .shop-hero .shop-how > summary, #main .shop-hist > summary { display: flex; align-items: center; }
 #layer .lv-prize.ux5-prize { color: var(--h-acc, var(--accent-text)); display: block; max-width: 100%; overflow-wrap: anywhere; }
+.ux5-odznaki { display: grid; gap: 8px; }
+.ux5-odznaki h2 { margin: 0; } .ux5-odznaki h3 { margin: 8px 0 0; font-size: 1rem; }
+.ux5-odz-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ux5-odz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.ux5-odz { display: grid; justify-items: center; gap: 4px; min-height: 44px; min-width: 44px; padding: 10px 6px; border-radius: 18px; border: 2px solid var(--h-line, var(--line)); background: var(--h-card, var(--surface)); color: var(--h-ink, var(--ink)); font: inherit; cursor: pointer; text-align: center; }
+.ux5-odz.off { border-style: dashed; border-color: var(--h-edge, var(--line)); background: transparent; }
+.ux5-odz .ux5-odz-n { font-weight: 700; font-size: .86rem; line-height: 1.2; }
+.ux5-odz small { font-size: .78rem; color: var(--h-muted, var(--muted)); }
+.ux5-odz-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 3px solid var(--h-edge, var(--line)); background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-acc, var(--accent)); }
+.ux5-odz-ic svg { width: 26px; height: 26px; }
+.ux5-odz-ic.t0 { background: transparent; border-style: dashed; color: var(--h-muted, var(--muted)); }
+.ux5-odz-ic.t0 svg { opacity: .55; }
+.ux5-odz-ic.t1 { border-color: var(--h-orange, var(--warn)); }
+.ux5-odz-ic.t2 { border-color: var(--h-blue, var(--accent)); }
+.ux5-odz-ic.t3 { border-color: #E0A20F; background: var(--h-lime, var(--accent-soft)); color: var(--h-ink, var(--ink)); }
+.ux5-odz-gry > summary { display: flex; justify-content: space-between; align-items: center; min-height: 44px; font-weight: 700; cursor: pointer; }
+.ux5-ark { display: grid; gap: 10px; }
+.ux5-ark-top { display: flex; gap: 14px; align-items: center; }
+.ux5-ark-top .ux5-odz-ic { width: 64px; height: 64px; flex: none; } .ux5-ark-top .ux5-odz-ic svg { width: 34px; height: 34px; }
+.ux5-ark h2 { margin: 0; } .ux5-ark p { margin: 0; }
+.ux5-ark-btns { justify-content: flex-end; gap: 8px; } .ux5-ark-btns .btn { min-height: 44px; }
+.ux5-banner-ic svg { width: 20px; height: 20px; }
+.ux5-lv-ic svg { width: 1.2em; height: 1.2em; }
+.lv-badge .ux5-lv-ic svg, .rk-badge .ux5-lv-ic svg { width: 22px; height: 22px; }
+.lv-badge.big .ux5-lv-ic svg, .rk-badge.big .ux5-lv-ic svg { width: 40px; height: 40px; }
+#layer .lv-row.lv-next .lv-badge { border: 2px dashed var(--h-edge, var(--line)); background: transparent; color: var(--h-muted, var(--muted)); }
+#layer .lv-row.lv-next .lv-badge .ico { filter: none; opacity: 1; }
+#layer .lv-row .lv-badge { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; }
+.rk-who { min-height: 44px; }
+.rk-nick .rk-lv { margin-left: 6px; vertical-align: middle; }
+.rk-badge.rk-lv { display: inline-flex; align-items: center; gap: 2px; padding: 0 6px; min-height: 22px; border-radius: 999px; font-size: .78rem; font-weight: 800; background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-acc-edge, var(--accent-text)); }
+.rk-badge.rk-lv .ux5-lv-ic svg { width: 14px; height: 14px; }
+.ux5-prezent { display: grid; gap: 10px; }
+.ux5-prezent h2 { margin: 0; } .ux5-prezent p { margin: 2px 0 0; }
+.ux5-prezent-top { display: flex; gap: 12px; align-items: center; }
+.ux5-prezent-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--h-lime, var(--accent-soft)); color: var(--h-ink, var(--ink)); flex: none; }
+.ux5-prezent-opcje { display: flex; flex-wrap: wrap; gap: 8px; }
+.ux5-prezent-opcje .btn { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
+.lv-badge .n, .rk-badge .n { font-size: 12px !important; color: #10231A !important; background: #CDF25E !important; }
+#main .kgab-slot, #main .kprof-btn, #layer .lv-foot .link, #layer .lv-modal .btn, #layer .lv-head ~ .btn { min-height: 44px; }
+#main .kgab-slot { min-width: 44px; }
+#layer .lv-foot .link { display: inline-flex; align-items: center; }
+#main .sk-profile .lv-howlink { min-height: 44px; display: inline-flex; align-items: center; }
+.ux5-lv-kosm { display: grid; gap: 8px; width: 100%; }
+.ux5-lv-kosm-k { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 18px; background: var(--h-acc-soft, var(--accent-soft)); }
+.ux5-lv-kosm-pv { display: grid; place-items: center; width: 56px; height: 56px; }
+.ux5-lv-kosm-pv svg { width: 56px; height: 56px; }
+.ux5-lv-kosm-t { display: grid; gap: 2px; min-width: 0; }
+#main .rk-row .rk-badge.rk-lv { position: static; width: auto; height: 22px; min-width: 0; padding: 0 7px 0 5px; border-radius: 999px; border: 0; box-shadow: none; display: inline-flex; gap: 3px; vertical-align: middle; background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-ink, var(--ink)); }
+#main .rk-row .rk-badge.rk-lv .n { position: static; min-width: 0; height: auto; padding: 0; background: none !important; color: inherit !important; font-size: 12px !important; }
+#main .rk-row .rk-badge.rk-lv .ux5-lv-ic svg { width: 14px; height: 14px; }
+#main .rk-row .ktl { font-size: 12px; }
+.ux5-start { display: grid; justify-items: center; gap: 8px; text-align: center; }
+.ux5-start h2 { margin: 0; font-size: 2rem; } .ux5-start p { margin: 0; }
+.ux5-start-ic { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--h-lime, var(--accent-soft)); color: var(--h-ink, var(--ink)); }
+.ux5-start-ic svg { width: 34px; height: 34px; }
+.ux5-start .btn { min-height: 44px; }
 .ux5-banner { display: inline-flex; align-items: center; gap: 8px; }
 `;
   function css() {
@@ -106,15 +183,207 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
   }
 
   // ---------- baner z ikoną (jak lpBanner, ale z monetą SVG) ----------
-  function baner(tekst, monety) {
+  // Banery po kolei: nowy czeka, aż zniknie poprzedni (także baner aplikacji .lp-banner), żeby się nie nakładały.
+  let banerDo = 0;
+  function baner(tekst, monety, nazwa) {
     const b = document.createElement("div"); b.className = "lp-banner ux5-banner"; b.setAttribute("role", "status");
+    const teraz = Date.now(), inny = document.querySelector(".lp-banner:not(.ux5-banner)") ? teraz + 1800 : 0, start = Math.max(teraz, banerDo, inny);
+    banerDo = start + 2700;
+    if (start > teraz) { b.hidden = true; setTimeout(() => { b.hidden = false; document.body.append(b); setTimeout(() => b.remove(), 2600); }, start - teraz); }
     const t = document.createElement("span"); t.textContent = tekst; b.append(t);
+    if (nazwa) { const n = document.createElement("b"); n.textContent = nazwa; b.append(n); }
     if (monety) b.append(coinTxt(monety, { plus: true }));
-    document.body.append(b); setTimeout(() => b.remove(), 2600);
+    if (start <= teraz) { document.body.append(b); setTimeout(() => b.remove(), 2600); }
     return b;
   }
 
   const ZD = (window.ZD_NAGRODY ||= {});
+
+  // ---------- G3: odznaki za naukę (z poziomami), odznaki startowe, gry osobno ----------
+  // Przyznaje przeglądarka (bez nagrody w monetach: A4 pkt 4) i zapisuje w S.progress.odznaki[id] = dzień (ta sama mapa co
+  // odznaki gier, więc gablota w bazie przyjmuje je bez zmian). Stan liczony z postępu przy każdym rysowaniu (sprawdz()).
+  // pr = postęp (S.progress). Każda odznaka: id, ikona, nazwa, jak, ile(pr) → bieżąca wartość, progi [brąz, srebro, złoto] albo [1].
+  const D = () => A().dayN?.() ?? 0;
+  const lekcjeN = (pr) => new Set([...Object.keys(pr.done || {}), ...Object.entries(pr.mastery || {}).filter(([, v]) => v?.ok).map(([k]) => k)]).size;
+  const seriaN = (pr) => Math.max(pr.rekordy?.seria || 0, (pr.streak && (pr.streak.d >= D() - 1) ? pr.streak.n || 0 : 0));
+  const xpDzisN = (pr) => (pr.xp?.d === D() ? pr.xp.n || 0 : 0);
+  const celDnia = () => +(window.ZD_NAWYK?.celDnia?.()?.cel || A().celDnia?.() || 50);
+  const powN = (pr) => Object.values(pr.srs || {}).filter((v) => Array.isArray(v) && v[0] > 0).length;
+  const testMax = (pr) => Math.max(0, ...Object.values(pr.exams || {}).flatMap((e) => (e?.att || []).map((a) => +a.pct || 0)));
+  const przedmiotyN = (pr) => { const Z = A(); return (Z.subjects?.() || []).filter((s) => { const ls = Z.lessonsOf(s.id); return ls.length && ls.every(Z.lessonDone); }).length; };
+  const ODZ = [
+    // id, ikona, nazwa, jak zdobyć (z {n} = próg), wartość, progi, sekcja
+    { id: "start1", ic: "ux5-sprout", pl: "Pierwszy krok", jak: "Skończ pierwszą kartę dnia albo lekcję.", ile: (pr) => ((pr.xp?.t || 0) > 0 || lekcjeN(pr) > 0 ? 1 : 0), progi: [1], sek: "start" },
+    { id: "seria", ic: "flame", pl: "Seria", jak: "Ucz się {n} dni z rzędu.", ile: seriaN, progi: [3, 7, 30], ids: ["seria3", "seria7", "seria30"], sek: "nauka", start: "seria3", startPl: "Trzy dni" },
+    { id: "pow1", ic: "retry", pl: "Pierwsza powtórka", jak: "Oceń pierwszą fiszkę w Powtórkach.", ile: (pr) => Math.min(1, powN(pr)), progi: [1], sek: "start" },
+    { id: "boss1", ic: "miecze", pl: "Pierwszy cios", jak: "Zadaj bossowi pierwszy cios dobrą odpowiedzią przed kolokwium.", ile: (pr) => (pr.odznaki?.boss1 != null ? 1 : 0), progi: [1], sek: "start" },
+    { id: "cel3", ic: "ux5-target", pl: "Cel 3 razy", jak: "Osiągnij cel dnia w 3 różne dni.", ile: (pr) => (pr.celDni || []).length, progi: [3], sek: "start" },
+    { id: "lekcje", ic: "book", pl: "Lekcje", jak: "Zrób {n} lekcji.", ile: lekcjeN, progi: [1, 10, 30], ids: ["lekcje1", "lekcje10", "lekcje30"], sek: "nauka" },
+    { id: "przedmiot", ic: "check", pl: "Przedmiot przerobiony", jak: "Zrób wszystkie lekcje jednego przedmiotu.", ile: przedmiotyN, progi: [1], sek: "nauka" },
+    { id: "dzial1", ic: "ux5-chest-open", pl: "Dział za Tobą", jak: "Zalicz cały dział kursu i odbierz nagrodę.", ile: (pr) => Object.keys(pr.dzialy || {}).length, progi: [1], sek: "nauka" },
+    { id: "boss", ic: "miecze", pl: "Boss pokonany", jak: "Zadaj co najmniej 10 ciosów bossowi, którego rok pokona.", ile: (pr) => (pr.odznaki?.boss != null ? 1 : 0), progi: [1], sek: "nauka" },
+    { id: "przygotowany", ic: "ux5-cap", pl: "Przygotowany", jak: "Zdobądź co najmniej 70% w próbnym teście (Przygotuj się).", ile: (pr) => (testMax(pr) >= 70 ? 1 : 0), progi: [1], sek: "nauka", pokaz: (pr) => `Najlepszy próbny test: ${testMax(pr)}%` },
+    { id: "rekord", ic: "bolt", pl: "Rekord dnia", jak: "Zdobądź {n} XP jednego dnia.", ile: (pr) => Math.max(pr.rekordy?.xpDzien || 0, xpDzisN(pr)), progi: [60, 120, 250], ids: ["rekord60", "rekord120", "rekord250"], sek: "nauka",
+      pokaz: (pr) => `Twój najlepszy dzień: ${Math.max(pr.rekordy?.xpDzien || 0, xpDzisN(pr))} XP` },
+    { id: "duet", ic: "ux5-duo", pl: "Duet tygodnia", jak: "Osiągnij z kimś z paczki cel duetu tygodnia.", ile: (pr) => (pr.odznaki?.duet != null ? 1 : 0), progi: [1], sek: "nauka" },
+  ];
+  const STOPIEN = ["brąz", "srebro", "złoto"];
+  // Gry: lista z aplikacji (GRY_BADGES) + Mistrz Zdawalni; ikony gier z H2 (wyjątek marki).
+  const IKONA_GRY = { frun10: "frun", frun30: "frun", szansa: "ux5-heart", pary0: "pary", przejdz50: "przejdz", top10: "ux5-trophy", mistrz: "ux5-cap" };
+  const gryOdz = () => [...(A().GRY_BADGES || []), ["mistrz", "", "Mistrz Zdawalni", "7 z 10 w teście przewodnika"]].map(([id, , pl, jak]) => ({ id, ic: IKONA_GRY[id] || "ux5-medal", pl, jak: jak.charAt(0).toUpperCase() + jak.slice(1) + ".", gra: true }));
+  // Stan jednej odznaki: zdobyte progi, następny próg, data.
+  function stan(b, pr) {
+    pr = pr || A().S?.progress || {}; const o = pr.odznaki || {};
+    if (b.gra) return { got: o[b.id] != null ? 1 : 0, max: 1, d: o[b.id], v: o[b.id] != null ? 1 : 0, nast: o[b.id] != null ? null : 1 };
+    const ids = b.ids || [b.id], v = b.ile(pr) || 0;
+    const got = ids.filter((id, i) => o[id] != null || v >= b.progi[i]).length;
+    const ost = got ? ids[got - 1] : null;
+    return { got, max: ids.length, v, d: ost ? o[ost] : null, nast: got < b.progi.length ? b.progi[got] : null };
+  }
+  // Ikona odznaki (kółko 48 px: SVG z H2 albo z listy; poziom = obwódka brąz/srebro/złoto).
+  function odzIkona(b, st) {
+    const Z = A(), el = document.createElement("span"); el.className = `ux5-odz-ic t${st.got ? Math.min(3, b.progi?.length > 1 ? st.got : 2) : 0}`; el.setAttribute("aria-hidden", "true");
+    const k = b.ic; el.innerHTML = ["flame", "miecze", "frun", "pary", "przejdz", "coin"].includes(k) ? (Z.H2_ICO?.[k] || "") : SVG(ikony[k] || ikony["ux5-medal"]);
+    return el;
+  }
+  // Przyznanie (umowa: ZD_NAGRODY.odznaka(id) – też dla innych pętli). o.cicho = bez banera.
+  const nazwaId = (id) => { for (const b of [...ODZ, ...gryOdz()]) { if (b.id === id) return b.pl; const i = (b.ids || []).indexOf(id); if (i >= 0) return id === b.start ? b.startPl : `${b.pl}: ${b.progi[i]}`; } return null; };
+  let kolejka = [], kolT = 0;
+  function odznaka(id, o = {}) {
+    const Z = A(), pr = Z.S?.progress; if (!pr || !Z.S?.progReady || pr.odznaki?.[id] != null) return false;
+    Z.progSoon?.({ odznaki: { ...(Z.S.progress.odznaki || {}), [id]: D() } });
+    if (!o.cicho) { kolejka.push(id); clearTimeout(kolT); kolT = setTimeout(pokazKolejke, 700); }
+    if (["profil", "shop"].includes(Z.S.route?.view)) setTimeout(() => Z.render?.(), 0); // siatka odznak bez starego stanu
+    return true;
+  }
+  function pokazKolejke() {
+    const ids = kolejka.splice(0); if (!ids.length) return;
+    const b = ids.length === 1 ? baner("Odznaka:", 0, nazwaId(ids[0]) || ids[0]) : baner(`Nowe odznaki: ${ids.length}`);
+    b.prepend(ikona(ids.length === 1 && ODZ.find((x) => x.id === ids[0] || (x.ids || []).includes(ids[0]))?.ic === "flame" ? "flame" : "ux5-medal", "ux5-banner-ic"));
+  }
+  // Sprawdzenie warunków (po każdej zmianie ekranu): rekordy dnia i serii, dni z celem, nowe progi odznak.
+  let sprT = 0, pierwszy = true;
+  function sprawdz() {
+    sprT = 0; const Z = A(), pr = Z.S?.progress; if (!pr || !Z.S?.progReady || !Z.S?.uid && !window.skrot?.uid) return;
+    const patch = {}, rek = { ...(pr.rekordy || {}) }, sn = pr.streak && pr.streak.d >= D() - 1 ? pr.streak.n || 0 : 0, xd = xpDzisN(pr);
+    if (sn > (rek.seria || 0)) { rek.seria = sn; patch.rekordy = rek; }
+    if (xd > (rek.xpDzien || 0)) {
+      // Nowy rekord osobisty (pobity wynik z innego dnia): baner raz dziennie.
+      if ((rek.xpDzien || 0) >= 30 && rek.xpDzienD !== D() && rek.banerD !== D()) { rek.banerD = D(); baner("Nowy rekord dnia:", 0, `${xd} XP`); }
+      rek.xpDzien = xd; rek.xpDzienD = D(); patch.rekordy = rek;
+    }
+    if (xd >= celDnia() && !(pr.celDni || []).includes(D())) patch.celDni = [...(pr.celDni || []), D()].slice(-60);
+    if (Object.keys(patch).length) { Z.progSoon?.(patch); clearTimeout(sprT); sprT = setTimeout(sprawdz, 300); return; } // kolejne sprawdzenie po zapisie
+    const nowe = [];
+    for (const b of ODZ) { const st = stan(b, pr), ids = b.ids || [b.id]; for (let i = 0; i < st.got; i++) if (pr.odznaki?.[ids[i]] == null) nowe.push(ids[i]); }
+    // Pierwsze sprawdzenie w sesji: zaległe odznaki (zdobyte przed tą wersją) dopisujemy bez banera, gdy jest ich więcej niż 2.
+    const cicho = pierwszy && nowe.length > 2; pierwszy = false;
+    for (const id of nowe) odznaka(id, { cicho });
+  }
+  // Po każdym przerysowaniu ekranu (#main dostaje nowe dzieci) i po zapisie postępu; nie przy każdej zmianie DOM.
+  const sprPozniej = () => { if (!sprT) sprT = setTimeout(sprawdz, 400); };
+  const mainEl = document.getElementById("main");
+  if (mainEl) new MutationObserver(sprPozniej).observe(mainEl, { childList: true }); else setInterval(sprPozniej, 3000);
+  addEventListener("skrot:sklep", sprPozniej);
+  // Boss (bsLoad): pierwszy cios. Duet (paczkaWynik): cel duetu osiągnięty.
+  ZD.bossStan = (bossy) => { if ((bossy || []).some((b) => (b.moje || 0) > 0)) odznaka("boss1"); };
+  ZD.duetStan = (d) => { if (d?.duet?.odebrane) odznaka("duet"); };
+
+  // Arkusz odznaki: nazwa, jak zdobyć, data, postęp („Seria 5/7”).
+  // Dzień (dayN) → data: dziś minus różnica dni.
+  const dataTxt = (d) => { if (d == null) return ""; try { const t = new Date(); t.setDate(t.getDate() - (D() - d)); return t.toLocaleDateString(EN() ? "en-GB" : "pl-PL", { day: "numeric", month: "short", year: "numeric" }); } catch { return ""; } };
+  function arkusz(b) {
+    const Z = A(), h = Z.h, st = stan(b);
+    const wiele = (b.progi?.length || 1) > 1, jak = (n) => b.jak.replace("{n}", String(n));
+    Z.modal((close) => [h("div", { class: "ux5-ark" },
+      h("div", { class: "ux5-ark-top" }, odzIkona(b, st), h("div", {}, h("h2", { text: b.pl }), st.got ? h("p", { class: "muted" }, h("span", { text: `Zdobyta ${dataTxt(st.d ?? D())}` }), wiele ? [" · ", h("span", { text: STOPIEN[st.got - 1] })] : null) : h("p", { class: "muted", text: "Jeszcze nie zdobyta" }))),
+      h("p", { class: "ux5-ark-jak", text: st.nast != null ? jak(st.nast) : wiele ? `Masz wszystkie stopnie: ${b.progi.join(" / ")}.` : b.jak.replace("{n}", "") }),
+      !b.gra && st.nast != null && st.nast > 1 ? h("div", { class: "ux5-ark-post" }, h("div", { class: "pts-head" }, h("b", {}, h("span", { text: b.pl }), " ", h("span", { class: "num", text: `${Math.min(st.v, st.nast)}/${st.nast}` }))),
+        h("div", { class: "pts-bar pts-md", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(st.nast), "aria-valuenow": String(Math.min(st.v, st.nast)), "aria-label": b.pl }, h("span", { class: "pts-seg", style: "flex:1 1 0" }, h("i", { style: `--w:${Math.round(100 * Math.min(1, st.v / st.nast))}%` })))) : null,
+      wiele ? h("p", { class: "muted ux5-ark-st", text: `Stopnie: brąz ${b.progi[0]} · srebro ${b.progi[1]} · złoto ${b.progi[2]}` }) : null,
+      b.pokaz ? h("p", { class: "muted", text: b.pokaz(Z.S.progress || {}) }) : null,
+      h("div", { class: "row ux5-ark-btns" }, st.got ? ZD.pokazZnajomym?.({ rodzaj: "odznaka", tytul: b.pl, stopien: wiele ? STOPIEN[st.got - 1] : null }) ?? null : null,
+        h("button", { type: "button", class: "btn primary", onclick: close }, "Jasne")))], "ux5-ark-modal");
+  }
+  function kafel(b) {
+    const Z = A(), h = Z.h, st = stan(b), wiele = (b.progi?.length || 1) > 1;
+    const pod = st.got ? (b.podpis || (wiele ? STOPIEN[st.got - 1] : "zdobyta")) : (b.progi && b.progi[0] > 1 ? `${Math.min(st.v, b.progi[0])}/${b.progi[0]}` : "jeszcze nie");
+    const post = st.got && wiele && st.nast != null ? `${st.v}/${st.nast}` : null;
+    return h("button", { type: "button", class: "ux5-odz" + (st.got ? " on" : " off"), "aria-label": `${b.pl}: ${pod}${post ? " " + post : ""}`, onclick: () => arkusz(b.arkusz || b) }, odzIkona(b, st), h("span", { class: "ux5-odz-n", text: b.pl }),
+      h("small", {}, h("span", { text: pod }), post ? [" · ", h("span", { class: "num", text: post })] : null));
+  }
+  // Sekcje w Profilu: „Na start” (5 startowych), „Nauka” (z poziomami), „Gry” (osobno, niżej).
+  function odznakiSekcja() {
+    const Z = A(), h = Z.h; if (!h) return null;
+    // „Trzy dni” to pierwszy stopień (brąz) Serii: ten sam kafel otwiera arkusz Serii, nie jest osobną odznaką.
+    const seria = ODZ.find((b) => b.id === "seria");
+    const start = [ODZ.find((b) => b.id === "start1"), { ...seria, pl: "Trzy dni", progi: [3], ids: ["seria3"], jak: "Ucz się 3 dni z rzędu.", arkusz: seria, podpis: "brąz Serii" }, ...ODZ.filter((b) => ["pow1", "boss1", "cel3"].includes(b.id))];
+    const nauka = ODZ.filter((b) => b.sek === "nauka"), gry = gryOdz();
+    const ileStart = start.filter((b) => stan(b).got).length;
+    return h("section", { class: "panel sk-panel ux5-odznaki", "aria-label": "Odznaki" },
+      h("div", { class: "ux5-odz-head" }, h("h2", { text: "Odznaki" }), h("span", { class: "muted num", text: `Na start: ${ileStart}/5` })),
+      h("h3", { text: "Na start" }), h("div", { class: "ux5-odz-grid" }, start.map(kafel)),
+      h("h3", { text: "Nauka" }), h("div", { class: "ux5-odz-grid" }, nauka.map(kafel)),
+      h("details", { class: "ux5-odz-gry" }, h("summary", {}, h("span", { text: "Gry" }), h("span", { class: "muted num", text: `${gry.filter((b) => stan(b).got).length}/${gry.length}` })), h("div", { class: "ux5-odz-grid" }, gry.map(kafel))));
+  }
+  // Odznaka po id (gablota, profil kolegi): { pl, ic } albo null.
+  function odzInfo(id) {
+    for (const b of [...ODZ, ...gryOdz()]) { if (b.id === id) return { pl: b.pl, b }; const i = (b.ids || []).indexOf(id); if (i >= 0) return { pl: id === b.start ? b.startPl : `${b.pl} · ${STOPIEN[i]}`, b, t: i + 1 }; }
+    return null;
+  }
+  function odzIkonaId(id) { const x = odzInfo(id); return x ? odzIkona(x.b, { got: x.t || 1 }) : null; }
+  // Lista do gabloty (ODZNAKI w index.html): [id, "", nazwa, jak] dla każdego stopnia odznak za naukę.
+  const odzLista = () => ODZ.flatMap((b) => (b.ids || [b.id]).map((id, i) => [id, "", odzInfo(id).pl, b.jak.replace("{n}", String(b.progi[i]))]));
+  // ---------- G3: ikony poziomów (SVG zamiast emoji) i nagrody za poziomy 10/15/17/20 ----------
+  const IKONY_POZ = ["ux5-sprout", "ux5-flame", "ux5-search", "ux5-cal", "check", "ux5-bulb", "ux5-chart", "ux5-chess", "ux5-cap", "ux5-trophy",
+    "ux5-compass", "ux5-rocket", "ux5-scope", "ux5-owl", "ux5-case", "ux5-office", "ux5-tie", "ux5-crown", "ux5-star", "ux5-gem"];
+  const ikonaPoziomu = (n) => ikona(IKONY_POZ[Math.min(Math.max(1, n), IKONY_POZ.length) - 1], "ico ux5-lv-ic");
+  // Nagrody kosmetyczne „tylko za poziom” z katalogu (Złota ramka 10, Platynowa 15, „Prezes roku” 17, Ramka Geniusza 20).
+  const zaPoziom = () => (window.skrot?.sklep?.katalog || []).filter((x) => x.tylko_za_poziom);
+  const kosmNazwa = (it) => (EN() ? it.en || it.pl : it.pl);
+  function nagrodaPoziomu(n) {
+    const Z = A(), h = Z.h, it = zaPoziom().filter((x) => x.tylko_za_poziom === n); if (!it.length || !h) return null;
+    return h("span", { class: "lv-prize ux5-prize" }, h("span", { text: `Nagroda: ${it.map(kosmNazwa).join(", ")}` }));
+  }
+  function nagrodaPoziomuOkno(from, to) {
+    const Z = A(), h = Z.h, it = zaPoziom().filter((x) => x.tylko_za_poziom > from && x.tylko_za_poziom <= to); if (!it.length || !h) return null;
+    const podglad = (x) => { const el = document.createElement("span"); el.className = "ux5-lv-kosm-pv"; el.setAttribute("aria-hidden", "true");
+      const K = window.SKROT_KOSM; if (x.slot === "ramka" && K?.avatarSvg) el.innerHTML = K.avatarSvg(Z.S?.progress?.nick || "Z", x.wyglad?.g); else el.append(ikona(x.slot === "tytul" ? "ux5-tie" : "ux5-medal")); return el; };
+    return h("div", { class: "ux5-lv-kosm" }, it.map((x) => h("div", { class: "ux5-lv-kosm-k" }, podglad(x), h("span", { class: "ux5-lv-kosm-t" },
+      h("b", { text: `Nagroda: ${kosmNazwa(x)}` }), h("small", { class: "muted", text: x.slot === "tytul" ? "Tylko za poziom. Załóż go w Sklepie → Profil." : "Tylko za poziom. Załóż ją w Sklepie → Profil." })))));
+  }
+  // ---------- G3: karta „Kup coś za monety z prezentu” (saldo ≥ 40, jeszcze nic nie kupione) ----------
+  function kartaPrezentu() {
+    const Z = A(), h = Z.h, sk = window.skrot?.sklep; if (!h || !sk?.ok || (sk.saldo || 0) < 40 || (sk.posiadane?.size || 0) > 0) return null;
+    const zam = (sk.katalog || []).find((x) => x.id === "zamrozenie"), kol = (sk.katalog || []).filter((x) => x.slot === "kolor" && typeof x.cena === "number").sort((a, b) => a.cena - b.cena)[0];
+    const kup = (tab, id) => { window.ZD_APP_SKLEP?.(tab, id) ?? Z.go?.({ view: "shop" }); };
+    return h("section", { class: "panel sk-panel ux5-prezent" },
+      h("div", { class: "ux5-prezent-top" }, ikona("ux5-gift", "ux5-prezent-ic"), h("div", {}, h("h2", { text: "Kup coś za monety z prezentu" }),
+        h("p", { class: "muted", text: `Masz ${sk.saldo} monet. Na początek najbardziej się przydaje:` }))),
+      h("div", { class: "ux5-prezent-opcje" },
+        zam ? h("button", { type: "button", class: "btn", onclick: () => kup("nauka", "zamrozenie") }, ikona("snow"), h("span", { text: "Zamrożenie serii" }), coinTxt(zam.cena)) : null,
+        kol ? h("button", { type: "button", class: "btn", onclick: () => kup("profil", kol.id) }, ikona("ux5-palette"), h("span", { text: "Kolor pseudonimu" }), coinTxt(kol.cena)) : null));
+  }
+  // „Prezent na start: 100 monet” raz na konto: gdy w historii monet jest wpis „start” (v60), pokazujemy okno z przyciskiem do Sklepu.
+  let startSpr = false;
+  async function startPrezent() {
+    const Z = A(), sk = window.skrot, lk = "ux5-start:" + (sk?.uid || "");
+    let lsz = null; try { lsz = localStorage.getItem(lk); } catch {}
+    if (startSpr || lsz || !Z.S?.progReady || Z.S.progress?.startPokazany || !sk?.sklep?.ok || !sk.monetyHistoria) return;
+    startSpr = true;
+    let r; try { r = await sk.monetyHistoria(30); } catch { return; }
+    const w = (r?.wpisy || []).find((x) => x.klucz === "start"); if (!w) return;
+    Z.progSoon?.({ startPokazany: Z.dayN?.() ?? 1 }); try { localStorage.setItem(lk, "1"); } catch {} // od razu, zanim postęp dojdzie do bazy
+    const h = Z.h, pokaz = () => Z.modal((close) => [h("div", { class: "ux5-start" }, ikona("ux5-gift", "ux5-start-ic"), h("span", { class: "eyebrow", text: "Prezent na start" }),
+      h("h2", {}, coinTxt(w.delta || 100, { plus: true })), h("p", { class: "muted", text: "Na dobry początek. Wydaj je w Sklepie: zamrożenie serii chroni ją, gdy wypadnie Ci dzień." }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { close(); Z.go?.({ view: "shop" }); } }, "Do Sklepu"), h("button", { type: "button", class: "btn ghost", onclick: close }, "Później")))], "ux5-start-modal");
+    if (document.querySelector("#layer .modal")) setTimeout(() => { if (!document.querySelector("#layer .modal")) pokaz(); }, 4000); else pokaz();
+  }
+  addEventListener("skrot:sklep", () => setTimeout(startPrezent, 600));
+  setTimeout(startPrezent, 3000);
+  Object.assign(ZD, { ikonaPoziomu, nagrodaPoziomu, nagrodaPoziomuOkno, kartaPrezentu, startPrezent });
+  Object.assign(ZD, { odznaka, odznakiSekcja, odzInfo, odzIkonaId, odzLista, ODZ, sprawdz });
+
   // ---------- RPC (v58–v62) ----------
   async function rpc(fn, args) {
     const c = sb(); if (!c) return { ok: false, code: "no_client" };
@@ -205,9 +474,9 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
   Object.assign(ZD, { ikona, coinTxt, baner, rpc, dzialSprawdz, dzialWezel, dzialOdbierz });
 
   // ---------- G2: jedna moneta (SVG) zamiast emoji na ekranach pętli 5 ----------
-  // Teksty w kodzie zostają (słownik EN ich szuka), a na ekranie znak 🪙 / ⚡ / 🔥 zamieniamy na ikonę SVG z H2
+  // Teksty w kodzie zostają (słownik EN ich szuka), a na ekranie znaki monety, błyskawicy i płomienia zamieniamy na ikonę SVG z H2
   // (ta sama moneta co w nagłówku). Zamiana idzie po tłumaczeniu (i18n działa wcześniej, w tej samej kolejce zdarzeń).
-  const ZNAKI = { "🪙": "coin", "⚡": "bolt", "🔥": "flame", "🏆": "ux5-trophy", "🏅": "ux5-medal", "🔒": "lock" }, ZNAK_RE = /(🪙|⚡️?|🔥|🏆|🏅|🔒)/u;
+  const ZNAKI = { "\u{1FA99}": "coin", "\u26A1": "bolt", "\u{1F525}": "flame", "\u{1F3C6}": "ux5-trophy", "\u{1F3C5}": "ux5-medal", "\u{1F512}": "lock" }, ZNAK_RE = /(\u{1FA99}|\u26A1\uFE0F?|\u{1F525}|\u{1F3C6}|\u{1F3C5}|\u{1F512})/u;
   const MOJE = ["shop", "profil", "ranking", "haslo", "boss", "subject", "games", "paczka"];
   function znakiNaSvg(root) {
     if (!root) return;
@@ -227,6 +496,11 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
     znakiNaSvg(document.getElementById("gain-tray"));
   }
   new MutationObserver(() => { if (!znakT) znakT = setTimeout(znakiTeraz, 0); }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+  // Baner aplikacji (.lp-banner bez ux5-banner) ma pierwszeństwo: nasz widoczny baner chowamy i pokazujemy ponownie po nim.
+  new MutationObserver((ms) => {
+    if (!ms.some((m) => [...m.addedNodes].some((n) => n.nodeType === 1 && n.classList?.contains("lp-banner") && !n.classList.contains("ux5-banner")))) return;
+    for (const b of document.querySelectorAll(".ux5-banner:not([hidden])")) { b.remove(); banerDo = Math.max(banerDo, Date.now() + 1800); setTimeout(() => { document.body.append(b); setTimeout(() => b.remove(), 2600); }, 1800); }
+  }).observe(document.body, { childList: true });
   ZD.znakiNaSvg = znakiNaSvg;
 
   css();
