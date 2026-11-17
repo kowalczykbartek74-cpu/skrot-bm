@@ -252,6 +252,15 @@ test("UX-2: mail „seria” – seria ≥ 3, wczoraj nauka, dziś nie; 3 warian
   // termin ma pierwszeństwo przed serią
   assert.equal(P.wybierz(ctx({ seria: ser, terminy: [ter("2026-11-07")] })).kind, "termin");
   // stanZ → kontekst przenosi serię
-  assert.deepEqual(P.kontekst({ stan: P.stanZ({ od: "2026-11-04", seria: ser }) }, "2026-11-04").seria, ser);
+  assert.deepEqual(P.kontekst({ stan: P.stanZ({ od: "2026-11-04", seria: ser }) }, "2026-11-04").seria, { ...ser, ok: [] });
   assert.equal(P.kontekst({ historia: [{ day: "2026-11-03", opened: false, rodzaj: "seria_b" }] }, "2026-11-04").history[0].kind, "seria_b");
+});
+
+test("UX-2: „seria” także po weekendzie chronionym zamrożeniem (strona podaje dni ok); przełącznik co.seria", () => {
+  const pon = ctx({ today: "2026-11-09", lastStudyDay: "2026-11-06", seria: { n: 10, d: "2026-11-06", ok: ["2026-11-09"] }, zadanie: false });
+  assert.equal(P.wybierz(pon)?.kind, "seria", "poniedziałek po weekendzie z 2 zamrożeniami");
+  assert.notEqual(P.wybierz(ctx({ today: "2026-11-09", lastStudyDay: "2026-11-06", seria: { n: 10, d: "2026-11-06", ok: [] }, zadanie: false }))?.kind, "seria", "bez zamrożeń: seria już nie żyje");
+  assert.notEqual(P.wybierz(ctx({ seria: { n: 9, d: "2026-11-03" }, co: { terminy: true, powtorki: true, zadanie: true, seria: false }, zadanie: false }))?.kind, "seria", "wyłączone w Ustawieniach");
+  assert.equal(P.coZ({}).seria, true);
+  assert.deepEqual(P.stanZ({ od: "2026-11-09", seria: { n: 10, d: "2026-11-06", ok: ["2026-11-09", "x"] } }).ser, { n: 10, d: "2026-11-06", ok: ["2026-11-09"] });
 });

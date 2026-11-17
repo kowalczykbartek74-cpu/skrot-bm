@@ -24,7 +24,7 @@ for (const [w, hh] of [[375, 812], [1280, 900]]) {
   const card = p.locator(".przyp-card");
   ok(`${w} A: karta „Przypomnieć Ci mailem?” na Dziś`, (await card.count()) === 1, await p.locator("main").innerText().then((t) => t.slice(0, 400)));
   const t = await card.innerText().catch(() => "");
-  ok(`${w} A: przedmiot, kolokwium, za 3 dni, 18:00`, /Makroekonomia/.test(t) && /kolokwium/.test(t) && /za 3 dni/.test(t) && /18:00/.test(t), t);
+  ok(`${w} A: przedmiot, kolokwium, za 3 dni, godzina (z planu zajęć, UX-2)`, /Makroekonomia/.test(t) && /kolokwium/.test(t) && /za 3 dni/.test(t) && /o \d{1,2}:\d\d /.test(t), t);
   const btn = card.locator(".przyp-on"), bb = await btn.boundingBox(), nb = await card.locator(".przyp-nie").boundingBox();
   ok(`${w} A: jeden przycisk „Włącz” ≥ 44 px, „Nie teraz” ≥ 44 px`, (await card.locator(".btn").count()) === 1 && bb?.height >= 44 && nb?.height >= 44, { bb, nb });
   await card.scrollIntoViewIfNeeded(); await shot(p, `przyp-${w}-dzis`);
@@ -77,8 +77,8 @@ for (const lang of ["pl", "en"]) for (const [w, hh] of [[375, 812], [1280, 900]]
   await p.goto(BASE + "index.html#/ustawienia/przypomnienia"); await p.waitForTimeout(2500);
   const set = p.locator(".przyp-set");
   const t = await set.innerText().catch(() => "");
-  if (lang === "pl") ok(`${w} C: zakładka z włącznikiem, godziną i trzema rodzajami`, /Przypomnienia mailem/.test(t) && /Włączone · student@x\.pl/.test(t) && /Co przypominać/.test(t)
-    && (await set.locator("input[type=checkbox]").count()) === 3 && (await p.locator("#pz-godz").inputValue()) === "1080", t);
+  if (lang === "pl") ok(`${w} C: zakładka z włącznikiem, godziną i czterema rodzajami (UX-2: „Seria dni”)`, /Przypomnienia mailem/.test(t) && /Włączone · student@x\.pl/.test(t) && /Co przypominać/.test(t)
+    && (await set.locator("input[type=checkbox]").count()) === 4 && (await p.locator("#pz-godz").inputValue()) === "1080", t);
   else ok(`${w} G: EN bez polskich znaków`, !PL_ZN.test(t) && /Email reminders/.test(t) && /What to remind about/.test(t), t);
   const tab = await p.locator('.set-tabs [role=tab][aria-selected="true"]').innerText();
   ok(`${w} ${lang} C: zakładka „Przypomnienia” wybrana`, lang === "pl" ? tab === "Przypomnienia" : tab === "Reminders", tab);
