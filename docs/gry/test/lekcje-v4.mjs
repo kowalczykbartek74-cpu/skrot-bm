@@ -1,6 +1,8 @@
 // Lekcje v4 (spec claude/lekcje-v4): etap A na atrapie – migracja zdanych lekcji, pytania z opcjami w Powtórkach,
 // powroty złych odpowiedzi, dni powtórek (lv) i punkty 60 → 80. BASE=http://127.0.0.1:8790/ node docs/gry/test/lekcje-v4.mjs
 import { chromium, page, BASE, shot } from "./lib.mjs";
+// UX-3 etap 3: dotknięcie opcji ją zaznacza, zatwierdza „Sprawdź” albo „Pewny ✓” w dolnym pasku.
+const zatwierdz = async (P) => { await P.waitForTimeout(80); const c = P.locator('.lp-bottom [data-conf="1"]:not([disabled]), .lp-bottom .lp-cta:not([disabled]):not([hidden])').filter({ hasText: /^(Sprawdź|Pewny|Check|Sure)/ }).first(); if (await c.count()) await c.click(); };
 const b = await chromium.launch();
 const wyniki = []; const ok = (n, w, i) => wyniki.push([w ? "✓" : "✗", n, w ? "" : JSON.stringify(i)?.slice(0, 600)]);
 const UID = "00000000-0000-4000-8000-000000000001";
@@ -74,8 +76,8 @@ while (guard++ < 30) {
     const opts = card.locator(".lp-opts .opt");
     let pick = -1;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (!wrongDone ? /Zła/.test(t) : /OK /.test(t)) { pick = i; break; } }
-    await opts.nth(pick).click(); await P.waitForTimeout(350);
-    if (!wrongDone) { wrongDone = true; const fb = await card.innerText(); ok("zła odpowiedź: why + „Czemu nie” + wróci", /Bo B\./.test(fb) && /Czemu nie/.test(fb) && /wróci jeszcze w tej sesji/.test(fb), fb); await shotX(P, "v4-rvmc-zle"); }
+    await opts.nth(pick).click(); await zatwierdz(P); await P.waitForTimeout(350);
+    if (!wrongDone) { wrongDone = true; const fb = (await card.innerText()) + "\n" + (await P.locator(".lp-fbar").innerText()); /* UX-3: werdykt w dolnym pasku */ ok("zła odpowiedź: why + „Czemu nie” + wróci", /Bo B\./.test(fb) && /Czemu nie/.test(fb) && /wróci jeszcze w tej sesji/.test(fb), fb); await shotX(P, "v4-rvmc-zle"); }
     else if (!shotMc) { shotMc = true; await shotX(P, "v4-rvmc-dobrze"); }
     await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
   } else if (type === "grade4") {
@@ -116,7 +118,7 @@ while (guard++ < 15) {
     const opts = card.locator(".lp-opts .opt"); let pick = 0;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (type === "hook" ? true : !bad && /exit 2/.test(t) ? /Zła/.test(t) : /OK /.test(t)) { pick = i; break; } }
     if (type === "mc" && !bad && /exit 2/.test(await card.innerText())) bad = true;
-    await opts.nth(pick).click(); await P.waitForTimeout(350);
+    await opts.nth(pick).click(); await zatwierdz(P); await P.waitForTimeout(350);
   }
   await P.locator(".lp-cta").click(); await P.waitForTimeout(450);
 }
@@ -137,14 +139,16 @@ await bezOkien(P); await P.locator(".lp-start").click(); await P.waitForTimeout(
 const types = []; let warmTxt = "", confShot = false; guard = 0;
 while (guard++ < 40) {
   await bezOkien(P);
-  const card = P.locator(".lp-card"); if (!(await card.count())) { if (await P.locator(".lp-done-screen").count() && !/Lekcja (zrobiona|przerobiona)/.test(await P.locator(".lp-done-screen").innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
+  const card = P.locator(".lp-card"); if (!(await card.count())) { if (await P.locator(".lp-step").count()) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } /* UX-3 etap 5: karta przejścia między częściami */ if (await P.locator(".lp-done-screen").count() && !/Lekcja (zrobiona|przerobiona)/.test(await P.locator(".lp-done-screen").innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
   const type = await card.getAttribute("data-type"), txt = await card.innerText(); types.push(type);
   if (/rozgrzewka/i.test(txt)) warmTxt += txt + "\n";
   if (type === "hook" || type === "mc") {
-    if (/L4 exit 3/.test(txt)) { await card.getByRole("button", { name: "Zgaduję" }).click(); await P.waitForTimeout(250); if (!confShot) { confShot = true; await shotX(P, "v4-zgaduje"); } }
+    const guess = /L4 exit 3/.test(txt); /* UX-3: „Zgaduję” w dolnym pasku, po zaznaczeniu odpowiedzi */
     const opts = card.locator(".lp-opts .opt"); let pick = 0;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (type === "hook" ? /Zła/.test(t) : /OK /.test(t)) { pick = i; break; } }
-    await opts.nth(pick).click(); await P.waitForTimeout(350);
+    await opts.nth(pick).click();
+    if (guess) { await P.waitForTimeout(150); if (!confShot) { confShot = true; await shotX(P, "v4-zgaduje"); } await P.locator('.lp-bottom [data-conf="0"]').click(); } else await zatwierdz(P);
+    await P.waitForTimeout(350);
   } else if (type === "grade4") { await P.locator(".lp-cta").click(); await P.waitForTimeout(250); await P.getByRole("button", { name: /Pamiętam/ }).first().click(); await P.waitForTimeout(600); continue; }
   await P.locator(".lp-cta").click(); await P.waitForTimeout(450);
 }
@@ -160,7 +164,7 @@ const k3 = "q:L4:" + hashStr("L4 exit 3"), k1 = "q:L4:" + hashStr("L4 exit 1");
 ok("zgadnięte i poprawne → pudełko 1 jak błędne; pewne → nowe od jutra", pr.srs[k3]?.[0] === 1 && pr.srs[k1]?.[0] === 0, { k3: pr.srs[k3], k1: pr.srs[k1] });
 // „Pewny / Zgaduję” z biletu trafia do zdarzeń nauki (exit_ticket.odp = [dobrze, pewność]); jedno wejście: learnEvent.
 { const q = await P.evaluate(() => JSON.parse(localStorage.getItem("bm-learn-q") || "[]")), et = q.filter((e) => e.typ === "exit_ticket" && e.dane.lessonId === "L4").pop();
-  ok("exit_ticket z pewnością: zgadnięte poprawne [1,0], bez wyboru [1,null]", et?.dane.odp?.some((x) => x[0] === 1 && x[1] === 0) && et.dane.odp.some((x) => x[0] === 1 && x[1] === null) && et.dane.max === 3, q.map((e) => e.typ + JSON.stringify(e.dane)).slice(-6));
+  /* UX-3 etap 3: na bilecie pewność jest zawsze („Zgaduję” albo „Pewny ✓”), więc zamiast „bez wyboru” jest [1,1] */ ok("exit_ticket z pewnością: zgadnięte poprawne [1,0], pewne [1,1]", et?.dane.odp?.some((x) => x[0] === 1 && x[1] === 0) && et.dane.odp.some((x) => x[0] === 1 && x[1] === 1) && et.dane.max === 3, q.map((e) => e.typ + JSON.stringify(e.dane)).slice(-6));
   // Etap 6 (lejek): wariant testu A/B haczyka w bilecie, żeby panel „Lejek i retencja” porównał „haczyk” i „bez”.
   ok("exit_ticket L4 z wariantem A/B „haczyk”", et?.dane.hak === "haczyk", et?.dane); }
 await P.evaluate(() => { location.hash = "#/material/L5"; }); await P.waitForTimeout(1500);
@@ -178,19 +182,19 @@ const solve = (task) => { const [a, b, c] = (task.match(/\d+/g) || []).map(Numbe
 while (guard++ < 40) {
   await bezOkien(P);
   const card = P.locator(".lp-card");
-  if (!(await card.count())) { const d = P.locator(".lp-done-screen"); if (await d.count() && !/Lekcja (zrobiona|przerobiona)/.test(await d.innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
+  if (!(await card.count())) { if (await P.locator(".lp-step").count()) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } /* UX-3 etap 5 */ const d = P.locator(".lp-done-screen"); if (await d.count() && !/Lekcja (zrobiona|przerobiona)/.test(await d.innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
   const type = await card.getAttribute("data-type"), txt = await card.innerText(); t3.push(type);
   if (type === "read" && !sheet) { await P.locator(".lp-help").click(); await P.waitForTimeout(400); sheet = await P.locator(".lp-sheet").innerText(); await shotX(P, "v4-prosciej"); await P.locator(".lp-sheet .btn.primary").click(); await P.waitForTimeout(300); }
   if (type === "mc") {
     if (/Which concept fits/.test(txt) && !distTxt) distTxt = txt;
     const opts = card.locator(".lp-opts .opt"); let pick = 0;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (/Which concept/.test(txt) ? (/Money actually/.test(txt) ? /Explicit cost/ : /Implicit cost/).test(t) : /OK /.test(t)) { pick = i; break; } }
-    await opts.nth(pick).click(); await P.waitForTimeout(350);
+    await opts.nth(pick).click(); await zatwierdz(P); await P.waitForTimeout(350);
   } else if (type === "num") {
     const task = await card.locator(".q").innerText(); numSeen.push(task);
     await card.locator("input.lp-num").fill(numSeen.length === 1 ? "1" : String(solve(task)).replace(".", ","));
     await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
-    if (numSeen.length === 1) { ok("num: zła odpowiedź pokazuje wynik i drugą szansę", /Wynik: \d+ zł/.test(await card.innerText()) && /nowymi liczbami/.test(await card.innerText()), await card.innerText()); await shotX(P, "v4-num-zle"); }
+    if (numSeen.length === 1) { const fbn = await P.locator(".lp-fbar").innerText(); /* UX-3: werdykt w dolnym pasku */ ok("num: zła odpowiedź pokazuje wynik i drugą szansę", /Wynik: \d+ zł/.test(fbn) && /nowymi liczbami/.test(fbn), await card.innerText()); await shotX(P, "v4-num-zle"); }
   } else if (type === "recap") {
     await card.locator("textarea").fill("Coś tam."); await P.locator(".lp-cta").click(); await P.waitForTimeout(400);
   }
@@ -221,11 +225,11 @@ while (guard++ < 60) {
     if (/Which concept fits/.test(txt)) rvDist = txt;
     const opts = card.locator(".lp-opts .opt"), m = /Which concept fits: (.*)\?/.exec(txt); let pick = 0;
     for (let i = 0; i < await opts.count(); i++) { const t = await opts.nth(i).innerText(); if (m ? (/Money actually/.test(m[1]) ? /Explicit/.test(t) : /Implicit/.test(t)) : /OK /.test(t)) { pick = i; break; } }
-    await opts.nth(pick).click(); await P.waitForTimeout(300); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
+    await opts.nth(pick).click(); await zatwierdz(P); await P.waitForTimeout(300); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
   } else if (type === "num") {
     rvNum = await card.locator(".q").innerText();
     await card.locator("input.lp-num").fill(String(solve(rvNum))); await P.locator(".lp-cta").click(); await P.waitForTimeout(300);
-    if (!/Dobrze/.test(await card.innerText())) rvTypes.push("NUM-ZLE:" + await card.innerText());
+    if (!/Dobrze/.test((await card.innerText()) + (await P.locator(".lp-fbar").innerText()))) /* UX-3: werdykt w dolnym pasku */ rvTypes.push("NUM-ZLE:" + await card.innerText());
     await shotX(P, "v4-rv-num"); await P.locator(".lp-cta").click(); await P.waitForTimeout(350);
   } else if (type === "grade4") { await P.locator(".lp-cta").click(); await P.waitForTimeout(250); await P.getByRole("button", { name: /Pamiętam/ }).first().click(); await P.waitForTimeout(600); }
   else break;

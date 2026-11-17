@@ -352,6 +352,10 @@
       if (id === "krople") { tone("sine", 1400, 620, 0, 0.12, 0.09); tone("sine", 1900, 900, 0.09, 0.1, 0.06); }
       else if (id === "dzwonki") { tone("triangle", 1318.5, 0, 0, 0.5, 0.06); tone("sine", 1975.5, 0, 0.07, 0.45, 0.035); }
       else if (id === "drewno") { tone("triangle", 820, 560, 0, 0.07, 0.12); tone("sine", 410, 300, 0, 0.09, 0.07); }
+      // UX-3: darmowe dźwięki odpowiedzi dla wszystkich: „ok” (dwa krótkie sinusy w górę) i „no” (niski, krótki, nie karzący).
+      // Paczka bez własnego brzmienia złej odpowiedzi („<paczka>-no”) gra darmowe „no”.
+      else if (id === "ok") { tone("sine", 880, 0, 0, 0.09, 0.07); tone("sine", 1320, 0, 0.08, 0.14, 0.06); }
+      else if (id === "no" || /-no$/.test(id)) { tone("triangle", 220, 180, 0, 0.16, 0.06); }
     } catch {}
   }
   const PV_BOX = (inner) => keep(`<svg viewBox="0 0 120 64" aria-hidden="true" focusable="false">${inner}</svg>`);

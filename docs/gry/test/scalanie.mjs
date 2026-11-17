@@ -23,8 +23,9 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const tag = String(w);
   const p = await page(b, { konto: "darmowe", w, h: hgt });
   await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
-  const btn = p.locator(".buybar button", { hasText: "Wypróbuj za darmo" });
-  ok(`${tag} darmowe: na Dziś karta „3 dni za darmo” z jednym przyciskiem „Wypróbuj za darmo”`, (await btn.count()) === 1 && (await txt(p, ".buybar")).startsWith("3 dni za darmo"), await txt(p, ".buybar"));
+  // Pętla UX-1 (etap 1, K3): próbę na Dziś proponuje pigułka „Masz jeszcze 3 dni za darmo · Włącz” nad panelem (zamiast dolnej karty).
+  const btn = p.locator(".uxw-pasek .uxw-pasek-b", { hasText: "Włącz" });
+  ok(`${tag} darmowe: na Dziś pasek „Masz jeszcze 3 dni za darmo” z jednym przyciskiem „Włącz”`, (await btn.count()) === 1 && (await txt(p, ".uxw-pasek")).startsWith("Masz jeszcze 3 dni za darmo"), await txt(p, ".uxw-pasek"));
   ok(`${tag} darmowe: gry zablokowane (rp.start → no_access)`, (await p.evaluate(() => window.skrot.rp.start("frun")))?.code === "no_access");
   if (w === 390) { await p.evaluate(() => scrollTo(0, 0)); await shot(p, `proba-przed-${tag}`); }
   await btn.click(); await p.waitForLoadState("load"); await p.waitForTimeout(3500);
@@ -35,7 +36,8 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   if (w === 390) await shot(p, `proba-powitanie-${tag}`);
   await zamknijModale(p); await p.waitForTimeout(300);
   const bar = await txt(p, ".buybar");
-  ok(`${tag} pasek: „Okres próbny · zostały 2 dni pełnego dostępu” + Kup dostęp`, /Okres próbny · zostały 2 dni pełnego dostępu/.test(bar) && bar.includes("Kup dostęp"), bar);
+  // Pętla UX-1 (etap 2, C2 P1 pkt 1): druga linia paska bez kropki na początku.
+  ok(`${tag} pasek: „Okres próbny” + „zostały 2 dni pełnego dostępu” + Kup dostęp`, /Okres próbny\s+zostały 2 dni pełnego dostępu/.test(bar) && !/Okres próbny\s*·/.test(bar) && bar.includes("Kup dostęp"), bar);
   const g = await p.evaluate(() => window.skrot.rp.start("drabina"));
   ok(`${tag} w okresie próbnym gry działają (rp.start ok)`, g?.ok === true, g);
   await p.evaluate(() => scrollTo(0, 0)); await shot(p, `proba-pasek-${tag}`);
@@ -51,9 +53,10 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
 {
   const p = await page(b, { konto: "proba-koniec" });
   await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
-  const bar = await txt(p, ".buybar");
+  // Pętla UX-1 (etap 2): na Dziś „Pełny dostęp · … · Kup dostęp” to pasek nad panelem (.uxw-pasek), a nie dolna karta.
+  const bar = (await txt(p, ".uxw-pasek")) || (await txt(p, ".buybar"));
   const r = await p.evaluate(() => window.skrot.rp.start("frun"));
-  ok("koniec: pasek „Pełny dostęp”, bez „Wypróbuj”, gry zablokowane", bar.startsWith("Pełny dostęp") && !bar.includes("Wypróbuj") && r?.code === "no_access", { bar, r });
+  ok("koniec: pasek „Pełny dostęp”, bez „Wypróbuj”, gry zablokowane", /^(Pełny dostęp|Próba minęła)/.test(bar) && !bar.includes("Wypróbuj") && r?.code === "no_access", { bar, r });
   await p.evaluate(() => scrollTo(0, 0)); await shot(p, "proba-koniec-390");
   await done(p, "proba koniec");
 }
@@ -167,7 +170,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   const q = await page(b, { lang: "en", konto: "proba" });
   await q.goto(BASE + "index.html#/"); await q.waitForTimeout(2500);
   const bar = await txt(q, ".buybar");
-  ok("EN pasek okresu próbnego", /^Free trial · 2 days left of full access/.test(bar), bar);
+  ok("EN pasek okresu próbnego", /^Free trial\s+2 days of full access left/.test(bar), bar);
   await done(q, "en proba");
 }
 

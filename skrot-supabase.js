@@ -227,6 +227,9 @@
     if (!l) return;
     const ok = [R.DOMYSLNY, ...l.filter((r) => r.status === "oczekujacy" || r.status === "platny").map((r) => r.id)];
     R.ustawWBazie(ok);
+    // ux-1: statusy roczników (oczekujacy / platny) dla ekranu wejścia („Wkrótce”) i przycisków próby.
+    try { ls.set("skrot-roczniki-status", JSON.stringify(Object.fromEntries(l.map((r) => [r.id, r.status])))); } catch {}
+    window.skrotKrok1Odswiez?.();
     if (skrot.realAdmin) return;
     document.querySelectorAll(".lk-card[data-k]").forEach((b) => { if (!ok.includes(b.dataset.k)) b.remove(); });
     if (cur && !ok.includes(cur.id) && !ED) {
@@ -236,6 +239,15 @@
     }
   }
 
+  // ux-1: status rocznika: najpierw z bazy (skrot-roczniki-status, zapisuje rocznikiBaza), potem z danych strony (roczniki-dane.js).
+  function rocznikStatus(id) {
+    const R = window.SKROT_ROCZNIKI;
+    if (!id || !R || id === R.DOMYSLNY) return "platny";
+    let m = null; try { m = JSON.parse(ls.get("skrot-roczniki-status") || "null"); } catch {}
+    return (m && m[id]) || R.STATUS_DANYCH?.[id] || "platny";
+  }
+  const rocznikRuszyl = () => rocznikStatus(window.SKROT_ROCZNIK?.id) === "platny";
+  skrot.rocznikStatus = rocznikStatus;
   async function refreshMe() {
     // Najpierw sygnał urządzenia: rejestruje je na liście konta (jeśli jest miejsce) i zajmuje sesję.
     const dev = await ping();
@@ -249,8 +261,19 @@
     skrot.plan = me?.plan || null;
     // Okres próbny (supabase/skrot-v16-proba.sql): trialUntil tylko wtedy, gdy to on daje dostęp.
     skrot.trialUntil = me?.proba_do || null;
-    skrot.trialCan = !!me?.proba_mozna && !skrot.paid;
+    // ux-1 (etap 2, K6): kierunek, który jeszcze nie ruszył (status inny niż „platny”), nie dostaje przycisków próby (v52 i tak odrzuci start).
+    skrot.trialCan = !!me?.proba_mozna && !skrot.paid && rocznikRuszyl();
     skrot.trialDays = me?.proba_dni || 3;
+    // ux-1 (etap 3): koniec próby zapamiętany w przeglądarce; gdy minął, a dostępu nie ma → skrot.trialEnded (ekran „Twoje 3 dni minęły”).
+    // shortcut: klucze nie są przypięte do konta (wspólna przeglądarka dwóch osób); ok przy jednym koncie na urządzenie (v8).
+    if (skrot.trialUntil) ls.set("skrot-proba-do", skrot.trialUntil);
+    // Kto ma (albo miał) opłacony dostęp, nigdy nie dostaje „Próba minęła”, także po wygaśnięciu planu.
+    if (skrot.paid && !skrot.trialUntil) { ls.set("skrot-proba-do", null); ls.set("bm-proba-koniec-pokazane", "1"); }
+    // Koniec próby z bazy (v54 nauka_proba_stan), gdy ta przeglądarka go nie zna (inne urządzenie, wyczyszczone dane).
+    if (!skrot.paid && !skrot.trialCan && !ls.get("skrot-proba-do")) {
+      try { const { data } = await sb.rpc("nauka_proba_stan"); if (data?.minela && data.do_kiedy) ls.set("skrot-proba-do", data.do_kiedy); } catch {}
+    }
+    { const pd = Date.parse(ls.get("skrot-proba-do") || ""); skrot.trialEnded = !skrot.trialUntil && !skrot.paid && !skrot.trialCan && pd > 0 && pd < Date.now(); }
     skrot.realAdmin = skrot.admin;
     // „Edytuję rocznik” tylko dla administratora: ktoś inny z ręcznie wpisanym kluczem wraca do swojego rocznika
     if (!skrot.admin && edKasuj() && ED) { location.reload(); return me; }
@@ -970,6 +993,13 @@
     set: (email, reason) => ls.set(PENDING, JSON.stringify({ email, reason: reason || null, t: Date.now() })),
     clear: () => ls.set(PENDING, null),
   };
+  // ux-1 (K5): błąd wysyłki kodu. Limit Supabase/Resend przy wejściu całego roku naraz → osobny komunikat, nie ogólny błąd.
+  const otpErr = (x) => {
+    const m = x?.message || "";
+    if (/rate limit|too many|over_email_send_rate_limit|429/i.test(m)) return "Teraz loguje się dużo osób naraz. Spróbuj za 2–3 minuty.";
+    if (/seconds|for security purposes/i.test(m)) return "Kod wysłaliśmy przed chwilą. Nowy możesz wysłać za minutę.";
+    return "Nie udało się wysłać kodu. Spróbuj ponownie za chwilę.";
+  };
   // Osobny ekran logowania przed aplikacją (#login w index.html). Bez sesji strona pokazuje tylko jego.
   const loginBox = () => document.getElementById("loginBox");
   function showLoginPage(reason, opts = {}) {
@@ -1009,7 +1039,8 @@
       inCode = true;
       const codeErr = el("p", { class: "notice err", hidden: "" });
       const code = el("input", { class: "input", id: "skrot-login-code", type: "text", inputmode: "numeric", autocomplete: "one-time-code", maxlength: "6", pattern: "[0-9]*", placeholder: "123456", style: "letter-spacing:.35em;font-size:1.5em;font-weight:800;text-align:center" });
-      const codeBtn = el("button", { type: "submit", class: "btn primary" }, "Zaloguj się");
+      // ux-1: w trybie próby przycisk mówi to, co się stanie po kodzie (spójna obietnica do końca).
+      const codeBtn = el("button", { type: "submit", class: "btn primary" + (trialOn() && page ? " uxw-lime" : "") }, trialOn() ? `Zacznij ${trialDays()} dni za darmo` : "Zaloguj się");
       const codeForm = el("form", { style: "display:grid;gap:12px", onsubmit: async (e) => {
         e.preventDefault();
         const token = code.value.replace(/\D+/g, "");
@@ -1022,6 +1053,8 @@
           if (error) { markLogin(null); throw error; }
           pending.clear();
           ls.set("skrot-offer-pass", "1");
+          // ux-1: logowanie z pełnego ekranu → po wejściu raz pytamy o okres próbny (afterReady → trialOffer).
+          if (page) ls.set("skrot-z-logowania", "1");
           // Zwykle przeładowuje już onAuthStateChange (SIGNED_IN); to tylko zapas.
           setTimeout(() => location.reload(), 1500);
         } catch (x) {
@@ -1033,20 +1066,42 @@
         codeErr, codeBtn);
       // Po wpisaniu albo wklejeniu 6 cyfr logujemy od razu.
       code.addEventListener("input", () => { const d = code.value.replace(/\D+/g, "").slice(0, 6); if (d !== code.value) code.value = d; if (d.length === 6 && !codeBtn.disabled) codeForm.requestSubmit(); });
+      // ux-1 (K5): po 60 s bez kodu notka o spamie i aktywne „Wyślij ponownie” (Supabase pozwala wysłać kod raz na minutę).
+      const RESEND_S = 60;
+      // Notka zajmuje miejsce od początku (niewidoczna do 60 s), żeby jej pojawienie się nie przesuwało ekranu.
+      const resendNote = el("p", { class: "lg-resend-note", "aria-hidden": "true" }, "Kod nie dochodzi? Sprawdź folder Oferty/Spam albo wpisz inny adres (np. prywatny Gmail).");
+      const resendMsg = el("p", { class: "lg-resend-msg", role: "status", hidden: "" });
+      const resend = el("button", { type: "button", class: "btn lg-resend", disabled: "" });
+      let resendT = null;
+      const resendTick = (left) => {
+        if (!resend.isConnected && left < RESEND_S) { clearInterval(resendT); return; }
+        if (left > 0) { resend.disabled = true; resend.textContent = `Wyślij ponownie za ${left} s`; return; }
+        clearInterval(resendT); resend.disabled = false; resend.textContent = "Wyślij ponownie"; resendNote.classList.add("on"); resendNote.removeAttribute("aria-hidden");
+      };
+      const resendStart = () => { let left = RESEND_S; clearInterval(resendT); resendTick(left); resendT = setInterval(() => resendTick(--left), 1000); };
+      resend.addEventListener("click", async () => {
+        resend.disabled = true; resend.textContent = "Wysyłam…"; resendMsg.hidden = true;
+        try { await skrot.sendLink(email); pending.set(email, reason); resendMsg.textContent = `Wysłaliśmy nowy kod na ${email}.`; resendMsg.hidden = false; resendStart(); }
+        catch (x) { resendMsg.textContent = otpErr(x); resendMsg.hidden = false; resendTick(0); }
+      });
+      resendStart();
       body.replaceChildren(...[
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wpisz kod z maila" }),
-        el("p", { style: "margin:0" }, justSent ? "Wysłaliśmy 6-cyfrowy kod na " : "Kod wysłaliśmy na ", el("b", { text: email }), ". Mail może przyjść z opóźnieniem, zajrzyj też do spamu. Kod jest ważny przez godzinę."),
+        el("p", { style: "margin:0" }, justSent ? "Wysłaliśmy 6-cyfrowy kod na " : "Kod wysłaliśmy na ", el("b", { text: email }),
+          ". Mail może przyjść z opóźnieniem, zajrzyj też do spamu. Kod jest ważny przez godzinę.",
+          page ? el("span", {}, " ", el("button", { type: "button", class: "lg-zmien", onclick: () => emailStep() }, "Zmień e-mail")) : null),
         trialOn() ? el("p", { class: "lg-trial-note", text: `Po wpisaniu kodu od razu włączy się ${trialDays()} dni pełnego dostępu za darmo.` }) : null,
         codeForm,
-        el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
-          el("button", { type: "button", class: "btn", onclick: () => { if (page) return emailStep(); close(); skrot.openLogin(reason); } }, page ? "Wyślij nowy kod albo zmień e-mail" : "Wyślij nowy kod"),
+        resend, resendNote, resendMsg,
+        page ? null : el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" },
+          el("button", { type: "button", class: "btn", onclick: () => { close(); skrot.openLogin(reason); } }, "Wyślij nowy kod"),
           closeBtn()),
       ].filter(Boolean));
       setTimeout(() => code.focus(), 30);
     };
 
     // Logowanie hasłem (hasło ustawia się po pierwszym zalogowaniu kodem: Więcej → Hasło do logowania).
-    const passStep = () => {
+    const passStep = (focus = true) => {
       inCode = false;
       ls.set(MODE, "haslo");
       const err = el("p", { class: "notice err", hidden: "" });
@@ -1063,6 +1118,7 @@
         try {
           await skrot.loginPassword(email, pass.value);
           ls.set(LAST_EMAIL, email); pending.clear();
+          if (page) ls.set("skrot-z-logowania", "1");
           setTimeout(() => location.reload(), 1500);
         } catch (x) {
           btn.disabled = false;
@@ -1076,26 +1132,29 @@
         el("label", { for: "skrot-login-email", style: "display:grid;gap:6px;font-weight:700" }, "E-mail", input),
         el("label", { for: "skrot-login-pass", style: "display:grid;gap:6px;font-weight:700" }, "Hasło", pass),
         err, btn);
+      const card = trialCard();
+      if (card) btn.className = "btn";
       body.replaceChildren(...[
-        trialCard(),
+        card,
         orLogin(),
-        el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
+        el(card ? "h3" : "h2", { class: card ? "lg-h3" : null, style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
         reason ? el("p", { class: "muted", style: "margin:0", text: reason }) : null,
         modeSwitch("haslo"),
         form,
         el("button", { type: "button", class: "btn ghost", onclick: () => emailStep() }, "Nie pamiętam hasła: wyślij kod na maila"),
         closeBtn(),
       ].filter(Boolean));
-      setTimeout(() => (input.value ? pass : input).focus(), 30);
+      if (focus) setTimeout(() => (input.value ? pass : input).focus(), 30);
     };
     // Dwie zakładki nad formularzem.
     const modeSwitch = (now) => {
-      const tab = (mode, label, go) => el("button", { type: "button", role: "tab", "aria-selected": String(now === mode), class: "btn small" + (now === mode ? " primary" : " ghost"), style: "flex:1", onclick: () => { if (now !== mode) go(); } }, label);
+      const tab = (mode, label, go) => el("button", { type: "button", role: "tab", "aria-selected": String(now === mode), class: "btn small" + (now === mode ? (page ? "" : " primary") : " ghost"), style: "flex:1", onclick: () => { if (now !== mode) go(); } }, label);
       return el("div", { role: "tablist", "aria-label": "Sposób logowania", style: "display:flex;gap:6px" },
         tab("kod", "Kod z maila", () => emailStep()), tab("haslo", "Hasło", () => passStep()));
     };
 
-    const emailStep = () => {
+    // ux-1 (K1): na pełnej stronie logowania bez kliknięcia nie ustawiamy fokusu (strona zaczyna się od góry, bez klawiatury).
+    const emailStep = (focus = true) => {
       inCode = false;
       ls.set(MODE, "kod");
       const err = el("p", { class: "notice err", hidden: "" });
@@ -1108,7 +1167,7 @@
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Wpisz poprawny adres e-mail.");
         btn.disabled = true;
         try { await skrot.sendLink(email); }
-        catch (x) { btn.disabled = false; return show(/rate|limit|seconds/i.test(x?.message || "") ? "Za dużo prób logowania. Odczekaj chwilę i spróbuj ponownie." : "Nie udało się wysłać kodu. Spróbuj ponownie za chwilę."); }
+        catch (x) { btn.disabled = false; return show(otpErr(x)); }
         pending.set(email, reason);
         ls.set(LAST_EMAIL, email);
         codeStep(email, true);
@@ -1118,11 +1177,14 @@
       const p = pending.get();
       // Tryb „okres próbny”: ten sam formularz, ale nagłówek mówi, co się stanie po wpisaniu kodu.
       const trial = page && trialOn();
-      if (trial) btn.textContent = "Wyślij kod i zacznij";
+      if (trial) { btn.textContent = "Wyślij kod i zacznij"; btn.classList.add("uxw-lime"); }
+      const card = trial ? null : trialCard();
+      // ux-1 (K2): przy karcie próby jedynym głównym przyciskiem jest „Zacznij 3 dni za darmo”; „Wyślij kod” jest drugorzędny.
+      if (card) btn.className = "btn";
       body.replaceChildren(...[
-        trial ? null : trialCard(),
+        card,
         trial ? null : orLogin(),
-        el("h2", { style: "margin:0;font-family:var(--f-display)", text: trial ? `${trialDays()} dni za darmo` : "Zaloguj się" }),
+        el(card ? "h3" : "h2", { class: card ? "lg-h3" : null, style: "margin:0;font-family:var(--f-display)", text: trial ? `${trialDays()} dni za darmo` : "Zaloguj się" }),
         el("p", { class: "muted", style: "margin:0", text: trial ? "Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo." : reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
         trial ? null : modeSwitch("kod"),
         form,
@@ -1131,14 +1193,14 @@
         trial ? el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("skrot-trial", null); emailStep(); } }, "Mam już konto: zwykłe logowanie") : null,
         closeBtn(),
       ].filter(Boolean));
-      setTimeout(() => input.focus(), 30);
+      if (focus) setTimeout(() => input.focus(), 30);
     };
 
     const scrim = page ? null : el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Logowanie" }, body));
     if (page) page.replaceChildren(body);
     else { layer.append(scrim); document.addEventListener("keydown", onKey); }
-    if (opts.codeFor) codeStep(opts.codeFor, false); else if (ls.get(MODE) === "haslo") passStep(); else emailStep();
+    if (opts.codeFor) codeStep(opts.codeFor, false); else if (ls.get(MODE) === "haslo") passStep(!page); else emailStep(!page);
   };
 
   // ---------- hasło do logowania (opcjonalne) ----------
@@ -1259,10 +1321,15 @@
     return scrim;
   };
   // Portal klienta Stripe: anulowanie subskrypcji, zmiana karty, faktury.
-  skrot.manage = () => {
+  // ux-1 (etap 4, K5): przy planie miesięcznym przed portalem Stripe porównanie z planem 199 zł (bez kuponu – decyzja B1).
+  const portal = () => {
     const u = new URL(CONFIG.portalLink);
     if (skrot.email) u.searchParams.set("prefilled_email", skrot.email);
     location.href = u.toString();
+  };
+  skrot.manage = () => {
+    if (skrot.plan !== "miesiac" || !window.ZD_WEJSCIE?.porownaniePlanow) return portal();
+    window.ZD_WEJSCIE.porownaniePlanow({ portal, rok: () => goPay("rok"), cmp: planCompare() });
   };
   // Przed płatnością: akceptacja regulaminu i zgoda na natychmiastowe dostarczenie Treści
   // (utrata prawa odstąpienia, art. 38 ust. 1 pkt 13 ustawy o prawach konsumenta, regulamin § 5).
@@ -1290,6 +1357,7 @@
     if (!window.SKROT_ROCZNIKI || ROK_ID === window.SKROT_ROCZNIKI.DOMYSLNY) return true;
     try { const { data, error } = await sb.rpc("nauka_rocznik_do_kupienia", { p_rocznik: ROK_ID }); return error ? true : data !== false; } catch { return true; }
   }
+  skrot.listaOczekujacych = () => listaOczekujacych();
   function listaOczekujacych() {
     const R = window.SKROT_ROCZNIK, Z = window.SKROT_ZAPISY;
     const nazwa = R ? (window.SKROT_LANG === "en" ? R.kierunek.en || R.kierunek.pl : R.kierunek.pl) : "";
@@ -1331,8 +1399,10 @@
     const row = (box, ...kids) => el("label", { style: "display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.95rem;line-height:1.45" }, box, el("span", {}, ...kids));
     const box = () => el("input", { type: "checkbox", style: "flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--accent,#1A7F45)", onchange: () => sync() });
     const terms = box(), now = box();
-    const pay = el("button", { type: "button", class: "btn primary", disabled: "" }, `Przejdź do płatności (${cfg.price})`);
-    const sync = () => { pay.disabled = !(terms.checked && now.checked); };
+    // ux-1 (etap 4, K3): przycisk zawsze aktywny; bez obu zgód mówi, czego brakuje, i przenosi fokus na pierwsze puste pole.
+    const pay = el("button", { type: "button", class: "btn primary" }, `Przejdź do płatności (${cfg.price})`);
+    const zgodyMsg = el("p", { class: "notice err uxw-zgody", role: "alert", style: "margin:0", hidden: "" });
+    const sync = () => { pay.disabled = false; if (terms.checked && now.checked) zgodyMsg.hidden = true; };
     // Kod polecający: tylko plan jednorazowy (199 zł). Cena się nie zmienia; nagrodę dostaje właściciel kodu.
     const KOD_ERR = { brak: "Nie ma takiego kodu. Sprawdź pisownię albo zostaw pole puste.", wlasny: "To Twój własny kod. Własnym kodem nie można polecić samego siebie.",
       juz_polecony: "Na tym koncie kod polecający był już użyty. Możesz zapłacić bez kodu.", nieaktywny: "Ten kod już nie działa. Możesz zapłacić bez kodu." };
@@ -1343,7 +1413,7 @@
       kodIn, kodMsg,
       el("small", { class: "muted", text: "Masz kod od znajomego z roku? Wpisz go. Cena się nie zmienia." })) : null;
     pay.addEventListener("click", async () => {
-      if (!(terms.checked && now.checked)) return;
+      if (!(terms.checked && now.checked)) { zgodyMsg.textContent = "Zaznacz obie zgody powyżej, żeby przejść do płatności."; zgodyMsg.hidden = false; (terms.checked ? now : terms).focus(); return; }
       pay.disabled = true;
       let kod = kodIn ? polecNorm(kodIn.value) : "";
       if (kod) {
@@ -1375,6 +1445,9 @@
         row(terms, "Znam i akceptuję ", el("a", { class: "link", href: "regulamin.html", target: "_blank", rel: "noopener" }, "Regulamin"), " oraz ", el("a", { class: "link", href: "prywatnosc.html", target: "_blank", rel: "noopener" }, "Politykę prywatności"), "."),
         row(now, CONSENT_NOW),
         kodBox,
+        // ux-1: przejście z planu miesięcznego na 199 zł – subskrypcji nikt nie anuluje automatycznie (bez podwójnej opłaty).
+        plan === "rok" && skrot.plan === "miesiac" ? el("p", { class: "notice", style: "margin:0", text: "Pamiętaj: po zakupie anuluj subskrypcję 35 zł w portalu płatności (Więcej → Konto i dostęp → Zarządzaj subskrypcją)." }) : null,
+        zgodyMsg,
         el("p", { class: "foot-note", style: "margin:0", text: "Zaznaczenie zgody zapisujemy razem z datą i adresem e-mail konta." }),
         el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, pay, el("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"))));
     layer.append(scrim);
@@ -1400,13 +1473,15 @@
     const card = (plan, title, price, lines, badge) => el("button", {
       type: "button", class: "plan-card", "data-plan": plan,
       style: "display:grid;gap:4px;text-align:left;width:100%;padding:14px 16px;border-radius:var(--r,14px);cursor:pointer;font:inherit;color:var(--ink);"
-        + (badge ? "background:var(--accent-soft,#EAF5EE);border:2px solid var(--accent,#1A7F45);" : "background:var(--surface,#fff);border:1px solid var(--line,#BFCEC5);"),
+        + (plan === "rok" ? "background:var(--accent-soft,#EAF5EE);border:2px solid var(--accent,#1A7F45);" : "background:var(--surface,#fff);border:1px solid var(--line,#BFCEC5);"), "aria-current": plan === "rok" ? "true" : null, // ux-1: 199 zł zawsze zaznaczony
       onclick: () => { close(); goPay(plan); },
     },
       el("span", { style: "display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap" },
         el("b", { style: "font-size:1.05rem", text: title }),
         badge ? el("span", { style: "font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink,#fff);background:var(--accent,#1A7F45);border-radius:999px;padding:2px 8px", text: badge }) : null),
       el("span", { style: "font-size:1.5rem;font-weight:800;color:var(--accent-text,#0E5A30)", text: price }),
+      // ux-1 (etap 4, K2): 199 zł przeliczone na miesiąc tuż pod ceną.
+      plan === "rok" ? el("span", { class: "uxw-mies", style: "font-size:.95rem;font-weight:700;color:var(--ink)", text: `to ok. ${Math.round(PRICE_ROK / cmp.months)} zł miesięcznie` }) : null,
       ...lines.map((t) => el("span", { style: "font-size:.9rem;color:var(--muted,#1F2D25)", text: t })));
     const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Wybierz plan" },
@@ -1440,10 +1515,36 @@
   };
 
   // ---------- okres próbny: 3 dni pełnego dostępu, raz na konto (supabase/skrot-v16-proba.sql) ----------
+  // ux-1 (K3): arkusz „Włączyć teraz 3 dni pełnego dostępu?” po pierwszym logowaniu z pełnego ekranu.
+  function trialOffer() {
+    const layer = document.getElementById("layer") || document.body;
+    const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    const d = skrot.trialDays || 3;
+    const face = window.ZD_APP?.stasFace?.("hi");
+    const yes = el("button", { type: "button", class: "btn primary uxw-big uxw-lime", onclick: () => { close(); skrot.startTrial(); } }, `Tak, zaczynam ${d} dni`);
+    const scrim = el("div", { class: "scrim uxw-scrim", onclick: (e) => { if (e.target === scrim) close(); } },
+      el("div", { class: "modal uxw-sheet", role: "dialog", "aria-modal": "true", "aria-labelledby": "uxw-offer-h" },
+        face ? el("div", { class: "uxw-face", "aria-hidden": "true" }, face) : null,
+        el("h2", { id: "uxw-offer-h", style: "margin:0;font-family:var(--f-display)", text: `Włączyć teraz ${d} dni pełnego dostępu?` }),
+        el("p", { style: "margin:0", text: `Bez karty i bez płatności. Po ${d} dniach nic się samo nie pobiera.` }),
+        el("div", { class: "uxw-actions" }, yes,
+          el("button", { type: "button", class: "btn ghost uxw-big", onclick: close }, "Później, zostawię na kolokwium"))));
+    layer.append(scrim);
+    document.addEventListener("keydown", onKey);
+    setTimeout(() => { const h2 = scrim.querySelector("h2"); h2.setAttribute("tabindex", "-1"); h2.focus({ preventScroll: true }); }, 30);
+    return scrim;
+  }
+  skrot.trialOffer = trialOffer;
+  // ux-1 (etap 3): wywołania RPC okresu próbnego z ux-wejscie.js (zgoda na mail przed końcem, SQL v53).
+  skrot.rpcProba = (fn, args) => (sb && skrot.state === "in" && /^nauka_proba_/.test(fn) ? sb.rpc(fn, args) : Promise.resolve({ data: null, error: { message: "off" } }));
+  // ux-1 (etap 4): tylko funkcje pętli 1 z v54 (spis lekcji, licznik rocznika – ten także dla gościa).
+  skrot.rpcUx = (fn, args) => (sb && (/^nauka_(proba_|lekcja_spis$)/.test(fn) && skrot.state === "in" || fn === "nauka_rocznik_licznik") ? sb.rpc(fn, args) : Promise.resolve({ data: null, error: { message: "off" } }));
   const TRIAL_ERR = {
     ma_dostep: "Masz już pełny dostęp, okres próbny nie jest potrzebny.",
     wykorzystany: "Okres próbny na tym koncie został już wykorzystany. Pełny dostęp możesz kupić od 35 zł miesięcznie.",
     urzadzenie: "Na tym urządzeniu okres próbny został już wykorzystany (także z innego konta).",
+    rocznik: "Ten kierunek jeszcze nie ruszył. Zapisz się na listę, a próba poczeka na Ciebie.",
   };
   skrot.startTrial = async () => {
     if (skrot.state !== "in") {
@@ -1457,6 +1558,8 @@
     if (error) {
       const code = Object.keys(TRIAL_ERR).find((k) => (error.message || "").includes(k));
       const noSql = /function|does not exist|schema cache|Could not find/i.test(error.message || "");
+      // ux-1 (etap 2, K5): wykorzystany / urządzenie / rocznik → okno z dalszą drogą (plan, kontakt), nie ślepa uliczka.
+      if (code && code !== "ma_dostep") { const w = window.ZD_WEJSCIE?.bladProby?.(code); if (w) return w; }
       return info("Okres próbny", code ? TRIAL_ERR[code] : noSql ? "Okres próbny ruszy wkrótce." : "Nie udało się włączyć okresu próbnego. Spróbuj za chwilę.");
     }
     skrot.trialUntil = data?.do_kiedy || null;
@@ -1480,6 +1583,13 @@
     // Bez sesji: tylko ekran logowania (powód i pole na kod, jeśli kod już poszedł).
     // Link promocyjny skrotbm.pl/?proba=1: od razu tryb „3 dni za darmo” (bez sesji) albo start próby (po zalogowaniu).
     const q = new URLSearchParams(location.search);
+    // ux-1 (etap 3, K4): link z maila „jutro kończy się próba” (zdawalni.pl/?plan=1) → wybór planu (po zalogowaniu albo od razu).
+    if (q.has("plan")) {
+      q.delete("plan"); q.delete("pz");
+      history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
+      if (skrot.state === "out") ls.set("skrot-buy", "1");
+      else if (skrot.state === "in" && !skrot.paid) { setTimeout(() => skrot.buy(), 400); }
+    }
     if (q.has("proba")) {
       q.delete("proba");
       history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
@@ -1514,6 +1624,12 @@
     if (skrot.state === "in" && ls.get("skrot-after-pay")) { ls.set("skrot-after-pay", null); ls.set("skrot-buy", null); if (!skrot.paid) await waitForPaid(); return; }
     if (skrot.state === "in" && ls.get("skrot-trial")) { ls.set("skrot-trial", null); if (!skrot.paid) skrot.startTrial(); return; }
     if (skrot.state === "in" && ls.get("skrot-buy")) { const want = ls.get("skrot-buy"); ls.set("skrot-buy", null); if (!skrot.paid) skrot.buy(CONFIG.plans[want] ? want : undefined); return; }
+    // ux-1 (K3): nowa osoba zalogowana z pełnego ekranu logowania bez klikania „Zacznij 3 dni” nie trafia po cichu do darmowej
+    // wersji: raz na konto w tej przeglądarce pytamy, czy włączyć okres próbny. Kto chciał kupić (skrot-buy), idzie do zakupu (wyżej).
+    if (skrot.state === "in" && ls.get("skrot-z-logowania")) {
+      ls.set("skrot-z-logowania", null);
+      if (!skrot.paid && skrot.trialCan && !ls.get("skrot-proba-zapytano") && !PG) { ls.set("skrot-proba-zapytano", "1"); trialOffer(); return; }
+    }
     // Pierwsze logowanie kodem: raz proponujemy ustawienie hasła.
     if (skrot.state === "in" && ls.get("skrot-offer-pass")) {
       ls.set("skrot-offer-pass", null);

@@ -1,0 +1,102 @@
+✓ K1 proba-koniec z blokiem lekcji jasny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 proba-koniec z blokiem lekcji jasny: „Kup dostęp” ma tło akcentu (#1A7F45), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 proba-koniec z blokiem lekcji jasny: konsola bez błędów
+✓ K1 proba-koniec z blokiem lekcji ciemny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 proba-koniec z blokiem lekcji ciemny: „Kup dostęp” ma tło akcentu (ciemny akcent), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 proba-koniec z blokiem lekcji ciemny: konsola bez błędów
+✓ K1 proba-koniec bez bloku lekcji jasny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 proba-koniec bez bloku lekcji jasny: „Kup dostęp” ma tło akcentu (#1A7F45), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 proba-koniec bez bloku lekcji jasny: konsola bez błędów
+✓ K1 proba-koniec bez bloku lekcji ciemny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 proba-koniec bez bloku lekcji ciemny: „Kup dostęp” ma tło akcentu (ciemny akcent), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 proba-koniec bez bloku lekcji ciemny: konsola bez błędów
+✓ K1 darmowe-bez z blokiem lekcji jasny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 darmowe-bez z blokiem lekcji jasny: „Kup dostęp” ma tło akcentu (#1A7F45), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 darmowe-bez z blokiem lekcji jasny: konsola bez błędów
+✓ K1 darmowe-bez z blokiem lekcji ciemny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 darmowe-bez z blokiem lekcji ciemny: „Kup dostęp” ma tło akcentu (ciemny akcent), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 darmowe-bez z blokiem lekcji ciemny: konsola bez błędów
+✓ K1 darmowe-bez bez bloku lekcji jasny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 darmowe-bez bez bloku lekcji jasny: „Kup dostęp” ma tło akcentu (#1A7F45), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 darmowe-bez bez bloku lekcji jasny: konsola bez błędów
+✓ K1 darmowe-bez bez bloku lekcji ciemny: na Dziś dokładnie jeden „Kup dostęp”
+✓ K1 darmowe-bez bez bloku lekcji ciemny: „Kup dostęp” ma tło akcentu (ciemny akcent), nie szarą pigułkę, czytelny tekst, ≥ 44 px
+✓ K1 darmowe-bez bez bloku lekcji ciemny: konsola bez błędów
+✓ K1: drugorzędne przyciski na Dziś dalej szare pigułki (#EDF1EA)
+✓ K2 dzień 1: pigułka „Próba · dzień 1 z 3 · do czw 17:00” w pierwszym ekranie 390×844
+✓ K2 dzień 1: pigułka ≤ 56 px, link „Plany” ≥ 44×44 px
+✓ K2 dzień 1: bez koloru ostrzeżenia, kontrast AA
+✓ K2 dzień 1 ciemny: pigułka „Próba · dzień 1 z 3 · do czw 17:00” w pierwszym ekranie 390×844
+✓ K2 dzień 1 ciemny: pigułka ≤ 56 px, link „Plany” ≥ 44×44 px
+✓ K2 dzień 1 ciemny: bez koloru ostrzeżenia, kontrast AA
+✓ K2 dzień 2: pigułka „Próba · dzień 2 z 3 · do czw 17:00” w pierwszym ekranie 390×844
+✓ K2 dzień 2: pigułka ≤ 56 px, link „Plany” ≥ 44×44 px
+✓ K2 dzień 2: bez koloru ostrzeżenia, kontrast AA
+✓ K2 dzień 2 ciemny: pigułka „Próba · dzień 2 z 3 · do czw 17:00” w pierwszym ekranie 390×844
+✓ K2 dzień 2 ciemny: pigułka ≤ 56 px, link „Plany” ≥ 44×44 px
+✓ K2 dzień 2 ciemny: bez koloru ostrzeżenia, kontrast AA
+✓ K2 dzień 3: pigułka „Próba · dzień 3 z 3 · do czw 17:00” w pierwszym ekranie 390×844
+✓ K2 dzień 3: pigułka ≤ 56 px, link „Plany” ≥ 44×44 px
+✓ K2 dzień 3: < 24 h: kolor ostrzeżenia, kontrast AA
+✓ K2 dzień 3 ciemny: pigułka „Próba · dzień 3 z 3 · do czw 17:00” w pierwszym ekranie 390×844
+✓ K2 dzień 3 ciemny: pigułka ≤ 56 px, link „Plany” ≥ 44×44 px
+✓ K2 dzień 3 ciemny: < 24 h: kolor ostrzeżenia, kontrast AA
+✓ K2 < 24 h: arkusz „Zostało 4 godz. próby” z dwoma planami, 199 zł pierwszy i zaznaczony
+✓ K2 < 24 h: po przeładowaniu tego samego dnia arkusza nie ma
+✓ K2 > 24 h: bez arkusza
+✓ K2 konto platne: bez pigułki próby
+✓ K2 konto darmowe: bez pigułki próby
+✓ K2 konto proba-koniec: bez pigułki próby
+✓ K2 EN: „Trial · day 2 of 3 · until Thu 17:00” + „Plans”
+✓ K3 darmowe (próba możliwa) z blokiem: każdy „Kup dostęp” stoi obok „Wypróbuj 3 dni” (bez samotnego)
+✓ K3 darmowe z blokiem: jest „Wypróbuj 3 dni” z przyciskZakupu
+✓ K3 darmowe (próba możliwa) bez bloku: każdy „Kup dostęp” stoi obok „Wypróbuj 3 dni” (bez samotnego)
+✓ K3 darmowe bez bloku: jest „Wypróbuj 3 dni” z przyciskZakupu
+✓ K3 API: przyciskZakupu() przy możliwej próbie → „Wypróbuj 3 dni” + „Kup dostęp”
+✓ K3: „Wypróbuj 3 dni” z Dziś włącza próbę
+✓ K3 API: po próbie → zielony „Kup dostęp” (pierwszy na ekranie) albo link „Zobacz plany” (kolejne)
+✓ K3 kod: 3 wyrażenia przycisku podmienione (ld, pts×2) z komentarzem // ux-1
+✓ K4 pl: konto w próbie: „okres próbny, zostały 2 dni”, bez „do końca 2. semestru”
+✓ K4 en: konto w próbie: „okres próbny, zostały 2 dni”, bez „do końca 2. semestru”
+✓ K4: konto płatne dalej „do końca 2. semestru”
+✓ K5 wykorzystany: tekst z C2
+✓ K5 wykorzystany: przyciski „Wybierz plan” (główny), „Napisz do nas” (mailto z tematem), „Zamknij”, każdy ≥ 44 px
+✓ K5 wykorzystany: „Wybierz plan” otwiera wybór planu
+✓ K5 urzadzenie: tekst z C2
+✓ K5 urzadzenie: przyciski „Wybierz plan” (główny), „Napisz do nas” (mailto z tematem), „Zamknij”, każdy ≥ 44 px
+✓ K5 urzadzenie: „Wybierz plan” otwiera wybór planu
+✓ K5 EN: okno błędu po angielsku
+✓ K6 pl: kierunek oczekujący ma widoczny tag „Wkrótce” i opis
+✓ K6 pl: BM (platny) bez tagu „Wkrótce”
+✓ K6: klik w kierunek oczekujący → lista oczekujących z tym kierunkiem
+✓ K6 pl: konsola bez błędów
+✓ K6 en: kierunek oczekujący ma widoczny tag „Coming soon” i opis
+✓ K6 en: BM (platny) bez tagu „Wkrótce”
+✓ K6 en: konsola bez błędów
+✓ K6: rocznik oczekujący → trialCan = false, bez „Wypróbuj” i „Masz jeszcze 3 dni” na Dziś
+✓ K6: błąd „rocznik” → „Ten kierunek jeszcze nie ruszył. Zapisz się na listę, a próba poczeka na Ciebie.”
+✓ K6 SQL: v52 odrzuca start próby dla rocznika nie-platny (raise 'rocznik'), test PGlite supabase/test/v52.sql
+78/78
+
+## PGlite (v52)
+✓ skrot-v52-proba-rocznik.sql
+✓ skrot-v52-proba-rocznik.sql
+    OK R1 rocznik oczekujacy: start próby odrzucony (rocznik)
+    OK R1 nauka_ja: proba_mozna dalej true (próba czeka na start kierunku)
+    OK R1 brak wiersza w nauka_proby po odrzuceniu
+    OK R2 BM: próba startuje (do_kiedy za 3 dni)
+    OK R3 po starcie kierunku: próba startuje
+    OK R4 drugi start → wykorzystany
+    OK R5 opłacony dostęp przy kierunku oczekujacy → ma_dostep
+✓ test/v52.sql
+
+## Istniejące testy
+- ux1-etap1: 89/89
+- h2-etap1: 25/25
+- h2-etap2: 33/33
+- h2-etap9: 92/92
+- scalanie: 52/56
+- wyglad-logowanie: wszystko OK
+- lekcja-dnia-4: 103/103
+- node --test: ℹ pass 372 ℹ fail 0 
+- scalanie: 4 ✗ jak na czystym main (ranga/monety, Zadania dnia) – uwagi-dla-innych.md

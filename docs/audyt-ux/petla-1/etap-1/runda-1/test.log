@@ -1,0 +1,90 @@
+✓ K1 360×640: scrollY = 0 po 3 s
+✓ K1 360×640: CLS < 0,1 (0.000)
+✓ K1 360×640: bez fokusu w polu (klawiatura się nie otwiera)
+✓ K1 360×640: nagłówek „Mniej szukania…” w pierwszym ekranie
+✓ K1 360×640: „Zacznij 3 dni za darmo” w pierwszym ekranie
+✓ K1 360×640: konsola bez błędów
+✓ K1 360×640 (bez grupy): scrollY = 0 po 3 s
+✓ K1 360×640 (bez grupy): CLS < 0,1 (0.000)
+✓ K1 360×640 (bez grupy): bez fokusu w polu (klawiatura się nie otwiera)
+✓ K1 360×640 (bez grupy): nagłówek „Mniej szukania…” w pierwszym ekranie
+✓ K1 360×640 (bez grupy): konsola bez błędów
+✓ K1 390×844: scrollY = 0 po 3 s
+✓ K1 390×844: CLS < 0,1 (0.000)
+✓ K1 390×844: bez fokusu w polu (klawiatura się nie otwiera)
+✓ K1 390×844: nagłówek „Mniej szukania…” w pierwszym ekranie
+✓ K1 390×844: „Zacznij 3 dni za darmo” w pierwszym ekranie
+✓ K1 390×844: konsola bez błędów
+✓ K1 390×844 (bez grupy): scrollY = 0 po 3 s
+✓ K1 390×844 (bez grupy): CLS < 0,1 (0.000)
+✓ K1 390×844 (bez grupy): bez fokusu w polu (klawiatura się nie otwiera)
+✓ K1 390×844 (bez grupy): nagłówek „Mniej szukania…” w pierwszym ekranie
+✓ K1 390×844 (bez grupy): konsola bez błędów
+✓ K1 1280×900: scrollY = 0 po 3 s
+✓ K1 1280×900: CLS < 0,1 (0.009)
+✓ K1 1280×900: bez fokusu w polu (klawiatura się nie otwiera)
+✓ K1 1280×900: nagłówek „Mniej szukania…” w pierwszym ekranie
+✓ K1 1280×900: „Zacznij 3 dni za darmo” w pierwszym ekranie
+✓ K1 1280×900: konsola bez błędów
+✓ K1 1280×900 (bez grupy): scrollY = 0 po 3 s
+✓ K1 1280×900 (bez grupy): CLS < 0,1 (0.009)
+✓ K1 1280×900 (bez grupy): bez fokusu w polu (klawiatura się nie otwiera)
+✓ K1 1280×900 (bez grupy): nagłówek „Mniej szukania…” w pierwszym ekranie
+✓ K1 1280×900 (bez grupy): konsola bez błędów
+✓ K2 jasny: dokładnie jeden przycisk .primary („Zacznij 3 dni za darmo”)
+✓ K2 jasny: „Wyślij kod” bez klasy primary i bez zielonego tła
+✓ K2 jasny: „Zaloguj się” jako h3 18 px
+✓ K2 ciemny: dokładnie jeden przycisk .primary („Zacznij 3 dni za darmo”)
+✓ K2 ciemny: „Wyślij kod” bez klasy primary i bez zielonego tła
+✓ K2 ciemny: „Zaloguj się” jako h3 18 px
+✓ K3: kod z pełnego ekranu logowania zostawia znacznik skrot-z-logowania
+✓ K3: konto darmowe + znacznik → arkusz „Włączyć teraz 3 dni pełnego dostępu?”
+✓ K3: arkusz: „Bez karty i bez płatności…”, główny „Tak, zaczynam 3 dni”, drugi „Później…”, przyciski ≥ 44 px
+✓ K3: „Tak” → próba (mock-konto = proba) i powitanie „Masz 3 dni pełnego dostępu”
+✓ K3: konsola bez błędów (arkusz i start próby)
+✓ K3: arkusz tylko raz (skrot-proba-zapytano)
+✓ K3 390×844: bez znacznika pasek „Masz jeszcze 3 dni za darmo · Włącz” w pierwszym ekranie Dziś (≤ 56 px)
+✓ K3 390×844: „Włącz” ≥ 44×44 px
+✓ K3 390×844: bez arkusza (brak znacznika)
+✓ K3: „Włącz” na pasku → próba
+✓ K3 360×640: bez znacznika pasek „Masz jeszcze 3 dni za darmo · Włącz” w pierwszym ekranie Dziś (≤ 56 px)
+✓ K3 360×640: „Włącz” ≥ 44×44 px
+✓ K3 360×640: bez arkusza (brak znacznika)
+✓ K3 390×844 ciemny: bez znacznika pasek „Masz jeszcze 3 dni za darmo · Włącz” w pierwszym ekranie Dziś (≤ 56 px)
+✓ K3 390×844 ciemny: „Włącz” ≥ 44×44 px
+✓ K3 390×844 ciemny: bez arkusza (brak znacznika)
+✓ K3: konto platne: bez paska „Masz jeszcze 3 dni”
+✓ K3: konto proba-koniec: bez paska „Masz jeszcze 3 dni”
+✓ K3: konto starosta: bez paska „Masz jeszcze 3 dni”
+✓ K4 390 jasny: Staś (SVG) na ekranie logowania
+✓ K4 390 jasny: przycisk próby pastylka, karta ≥ 22 px (H2)
+✓ K4 390 jasny: tło logowania jasne #F4F5F0
+✓ K4 390 jasny: ikona SVG play w „Zobacz przykładową lekcję”, bez emoji
+✓ K4 390 ciemny: Staś (SVG) na ekranie logowania
+✓ K4 390 ciemny: przycisk próby pastylka, karta ≥ 22 px (H2)
+✓ K4 390 ciemny: tło logowania ciemne #0F1A14
+✓ K4 390 ciemny: ikona SVG play w „Zobacz przykładową lekcję”, bez emoji
+✓ K4 1280 jasny: Staś (SVG) na ekranie logowania
+✓ K4 1280 jasny: przycisk próby pastylka, karta ≥ 22 px (H2)
+✓ K4 1280 jasny: tło logowania jasne #F4F5F0
+✓ K4 1280 jasny: ikona SVG play w „Zobacz przykładową lekcję”, bez emoji
+✓ K4 1280 ciemny: Staś (SVG) na ekranie logowania
+✓ K4 1280 ciemny: przycisk próby pastylka, karta ≥ 22 px (H2)
+✓ K4 1280 ciemny: tło logowania ciemne #0F1A14
+✓ K4 1280 ciemny: ikona SVG play w „Zobacz przykładową lekcję”, bez emoji
+✓ K5: błąd limitu z signInWithOtp → „Teraz loguje się dużo osób naraz. Spróbuj za 2–3 minuty.”
+✓ K5: przed 60 s „Wyślij ponownie” nieaktywne z odliczaniem, bez notki
+✓ K5: pojawienie się notki po 60 s nie przesuwa ekranu (przyrost CLS < 0,01)
+✓ K5: po 60 s notka o spamie i aktywne „Wyślij ponownie”
+✓ K5: „Wyślij ponownie” wysyła kod jeszcze raz i znów odlicza
+✓ K6: przycisk po kodzie w trybie próby: „Zacznij 3 dni za darmo”
+✓ K6: bez trybu próby przycisk po kodzie: „Zaloguj się”
+✓ K6 EN: „Practice tests before every midterm”
+✓ K6 EN: „Your group's test and exam dates”
+✓ K6 EN: zakładka „Email code”
+✓ K6 EN: bez starych tekstów (Mock tests before each test, Code from the email)
+✓ K6 EN: krok kodu po angielsku („Change email”, „Resend in … s”)
+✓ K3/K6 EN: arkusz po angielsku
+✓ K3/K6 EN: pasek „You still have 3 free days · Turn on”
+✓ K5 EN: komunikat limitu po angielsku
+89/89

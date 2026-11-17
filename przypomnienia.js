@@ -288,8 +288,43 @@
     return { subject: p.title, text: text, html: html };
   }
 
+  // === ux-1: rodzaj „proba” – jeden mail dzień przed końcem okresu próbnego, tylko za zgodą z powitania próby (SQL v53) ===
+  // o = { lang, doKiedy (ISO), teraz (Date|ISO), site, id }. Link prowadzi do wyboru planu (?plan=1), bez wypisywania (mail jednorazowy).
+  function mailProba(o) {
+    var en = o.lang === "en", koniec = new Date(o.doKiedy), teraz = o.teraz ? new Date(o.teraz) : new Date();
+    var godz = new Intl.DateTimeFormat("pl-PL", { timeZone: "Europe/Warsaw", hour: "2-digit", minute: "2-digit" }).format(koniec);
+    // „jutro” / „dziś” / dzień tygodnia liczone z dat kalendarzowych w Warszawie (koniec o 02:00 to nie zawsze „jutro”).
+    var dWaw = function (d) { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Warsaw" }).format(d); };
+    var roz = Math.round((Date.parse(dWaw(koniec)) - Date.parse(dWaw(teraz))) / 864e5);
+    var dzienTyg = new Intl.DateTimeFormat(en ? "en-GB" : "pl-PL", { timeZone: "Europe/Warsaw", weekday: "long" }).format(koniec);
+    var kiedyPL = roz === 0 ? "Dziś" : roz === 1 ? "Jutro" : (/^(wtorek)$/.test(dzienTyg) ? "We " : "W ") + (/^(niedziela|środa|sobota)$/.test(dzienTyg) ? dzienTyg.replace(/a$/, "ę") : dzienTyg);
+    var kiedyEN = roz === 0 ? "today" : roz === 1 ? "tomorrow" : "on " + dzienTyg;
+    var h = Math.max(1, Math.round((koniec.getTime() - teraz.getTime()) / 36e5));
+    var ile = en ? "about " + h + " hours" : "ok. " + h + " godz.";
+    var go = String(o.site).replace(/\/$/, "") + "/?plan=1" + (o.id ? "&pz=" + encodeURIComponent(o.id) : "");
+    var subject = en ? "Your Zdawalni trial ends " + kiedyEN + " at " + godz : kiedyPL + " o " + godz + " kończy się Twoja próba w Zdawalni";
+    var body = en ? "You still have " + ile + " of full access. Until the end of semester 2: 199 zł one-off (BLIK), no renewal."
+      : "Masz jeszcze " + ile + " pełnego dostępu. Do końca 2. semestru: 199 zł jednorazowo (BLIK), bez odnawiania.";
+    var cta = en ? "Choose a plan" : "Wybieram plan";
+    var keep = en ? "Your progress stays on your account even if you don’t buy." : "Postępy zostaną na koncie, nawet jeśli nie kupisz.";
+    var foot = en ? "You get this one email because you asked for a reminder when your trial started. Nothing is charged automatically."
+      : "Ten jeden mail przychodzi, bo przy starcie próby zaznaczyłeś(-aś) przypomnienie. Nic nie pobieramy samo.";
+    var text = [en ? "Hi!" : "Cześć!", "", body, "", cta + ": " + go, "", keep, "", "Zdawalni · zdawalni.pl", "", foot].join("\n");
+    var html = '<!doctype html>\n<html lang="' + (en ? "en" : "pl") + '"><body style="margin:0;background:#F5F8F6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1d2b24">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:24px 12px"><tr><td align="center">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border:1px solid #dde5df;border-radius:14px;padding:24px"><tr><td>' +
+      '<p style="margin:0 0 14px;font-size:18px;font-weight:800;color:#1b7f4a">Zdawalni</p>' +
+      '<p style="margin:0 0 20px;font-size:16px;line-height:1.5">' + esc(body) + '</p>' +
+      '<a href="' + esc(go) + '" style="display:inline-block;background:#1b7f4a;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:14px 22px;border-radius:10px">' + esc(cta) + '</a>' +
+      '<p style="margin:20px 0 0;font-size:15px;line-height:1.5">' + esc(keep) + '</p>' +
+      '<p style="margin:24px 0 0;font-size:13px;line-height:1.5;color:#4a5a51">' + esc(foot) + '</p>' +
+      '</td></tr></table></td></tr></table></body></html>';
+    return { subject: subject, text: text, html: html };
+  }
+  // === koniec ux-1 ===
+
   return { NOTIFY: NOTIFY, DNI_TERMINU: DNI_TERMINU, STAN_DNI: STAN_DNI, CO: CO, GODZ_DOMYSLNA: GODZ_DOMYSLNA, GODZ_OD: GODZ_OD, GODZ_DO: GODZ_DO, GODZ_KROK: GODZ_KROK,
     diffDays: diffDays, addDays: addDays, warszawa: warszawa, ignoredInRow: ignoredInRow, throttleAllows: throttleAllows,
     godzOk: godzOk, godzTekst: godzTekst, godziny: godziny, coZ: coZ, stanZ: stanZ, terminyAktualne: terminyAktualne,
-    kontekst: kontekst, wybierz: wybierz, mail: mail, link: link, dataTekst: dataTekst };
+    kontekst: kontekst, wybierz: wybierz, mail: mail, link: link, dataTekst: dataTekst, mailProba: mailProba /* ux-1 */ };
 });

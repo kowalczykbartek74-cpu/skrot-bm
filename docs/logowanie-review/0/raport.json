@@ -1,0 +1,171 @@
+{
+ "przypadki": [
+  {
+   "n": "pl-375-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 62,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": true,
+   "bledy": []
+  },
+  {
+   "n": "pl-375-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 30,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-375-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 33,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 70,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 41,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "pl-1280-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 43,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-1-kierunek",
+   "krok": "1. kierunek",
+   "teksty": 62,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-2-grupa",
+   "krok": "2. rok i grupa",
+   "teksty": 30,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "en-375-3-logowanie",
+   "krok": "3. logowanie",
+   "teksty": 33,
+   "ponizejAA": [],
+   "cele": [],
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "ruch": [
+  {
+   "nazwa": "375 px, zwykle",
+   "calm": false,
+   "karta kierunku (wejście)": "lg-rise; przejście 0.2s, 0.2s",
+   "nagłówek kroku": "lg-rise; przejście 0s",
+   "pasek kroków (napełnianie)": "lg-fill; przejście 0s",
+   "Staś przy nagłówku (telefon)": "lg-hop, lg-wave; przejście 0s",
+   "Staś w panelu (komputer)": null,
+   "dymek Stasia": null,
+   "karta z przykładem (unosi się)": null,
+   "lista zalet": null,
+   "połysk przycisku 3 dni": "uxw-shine; przejście 0s",
+   "karta 3 dni (wejście)": "lg-rise; przejście 0s"
+  },
+  {
+   "nazwa": "375 px, reduced-motion",
+   "calm": false,
+   "karta kierunku (wejście)": "none; przejście 0s",
+   "nagłówek kroku": "none; przejście 0s",
+   "pasek kroków (napełnianie)": "none; przejście 0s",
+   "Staś przy nagłówku (telefon)": "none; przejście 0s",
+   "Staś w panelu (komputer)": null,
+   "dymek Stasia": null,
+   "karta z przykładem (unosi się)": null,
+   "lista zalet": null,
+   "połysk przycisku 3 dni": "none; przejście 0s",
+   "karta 3 dni (wejście)": "none; przejście 0s"
+  },
+  {
+   "nazwa": "375 px, Mniej animacji",
+   "calm": true,
+   "karta kierunku (wejście)": "none; przejście 0s",
+   "nagłówek kroku": "none; przejście 0s",
+   "pasek kroków (napełnianie)": "none; przejście 0s",
+   "Staś przy nagłówku (telefon)": "none; przejście 0s",
+   "Staś w panelu (komputer)": null,
+   "dymek Stasia": null,
+   "karta z przykładem (unosi się)": null,
+   "lista zalet": null,
+   "połysk przycisku 3 dni": "none; przejście 0s",
+   "karta 3 dni (wejście)": "none; przejście 0s"
+  },
+  {
+   "nazwa": "1280 px, zwykle",
+   "calm": false,
+   "karta kierunku (wejście)": "lg-rise; przejście 0.2s, 0.2s",
+   "nagłówek kroku": "lg-rise; przejście 0s",
+   "pasek kroków (napełnianie)": "lg-fill; przejście 0s",
+   "Staś przy nagłówku (telefon)": null,
+   "Staś w panelu (komputer)": "lg-hop, lg-wave; przejście 0s",
+   "dymek Stasia": "lg-rise; przejście 0s",
+   "karta z przykładem (unosi się)": "lg-rise, lg-float; przejście 0s",
+   "lista zalet": "lg-rise; przejście 0s",
+   "połysk przycisku 3 dni": "uxw-shine; przejście 0s",
+   "karta 3 dni (wejście)": "lg-rise; przejście 0s"
+  },
+  {
+   "nazwa": "1280 px, reduced-motion",
+   "calm": false,
+   "karta kierunku (wejście)": "none; przejście 0s",
+   "nagłówek kroku": "none; przejście 0s",
+   "pasek kroków (napełnianie)": "none; przejście 0s",
+   "Staś przy nagłówku (telefon)": null,
+   "Staś w panelu (komputer)": "none; przejście 0s",
+   "dymek Stasia": "none; przejście 0s",
+   "karta z przykładem (unosi się)": "none; przejście 0s",
+   "lista zalet": "none; przejście 0s",
+   "połysk przycisku 3 dni": "none; przejście 0s",
+   "karta 3 dni (wejście)": "none; przejście 0s"
+  },
+  {
+   "nazwa": "1280 px, Mniej animacji",
+   "calm": true,
+   "karta kierunku (wejście)": "none; przejście 0s",
+   "nagłówek kroku": "none; przejście 0s",
+   "pasek kroków (napełnianie)": "none; przejście 0s",
+   "Staś przy nagłówku (telefon)": null,
+   "Staś w panelu (komputer)": "none; przejście 0s",
+   "dymek Stasia": "none; przejście 0s",
+   "karta z przykładem (unosi się)": "none; przejście 0s",
+   "lista zalet": "none; przejście 0s",
+   "połysk przycisku 3 dni": "none; przejście 0s",
+   "karta 3 dni (wejście)": "none; przejście 0s"
+  }
+ ]
+}

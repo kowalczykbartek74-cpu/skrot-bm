@@ -1,0 +1,1726 @@
+{
+ "etap": 4,
+ "runda": 1,
+ "data": "2026-11-17T17:18:00.721Z",
+ "przypadki": [
+  {
+   "n": "paywall-lekcji-po-probie-360-jasny",
+   "y": 0,
+   "cls": 0.0102,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "„199 zł do lipca…”": {
+     "top": 342,
+     "bottom": 390,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "spis lekcji": {
+     "top": 456,
+     "bottom": 634,
+     "h": 178,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 21,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-po-probie-360-ciemny",
+   "y": 0,
+   "cls": 0.0102,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "„199 zł do lipca…”": {
+     "top": 342,
+     "bottom": 390,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "spis lekcji": {
+     "top": 456,
+     "bottom": 634,
+     "h": 178,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 21,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-po-probie-390-jasny",
+   "y": 0,
+   "cls": 0.0109,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "„199 zł do lipca…”": {
+     "top": 318,
+     "bottom": 366,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "spis lekcji": {
+     "top": 432,
+     "bottom": 610,
+     "h": 178,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 21,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-po-probie-390-jasny-en",
+   "y": 0,
+   "cls": 0.007,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "„199 zł do lipca…”": {
+     "top": 318,
+     "bottom": 366,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "spis lekcji": {
+     "top": 432,
+     "bottom": 610,
+     "h": 178,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 21,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nMathematical Analysis",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Timetable (free)",
+     "w": 102,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Message box for the year supervisor",
+     "w": 229,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Terms of service",
+     "w": 103,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Privacy policy",
+     "w": 89,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Contact",
+     "w": 53,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-po-probie-390-ciemny",
+   "y": 0,
+   "cls": 0.0108,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "„199 zł do lipca…”": {
+     "top": 318,
+     "bottom": 366,
+     "h": 48,
+     "w_pierwszym_ekranie": true
+    },
+    "spis lekcji": {
+     "top": 432,
+     "bottom": 610,
+     "h": 178,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 21,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-po-probie-1280-jasny",
+   "y": 0,
+   "cls": 0.0014,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "„199 zł do lipca…”": {
+     "top": 300,
+     "bottom": 343,
+     "h": 43,
+     "w_pierwszym_ekranie": true
+    },
+    "spis lekcji": {
+     "top": 353,
+     "bottom": 531,
+     "h": 178,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 21,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "199 zł do lipca · ok. 25 zł / mies.",
+     "w": 256,
+     "h": 43,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "35 zł / mies.",
+     "w": 121,
+     "h": 43,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-po-probie-1280-ciemny",
+   "y": 0,
+   "cls": 0.0326,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "„199 zł do lipca…”": {
+     "top": 300,
+     "bottom": 343,
+     "h": 43,
+     "w_pierwszym_ekranie": true
+    },
+    "spis lekcji": {
+     "top": 353,
+     "bottom": 531,
+     "h": 178,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 21,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "199 zł do lipca · ok. 25 zł / mies.",
+     "w": 256,
+     "h": 43,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "35 zł / mies.",
+     "w": 121,
+     "h": 43,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-darmowe-360-jasny",
+   "y": 0,
+   "cls": 0.0102,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "przyciski": {
+     "top": 342,
+     "bottom": 502,
+     "h": 160,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-darmowe-360-ciemny",
+   "y": 0,
+   "cls": 0.0102,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "przyciski": {
+     "top": 342,
+     "bottom": 502,
+     "h": 160,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-darmowe-390-jasny",
+   "y": 0,
+   "cls": 0.007,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "przyciski": {
+     "top": 318,
+     "bottom": 478,
+     "h": 160,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "paywall-lekcji-darmowe-390-ciemny",
+   "y": 0,
+   "cls": 0.007,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "przyciski": {
+     "top": 318,
+     "bottom": 478,
+     "h": 160,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 23,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 202,
+     "h": 36,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21,
+     "w_tekscie": false
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "wybor-planu-360-jasny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 16,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 70,
+     "h": 17,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Prywatność",
+     "w": 80,
+     "h": 17,
+     "w_tekscie": true
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "wybor-planu-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 16,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 70,
+     "h": 17,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Prywatność",
+     "w": 80,
+     "h": 17,
+     "w_tekscie": true
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "wybor-planu-390-jasny",
+   "y": 0,
+   "cls": 0.0064,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 16,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 70,
+     "h": 17,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Prywatność",
+     "w": 80,
+     "h": 17,
+     "w_tekscie": true
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "wybor-planu-390-jasny-en",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 16,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Terms of service",
+     "w": 108,
+     "h": 17,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Privacy",
+     "w": 49,
+     "h": 17,
+     "w_tekscie": true
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "wybor-planu-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 16,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 70,
+     "h": 17,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Prywatność",
+     "w": 80,
+     "h": 17,
+     "w_tekscie": true
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "wybor-planu-1280-jasny",
+   "y": 0,
+   "cls": 0.0002,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 16,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 70,
+     "h": 17,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Prywatność",
+     "w": 80,
+     "h": 17,
+     "w_tekscie": true
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "wybor-planu-1280-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 16,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 70,
+     "h": 17,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Prywatność",
+     "w": 80,
+     "h": 17,
+     "w_tekscie": true
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "zgody-bez-zaznaczenia-390-jasny",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 13,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 77,
+     "h": 19,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Politykę prywatności",
+     "w": 299,
+     "h": 41,
+     "w_tekscie": true
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Przejdź do płatności (199 zł)",
+     "w": 233,
+     "h": 43,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.btn.ghost",
+     "tekst": "Anuluj",
+     "w": 80,
+     "h": 43,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "zgody-bez-zaznaczenia-390-jasny-en",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 13,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Terms of service",
+     "w": 119,
+     "h": 19,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Privacy Policy",
+     "w": 103,
+     "h": 19,
+     "w_tekscie": true
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Go to payment (199 zł)",
+     "w": 195,
+     "h": 43,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.btn.ghost",
+     "tekst": "Cancel",
+     "w": 86,
+     "h": 43,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "zgody-bez-zaznaczenia-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 13,
+   "kontrast_ponizej": [],
+   "cele44": [
+    {
+     "cel": "A.link",
+     "tekst": "Regulamin",
+     "w": 77,
+     "h": 19,
+     "w_tekscie": true
+    },
+    {
+     "cel": "A.link",
+     "tekst": "Politykę prywatności",
+     "w": 299,
+     "h": 41,
+     "w_tekscie": true
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Przejdź do płatności (199 zł)",
+     "w": 233,
+     "h": 43,
+     "w_tekscie": false
+    },
+    {
+     "cel": "BUTTON.btn.ghost",
+     "tekst": "Anuluj",
+     "w": 80,
+     "h": 43,
+     "w_tekscie": false
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "n": "dzis-plus-2-dni-360-jasny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "karta „+2 dni”": {
+     "top": 215,
+     "bottom": 383,
+     "h": 168,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-plus-2-dni-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "karta „+2 dni”": {
+     "top": 215,
+     "bottom": 383,
+     "h": 168,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-plus-2-dni-390-jasny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "karta „+2 dni”": {
+     "top": 215,
+     "bottom": 383,
+     "h": 168,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-plus-2-dni-390-jasny-en",
+   "y": 0,
+   "cls": 0.0059,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "karta „+2 dni”": {
+     "top": 215,
+     "bottom": 359,
+     "h": 144,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "lvl 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-plus-2-dni-390-ciemny",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {
+    "karta „+2 dni”": {
+     "top": 215,
+     "bottom": 383,
+     "h": 168,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-plus-2-dni-1280-jasny",
+   "y": 0,
+   "cls": 0.0002,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "karta „+2 dni”": {
+     "top": 231,
+     "bottom": 375,
+     "h": 144,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "dzis-plus-2-dni-1280-ciemny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {
+    "karta „+2 dni”": {
+     "top": 231,
+     "bottom": 375,
+     "h": 144,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 72,
+   "kontrast_ponizej": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    }
+   ],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "przed-portalem-390-jasny",
+   "y": 0,
+   "cls": 0.0064,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 7,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "przed-portalem-390-jasny-en",
+   "y": 0,
+   "cls": 0.006,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 7,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "przed-portalem-390-ciemny",
+   "y": 0,
+   "cls": 0.0064,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 7,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "przed-portalem-1280-jasny",
+   "y": 0,
+   "cls": 0.0001,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 7,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "przed-portalem-1280-ciemny",
+   "y": 0,
+   "cls": 0,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 7,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-licznik-faq-390-jasny",
+   "y": 753,
+   "cls": 0.0335,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 35,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-licznik-faq-390-jasny-en",
+   "y": 796,
+   "cls": 0.0431,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 35,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-licznik-faq-390-ciemny",
+   "y": 753,
+   "cls": 0.0335,
+   "poziomo": false,
+   "ih": 844,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 35,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-licznik-faq-1280-jasny",
+   "y": 575,
+   "cls": 0.0051,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 31,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "logowanie-licznik-faq-1280-ciemny",
+   "y": 575,
+   "cls": 0.0051,
+   "poziomo": false,
+   "ih": 900,
+   "widoczne": {},
+   "undef": false,
+   "axe": [],
+   "tekstow": 31,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "koniec-proby-360-360-jasny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "„Wybierz 199 zł”": {
+     "top": 518,
+     "bottom": 570,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 13,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  },
+  {
+   "n": "koniec-proby-360-360-ciemny",
+   "y": 0,
+   "cls": 0.0103,
+   "poziomo": false,
+   "ih": 640,
+   "widoczne": {
+    "„Wybierz 199 zł”": {
+     "top": 518,
+     "bottom": 570,
+     "h": 52,
+     "w_pierwszym_ekranie": true
+    }
+   },
+   "undef": false,
+   "axe": [],
+   "tekstow": 13,
+   "kontrast_ponizej": [],
+   "cele44": [],
+   "bledy": []
+  }
+ ],
+ "przejscia": [
+  {
+   "nazwa": "paywall-kup",
+   "opis": "po próbie: lekcja z kłódką → „199 zł do lipca” → okno zgód → klik bez zgód → komunikat i fokus",
+   "kroki": [
+    {
+     "krok": "paywall lekcji",
+     "zrzut": "przejscie-paywall-kup-1.png",
+     "stan": [
+      "199 zł do lipca · ok. 25 zł / mies.",
+      "35 zł / mies."
+     ]
+    },
+    {
+     "krok": "klik „199 zł do lipca…” → „Zanim zapłacisz”",
+     "zrzut": "przejscie-paywall-kup-2.png",
+     "stan": "Zanim zapłacisz"
+    },
+    {
+     "krok": "klik „Przejdź do płatności” bez zgód → komunikat, fokus na 1. zgodzie",
+     "zrzut": "przejscie-paywall-kup-3.png",
+     "stan": {
+      "msg": "Zaznacz obie zgody powyżej, żeby przejść do płatności.",
+      "fokus": "checkbox"
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [],
+   "bledy": []
+  },
+  {
+   "nazwa": "plus-2-dni",
+   "opis": "po próbie, kolokwium za 5 dni: karta „+2 dni” → „Włącz 2 dni za darmo” → próba znów trwa",
+   "kroki": [
+    {
+     "krok": "Dziś z kartą",
+     "zrzut": "przejscie-plus-2-dni-1.png",
+     "stan": "Kolokwium · Prawo · za 5 dni\n\nMasz jeszcze jedne 2 dni pełnego dostępu, żeby się przygotować.\n\nWłącz 2 dni za darmo"
+    },
+    {
+     "krok": "klik → przeładowanie, powitanie próby",
+     "zrzut": "przejscie-plus-2-dni-2.png",
+     "stan": {
+      "konto": "proba",
+      "h2": "Masz 3 dni pełnego dostępu"
+     }
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "bledy": []
+  },
+  {
+   "nazwa": "anulowanie-miesiecznego",
+   "opis": "plan miesięczny: Zarządzaj → arkusz porównania → „Przejdź na 199 zł” → zgody 199 zł",
+   "kroki": [
+    {
+     "krok": "arkusz przed portalem",
+     "zrzut": "przejscie-anulowanie-miesiecznego-1.png",
+     "stan": "PLAN MIESIĘCZNY Zanim anulujesz Zostało ok. 8 mies. do lipca. Co miesiąc to ok. 280 zł, a plan do końca 2. semestru kosztuje 199 zł. Po zakupie 199 zł anuluj subskrypcję w portalu, żeby nie płacić co miesiąc. Opłacony miesiąc i tak działa do końca. Przejdź na 199 zł Anuluj subskrypcję Zamknij"
+    },
+    {
+     "krok": "klik „Przejdź na 199 zł”",
+     "zrzut": "przejscie-anulowanie-miesiecznego-2.png",
+     "stan": "Przejdź do płatności (199 zł)"
+    }
+   ],
+   "kontrast_ponizej_na_koncu": [
+    {
+     "tekst": "poz. 1",
+     "cel": "SPAN",
+     "maly_tekst": 11.84
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "maly_tekst": 9.92
+    }
+   ],
+   "bledy": []
+  }
+ ],
+ "ruch": [
+  {
+   "ekran": "dzis-plus-2-dni",
+   "tryb": "zwykle",
+   ".uxw-bonus": {
+    "animacja": "none",
+    "przejscie": "0s",
+    "after": "none"
+   },
+   ".uxw-bonus .btn": {
+    "animacja": "none",
+    "przejscie": "0.08s, 0.08s, 0.15s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "dzis-plus-2-dni",
+   "tryb": "reduced-motion",
+   ".uxw-bonus": {
+    "animacja": "none",
+    "przejscie": "0.001s",
+    "after": "none"
+   },
+   ".uxw-bonus .btn": {
+    "animacja": "none",
+    "przejscie": "0.001s",
+    "after": "none"
+   }
+  },
+  {
+   "ekran": "dzis-plus-2-dni",
+   "tryb": "Mniej animacji (html.calm)",
+   ".uxw-bonus": {
+    "animacja": "none",
+    "przejscie": "0.001s",
+    "after": "none"
+   },
+   ".uxw-bonus .btn": {
+    "animacja": "none",
+    "przejscie": "0.001s",
+    "after": "none"
+   }
+  }
+ ],
+ "przewijanie": [
+  {
+   "ekran": "paywall-lekcji",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-plus-2-dni",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie",
+   "w": 360,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "paywall-lekcji",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-plus-2-dni",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie",
+   "w": 360,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "paywall-lekcji",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-plus-2-dni",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie",
+   "w": 375,
+   "dark": false,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "paywall-lekcji",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "dzis-plus-2-dni",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "ekran": "logowanie",
+   "w": 375,
+   "dark": true,
+   "poziomo": false,
+   "bledy": []
+  }
+ ]
+}

@@ -1,0 +1,72 @@
+✓ K1 pl: w powitaniu próby przełącznik „Przypomnij mi mailem dzień przed końcem próby”, domyślnie odznaczony
+✓ K1 pl: cel dotyku przełącznika ≥ 44 px
+✓ K1 pl: notka „Jeden mail. Nic nie pobieramy samo.”
+✓ K1: włączenie → RPC nauka_proba_przypomnij(true, jezyk) i potwierdzenie
+✓ K1 pl: konsola bez błędów
+✓ K1 pl ciemny: w powitaniu próby przełącznik „Przypomnij mi mailem dzień przed końcem próby”, domyślnie odznaczony
+✓ K1 pl ciemny: cel dotyku przełącznika ≥ 44 px
+✓ K1 pl ciemny: notka „Jeden mail. Nic nie pobieramy samo.”
+✓ K1 pl ciemny: konsola bez błędów
+✓ K1 en: w powitaniu próby przełącznik „Email me a day before my trial ends”, domyślnie odznaczony
+✓ K1 en: cel dotyku przełącznika ≥ 44 px
+✓ K1 en: notka „One email. Nothing is charged automatically.”
+✓ K1 en: konsola bez błędów
+✓ K2 SQL: kolumny przypomnij i przypomniano_at, RPC nauka_proba_przypomnij i nauka_proba_kandydaci (tylko service_role)
+✓ K2 PGlite: Z1–Z8 (kandydat przy 24 h i zgodzie, nie po wysłaniu, nie po zakupie, nigdy bez zgody, limit dnia)
+✓ K3: funkcja przypomnienia: rodzaj „proba” przed innymi i w limit_dzien (tests/ux1-proba-mail.test.js + stare testy)
+✓ K4: zalogowany + ?plan=1 → okno „Wybierz plan”, parametr usunięty z adresu
+✓ K4: gość + ?plan=1 → po zalogowaniu wybór planu (skrot-buy), parametr usunięty
+✓ K5 390: jednorazowy ekran „Twoje 3 dni minęły” (nadtytuł „Okres próbny minął”)
+✓ K5 390: postęp z 3 dni (2 lekcje, 3 fiszki, 85 XP)
+✓ K5 390: najbliższe kolokwium „za n dni”
+✓ K5 390: dwa plany, 199 zł na górze i zaznaczony
+✓ K5 390: „Twoje postępy zostały na koncie” i link „Zostaję przy darmowych próbkach”
+✓ K5 390: bez poziomego przewijania, konsola bez błędów
+✓ K5 360: jednorazowy ekran „Twoje 3 dni minęły” (nadtytuł „Okres próbny minął”)
+✓ K5 360: postęp z 3 dni (2 lekcje, 3 fiszki, 85 XP)
+✓ K5 360: najbliższe kolokwium „za n dni”
+✓ K5 360: dwa plany, 199 zł na górze i zaznaczony
+✓ K5 360: „Twoje postępy zostały na koncie” i link „Zostaję przy darmowych próbkach”
+✓ K5 360: bez poziomego przewijania, konsola bez błędów
+✓ K5 390 ciemny: jednorazowy ekran „Twoje 3 dni minęły” (nadtytuł „Okres próbny minął”)
+✓ K5 390 ciemny: postęp z 3 dni (2 lekcje, 3 fiszki, 85 XP)
+✓ K5 390 ciemny: najbliższe kolokwium „za n dni”
+✓ K5 390 ciemny: dwa plany, 199 zł na górze i zaznaczony
+✓ K5 390 ciemny: „Twoje postępy zostały na koncie” i link „Zostaję przy darmowych próbkach”
+✓ K5 390 ciemny: bez poziomego przewijania, konsola bez błędów
+✓ K5 1280: jednorazowy ekran „Twoje 3 dni minęły” (nadtytuł „Okres próbny minął”)
+✓ K5 1280: postęp z 3 dni (2 lekcje, 3 fiszki, 85 XP)
+✓ K5 1280: najbliższe kolokwium „za n dni”
+✓ K5 1280: dwa plany, 199 zł na górze i zaznaczony
+✓ K5 1280: „Twoje postępy zostały na koncie” i link „Zostaję przy darmowych próbkach”
+✓ K5 1280: bez poziomego przewijania, konsola bez błędów
+✓ K5 EN: ekran po angielsku
+✓ K5 390 EN: bez poziomego przewijania, konsola bez błędów
+✓ K5: zero postępu → „Nie zdążyłeś? Zostało N dni do: …”
+✓ K5: „Zostaję przy darmowych próbkach” zamyka ekran
+✓ K5: drugie wejście: bez ekranu końca próby
+✓ K5: drugie wejście: pasek „Próba minęła · 199 zł do 11 lipca 2027 albo 35 zł / mies.” + „Kup dostęp”, ≤ 56 px, nad panelem, w 1. ekranie
+✓ K5: na Dziś dalej dokładnie jeden „Kup dostęp” (na pasku, akcent)
+✓ K5 po próbie bez zapisanego końca (inne urządzenie): bez ekranu końca próby i bez paska „Próba minęła”
+✓ K5 darmowe z możliwą próbą: bez ekranu końca próby i bez paska „Próba minęła”
+✓ K5 płatne: bez ekranu końca próby i bez paska „Próba minęła”
+✓ K5: w trakcie próby koniec zapisany w skrot-proba-do
+53/53
+
+## PGlite
+✗ skrot-v12-zabezpieczenia.sql → function public.limit_wpisow() does not exist
+✓ test/v52.sql
+✓ test/v53.sql
+
+## Istniejące testy
+- ux1-etap1: 89/89
+- ux1-etap2: 83/83
+- h2-etap1: 25/25
+- h2-etap2: 33/33
+- h2-etap9: 92/92
+- scalanie: 52/56
+- wyglad-logowanie: wszystko OK
+- lekcja-dnia-4: 103/103 (ponownie, pojedynczo; w trakcie pomiarów przekroczył czas)
+- node --test: 372/372 (ponownie 2×; w trakcie pomiarów 1 test przekroczył czas)
+- scalanie: 4 ✗ jak na czystym main (ranga/monety, Zadania dnia) – uwagi-dla-innych.md
+- PGlite ✗ skrot-v12 (limit_wpisow) – tak samo na main (pierwsze uruchomienie v12)

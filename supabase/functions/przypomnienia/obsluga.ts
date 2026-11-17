@@ -13,12 +13,14 @@ export interface Logika {
   kontekst(row: unknown, today: string): unknown;
   wybierz(ctx: unknown): { kind: string; wariant?: string; title: string; body: string; cta: string; path: string } | null;
   mail(o: { lang: string; pick: unknown; site: string; id: string; unsubscribeUrl: string }): { subject: string; text: string; html: string };
+  mailProba?(o: { lang: string; doKiedy: string; teraz?: Date; site: string; id: string }): { subject: string; text: string; html: string };
 }
 export interface Zaleznosci {
   rpc(fn: string, args?: Record<string, unknown>): Promise<{ data: any; error: unknown }>;
   fetch: typeof fetch;
   env: (k: string) => string | undefined;
   P: Logika;
+  teraz?: () => Date; // testy: stały zegar
 }
 
 const SITE = "https://zdawalni.pl";
@@ -56,10 +58,14 @@ async function wypisz(d: Zaleznosci, token: string) {
 export async function wyslij(d: Zaleznosci, fnUrl: string) {
   const key = d.env("RESEND_API_KEY"), from = d.env("RESEND_FROM");
   if (!key || !from) return { ok: false, code: "no_mail", sent: 0, skipped: 0 };
-  const { data, error } = await d.rpc("nauka_przypomnienia_kandydaci", {});
-  if (error || !data?.ok) return { ok: false, code: "not_enabled", sent: 0, skipped: 0 };
   const site = d.env("SITE_URL") || SITE;
   let sent = 0, skipped = 0, failed = 0;
+  // === ux-1: rodzaj „proba” przed innymi (SQL v53): zgoda z powitania próby, koniec za 18–30 h, w limicie dnia (ten sam log) ===
+  const proba = await wyslijProby(d, key, from, site);
+  sent += proba.sent; failed += proba.failed;
+  // === koniec ux-1 ===
+  const { data, error } = await d.rpc("nauka_przypomnienia_kandydaci", {});
+  if (error || !data?.ok) return proba.sent ? { ok: true, sent, skipped, failed, proba: proba.sent } : { ok: false, code: "not_enabled", sent: 0, skipped: 0 };
   for (const row of data.osoby || []) {
     const pick = d.P.wybierz(d.P.kontekst(row, data.dzien));
     if (!pick) { skipped++; continue; }
@@ -80,7 +86,33 @@ export async function wyslij(d: Zaleznosci, fnUrl: string) {
     if (r && r.ok) sent++;
     else { failed++; await d.rpc("nauka_przypomnienia_log_usun", { p_id: id }); }
   }
-  return { ok: true, dzien: data.dzien, sent, skipped, failed };
+  return { ok: true, dzien: data.dzien, sent, skipped, failed, proba: proba.sent };
+}
+
+// ux-1: maile „jutro kończy się próba”. Bez v53 w bazie (brak funkcji) nic nie robi. Wpis w nauka_przypomnienia_log (rodzaj „proba”)
+// liczy się do limit_dzien i blokuje drugi mail tej osobie tego dnia; nauka_proba_przypomniano – drugi raz nigdy.
+async function wyslijProby(d: Zaleznosci, key: string, from: string, site: string) {
+  let sent = 0, failed = 0;
+  if (!d.P.mailProba) return { sent, failed };
+  // Tylko w dzień (9:00–20:59 w Warszawie): okno kandydatów 18–30 h przed końcem zawsze obejmuje taką porę.
+  const h = +new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Warsaw", hour: "2-digit", hourCycle: "h23" }).format(d.teraz ? d.teraz() : new Date());
+  if (h < 9 || h > 20) return { sent, failed };
+  const { data, error } = await d.rpc("nauka_proba_kandydaci", {});
+  if (error || !data?.ok) return { sent, failed };
+  for (const row of data.osoby || []) {
+    const log = await d.rpc("nauka_przypomnienia_log_dodaj", { p_user: row.user_id, p_dzien: data.dzien, p_rodzaj: "proba" });
+    const id = log.data as string | null;
+    if (log.error || !id) continue;
+    const m = d.P.mailProba({ lang: row.jezyk, doKiedy: row.do_kiedy, teraz: d.teraz ? d.teraz() : new Date(), site, id });
+    const r = await d.fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + key, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to: [row.email], subject: m.subject, text: m.text, html: m.html }),
+    }).catch(() => null);
+    if (r && r.ok) { sent++; await d.rpc("nauka_proba_przypomniano", { p_user: row.user_id }); }
+    else { failed++; await d.rpc("nauka_przypomnienia_log_usun", { p_id: id }); }
+  }
+  return { sent, failed };
 }
 
 export async function obsluz(req: Request, d: Zaleznosci): Promise<Response> {

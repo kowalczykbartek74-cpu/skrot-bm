@@ -555,7 +555,20 @@
     // etap 4: link do kalendarza w telefonie (okno z przełącznikiem „5 min po zajęciach”)
     nauka_kalendarz_token: () => "a".repeat(48),
     // === koniec ux-2 ===
+    // === ux-1 ===
+    // v53: zgoda na mail przed końcem próby (stan w localStorage mock-proba-przypomnij)
+    nauka_lekcja_spis: (a) => (DOCS.materialContent[a.p_id]?.lesson?.sections || []).map((x) => x.h).filter(Boolean).slice(0, 6),
+    nauka_rocznik_licznik: () => { const n = +ls("mock-licznik", "0"); return n >= 15 ? n : null; },
+    nauka_proba_bonus_stan: () => (KONTO === "proba-koniec" && ls("mock-bonus", "") ? { mozna: true, termin: { title: "Kolokwium: Prawo", subjectId: "prawo", type: "kolokwium", date: "2026-11-22", n: 5 } } : { mozna: false }),
+    nauka_proba_bonus: () => { try { localStorage.setItem("mock-konto", "proba"); localStorage.setItem("mock-proba-do", new Date(Date.now() + 2 * 864e5).toISOString()); localStorage.removeItem("mock-bonus"); } catch {} return { ok: true, do_kiedy: new Date(Date.now() + 2 * 864e5).toISOString() }; },
+    nauka_proba_stan: () => (KONTO === "proba-koniec" ? { minela: true, do_kiedy: ls("mock-proba-koniec-do", "2026-11-14T17:00:00+01:00") } : { minela: false }),
+    nauka_proba_przypomnij: (a) => { if (!PROBA) return { ok: false, code: "brak_proby" }; try { localStorage.setItem("mock-proba-przypomnij", String(!!a.p)); } catch {} return { ok: true, przypomnij: !!a.p, do_kiedy: probaDo }; },
+    // === koniec ux-1 ===
   };
+  // === ux-1 === logowanie: mock-otp-blad = "rate" (limit maili/IP) | "sekundy" (kod przed chwilą) | inny tekst → błąd signInWithOtp
+  const UX1_OTP = async () => { const e = ls("mock-otp-blad", ""); window.__otp = (window.__otp || 0) + 1;
+    return e ? { error: { message: e === "rate" ? "email rate limit exceeded" : e === "sekundy" ? "For security purposes, you can only request this after 58 seconds." : e } } : {}; };
+  // === koniec ux-1 ===
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
     await new Promise((r) => setTimeout(r, 30));
@@ -632,7 +645,7 @@
   const session = KONTO === "brak" ? null : { access_token: "t", user: { id: UID, email: EMAIL, user_metadata: {} } };
   window.supabase = { createClient: () => ({
     auth: { getSession: async () => ({ data: { session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}),
-      signInWithOtp: async () => ({}), signInWithPassword: async () => ({}), verifyOtp: async () => ({}), updateUser: async () => ({}), reauthenticate: async () => ({}) },
+      signInWithOtp: UX1_OTP, signInWithPassword: async () => ({}), verifyOtp: async () => ({}), updateUser: async () => ({}), reauthenticate: async () => ({}) },
     rpc, from: () => table(),
     functions: { invoke: async () => ({ data: null, error: { message: "atrapa" } }) },
   }) };

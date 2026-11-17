@@ -57,7 +57,8 @@ for (const dark of [false, true]) for (const w of [360, 1280]) {
   ok(`${n}: obie zakładki logowania równej szerokości`, tw.length === 2 && Math.abs(tw[0] - tw[1]) <= 2, tw);
   const th1 = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().height)));
   ok(`${n}: zakładki logowania w jednej linii`, th1.every((x) => x <= 50), th1);
-  ok(`${n}: logowanie zawsze jasne`, lg.bg === "rgb(244, 245, 240)", lg.bg);
+  // Pętla UX-1 etap 1 (K4): logowanie ma ciemny wariant przy ciemnym motywie systemu (data-green="dark"), jasne w jasnym.
+  ok(`${n}: logowanie jasne w jasnym, ciemne (#0F1A14) w ciemnym`, lg.bg === (/ciemny/.test(n) ? "rgb(15, 26, 20)" : "rgb(244, 245, 240)"), lg.bg);
   ok(`${n}: logowanie bez poziomego przewijania i błędów`, (await noH(p)) && p.errors.length === 0, p.errors);
   await p.close();
 }
