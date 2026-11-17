@@ -98,8 +98,8 @@ await p.close();
 for (const w of [375, 1280]) {
   const q = await open({ w, h: w > 600 ? 900 : 812 });
   const bx = await q.locator(".ld-tile").evaluateAll((ts) => ts.map((t) => { const r = t.getBoundingClientRect(); return [Math.round(r.x), Math.round(r.y)]; }));
-  // Wygląd H: na telefonie lekcje w poziomej karuzeli (mniej przewijania strony), na komputerze obok siebie.
-  ok(`${w} px: ${w < 600 ? "lekcje w karuzeli obok siebie" : "lekcje obok siebie"}`, Math.abs(bx[0][1] - bx[1][1]) <= 2 && bx[1][0] > bx[0][0] && (w > 600 || await q.locator(".ld-lessons").evaluate((e) => getComputedStyle(e).overflowX === "auto" && e.scrollWidth > e.clientWidth)), bx);
+  // UX-2 etap 5 (K2): na telefonie lekcje jedna pod drugą (zwarte wiersze), na komputerze obok siebie.
+  ok(`${w} px: ${w < 600 ? "lekcje jedna pod drugą" : "lekcje obok siebie"}`, w < 600 ? bx[0][0] === bx[1][0] && bx[1][1] > bx[0][1] : Math.abs(bx[0][1] - bx[1][1]) <= 2 && bx[1][0] > bx[0][0], bx);
   ok(`${w} px: bez przewijania w bok`, await q.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "");
   const small = await q.locator(".ld-block button, .ld-block .ld-road").evaluateAll((els) => els.filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44).map((e) => e.textContent.trim().slice(0, 30)));
   ok(`${w} px: przyciski bloku ≥ 44 px`, small.length === 0, small);
