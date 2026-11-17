@@ -16,7 +16,9 @@ if (untracked) { P("Nowe pliki (jeszcze nie w git):"); P("```"); P(untracked); P
 // 2. zmienione funkcje w index.html i skrot-supabase.js vs lista z B3
 const MINE = ["playerOpen", "lpOpen", "lpBuild", "lpBuildDeck", "lpCards", "lpSectionCards", "LPR", "lpAward", "lpBuzz", "lpFloat", "lpTop", "lpKeys", "kick", "lpConfChips", "lpBiteDone", "lpSrcDone", "lpFinishLesson", "ldSource", "kSound", "kSoundOn", "xpFlush", "rv-hero", "lp-css", "lpLoad", "lpBonus",
   // nowe funkcje odtwarzacza tej pętli (dopisane obok LPR, bez zmian w cudzym kodzie)
-  "lpSel", "lpRetryAdd", "lpGapFor", "lpBank", "lpRetryLater", "lpBanner", "lpStep", "lpNextLesson", "lpDoneUx", "lpNo"];
+  "lpSel", "lpRetryAdd", "lpGapFor", "lpBank", "lpRetryLater", "lpBanner", "lpStep", "lpNextLesson", "lpDoneUx", "lpNo",
+  // C5 P2-2: awans odłożony do finału albo lpClose; lpBeforeAfter = część ekranu końca lekcji (szuka haczyka po scaleniu rozgrzewki)
+  "lpClose", "lpBeforeAfter"];
 const ALLOWED_EXTRA = ["most ux-3", "skrypt lekcja-ux.js", "?v= w linii skryptów", "?v= w linii 1 (tylko i18n.js)", "Ustawienia: jeden wiersz (D3)"];
 function changedFns(file) {
   let diff = ""; try { diff = sh(`git diff -U0 ${BASE} -- ${file}`); } catch { return []; }

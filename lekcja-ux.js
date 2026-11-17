@@ -67,7 +67,7 @@
     return KICK[k] ? ico(KICK[k], "lp-kick-i") : null;
   }
   const EMO = /[\p{Extended_Pictographic}\uFE0F\u200D\u20E3]/gu;
-  const CONTENT = ".lp-text, .lp-big, .lp-quote, .q, [translate=no], .lp-sw .face, .lp-formula, textarea, input, .lp-gap, .lp-flow, .lp-steps, .lp-marks, .lp-layers, .lv-table, .lv-chart, .lp-tip, .lp-fb-why, .lp-ans";
+  const CONTENT = ".rk-badge, .lv-badge, .rk, .lp-text, .lp-big, .lp-quote, .q, [translate=no], .lp-sw .face, .lp-formula, textarea, input, .lp-gap, .lp-flow, .lp-steps, .lp-marks, .lp-layers, .lv-table, .lv-chart, .lp-tip, .lp-fb-why, .lp-ans";
   const STAR = '<svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.5 1.1 6.3L12 17.3l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg>';
   function scrub(root) {
     if (!green() || !root) return;
@@ -99,8 +99,35 @@
     try { const f = LP.el.root.querySelector(".lp-bottom").getBoundingClientRect(); box.style.bottom = Math.round(innerHeight - f.top + 12) + "px"; } catch {}
   }
   function readStas() {
-    const { stasFace } = A(); if (!green() || !stasFace) return null;
+    const { stasFace } = A(); if (!stasFace) return null;
     const f = stasFace("hi"); f.classList.add("lp-read-stas"); return f;
+  }
+
+  // ---------- etap 5: cel dnia i ekran domykający dzień ----------
+  // Pasek celu dnia; o.sesja = XP z tej sesji (pasek rośnie od wartości sprzed sesji, bez ruchu przy calm / reduced-motion), o.premia = premia karty dnia.
+  function celDniaPasek(xp, cel, o = {}) {
+    const { h, LP_DAILY_GOAL, lpReduced } = A(); if (!h) return null;
+    const goal = cel || LP_DAILY_GOAL || 30, x = Math.max(0, xp || 0), done = x >= goal, w0 = Math.max(0, x - (o.sesja || 0));
+    const pct = (v) => Math.round(Math.min(1, v / goal) * 100) + "%";
+    const fill = h("i", { style: `--w:${o.sesja && !lpReduced?.() ? pct(w0) : pct(x)}` });
+    if (o.sesja && !lpReduced?.()) setTimeout(() => fill.style.setProperty("--w", pct(x)), 250);
+    return h("div", { class: "lp-goalbar" + (done ? " done" : ""), role: "group", "aria-label": "Cel dnia" },
+      h("p", { class: "num" }, ico(done ? "check" : "ux3-target") || null, h("span", { text: done ? "Cel dnia ✓" : `Cel dnia: ${Math.min(x, goal)}/${goal} XP` }), o.sesja ? h("b", { class: "lp-goal-gain", text: `+${o.sesja} XP` }) : null),
+      h("span", { class: "lp-goal-track", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(goal), "aria-valuenow": String(Math.min(x, goal)) }, fill),
+      o.premia ? h("p", { class: "lp-goal-bonus", text: `Karta dnia: +${o.premia} XP` }) : null);
+  }
+  // Wynik z pierwszej próby i poprawki z drugiej szansy (ekrany końca talii innych niż lekcja, np. Powtórki).
+  function pierwszaProba(bs) {
+    const { h } = A(); if (!h || !bs || !(bs.tot || bs.rTot)) return null;
+    return h("p", { class: "lp-first num" }, h("b", { text: `${bs.ok}/${bs.tot} z pierwszej próby` }), bs.rTot ? h("span", { text: bs.rOk ? ` · +${bs.rOk} poprawione w drugiej szansie` : ` · ${bs.rTot} do powtórki jutro` }) : null);
+  }
+  // Stała kolejność (K5): seria → zamrożenie → cel dnia → jutro → przypomnienie → zadania. Każda część z ZD_NAWYK albo pominięta.
+  function dzienKoniec(cel, o = {}) {
+    const N = window.ZD_NAWYK || {}, call = (f) => { try { return typeof N[f] === "function" ? N[f]() : null; } catch { return null; } };
+    const box = document.createElement("div"); box.className = "lp-dzien-lista";
+    const bar = celDniaPasek(cel?.xp, cel?.cel, o);
+    [call("ekranSerii"), call("ofertaZamrozenia"), bar, call("jutro"), call("ofertaPrzypomnienia"), call("zadaniaLinia")].forEach((x) => { if (x instanceof Node) box.append(x); });
+    return box;
   }
 
   // ---------- etap 1–2: werdykt w dolnym pasku, Staś, combo ----------
@@ -117,7 +144,7 @@
     const t = h("span", { class: "lp-fb-t", text: fb.title });
     const v = h("p", { class: "v" }, ico(fb.ok ? "check" : "cross", "lp-fb-ico") || h("span", { class: "lp-fb-ico", "aria-hidden": "true", text: fb.ok ? "✓" : "✗" }), t,
       cm ? h("span", { class: "lp-fb-combo" }, ico("bolt"), h("span", { text: cm.bonus ? `${cm.n} z rzędu! +${cm.bonus} XP` : `${cm.n} z rzędu!` })) : null,
-      gain > 0 && lpReduced() ? h("span", { class: "lp-fb-xp", text: `+${gain} XP` }) : null);
+      gain > 0 ? h("span", { class: "lp-fb-xp", text: `+${gain} XP` }) : null);
     // Kolejność: werdykt, „Czemu nie X?” i informacja o drugiej szansie, na końcu pełne „Dlaczego”.
     const body = (fb.body || []).filter(Boolean), why = body.filter((x) => x.classList?.contains("lp-fb-why")), rest = body.filter((x) => !why.includes(x));
     // Po dobrej odpowiedzi „Dlaczego” zwinięte do 2 linii z „Więcej”; po złej całe.
@@ -287,6 +314,47 @@ html[data-theme] .lp:not([data-fb]) .lp-bottom { background: var(--surface, var(
 .lp-confetti.lpux-fade { opacity: 0; transition: opacity .3s; }
 .lp-fresh .lp-stag > * { animation-delay: calc(var(--i, 0) * 40ms) !important; }
 @media (max-width: 380px) { .lp-barx .sk-grade4 .opt { font-size: .82rem; padding: 6px 2px; } }
+/* Etap 5: karta przejścia, cel dnia, szczegóły, 3. gwiazdka. */
+.lp-step { display: grid; justify-items: center; align-content: center; text-align: center; gap: 8px; min-height: 52dvh; padding: 16px; }
+.lp-step .lp-bigcheck { width: 56px; height: 56px; }
+.lp-step-ico { width: 64px; height: 64px; border-radius: 50%; background: var(--h-acc-soft, var(--accent-soft)); color: var(--accent-text, var(--accent)); }
+.lp-step-ico svg { width: 40px; height: 40px; }
+.lp-step h2 { margin: 0; font-size: 1.4rem; }
+.lp-step-line { font-weight: 800; color: var(--accent-text, var(--ink)); }
+.lp-step .lp-snd-ask { margin-top: 8px; max-width: 420px; }
+.lp-goalbar { display: grid; gap: 6px; padding: 12px 14px; border-radius: 18px; background: var(--surface); border: 2px solid var(--line); text-align: left; }
+.lp-goalbar p { margin: 0; display: flex; align-items: center; gap: 8px; font-weight: 800; }
+.lp-goal-track { display: block; height: 12px; border-radius: 99px; background: color-mix(in srgb, var(--line) 60%, var(--surface)); overflow: hidden; }
+.lp-goal-track i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: var(--accent); }
+html:not([data-theme]) .lp-goalbar.done { background: var(--h-acc-soft); }
+.lp-dzien-lista { display: grid; gap: 10px; width: 100%; }
+.lp-det { width: 100%; text-align: left; }
+.lp-det > summary { cursor: pointer; font-weight: 800; min-height: 44px; display: flex; align-items: center; color: var(--muted); }
+.lp-star3 { font-weight: 700; color: var(--ink); background: color-mix(in srgb, var(--h-lime, var(--lime-100)) 35%, var(--surface)); border-radius: 14px; padding: 8px 12px; }
+.lp-fixed { font-weight: 700; }
+.lp-done-screen .rk-chips > .xp-chip:first-child:not(.hud-coin) { display: none; }
+.lp-fb-xp { font-weight: 800; }
+.lp-done-screen .rk-chips .xp-chip { min-height: 44px; }
+html:not([data-theme]) .lp-done-screen .rk-new { color: var(--h-lime-ink); }
+/* Poprawki po etapie 4: karta czytania dopasowana do treści, „Część N” bez łamania, „Pomiń krok” w rzędzie z podpowiedzią. */
+.lp-card[data-type="read"] { min-height: min(34dvh, 300px) !important; }
+.lp-kick .sec { white-space: nowrap; }
+.lp-bottom:has(.lp-conf-ask) .ld-skip { order: -1; min-height: 44px; padding: 4px 10px; }
+.lp-bottom:has(.lp-conf-ask) .lp-barx { flex: 1 1 0; }
+.lp-bottom:has(.lp-conf-ask):has(.ld-skip:not([hidden])) .lp-conf-ask { flex: 1 1 auto; text-align: right; }
+/* Etap 5 runda 2: szczegóły z chevronem, fokus nagłówka tylko z klawiatury, główny przycisk zawsze zielony na karcie dnia. */
+.lp-det > summary { list-style: none; gap: 6px; }
+.lp-det > summary::-webkit-details-marker { display: none; }
+.lp-det > summary::before { content: ""; width: 8px; height: 8px; border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor; transform: rotate(-45deg); margin-right: 4px; }
+.lp-det[open] > summary::before { transform: rotate(45deg); }
+@media (prefers-reduced-motion: no-preference) { html:not(.calm) .lp-det > summary::before { transition: transform .15s; } }
+.lp-det .lp-stats { margin-top: 6px; }
+.lp-done-screen h2:focus:not(:focus-visible), .lp-step h2:focus:not(:focus-visible) { outline: none; }
+html:not([data-theme]) .lp:has(.lp-dzien):not(:has(.lp-dzien .lp-actions .btn.primary)) .lp-bottom .lp-cta { background: var(--accent); color: var(--accent-ink, #fff); border-color: var(--accent); box-shadow: 0 4px 0 var(--h-acc-edge); }
+.lp-goalbar p .lp-goal-gain { margin-left: auto; color: var(--accent-text, var(--ink)); }
+.lp-goal-bonus { margin: 0; font-size: .86rem; font-weight: 700; color: var(--muted); }
+.lp-goal-track i { transition: width .7s cubic-bezier(.2,.8,.2,1); }
+.lp-first { margin: 0; font-weight: 700; }
 /* Karta „Dziś do powtórki” w limonce H2 (zamiast pomarańczu), w ciemnym bez brązu. */
 html:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100); --h-rv-line: color-mix(in srgb, var(--h-lime) 70%, var(--h-line)); --h-rv-edge: var(--lime-400); --h-rv-num: var(--ink); --h-rv-ink: var(--h-muted); }
 html[data-green="dark"]:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100); --h-rv-line: color-mix(in srgb, var(--lime-400) 30%, var(--h-line)); --h-rv-edge: color-mix(in srgb, var(--lime-400) 45%, var(--h-paper)); --h-rv-num: var(--ink); --h-rv-ink: var(--h-muted); }
@@ -297,6 +365,6 @@ html[data-green="dark"]:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100);
     document.head.append(s);
   }
   css();
-  window.ZD_LEKCJA = { fbar, ico, icons, pytanieDzwieki, ustawienia, kickIco, undo, readStas, scrub, IKONY: RYS };
+  window.ZD_LEKCJA = { fbar, ico, icons, pytanieDzwieki, ustawienia, kickIco, undo, readStas, scrub, celDniaPasek, dzienKoniec, pierwszaProba, IKONY: RYS };
   if (document.body) watch(); else document.addEventListener("DOMContentLoaded", watch);
 })();

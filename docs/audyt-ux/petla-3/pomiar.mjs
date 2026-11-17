@@ -28,10 +28,32 @@ import { open as openDzis } from "../../gry/test/h2-lib.mjs";
 const toRead = async (p) => { await startLesson(p); await goToCard(p, (c) => c.type === "read"); await p.waitForTimeout(400); };
 const toDzis = async (p) => { await p.locator(".zh-hero .zh-go").click(); await p.locator(".lp").waitFor({ timeout: 15000 }); await p.waitForTimeout(800); };
 const toSkip = async (p) => { await toDzis(p); await p.locator(".lp-bottom .ld-skip").click(); await p.waitForTimeout(400); };
+const bezOk = async (p) => { for (let i = 0; i < 3 && await p.locator("#layer .scrim").count(); i++) { await p.keyboard.press("Escape"); await p.waitForTimeout(300); } };
+const toEnd = (bad) => async (p) => { await startLesson(p); for (let i = 0; i < 120 && !(await p.locator(".lp-done-screen").count()); i++) { await bezOk(p); if (await p.locator(".lp-step").count()) { await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400); continue; } const c = await p.evaluate(() => { const A = window.ZD_APP, c = A.LP.open ? A.lpCur() : null; return c ? { type: c.type, exit: !!c.exit, done: A.LP.st.ans[c.id] != null } : null; }); if (c && c.type === "hook" && !c.done) { await p.locator(".lp-opts .opt").first().click(); await p.waitForTimeout(200); } else if (c && c.type === "mc" && !c.done) await answer(p, !(bad && c.exit), 1); const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])"); if (await cta.count()) { await cta.click(); await p.waitForTimeout(400); } } await p.waitForTimeout(1900); await bezOk(p); };
+const toStep = async (p) => { await startLesson(p); for (let i = 0; i < 30 && !(await p.locator(".lp-step").count()); i++) await goToCard(p, () => false, 1); await p.waitForTimeout(300); };
+const toDzisEnd = (bad) => async (p) => { await toDzis(p); for (let i = 0; i < 40 && !(await p.locator(".lp-done-screen").count()); i++) { const o = p.locator(".lp-opts .opt:not([disabled]):not(.sel)").filter({ hasText: bad ? /Zła/ : /Dobra|Dobrze/ }).first(); const any = p.locator(".lp-opts .opt:not([disabled]):not(.sel)").first(); const t = (await o.count()) ? o : any; if ((await t.count()) && !(await p.locator(".lp[data-fb]").count())) { await t.click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(100); const ck = p.locator('.lp-bottom [data-conf="1"]:not([disabled]), .lp-bottom .lp-cta:not([disabled]):not([hidden])').filter({ hasText: /^(Sprawdź|Pewny)/ }).first(); if (await ck.count()) await ck.click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(300); } const w = p.locator(".lp-bottom .lp-barx .btn.primary"); if (await w.count()) { await w.click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(400); continue; } const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])"); if (await cta.count()) { await cta.click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(400); } else { const sk = p.locator(".lp-bottom .ld-skip:not([hidden])"); if (await sk.count()) { await sk.click(); await p.waitForTimeout(400); } } } await p.waitForTimeout(1500); };
 const isQ = (c) => c.type === "mc" && (c.check || c.exit || c.again) && !c.done;
 const toCombo = (n) => async (p) => { await startLesson(p); for (let k = 0; k < n; k++) { await goToCard(p, isQ); await answer(p, true); if (k < n - 1) { await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400); } } await p.waitForTimeout(300); };
 const toAsk = async (p) => { await startLesson(p); for (let i = 0; i < 30 && !(await p.locator(".lp-snd-ask").count()); i++) await goToCard(p, () => false, 1); };
 const SC = {
+  5: [
+    { n: "390-jasny-karta-przejscia", o: { w: 390, h: 844, ls: { "bm-dzwieki": "0" } }, run: toStep, scope: ".lp" },
+    { n: "360-ciemny-karta-przejscia", o: { dark: true, ls: { "bm-dzwieki": "0" } }, run: toStep, scope: ".lp" },
+    { n: "390-jasny-koniec-lekcji", o: { w: 390, h: 844, ls: { "bm-dzwieki": "0" } }, run: toEnd(false), scope: ".lp" },
+    { n: "390-ciemny-koniec-lekcji", o: { w: 390, h: 844, dark: true, ls: { "bm-dzwieki": "0" } }, run: toEnd(false), scope: ".lp" },
+    { n: "360-jasny-koniec-niezdany", o: { ls: { "bm-dzwieki": "0" } }, run: toEnd(true), scope: ".lp" },
+    { n: "1280-jasny-koniec-lekcji", o: { w: 1280, h: 900, ls: { "bm-dzwieki": "0" } }, run: toEnd(false), scope: ".lp" },
+    { n: "390-jasny-dzis-koniec-zle", dzis: true, o: { w: 390, h: 844 }, run: toDzisEnd(true), scope: ".lp" },
+    { n: "390-ciemny-dzis-koniec-dobrze", dzis: true, o: { w: 390, h: 844, dark: true }, run: toDzisEnd(false), scope: ".lp" },
+    { n: "360-jasny-dzis-koniec-zle", dzis: true, o: { w: 360, h: 640 }, run: toDzisEnd(true), scope: ".lp" },
+    { n: "1280-ciemny-dzis-koniec-zle", dzis: true, o: { w: 1280, h: 900, dark: true }, run: toDzisEnd(true), scope: ".lp" },
+    { n: "390-en-koniec-lekcji", o: { w: 390, h: 844, lang: "en", ls: { "bm-dzwieki": "0" } }, run: toEnd(false), scope: ".lp" },
+    { n: "390-en-dzis-koniec", dzis: true, o: { w: 390, h: 844, lang: "en" }, run: toDzisEnd(true), scope: ".lp" },
+    { n: "360-reduced-koniec-lekcji", o: { motion: "reduce", ls: { "bm-dzwieki": "0" } }, run: toEnd(false), scope: ".lp", motion: true },
+    { n: "360-calm-dzis-koniec", dzis: true, o: { w: 360, h: 640, ls: { "skrot-calm": "1" } }, run: toDzisEnd(false), scope: ".lp", motion: true },
+    { n: "390-pink-koniec-lekcji", o: { w: 390, h: 844, theme: "pink", ls: { "bm-dzwieki": "0" } }, run: toEnd(false), scope: ".lp", other: true },
+    { n: "390-noc-karta-przejscia", o: { w: 390, h: 844, theme: "noc", ls: { "bm-dzwieki": "0" } }, run: toStep, scope: ".lp", other: true },
+  ],
   4: [
     { n: "360-jasny-czytaj", o: {}, run: toRead, scope: ".lp" },
     { n: "360-ciemny-czytaj", o: { dark: true }, run: toRead, scope: ".lp" },

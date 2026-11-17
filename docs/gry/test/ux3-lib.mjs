@@ -72,6 +72,7 @@ export const contrastFails = (list) => list.filter((x) => x.bg !== "gradient" &&
 // Przechodzi do karty spełniającej warunek (np. mc z kontrolą części), klikając „Dalej” na kartach do czytania.
 export async function goToCard(p, test, max = 40) {
   for (let i = 0; i < max; i++) {
+    for (let k = 0; k < 3 && await p.locator("#layer .scrim").count(); k++) { await p.keyboard.press("Escape"); await p.waitForTimeout(300); } // okno awansu (finał lekcji)
     const info = await p.evaluate(() => { const LP = window.ZD_APP?.LP; const c = LP?.open ? window.ZD_APP.lpCur() : null; return !LP?.open ? null : c ? { id: c.id, type: c.type, check: !!c.check, again: !!c.again, exit: !!c.exit, done: LP.st.ans[c.id] != null } : { end: true }; });
     if (!info) return null;
     if (!info.end && test(info)) return info;

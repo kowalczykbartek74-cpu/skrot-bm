@@ -11,7 +11,7 @@ const EMO = /\p{Extended_Pictographic}/u;
 // Tekst odtwarzacza poza treścią lekcji (pytania, akapity, odpowiedzi, fiszki, wzory).
 const chrome = (p) => p.evaluate(() => {
   const root = document.querySelector(".lp"); if (!root) return "";
-  const skip = ".lp-text, .lp-big, .lp-quote, .q, [translate=no], .lp-sw .face, .lp-formula, textarea, .lp-gap, .lp-flow, .lp-steps, .lp-marks, .lp-layers, .lv-table, .lv-chart, .lp-fb-why";
+  const skip = ".rk-badge, .lp-text, .lp-big, .lp-quote, .q, [translate=no], .lp-sw .face, .lp-formula, textarea, .lp-gap, .lp-flow, .lp-steps, .lp-marks, .lp-layers, .lv-table, .lv-chart, .lp-fb-why";
   const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let out = "";
   for (let n = w.nextNode(); n; n = w.nextNode()) { const e = n.parentElement; if (!e || e.closest(skip) || e.closest("[hidden]")) continue; const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden") continue; out += n.textContent + " "; }
   return out;
