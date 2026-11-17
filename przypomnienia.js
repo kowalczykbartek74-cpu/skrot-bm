@@ -75,7 +75,7 @@
   function godziny() { var out = []; for (var g = GODZ_OD; g <= GODZ_DO; g += GODZ_KROK) out.push(g); return out; }
   function coZ(v) {
     var o = v && typeof v === "object" ? v : {};
-    return { terminy: o.terminy !== false, powtorki: o.powtorki !== false, zadanie: o.zadanie !== false };
+    return { terminy: o.terminy !== false, powtorki: o.powtorki !== false, zadanie: o.zadanie !== false, seria: o.seria !== false };
   }
 
   // ---------- stan liczony na stronie ----------
@@ -98,7 +98,9 @@
         return { d: t.d, n: String(t.n || "").slice(0, 80), ne: String(t.ne || t.n || "").slice(0, 80), r: ["K", "E", "W", "LAB"].indexOf(t.r) >= 0 ? t.r : "K",
           dl: t.dl ? String(t.dl).slice(0, 120) : null, own: !!t.own, ok: !!t.ok, sid: t.sid ? String(t.sid).slice(0, 60) : null };
       });
-    var ser = o.seria && Number.isFinite(o.seria.n) && isKey(o.seria.d) ? { n: Math.max(0, Math.min(9999, Math.floor(o.seria.n))), d: o.seria.d } : null;
+    // ok = dni (ISO), w które dzisiejsza nauka jeszcze przedłuży serię (wczoraj, zamrożenia, przerwy) – liczy strona (nawyk.js).
+    var ser = o.seria && Number.isFinite(o.seria.n) && isKey(o.seria.d) ? { n: Math.max(0, Math.min(9999, Math.floor(o.seria.n))), d: o.seria.d,
+      ok: (Array.isArray(o.seria.ok) ? o.seria.ok : []).filter(isKey).slice(0, 7) } : null;
     var out = { v: 1, od: o.od, ter: ter, pow: licz(o.pow), rew: licz(o.rew), zad: !!o.zadanie };
     if (o.znane === false) out.zn = false; // UX-2: tylko gdy różne od domyślnego (stary stan bez pola = jak dotąd)
     if (ser) out.ser = ser;
@@ -144,7 +146,7 @@
       rewanze: at(st.rew),
       zadanie: !!st.zad,
       znane: st.zn !== false, // UX-2: czy strona ma kartę powrotu „3 minuty” (znany temat albo rewanż)
-      seria: st.ser && Number.isFinite(st.ser.n) && isKey(st.ser.d) ? { n: st.ser.n, d: st.ser.d } : null, // UX-2: seria dni (ostatni dzień ISO)
+      seria: st.ser && Number.isFinite(st.ser.n) && isKey(st.ser.d) ? { n: st.ser.n, d: st.ser.d, ok: Array.isArray(st.ser.ok) ? st.ser.ok : [] } : null, // UX-2: seria
     };
   }
 
@@ -186,7 +188,8 @@
     // UX-2: „ratuj serię” – seria ≥ 3, wczoraj była nauka, dziś jeszcze nie (dni 2–3 po przerwie ma „powrót”, nie to).
     // 3 warianty bez poczucia winy; wariant = pierwszy z A/B/C nieużyty w ostatnich 3 mailach „seria” (historia z rodzajem seria_x).
     var ser = ctx.seria;
-    if (ser && ser.n >= 3 && ser.d === addDays(ctx.today, -1)) {
+    // Seria żyje dziś: wczoraj była nauka albo strona policzyła, że dzisiejsza nauka ją przedłuży (zamrożenia, przerwa).
+    if (co.seria && ser && ser.n >= 3 && (ser.d === addDays(ctx.today, -1) || (ser.ok || []).indexOf(ctx.today) >= 0)) {
       var uzyte = (ctx.history || []).filter(function (h) { return h.kind && /^seria_[abc]$/.test(h.kind); }).slice(0, 3).map(function (h) { return h.kind.slice(6); });
       var w = ["a", "b", "c"].filter(function (x) { return uzyte.indexOf(x) < 0; })[0] || uzyte[uzyte.length - 1] || "a";
       var n1 = ser.n, n2 = ser.n + 1;

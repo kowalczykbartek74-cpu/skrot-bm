@@ -25,7 +25,7 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   const txt = await wstaw(p, "ofertaPrzypomnienia");
   const gt = `${Math.floor(godz / 60)}:${String(godz % 60).padStart(2, "0")}`;
   if (lang === "pl") ok(`K1 ${tag}: „Przypomnieć Ci jutro o ${gt}?” (godzina z planu, pełne 30 min, ≤ 21:00), opis i „Tak, przypominaj” / „Nie teraz”`, txt && txt.includes(`Przypomnieć Ci jutro o ${gt}?`) && /Jeden mail, tylko gdy jeszcze nie było nauki/.test(txt) && /Tak, przypominaj/.test(txt) && /Nie teraz/.test(txt) && godz % 30 === 0 && godz <= 21 * 60, { txt, godz });
-  else ok("K1 EN: „Remind you tomorrow at …?” / „Yes, remind me”", txt && /Remind you tomorrow at/.test(txt) && /Yes, remind me/.test(txt) && /Not now/.test(txt), txt);
+  else ok("K1 EN: „Remind you tomorrow at 4:30 pm?” (godzina po angielsku) / „Yes, remind me”", txt && /Remind you tomorrow at \d{1,2}:\d\d [ap]m\?/.test(txt) && /Yes, remind me/.test(txt) && /Not now/.test(txt), txt);
   await shot(p, `k1-oferta-przypomnienia-${tag}`);
   R.pomiary.push(await pomiar(p, `K1 oferta przypomnienia ${tag}`, "#nw-test", "#nw-test"));
   if (tag === "390-jasny") {
@@ -42,6 +42,19 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   await kartaZrobiona(p);
   await wstaw(p, "ofertaPrzypomnienia"); await p.click("#nw-test .btn.ghost"); await p.waitForTimeout(300);
   ok("K1 „Nie teraz” chowa propozycję na dziś", (await p.evaluate(() => window.ZD_NAWYK.ofertaPrzypomnienia())) === null);
+  await p.close();
+  // trzecie „Nie teraz” z rzędu → 30 dni bez propozycji
+  p = await open(b, { konto: "proba", prog: P2, ls: { ...PR, "skrot-przyp-odmowy": "2" } });
+  await kartaZrobiona(p);
+  await wstaw(p, "ofertaPrzypomnienia"); await p.click("#nw-test .btn.ghost"); await p.waitForTimeout(300);
+  const pauza = await p.evaluate(() => +localStorage.getItem("skrot-przyp-pauza") - window.ZD_APP.dayN());
+  ok("K1 trzecie „Nie teraz” → propozycja wraca dopiero za 30 dni", pauza === 30, pauza);
+  await p.close();
+  // raz dziennie: pokazana rano na innym ekranie (inny stan karty) → po południu już nie
+  p = await open(b, { konto: "proba", prog: P2, ls: PR });
+  await kartaZrobiona(p);
+  const raz = await p.evaluate(() => { const A = window.ZD_APP; A.ls.set("skrot-przyp-oferta", String(A.dayN())); return window.ZD_NAWYK.ofertaPrzypomnienia(); });
+  ok("K1 propozycja najwyżej raz dziennie (już pokazana dziś na innym ekranie → brak)", raz === null);
   await p.close();
   p = await open(b, { konto: "darmowe", prog: P2, ls: PR });
   await kartaZrobiona(p);
@@ -63,6 +76,10 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, true, "pl"], [390, fals
   if (lang === "pl") ok(`K2 ${tag}: bez zaliczenia w 14 dni, po 1 dniu nauki – „Przypomnieć Ci mailem?” z godziną z planu`, c && /Przypomnieć Ci mailem\?/.test(c) && /Najwyżej jeden mail dziennie o \d{1,2}:\d\d/.test(c) && /Włącz/.test(c), c);
   else ok("K2 EN: „Get an email reminder?” (istniejące tłumaczenie) z godziną", c && /Get an email reminder\?/.test(c) && /at \d{1,2}:\d\d/.test(c), c);
   ok(`K2 ${tag}: nic poza ekranem`, (await pozaEkranem(p, "#main .przyp-card *")).length === 0);
+  if (c) ok(`K2 ${tag}: karta tuż pod kartą dnia (wyżej na Dziś), zielony przycisk ≥ 48 px`, await p.evaluate(() => {
+    const k = document.querySelector("#main .przyp-card"), prev = k.previousElementSibling, bt = k.querySelector(".btn.primary"), cs = getComputedStyle(bt);
+    return !!prev && (prev.matches(".ld-card, .ld-home, [class*='ld-']") || !!prev.querySelector("[class*='ld-']")) && bt.getBoundingClientRect().height >= 48 && cs.backgroundColor !== "rgba(0, 0, 0, 0)";
+  }));
   if (c) { await p.evaluate(() => document.querySelector("#main .przyp-card")?.scrollIntoView({ block: "center" })); await p.waitForTimeout(300); await shot(p, `k2-przyp-dzis-${tag}`); R.pomiary.push(await pomiar(p, `K2 karta przypomnień na Dziś ${tag}`, "#main .przyp-card", "#main .przyp-card")); }
   if (tag === "390-jasny") {
     await p.click("#main .przyp-card .przyp-nie"); await p.waitForTimeout(500);
@@ -71,6 +88,12 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, true, "pl"], [390, fals
   await p.close();
 }
 {
+  const p0 = await open(b, { konto: "platne", prog: { xp: { t: 300, d: T - 1, n: 12 }, streak: { d: T - 1, n: 6 }, nd: [T - 6, T - 5, T - 4, T - 3, T - 2, T - 1] }, ls: PR });
+  const c6 = await p0.evaluate(() => document.querySelector("#main .przyp-card")?.innerText.replace(/\s+/g, " ") || null);
+  ok("K2 przy serii: powód „Żeby nie zgubić serii 6 dni.”", c6 && /Żeby nie zgubić serii 6 dni\./.test(c6), c6);
+  const opis = await p0.evaluate(() => { const g = window.ZD_NAWYK.godzinaPrzypomnienia(); return { t: window.ZD_NAWYK.przypOpisTermin(), g: `${Math.floor(g / 60)}:${String(g % 60).padStart(2, "0")}` }; });
+  ok("K2 karta z zaliczeniem: opis z tą samą godziną, którą zapisze „Włącz” (nie zawsze 18:00)", opis.t.includes(`o ${opis.g} `), opis);
+  await p0.close();
   const p = await open(b, { konto: "platne", prog: {}, ls: PR });
   ok("K2 przed pierwszym dniem nauki: bez karty przypomnień", !(await p.evaluate(() => !!document.querySelector("#main .przyp-card"))));
   await p.close();
@@ -81,7 +104,7 @@ try {
   const out = execSync("node --test tests/przypomnienia.test.js", { cwd: ROOT, encoding: "utf8" });
   ok("K3 tests/przypomnienia.test.js (rodzaj „seria”, warianty A/B/C, rotacja, studiedToday → null, termin pierwszy)", /ℹ fail 0/.test(out) && /seria/.test(out), out.split("\n").filter((l) => /seria|ℹ (pass|fail)/.test(l)).join(" | "));
   const pg = execSync("node supabase/test/pglite.mjs", { cwd: ROOT, encoding: "utf8", maxBuffer: 32 << 20 });
-  ok("K3/K4 PGlite v57: historia z rodzajem (seria_x), flaga kalendarza", /OK v57: K1–K3/.test(pg) && /^✓ test\/v57\.sql$/m.test(pg), pg.split("\n").filter((l) => /v57/.test(l)));
+  ok("K3/K4 PGlite v57: historia z rodzajem (seria_x), flaga kalendarza", /OK v57: K1–K4/.test(pg) && /^✓ test\/v57\.sql$/m.test(pg), pg.split("\n").filter((l) => /v57/.test(l)));
   const obs = fs.readFileSync(ROOT + "supabase/functions/przypomnienia/obsluga.ts", "utf8");
   ok("K3 funkcja Edge zapisuje wariant w rodzaju logu („seria_b”)", /pick\.wariant \? pick\.kind \+ "_" \+ pick\.wariant : pick\.kind/.test(obs));
 } catch (e) { ok("K3 testy", false, String(e.stdout || e).slice(-300)); }
@@ -109,10 +132,13 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, false, "pl"], [390, tru
   if (!k) { await p.evaluate(() => window.ZD_APP.ls && document.querySelector("#layer") && 0); }
   if (lang === "pl") ok(`K4 ${tag}: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony`, k && /Przypominaj o 5 minutach po zajęciach/.test(k.txt) && k.on === false, k);
   else ok("K4 EN: „Remind me about 5 minutes after class”", k && /Remind me about 5 minutes after class/.test(k.txt), k);
+  if (k) ok(`K4 ${tag}: przełącznik nad przyciskami Google/Apple/Outlook`, await p.evaluate(() => { const l = document.querySelector("#layer .nw-kal"), o = document.querySelector("#layer .calopts"); return !o || !!(l.compareDocumentPosition(o) & Node.DOCUMENT_POSITION_FOLLOWING); }));
   if (k) { await shot(p, `k4-kalendarz-okno-${tag}`); R.pomiary.push(await pomiar(p, `K4 okno kalendarza ${tag}`, "#layer", "#layer .nw-kal")); }
   if (tag === "390-jasny" && k) {
     await p.click("#layer .nw-kal input"); await p.waitForTimeout(400);
     ok("K4 włączenie zapisuje progress.calStudy = true", (await p.evaluate(() => window.ZD_APP.S.progress.calStudy)) === true);
+    const tst = await p.evaluate(() => document.querySelector("#toast, .toast, [role=status]")?.innerText || document.body.innerText.match(/Zapisano\. Wpisy[^\n]*/)?.[0] || "");
+    ok("K4 po przełączeniu potwierdzenie „Zapisano. Wpisy pojawią się…”", /Zapisano\. Wpisy pojawią się/.test(tst), tst);
   }
   await p.close();
 }
@@ -135,8 +161,20 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, false, "pl"], [390, tru
   await p.reload().catch(() => {}); await p.waitForTimeout(3500);
   const off = await p.evaluate(() => ({ greet: !!document.querySelector("#main .greet"), txt: (document.querySelector("#main")?.innerText || "").slice(0, 120), online: navigator.onLine }));
   ok("K5 offline po pierwszym wejściu: Dziś się renderuje (powitanie z serią)", off.greet && !off.online, off);
+  const offSeria = await p.evaluate(() => document.querySelector("#main .nw-streak .nw-s-l > b.num")?.textContent || null);
+  ok("K5 offline: seria z ostatniego zapisanego postępu (2 dni, nie 0)", offSeria === "2", offSeria);
   await shot(p, "k5-dzis-offline-390-jasny");
+  const swTest = await p.evaluate(async () => {
+    const c = await caches.open((await caches.keys()).find((k) => k.endsWith("-strona")));
+    const app = await (await c.match(new URL("index.html", location.href).href)).text();
+    return { nawykV: (app.match(/nawyk\.js\?v=([^"]+)/) || [])[1] };
+  });
+  const biezace = (fs.readFileSync(ROOT + "index.html", "utf8").match(/nawyk\.js\?v=([^"]+)/) || [])[1];
+  ok("K5 kopia strony aplikacji offline = najnowszy index.html (ten sam ?v= co na serwerze)", swTest.nawykV === biezace, { swTest, biezace });
   await p.context().setOffline(false);
+  await p.evaluate(async () => { await fetch("regulamin.html").catch(() => {}); });
+  const poReg = await p.evaluate(async () => { const c = await caches.open((await caches.keys()).find((k) => k.endsWith("-strona"))); const t = await (await c.match(new URL("index.html", location.href).href))?.text(); return !!t && /nawyk\.js/.test(t); });
+  ok("K5 inna strona HTML (regulamin) nie nadpisuje kopii aplikacji", poReg);
   await p.goto(p.url().replace(/\?.*$/, "?ld=1&sw=off#/")); await p.waitForTimeout(2500);
   const poOff = await p.evaluate(async () => ({ reg: (await navigator.serviceWorker.getRegistrations()).length, cache: (await caches.keys()).filter((k) => k.startsWith("zdawalni-sw-")).length }));
   ok("K5 ?sw=off wyrejestrowuje workera i kasuje pamięci", poOff.reg === 0 && poOff.cache === 0, poOff);
@@ -147,7 +185,7 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, false, "pl"], [390, tru
   ok("K5 bez ?sw=on na 127.0.0.1 worker się nie rejestruje (zwykłe testy bez pamięci podręcznej)", (await zwykly.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).length)) === 0);
   await zwykly.close();
 }
-// zachęta do instalacji: iPhone (2 kroki), raz w 2. dniu nauki, „Nie teraz” na 30 dni
+// zachęta do instalacji: iPhone (2 kroki), od 2. dnia nauki, raz, „Nie teraz” na 30 dni
 for (const [w, dark, lang] of [[390, false, "pl"], [360, true, "pl"], [390, false, "en"]]) {
   const tag = `${w}-${dark ? "ciemny" : "jasny"}${lang === "en" ? "-en" : ""}`;
   const ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
@@ -165,8 +203,16 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, true, "pl"], [390, fals
 {
   const ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
   const p = await open(b, { prog: { xp: { t: 400, d: T, n: 12 }, streak: { d: T, n: 5 }, nd: [T - 4, T - 3, T - 2, T - 1, T] }, ls: PR, ctx: { userAgent: ua } });
-  ok("K5 zachęta tylko w 2. dniu nauki (5. dzień: brak)", !(await p.evaluate(() => !!document.querySelector("#main .nw-inst"))));
+  ok("K5 konto z 5 dniami nauki też dostaje zachętę (raz)", await p.evaluate(() => !!document.querySelector("#main .nw-inst")));
   await p.close();
+  const ipad = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
+  const pi = await open(b, { prog: P2, ls: PR, ctx: { userAgent: ipad } });
+  await pi.evaluate(() => { Object.defineProperty(Navigator.prototype, "maxTouchPoints", { get: () => 5 }); window.ZD_APP.render(); }); await pi.waitForTimeout(300);
+  ok("K5 iPadOS (Macintosh + dotyk): zachęta z krokami Safari", await pi.evaluate(() => /Udostępnij/.test(document.querySelector("#main .nw-inst")?.innerText || "")));
+  await pi.close();
+  const ig = await open(b, { prog: P2, ls: PR, ctx: { userAgent: ua + " Instagram 300.0" } });
+  ok("K5 przeglądarka w Instagramie: bez zachęty", !(await ig.evaluate(() => !!document.querySelector("#main .nw-inst"))));
+  await ig.close();
 }
 await b.close();
 const errs = R.pomiary.flatMap((x) => x.bledy);

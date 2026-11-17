@@ -3,11 +3,15 @@
 //  - HTML i skrypty/style (także z ?v=): najpierw sieć, kopia w pamięci na wypadek braku sieci.
 //  - ikony, obrazki, fonty, manifest: najpierw pamięć (zmieniają się rzadko).
 // Wyłącznik: zmiana WERSJA kasuje stare pamięci przy aktywacji; strona z ?sw=off wyrejestrowuje workera (nawyk.js).
-const WERSJA = "zdawalni-sw-20261117-1";
+const WERSJA = "zdawalni-sw-20261117-3";
 const STRONA = WERSJA + "-strona", PLIKI = WERSJA + "-pliki";
 
 const sameOrigin = (url) => url.origin === self.location.origin;
 const naStale = (url) => /\/icons\/|\.(?:png|jpg|jpeg|svg|webp|ico|woff2?|ttf)$|manifest\.webmanifest$/.test(url.pathname);
+// Strona aplikacji („/”, „/index.html”, z dowolnym ?…) ma jeden klucz w pamięci: index.html. Inne strony HTML (regulamin,
+// wypis z przypomnień, plan) zapisują się pod własnym adresem i nigdy nie nadpisują kopii aplikacji.
+const KLUCZ_APP = () => new URL("index.html", self.location.href).href;
+const aplikacja = (url) => { const base = new URL("./", self.location.href).pathname; return url.pathname === base || url.pathname === base + "index.html"; };
 const strona = (req, url) => req.mode === "navigate" || url.pathname.endsWith("/") || url.pathname.endsWith(".html");
 
 // Przy instalacji: strona startowa i jej skrypty z tej samej domeny (adresy z ?v= z samego HTML), żeby Dziś działało offline
@@ -19,8 +23,7 @@ self.addEventListener("install", (e) => {
       const r = await fetch(new URL("index.html", base), { cache: "no-store" });
       if (!r.ok) return;
       const html = await r.clone().text();
-      await c.put(new URL("index.html", base).href, r.clone());
-      await c.put(base.href, r);
+      await c.put(KLUCZ_APP(), r);
       const src = [...html.matchAll(/<(?:script[^>]*\ssrc|link[^>]*\shref)="([^"]+)"/g)].map((m) => new URL(m[1], base)).filter((u) => sameOrigin(u));
       const p = await caches.open(PLIKI);
       await Promise.all(src.map((u) => fetch(u).then((x) => (x.ok ? (naStale(u) ? p : c).put(u.href, x) : null)).catch(() => null)));
@@ -60,13 +63,15 @@ self.addEventListener("fetch", (e) => {
     return;
   }
   e.respondWith((async () => {
-    const c = await caches.open(STRONA);
+    const c = await caches.open(STRONA), app = strona(req, url) && aplikacja(url);
     try {
       const res = await fetch(req);
-      if (res.ok && (strona(req, url) || /\.(?:js|css|json)$/.test(url.pathname))) await polozJedna(c, strona(req, url) ? new Request(new URL("index.html", self.location.href).href) : req, res.clone());
+      if (res.ok && app) await c.put(KLUCZ_APP(), res.clone()); // zawsze najświeższa strona aplikacji pod jednym kluczem
+      else if (res.ok && (strona(req, url) || /\.(?:js|css|json)$/.test(url.pathname))) await polozJedna(c, new Request(url.origin + url.pathname + url.search), res.clone());
       return res;
     } catch (err) {
-      const hit = (await c.match(req)) || (strona(req, url) ? (await c.match(new URL("index.html", self.location.href).href)) : null);
+      // Bez sieci: dokładny adres, a gdy pamięć ma inną wersję pliku (inne ?v=), ta sama ścieżka – lepsze niż brak skryptu.
+      const hit = app ? await c.match(KLUCZ_APP()) : (await c.match(req, { ignoreVary: true })) || (await c.match(req, { ignoreVary: true, ignoreSearch: true }));
       if (hit) return hit;
       throw err;
     }

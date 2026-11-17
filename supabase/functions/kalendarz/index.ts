@@ -247,7 +247,8 @@ Deno.serve(async (req) => {
     // UX-2 (SQL v57): opcjonalny wpis „5 min po zajęciach”; bez v57 w bazie albo przy błędzie po prostu go nie ma.
     let nauka = false;
     try { const r = await db.rpc("nauka_kalendarz_nauka", { p_token: token }); nauka = r?.data === true; } catch { /* bez wpisu */ }
-    if (nauka) L.push(...studyEvents(plan, group, sub, stamp, key(new Date(Date.now() + 2 * 3600e3))));
+    const dzis = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Warsaw" }).format(new Date()); // dziś w Warszawie (zima i lato)
+    if (nauka) L.push(...studyEvents(plan, group, sub, stamp, dzis));
   }
   if (data.platny) {
     // Część przedmiotu z własną datą: szacowane terminy starosty tej części znikają (jak w aplikacji).

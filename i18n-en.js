@@ -5667,7 +5667,15 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Zdawalni · 5 min po zajęciach": "Zdawalni · 5 min after class",
 "Naprawa serii {0} nie wyszła (zabrakło dnia nauki). Dziś zaczynasz nową.": "Streak repair for {0} didn't work out (a study day was missing). Today you start a new one.",
 "Naprawa serii {0} dni nie wyszła (zabrakło dnia nauki). Dziś zaczynasz nową.": "Repair of your {0}-day streak didn't work out (a study day was missing). Today you start a new one.",
-"Zajęcia od ostatniej nauki: {0}": "Classes since you last studied: {0}"
+"Zajęcia od ostatniej nauki: {0}": "Classes since you last studied: {0}",
+"Żeby nie zgubić serii {0} dni.": "So you don't lose your {0}-day streak.",
+"Żeby nie zgubić serii {0}.": "So you don't lose your {0} streak.",
+"Najwyżej jeden mail dziennie o {0} i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia.": "At most one email a day at {0}, and only when something matters: a test or exam in 7, 3 and 1 day, overdue reviews or the daily task.",
+"Zapisano. Wpisy pojawią się przy najbliższym odświeżeniu kalendarza w telefonie.": "Saved. The entries will appear at your phone calendar's next refresh.",
+"Zapisano. Wpisy znikną przy najbliższym odświeżeniu kalendarza w telefonie.": "Saved. The entries will disappear at your phone calendar's next refresh.",
+"Bez sieci: pokazuję ostatni zapisany postęp.": "Offline: showing your last saved progress.",
+"Seria dni": "Day streak",
+"gdy seria trwa, a dziś jeszcze nie było nauki": "when your streak is on and you haven't studied today",
 // koniec ux-2
 },
 "plural": {

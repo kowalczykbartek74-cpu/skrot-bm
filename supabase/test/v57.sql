@@ -16,4 +16,12 @@ do $$ begin
   perform test.chk('K3 zalogowany ani anon nie wołają nauka_kalendarz_nauka', not has_function_privilege('authenticated', 'public.nauka_kalendarz_nauka(text)', 'execute')
     and not has_function_privilege('anon', 'public.nauka_kalendarz_nauka(text)', 'execute'), null);
 end $$;
-do $$ begin raise notice 'OK v57: K1–K3'; end $$;
+select test.jako('przyp1@x.pl'); set role authenticated;
+do $$ declare r jsonb; begin
+  r := public.nauka_przypomnienia_ustaw('{"co": {"terminy": true, "powtorki": true, "zadanie": true, "seria": false}}');
+  perform test.chk('K4 ustawienia: rodzaj „seria” zapisany (false)', (r->>'ok')::boolean and (r->'co'->>'seria')::boolean = false, r);
+  r := public.nauka_przypomnienia_ustaw('{"co": {"terminy": true}}');
+  perform test.chk('K4 brak pola „seria” → domyślnie true', (r->'co'->>'seria')::boolean = true, r);
+end $$;
+reset role;
+do $$ begin raise notice 'OK v57: K1–K4'; end $$;

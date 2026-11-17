@@ -8003,6 +8003,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       // ux-2: po przerwie (≥ 2 dni) albo z maila „powrót” (?wracam=1): „Dobrze, że jesteś” nad kartą dnia.
       needGroup() ? null : window.ZD_NAWYK?.kartaPowrotu?.(),
       !needGroup() && ldOn() ? ldBlock() : null,
+      // ux-2: przypomnienia mailem tuż pod kartą dnia (wcześniej prawie na dole strony).
+      needGroup() ? null : przypHomeCard(),
       needGroup() || !S.ready ? null : ptsDzis(),
       S.noDb ? accessNotice() : buyBanner(),
       annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
@@ -8021,7 +8023,6 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       // Gdy nie ma świeżych zajęć: strona i tak proponuje 5-minutowe podsumowanie (przed zajęciami, nieprzeczytane, odświeżenie).
       needGroup() || ldOn() ? null : poHomeCard("mid"),
       needGroup() ? null : guideStrip(),
-      needGroup() ? null : przypHomeCard(),
       // ux-2: zachęta „Dodaj Zdawalni do ekranu głównego” (raz, w 2. dniu nauki).
       needGroup() ? null : window.ZD_NAWYK?.ofertaInstalacji?.(),
       // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
@@ -8132,6 +8133,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         body.replaceChildren(
           h("p", { text: S.group ? `Zajęcia grupy ${S.group}${S.sub ? ", lab " + S.sub : ", oba laby"} oraz zaliczenia i zadania z przypomnieniem dzień wcześniej.` : "Zaliczenia i zadania z przypomnieniem dzień wcześniej. Wybierz grupę w „Więcej”, a dojdą też Twoje zajęcia." }),
           h("p", { class: "muted", text: "To subskrypcja: nowe terminy i zmiany w planie same pojawią się w telefonie. Po zmianie grupy w „Więcej” kalendarz też się dostosuje." }),
+          // ux-2: opcjonalny wpis „Zdawalni · 5 min po zajęciach” z alarmem (domyślnie wyłączony, SQL v57 + funkcja kalendarz).
+          window.ZD_NAWYK?.przelacznikKalendarza?.() ?? null,
           h("div", { class: "calopts" },
             opt(`https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`, "G", "#1A73E8", "Google Calendar", "Android i komputer. Otwórz na koncie Google, którego używasz w telefonie.", true),
             opt(webcal, "A", "#16231B", "iPhone, iPad, Mac", "Kalendarz Apple. Potwierdź „Subskrybuj”.", false),
@@ -8140,8 +8143,6 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
             try { await navigator.clipboard.writeText(https); } catch { inp.select(); try { document.execCommand("copy"); } catch {} }
             e.currentTarget.textContent = "Skopiowano ✓";
           } }, "Kopiuj link")),
-          // ux-2: opcjonalny wpis „Zdawalni · 5 min po zajęciach” z alarmem (domyślnie wyłączony, SQL v57 + funkcja kalendarz).
-          window.ZD_NAWYK?.przelacznikKalendarza?.() ?? null,
           h("p", { class: "foot-note", text: "Link jest tylko Twój: nie udostępniaj go, bo pokazuje terminy z płatnej części. Google odświeża kalendarze co kilka godzin, więc nowości mogą dojść z opóźnieniem. Na Androidzie, jeśli nic się nie pokazuje, włącz w aplikacji Kalendarz synchronizację „" + name + "”." }),
           h("div", { class: "row" },
             h("button", { type: "button", class: "btn small ghost", onclick: async () => {
@@ -14793,7 +14794,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       for (const [k, st] of rewStates()) if ((st.status === "due" || st.status === "waiting") && keySubject(k)) rew.push(st.due - t);
     }
     const sr = S.progress?.streak; // ux-2: seria do maila „ratuj serię” (dzień ostatniej nauki jako data)
-    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid, znane: window.ZD_NAWYK?.maKartePowrotu?.() ?? true, seria: sr?.n > 0 ? { n: sr.n, d: dayIso(sr.d) } : null });
+    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid, znane: window.ZD_NAWYK?.maKartePowrotu?.() ?? true, seria: sr?.n > 0 ? { n: sr.n, d: dayIso(sr.d), ok: window.ZD_NAWYK?.dniSeriiZywej?.() || [] } : null });
   }
   function przypSync() {
     const sk = window.skrot || {};
@@ -14825,7 +14826,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       h("div", { class: "panel-head" }, h("h2", { text: "Przypomnieć Ci mailem?" }),
         h("button", { type: "button", class: "link przyp-nie", onclick: () => { ls.set("skrot-przyp-nie", todayKey()); render(); } }, "Nie teraz")),
       h("p", { class: "przyp-ex" }, h("b", { text: EN && ex.s.en ? ex.s.en : ex.s.pl }), " · ", h("span", { text: partLabel(ex.s.id, ex.part) }), " · ", h("span", { text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` })),
-      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Najwyżej jeden mail dziennie o 18:00 i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia." }),
+      // ux-2: godzina z planu zajęć (albo zapisana wcześniej), ta sama, którą zapisze „Włącz”.
+      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: window.ZD_NAWYK?.przypOpisTermin?.() ?? "Najwyżej jeden mail dziennie o 18:00 i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia." }),
       h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", disabled: PRZ.saving ? true : null,
         onclick: () => przypSave(PRZ.d.nowe ? { wlaczone: true, godz: window.ZD_NAWYK?.godzinaPrzypomnienia?.() ?? PZ.GODZ_DOMYSLNA } : { wlaczone: true }, "Przypomnienia włączone. Godzinę i rodzaje zmienisz w Ustawieniach.") }, "Włącz")));
   }
@@ -14845,7 +14847,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     const godz = h("select", { class: "input", id: "pz-godz", disabled: dis || !on ? true : null, onchange: (e) => przypSave({ godz: +e.target.value }, "Godzina zapisana.") },
       PZ.godziny().map((g) => h("option", { value: String(g), selected: g === d.godz ? true : null }, PZ.godzTekst(g))));
     const CO_ROWS = [["terminy", "Zaliczenia za 7, 3 i 1 dzień", "kolokwia i egzaminy z Terminów i Twoje daty z „Przygotuj się”"],
-      ["powtorki", "Zaległe powtórki i rewanże", "dzisiejsza porcja i ile to minut"], ["zadanie", "Zadanie dnia", "gdy nie ma nic ważniejszego"]];
+      ["powtorki", "Zaległe powtórki i rewanże", "dzisiejsza porcja i ile to minut"], ["zadanie", "Zadanie dnia", "gdy nie ma nic ważniejszego"],
+      ["seria", "Seria dni", "gdy seria trwa, a dziś jeszcze nie było nauki"]]; // ux-2
     const chk = CO_ROWS.map(([k, l, sub]) => h("label", { class: "pz-co" },
       h("input", { type: "checkbox", "data-co": k, checked: co[k] ? true : null, disabled: dis || !on ? true : null, onchange: (e) => przypSave({ co: { ...co, [k]: e.target.checked } }, "Zapisano.") }),
       h("span", { class: "more-txt" }, h("span", { text: l }), h("small", { text: sub }))));

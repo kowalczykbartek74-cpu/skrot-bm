@@ -15,7 +15,9 @@ const P = (...l) => out.push(...l);
 
 // Lista z B3 (pętla 2) + funkcje nowe w tej pętli. Wywołania z umów i blok mostu wypisujemy osobno.
 const MOJE = new Set(["viewHome", "lpLevelBar", "streakNext", "kStreakAlive", "kFreezeUse", "xpFlush", "LP_DAILY_GOAL", "przypHomeCard", "ptsDzis", "ptsHome", "ldBlock",
-  "misjaClaim", "viewReview", "openPhoneCal", "homeQuests", "greetBadges", "CAL_FN", "termIcs", "przypStan"]);
+  "misjaClaim", "viewReview", "openPhoneCal", "homeQuests", "greetBadges", "CAL_FN", "termIcs", "przypStan",
+  "setPrzyp" // B3 „funkcja przypomnienia”: wiersz „Seria dni” w rodzajach maili (recenzja etapu 4, runda 1)
+]);
 const UMOWY = [/window\.ZD_WEJSCIE\?\./, /window\.ZD_NAWYK\?\./, /window\.ZD_NAGRODY\?\./];
 
 P("# Kontrola automatyczna UX-2", "", `Gałąź: ${sh("git branch --show-current").trim()} · HEAD ${sh("git rev-parse --short HEAD").trim()} · origin/main ${sh("git rev-parse --short origin/main").trim()}`, "");

@@ -53,6 +53,11 @@
     przypDzisTytul: "Przypomnieć Ci mailem?",
     przypDzisOpis: "Najwyżej jeden mail dziennie o {0} i tylko wtedy, gdy jeszcze nie było nauki.",
     wlacz: "Włącz",
+    przypPowod: "Żeby nie zgubić serii {0}.",
+    przypOpisTermin: "Najwyżej jeden mail dziennie o {0} i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia.",
+    kalZapisanoOn: "Zapisano. Wpisy pojawią się przy najbliższym odświeżeniu kalendarza w telefonie.",
+    kalZapisanoOff: "Zapisano. Wpisy znikną przy najbliższym odświeżeniu kalendarza w telefonie.",
+    offline: "Bez sieci: pokazuję ostatni zapisany postęp.",
     kalNauka: "Przypominaj o 5 minutach po zajęciach",
     kalNaukaOpis: "W kalendarzu pojawi się wpis „Zdawalni · 5 min po zajęciach” z przypomnieniem, pół godziny po Twoich ostatnich zajęciach.",
     instTytul: "Dodaj Zdawalni do ekranu głównego: jedno dotknięcie do 5 minut.",
@@ -640,7 +645,18 @@
     return box;
   }
   // ---------------------------------------------------------------- etap 4: kanał poza stroną
-  const godzTxt = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  const godzTxt = (m) => { const g = Math.floor(m / 60), mm = String(m % 60).padStart(2, "0");
+    return W && W.SKROT_LANG === "en" ? `${g % 12 || 12}:${mm} ${g < 12 ? "am" : "pm"}` : `${g}:${mm}`; };
+  // Godzina, którą zapisze „Włącz” (nowe ustawienia: z planu zajęć; wcześniej zapisane: ta zapisana).
+  function godzinaDoZapisu() { const PRZ = A().prz?.(); return PRZ?.d && !PRZ.d.nowe && Number.isFinite(PRZ.d.godz) ? PRZ.d.godz : godzinaPrzypomnienia(); }
+  function przypOpisTermin() { return fmt(PL.przypOpisTermin, godzTxt(godzinaDoZapisu())); }
+  // Dni (ISO, dziś…+3), w które nauka jeszcze przedłuży serię (wczoraj, zamrożenia, przerwy): mail „seria” liczy z nich.
+  function dniSeriiZywej() {
+    const ap = A(), st = progress().streak, t = today(), out = [];
+    if (!st || !(st.n > 0) || !ap.dayIso) return out;
+    for (let i = 0; i <= 3; i++) if (st.d < t + i && seriaZywa(st, t + i)) out.push(ap.dayIso(t + i));
+    return out;
+  }
   // Koniec ostatnich zajęć w najbliższym dniu z zajęciami (od jutra, do 7 dni) → godzina przypomnienia.
   function godzinaPrzypomnienia() {
     const ap = A();
@@ -663,26 +679,36 @@
     ap.przypLoad?.();
     if (!PRZ?.d || PRZ.d.wlaczone || PRZ.off) return null;
     if (ap.ls?.get("skrot-przyp-nie") === ap.todayKey?.()) return null;
+    if (+(ap.ls?.get("skrot-przyp-pauza") || 0) > today()) return null; // 3 × „Nie teraz” → 30 dni spokoju
     const st = ap.ldDay?.get?.(); if (!st?.done?.karta) return null; // pierwsza skończona karta dnia
-    const godz = godzinaPrzypomnienia();
+    // Raz dziennie: tylko na ekranie, na którym pokazała się pierwszy raz (kolejne render() tego ekranu ją zachowują).
+    const dz = String(today()), ekran = st.done.karta;
+    if (ap.ls?.get("skrot-przyp-oferta") === dz && ofertaEkran !== ekran) return null;
+    ap.ls?.set("skrot-przyp-oferta", dz); ofertaEkran = ekran;
+    const godz = godzinaDoZapisu();
     const box = h("section", { class: "panel sk-panel nw-przyp", "aria-label": fmt(PL.przypTytul, godzTxt(godz)) },
       h("h2", { class: "nw-przyp-h", text: fmt(PL.przypTytul, godzTxt(godz)) }),
       h("p", { class: "muted", text: PL.przypOpis }),
       h("div", { class: "row nw-przyp-btns" },
         h("button", { type: "button", class: "btn primary", onclick: async () => { await ap.przypSave({ wlaczone: true, godz }, PL.przypWlaczone); box.remove(); } }, PL.przypTak),
-        h("button", { type: "button", class: "btn ghost", onclick: () => { ap.ls.set("skrot-przyp-nie", ap.todayKey()); box.remove(); } }, PL.nieTeraz)));
+        h("button", { type: "button", class: "btn ghost", onclick: () => { ap.ls.set("skrot-przyp-nie", ap.todayKey());
+          const n = +(ap.ls.get("skrot-przyp-odmowy") || 0) + 1;
+          if (n >= 3) { ap.ls.set("skrot-przyp-pauza", String(today() + 30)); ap.ls.set("skrot-przyp-odmowy", "0"); } else ap.ls.set("skrot-przyp-odmowy", String(n));
+          box.remove(); } }, PL.nieTeraz)));
     return box;
   }
+  let ofertaEkran = null;
   // przypHomeCard bez zaliczenia w ciągu 14 dni: wersja ogólna po ≥ 1 dniu nauki; „Nie teraz” chowa na 30 dni (ten sam klucz).
   function kartaPrzypomnieniaDzis() {
     const ap = A(), { h } = ap; if (!h) return null;
     const PRZ = ap.prz?.(); if (!PRZ?.d || PRZ.d.wlaczone) return null;
     const p = progress(), dniNauki = L.dniNauki(p, zamDni(), przerwa).size;
     if (dniNauki < 1) return null;
-    const godz = godzinaPrzypomnienia();
+    const godz = godzinaDoZapisu(), sn = p.streak?.n || 0;
     return h("section", { class: "panel sk-panel przyp-card nw-przyp", "aria-label": PL.przypDzisTytul },
       h("div", { class: "panel-head" }, h("h2", { text: PL.przypDzisTytul }),
         h("button", { type: "button", class: "link przyp-nie nw-link44", onclick: () => { ap.ls.set("skrot-przyp-nie", ap.todayKey()); ap.render(); } }, PL.nieTeraz)),
+      sn >= 2 ? h("p", { class: "nw-przyp-powod", text: fmt(PL.przypPowod, dniPL(sn)) }) : null,
       h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: fmt(PL.przypDzisOpis, godzTxt(godz)) }),
       h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", onclick: () => ap.przypSave(PRZ.d.nowe ? { wlaczone: true, godz } : { wlaczone: true }, PL.przypWlaczone) }, PL.wlacz)));
   }
@@ -690,20 +716,23 @@
   function przelacznikKalendarza() {
     const ap = A(), { h } = ap; if (!h) return null;
     const id = "nw-kal-nauka", on = progress().calStudy === true;
-    const inp = h("input", { type: "checkbox", id, checked: on ? true : null, onchange: (e) => ap.saveProgress?.({ calStudy: !!e.target.checked }) });
+    const inp = h("input", { type: "checkbox", id, checked: on ? true : null, onchange: async (e) => { const v = !!e.target.checked; await ap.saveProgress?.({ calStudy: v }); ap.toast?.(v ? PL.kalZapisanoOn : PL.kalZapisanoOff); } });
     return h("label", { class: "nw-kal", for: id }, inp, h("span", {}, h("b", { text: PL.kalNauka }), h("small", { class: "muted", text: PL.kalNaukaOpis })));
   }
   // Zachęta do instalacji: raz, w 2. dniu nauki (Android: zapamiętany beforeinstallprompt, iPhone: 2 kroki), „Nie teraz” na 30 dni.
   let instEvt = null;
-  if (W) W.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); instEvt = e; });
-  const iOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) && !navigator.standalone;
+  // Zdarzenie przychodzi zwykle po pierwszym rysowaniu Dziś: przerysowanie, żeby zachęta mogła się pojawić.
+  if (W) W.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); instEvt = e; try { if (!document.querySelector(".nw-inst")) A().render?.(); } catch (er) {} });
+  const iOS = () => (/iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) && !navigator.standalone; // + iPadOS
+  // Przeglądarki wbudowane w aplikacje (Instagram, Facebook, TikTok…) nie umieją dodać strony do ekranu głównego.
+  const wAplikacji = () => /FBAN|FBAV|FB_IAB|Instagram|Line\/|Messenger|TikTok|musical_ly|Snapchat|; wv\)/.test(navigator.userAgent);
   const zainstalowana = () => (W.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
   function ofertaInstalacji() {
-    const ap = A(), { h } = ap; if (!h || zainstalowana()) return null;
+    const ap = A(), { h } = ap; if (!h || zainstalowana() || wAplikacji()) return null;
     if (!instEvt && !iOS()) return null;
     const nie = +(ap.ls?.get("skrot-inst-nie") || -99), t = today();
     if (t - nie < 30 || ap.ls?.get("skrot-inst-pokazana") && ap.ls.get("skrot-inst-pokazana") !== String(t)) return null;
-    const p = progress(); if (L.dniNauki(p, zamDni(), przerwa).size !== 2 || p.streak?.d !== t) return null;
+    const p = progress(); if (L.dniNauki(p, zamDni(), przerwa).size < 2) return null; // od 2. dnia nauki, jeden raz
     ap.ls?.set("skrot-inst-pokazana", String(t));
     const box = h("section", { class: "panel sk-panel nw-inst", "aria-label": PL.instTytul },
       h("p", { class: "nw-inst-h", text: PL.instTytul }),
@@ -957,6 +986,8 @@ main[data-view="home"] .greet .rk-compact .rk-chips { flex-wrap: nowrap; }
 .nw-conf i { position: absolute; top: -10px; width: 8px; height: 12px; border-radius: 2px; animation: nw-fall 2.2s var(--d) ease-in forwards; }
 .nw-conf i.c0 { background: var(--h-acc, var(--accent)); } .nw-conf i.c1 { background: var(--h-lime, var(--accent-soft)); } .nw-conf i.c2 { background: var(--h-orange, var(--warn)); } .nw-conf i.c3 { background: var(--h-blue, var(--accent-text)); }
 @keyframes nw-dot { from { transform: scale(.4); } to { transform: none; } }
+html #main .nw-przyp .btn.primary { min-height: 48px; border: 0; border-radius: 999px; background: var(--h-lime, var(--accent)); color: var(--h-lime-ink, var(--accent-ink)); font-weight: 800; box-shadow: 0 4px 0 var(--h-lime-edge, var(--accent-strong)); padding-inline: 22px; }
+.nw-przyp-powod { margin: 0 0 4px; font-weight: 700; }
 @keyframes nw-pop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes nw-up { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes nw-fall { to { transform: translate(var(--x), 320px) rotate(var(--r)); opacity: 0; } }
@@ -972,7 +1003,29 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, ofertaPrzypomnienia, kartaPrzypomnieniaDzis, przelacznikKalendarza, ofertaInstalacji, godzinaPrzypomnienia, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu, powrotAktywny, oknoOdzyskana, maKartePowrotu, naprawaLinia });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, ofertaPrzypomnienia, kartaPrzypomnieniaDzis, przelacznikKalendarza, ofertaInstalacji, godzinaPrzypomnienia, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu, powrotAktywny, oknoOdzyskana, maKartePowrotu, naprawaLinia, dniSeriiZywej, przypOpisTermin, postepOffline });
+  // Bez sieci logowanie się nie kończy (S.uid puste), więc S.progress jest puste i Dziś pokazałoby „0 dni”. Wtedy (tylko do
+  // pokazania) bierzemy ostatni postęp zapisany w tej przeglądarce (bm-progress-<uid>, ten sam zapis co progLocal w index.html).
+  let offlinePokazany = false;
+  function postepOffline() {
+    const ap = A(), S = ap.S; if (!S || S.uid || offlinePokazany) return false;
+    if (W.skrot?.state !== "error" && navigator.onLine !== false) return false;
+    if (S.progress?.streak || S.progress?.xp) return false;
+    let best = null;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i); if (!k || !k.startsWith("bm-progress-") || k === "bm-progress-anon") continue;
+        const v = JSON.parse(localStorage.getItem(k) || "null")?.data; if (!v) continue;
+        const d = Math.max(v.streak?.d || 0, v.xp?.d || 0);
+        if (!best || d > best.d) best = { d, v };
+      }
+    } catch (e) {}
+    if (!best) return false;
+    offlinePokazany = true; S.progress = { ...best.v, ...(S.progress || {}) };
+    try { ap.render?.(); } catch (e) {}
+    setTimeout(() => baner("snow", PL.offline, 5000), 300);
+    return true;
+  }
   // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
   let stanKey = null;
   function tik() {
@@ -985,6 +1038,7 @@ html.calm .nw-conf { display: none; }
   setTimeout(ponow, 4000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") tik(); });
   W.ZD_NAWYK.tik = tik;
+  { let i = 0; const sp = () => { if (!postepOffline() && ++i < 40) setTimeout(sp, 500); }; setTimeout(sp, 500); W.addEventListener("offline", () => setTimeout(postepOffline, 1500)); }
   // Service worker (sw.js): https albo localhost/127.0.0.1 (lokalnie tylko z ?sw=on albo skrot-sw=1, żeby zwykłe testy
   // Playwright nie dostawały pamięci podręcznej); ?sw=off wyrejestrowuje i kasuje pamięci.
   if ("serviceWorker" in navigator) {

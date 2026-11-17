@@ -9,6 +9,7 @@ end $$;
 -- Etap 4:
 --  1. nauka_przypomnienia_kandydaci: historia maili ma też rodzaj (np. „seria_b”), żeby przypomnienie „ratuj serię” wybierało wariant
 --     tekstu nieużyty w ostatnich 3 mailach (rotacja A/B/C). Reszta bez zmian (kopia wersji z v44 + pole rodzaj).
+--  3. nauka_przypomnienia_ustaw: nowy rodzaj maila „seria” (ratuj serię) w ustawieniach co (domyślnie włączony); kopia v36 + pole.
 --  2. nauka_kalendarz_nauka(token): czy osoba włączyła w kalendarzu w telefonie wpis „Zdawalni · 5 min po zajęciach”
 --     (progress.calStudy). Osobna funkcja: nauka_kalendarz_dane (v46) zostaje bez zmian.
 
@@ -67,5 +68,38 @@ language sql stable security definer set search_path = '' as $$
 $$;
 revoke all on function public.nauka_kalendarz_nauka(text) from public, anon, authenticated;
 grant execute on function public.nauka_kalendarz_nauka(text) to service_role;
+
+create or replace function public.nauka_przypomnienia_ustaw(p jsonb) returns jsonb
+language plpgsql volatile security definer set search_path = public as $$
+declare u uuid := auth.uid(); w boolean; g int; c jsonb; j text; rid text; stare public.nauka_przypomnienia;
+begin
+  if u is null then return jsonb_build_object('ok', false, 'code', 'not_logged_in'); end if;
+  if jsonb_typeof(p) is distinct from 'object' then return jsonb_build_object('ok', false, 'code', 'bad_input'); end if;
+  select * into stare from public.nauka_przypomnienia where user_id = u;
+  w := case when jsonb_typeof(p->'wlaczone') = 'boolean' then (p->>'wlaczone')::boolean else coalesce(stare.wlaczone, false) end;
+  if p ? 'godz' then
+    if jsonb_typeof(p->'godz') <> 'number' or (p->>'godz') !~ '^[0-9]{3,4}$' then return jsonb_build_object('ok', false, 'code', 'bad_input'); end if;
+    g := (p->>'godz')::int;
+    if g < 360 or g > 1320 or g % 30 <> 0 then return jsonb_build_object('ok', false, 'code', 'bad_input'); end if;
+  else g := coalesce(stare.godz, 1080); end if;
+  if p ? 'co' then
+    if jsonb_typeof(p->'co') <> 'object' then return jsonb_build_object('ok', false, 'code', 'bad_input'); end if;
+    c := jsonb_build_object('terminy', case when jsonb_typeof(p->'co'->'terminy') = 'boolean' then (p->'co'->>'terminy')::boolean else true end,
+                            'powtorki', case when jsonb_typeof(p->'co'->'powtorki') = 'boolean' then (p->'co'->>'powtorki')::boolean else true end,
+                            'zadanie', case when jsonb_typeof(p->'co'->'zadanie') = 'boolean' then (p->'co'->>'zadanie')::boolean else true end,
+                            'seria', case when jsonb_typeof(p->'co'->'seria') = 'boolean' then (p->'co'->>'seria')::boolean else true end);
+  else c := coalesce(stare.co, '{"terminy": true, "powtorki": true, "zadanie": true}'::jsonb); end if;
+  j := case when p->>'jezyk' in ('pl', 'en') then p->>'jezyk' else coalesce(stare.jezyk, 'pl') end;
+  select x.rocznik_id into rid from public.nauka_profil x where x.user_id = u;
+  insert into public.nauka_przypomnienia as t (user_id, rocznik_id, wlaczone, godz, co, jezyk, wlaczone_at)
+  values (u, rid, w, g, c, j, case when w then now() end)
+  on conflict (user_id) do update set rocznik_id = excluded.rocznik_id, wlaczone = excluded.wlaczone, godz = excluded.godz, co = excluded.co,
+    jezyk = excluded.jezyk, updated_at = now(),
+    wlaczone_at = case when excluded.wlaczone and not t.wlaczone then now() else t.wlaczone_at end,
+    wypisane_at = case when excluded.wlaczone then null else t.wypisane_at end,
+    stan = case when excluded.wlaczone then t.stan else '{}'::jsonb end,
+    stan_at = case when excluded.wlaczone then t.stan_at end;
+  return public.nauka_przypomnienia_moje();
+end $$;
 
 notify pgrst, 'reload schema';
