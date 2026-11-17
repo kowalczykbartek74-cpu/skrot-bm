@@ -1,0 +1,348 @@
+{
+ "etap": 4,
+ "runda": 1,
+ "pomiary": [
+  {
+   "nazwa": "K1 oferta przypomnienia 390-jasny",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K1 oferta przypomnienia 360-jasny",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K1 oferta przypomnienia 390-ciemny",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K1 oferta przypomnienia 390-jasny-en",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K2 karta przypomnień na Dziś 390-jasny",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K2 karta przypomnień na Dziś 360-ciemny",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K2 karta przypomnień na Dziś 390-jasny-en",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 okno kalendarza 390-jasny",
+   "teksty": 18,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 okno kalendarza 360-jasny",
+   "teksty": 18,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 okno kalendarza 390-ciemny",
+   "teksty": 18,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 okno kalendarza 390-jasny-en",
+   "teksty": 18,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 zachęta do instalacji 390-jasny",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 zachęta do instalacji 360-ciemny",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 zachęta do instalacji 390-jasny-en",
+   "teksty": 4,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "zrzuty": [
+  "k1-oferta-przypomnienia-390-jasny.png",
+  "k1-oferta-przypomnienia-360-jasny.png",
+  "k1-oferta-przypomnienia-390-ciemny.png",
+  "k1-oferta-przypomnienia-390-jasny-en.png",
+  "k2-przyp-dzis-390-jasny.png",
+  "k2-przyp-dzis-360-ciemny.png",
+  "k2-przyp-dzis-390-jasny-en.png",
+  "k4-kalendarz-okno-390-jasny.png",
+  "k4-kalendarz-okno-360-jasny.png",
+  "k4-kalendarz-okno-390-ciemny.png",
+  "k4-kalendarz-okno-390-jasny-en.png",
+  "k5-dzis-offline-390-jasny.png",
+  "k5-instalacja-390-jasny.png",
+  "k5-instalacja-360-ciemny.png",
+  "k5-instalacja-390-jasny-en.png"
+ ],
+ "ruch": [],
+ "dodatkowe": [
+  "Godzina przypomnienia z planu C111 (jutro): 16:30",
+  "## Różnica złotego pliku tests/fixtures/kalendarz-bm.ics (stary → nowy)",
+  "```diff",
+  "3c3\n< PRODID:-//skrotbm.pl//Skrot BM//PL\r\n---\n> PRODID:-//zdawalni.pl//Zdawalni//PL\r\n6c6\n< X-WR-CALNAME:Skrót BM · C111 lab A\r\n---\n> X-WR-CALNAME:Zdawalni · C111 lab A\r\n1911c1911\n< DESCRIPTION:Szczegóły w Skrócie BM: https://zdawalni.pl\r\n---\n> DESCRIPTION:Szczegóły w Zdawalni: https://zdawalni.pl\r\n1927c1927\n<  kładnego terminu.\\nSzczegóły w Skrócie BM: https://zdawalni.pl\r\n---\n>  kładnego terminu.\\nSzczegóły w Zdawalni: https://zdawalni.pl\r\n1942c1942\n< DESCRIPTION:Twój wpis w Skrócie BM: https://zdawalni.pl\r\n---\n> DESCRIPTION:Twój wpis w Zdawalni: https://zdawalni.pl\r\n1951,1952c1951,1952\n< DESCRIPTION:Data wpisana przez Ciebie w Skrócie BM (Przygotuj się). Plan \r\n<  nauki liczy się do niej.\\nhttps://zdawalni.pl\r\n---\n> DESCRIPTION:Data wpisana przez Ciebie w Zdawalni (Przygotuj się). Plan nau\r\n>  ki liczy się do niej.\\nhttps://zdawalni.pl",
+  "```",
+  "Pamięć service workera po wejściu: 31 adresów, np. http://127.0.0.1:8812/index.html, http://127.0.0.1:8812/, http://127.0.0.1:8812/i18n.js?v=20261116-logowanie1, http://127.0.0.1:8812/admin.js?v=20261107-rok4, http://127.0.0.1:8812/importy.js?v=20261106-kanon, http://127.0.0.1:8812/roczniki-dane.js?v=20261114-cukrowa"
+ ],
+ "testy": [
+  {
+   "name": "K1 390-jasny: przed skończoną kartą dnia – brak propozycji",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny: „Przypomnieć Ci jutro o 16:30?” (godzina z planu, pełne 30 min, ≤ 21:00), opis i „Tak, przypominaj” / „Nie teraz”",
+   "ok": true
+  },
+  {
+   "name": "K1 „Tak” włącza przypomnienia z godziną z planu",
+   "ok": true
+  },
+  {
+   "name": "K1 po włączeniu propozycja znika",
+   "ok": true
+  },
+  {
+   "name": "K1 360-jasny: przed skończoną kartą dnia – brak propozycji",
+   "ok": true
+  },
+  {
+   "name": "K1 360-jasny: „Przypomnieć Ci jutro o 16:30?” (godzina z planu, pełne 30 min, ≤ 21:00), opis i „Tak, przypominaj” / „Nie teraz”",
+   "ok": true
+  },
+  {
+   "name": "K1 390-ciemny: przed skończoną kartą dnia – brak propozycji",
+   "ok": true
+  },
+  {
+   "name": "K1 390-ciemny: „Przypomnieć Ci jutro o 16:30?” (godzina z planu, pełne 30 min, ≤ 21:00), opis i „Tak, przypominaj” / „Nie teraz”",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny-en: przed skończoną kartą dnia – brak propozycji",
+   "ok": true
+  },
+  {
+   "name": "K1 EN: „Remind you tomorrow at …?” / „Yes, remind me”",
+   "ok": true
+  },
+  {
+   "name": "K1 „Nie teraz” chowa propozycję na dziś",
+   "ok": true
+  },
+  {
+   "name": "K1 konto bez dostępu: brak propozycji",
+   "ok": true
+  },
+  {
+   "name": "K1 przypomnienia już włączone: brak propozycji",
+   "ok": true
+  },
+  {
+   "name": "K1 godzina z planu: test jednostkowy (koniec + 60, w górę do 30 min, ≤ 21:00, bez planu 18:00)",
+   "ok": true
+  },
+  {
+   "name": "K2 390-jasny: bez zaliczenia w 14 dni, po 1 dniu nauki – „Przypomnieć Ci mailem?” z godziną z planu",
+   "ok": true
+  },
+  {
+   "name": "K2 390-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K2 „Nie teraz” chowa kartę (30 dni)",
+   "ok": true
+  },
+  {
+   "name": "K2 360-ciemny: bez zaliczenia w 14 dni, po 1 dniu nauki – „Przypomnieć Ci mailem?” z godziną z planu",
+   "ok": true
+  },
+  {
+   "name": "K2 360-ciemny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K2 EN: „Get an email reminder?” (istniejące tłumaczenie) z godziną",
+   "ok": true
+  },
+  {
+   "name": "K2 390-jasny-en: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K2 przed pierwszym dniem nauki: bez karty przypomnień",
+   "ok": true
+  },
+  {
+   "name": "K3 tests/przypomnienia.test.js (rodzaj „seria”, warianty A/B/C, rotacja, studiedToday → null, termin pierwszy)",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 PGlite v57: historia z rodzajem (seria_x), flaga kalendarza",
+   "ok": true
+  },
+  {
+   "name": "K3 funkcja Edge zapisuje wariant w rodzaju logu („seria_b”)",
+   "ok": true
+  },
+  {
+   "name": "K4 tests/kalendarz.test.js: złoty plik, UID-y @skrotbm.pl bez zmian, wpis nauki tylko po włączeniu, VALARM, Zdawalni",
+   "ok": true
+  },
+  {
+   "name": "K4 różnica złotego pliku .ics: tylko linie z nazwą (PRODID, X-WR-CALNAME, opisy), bez UID",
+   "ok": true
+  },
+  {
+   "name": "K4 jednorazowe .ics (termIcs): PRODID Zdawalni",
+   "ok": true
+  },
+  {
+   "name": "K4 390-jasny: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony",
+   "ok": true
+  },
+  {
+   "name": "K4 włączenie zapisuje progress.calStudy = true",
+   "ok": true
+  },
+  {
+   "name": "K4 360-jasny: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony",
+   "ok": true
+  },
+  {
+   "name": "K4 390-ciemny: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony",
+   "ok": true
+  },
+  {
+   "name": "K4 EN: „Remind me about 5 minutes after class”",
+   "ok": true
+  },
+  {
+   "name": "K5 service worker zarejestrowany i steruje stroną (127.0.0.1 z ?sw=on)",
+   "ok": true
+  },
+  {
+   "name": "K5 w pamięci tylko adresy z tej samej domeny (bez Supabase, Stripe, plan.zdawalni.pl, CDN)",
+   "ok": true
+  },
+  {
+   "name": "K5 nowe ?v= wymienia plik w pamięci (jeden nawyk.js, najnowszy)",
+   "ok": true
+  },
+  {
+   "name": "K5 offline po pierwszym wejściu: Dziś się renderuje (powitanie z serią)",
+   "ok": true
+  },
+  {
+   "name": "K5 ?sw=off wyrejestrowuje workera i kasuje pamięci",
+   "ok": true
+  },
+  {
+   "name": "K5 sw.js: tylko GET z tej samej domeny, stała wersji, kasowanie starych pamięci",
+   "ok": true
+  },
+  {
+   "name": "K5 bez ?sw=on na 127.0.0.1 worker się nie rejestruje (zwykłe testy bez pamięci podręcznej)",
+   "ok": true
+  },
+  {
+   "name": "K5 390-jasny: 2. dzień nauki na iPhonie – „Dodaj Zdawalni do ekranu głównego…” z 2 krokami (Udostępnij → Do ekranu początkowego)",
+   "ok": true
+  },
+  {
+   "name": "K5 „Nie teraz” chowa zachętę (30 dni)",
+   "ok": true
+  },
+  {
+   "name": "K5 360-ciemny: 2. dzień nauki na iPhonie – „Dodaj Zdawalni do ekranu głównego…” z 2 krokami (Udostępnij → Do ekranu początkowego)",
+   "ok": true
+  },
+  {
+   "name": "K5 EN: „Add Zdawalni to your home screen” + „Add to Home Screen”",
+   "ok": true
+  },
+  {
+   "name": "K5 zachęta tylko w 2. dniu nauki (5. dzień: brak)",
+   "ok": true
+  },
+  {
+   "name": "konsola bez błędów (wszystkie stany)",
+   "ok": true
+  }
+ ],
+ "wynik": {
+  "pass": 46,
+  "fail": 0
+ }
+}

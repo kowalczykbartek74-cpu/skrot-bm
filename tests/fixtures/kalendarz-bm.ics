@@ -1,9 +1,9 @@
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//skrotbm.pl//Skrot BM//PL
+PRODID:-//zdawalni.pl//Zdawalni//PL
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:Skrót BM · C111 lab A
+X-WR-CALNAME:Zdawalni · C111 lab A
 X-WR-TIMEZONE:Europe/Warsaw
 X-WR-CALDESC:Zajęcia\, zaliczenia i zadania. Aktualizuje się sam.
 REFRESH-INTERVAL;VALUE=DURATION:PT3H
@@ -1908,7 +1908,7 @@ DTSTAMP:X
 DTSTART;TZID=Europe/Warsaw:20261210T100000
 DTEND;TZID=Europe/Warsaw:20261210T110000
 SUMMARY:Kolokwium z mikroekonomii
-DESCRIPTION:Szczegóły w Skrócie BM: https://zdawalni.pl
+DESCRIPTION:Szczegóły w Zdawalni: https://zdawalni.pl
 CATEGORIES:Kolokwium
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -1924,7 +1924,7 @@ DTSTART;VALUE=DATE:20270115
 DTEND;VALUE=DATE:20270116
 SUMMARY:~ Projekt
 DESCRIPTION:Data orientacyjna z sylabusa: prowadzący jeszcze nie podał do
- kładnego terminu.\nSzczegóły w Skrócie BM: https://zdawalni.pl
+ kładnego terminu.\nSzczegóły w Zdawalni: https://zdawalni.pl
 CATEGORIES:Projekt
 TRANSP:TRANSPARENT
 BEGIN:VALARM
@@ -1939,7 +1939,7 @@ DTSTAMP:X
 DTSTART;TZID=Europe/Warsaw:20261120T120000
 DTEND;TZID=Europe/Warsaw:20261120T130000
 SUMMARY:✏️ Mój wpis: Konsultacje
-DESCRIPTION:Twój wpis w Skrócie BM: https://zdawalni.pl
+DESCRIPTION:Twój wpis w Zdawalni: https://zdawalni.pl
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
@@ -1948,8 +1948,8 @@ DTSTAMP:X
 DTSTART;VALUE=DATE:20270203
 DTEND;VALUE=DATE:20270204
 SUMMARY:📅 Twoja data: zaliczenie Makroekonomia (wykład)
-DESCRIPTION:Data wpisana przez Ciebie w Skrócie BM (Przygotuj się). Plan 
- nauki liczy się do niej.\nhttps://zdawalni.pl
+DESCRIPTION:Data wpisana przez Ciebie w Zdawalni (Przygotuj się). Plan nau
+ ki liczy się do niej.\nhttps://zdawalni.pl
 TRANSP:TRANSPARENT
 BEGIN:VALARM
 ACTION:DISPLAY

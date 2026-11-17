@@ -537,6 +537,8 @@
     nauka_zamrozenie_uzyj_dni: (a) => UX2.uzyjDni(a.p_dni || []),
     nauka_zamrozenie_prezent: () => UX2.prezent(),
     nauka_seria: () => UX2.seria(),
+    // etap 4: link do kalendarza w telefonie (okno z przełącznikiem „5 min po zajęciach”)
+    nauka_kalendarz_token: () => "a".repeat(48),
     // === koniec ux-2 ===
   };
   window.__rpc = [];

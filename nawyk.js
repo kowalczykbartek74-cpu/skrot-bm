@@ -46,9 +46,22 @@
     zostalo: "zostało {0}/{1}",
     koniecSerii: "Seria {0} się skończyła: zabrakło zamrożeń. Dziś zaczynasz nową.",
     lgPrzyszly: "przed Tobą",
+    przypTytul: "Przypomnieć Ci jutro o {0}?",
+    przypOpis: "Jeden mail, tylko gdy jeszcze nie było nauki. Godzinę zmienisz w Ustawieniach.",
+    przypTak: "Tak, przypominaj",
+    przypWlaczone: "Przypomnienia włączone. Godzinę zmienisz w Ustawieniach.",
+    przypDzisTytul: "Przypomnieć Ci mailem?",
+    przypDzisOpis: "Najwyżej jeden mail dziennie o {0} i tylko wtedy, gdy jeszcze nie było nauki.",
+    wlacz: "Włącz",
+    kalNauka: "Przypominaj o 5 minutach po zajęciach",
+    kalNaukaOpis: "W kalendarzu pojawi się wpis „Zdawalni · 5 min po zajęciach” z przypomnieniem, pół godziny po Twoich ostatnich zajęciach.",
+    instTytul: "Dodaj Zdawalni do ekranu głównego: jedno dotknięcie do 5 minut.",
+    instDodaj: "Dodaj",
+    instIos1: "Dotknij „Udostępnij” na dole Safari.",
+    instIos2: "Wybierz „Do ekranu początkowego”.",
     powrotTytul: "Dobrze, że jesteś. Ostatnio {0} temu.",
     powrotTytulDzis: "Dobrze, że jesteś.",
-    powrotZajecia: "Zajęcia od ostatniej wizyty: {0}",
+    powrotZajecia: "Zajęcia od ostatniej nauki: {0}",
     powrotTerminy: "Nowe terminy: {0}",
     powrotFiszki: "Fiszki do odświeżenia: {0}",
     powrotWracam: "Wracam: 3 minuty",
@@ -64,6 +77,7 @@
     naprawaJutro: "· jutro seria wróci do {0}",
     naprawaOk: "Seria odzyskana: {0}",
     naprawaDzis: "· ucz się dziś: seria wróci do {0}",
+    naprawaNieudana: "Naprawa serii {0} nie wyszła (zabrakło dnia nauki). Dziś zaczynasz nową.",
     seriaPrzepadla: "Seria {0} się skończyła. Dziś zaczynasz nową.",
     kupZa: "Kup za",
     ofertaTytul: "Chroń serię",
@@ -220,7 +234,7 @@
         const last = rep.dni[rep.dni.length - 1];
         if (last === t) return null;
         if (last === t - 1) { const dni = [...rep.dni, t]; return dni.length >= 2 ? { streak: { d: t, n: rep.n + 2 }, streakRepair: null, streakRepairAt: t, odzyskana: rep.n + 2 } : { streakRepair: { ...rep, dni } }; }
-        return { streakRepair: null };
+        return { streakRepair: null, nieudana: rep.n };
       }
       const m = L.naprawaMozna(prog, t, c);
       return m ? { streakRepair: { n: m.n, od: t, dni: [t] } } : null;
@@ -230,6 +244,12 @@
       const zam = c.zamrozone || new Set(), prz = c.przerwa || (() => false); let n = 0;
       for (let d = od + 1; d < t; d++) if (L.dow(d) < 5 && !prz(d) && !zam.has(d)) n++;
       return n;
+    },
+    // Godzina przypomnienia (minuty od północy): koniec ostatnich zajęć + 60 min, w górę do pełnych 30 min, najpóźniej 21:00;
+    // bez planu 18:00 (B1).
+    godzinaZPlanu(koniec) {
+      if (!Number.isFinite(koniec)) return 18 * 60;
+      return Math.min(21 * 60, Math.ceil((koniec + 60) / 30) * 30);
     },
     tydzien(t, nauka, zamrozone, przerwa) { return L.kalendarz(t, 1, nauka, zamrozone, przerwa)[0]; },
     kamien: (n) => KAMIENIE.includes(n),
@@ -361,8 +381,10 @@
     const rep = progress().streakRepair;
     const repJutro = rep && rep.dni && rep.dni[rep.dni.length - 1] === t && rep.dni.length === 1;
     const repDzis = rep && rep.dni && rep.dni.length === 1 && rep.dni[0] === t - 1 && stan !== "done";
-    const napT = przepadla && !rep ? L.naprawaMozna(progress(), t, kontekstSerii()) : null;
-    if (napT) przepadla = 0;
+    // Przy karcie powrotu (na Dziś) strata i naprawa są w karcie: pigułka zostaje spokojna (bez powtarzania).
+    const zKarta = compact && kartaPowrotuWarunek();
+    const napT = przepadla && !rep && !zKarta ? L.naprawaMozna(progress(), t, kontekstSerii()) : null;
+    if (napT || zKarta) przepadla = 0;
     // Piątek z 2 zamrożeniami: przed nauką „ucz się dziś: weekend chroniony” (pt + sob. + ndz. bez nauki to 3 dni, za dużo),
     // po nauce „weekend chroniony”.
     const piatek = L.dow(t) === 4 && ma >= 2 && sk > 0, piatekPo = piatek && stan === "done", piatekPrzed = piatek && (stan === "chroni" || stan === "todo" || stan === "risk") && !czeka;
@@ -400,7 +422,8 @@
     let patch = L.seriaPatch(prog, t, sn);
     if (!prog?.xp || prog.xp.d !== t) { // pierwsze XP dnia: krok naprawy serii
       const k = L.naprawaKrok(prog, t, kontekstSerii());
-      if (k) { const { odzyskana, ...rest } = k; patch = { ...(patch || {}), ...rest }; if (odzyskana) setTimeout(() => oknoOdzyskana(odzyskana), 900); }
+      if (k) { const { odzyskana, nieudana, ...rest } = k; patch = { ...(patch || {}), ...rest }; if (odzyskana) setTimeout(() => oknoOdzyskana(odzyskana), 900);
+        if (nieudana) setTimeout(() => baner("ux2-klepsydra", fmt(PL.naprawaNieudana, dniPL(nieudana)), 0), 900); } // nieudana naprawa nigdy po cichu
     }
     // Prezent po zapisie postępu (progSoon zapisuje po 2,5 s), żeby baza widziała już 2 dni nauki; w razie „za wcześnie” ponawia tik.
     if (sn && sn.n >= 2) setTimeout(() => { try { A().ls?.set("skrot-zam-prezent-dzien", ""); } catch (e) {} prezent(); }, 3500);
@@ -616,6 +639,80 @@
       h("p", { class: "nw-powrot-lekko muted", text: plan ? PL.powrotLekko : PL.powrotSpokojnie }));
     return box;
   }
+  // ---------------------------------------------------------------- etap 4: kanał poza stroną
+  const godzTxt = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  // Koniec ostatnich zajęć w najbliższym dniu z zajęciami (od jutra, do 7 dni) → godzina przypomnienia.
+  function godzinaPrzypomnienia() {
+    const ap = A();
+    try {
+      for (let i = 1; i <= 7; i++) {
+        const lst = ap.classesOn(dzienKey(today() + i), ap.S.group, ap.S.sub) || [];
+        if (!lst.length) continue;
+        const ends = lst.map((e) => (e.time || ap.SLOTS[e.s] || [])[1]).filter(Boolean).map((x) => { const [h, m] = x.split(":").map(Number); return h * 60 + m; });
+        if (ends.length) return L.godzinaZPlanu(Math.max(...ends));
+      }
+    } catch (e) {}
+    return L.godzinaZPlanu(null);
+  }
+  // „Przypomnieć Ci jutro o {godz}?” na ekranie końca pierwszej karty dnia (wstawia pętla 3).
+  // Warunki (C4): zalogowany, pełny dostęp albo próba, przypomnienia wyłączone, bez „Nie teraz” dziś, pierwsza skończona karta dnia.
+  function ofertaPrzypomnienia() {
+    const ap = A(), { h } = ap; if (!h) return null;
+    const PRZ = ap.prz?.(), sk = W.skrot || {};
+    if (sk.state !== "in" || !ap.PAID?.() || !ap.pz?.()) return null;
+    ap.przypLoad?.();
+    if (!PRZ?.d || PRZ.d.wlaczone || PRZ.off) return null;
+    if (ap.ls?.get("skrot-przyp-nie") === ap.todayKey?.()) return null;
+    const st = ap.ldDay?.get?.(); if (!st?.done?.karta) return null; // pierwsza skończona karta dnia
+    const godz = godzinaPrzypomnienia();
+    const box = h("section", { class: "panel sk-panel nw-przyp", "aria-label": fmt(PL.przypTytul, godzTxt(godz)) },
+      h("h2", { class: "nw-przyp-h", text: fmt(PL.przypTytul, godzTxt(godz)) }),
+      h("p", { class: "muted", text: PL.przypOpis }),
+      h("div", { class: "row nw-przyp-btns" },
+        h("button", { type: "button", class: "btn primary", onclick: async () => { await ap.przypSave({ wlaczone: true, godz }, PL.przypWlaczone); box.remove(); } }, PL.przypTak),
+        h("button", { type: "button", class: "btn ghost", onclick: () => { ap.ls.set("skrot-przyp-nie", ap.todayKey()); box.remove(); } }, PL.nieTeraz)));
+    return box;
+  }
+  // przypHomeCard bez zaliczenia w ciągu 14 dni: wersja ogólna po ≥ 1 dniu nauki; „Nie teraz” chowa na 30 dni (ten sam klucz).
+  function kartaPrzypomnieniaDzis() {
+    const ap = A(), { h } = ap; if (!h) return null;
+    const PRZ = ap.prz?.(); if (!PRZ?.d || PRZ.d.wlaczone) return null;
+    const p = progress(), dniNauki = L.dniNauki(p, zamDni(), przerwa).size;
+    if (dniNauki < 1) return null;
+    const godz = godzinaPrzypomnienia();
+    return h("section", { class: "panel sk-panel przyp-card nw-przyp", "aria-label": PL.przypDzisTytul },
+      h("div", { class: "panel-head" }, h("h2", { text: PL.przypDzisTytul }),
+        h("button", { type: "button", class: "link przyp-nie nw-link44", onclick: () => { ap.ls.set("skrot-przyp-nie", ap.todayKey()); ap.render(); } }, PL.nieTeraz)),
+      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: fmt(PL.przypDzisOpis, godzTxt(godz)) }),
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", onclick: () => ap.przypSave(PRZ.d.nowe ? { wlaczone: true, godz } : { wlaczone: true }, PL.przypWlaczone) }, PL.wlacz)));
+  }
+  // Przełącznik w oknie „Kalendarz w telefonie”: progress.calStudy (funkcja kalendarz czyta go przez SQL v57).
+  function przelacznikKalendarza() {
+    const ap = A(), { h } = ap; if (!h) return null;
+    const id = "nw-kal-nauka", on = progress().calStudy === true;
+    const inp = h("input", { type: "checkbox", id, checked: on ? true : null, onchange: (e) => ap.saveProgress?.({ calStudy: !!e.target.checked }) });
+    return h("label", { class: "nw-kal", for: id }, inp, h("span", {}, h("b", { text: PL.kalNauka }), h("small", { class: "muted", text: PL.kalNaukaOpis })));
+  }
+  // Zachęta do instalacji: raz, w 2. dniu nauki (Android: zapamiętany beforeinstallprompt, iPhone: 2 kroki), „Nie teraz” na 30 dni.
+  let instEvt = null;
+  if (W) W.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); instEvt = e; });
+  const iOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) && !navigator.standalone;
+  const zainstalowana = () => (W.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  function ofertaInstalacji() {
+    const ap = A(), { h } = ap; if (!h || zainstalowana()) return null;
+    if (!instEvt && !iOS()) return null;
+    const nie = +(ap.ls?.get("skrot-inst-nie") || -99), t = today();
+    if (t - nie < 30 || ap.ls?.get("skrot-inst-pokazana") && ap.ls.get("skrot-inst-pokazana") !== String(t)) return null;
+    const p = progress(); if (L.dniNauki(p, zamDni(), przerwa).size !== 2 || p.streak?.d !== t) return null;
+    ap.ls?.set("skrot-inst-pokazana", String(t));
+    const box = h("section", { class: "panel sk-panel nw-inst", "aria-label": PL.instTytul },
+      h("p", { class: "nw-inst-h", text: PL.instTytul }),
+      iOS() ? h("ol", { class: "nw-inst-ios" }, h("li", {}, svg('<path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>', 18), h("span", { text: PL.instIos1 })), h("li", {}, svg('<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/>', 18), h("span", { text: PL.instIos2 }))) : null,
+      h("div", { class: "row" },
+        instEvt ? h("button", { type: "button", class: "btn primary", onclick: async () => { try { await instEvt.prompt(); } catch (e) {} instEvt = null; box.remove(); } }, PL.instDodaj) : null,
+        h("button", { type: "button", class: "btn ghost", onclick: () => { ap.ls.set("skrot-inst-nie", String(t)); box.remove(); } }, PL.nieTeraz)));
+    return box;
+  }
   // Wiersz „Jutro: {temat}, 5 min” (ekran końca, pętla 3): karta 5 min z tematu spoza dzisiejszych, jak „Jeszcze 5 min”.
   function jutroTytul() {
     try {
@@ -749,6 +846,19 @@ html #main .nw-powrot .btn.primary.nw-powrot-go { width: 100%; min-height: 52px;
 .nw-powrot-lekko { margin: -4px 0 0; font-size: .85rem; text-align: center; }
 .nw-powrot { gap: 10px; }
 .nw-powrot.nw-mig { outline: 3px solid var(--h-lime-edge, var(--accent)); outline-offset: 3px; }
+.nw-przyp { display: grid; gap: 8px; }
+.nw-przyp-h { margin: 0; font-size: 1.1rem; }
+.nw-przyp .muted { margin: 0; }
+.nw-przyp-btns .btn, .nw-inst .btn { min-height: 48px; }
+.nw-link44 { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; }
+.nw-kal { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: var(--sunk, var(--h-line)); cursor: pointer; }
+.nw-kal input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--h-acc, var(--accent)); }
+.nw-kal span { display: grid; gap: 2px; }
+.nw-kal small { font-size: .82rem; }
+.nw-inst { display: grid; gap: 8px; }
+.nw-inst-h { margin: 0; font-weight: 700; }
+.nw-inst-ios { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+.nw-inst-ios li { display: flex; gap: 8px; align-items: center; }
 .nw-zcard, .nw-oferta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 12px; align-items: center; padding: 14px 16px; border-radius: 22px; background: var(--h-blue-soft, var(--accent-soft)); color: var(--ink); }
 .nw-zcard > .btn, .nw-zcard > .nw-zam-full, .nw-oferta-btns { grid-column: 1 / -1; }
 .nw-zcard .btn, .nw-oferta .btn { min-height: 48px; display: inline-flex; align-items: center; gap: 6px; }
@@ -862,7 +972,7 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu, powrotAktywny, oknoOdzyskana, maKartePowrotu, naprawaLinia });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, ofertaPrzypomnienia, kartaPrzypomnieniaDzis, przelacznikKalendarza, ofertaInstalacji, godzinaPrzypomnienia, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu, powrotAktywny, oknoOdzyskana, maKartePowrotu, naprawaLinia });
   // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
   let stanKey = null;
   function tik() {
@@ -875,6 +985,21 @@ html.calm .nw-conf { display: none; }
   setTimeout(ponow, 4000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") tik(); });
   W.ZD_NAWYK.tik = tik;
+  // Service worker (sw.js): https albo localhost/127.0.0.1 (lokalnie tylko z ?sw=on albo skrot-sw=1, żeby zwykłe testy
+  // Playwright nie dostawały pamięci podręcznej); ?sw=off wyrejestrowuje i kasuje pamięci.
+  if ("serviceWorker" in navigator) {
+    let q = null; try { q = new URLSearchParams(location.search).get("sw"); } catch (e) {}
+    const lokalnie = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+    let flaga = null; try { if (q === "on") localStorage.setItem("skrot-sw", "1"); flaga = localStorage.getItem("skrot-sw"); } catch (e) {}
+    if (q === "off") {
+      try { localStorage.removeItem("skrot-sw"); } catch (e) {}
+      navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister())).catch(() => {});
+      if (W.caches) caches.keys().then((ks) => ks.filter((k) => k.startsWith("zdawalni-sw-")).forEach((k) => caches.delete(k))).catch(() => {});
+    } else if (location.protocol === "https:" || (lokalnie && flaga === "1")) {
+      const reg = () => navigator.serviceWorker.register("sw.js").catch(() => {});
+      if (document.readyState === "complete") reg(); else W.addEventListener("load", reg);
+    }
+  }
   // Link z maila „powrót” (?wracam=1): karta powrotu na Dziś przez resztę dnia, przewinięcie do niej i adres bez parametru.
   if (wracamZLinku()) {
     try { A().ls?.set("skrot-wracam", String(today())); } catch (e) {}

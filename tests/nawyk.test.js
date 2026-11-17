@@ -126,5 +126,12 @@ test("naprawa serii wysiłkiem: seria ≥ 3, 2–4 opuszczone dni, 2 dni nauki z
   assert.deepEqual(k1, { streakRepair: { n: 12, od: t, dni: [t] } });
   const k2 = L.naprawaKrok({ streak: { d: t, n: 1 }, streakRepair: k1.streakRepair }, t + 1, c);
   assert.deepEqual(k2, { streak: { d: t + 1, n: 14 }, streakRepair: null, streakRepairAt: t + 1, odzyskana: 14 });
-  assert.deepEqual(L.naprawaKrok({ streak: { d: t, n: 1 }, streakRepair: k1.streakRepair }, t + 2, c), { streakRepair: null }, "przerwa w naprawie: przepada");
+  assert.deepEqual(L.naprawaKrok({ streak: { d: t, n: 1 }, streakRepair: k1.streakRepair }, t + 2, c), { streakRepair: null, nieudana: 12 }, "przerwa w naprawie: przepada, ale z komunikatem");
+});
+
+test("godzina przypomnienia z planu: koniec + 60 min, w górę do 30 min, najpóźniej 21:00; bez planu 18:00", () => {
+  assert.equal(L.godzinaZPlanu(15 * 60 + 15), 16 * 60 + 30, "15:15 → 16:15 → 16:30");
+  assert.equal(L.godzinaZPlanu(17 * 60), 18 * 60, "17:00 → 18:00");
+  assert.equal(L.godzinaZPlanu(20 * 60 + 30), 21 * 60, "20:30 → 21:30 → 21:00");
+  assert.equal(L.godzinaZPlanu(null), 18 * 60);
 });

@@ -98,7 +98,11 @@
         return { d: t.d, n: String(t.n || "").slice(0, 80), ne: String(t.ne || t.n || "").slice(0, 80), r: ["K", "E", "W", "LAB"].indexOf(t.r) >= 0 ? t.r : "K",
           dl: t.dl ? String(t.dl).slice(0, 120) : null, own: !!t.own, ok: !!t.ok, sid: t.sid ? String(t.sid).slice(0, 60) : null };
       });
-    return { v: 1, od: o.od, ter: ter, pow: licz(o.pow), rew: licz(o.rew), zad: !!o.zadanie, zn: o.znane !== false };
+    var ser = o.seria && Number.isFinite(o.seria.n) && isKey(o.seria.d) ? { n: Math.max(0, Math.min(9999, Math.floor(o.seria.n))), d: o.seria.d } : null;
+    var out = { v: 1, od: o.od, ter: ter, pow: licz(o.pow), rew: licz(o.rew), zad: !!o.zadanie };
+    if (o.znane === false) out.zn = false; // UX-2: tylko gdy różne od domyślnego (stary stan bez pola = jak dotąd)
+    if (ser) out.ser = ser;
+    return out;
   }
 
   // Terminy z dzisiejszymi datami: termin starosty (dl) bierze datę z bazy (przesunięty → nowa data, usunięty → znika),
@@ -126,7 +130,7 @@
     var at = function (a) { return i >= 0 && Array.isArray(a) && Number.isFinite(a[i]) ? Math.max(0, a[i]) : 0; };
     var hist = ((row && row.historia) || []).filter(function (h) { return h && isKey(h.day) && h.day < today; })
       .sort(function (a, b) { return a.day < b.day ? 1 : -1; })
-      .map(function (h) { return { day: h.day, helped: !!h.opened || dni.has(h.day) }; });
+      .map(function (h) { var o = { day: h.day, helped: !!h.opened || dni.has(h.day) }; if (h.rodzaj) o.kind = h.rodzaj; return o; });
     var last = isKey(row && row.ostatni) && row.ostatni < today ? row.ostatni : null;
     return {
       today: today,
@@ -140,6 +144,7 @@
       rewanze: at(st.rew),
       zadanie: !!st.zad,
       znane: st.zn !== false, // UX-2: czy strona ma kartę powrotu „3 minuty” (znany temat albo rewanż)
+      seria: st.ser && Number.isFinite(st.ser.n) && isKey(st.ser.d) ? { n: st.ser.n, d: st.ser.d } : null, // UX-2: seria dni (ostatni dzień ISO)
     };
   }
 
@@ -177,6 +182,24 @@
           cta: "Powtórz ten przedmiot", path: t.sid ? "#/exam/" + t.sid : "#/",
         };
       }
+    }
+    // UX-2: „ratuj serię” – seria ≥ 3, wczoraj była nauka, dziś jeszcze nie (dni 2–3 po przerwie ma „powrót”, nie to).
+    // 3 warianty bez poczucia winy; wariant = pierwszy z A/B/C nieużyty w ostatnich 3 mailach „seria” (historia z rodzajem seria_x).
+    var ser = ctx.seria;
+    if (ser && ser.n >= 3 && ser.d === addDays(ctx.today, -1)) {
+      var uzyte = (ctx.history || []).filter(function (h) { return h.kind && /^seria_[abc]$/.test(h.kind); }).slice(0, 3).map(function (h) { return h.kind.slice(6); });
+      var w = ["a", "b", "c"].filter(function (x) { return uzyte.indexOf(x) < 0; })[0] || uzyte[uzyte.length - 1] || "a";
+      var n1 = ser.n, n2 = ser.n + 1;
+      var T = en ? {
+        a: [n1 + "-day streak. 5 minutes today?", "You're on a " + n1 + "-day streak in Zdawalni. Five minutes today and tomorrow it's " + n2 + "."],
+        b: ["Your " + n1 + "-day streak is waiting", "One 5-minute card keeps it going."],
+        c: ["Today: 5 minutes and a " + n2 + "-day streak", "One short card and you're done."],
+      } : {
+        a: [n1 + " dni z rzędu. Dziś 5 minut?", "Masz serię " + n1 + " dni w Zdawalni. Pięć minut dziś i jutro będzie " + n2 + "."],
+        b: ["Seria " + n1 + " dni czeka na dziś", "Wystarczy jedna karta 5 minut, żeby seria została."],
+        c: ["Na dziś: 5 minut i seria " + n2, "Jedna krótka karta i masz to z głowy."],
+      };
+      return { kind: "seria", wariant: w, title: T[w][0], body: T[w][1], cta: en ? "5 minutes now" : "5 minut teraz", path: "#/" };
     }
     var cokolwiek = (co.powtorki && ctx.powtorki + ctx.rewanze > 0) || (co.zadanie && ctx.zadanie);
     if (cokolwiek && ctx.lastStudyDay && diffDays(ctx.today, ctx.lastStudyDay) >= NOTIFY.comebackAfterDays) {

@@ -5650,11 +5650,24 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "· odzyskaj {0} (1/2)": "· win back {0} (1/2)",
 "· odzyskaj {0} dni (0/2)": "· win back {0}-day streak (0/2)",
 "· odzyskaj {0} dni (1/2)": "· win back {0}-day streak (1/2)",
-"Zajęcia od ostatniej wizyty: {0}": "Classes since your last visit: {0}",
 "Powtórka z tego, co już znasz, i jedno pytanie. Bez nowego tematu.": "A review of what you already know, plus one question. No new topic.",
 "Naprawa serii: 1/2. Jutro wróci seria {0}.": "Streak repair: 1/2. Tomorrow your {0} streak comes back.",
 "Naprawa serii: 1/2. Jutro wróci seria {0} dni.": "Streak repair: 1/2. Tomorrow your {0}-day streak comes back.",
-"Wracasz? Zacznijmy spokojnie": "Back, nice and easy"
+"Wracasz? Zacznijmy spokojnie": "Back, nice and easy",
+"Przypomnieć Ci jutro o {0}?": "Remind you tomorrow at {0}?",
+"Jeden mail, tylko gdy jeszcze nie było nauki. Godzinę zmienisz w Ustawieniach.": "One email, only if you haven't studied yet. Change the time in Settings.",
+"Tak, przypominaj": "Yes, remind me",
+"Przypomnienia włączone. Godzinę zmienisz w Ustawieniach.": "Reminders on. Change the time in Settings.",
+"Najwyżej jeden mail dziennie o {0} i tylko wtedy, gdy jeszcze nie było nauki.": "At most one email a day at {0}, and only if you haven't studied yet.",
+"Przypominaj o 5 minutach po zajęciach": "Remind me about 5 minutes after class",
+"W kalendarzu pojawi się wpis „Zdawalni · 5 min po zajęciach” z przypomnieniem, pół godziny po Twoich ostatnich zajęciach.": "Your calendar gets a “Zdawalni · 5 min after class” event with an alert, half an hour after your last class.",
+"Dodaj Zdawalni do ekranu głównego: jedno dotknięcie do 5 minut.": "Add Zdawalni to your home screen: one tap to your 5 minutes.",
+"Dotknij „Udostępnij” na dole Safari.": "Tap “Share” at the bottom of Safari.",
+"Wybierz „Do ekranu początkowego”.": "Choose “Add to Home Screen”.",
+"Zdawalni · 5 min po zajęciach": "Zdawalni · 5 min after class",
+"Naprawa serii {0} nie wyszła (zabrakło dnia nauki). Dziś zaczynasz nową.": "Streak repair for {0} didn't work out (a study day was missing). Today you start a new one.",
+"Naprawa serii {0} dni nie wyszła (zabrakło dnia nauki). Dziś zaczynasz nową.": "Repair of your {0}-day streak didn't work out (a study day was missing). Today you start a new one.",
+"Zajęcia od ostatniej nauki: {0}": "Classes since you last studied: {0}"
 // koniec ux-2
 },
 "plural": {

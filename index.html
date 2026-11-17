@@ -7235,7 +7235,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       const [hh, mm] = x.time.split(":").map(Number), end = hh * 60 + mm + 60;
       when = [`DTSTART:${d}T${pad(hh)}${pad(mm)}00`, `DTEND:${d}T${pad(Math.min(23, Math.floor(end / 60)))}${pad(end >= 1440 ? 59 : end % 60)}00`];
     } else when = [`DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${TL.addDays(x.date, 1).replace(/-/g, "")}`];
-    const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Skrot BM//Terminy//PL", "BEGIN:VEVENT", `UID:${String(x.key).replace(/[^\w:-]/g, "")}@skrotbm.pl`,
+    const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Zdawalni//Terminy//PL", "BEGIN:VEVENT", `UID:${String(x.key).replace(/[^\w:-]/g, "")}@skrotbm.pl`,
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`, ...when, `SUMMARY:${esc(x.title)}`, s ? `DESCRIPTION:${esc(s.pl)}` : null, "END:VEVENT", "END:VCALENDAR"].filter(Boolean).join("\r\n");
     const a = h("a", { href: URL.createObjectURL(new Blob([body], { type: "text/calendar" })), download: (x.title || "termin").replace(/[^\p{L}\p{N}]+/gu, "-").slice(0, 60) + ".ics" });
     document.body.append(a); a.click(); a.remove();
@@ -8022,6 +8022,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       needGroup() || ldOn() ? null : poHomeCard("mid"),
       needGroup() ? null : guideStrip(),
       needGroup() ? null : przypHomeCard(),
+      // ux-2: zachęta „Dodaj Zdawalni do ekranu głównego” (raz, w 2. dniu nauki).
+      needGroup() ? null : window.ZD_NAWYK?.ofertaInstalacji?.(),
       // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
       needGroup() || (ldOn() && ldHasStas()) ? null : stasHomeCard(),
       // Hasło dnia nie ma już karty na Dziś (16.11.2026): gra jest w menu gier (#/gry) i w Więcej.
@@ -8138,6 +8140,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
             try { await navigator.clipboard.writeText(https); } catch { inp.select(); try { document.execCommand("copy"); } catch {} }
             e.currentTarget.textContent = "Skopiowano ✓";
           } }, "Kopiuj link")),
+          // ux-2: opcjonalny wpis „Zdawalni · 5 min po zajęciach” z alarmem (domyślnie wyłączony, SQL v57 + funkcja kalendarz).
+          window.ZD_NAWYK?.przelacznikKalendarza?.() ?? null,
           h("p", { class: "foot-note", text: "Link jest tylko Twój: nie udostępniaj go, bo pokazuje terminy z płatnej części. Google odświeża kalendarze co kilka godzin, więc nowości mogą dojść z opóźnieniem. Na Androidzie, jeśli nic się nie pokazuje, włącz w aplikacji Kalendarz synchronizację „" + name + "”." }),
           h("div", { class: "row" },
             h("button", { type: "button", class: "btn small ghost", onclick: async () => {
@@ -14788,7 +14792,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       for (const [k, v] of Object.entries(all)) if (Array.isArray(v) && v[0] !== 0 && !nb.has(k)) pow.push(v[1] - t);
       for (const [k, st] of rewStates()) if ((st.status === "due" || st.status === "waiting") && keySubject(k)) rew.push(st.due - t);
     }
-    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid, znane: window.ZD_NAWYK?.maKartePowrotu?.() ?? true });
+    const sr = S.progress?.streak; // ux-2: seria do maila „ratuj serię” (dzień ostatniej nauki jako data)
+    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid, znane: window.ZD_NAWYK?.maKartePowrotu?.() ?? true, seria: sr?.n > 0 ? { n: sr.n, d: dayIso(sr.d) } : null });
   }
   function przypSync() {
     const sk = window.skrot || {};
@@ -14813,7 +14818,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     const nie = ls.get("skrot-przyp-nie"); if (nie && daysUntil(nie) > -30) return null;
     let ex = null;
     for (const s of SUBJECTS) { const nx = nextExam(s.id); if (nx && daysUntil(nx.date) >= 0 && daysUntil(nx.date) <= 14 && (!ex || nx.date < ex.date)) ex = { ...nx, s }; }
-    if (!ex) return null;
+    // ux-2: bez zaliczenia w ciągu 14 dni wersja ogólna, ale dopiero po co najmniej 1 dniu nauki (raz na 30 dni przez „Nie teraz”).
+    if (!ex) return window.ZD_NAWYK?.kartaPrzypomnieniaDzis?.() ?? null;
     const n = daysUntil(ex.date);
     return h("section", { class: "panel sk-panel przyp-card", "aria-label": "Przypomnienia mailem" },
       h("div", { class: "panel-head" }, h("h2", { text: "Przypomnieć Ci mailem?" }),
@@ -14821,7 +14827,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       h("p", { class: "przyp-ex" }, h("b", { text: EN && ex.s.en ? ex.s.en : ex.s.pl }), " · ", h("span", { text: partLabel(ex.s.id, ex.part) }), " · ", h("span", { text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` })),
       h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Najwyżej jeden mail dziennie o 18:00 i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia." }),
       h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", disabled: PRZ.saving ? true : null,
-        onclick: () => przypSave(PRZ.d.nowe ? { wlaczone: true, godz: PZ.GODZ_DOMYSLNA } : { wlaczone: true }, "Przypomnienia włączone. Godzinę i rodzaje zmienisz w Ustawieniach.") }, "Włącz")));
+        onclick: () => przypSave(PRZ.d.nowe ? { wlaczone: true, godz: window.ZD_NAWYK?.godzinaPrzypomnienia?.() ?? PZ.GODZ_DOMYSLNA } : { wlaczone: true }, "Przypomnienia włączone. Godzinę i rodzaje zmienisz w Ustawieniach.") }, "Włącz")));
   }
   function setPrzyp() {
     const sk = window.skrot || {};
@@ -22929,7 +22935,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
     if (S.isStarosta) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
   // === most ux-2 ===
-  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, dayIso, dparse, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
+  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, dayIso, dparse, SLOTS, saveProgress, przypSave, przypLoad, PAID, prz: () => PRZ, pz: () => PZ, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
   // === koniec mostu ux-2 ===
 })();
 </script>

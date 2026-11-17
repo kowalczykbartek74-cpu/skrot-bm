@@ -95,7 +95,7 @@ catch (e) { ok("K2/K3 testy jednostkowe", false, String(e.stdout || e).slice(-30
   let p = await open(b, { prog: P12, ls: PR, czas: "2026-11-06T10:00:00+01:00" });
   let k = await karta(p);
   const pl0 = await pill(p);
-  ok("K3 seria 12 spadła po 3 dniach: wiersz „Seria 12 dni do odzyskania: ucz się dziś i jutro…” z postępem 0/2, pigułka „odzyskaj 12 dni (0/2)” (nie „koniec serii”), nic poza ekranem", k && k.nap === "Seria 12 dni do odzyskania: ucz się dziś i jutro (wystarczy krótka karta), a wróci." && /odzyskaj 12 dni \(0\/2\)/.test(pl0) && (await pozaEkranem(p, "#main .greet *")).length === 0 && !/koniec serii/.test(pl0), { k, pl0 });
+  ok("K3 seria 12 spadła po 3 dniach: wiersz „Seria 12 dni do odzyskania: ucz się dziś i jutro…” z postępem 0/2, pigułka spokojna (strata i naprawa tylko w karcie), nic poza ekranem", k && k.nap === "Seria 12 dni do odzyskania: ucz się dziś i jutro (wystarczy krótka karta), a wróci." && !/koniec serii|odzyskaj/.test(pl0) && (await pozaEkranem(p, "#main .greet *")).length === 0 && !/koniec serii/.test(pl0), { k, pl0 });
   await shot(p, "k3-naprawa-wiersz-390-jasny");
   R.pomiary.push(await pomiar(p, "Karta powrotu z naprawą 390", "#main .nw-powrot", "#main .nw-powrot"));
   await p.evaluate(() => window.ZD_APP.xpFlush(10)); await p.waitForTimeout(3200);
@@ -114,6 +114,14 @@ catch (e) { ok("K2/K3 testy jednostkowe", false, String(e.stdout || e).slice(-30
   await p.close();
   p = await open(b, { prog: { ...P12, streakRepairAt: T - 10 }, ls: PR });
   k = await karta(p);
+  {
+    const q = await open(b, { prog: { ...P12, xp: { t: 920, d: T - 2, n: 5 }, streak: { d: T - 2, n: 1 }, streakRepair: { n: 12, od: T - 2, dni: [T - 2] } }, ls: PR });
+    await q.evaluate(() => window.ZD_APP.xpFlush(5)); await q.waitForTimeout(1600);
+    const nb = await q.evaluate(() => ({ ban: document.querySelector(".nw-baner")?.innerText, rep: window.ZD_APP.S.progress.streakRepair }));
+    ok("K5 nieudana naprawa (dzień 1, przerwa, powrót w 3.) nie przepada po cichu: baner „Naprawa serii 12 dni nie wyszła…”", /Naprawa serii 12 dni nie wyszła/.test(nb.ban || "") && !nb.rep, nb);
+    await shot(q, "k5-naprawa-nieudana-390-jasny");
+    await q.close();
+  }
   ok("K3 naprawa raz na 30 dni: 10 dni po poprzedniej bez wiersza naprawy (zamiast tego jasny komunikat o końcu serii)", k && !/wróci/.test(k.nap || "") && /Seria 12 dni się skończyła/.test(k.nap || ""), k);
   await p.close();
 }
@@ -140,7 +148,7 @@ for (const [w, dark, lang] of [[390, false, "pl"], [390, true, "pl"], [360, fals
   const tag = `${w}-${dark ? "ciemny" : "jasny"}${lang === "en" ? "-en" : ""}`;
   const p = await open(b, { w, h: 800, dark, lang, prog: { xp: { t: 900, d: T - 7, n: 20 }, streak: { d: T - 7, n: 10 } }, ls: PR });
   const k = await karta(p), pl = await pill(p);
-  if (lang === "pl") ok(`K5 ${tag}: od wejścia pigułka „koniec serii 10 dni” i w karcie „Seria 10 dni się skończyła. Dziś zaczynasz nową.”`, /koniec serii 10 dni/.test(pl || "") && k && k.nap === "Seria 10 dni się skończyła. Dziś zaczynasz nową.", { pl, k });
+  if (lang === "pl") ok(`K5 ${tag}: od wejścia w karcie powrotu „Seria 10 dni się skończyła. Dziś zaczynasz nową.” (pigułka bez powtarzania)`, !/koniec serii/.test(pl || "") && k && k.nap === "Seria 10 dni się skończyła. Dziś zaczynasz nową.", { pl, k });
   else ok("K5 EN: „Your 10-day streak ended. Today you start a new one.”", (k?.nap || "") === "Your 10-day streak ended. Today you start a new one.", k?.nap);
   await shot(p, `k5-utrata-${tag}`);
   R.pomiary.push(await pomiar(p, `Utrata serii od wejścia ${tag}`, "#main", "#main .nw-powrot"));

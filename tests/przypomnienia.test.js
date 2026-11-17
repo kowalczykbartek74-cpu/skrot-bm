@@ -231,3 +231,27 @@ test("UX-2: mail „powrót” obiecuje „3 minuty” tylko, gdy strona ma kart
   assert.equal(P.kontekst({ stan: P.stanZ({ od: "2026-11-04", znane: false }) }, "2026-11-04").znane, false);
   assert.equal(P.kontekst({ stan: { v: 1, od: "2026-11-04" } }, "2026-11-04").znane, true, "stary stan bez pola: jak dotąd");
 });
+
+test("UX-2: mail „seria” – seria ≥ 3, wczoraj nauka, dziś nie; 3 warianty PL/EN po kolei, wariant w rodzaju; bez maila po dzisiejszej nauce", () => {
+  const ser = { n: 9, d: "2026-11-03" };
+  const a = P.wybierz(ctx({ seria: ser, zadanie: false }));
+  assert.equal(a.kind, "seria"); assert.equal(a.wariant, "a");
+  assert.equal(a.title, "9 dni z rzędu. Dziś 5 minut?"); assert.equal(a.body, "Masz serię 9 dni w Zdawalni. Pięć minut dziś i jutro będzie 10."); assert.equal(a.cta, "5 minut teraz"); assert.equal(a.path, "#/");
+  const h1 = [{ day: "2026-11-03", helped: true, kind: "seria_a" }];
+  const b = P.wybierz(ctx({ seria: ser, zadanie: false, history: h1 }));
+  assert.equal(b.wariant, "b"); assert.equal(b.title, "Seria 9 dni czeka na dziś");
+  const c = P.wybierz(ctx({ seria: ser, zadanie: false, history: [{ day: "2026-11-03", helped: true, kind: "seria_b" }, { day: "2026-11-02", helped: true, kind: "seria_a" }] }));
+  assert.equal(c.wariant, "c"); assert.equal(c.title, "Na dziś: 5 minut i seria 10");
+  const d4 = P.wybierz(ctx({ seria: ser, zadanie: false, history: [{ day: "2026-11-03", helped: true, kind: "seria_c" }, { day: "2026-11-02", helped: true, kind: "seria_b" }, { day: "2026-11-01", helped: true, kind: "seria_a" }] }));
+  assert.equal(d4.wariant, "a", "po trzech: najdawniej użyty");
+  assert.equal(P.wybierz(ctx({ seria: ser, studiedToday: true })), null, "dziś już nauka: nic");
+  assert.notEqual(P.wybierz(ctx({ seria: { n: 2, d: "2026-11-03" }, zadanie: false }))?.kind, "seria", "seria < 3");
+  assert.notEqual(P.wybierz(ctx({ seria: { n: 9, d: "2026-11-02" }, zadanie: false }))?.kind, "seria", "przedwczoraj: to już nie „ratuj serię”");
+  const en = P.wybierz(ctx({ seria: ser, zadanie: false, lang: "en" }));
+  assert.equal(en.title, "9-day streak. 5 minutes today?"); assert.equal(en.cta, "5 minutes now");
+  // termin ma pierwszeństwo przed serią
+  assert.equal(P.wybierz(ctx({ seria: ser, terminy: [ter("2026-11-07")] })).kind, "termin");
+  // stanZ → kontekst przenosi serię
+  assert.deepEqual(P.kontekst({ stan: P.stanZ({ od: "2026-11-04", seria: ser }) }, "2026-11-04").seria, ser);
+  assert.equal(P.kontekst({ historia: [{ day: "2026-11-03", opened: false, rodzaj: "seria_b" }] }, "2026-11-04").history[0].kind, "seria_b");
+});

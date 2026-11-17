@@ -15,7 +15,7 @@ const P = (...l) => out.push(...l);
 
 // Lista z B3 (pętla 2) + funkcje nowe w tej pętli. Wywołania z umów i blok mostu wypisujemy osobno.
 const MOJE = new Set(["viewHome", "lpLevelBar", "streakNext", "kStreakAlive", "kFreezeUse", "xpFlush", "LP_DAILY_GOAL", "przypHomeCard", "ptsDzis", "ptsHome", "ldBlock",
-  "misjaClaim", "viewReview", "openPhoneCal", "homeQuests", "greetBadges", "CAL_FN"]);
+  "misjaClaim", "viewReview", "openPhoneCal", "homeQuests", "greetBadges", "CAL_FN", "termIcs", "przypStan"]);
 const UMOWY = [/window\.ZD_WEJSCIE\?\./, /window\.ZD_NAWYK\?\./, /window\.ZD_NAGRODY\?\./];
 
 P("# Kontrola automatyczna UX-2", "", `Gałąź: ${sh("git branch --show-current").trim()} · HEAD ${sh("git rev-parse --short HEAD").trim()} · origin/main ${sh("git rev-parse --short origin/main").trim()}`, "");
@@ -73,6 +73,10 @@ for (const plik of ["index.html", "skrot-supabase.js"]) {
 const EMO = /\p{Extended_Pictographic}/u;
 const added = sh(`git diff -U0 ${BAZA} -- '*.js' '*.html' '*.css' '*.mjs' '*.ts'`).split("\n");
 let file = "", emo = [];
+// Emoji, które były już w usuniętej (starej) wersji tego samego pliku, to tekst sprzed pętli w zmienionej linii (np. tytuł wpisu
+// w kalendarzu) – wypisujemy je osobno, nie jako nowe emoji.
+const stareEmo = {}; { let f = ""; for (const l of added) { if (l.startsWith("+++ b/")) { f = l.slice(6); continue; } if (l.startsWith("-") && !l.startsWith("---")) for (const m of l.match(new RegExp(EMO.source, "gu")) || []) (stareEmo[f] ||= new Set()).add(m); } }
+const emoStare = [];
 for (const l of added) {
   if (l.startsWith("+++ b/")) { file = l.slice(6); continue; }
   if (!l.startsWith("+") || l.startsWith("+++")) continue;
@@ -81,12 +85,14 @@ for (const l of added) {
   if (/i18n-en\.js$/.test(file)) continue; // słownik
   if ((/^docs\/gry\/test\//.test(file) && !/atrapa/.test(file)) || /^docs\/audyt-ux\//.test(file)) continue; // testy (asercje na istniejących tekstach)
   const m = code.match(new RegExp(EMO.source, "gu"));
-  if (m) emo.push(`${file}: ${m.join(" ")} · \`${code.trim().slice(0, 120)}\``);
+  if (m && m.every((x) => stareEmo[file]?.has(x))) emoStare.push(`${file}: ${m.join(" ")} · \`${code.trim().slice(0, 120)}\``);
+  else if (m) emo.push(`${file}: ${m.join(" ")} · \`${code.trim().slice(0, 120)}\``);
 }
 for (const f of sh("git ls-files --others --exclude-standard").split("\n").filter((f) => /\.(js|css|html|ts)$/.test(f) && !/^docs\//.test(f))) {
   fs.readFileSync(ROOT + f, "utf8").split("\n").forEach((code, i) => { if (/^\s*\/\//.test(code)) return; const m = code.match(new RegExp(EMO.source, "gu")); if (m) emo.push(`${f}:${i + 1}: ${m.join(" ")} · \`${code.trim().slice(0, 120)}\``); });
 }
 P("## Emoji w dodanych liniach kodu", ...(emo.length ? emo.map((x) => "- " + x) : ["- brak"]), "");
+if (emoStare.length) P("### Emoji sprzed pętli w zmienionych liniach (były już w usuniętej wersji linii)", ...emoStare.map((x) => "- " + x), "");
 if (emo.length) problemy.push(`emoji w kodzie: ${emo.length}`);
 
 // --- skrót tablic quiz w atrapie i w docs/ (origin/main vs teraz)

@@ -1,4 +1,4 @@
-// Funkcja „kalendarz” dla Skrót BM: osobisty plik kalendarza (.ics) pod tajnym linkiem.
+// Funkcja „kalendarz” dla Zdawalni (dawniej Skrót BM): osobisty plik kalendarza (.ics) pod tajnym linkiem.
 //   GET /functions/v1/kalendarz?t=TOKEN
 // Zawiera zajęcia grupy wybranej w aplikacji (plan z plan.zdawalni.pl, z odwołaniami), zaliczenia i zadania z bazy,
 // a od SQL v27 także własne wpisy („✏️ Mój wpis”), własne daty zaliczeń („📅 Twoja data”) i dni planu nauki („📘 Plan”).
@@ -134,7 +134,7 @@ function personalEvents(mine: Mine[], own: Own[], planDays: PlanDay[], names: Re
     ...(alarm ? ["BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${esc(title)}`, `TRIGGER:${alarm}`, "END:VALARM"] : []), "END:VEVENT");
   for (const e of mine) {
     if (!e?.title || !/^\d{4}-\d{2}-\d{2}$/.test(e.date || "")) continue;
-    const title = `✏️ Mój wpis: ${e.title}${e.sid && names[e.sid] ? ` (${names[e.sid]})` : ""}`, desc = [e.note || null, `Twój wpis w Skrócie BM: ${APP}`].filter(Boolean).join("\n");
+    const title = `✏️ Mój wpis: ${e.title}${e.sid && names[e.sid] ? ` (${names[e.sid]})` : ""}`, desc = [e.note || null, `Twój wpis w Zdawalni: ${APP}`].filter(Boolean).join("\n");
     if (/^\d{1,2}:\d{2}$/.test(e.time || "")) {
       const [h, m] = e.time!.split(":").map(Number), t = h * 60 + m + 60;
       L.push("BEGIN:VEVENT", `UID:moje-${esc(e.id || hash(e.title + e.date))}@skrotbm.pl`, `DTSTAMP:${stamp}`,
@@ -146,11 +146,40 @@ function personalEvents(mine: Mine[], own: Own[], planDays: PlanDay[], names: Re
     const i = o.k.lastIndexOf("-"), sid = o.k.slice(0, i), part = o.k.slice(i + 1);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(o.date)) continue;
     const title = `📅 Twoja data: zaliczenie ${names[sid] || sid}${PART[part] ? ` (${PART[part]})` : ""}`;
-    day(`twoja-data-${o.k}`, o.date, title, `Data wpisana przez Ciebie w Skrócie BM (Przygotuj się). Plan nauki liczy się do niej.\n${APP}`, "-PT6H");
+    day(`twoja-data-${o.k}`, o.date, title, `Data wpisana przez Ciebie w Zdawalni (Przygotuj się). Plan nauki liczy się do niej.\n${APP}`, "-PT6H");
   }
   for (const p of planDays) {
     if (!p?.title || !/^\d{4}-\d{2}-\d{2}$/.test(p.date || "")) continue;
     day(`plan-${p.date}-${hash((p.sid || "") + (p.part || ""))}`, p.date!, `📘 Plan: ${p.title}`, `Dzisiejszy krok planu „Przygotuj się”${p.min ? `, ok. ${p.min} min` : ""}.\n${APP}`);
+  }
+  return L;
+}
+
+// UX-2: „Zdawalni · 5 min po zajęciach” – w każdy dzień zajęć grupy (od dziś, 60 dni naprzód) 30 min po końcu ostatnich zajęć,
+// 10 minut, z przypomnieniem w chwili rozpoczęcia. Tylko gdy osoba włączyła to w aplikacji (progress.calStudy, SQL v57).
+function studyEvents(plan: Plan, group: string, sub: string, stamp: string, today: string): string[] {
+  const grp = plan.groups?.[group], kal = plan.kalendarz;
+  if (!grp || !kal?.tygodnie?.length) return [];
+  const PAR: Record<string, string> = {}, OFF = kal.wolne || {}, SWAP = kal.zamiany || {};
+  for (const [a, b, p] of kal.tygodnie) for (let d = parse(a); key(d) <= b; d = addDays(d, 1)) if (d.getUTCDay() % 6) PAR[key(d)] = p;
+  for (const d of Object.keys(OFF)) delete PAR[d];
+  for (const [d, v] of Object.entries(SWAP)) PAR[d] = (v as { p: string }).p;
+  const odw = (plan.dziekanat?.zmiany?.[group] || []).filter((x) => x.type === "cancel" && (!sub || !x.g || x.g === sub));
+  const L: string[] = [], end = key(addDays(parse(today), 60));
+  for (let d = parse(today); key(d) <= end; d = addDays(d, 1)) {
+    const k = key(d), sw = SWAP[k], p = sw?.p || PAR[k];
+    if (!p) continue;
+    const day = sw?.asDay ?? (d.getUTCDay() + 6) % 7;
+    const ends = (grp[p] || []).filter((e) => e.d === day && (!sub || !e.g || e.g === sub) && (!e.dates || e.dates.includes(k)))
+      .filter((e) => { const t0 = (e.time || SLOTS[e.s])[0]; return !odw.some((x) => x.date === k && x.start === t0 && x.pl === e.pl); })
+      .map((e) => (e.time || SLOTS[e.s])[1]).filter(Boolean).sort();
+    if (!ends.length) continue;
+    const [h, m] = ends[ends.length - 1].split(":").map(Number), t = h * 60 + m + 30;
+    if (t + 10 >= 24 * 60) continue;
+    L.push("BEGIN:VEVENT", `UID:nauka-${k}-${group}@skrotbm.pl`, `DTSTAMP:${stamp}`,
+      `DTSTART;TZID=Europe/Warsaw:${ymd(k)}T${pad(Math.floor(t / 60))}${pad(t % 60)}00`, `DTEND;TZID=Europe/Warsaw:${ymd(k)}T${pad(Math.floor((t + 10) / 60))}${pad((t + 10) % 60)}00`,
+      `SUMMARY:${esc("Zdawalni · 5 min po zajęciach")}`, `DESCRIPTION:${esc(`Jedna karta 5 minut z dzisiejszych zajęć: ${APP}/#/`)}`, "TRANSP:TRANSPARENT",
+      "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${esc("Zdawalni · 5 min po zajęciach")}`, "TRIGGER:PT0M", "END:VALARM", "END:VEVENT");
   }
   return L;
 }
@@ -169,7 +198,7 @@ function deadlineEvents(list: Deadline[], plan: Plan | null, group: string, sub:
       subj ? `Przedmiot: ${subj}` : null,
       d.note || null,
       d.approx ? "Data orientacyjna z sylabusa: prowadzący jeszcze nie podał dokładnego terminu." : null,
-      `Szczegóły w Skrócie BM: ${APP}`,
+      `Szczegóły w Zdawalni: ${APP}`,
     ].filter(Boolean).join("\n");
     const timed = /^\d{1,2}:\d{2}$/.test(d.time || "");
     let start: string, end: string, alarm: string;
@@ -200,20 +229,26 @@ Deno.serve(async (req) => {
   const db = createClient(Deno.env.get("SUPABASE_URL")!, serverKey(), { auth: { persistSession: false } });
   const { data, error } = await db.rpc("nauka_kalendarz_dane", { p_token: token });
   if (error) return new Response("Błąd bazy. Spróbuj później.", { status: 503 });
-  if (!data) return new Response("Ten link do kalendarza jest nieaktualny. Nowy znajdziesz w Skrócie BM: Terminy → Do kalendarza w telefonie.", { status: 404 });
+  if (!data) return new Response("Ten link do kalendarza jest nieaktualny. Nowy znajdziesz w Zdawalni: Terminy → Do kalendarza w telefonie.", { status: 404 });
 
   let plan: Plan | null = null;
   try { const r = await fetch(planUrl(data.plan_url)); if (r.ok) plan = await r.json(); } catch { /* bez planu zostają same terminy */ }
 
   const group: string = data.grupa || "", sub: string = data.podgrupa || "";
   const now = new Date(), stamp = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}00Z`;
-  const name = `Skrót BM${group ? " · " + group + (sub ? " lab " + sub : "") : ""}`;
-  const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//skrotbm.pl//Skrot BM//PL", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+  const name = `Zdawalni${group ? " · " + group + (sub ? " lab " + sub : "") : ""}`;
+  const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//zdawalni.pl//Zdawalni//PL", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
     `X-WR-CALNAME:${esc(name)}`, "X-WR-TIMEZONE:Europe/Warsaw",
-    `X-WR-CALDESC:${esc(group ? "Zajęcia, zaliczenia i zadania. Aktualizuje się sam." : "Zaliczenia i zadania. Wybierz grupę w Skrócie BM, żeby dodać też zajęcia.")}`,
+    `X-WR-CALDESC:${esc(group ? "Zajęcia, zaliczenia i zadania. Aktualizuje się sam." : "Zaliczenia i zadania. Wybierz grupę w Zdawalni, żeby dodać też zajęcia.")}`,
     "REFRESH-INTERVAL;VALUE=DURATION:PT3H", "X-PUBLISHED-TTL:PT3H", ...VTIMEZONE];
 
   if (plan && group) L.push(...classEvents(plan, group, sub, stamp));
+  if (plan && group) {
+    // UX-2 (SQL v57): opcjonalny wpis „5 min po zajęciach”; bez v57 w bazie albo przy błędzie po prostu go nie ma.
+    let nauka = false;
+    try { const r = await db.rpc("nauka_kalendarz_nauka", { p_token: token }); nauka = r?.data === true; } catch { /* bez wpisu */ }
+    if (nauka) L.push(...studyEvents(plan, group, sub, stamp, key(new Date(Date.now() + 2 * 3600e3))));
+  }
   if (data.platny) {
     // Część przedmiotu z własną datą: szacowane terminy starosty tej części znikają (jak w aplikacji).
     const own: Own[] = Array.isArray(data.zaliczenia) ? data.zaliczenia : [];
@@ -227,7 +262,7 @@ Deno.serve(async (req) => {
   else {
     const t = key(new Date(Date.now() + 2 * 3600e3));
     L.push("BEGIN:VEVENT", `UID:dostep-wygasl-${t}@skrotbm.pl`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${ymd(t)}`,
-      `SUMMARY:${esc("Skrót BM: dostęp wygasł, terminy zaliczeń są ukryte")}`,
+      `SUMMARY:${esc("Zdawalni: dostęp wygasł, terminy zaliczeń są ukryte")}`,
       `DESCRIPTION:${esc(`Przedłuż dostęp na ${APP}, a zaliczenia i zadania wrócą do kalendarza.`)}`, "TRANSP:TRANSPARENT", "END:VEVENT");
   }
   L.push("END:VCALENDAR");
@@ -235,7 +270,7 @@ Deno.serve(async (req) => {
   return new Response(L.map(fold).join("\r\n") + "\r\n", {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": 'inline; filename="skrot-bm.ics"',
+      "Content-Disposition": 'inline; filename="zdawalni.ics"',
       "Cache-Control": "private, max-age=900",
     },
   });

@@ -11,7 +11,7 @@
 
 export interface Logika {
   kontekst(row: unknown, today: string): unknown;
-  wybierz(ctx: unknown): { kind: string; title: string; body: string; cta: string; path: string } | null;
+  wybierz(ctx: unknown): { kind: string; wariant?: string; title: string; body: string; cta: string; path: string } | null;
   mail(o: { lang: string; pick: unknown; site: string; id: string; unsubscribeUrl: string }): { subject: string; text: string; html: string };
 }
 export interface Zaleznosci {
@@ -63,7 +63,8 @@ export async function wyslij(d: Zaleznosci, fnUrl: string) {
   for (const row of data.osoby || []) {
     const pick = d.P.wybierz(d.P.kontekst(row, data.dzien));
     if (!pick) { skipped++; continue; }
-    const log = await d.rpc("nauka_przypomnienia_log_dodaj", { p_user: row.user_id, p_dzien: data.dzien, p_rodzaj: pick.kind });
+    // UX-2: rodzaj z wariantem („seria_b”) – historia w bazie (v57) pozwala rotować warianty i porównać, który pomaga.
+    const log = await d.rpc("nauka_przypomnienia_log_dodaj", { p_user: row.user_id, p_dzien: data.dzien, p_rodzaj: pick.wariant ? pick.kind + "_" + pick.wariant : pick.kind });
     const id = log.data as string | null;
     if (log.error || !id) continue; // już dziś wysłane (unikalny klucz user + dzień)
     const off = fnUrl + "?t=" + encodeURIComponent(row.token);

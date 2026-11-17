@@ -21,7 +21,7 @@ const DANE = {
   plan: [{ date: "2026-11-21", sid: "makroekonomia", t: "Powtórka" }],
 };
 // stały znacznik czasu w wyniku (DTSTAMP i data „dostęp wygasł” zależą od chwili uruchomienia)
-const norm = (t) => t.replace(/DTSTAMP:\d{8}T\d{4}00Z/g, "DTSTAMP:X").replace(/dostep-wygasl-\d{4}-\d{2}-\d{2}/g, "dostep-wygasl-X").replace(/DTSTART;VALUE=DATE:\d{8}(\r\nSUMMARY:Skrót BM: dostęp)/g, "DTSTART;VALUE=DATE:X$1");
+const norm = (t) => t.replace(/DTSTAMP:\d{8}T\d{4}00Z/g, "DTSTAMP:X").replace(/dostep-wygasl-\d{4}-\d{2}-\d{2}/g, "dostep-wygasl-X").replace(/DTSTART;VALUE=DATE:\d{8}(\r\nSUMMARY:(?:Skrót BM|Zdawalni): dostęp)/g, "DTSTART;VALUE=DATE:X$1");
 
 // Wczytuje index.ts jako moduł: bez importów, Deno.serve → export, createClient i Deno z atrapy.
 async function zaladuj(plik) {
@@ -76,4 +76,29 @@ test("UID-y wydarzeń bez zmian (@skrotbm.pl)", async () => {
   const r = await ics(await zaladuj(NOWY), { ...DANE, plan_url: "https://plan.skrotbm.pl/plan/wefiz-test-1-st-2026.json" });
   const uid = r.body.split("\r\n").filter((l) => l.startsWith("UID:"));
   assert.ok(uid.length > 10 && uid.every((l) => l.endsWith("@skrotbm.pl")));
+});
+
+test("UX-2: „Zdawalni · 5 min po zajęciach” tylko po włączeniu (nauka_kalendarz_nauka), 30 min po ostatnich zajęciach, z alarmem", async () => {
+  const h = await zaladuj(NOWY);
+  const uruchom = async (wl) => {
+    globalThis.__Deno = { env: { get: () => "x" } };
+    globalThis.__createClient = () => ({ rpc: async (fn) => ({ data: fn === "nauka_kalendarz_nauka" ? wl : DANE, error: null }) });
+    const stary = globalThis.fetch; globalThis.fetch = async () => ({ ok: true, json: async () => PLAN });
+    try { return await (await h(new Request("https://x/functions/v1/kalendarz?t=" + TOKEN))).text(); } finally { globalThis.fetch = stary; }
+  };
+  const bez = await uruchom(false);
+  assert.ok(!bez.includes("5 min po zajęciach"), "domyślnie wyłączone");
+  const z = await uruchom(true);
+  const ev = z.split("BEGIN:VEVENT").filter((x) => x.includes("SUMMARY:Zdawalni · 5 min po zajęciach"));
+  if (ev.length) { // plan testowy może nie mieć zajęć w najbliższych 60 dniach od dziś
+    for (const e of ev) {
+      assert.match(e, /UID:nauka-\d{4}-\d{2}-\d{2}-C111@skrotbm\.pl/);
+      assert.match(e, /BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Zdawalni · 5 min po zajęciach\r\nTRIGGER:PT0M\r\nEND:VALARM/);
+      const s = e.match(/DTSTART;TZID=Europe\/Warsaw:\d{8}T(\d\d)(\d\d)00/), k = e.match(/DTEND;TZID=Europe\/Warsaw:\d{8}T(\d\d)(\d\d)00/);
+      assert.equal((+k[1] * 60 + +k[2]) - (+s[1] * 60 + +s[2]), 10, "10 minut");
+    }
+  }
+  assert.ok(!/Skrót BM|Skrócie BM/.test(z), "w kalendarzu nazwa Zdawalni");
+  // ten sam wynik bez wpisów nauki = złoty plik (wpis jest tylko dodatkiem)
+  assert.equal(norm(z.split("BEGIN:VEVENT").filter((x) => !x.includes("5 min po zajęciach")).join("BEGIN:VEVENT")), fs.readFileSync(path.join(FIX, "kalendarz-bm.ics"), "utf8"));
 });
