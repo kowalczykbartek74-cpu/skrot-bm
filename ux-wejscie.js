@@ -63,23 +63,32 @@
     return { n, dzien, koniec, ms, godz: Math.max(1, Math.ceil(ms / 36e5)), ost: ms > 0 && ms < 864e5, wd: (EN() ? DNI_EN : DNI_PL)[koniec.getDay()], czas: hhmm(koniec) };
   }
   // Postęp z okresu próbnego (te same dane co profil): lekcje zrobione od startu próby, fiszki, XP, seria.
-  function postep(odMs = 0) {
+  function postep(odMs = 0, doMs = Infinity) {
     const P = A().S?.progress || {};
-    const lekcje = Object.values(P.done || {}).filter((t) => +t >= odMs).length;
+    const lekcje = Object.values(P.done || {}).filter((t) => +t >= odMs && +t <= doMs).length;
     const fiszki = Object.keys(P.srs || {}).length, xp = P.xp?.t || 0, seria = P.streak?.n || 0;
     return { lekcje, fiszki, xp, seria, zero: !lekcje && !fiszki && !xp };
   }
   const zl = (x) => `${x} zł`;
   const miesiecznie = () => { const c = SK().planCompare?.() || { months: 8 }; return Math.round(199 / Math.max(1, c.months)); };
-  // Dwie karty planu: 199 zł na górze (zaznaczona), 35 zł / mies. pod spodem.
+  // Dwie karty planu jako wybór (radio): 199 zł na górze i zaznaczony; pod nimi jeden przycisk „Wybierz …” kupuje zaznaczony plan.
+  // Zwraca [karty, przycisk] – przycisk trafia na dół arkusza (przyklejony, w zasięgu kciuka).
   function planKarty(zamknij) {
     const sk = SK(), m = miesiecznie();
-    const karta = (plan, tytul, cena, pod, on) => el("button", { type: "button", class: "uxw-plan" + (on ? " on" : ""), "data-plan": plan, onclick: () => { zamknij?.(); sk.buy?.(plan); } },
-      el("span", { class: "uxw-plan-t" }, el("b", { text: tytul }), on ? el("span", { class: "uxw-plan-tag", text: "Najtaniej" }) : null),
-      el("span", { class: "uxw-plan-c", text: cena }), el("span", { class: "uxw-plan-p", text: pod }));
-    return el("div", { class: "uxw-plany" },
-      karta("rok", "Do końca 2. semestru", "199 zł", `to ok. ${m} zł miesięcznie · jednorazowo, BLIK, bez odnawiania`, true),
-      karta("miesiac", "Co miesiąc", "35 zł / mies.", "kartą, odnawia się co miesiąc, anulujesz w każdej chwili", false));
+    let wybor = "rok";
+    const kup = el("button", { type: "button", class: "btn primary uxw-big uxw-kup", onclick: () => { zamknij?.(); sk.buy?.(wybor); } }, "Wybierz 199 zł");
+    const karty = [];
+    const karta = (plan, tytul, cena, pod, tag) => {
+      const b = el("button", { type: "button", role: "radio", "aria-checked": String(plan === wybor), class: "uxw-plan" + (plan === wybor ? " on" : ""), "data-plan": plan, onclick: () => {
+        wybor = plan; karty.forEach((x) => { const on = x.dataset.plan === plan; x.classList.toggle("on", on); x.setAttribute("aria-checked", String(on)); });
+        kup.textContent = plan === "rok" ? "Wybierz 199 zł" : "Wybierz 35 zł / mies."; } },
+        el("span", { class: "uxw-plan-t" }, el("b", { text: tytul }), tag ? el("span", { class: "uxw-plan-tag", text: tag }) : null),
+        el("span", { class: "uxw-plan-c", text: cena }), el("span", { class: "uxw-plan-p", text: pod }));
+      karty.push(b); return b;
+    };
+    return [el("div", { class: "uxw-plany", role: "radiogroup", "aria-label": "Plan" },
+      karta("rok", "Do końca 2. semestru", "199 zł", `to ok. ${m} zł miesięcznie · jednorazowo, BLIK, bez odnawiania`, "Najtaniej"),
+      karta("miesiac", "Co miesiąc", "35 zł / mies.", "kartą, odnawia się co miesiąc, anulujesz w każdej chwili", null)), kup];
   }
   // Okno w stylu aplikacji (jak info w skrot-supabase.js): scrim + modal, Esc i klik obok zamykają.
   function okno(cls, label, build) {
@@ -100,22 +109,20 @@
     const klucz = `bm-proba-ost-${dzienKlucz()}`;
     if (!force && ls.get(klucz)) return null;
     ls.set(klucz, "1");
-    const pp = postep(p.koniec.getTime() - p.n * 864e5);
+    const pp = postep(p.koniec.getTime() - p.n * 864e5, p.koniec.getTime());
     return okno("uxw-ost", "Okres próbny", (zamknij) => [
       el("span", { class: "eyebrow", text: "Okres próbny" }),
       el("h2", { style: "margin:0", text: `Zostało ${p.godz} godz. próby` }),
       el("p", { class: "uxw-ost-p", text: `Próba kończy się ${p.wd} o ${p.czas}. Po zakupie wszystko, co zrobisz, zostaje na koncie.` }),
       statyProby(pp),
-      planKarty(zamknij),
-      el("button", { type: "button", class: "btn primary uxw-big uxw-kup", onclick: () => { zamknij(); SK().buy?.("rok"); } }, "Wybierz 199 zł"),
-      el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Później")]);
+      ...(([karty, kup]) => [karty, el("div", { class: "uxw-dol" }, kup, el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Później"))])(planKarty(zamknij))]);
   }
   let ostZaplanowane = false;
   // Odmiana: 1 lekcja, 2–4 lekcje, 5+ lekcji (12–14 też „lekcji”).
   const odm = (n, a, b, c) => (n === 1 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? b : c);
   // Kafelki postępu tylko dla tego, co student naprawdę zrobił (zera nie pokazujemy).
   const statyProby = (pp) => {
-    const k = [[pp.lekcje, odm(pp.lekcje, "lekcja", "lekcje", "lekcji")], [pp.fiszki, odm(pp.fiszki, "fiszka", "fiszki", "fiszek")], [pp.xp, "XP"]].filter(([n]) => n > 0);
+    const k = [[pp.lekcje, odm(pp.lekcje, "lekcja", "lekcje", "lekcji")], [pp.fiszki, odm(pp.fiszki, "fiszka", "fiszki", "fiszek")], [pp.xp, "XP"], [pp.seria, odm(pp.seria, "dzień serii", "dni serii", "dni serii")]].filter(([n]) => n > 0);
     return k.length ? el("div", { class: "uxw-staty", style: `grid-template-columns:repeat(${k.length},1fr)` }, k.map(([n, t]) => el("span", { class: "uxw-stat" }, el("b", { text: String(n) }), el("small", { text: t })))) : null;
   };
 
@@ -144,6 +151,7 @@
         el("button", { type: "button", class: "uxw-pasek-link", onclick: () => (p.ost ? ostatnieGodziny(true) : sk.buy?.()) }, "Plany"));
     }
     if (st === "darmowe" && SK().rocznikStatus && SK().rocznikStatus(window.SKROT_ROCZNIK?.id) !== "platny") return null;
+    if (st === "po-probie") { const k = bonusKarta(); if (k) return k; }
     if (st === "po-probie" || st === "darmowe") {
       kupZajmij();
       return el("section", { class: "uxw-pasek " + (st === "po-probie" ? "uxw-po" : "uxw-pelny"), "aria-label": st === "po-probie" ? "Okres próbny minął" : "Pełny dostęp" },
@@ -183,24 +191,68 @@
   }
   function koniecProby() {
     const sk = SK(), n = sk.trialDays || 3;
-    const od = Date.parse(ls.get("skrot-proba-do") || "") - n * 864e5;
-    const pp = postep(od > 0 ? od : 0), t = najblizszyTermin();
+    const koniec = Date.parse(ls.get("skrot-proba-do") || ""), od = koniec - n * 864e5;
+    const pp = postep(od > 0 ? od : 0, koniec > 0 ? koniec : Infinity), t = najblizszyTermin();
     const kiedy = t ? (t.n === 0 ? "dziś" : t.n === 1 ? "jutro" : `za ${t.n} dni`) : "";
-    // Nazwa przedmiotu w mianowniku (bez odmiany „z Makroekonomii”): „Kolokwium · Makroekonomia · za 66 dni”.
     const termin = t ? `${t.kind === "egzamin" ? "Egzamin" : "Kolokwium"} · ${t.nazwa} · ${kiedy}` : null;
-    const h2 = pp.zero
-      ? (t ? `Nie zdążyłeś? Zostało ${t.n} dni do: ${t.nazwa}.` : "Nie zdążyłeś? Materiały czekają, a postępy liczą się od pierwszej lekcji.")
-      : `Przez ${n} dni zrobiłeś:`;
-    return okno("uxw-koniec", "Okres próbny minął", (zamknij) => [
-      el("span", { class: "eyebrow", text: "Okres próbny minął" }),
-      el("p", { class: "uxw-koniec-t", text: `Twoje ${n} dni minęły` }),
-      el("h2", { style: "margin:0", text: h2 }),
-      pp.zero ? null : statyProby(pp),
-      termin ? el("p", { class: "uxw-termin" }, ico("ux1-clock", 18), el("span", { text: termin })) : null,
-      planKarty(zamknij),
-      el("button", { type: "button", class: "btn primary uxw-big uxw-kup", onclick: () => { zamknij(); sk.buy?.("rok"); } }, "Wybierz 199 zł"),
-      el("p", { class: "uxw-koniec-note", text: "Twoje postępy zostały na koncie: fiszki, wpisy i XP." }),
-      el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Zostaję przy darmowych próbkach")]);
+    const [karty, kup] = planKarty(null);
+    const box = okno("uxw-koniec", `Twoje ${n} dni minęły`, (zamknij) => {
+      kup.addEventListener("click", zamknij, { once: true });
+      return [
+        el("h2", { id: "uxw-koniec-h", style: "margin:0", text: `Twoje ${n} dni minęły` }),
+        el("p", { class: "uxw-koniec-sub", text: pp.zero ? (t ? "Nie było kiedy? Najbliższe zaliczenie jeszcze przed Tobą:" : "Nie było kiedy? Materiały czekają, a postępy liczą się od pierwszej lekcji.") : `Przez ${n} dni:` }),
+        pp.zero ? null : statyProby(pp),
+        termin ? el("p", { class: "uxw-termin" }, ico("ux1-clock", 18), el("span", { text: termin })) : null,
+        karty,
+        el("p", { class: "uxw-koniec-note", text: "Twoje postępy zostały na koncie: fiszki, wpisy i XP. Po zakupie wszystko zostaje." }),
+        el("div", { class: "uxw-dol" }, kup, el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Zostaję przy darmowych próbkach"))];
+    });
+    box.setAttribute("aria-labelledby", "uxw-koniec-h"); box.removeAttribute("aria-label");
+    return box;
+  }
+
+  // ---------- etap 4: „+2 dni przed kolokwium” (raz na konto, po próbie, kolokwium ≤ 7 dni; SQL v54) ----------
+  let bonus = null, bonusPyt = false;
+  function bonusKarta() {
+    const sk = SK();
+    if (!bonusPyt) { bonusPyt = true; sk.rpcUx?.("nauka_proba_bonus_stan", {}).then(({ data }) => { if (data?.mozna && data.termin) { bonus = data.termin; A().render?.(); } }, () => {}); }
+    if (!bonus) return null;
+    const subj = (A().subjects?.() || []).find((x) => x.id === bonus.subjectId);
+    const nazwa = subj ? (EN() ? subj.en || subj.pl : subj.pl) : String(bonus.title || "").replace(/^[^:]*:\s*/, "");
+    const kiedy = bonus.n === 0 ? "dziś" : bonus.n === 1 ? "jutro" : `za ${bonus.n} dni`;
+    const btn = el("button", { type: "button", class: "btn primary uxw-kup", onclick: async () => {
+      btn.disabled = true;
+      const { data, error } = await sk.rpcUx("nauka_proba_bonus", {});
+      if (error || !data?.ok) { btn.disabled = false; A().toast?.("Nie udało się włączyć 2 dni. Spróbuj za chwilę."); return; }
+      ls.set("skrot-welcome", "proba"); location.reload(); } }, "Włącz 2 dni za darmo");
+    return el("section", { class: "uxw-bonus", "aria-label": "Dodatkowe 2 dni" },
+      el("p", { class: "uxw-bonus-t" }, ico("ux1-clock", 20), el("b", { text: `${bonus.type === "egzamin" ? "Egzamin" : "Kolokwium"} · ${nazwa} · ${kiedy}` })),
+      el("p", { class: "uxw-bonus-p", text: "Masz jeszcze jedne 2 dni pełnego dostępu, żeby się przygotować." }), btn);
+  }
+
+  // ---------- etap 4: przed portalem Stripe (plan miesięczny) – porównanie z planem 199 zł ----------
+  function porownaniePlanow({ portal, rok, cmp }) {
+    const m = cmp.months, suma = m * 35;
+    return okno("uxw-porownanie", "Subskrypcja", (zamknij) => [
+      el("span", { class: "eyebrow", text: "Plan miesięczny" }),
+      el("h2", { style: "margin:0", text: "Twoja subskrypcja" }),
+      el("p", { style: "margin:0", text: `Płacąc co miesiąc, do lipca zapłacisz razem ok. ${suma} zł. Plan do lipca kosztuje 199 zł.` }),
+      suma > 199 ? el("p", { class: "uxw-porownanie-p", text: "Po zakupie 199 zł anuluj subskrypcję w portalu, żeby nie płacić co miesiąc. Opłacony miesiąc i tak działa do końca." }) : null,
+      el("div", { class: "uxw-actions" },
+        el("button", { type: "button", class: "btn primary uxw-big", onclick: () => { zamknij(); rok(); } }, "Przejdź na 199 zł"),
+        el("button", { type: "button", class: "btn uxw-big", onclick: () => { zamknij(); portal(); } }, "Otwórz portal płatności (karta, faktury, anulowanie)"),
+        el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Zamknij"))]);
+  }
+
+  // ---------- etap 4: ekran logowania – „N osób z {kierunek} uczyło się tu w tym tygodniu” (tylko od 15; SQL v54) ----------
+  function licznik() {
+    const p = document.querySelector("#login .lg-licznik"), R = window.SKROT_ROCZNIK, sk = SK();
+    if (!p || !R || !sk.rpcUx || !document.documentElement.classList.contains("needlogin")) return;
+    sk.rpcUx("nauka_rocznik_licznik", { p_rocznik: R.id }).then(({ data }) => {
+      if (!(data >= 15)) return;
+      const nazwa = EN() ? R.kierunek.en || R.kierunek.pl : R.kierunek.pl;
+      p.textContent = `${data} osób z ${nazwa} uczyło się tu w tym tygodniu`; p.hidden = false;
+    }, () => {});
   }
 
   // ---------- przycisk zakupu zależny od stanu konta (umowa z pętlą 2) ----------
@@ -246,8 +298,9 @@
         el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Zamknij"))]);
   }
 
-  window.ZD_WEJSCIE = Object.assign(window.ZD_WEJSCIE || {}, { pasekProby, przyciskZakupu, stan, kupNaDzis, bladProby, ostatnieGodziny, planKarty, postep, proba, przelacznikPrzypomnienia, koniecProby });
+  window.ZD_WEJSCIE = Object.assign(window.ZD_WEJSCIE || {}, { pasekProby, przyciskZakupu, stan, kupNaDzis, bladProby, ostatnieGodziny, planKarty, postep, proba, przelacznikPrzypomnienia, koniecProby, porownaniePlanow, licznik });
   // Aplikacja mogła narysować ekran, zanim ten plik się wczytał (ładuje się na końcu strony): wtedy rysujemy ją jeszcze raz,
   // żeby pigułka próby i przyciski zakupu z tej pętli zastąpiły zapasowe.
   try { if (window.ZD_APP?.render && window.ZD_APP.S?.ready) window.ZD_APP.render(); } catch {}
+  setTimeout(licznik, 300);
 })();

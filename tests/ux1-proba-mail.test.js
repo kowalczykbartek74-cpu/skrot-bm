@@ -28,7 +28,8 @@ function atrapa(o = {}) {
   };
   const fetchMock = async (url, init) => { db.maile.push(JSON.parse(init.body)); return { ok: true, status: 200 }; };
   const env = { RESEND_API_KEY: "re_test", RESEND_FROM: "Zdawalni <przypomnienia@zdawalni.pl>", PRZYPOMNIENIA_CRON: "s".repeat(40), SUPABASE_URL: "https://abc.supabase.co" };
-  return { db, deps: { rpc, fetch: fetchMock, env: (k) => env[k], P } };
+  const teraz = new Date(o.teraz || "2026-11-18T12:00:00Z"); // 13:00 w Warszawie
+  return { db, deps: { rpc, fetch: fetchMock, env: (k) => env[k], P, teraz: () => teraz } };
 }
 const cron = () => new Request("https://abc.supabase.co/functions/v1/przypomnienia", { method: "POST", headers: { "x-cron-secret": "s".repeat(40) }, body: "{}" });
 
@@ -72,5 +73,24 @@ test("funkcja Edge bez v53 w bazie: zwykłe przypomnienia działają jak dotąd"
   const { db, deps } = atrapa({ bezV53: true });
   const r = await (await obsluz(cron(), deps)).json();
   assert.equal(r.ok, true); assert.equal(r.proba, 0);
+  assert.ok(db.log.every((l) => l.rodzaj !== "proba"));
+});
+
+test("mail „proba”: koniec o 02:00 pojutrze w kalendarzu → dzień tygodnia, nie „jutro”; koniec dziś → „Dziś”", () => {
+  const a = P.mailProba({ lang: "pl", doKiedy: "2026-11-20T01:00:00Z", teraz: "2026-11-18T19:00:00Z", site: "https://zdawalni.pl" });
+  assert.equal(a.subject, "W piątek o 02:00 kończy się Twoja próba w Zdawalni");
+  const b = P.mailProba({ lang: "pl", doKiedy: "2026-11-18T21:00:00Z", teraz: "2026-11-18T08:00:00Z", site: "https://zdawalni.pl" });
+  assert.equal(b.subject, "Dziś o 22:00 kończy się Twoja próba w Zdawalni");
+  const c = P.mailProba({ lang: "en", doKiedy: "2026-11-20T01:00:00Z", teraz: "2026-11-18T19:00:00Z", site: "https://zdawalni.pl" });
+  assert.equal(c.subject, "Your Zdawalni trial ends on Friday at 02:00");
+  const d = P.mailProba({ lang: "pl", doKiedy: "2026-11-19T01:00:00Z", teraz: "2026-11-17T23:30:00Z", site: "https://zdawalni.pl" });
+  assert.equal(d.subject, "Jutro o 02:00 kończy się Twoja próba w Zdawalni", "00:30 w środę → koniec w czwartek o 02:00 to „jutro”");
+});
+
+test("funkcja Edge: w nocy (03:00 w Warszawie) mail „proba” czeka do rana", async () => {
+  const { obsluz } = await import("../supabase/functions/przypomnienia/obsluga.ts");
+  const { db, deps } = atrapa({ teraz: "2026-11-18T02:00:00Z" });
+  const r = await (await obsluz(cron(), deps)).json();
+  assert.equal(r.proba, 0);
   assert.ok(db.log.every((l) => l.rodzaj !== "proba"));
 });

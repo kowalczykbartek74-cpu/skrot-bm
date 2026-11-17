@@ -265,7 +265,14 @@
     skrot.trialCan = !!me?.proba_mozna && !skrot.paid && rocznikRuszyl();
     skrot.trialDays = me?.proba_dni || 3;
     // ux-1 (etap 3): koniec próby zapamiętany w przeglądarce; gdy minął, a dostępu nie ma → skrot.trialEnded (ekran „Twoje 3 dni minęły”).
+    // shortcut: klucze nie są przypięte do konta (wspólna przeglądarka dwóch osób); ok przy jednym koncie na urządzenie (v8).
     if (skrot.trialUntil) ls.set("skrot-proba-do", skrot.trialUntil);
+    // Kto ma (albo miał) opłacony dostęp, nigdy nie dostaje „Próba minęła”, także po wygaśnięciu planu.
+    if (skrot.paid && !skrot.trialUntil) { ls.set("skrot-proba-do", null); ls.set("bm-proba-koniec-pokazane", "1"); }
+    // Koniec próby z bazy (v54 nauka_proba_stan), gdy ta przeglądarka go nie zna (inne urządzenie, wyczyszczone dane).
+    if (!skrot.paid && !skrot.trialCan && !ls.get("skrot-proba-do")) {
+      try { const { data } = await sb.rpc("nauka_proba_stan"); if (data?.minela && data.do_kiedy) ls.set("skrot-proba-do", data.do_kiedy); } catch {}
+    }
     { const pd = Date.parse(ls.get("skrot-proba-do") || ""); skrot.trialEnded = !skrot.trialUntil && !skrot.paid && !skrot.trialCan && pd > 0 && pd < Date.now(); }
     skrot.realAdmin = skrot.admin;
     // „Edytuję rocznik” tylko dla administratora: ktoś inny z ręcznie wpisanym kluczem wraca do swojego rocznika
@@ -1314,10 +1321,15 @@
     return scrim;
   };
   // Portal klienta Stripe: anulowanie subskrypcji, zmiana karty, faktury.
-  skrot.manage = () => {
+  // ux-1 (etap 4, K5): przy planie miesięcznym przed portalem Stripe porównanie z planem 199 zł (bez kuponu – decyzja B1).
+  const portal = () => {
     const u = new URL(CONFIG.portalLink);
     if (skrot.email) u.searchParams.set("prefilled_email", skrot.email);
     location.href = u.toString();
+  };
+  skrot.manage = () => {
+    if (skrot.plan !== "miesiac" || !window.ZD_WEJSCIE?.porownaniePlanow) return portal();
+    window.ZD_WEJSCIE.porownaniePlanow({ portal, rok: () => goPay("rok"), cmp: planCompare() });
   };
   // Przed płatnością: akceptacja regulaminu i zgoda na natychmiastowe dostarczenie Treści
   // (utrata prawa odstąpienia, art. 38 ust. 1 pkt 13 ustawy o prawach konsumenta, regulamin § 5).
@@ -1387,8 +1399,10 @@
     const row = (box, ...kids) => el("label", { style: "display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.95rem;line-height:1.45" }, box, el("span", {}, ...kids));
     const box = () => el("input", { type: "checkbox", style: "flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--accent,#1A7F45)", onchange: () => sync() });
     const terms = box(), now = box();
-    const pay = el("button", { type: "button", class: "btn primary", disabled: "" }, `Przejdź do płatności (${cfg.price})`);
-    const sync = () => { pay.disabled = !(terms.checked && now.checked); };
+    // ux-1 (etap 4, K3): przycisk zawsze aktywny; bez obu zgód mówi, czego brakuje, i przenosi fokus na pierwsze puste pole.
+    const pay = el("button", { type: "button", class: "btn primary" }, `Przejdź do płatności (${cfg.price})`);
+    const zgodyMsg = el("p", { class: "notice err uxw-zgody", role: "alert", style: "margin:0", hidden: "" });
+    const sync = () => { pay.disabled = false; if (terms.checked && now.checked) zgodyMsg.hidden = true; };
     // Kod polecający: tylko plan jednorazowy (199 zł). Cena się nie zmienia; nagrodę dostaje właściciel kodu.
     const KOD_ERR = { brak: "Nie ma takiego kodu. Sprawdź pisownię albo zostaw pole puste.", wlasny: "To Twój własny kod. Własnym kodem nie można polecić samego siebie.",
       juz_polecony: "Na tym koncie kod polecający był już użyty. Możesz zapłacić bez kodu.", nieaktywny: "Ten kod już nie działa. Możesz zapłacić bez kodu." };
@@ -1399,7 +1413,7 @@
       kodIn, kodMsg,
       el("small", { class: "muted", text: "Masz kod od znajomego z roku? Wpisz go. Cena się nie zmienia." })) : null;
     pay.addEventListener("click", async () => {
-      if (!(terms.checked && now.checked)) return;
+      if (!(terms.checked && now.checked)) { zgodyMsg.textContent = "Zaznacz obie zgody powyżej, żeby przejść do płatności."; zgodyMsg.hidden = false; (terms.checked ? now : terms).focus(); return; }
       pay.disabled = true;
       let kod = kodIn ? polecNorm(kodIn.value) : "";
       if (kod) {
@@ -1431,6 +1445,7 @@
         row(terms, "Znam i akceptuję ", el("a", { class: "link", href: "regulamin.html", target: "_blank", rel: "noopener" }, "Regulamin"), " oraz ", el("a", { class: "link", href: "prywatnosc.html", target: "_blank", rel: "noopener" }, "Politykę prywatności"), "."),
         row(now, CONSENT_NOW),
         kodBox,
+        zgodyMsg,
         el("p", { class: "foot-note", style: "margin:0", text: "Zaznaczenie zgody zapisujemy razem z datą i adresem e-mail konta." }),
         el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, pay, el("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"))));
     layer.append(scrim);
@@ -1456,13 +1471,15 @@
     const card = (plan, title, price, lines, badge) => el("button", {
       type: "button", class: "plan-card", "data-plan": plan,
       style: "display:grid;gap:4px;text-align:left;width:100%;padding:14px 16px;border-radius:var(--r,14px);cursor:pointer;font:inherit;color:var(--ink);"
-        + (badge ? "background:var(--accent-soft,#EAF5EE);border:2px solid var(--accent,#1A7F45);" : "background:var(--surface,#fff);border:1px solid var(--line,#BFCEC5);"),
+        + (plan === "rok" ? "background:var(--accent-soft,#EAF5EE);border:2px solid var(--accent,#1A7F45);" : "background:var(--surface,#fff);border:1px solid var(--line,#BFCEC5);"), "aria-current": plan === "rok" ? "true" : null, // ux-1: 199 zł zawsze zaznaczony
       onclick: () => { close(); goPay(plan); },
     },
       el("span", { style: "display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap" },
         el("b", { style: "font-size:1.05rem", text: title }),
         badge ? el("span", { style: "font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink,#fff);background:var(--accent,#1A7F45);border-radius:999px;padding:2px 8px", text: badge }) : null),
       el("span", { style: "font-size:1.5rem;font-weight:800;color:var(--accent-text,#0E5A30)", text: price }),
+      // ux-1 (etap 4, K2): 199 zł przeliczone na miesiąc tuż pod ceną.
+      plan === "rok" ? el("span", { class: "uxw-mies", style: "font-size:.95rem;font-weight:700;color:var(--ink)", text: `to ok. ${Math.round(PRICE_ROK / cmp.months)} zł miesięcznie` }) : null,
       ...lines.map((t) => el("span", { style: "font-size:.9rem;color:var(--muted,#1F2D25)", text: t })));
     const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Wybierz plan" },
@@ -1519,6 +1536,8 @@
   skrot.trialOffer = trialOffer;
   // ux-1 (etap 3): wywołania RPC okresu próbnego z ux-wejscie.js (zgoda na mail przed końcem, SQL v53).
   skrot.rpcProba = (fn, args) => (sb && skrot.state === "in" && /^nauka_proba_/.test(fn) ? sb.rpc(fn, args) : Promise.resolve({ data: null, error: { message: "off" } }));
+  // ux-1 (etap 4): tylko funkcje pętli 1 z v54 (spis lekcji, licznik rocznika – ten także dla gościa).
+  skrot.rpcUx = (fn, args) => (sb && (/^nauka_(proba_|lekcja_spis$)/.test(fn) && skrot.state === "in" || fn === "nauka_rocznik_licznik") ? sb.rpc(fn, args) : Promise.resolve({ data: null, error: { message: "off" } }));
   const TRIAL_ERR = {
     ma_dostep: "Masz już pełny dostęp, okres próbny nie jest potrzebny.",
     wykorzystany: "Okres próbny na tym koncie został już wykorzystany. Pełny dostęp możesz kupić od 35 zł miesięcznie.",

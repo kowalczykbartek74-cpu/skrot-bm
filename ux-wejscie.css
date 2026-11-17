@@ -224,3 +224,51 @@ html:not([data-theme]) #login .lk-card.gotowe .lk-tag { display: inline-block; f
 html:not([data-theme]) #login .lk-card.gotowe .lk-tag { position: static !important; transform: none; margin: 0 2px 0 auto; padding: 1px 8px; font-size: 12px; box-shadow: none; align-self: center; }
 @media (prefers-reduced-motion: reduce) { .uxw-przyp .uxw-sw, .uxw-przyp .uxw-sw::after { transition: none !important; } }
 html.calm .uxw-przyp .uxw-sw, html.calm .uxw-przyp .uxw-sw::after { transition: none !important; }
+
+/* ===== Etap 3 · poprawki po rundzie 1 ===== */
+/* Główny przycisk arkusza przyklejony na dole (w zasięgu kciuka także przy 360×640). */
+:is(.uxw-ost, .uxw-koniec) .uxw-dol { position: sticky; bottom: calc(-20px - env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; margin: 0 -18px calc(-20px - env(safe-area-inset-bottom, 0px)); padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--h-raised, #FFFFFF); box-shadow: 0 -10px 20px -14px rgba(16,35,26,.35); }
+@media (min-width: 640px) { :is(.uxw-ost, .uxw-koniec) .uxw-dol { margin: 0 -22px -22px; padding: 12px 22px 18px; bottom: -22px; } }
+.uxw-koniec .uxw-koniec-sub { margin: 0; font-weight: 700; color: var(--h-ink, #10231A); }
+.uxw-koniec h2 { font-size: 24px; }
+.uxw-plan[aria-checked="false"] .uxw-plan-c { color: var(--h-ink, #10231A); }
+/* Tor wyłączonego przełącznika z obwódką ≥ 3:1 do tła (WCAG 1.4.11). */
+.uxw-przyp .uxw-sw { box-shadow: inset 0 0 0 2px var(--h-muted, #3E5046); }
+.uxw-przyp .uxw-sw-in:checked + .uxw-sw { box-shadow: none; }
+/* „Wybierz plan”: „Zamknij” ≥ 44 px. */
+.modal:has(.plan-card) .btn { min-height: 44px; }
+
+/* ===== Etap 4: paywall, odzyskiwanie, zaufanie ===== */
+/* Paywall lekcji: liczby lekcji i spis sekcji (same tytuły), przyciski w kolumnie na telefonie. */
+.uxw-paywall .uxw-lekcja-info { margin: 0; font-weight: 700; color: var(--h-ink, #10231A); }
+.uxw-spis { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.uxw-spis li { position: relative; min-height: 40px; box-sizing: border-box; padding: 8px 12px 8px 34px; border-radius: 14px; background: var(--h-acc-soft, #DDF3D0); color: var(--h-ink, #10231A); font-weight: 600; font-size: 15px; }
+.uxw-spis li::before { content: ""; position: absolute; left: 12px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 3px; border: 2px solid var(--h-muted, #3E5046); }
+.uxw-spis.wczyt { min-height: 172px; }
+.uxw-spis:empty:not(.wczyt) { display: none; }
+@media (max-width: 640px) { .uxw-paywall .uxw-paywall-act { display: grid; gap: 8px; } .uxw-paywall .uxw-paywall-act .btn { width: 100%; min-height: 48px; justify-content: center; } }
+/* Karta „+2 dni przed kolokwium” nad panelem. */
+.uxw-bonus { display: grid; gap: 8px; padding: 16px; border-radius: 24px; background: var(--h-orange-soft, #FFE8CC); color: var(--h-ink, #10231A); box-shadow: inset 0 0 0 2px var(--h-orange, #B35400); }
+.uxw-bonus p { margin: 0; }
+.uxw-bonus .uxw-bonus-t { display: flex; align-items: center; gap: 8px; }
+.uxw-bonus .uxw-bonus-t .uxw-ico { display: inline-flex; color: var(--h-orange, #B35400); }
+html:not([data-theme]) .uxw-bonus .btn.primary.uxw-kup { justify-self: start; min-height: 48px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 0 var(--h-acc-edge); font-weight: 800; }
+/* Arkusz przed portalem Stripe. */
+.uxw-porownanie .uxw-porownanie-p { margin: 0; font-size: 14px; color: var(--h-muted, #3E5046); }
+.uxw-porownanie .uxw-actions { display: grid; gap: 8px; }
+.uxw-porownanie .btn.uxw-big { width: 100%; min-height: 52px; justify-content: center; }
+/* Logowanie: licznik osób z rocznika (tylko od 15). */
+#login .lg-licznik { margin: 0 0 4px; padding: 10px 14px; border-radius: 16px; background: var(--h-acc-soft, #DDF3D0); color: var(--h-ink, #10231A); font-weight: 700; font-size: 14px; text-align: center; }
+/* Linki „Regulamin · Prywatność” w stopce paywalla: cel dotyku 44 px bez zmiany wyglądu zdania. */
+.paywall .foot-note a.link { display: inline-block; padding: 13px 0; margin: -13px 0; }
+
+/* ===== Etap 4 · poprawki po rundzie 1 ===== */
+/* Wszystkie przyciski paywalla i okna „Zanim zapłacisz” ≥ 44 px na każdej szerokości. */
+.uxw-paywall .uxw-paywall-act .btn, .modal:has(.uxw-zgody) .btn { min-height: 48px; }
+/* Spis lekcji: nagłówek i ikona kłódki zamiast pustego kwadratu (nie wygląda jak pola wyboru). */
+.uxw-spis-h { margin: 4px 0 -4px; font-weight: 800; color: var(--h-ink, #10231A); }
+.uxw-spis li { background: var(--h-card, #FFFFFF); box-shadow: inset 0 0 0 1px var(--h-line, #E1E8DD); }
+.uxw-spis li::before { width: 14px; height: 14px; margin-top: -7px; border: 0; border-radius: 0; background: var(--h-muted, #3E5046);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E") center / contain no-repeat; }
+.uxw-porownanie h2:focus { outline: none; }

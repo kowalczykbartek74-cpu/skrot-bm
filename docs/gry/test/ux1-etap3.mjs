@@ -45,7 +45,8 @@ for (const lang of ["pl", "en"]) for (const dark of [false, true]) {
   ok("K2 SQL: kolumny przypomnij i przypomniano_at, RPC nauka_proba_przypomnij i nauka_proba_kandydaci (tylko service_role)",
     /add column if not exists przypomnij boolean not null default false/.test(sql) && /add column if not exists przypomniano_at timestamptz/.test(sql)
     && /function public\.nauka_proba_przypomnij\(/.test(sql) && /function public\.nauka_proba_kandydaci\(/.test(sql) && /grant execute on function public\.nauka_proba_kandydaci\(timestamptz\), public\.nauka_proba_przypomniano\(uuid\) to service_role/.test(sql));
-  const out = execSync("node supabase/test/pglite.mjs 2>&1", { cwd: ROOT, encoding: "utf8" });
+  // Wynik PGlite czytamy także, gdy inny plik test/*.sql padnie (kod wyjścia ≠ 0) – liczą się linie v53.
+  let out = ""; try { out = execSync("node supabase/test/pglite.mjs 2>&1", { cwd: ROOT, encoding: "utf8" }); } catch (e) { out = String(e.stdout || ""); }
   const z = out.split("\n").filter((l) => /OK Z[1-8]/.test(l));
   ok("K2 PGlite: Z1–Z8 (kandydat przy 24 h i zgodzie, nie po wysłaniu, nie po zakupie, nigdy bez zgody, limit dnia)", z.length >= 14 && /✓ test\/v53\.sql/.test(out), z.length);
 }
@@ -53,7 +54,7 @@ for (const lang of ["pl", "en"]) for (const dark of [false, true]) {
 // ---------- K3: funkcja Edge (test Node) ----------
 {
   const out = execSync("node --test tests/ux1-proba-mail.test.js tests/przypomnienia.test.js 2>&1", { cwd: ROOT, encoding: "utf8" });
-  ok("K3: funkcja przypomnienia: rodzaj „proba” przed innymi i w limit_dzien (tests/ux1-proba-mail.test.js + stare testy)", /ℹ fail 0/.test(out) && /ℹ pass 15/.test(out), out.match(/ℹ (pass|fail) \d+/g));
+  ok("K3: funkcja przypomnienia: rodzaj „proba” przed innymi, w limit_dzien, tylko w dzień, dzień końca z kalendarza (tests/ux1-proba-mail.test.js + stare testy)", /ℹ fail 0/.test(out) && /ℹ pass 17/.test(out), out.match(/ℹ (pass|fail) \d+/g));
 }
 
 // ---------- K4: ?plan=1 po zalogowaniu otwiera wybór planu ----------
@@ -74,15 +75,15 @@ for (const [w, h, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "pl
   const p = await open({ w, h, dark, lang, ls: { ...KONIEC, "mock-progress": JSON.stringify(prog) }, sel: ".uxw-koniec" });
   const r = await p.evaluate(() => { const d = document.querySelector(".uxw-koniec"); if (!d) return null; const plany = [...d.querySelectorAll(".uxw-plan")].map((x) => ({ t: x.innerText.replace(/\s+/g, " "), on: x.classList.contains("on") }));
     const kup = [...d.querySelectorAll("button")].filter((x) => x.matches(".uxw-plan, .btn.primary"));
-    return { eyebrow: d.querySelector(".eyebrow")?.textContent, h2: d.querySelector("h2")?.textContent, txt: d.innerText.replace(/\s+/g, " "), plany, staty: [...d.querySelectorAll(".uxw-stat b")].map((x) => x.textContent) }; });
+    return { h2: d.querySelector("h2")?.textContent, sub: d.querySelector(".uxw-koniec-sub")?.textContent, lab: d.getAttribute("aria-labelledby"), kup: d.querySelector(".uxw-dol .uxw-kup")?.textContent, kupB: d.querySelector(".uxw-dol .uxw-kup")?.getBoundingClientRect().bottom, ih: innerHeight, txt: d.innerText.replace(/\s+/g, " "), plany, staty: [...d.querySelectorAll(".uxw-stat b")].map((x) => x.textContent) }; });
   const tag = `${w}${dark ? " ciemny" : ""}${lang === "en" ? " EN" : ""}`;
   if (lang === "pl") {
-    ok(`K5 ${tag}: jednorazowy ekran „Twoje 3 dni minęły” (nadtytuł „Okres próbny minął”)`, r && r.eyebrow === "Okres próbny minął" && /Twoje 3 dni minęły/.test(r.txt), r);
-    ok(`K5 ${tag}: postęp z 3 dni (2 lekcje, 3 fiszki, 85 XP)`, r && /^Przez 3 dni zrobiłeś/.test(r.h2) && JSON.stringify(r.staty) === JSON.stringify(["2", "3", "85"]), r);
+    ok(`K5 ${tag}: jednorazowy ekran z tytułem h2 „Twoje 3 dni minęły” (nazwa okna z tytułu)`, r && r.h2 === "Twoje 3 dni minęły" && r.lab === "uxw-koniec-h", r);
+    ok(`K5 ${tag}: postęp z 3 dni (2 lekcje, 3 fiszki, 85 XP, seria 2 dni)`, r && r.sub === "Przez 3 dni:" && JSON.stringify(r.staty) === JSON.stringify(["2", "3", "85", "2"]), r);
     ok(`K5 ${tag}: najbliższe kolokwium „za n dni”`, r && /(Kolokwium|Egzamin) · .+ · za \d+ dni/.test(r.txt), r?.txt);
-    ok(`K5 ${tag}: dwa plany, 199 zł na górze i zaznaczony`, r && r.plany.length === 2 && /199 zł/.test(r.plany[0].t) && r.plany[0].on && /35 zł/.test(r.plany[1].t), r?.plany);
+    ok(`K5 ${tag}: dwa plany jako wybór, 199 zł na górze i zaznaczony; przycisk „Wybierz 199 zł” w 1. ekranie (przyklejony)`, r && r.plany.length === 2 && /199 zł/.test(r.plany[0].t) && r.plany[0].on && /35 zł/.test(r.plany[1].t) && r.kup === "Wybierz 199 zł" && r.kupB <= r.ih, r && { plany: r.plany, kup: r.kup, kupB: r.kupB, ih: r.ih });
     ok(`K5 ${tag}: „Twoje postępy zostały na koncie” i link „Zostaję przy darmowych próbkach”`, r && /Twoje postępy zostały na koncie/.test(r.txt) && /Zostaję przy darmowych próbkach/.test(r.txt), r?.txt);
-  } else ok("K5 EN: ekran po angielsku", r && r.eyebrow === "Your trial has ended" && /Your 3 days are over/.test(r.txt) && /^In 3 days you did/.test(r.h2) && /Your progress stays on your account/.test(r.txt) && /I’ll stay with the free samples/.test(r.txt), r);
+  } else ok("K5 EN: ekran po angielsku", r && r.h2 === "Your 3 days are over" && r.sub === "In 3 days:" && /Your progress stays on your account/.test(r.txt) && /I’ll stay with the free samples/.test(r.txt) && r.kup === "Choose 199 zł", r);
   const sc = await p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   ok(`K5 ${tag}: bez poziomego przewijania, konsola bez błędów`, !sc && !p.errors.length, p.errors);
   await p.close();
@@ -90,8 +91,8 @@ for (const [w, h, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "pl
 {
   // Zerowy postęp → „Nie zdążyłeś?…”
   const p = await open({ ls: { ...KONIEC, "mock-progress": JSON.stringify({ [UID]: {} }) }, sel: ".uxw-koniec" });
-  const h2 = await p.evaluate(() => document.querySelector(".uxw-koniec h2")?.textContent);
-  ok("K5: zero postępu → „Nie zdążyłeś? Zostało N dni do: …”", /^Nie zdążyłeś\? Zostało \d+ dni do: .+\.$/.test(h2 || ""), h2);
+  const z = await p.evaluate(() => ({ sub: document.querySelector(".uxw-koniec-sub")?.textContent, staty: document.querySelectorAll(".uxw-koniec .uxw-stat").length, termin: document.querySelector(".uxw-koniec .uxw-termin")?.textContent }));
+  ok("K5: zero postępu → „Nie było kiedy?…” bez kafelków z zerami, z najbliższym zaliczeniem", /^Nie było kiedy\?/.test(z.sub || "") && z.staty === 0 && /za \d+ dni/.test(z.termin || ""), z);
   // „Zostaję…” zamyka; drugie wejście: bez ekranu, pasek zakupu ≤ 56 px nad panelem
   await p.click(".uxw-koniec .btn.ghost"); await p.waitForTimeout(300);
   ok("K5: „Zostaję przy darmowych próbkach” zamyka ekran", !(await p.locator(".uxw-koniec").count()));
@@ -104,7 +105,19 @@ for (const [w, h, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "pl
   ok("K5: na Dziś dalej dokładnie jeden „Kup dostęp” (na pasku, akcent)", kup.length === 1 && kup[0] === "rgb(26, 127, 69)", kup);
   await p.close();
 }
-for (const [konto, ls, opis] of [["proba-koniec", {}, "po próbie bez zapisanego końca (inne urządzenie)"], ["darmowe", KONIEC, "darmowe z możliwą próbą"], ["platne", KONIEC, "płatne"]]) {
+{
+  // Inne urządzenie / wyczyszczone dane: koniec próby z bazy (v54 nauka_proba_stan) → ekran też się pokazuje.
+  const p = await open({ sel: ".uxw-koniec" });
+  ok("K5 inne urządzenie (bez skrot-proba-do): koniec próby z bazy → ekran „Twoje 3 dni minęły”", (await p.locator(".uxw-koniec").count()) === 1 && (await p.evaluate(() => localStorage.getItem("skrot-proba-do"))) === "2026-11-14T17:00:00+01:00");
+  await p.close();
+}
+{
+  // Kto płacił (płatne konto z zapisanym końcem próby): klucz czyszczony, nigdy „Próba minęła”, także po wygaśnięciu dostępu.
+  const p = await open({ konto: "platne", ls: KONIEC });
+  ok("K5 płatne: skrot-proba-do wyczyszczony, ekran końca oznaczony jako pokazany", (await p.evaluate(() => [localStorage.getItem("skrot-proba-do"), localStorage.getItem("bm-proba-koniec-pokazane")])).join() === ",1");
+  await p.close();
+}
+for (const [konto, ls, opis] of [["darmowe", KONIEC, "darmowe z możliwą próbą"], ["platne", KONIEC, "płatne"]]) {
   const p = await open({ konto, ls });
   ok(`K5 ${opis}: bez ekranu końca próby i bez paska „Próba minęła”`, !(await p.locator(".uxw-koniec, .uxw-po").count()));
   await p.close();

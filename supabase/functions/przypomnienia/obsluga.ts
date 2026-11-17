@@ -20,6 +20,7 @@ export interface Zaleznosci {
   fetch: typeof fetch;
   env: (k: string) => string | undefined;
   P: Logika;
+  teraz?: () => Date; // testy: stały zegar
 }
 
 const SITE = "https://zdawalni.pl";
@@ -92,13 +93,16 @@ export async function wyslij(d: Zaleznosci, fnUrl: string) {
 async function wyslijProby(d: Zaleznosci, key: string, from: string, site: string) {
   let sent = 0, failed = 0;
   if (!d.P.mailProba) return { sent, failed };
+  // Tylko w dzień (9:00–20:59 w Warszawie): okno kandydatów 18–30 h przed końcem zawsze obejmuje taką porę.
+  const h = +new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Warsaw", hour: "2-digit", hourCycle: "h23" }).format(d.teraz ? d.teraz() : new Date());
+  if (h < 9 || h > 20) return { sent, failed };
   const { data, error } = await d.rpc("nauka_proba_kandydaci", {});
   if (error || !data?.ok) return { sent, failed };
   for (const row of data.osoby || []) {
     const log = await d.rpc("nauka_przypomnienia_log_dodaj", { p_user: row.user_id, p_dzien: data.dzien, p_rodzaj: "proba" });
     const id = log.data as string | null;
     if (log.error || !id) continue;
-    const m = d.P.mailProba({ lang: row.jezyk, doKiedy: row.do_kiedy, site, id });
+    const m = d.P.mailProba({ lang: row.jezyk, doKiedy: row.do_kiedy, teraz: d.teraz ? d.teraz() : new Date(), site, id });
     const r = await d.fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: "Bearer " + key, "Content-Type": "application/json" },

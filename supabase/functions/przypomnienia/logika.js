@@ -249,10 +249,16 @@
   function mailProba(o) {
     var en = o.lang === "en", koniec = new Date(o.doKiedy), teraz = o.teraz ? new Date(o.teraz) : new Date();
     var godz = new Intl.DateTimeFormat("pl-PL", { timeZone: "Europe/Warsaw", hour: "2-digit", minute: "2-digit" }).format(koniec);
+    // „jutro” / „dziś” / dzień tygodnia liczone z dat kalendarzowych w Warszawie (koniec o 02:00 to nie zawsze „jutro”).
+    var dWaw = function (d) { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Warsaw" }).format(d); };
+    var roz = Math.round((Date.parse(dWaw(koniec)) - Date.parse(dWaw(teraz))) / 864e5);
+    var dzienTyg = new Intl.DateTimeFormat(en ? "en-GB" : "pl-PL", { timeZone: "Europe/Warsaw", weekday: "long" }).format(koniec);
+    var kiedyPL = roz === 0 ? "Dziś" : roz === 1 ? "Jutro" : (/^(wtorek)$/.test(dzienTyg) ? "We " : "W ") + (/^(niedziela|środa|sobota)$/.test(dzienTyg) ? dzienTyg.replace(/a$/, "ę") : dzienTyg);
+    var kiedyEN = roz === 0 ? "today" : roz === 1 ? "tomorrow" : "on " + dzienTyg;
     var h = Math.max(1, Math.round((koniec.getTime() - teraz.getTime()) / 36e5));
     var ile = en ? "about " + h + " hours" : "ok. " + h + " godz.";
     var go = String(o.site).replace(/\/$/, "") + "/?plan=1" + (o.id ? "&pz=" + encodeURIComponent(o.id) : "");
-    var subject = en ? "Your Zdawalni trial ends tomorrow at " + godz : "Jutro o " + godz + " kończy się Twoja próba w Zdawalni";
+    var subject = en ? "Your Zdawalni trial ends " + kiedyEN + " at " + godz : kiedyPL + " o " + godz + " kończy się Twoja próba w Zdawalni";
     var body = en ? "You still have " + ile + " of full access. Until the end of semester 2: 199 zł one-off (BLIK), no renewal."
       : "Masz jeszcze " + ile + " pełnego dostępu. Do końca 2. semestru: 199 zł jednorazowo (BLIK), bez odnawiania.";
     var cta = en ? "Choose a plan" : "Wybieram plan";

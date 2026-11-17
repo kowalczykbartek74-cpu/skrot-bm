@@ -14,8 +14,12 @@ end $$;
 -- 1. „+2 dni przed kolokwium”: raz na konto, tylko po zakończonej próbie bez zakupu, tylko gdy najbliższe kolokwium / egzamin
 --    rocznika (terminy starosty, nauka_docs 'deadlines') wypada w ciągu 7 dni. nauka_proba_bonus_stan() mówi stronie, czy
 --    pokazać kartę; nauka_proba_bonus() sprawdza to samo w bazie i przedłuża próbę o 2 dni (bonus_at = znacznik „raz”).
+-- 1b. nauka_proba_stan(): czy próba tej osoby już minęła (bez zakupu, nigdy nie płaciła) – ekran „Twoje 3 dni minęły” także na
+--     innym urządzeniu niż to, na którym trwała próba.
 -- 2. nauka_rocznik_licznik(rocznik) dla gościa: ile osób z rocznika uczyło się w ostatnich 7 dniach (punkty nauki nauka_rp),
 --    tylko gdy co najmniej 15 (mniej → null: mała liczba działa odwrotnie). Zwraca samą liczbę, bez żadnych danych osób.
+-- 3. nauka_lekcja_spis(id): same tytuły sekcji lekcji (najwyżej 6, bez treści) z rocznika osoby – podgląd na ekranie z kłódką,
+--    żeby student widział, co jest w lekcji, zanim kupi. Treść lekcji dalej tylko z pełnym dostępem.
 
 alter table public.nauka_proby add column if not exists bonus_at timestamptz;
 
@@ -70,6 +74,17 @@ end $$;
 revoke all on function public.nauka_proba_bonus() from public, anon;
 grant execute on function public.nauka_proba_bonus() to authenticated;
 
+create or replace function public.nauka_proba_stan() returns jsonb
+language sql stable security definer set search_path = '' as $$
+  select coalesce((select jsonb_build_object('minela', p.do_kiedy <= now(), 'do_kiedy', p.do_kiedy, 'bonus', p.bonus_at is not null)
+                   from public.nauka_proby p
+                   where p.user_id = auth.uid()
+                     and not exists (select 1 from public.nauka_dostep d where d.user_id = p.user_id or d.email = p.email)),
+                  jsonb_build_object('minela', false))
+$$;
+revoke all on function public.nauka_proba_stan() from public, anon;
+grant execute on function public.nauka_proba_stan() to authenticated;
+
 create or replace function public.nauka_rocznik_licznik(p_rocznik text) returns int
 language sql stable security definer set search_path = '' as $$
   select case when n >= 15 then n end from (
@@ -79,3 +94,15 @@ language sql stable security definer set search_path = '' as $$
 $$;
 revoke all on function public.nauka_rocznik_licznik(text) from public;
 grant execute on function public.nauka_rocznik_licznik(text) to anon, authenticated;
+
+create or replace function public.nauka_lekcja_spis(p_id text) returns jsonb
+language sql stable security definer set search_path = '' as $$
+  select coalesce((select jsonb_agg(left(x.h, 120) order by x.i) from (
+      select e->>'h' h, i from public.nauka_docs d,
+        jsonb_array_elements(case when jsonb_typeof(d.data->'lesson'->'sections') = 'array' then d.data->'lesson'->'sections' else '[]'::jsonb end) with ordinality as t(e, i)
+      where d.kolekcja = 'materialContent' and d.id = public.nauka_docs_id_dla(p_id, public.nauka_moj_rocznik())
+        and coalesce(e->>'h', '') <> ''
+      order by i limit 6) x), '[]'::jsonb)
+$$;
+revoke all on function public.nauka_lekcja_spis(text) from public, anon;
+grant execute on function public.nauka_lekcja_spis(text) to authenticated;

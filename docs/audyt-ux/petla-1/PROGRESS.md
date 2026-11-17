@@ -30,6 +30,11 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 - Etap 2: na Dziś bez dostępu i bez możliwej próby pasek nad panelem: po próbie „Próba minęła · 199 zł do 11 lipca 2027 albo 35 zł / mies. · Kup dostęp”, w pozostałych przypadkach „Pełny dostęp · …” (nie dla kierunku oczekującego).
 - Etap 2: tekst pigułki próby w EN składany w `ux-wejscie.js` (data i godzina w jednym kawałku bez łamania); pary PL→EN i tak w słowniku.
 - Etap 2 (świadome): `nauka_ja().proba_mozna` dalej `true` dla rocznika oczekującego – `nauka_ja` nie należy do pętli 1; ekrany próby biorą `skrot.trialCan`, który uwzględnia status rocznika, a v52 i tak odrzuca start („rocznik”). Do RAPORT.
+- Etap 4: spis sekcji w paywallu z nowej funkcji v54 `nauka_lekcja_spis` (same tytuły, maks. 6) – treść zablokowanej lekcji jest dla konta bez dostępu nieczytelna (RLS). `paywallCard` sam bierze materiał z trasy (bez zmiany cudzego `viewMaterial`).
+- Etap 4: licznik „N osób z {kierunek}…” nad FAQ na ekranie logowania (pod pierwszym ekranem), a nie pod nagłówkiem – liczba przychodzi z bazy po wyrenderowaniu i pod nagłówkiem przesuwałaby ekran (CLS).
+- Etap 4: FAQ „Kto to robi?” z imieniem i nazwiskiem, bo są w regulaminie § 1 (B1).
+- Etap 4: przejście z planu miesięcznego na 199 zł bez automatycznego anulowania subskrypcji – webhook nie ma klucza Stripe do wywołań API (tylko podpis); arkusz mówi wprost, żeby anulować w portalu. Automatyczne anulowanie = decyzja Bartka (sekret STRIPE_SECRET_KEY w funkcji) → RAPORT.
+- Etap 4 (poprawki po etapie 3): koniec próby także z bazy (`nauka_proba_stan`, v54); po zakupie `skrot-proba-do` czyszczony; mail „próba” tylko 9:00–20:59 w Warszawie, w temacie „Dziś/Jutro/W czwartek” z kalendarza; karty planów jako wybór (radio) + jeden przyklejony przycisk „Wybierz …”.
 - Etap 1: przycisk przykładowej lekcji dostaje ikonę `play` (A4d) już teraz; przeniesienie nad formularz i prawdziwa lekcja to etap 5.
 
 ## Etapy
@@ -38,7 +43,7 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 | 1 Pierwszy ekran i jedna ścieżka | **ZALICZONY** | 2 | 9,0 | brak | (ten commit) |
 | 2 Widoczna próba i przyciski zakupu | **ZALICZONY** | 2 | 8,5 | brak | (ten commit) |
 | 3 Koniec próby jako wydarzenie | **ZALICZONY** | 1 | 8,0 | brak | (ten commit) |
-| 4 Paywall, odzyskiwanie, zaufanie | w toku | 0 | – | – | – |
+| 4 Paywall, odzyskiwanie, zaufanie | w toku | 1 | 5 (twardy błąd) | przyciski 43 px (paywall przy 1280, „Zanim zapłacisz”) | – |
 | 5 Lekcja dla gościa | – | – | – | – | – |
 
 ## Dziennik rund
@@ -59,3 +64,7 @@ Uwagi przeniesione do etapu 3 (te same elementy): pasek „Próba minęła / Pe�
 
 ### Etap 3 · runda 1 – 8,0/10, twarde błędy: brak, K1–K5 = true → ZALICZONY
 Uwagi recenzenta naprawiane na początku etapu 4 (logika, która trafi na stronę): po zakupie czyścić `skrot-proba-do` (inaczej po wygaśnięciu płatnego dostępu fałszywe „Próba minęła”); mail „próba” tylko w dzień (9–21 Warszawa) i dzień tygodnia w temacie liczony z kalendarza; koniec próby także bez localStorage (nowe RPC `nauka_proba_stan()` w v54); 360 px: główny przycisk przyklejony na dole arkusza, bez podwójnego tytułu; karty planów jako wybór + jeden przycisk; wariant bez postępu bez dubla; tytuł jako `h2`; tor przełącznika ≥ 3:1; „Zamknij” w „Wybierz plan” ≥ 44 px; seria w kafelkach i postęp ucięty na końcu próby; test etapu 3 odporny na cudze pliki PGlite.
+
+### Etap 4 · runda 1 – 5/10 (twardy błąd), K1–K6 = true → poprawki
+Twardy błąd: przyciski 43 px w paywallu przy 1280 px i w oknie „Zanim zapłacisz”. Poprawione: wszystkie ≥ 48 px (test sprawdza 390 i 1280); powitanie po „+2 dni” mówi „Masz 2 dni” (liczba dni z faktycznego końca próby); arkusz przed portalem jako „Twoja subskrypcja” z „Otwórz portal płatności (karta, faktury, anulowanie)” i jasnym zdaniem o sumie do lipca; spis lekcji z nagłówkiem „W tej lekcji:” i kłódkami; próba w paywallu limonkowa; stopka paywalla lekcji bez powtórzonych cen; bez ramki fokusu na nagłówku arkusza.
+Zostaje (RAPORT / uwagi): zielony „Kup dostęp” w nagłówku aplikacji obok paywalla (nagłówek poza B3); przypomnienie o anulowaniu subskrypcji po zakupie 199 zł (wymaga automatycznego anulowania w webhooku – decyzja Bartka); licznik nad FAQ (decyzja: bez CLS); „Wybierz plan” bez przycisku „Dalej” (karty same są przyciskami – zostawione jak było).

@@ -27,7 +27,7 @@ export default {
     ] },
     { nazwa: "koniec-proby-plan", opis: "ekran końca próby → plan 199 zł → okno zgód przed płatnością", konto: "proba-koniec", ls: { ...KONIEC, "mock-progress": PROG }, wait: 4000, kroki: [
       { opis: "ekran końca próby", stan: () => !!document.querySelector(".uxw-koniec") },
-      { opis: "klik plan 199 zł → „Zanim zapłacisz”", zrob: (p) => p.click(".uxw-koniec .uxw-plan.on"), stan: () => document.querySelector('[aria-label="Zanim zapłacisz"] h2')?.textContent },
+      { opis: "klik „Wybierz 199 zł” → „Zanim zapłacisz”", zrob: (p) => p.click(".uxw-koniec .uxw-dol .uxw-kup"), stan: () => document.querySelector('[aria-label="Zanim zapłacisz"] h2')?.textContent },
     ] },
   ],
   przewijanie: [{ nazwa: "koniec-proby", konto: "proba-koniec", ls: { ...KONIEC, "mock-progress": PROG } }, { nazwa: "dzis-po-probie", konto: "proba-koniec", ls: { ...KONIEC, "bm-proba-koniec-pokazane": "1" } }],

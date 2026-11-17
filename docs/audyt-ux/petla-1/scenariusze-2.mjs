@@ -21,7 +21,7 @@ export default {
   przejscia: [
     { nazwa: "proba-ostatni-dzien", opis: "próba, 4 h do końca: arkusz raz dziennie → „199 zł” → „Zanim zapłacisz”; po przeładowaniu sama pigułka", konto: "proba", time: "2026-11-19T13:00:00+01:00", ls: { "mock-proba-do": DO, ...LD }, wait: 4000, kroki: [
       { opis: "arkusz „Zostało 4 godz. próby”", stan: () => ({ h2: document.querySelector(".uxw-ost h2")?.textContent, plany: [...document.querySelectorAll(".uxw-plan")].map((x) => x.innerText.replace(/\s+/g, " ")) }) },
-      { opis: "klik plan 199 zł → okno zgód przed płatnością", zrob: (p) => p.click(".uxw-plan.on"), stan: () => document.querySelector('[aria-label="Zanim zapłacisz"] h2')?.textContent },
+      { opis: "klik „Wybierz 199 zł” → okno zgód przed płatnością", zrob: (p) => p.click(".uxw-ost .uxw-dol .uxw-kup"), stan: () => document.querySelector('[aria-label="Zanim zapłacisz"] h2')?.textContent },
       { opis: "przeładowanie → bez arkusza, pigułka w kolorze ostrzeżenia", zrob: (p) => p.reload(), czekaj: 4000, stan: () => ({ arkusz: !!document.querySelector(".uxw-ost"), pigulka: document.querySelector(".uxw-proba")?.className }) },
     ] },
     { nazwa: "proba-koniec-kup", opis: "po próbie: jeden zielony „Kup dostęp” na Dziś → wybór planu", konto: "proba-koniec", ls: PK, wait: 3000, kroki: [

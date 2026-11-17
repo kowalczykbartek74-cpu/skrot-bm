@@ -51,6 +51,11 @@ select test.chk('B5 próba trwa: mozna = false, bonus → trwa', not (public.nau
 -- B6: po zakupie → nie
 reset role; select test.jako('b54c@x.pl'); set role authenticated;
 select test.chk('B6 po zakupie: mozna = false, bonus → ma_dostep', not (public.nauka_proba_bonus_stan()->>'mozna')::boolean and test.blad54('nauka_proba_bonus()') like '%ma_dostep%', null);
+-- S1–S2: nauka_proba_stan – próba minęła (a) / nie dla płacącego (c)
+reset role; select test.jako('b54a@x.pl'); set role authenticated;
+select test.chk('S1 po próbie: minela = true', (public.nauka_proba_stan()->>'minela')::boolean, public.nauka_proba_stan());
+reset role; select test.jako('b54c@x.pl'); set role authenticated;
+select test.chk('S2 kto płacił: minela = false (bez „Próba minęła”)', not (public.nauka_proba_stan()->>'minela')::boolean, public.nauka_proba_stan());
 -- B7: gość i przeglądarka bez dostępu do funkcji pomocniczej
 reset role; set role anon;
 do $$ begin
@@ -78,6 +83,14 @@ set role anon;
 select test.chk('L2 20 osób w tygodniu (dawna nauka się nie liczy) → co najmniej 20, liczba', public.nauka_rocznik_licznik('wefiz-test-1-st-2026') >= 20, to_jsonb(public.nauka_rocznik_licznik('wefiz-test-1-st-2026')));
 select test.chk('L3 rocznik bez nauki → null', public.nauka_rocznik_licznik('wefiz-zarz-1-st-2026') is null, null);
 reset role;
+-- T1–T2: spis lekcji (same tytuły sekcji) dla konta bez dostępu
+insert into public.nauka_docs (kolekcja, id, data) values ('materialContent', 'm54', '{"lesson": {"sections": [{"h": "1. Popyt", "body": "TAJNA TREŚĆ"}, {"h": "2. Podaż", "body": "x"}, {"h": "3. A"}, {"h": "4. B"}, {"h": "5. C"}, {"h": "6. D"}, {"h": "7. E"}]}}')
+on conflict (kolekcja, id) do update set data = excluded.data;
+select test.jako('b54b@x.pl'); set role authenticated;
+select test.chk('T1 spis: najwyżej 6 tytułów, bez treści', public.nauka_lekcja_spis('m54') = '["1. Popyt", "2. Podaż", "3. A", "4. B", "5. C", "6. D"]'::jsonb and public.nauka_lekcja_spis('m54')::text not like '%TAJNA%', public.nauka_lekcja_spis('m54'));
+select test.chk('T2 nieznana lekcja → pusta lista', public.nauka_lekcja_spis('brak54') = '[]'::jsonb, null);
+reset role;
+delete from public.nauka_docs where id = 'm54';
 delete from public.nauka_rp where klucz like 'l54%';
 delete from public.nauka_profil where user_id::text like '00000000-0000-0000-0000-0000000055%';
 delete from public.nauka_docs where id in ('d54far', 'd54near');
