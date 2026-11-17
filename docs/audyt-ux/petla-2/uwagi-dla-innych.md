@@ -19,3 +19,11 @@
 
 ## Pętla 4 / ogólne (EN)
 - Podtytuł powitania na Dziś (`weekLine`, ok. 7507) w przerwie świątecznej pokazuje po angielsku „Today: przerwa świąteczna.” — opis okresu z kalendarza uczelni (`CAL.PERIODS[].opis`) nie ma tłumaczenia EN.
+
+## Pętla 5 (Sklep, zadania) – po etapie 5
+- Zadania dnia odbiera teraz baza sama (v57: `nauka_misje_auto` w triggerze monet). W `misjaCard` przycisk „Odbierz +8” pokaże się już tylko na chwilę między zrobieniem zadania a zapisem punktów; `nauka_misje()` zwraca wtedy `odebrana: true`, więc karta powinna pokazywać chip „✓ Odebrane” z `m.odebrana`. Stan dla Sklepu: `ZD_NAWYK.zadaniaStan()` → `{ ok, zrobione, wszystkie, suma, pula, godz, dzienne, tydz, zablokowane }`.
+- Atrapa: auto-odbiór działa przy odczycie `nauka_misje` (`mock-auto-misje` = "0" wyłącza, np. do testu ręcznego „Odbierz”).
+
+## Pętla 3 (ekran końca) – po scaleniu
+- Prawdziwe `ZD_NAWYK.ofertaPrzypomnienia()` ma własne 2 przyciski („Tak, przypominaj”, „Nie teraz”). Reguła „najwyżej 2 przyciski na ekranie końca” z `ux3-etap5.mjs` liczy je razem z głównymi, gdy karta przypomnienia jest widoczna (atrapa w teście ich nie ma). Do decyzji: liczyć kartę przypomnienia osobno albo pokazywać ją jako link.
+- `ux3-etap5.mjs` wariant „bez ZD_NAWYK” po scaleniu usuwa `window.ZD_NAWYK` przed sesją (commit „test: po scaleniu…”).
