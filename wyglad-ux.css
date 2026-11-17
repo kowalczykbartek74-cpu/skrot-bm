@@ -134,3 +134,40 @@ html:not([data-theme]) #main .th-head .th-more { width: 32px; height: 32px; font
 .ux4-okno-zamknij { width: 100%; min-height: 48px; justify-content: center; }
 #main[data-view="calendar"] .row:has(> .stack > .th-row) { align-items: flex-start !important; gap: 12px; }
 #main[data-view="calendar"] .row:has(> .stack > .th-row) > .row { padding-top: 2px; }
+
+/* ---------- W3. Kafle Przedmiotów: pasek zawsze nad tekstem i na całą szerokość (ten sam w każdym kaflu), krótsze pigułki ---------- */
+#main .nb .nb-prog { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; align-items: start; }
+#main .nb .nb-prog .nb-bar { width: 100%; flex: none; }
+.nw { white-space: nowrap; }
+#main .nb .chip.nb-when { white-space: normal; text-wrap: balance; }
+
+/* ---------- W3. Stan pusty i błąd ze Stasiem (ZD_UX4.pusty): Staś jako element (mina „oops”), tytuł, zdanie, jeden główny przycisk ---------- */
+.empty.ux4-empty { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; align-items: start; padding: 20px; min-height: 0; }
+html:not([data-theme]) .empty.ux4-empty:not(.small):not(.locked) { padding: 20px; min-height: 0; }
+html:not([data-theme]) .empty.ux4-empty:not(.small):not(.locked)::before { content: none; }
+.empty.ux4-empty > .art { display: none; } /* decorate() dokłada rysunek pudełka do pustych stanów; tu jest Staś */
+.empty.ux4-empty > .stas-face { width: 72px; height: 72px; border-radius: 50%; overflow: hidden; display: block; background: var(--h-acc-soft, var(--accent-soft)); }
+.empty.ux4-empty > .stas-face svg { width: 100%; height: 100%; display: block; }
+.ux4-empty-txt { display: grid; gap: 8px; justify-items: start; }
+.ux4-empty-txt h2 { margin: 0; }
+.ux4-empty-txt p { margin: 0; }
+.ux4-empty-txt .btn { margin-top: 6px; min-height: 48px; }
+@media (max-width: 420px) { .empty.ux4-empty { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; } .empty.ux4-empty > .stas-face { width: 56px; height: 56px; } .ux4-empty-txt .btn { width: 100%; justify-content: center; } }
+
+/* ---------- W3. Znak wodny z adresem konta: w marginesie strony, poza kolumną treści (.wrap 1040 px), na telefonie słabszy ---------- */
+/* z-index -1: znak leży na tle strony, a karty (także karuzele dochodzące do krawędzi ekranu) go przykrywają – nie przecina kart. */
+#skrot-wm { right: max(2px, calc((100vw - 1040px) / 2 - 22px)) !important; font-size: 9px !important; opacity: .22 !important; z-index: -1 !important; }
+@media (max-width: 430px) { #skrot-wm { right: 1px !important; opacity: .14 !important; } }
+@media print { #skrot-wm { opacity: .22 !important; } }
+/* Runda 1 W3 – poprawki: stan pusty jak w Headspace/Duolingo (Staś nad tytułem, wszystko wyśrodkowane, przycisk na pełną szerokość,
+   karta do 560 px), krótkie wejście; pigułki terminów w kaflach Przedmiotów na jednej linii w rzędzie. */
+.empty.ux4-empty, html:not([data-theme]) .empty.ux4-empty:not(.small):not(.locked) { grid-template-columns: 1fr; justify-items: center; text-align: center; max-width: 560px; margin: 8px auto; padding: 24px 20px; }
+.empty.ux4-empty > .stas-face { width: 104px; height: 104px; }
+.ux4-empty-txt { justify-items: center; width: 100%; }
+.ux4-empty-txt .btn { width: 100%; justify-content: center; }
+@media (max-width: 420px) { .empty.ux4-empty > .stas-face { width: 96px; height: 96px; } }
+html:not([data-theme]) .empty.ux4-empty { animation: h-rise .4s ease-out both; }
+html:not([data-theme]) .empty.ux4-empty > .stas-face { animation: h-pop .45s var(--h-spring, ease-out) .1s both; }
+@media (prefers-reduced-motion: reduce) { .empty.ux4-empty, .empty.ux4-empty > .stas-face { animation: none !important; } }
+html.calm .empty.ux4-empty, html.calm .empty.ux4-empty > .stas-face { animation: none !important; }
+#main .nb > .foot { margin-top: auto; }

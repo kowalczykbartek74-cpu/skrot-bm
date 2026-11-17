@@ -5559,7 +5559,18 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Znaczek EN albo PL mówi, w jakim języku jest opis (materiały z zajęć są po angielsku, tematy z sylabusa często po polsku).": "The EN or PL badge shows the language of the description (class materials are in English, syllabus topics are often in Polish).",
 "Szukaj w obu językach, ogonki nie są potrzebne.": "Search in either language; Polish diacritics are optional.",
 "Dotknij, żeby zamknąć": "Tap to close",
-"Ponów": "Retry"
+"Ponów": "Retry",
+"szacunkowo": "estimated",
+"Od czego najlepiej zacząć dzień w Zdawalni?": "What’s the best way to start your day in Zdawalni?",
+"Przewodnik po Zdawalni": "Guide to Zdawalni",
+"Lekcja {0} · dział {1}: {2} · ok. {3} min": "Lesson {0} · unit {1}: {2} · approx. {3} min",
+"Lekcja {0} · dział {1}: {2} · ok. {3} min (+{4} min dla chętnych)": "Lesson {0} · unit {1}: {2} · approx. {3} min (+{4} min optional)",
+"To podsumowanie wygasło": "This summary has expired",
+"Podsumowania zajęć są dostępne przez 7 dni. Zrób krótką powtórkę z tego, co jest teraz.": "Class summaries are available for 7 days. Do a short review of what's there now.",
+"Nie udało się wczytać podsumowania": "Couldn't load the summary",
+"Sprawdź połączenie z internetem i spróbuj jeszcze raz.": "Check your internet connection and try again.",
+"Nie udało się wczytać materiału": "Couldn't load this material",
+"Sprawdź połączenie i spróbuj jeszcze raz. Jeśli to nie pomoże, napisz na zdawalni.support@gmail.com.": "Check your connection and try again. If that doesn't help, write to zdawalni.support@gmail.com."
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],

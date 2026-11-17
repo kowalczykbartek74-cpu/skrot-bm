@@ -5371,7 +5371,7 @@ html:not([data-theme]) #login #loginBox:has(.lg-trial) h2 { font-size: 22px; }
 html:not([data-theme]) #login .lg-demo-btn { background: transparent !important; box-shadow: none !important; color: #0E5A30; text-decoration: underline; text-decoration-color: rgba(14,90,48,.35); text-underline-offset: 4px; }
 html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decoration-color: currentColor; }
 </style>
-<link rel="stylesheet" href="wyglad-ux.css?v=20261117-ux4p">
+<link rel="stylesheet" href="wyglad-ux.css?v=20261117-ux4u">
 
 <header class="bar"><div class="wrap">
   <button class="morebtn" id="moreBtn" type="button" aria-label="Więcej"></button>
@@ -9019,7 +9019,9 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   // ================= PRZEDMIOTY: wyszukiwarka i siatka przedmiotów =================
   function subjectLabel(s) {
     const nx = nextExam(s.id);
-    if (nx && daysUntil(nx.date) >= 0) { const n = daysUntil(nx.date); return { cls: n <= 3 ? "bad" : n <= 14 ? "warn" : "plain", text: `${nx.dl ? (TERM_KIND[nx.dl.type] || "").toLowerCase() : partLabel(s.id, nx.part)} ${whenN(n)}${nx.approx ? " (szacunkowo)" : ""}`, pin: nx.date, exam: true }; }
+    if (nx && daysUntil(nx.date) >= 0) { const n = daysUntil(nx.date); return { cls: n <= 3 ? "bad" : n <= 14 ? "warn" : "plain", text: `${nx.dl ? (TERM_KIND[nx.dl.type] || "").toLowerCase() : partLabel(s.id, nx.part)} ${whenN(n)}${nx.approx ? " (szacunkowo)" : ""}`, pin: nx.date, exam: true,
+      // ux-4: krótka pigułka na kaflu („wykład za 77 dni”), „77 dni” bez łamania
+      kind: (nx.dl ? (TERM_KIND[nx.dl.type] || "").toLowerCase() : partLabel(s.id, nx.part)).replace(/^zaliczenie (wykładu|laboratorium)$/, (_, w) => (w === "wykładu" ? "wykład" : "laboratorium")), when: whenN(n), approx: !!nx.approx }; }
     const ms = materialsOf(s.id);
     if (ms.some((m) => Date.now() - m.createdAt < 7 * 864e5 && !isLesson(m))) return { cls: "sun", text: "nowy materiał" };
     const scored = ms.map((m) => best(m.id)).filter(Boolean);
@@ -9037,7 +9039,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       s.en && !EN ? h("span", { class: "en", text: s.en }) : null,
       k.n ? h("span", { class: "nb-prog", title: `Tematy z zakresu (${k.what}), które umiesz: ${good} z ${k.n}` }, h("span", { class: "nb-bar", "aria-hidden": "true" }, k.started ? h("i", { class: "st", style: `width:${Math.round((100 * Math.min(k.n, k.known + k.started)) / k.n)}%` }) : null, h("i", { style: `width:${pct}%` })), h("span", { class: "num", text: `umiesz ${knowTxt(k)}` }))
         : h("span", { class: "meta", text: "Jeszcze bez materiałów" }),
-      h("span", { class: "foot" }, lb ? h("span", { class: "chip " + lb.cls, text: lb.text }) : null, k.n && SPR?.odznaka(sprRecs(sprKey(s.id, k.part))) ? h("span", { class: "chip good spr-badge", title: "Poziom potwierdzony mini-sprawdzianem", text: "✓ sprawdzian" }) : null));
+      h("span", { class: "foot" }, lb ? (lb.kind ? [ h("span", { class: "chip nb-when " + lb.cls }, h("span", { text: lb.kind }), " ", h("span", { class: "nw", text: lb.when })), lb.approx ? h("span", { class: "chip plain nb-approx", text: "szacunkowo" }) : null] /* ux-4 */ : h("span", { class: "chip " + lb.cls, text: lb.text })) : null, k.n && SPR?.odznaka(sprRecs(sprKey(s.id, k.part))) ? h("span", { class: "chip good spr-badge", title: "Poziom potwierdzony mini-sprawdzianem", text: "✓ sprawdzian" }) : null));
   }
   // Lekcje przedmiotu: przerobione (✓ albo ≥ 1 gwiazdka, jak na mapie lekcji), suma gwiazdek.
   const lessonDone = (l) => !!S.progress?.done?.[l.id] || (S.progress?.lp?.[l.id]?.stars || 0) >= 1;
@@ -9496,7 +9498,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       h("span", { class: "row", style: "gap:8px" }, h("i", { class: "dot", style: `--c:${colorOf(m.subjectId)}` }), h("span", { class: "eyebrow", text: mine ? ["Moje materiały", folderOf(m).name, s?.pl].filter(Boolean).join(" · ") : s?.pl || "Materiał" }), m.source === "sylabus" || m.sylRef ? h("span", { class: "chip sun", title: "Opracowane z tematów sylabusa, zanim prowadzący wrzucili slajdy", text: "z sylabusa, nie z wykładu" }) : null),
       h("h1", { text: m.title || m.fileName }),
       h("div", { class: "row muted num", style: "font-size:.86rem" },
-        h("span", { text: mine ? `${m.fileName} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? (m.sylRef ? (m.unit == null ? `Lekcja ${lessonNo(m)} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}` : `Lekcja ${lessonNo(m)} · dział ${m.unit}: ${m.unitTitle} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}`) : `Lekcja ${lessonNo(m)} · dział ${m.unit}: ${m.unitTitle} · podręcznik, rozdz. ${m.bookRef} · ${lessonMinTxt(m, c)}`) : `dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
+        h("span", { text: mine ? `${m.fileName} · dodano ${fmtDate(m.createdAt)} · widzisz tylko Ty` : lessonMode ? (m.sylRef ? (m.unit == null ? `Lekcja ${lessonNo(m)} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}` : `Lekcja ${lessonNo(m)} · dział ${m.unit}: ${m.unitTitle} · sylabus: ${m.sylRef} · ${lessonMinTxt(m, c)}`) : `Lekcja ${lessonNo(m)} · dział ${m.unit}: ${m.unitTitle}${m.bookRef ? ` · podręcznik, rozdz. ${m.bookRef}` : ""} · ${lessonMinTxt(m, c)}`) /* ux-4: bez „rozdz. undefined” */ : `dodano ${fmtDate(m.createdAt)}${who(m.createdBy) ? " przez " + who(m.createdBy) : ""}` }),
         h("button", { type: "button", class: "link", style: "font-size:.86rem", onclick: () => go({ view: "cheat", id: m.id }) }, "Ściągawka do druku"),
         mine && myFolders().length > 1 ? h("select", { class: "input small-sel", "aria-label": "Przenieś do sekcji", onchange: (e) => moveMine(m, e.target.value) },
           myFolders().map((f) => h("option", { value: f.id, selected: f.id === folderOf(m).id ? true : null, text: f.id === folderOf(m).id ? `Sekcja: ${f.name}` : `Przenieś do: ${f.name}` }))) : null,
@@ -9521,6 +9523,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     let panel;
     if (c === undefined) panel = h("p", { class: "muted", text: "Ładuję materiał…" });
     else if (c === null && !PAID()) return [backLink(backTo), paywallCard(m.title || m.fileName)];
+    else if (c === null && !mine && !S.canEdit && window.ZD_UX4?.pusty) panel = window.ZD_UX4.pusty({ tytul: "Nie udało się wczytać materiału", tekst: "Sprawdź połączenie i spróbuj jeszcze raz. Jeśli to nie pomoże, napisz na zdawalni.support@gmail.com.", przycisk: { tekst: "Spróbuj ponownie", akcja: () => location.reload() } }); // ux-4
     else if (c === null) panel = h("div", { class: "notice err", text: mine ? "Nie udało się wczytać treści tego materiału. Odśwież stronę." : S.canEdit ? "Nie udało się znaleźć treści tego materiału. Spróbuj wgrać plik jeszcze raz." : "Nie udało się wczytać treści tego materiału. Odśwież stronę, a jeśli to nie pomoże, napisz na zdawalni.support@gmail.com." });
     else if (step === "fiszki") panel = h("div", { class: "stack" },
       !lessonFlashcards(c).length ? h("div", { class: "empty small", text: "Ten materiał nie ma fiszek. Przejdź do quizu." })
@@ -9595,7 +9598,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         sec.example.answer ? h("div", { class: "ans" }, h("b", { text: "Wynik: " }), inline(sec.example.answer)) : null) : null,
       sec.tip ? h("div", { class: "tip" }, h("b", { text: "Uwaga: " }), inline(sec.tip)) : null)));
     return h("div", { class: "lesson" },
-      h("p", { class: "lesson-intro" }, inline(L.intro)),
+      L.intro ? h("p", { class: "lesson-intro" }, inline(L.intro)) : null, // ux-4: bez akapitu „undefined”, gdy lekcja nie ma wstępu
       sections,
       L.formulas?.length ? h("section", { class: "lsec" }, h("h2", { text: L.cheatTitle || "Ściągawka: najważniejsze wzory" }), h("div", { class: "formulas" }, L.formulas.map((f) => h("div", {}, inline(f))))) : null,
       L.exercises?.length ? h("section", { class: "lsec" }, h("h2", { text: "Zadania do przećwiczenia" }),
@@ -9843,7 +9846,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     return h("div", { class: "lesson lesson2" },
       LP_ON() ? h("button", { type: "button", class: "btn small", onclick: () => { S.route = { ...S.route, lpText: false }; render(); } }, "← Wróć do lekcji w krótkich krokach") : null,
       bar,
-      h("p", { class: "lesson-intro" }, inline(L.intro)),
+      L.intro ? h("p", { class: "lesson-intro" }, inline(L.intro)) : null, // ux-4: bez akapitu „undefined”, gdy lekcja nie ma wstępu
       shown === 0 || all ? [hook, prereq] : [hook && st.ans.hook == null ? hook : null],
       start,
       secEls,
@@ -13882,7 +13885,8 @@ ${written}`;
     const head = backLink(s ? { view: "po", id: s.id } : { view: "po" });
     if (!PAID()) return [head, paywallCard("Podsumowania zajęć są w pełnej wersji")];
     if (!PO.idx) { poLoad(); return [head, h("p", { class: "muted", text: "Ładuję…" })]; }
-    if (!it) return [head, h("p", { class: "notice", text: "Tego podsumowania już nie ma." })];
+    // ux-4: wygasłe podsumowanie jako stan pusty ze Stasiem i jednym przyciskiem (bez pliku ikony-ux.js: stary komunikat)
+    if (!it) return [head, window.ZD_UX4?.pusty?.({ tytul: "To podsumowanie wygasło", tekst: "Podsumowania zajęć są dostępne przez 7 dni. Zrób krótką powtórkę z tego, co jest teraz.", przycisk: { tekst: "Powtórka w 5 minut", akcja: () => go({ view: "po" }) } }) ?? h("p", { class: "notice", text: "Tego podsumowania już nie ma." })];
     const c = PO.c[id];
     if (c === undefined) {
       PO.c[id] = null;
@@ -13890,7 +13894,7 @@ ${written}`;
       return [head, h("p", { class: "muted", text: "Ładuję…" })];
     }
     if (c === null) return [head, h("p", { class: "muted", text: "Ładuję…" })];
-    if (!c) return [head, h("p", { class: "notice", text: "Nie udało się wczytać podsumowania. Spróbuj za chwilę." })];
+    if (!c) return [head, window.ZD_UX4?.pusty?.({ tytul: "Nie udało się wczytać podsumowania", tekst: "Sprawdź połączenie z internetem i spróbuj jeszcze raz.", przycisk: { tekst: "Spróbuj ponownie", akcja: () => { delete PO.c[id]; render(); } } }) ?? h("p", { class: "notice", text: "Nie udało się wczytać podsumowania. Spróbuj za chwilę." })]; // ux-4
     if (PO.openId !== id) { PO.openId = id; PO.step = 0; PO.ans = {}; PO.addTerms = true; }
     const lesson = poLesson({ ...it, id });
     const parts = c.parts || [], N = parts.length + 1, step = Math.min(PO.step, N - 1), last = step === N - 1;
@@ -18583,7 +18587,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
   const GART = { start: "hub", przedmioty: "books", material: "review", powtorki: "review", gry: "review", nagrody: "more", cwicz: "tasks", zaliczenie: "tasks", terminy: "tasks", kalendarz: "cal", wiecej: "more" };
   const gTour = (ch) => ch.tour.map((s, j) => (j || !GART[ch.id] ? s : { ...s, art: GART[ch.id] }));
   const GTEST = [
-    { q: "Od czego najlepiej zacząć dzień w Skrócie BM?", o: ["Od listy wszystkich przedmiotów", "Od karty „Teraz zrób to” na ekranie Dziś", "Od kalkulatora średniej"], a: 1, ch: "start", why: "Karta sama wybiera najważniejszą rzecz: zaliczenie, termin, powtórki albo nowy materiał." },
+    { q: "Od czego najlepiej zacząć dzień w Zdawalni?", o: ["Od listy wszystkich przedmiotów", "Od karty „Teraz zrób to” na ekranie Dziś", "Od kalkulatora średniej"], a: 1, ch: "start", why: "Karta sama wybiera najważniejszą rzecz: zaliczenie, termin, powtórki albo nowy materiał." },
     { q: "Co robi przełącznik „Prościej” w materiale?", o: ["Skraca tekst do jednego zdania", "Tłumaczy temat prostym językiem, z przykładami", "Pokazuje slajdy prowadzącego"], a: 1, ch: "material", why: "To ta sama wiedza wytłumaczona jak dla 12-latka." },
     { q: "Co znaczy „📍 slajdy 12–15” przy temacie?", o: ["Że temat zajmuje 4 strony", "Gdzie w prezentacji prowadzącego jest ten temat", "Że trzeba to wykuć na pamięć"], a: 1, ch: "material", why: "To odsyłacz do prezentacji z Teams, gdy chcesz szczegółów z wykładu." },
     { q: "Fiszkę oceniasz „Łatwe”. Co się dzieje?", o: ["Wraca jutro", "Przeskakuje o dwa pudełka i wraca dużo później", "Znika na zawsze"], a: 1, ch: "powtorki", why: "„Łatwe” to +2 pudełka; przerwy rosną: 1, 3, 7, 14, 30, 60 dni." },
@@ -18616,7 +18620,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const minutes = GUIDE.reduce((a, c) => a + c.slides.length, 0);
     const hero = h("section", { class: "g-hero" },
       h("div", { class: "stack", style: "gap:12px;min-width:0" },
-        h("span", { class: "eyebrow", text: "Przewodnik po Skrócie BM" }),
+        h("span", { class: "eyebrow", text: "Przewodnik po Zdawalni" }),
         h("h1", { text: n === N ? "Znasz już całą stronę" : n ? "Wracamy tam, gdzie skończyłeś" : "Poznaj całą stronę krok po kroku" }),
         h("p", { class: "g-lead", text: `${N} krótkich rozdziałów, ok. ${Math.round(minutes / 2)} minut razem. W każdym klikasz i sprawdzasz sam na przykładach, a na końcu pokażemy Ci to samo na prawdziwych ekranach.` }),
         h("div", { class: "row" },
@@ -18766,7 +18770,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
         if (pass) gryBadge("mistrz");   // do gabloty odznak (v24)
         const wrong = GTEST.map((q, i) => [q, st.ans["g" + i]]).filter(([q, a]) => a !== q.a);
         const chs = [...new Set(wrong.map(([q]) => q.ch))].map((id) => GUIDE.find((c) => c.id === id)).filter(Boolean);
-        return { top: pass ? h("div", { class: "g-badge sk-badge" }, h("img", { src: "icons/emblem.png", alt: "Odznaka Mistrz Zdawalni", width: "70", height: "80" })) : null, stars: pass ? null : Math.max(1, Math.round(score / GTEST.length * 3)),
+        return { top: pass ? h("div", { class: "g-badge sk-badge" }, h("img", { src: "icons/odznaka-zdawalni.svg", alt: "Odznaka Mistrz Zdawalni", width: "70", height: "80" })) : null, stars: pass ? null : Math.max(1, Math.round(score / GTEST.length * 3)),
           title: pass ? "Mistrz Zdawalni" : "Prawie", text: pass ? "Znasz stronę lepiej niż większość roku. Teraz wykorzystaj to do nauki." : "Przejrzyj rozdziały poniżej i spróbuj jeszcze raz. Od 7 punktów jest odznaka.",
           stats: [[`${score}/${GTEST.length}`, "wynik"], [st.best, "najdłuższa seria"], [pass ? "✓" : "7", pass ? "odznaka" : "próg odznaki"]],
           actions: [...chs.map((c) => ({ label: `Rozdział: ${c.title}`, fn: () => { lpClose(true); go({ view: "guide", id: c.id }); } })),
@@ -18792,7 +18796,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       const wrong = GTEST.map((q, i) => [q, T.ans[i]]).filter(([q, a]) => a !== q.a);
       return [...head,
         h("section", { class: "g-result" + (pass ? " pass" : "") },
-          pass ? h("div", { class: "g-badge", "aria-hidden": "true" }, h("img", { src: "icons/emblem.png", alt: "", width: "70", height: "80" })) : null,
+          pass ? h("div", { class: "g-badge", "aria-hidden": "true" }, h("img", { src: "icons/odznaka-zdawalni.svg", alt: "", width: "70", height: "80" })) : null,
           h("span", { class: "eyebrow", text: pass ? "Odznaka zdobyta" : "Prawie" }),
           h("h2", { class: "num", text: `${score}/${GTEST.length} · ${pass ? "Mistrz Zdawalni" : "prawie"}` }),
           h("p", { text: pass ? "Znasz stronę lepiej niż większość roku. Teraz wykorzystaj to do nauki." : "Przejrzyj rozdziały, do których odsyłają pytania poniżej, i spróbuj jeszcze raz. Od 7 punktów jest odznaka." }),
@@ -22938,6 +22942,6 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
   // === koniec mostu ux-4 ===
 })();
 </script>
-<script src="ikony-ux.js?v=20261117-ux4b"></script>
+<script src="ikony-ux.js?v=20261117-ux4c"></script>
 
 </body></html>

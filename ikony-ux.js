@@ -27,9 +27,19 @@
     const { h } = A();
     return h("div", { class: "th-row" }, ...dzieci);
   }
+  // Stan pusty / błąd: Staś (mina „oops”), tytuł, jedno zdanie i jeden główny przycisk. przycisk = { tekst, akcja }.
+  function pusty({ tytul, tekst, przycisk, mina = "oops" }) {
+    const { h, stasFace } = A();
+    return h("section", { class: "empty ux4-empty", role: "status" },
+      stasFace ? stasFace(mina) : null,
+      h("div", { class: "ux4-empty-txt" },
+        h("h2", { text: tytul }),
+        tekst ? h("p", { class: "muted", text: tekst }) : null,
+        przycisk ? h("button", { type: "button", class: "btn primary", onclick: przycisk.akcja }, przycisk.tekst) : null));
+  }
   const txt = (v) => (v == null ? "" : String(v));
   window.txt = window.txt || txt;
-  window.ZD_UX4 = Object.assign(window.ZD_UX4 || {}, { pomoc, wiersz, oknoPomocy, txt });
+  window.ZD_UX4 = Object.assign(window.ZD_UX4 || {}, { pomoc, wiersz, oknoPomocy, pusty, txt });
 })();
 // Plik ładuje się po skrypcie aplikacji: jeśli ekran już się narysował (bez „?” z tego pliku), rysujemy go raz jeszcze.
 (() => { const A = window.ZD_APP; if (A?.render && document.querySelector("#main > *")) try { A.render(); } catch {} })();

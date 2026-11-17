@@ -18,12 +18,17 @@ Narzędzia: `docs/gry/test/ux4-lib.mjs` (pomiary), `docs/gry/test/ux4-runda.mjs`
 - W2: toast w miejscu (funkcja `toast` z B4): `toast(msg, { alert, retry })`; błąd zapisu postępu (`flushProgress`) jako `role=alert` z „Ponów”. `i18n.js?v=` w linii 1 podbity (A4 pkt 5: zmiana `i18n-en.js`).
 - W2: mapa postępów na Powtórkach: kwadrat 28 px co 44 px (pola sąsiadów się nie nakładają); legenda bez zmian.
 
+- W3: pigułka terminu na kaflu Przedmiotów składana z dwóch tekstów („wykład” + „za 77 dni” w `.nw`), więc EN tłumaczy się istniejącymi parami; „(szacunkowo)” jako osobna pigułka. `aria-label` kafla dalej ma pełny opis.
+- W3: stan pusty `ZD_UX4.pusty({ tytul, tekst, przycisk })` – Staś (mina „oops”, `stasFace` z mostu) zamiast rysunku pudełka z `decorate()`; użyty w wygasłym podsumowaniu, błędzie wczytania podsumowania i błędzie wczytania materiału (uczeń). Bez pliku `ikony-ux.js` – stare komunikaty.
+- W3: znak wodny `#skrot-wm` przez CSS (`!important`, bo styl jest w atrybucie z `skrot-supabase.js`): prawy margines poza kolumną 1040 px, 9 px, krycie 0,14 do 430 px (0,22 szerzej i na wydruku), `z-index: -1` – leży na tle strony pod kartami (karuzele na Dziś dochodzą do krawędzi ekranu i inaczej by go przecinały).
+- W3: odznaka „Mistrz Zdawalni” `icons/odznaka-zdawalni.svg` (1,3 KB, bez polskiego tekstu w obrazie); `emblem.png` i `logo.png` zostają w repo nieużywane (do decyzji Bartka). `.ics` z `PRODID:-//Skrot BM` to obszar pętli 2.
+
 ## Etapy
 | etap | stan | runda | wynik | twarde błędy | commit |
 |---|---|---|---|---|---|
 | W1 czcionki i typografia | **ZALICZONY 8/10** | 3 | r1: 7, r2: 5, r3: 8 | r2: 1 (kontrast .ev), r3: 0 | (ten commit) |
 | W2 dotyk, pomoc, toast | **ZALICZONY 8/10** | 1 | r1: 8 | 0 | (ten commit) |
-| W3 Przedmioty, stany puste, znak wodny, marka | – | – | – | – | – |
+| W3 Przedmioty, stany puste, znak wodny, marka | **ZALICZONY 8,5/10** | 1 | r1: 8,5 | 0 | (ten commit) |
 | W4 ikony SVG | – | – | – | – | – |
 
 ## Dziennik rund
@@ -33,3 +38,4 @@ Narzędzia: `docs/gry/test/ux4-lib.mjs` (pomiary), `docs/gry/test/ux4-runda.mjs`
 - **W1 r3 – 8/10 ZALICZONY**, twarde błędy: brak, K1–K4 true. Przed commitem poprawiona wskazana regresja: plakietka „data szacowana” na Dziś ucinała się przy 360 px po podniesieniu do 12 px (teraz dwie linie w kaflu) i test sprawdza, czy wszystkie elementy podniesione do 12 px mieszczą się (50/50). Pozostałe uwagi recenzenta na później: krój „Listopad 2026”/nagłówka agendy (to już h2 Bricolage – do sprawdzenia przy W2 na zrzutach), `.tl-t` 16 px z balance, podtytuł powitania przygaszony; „Jeszcze nic tu nie ma.” w `.rv-hero` → pętla 3 (uwagi).
 - Zrzuty: w repo tylko pierwszy ekran z rundy zaliczonej (`etap-X/zaliczone/`); zrzuty pozostałych rund i całe strony są lokalnie w `etap-X/runda-R/` (wykluczone w `.git/info/exclude`, ok. 30 MB na rundę), raporty `raport.md`/`raport.json` wszystkich rund są w repo.
 - **W2 r1 – 8/10 ZALICZONY**, twarde błędy: brak, K1–K3 true. Przed commitem poprawione uwagi recenzenta we własnym kodzie: link w nagłówku panelu („Wszystkie gry →”) z polem 44 px także przy 360 px; „?” w Kalendarzu przy prawej krawędzi obok „+ Mój wpis”; „⋯” w Terminach 32 px w stylu „?”; „Zamknij” w oknach „Jak działa …” jako pełny przycisk 48 px. Asercja h2-etap10 (kwadrat mapy 24 → 28 px) poprawiona w osobnym commicie `ae45e57`. Na później: ikona × w toaście, zrzuty toastu błędu w ciemnym; „?” na ścieżce przedmiotu → pętla 5 (uwagi).
+- **W3 r1 – 8,5/10 ZALICZONY**, twarde błędy: brak, K1–K4 true. Przed commitem: stan pusty wyśrodkowany (Staś 96–104 px nad tytułem, przycisk na pełną szerokość, karta do 560 px) z krótkim wejściem `h-rise`/`h-pop` (wyłączane przez reduced-motion i `html.calm`). PALETA.md: przywrócone sekcje zmiennych bazowych `:root` (czyta je `tests/tresci.test.js`). Na później: smutniejsza mina Stasia (nowy nastrój w `STAS_MOOD` – kod Stasia nie jest w B3 pętli 4), ikona kafla „Moje materiały”, pigułki w rzędzie na jednej linii, „0 z 2” bez łamania.

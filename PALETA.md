@@ -1,8 +1,33 @@
-# Paleta Skrót BM — biało-zielona
+# Paleta Zdawalni — wygląd H2 (jasny i ciemny zielony)
 
-Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane raz, w `:root` na górze `index.html`; reszta strony używa tylko zmiennych.
+Źródło prawdy to blok zmiennych `--h-*` w `index.html` (sekcja „Wygląd H2”, ok. linia 4430) i `wyglad-ux.css` (pętla UX-4).
+Nowe reguły używają **zmiennych**, nie kolorów wpisanych na sztywno. Motywy ze sklepu (niżej) mają własne wartości.
 
-## Zieleń marki
+## Dwa warianty zieleni
+
+Przełącznik w Ustawieniach → Wygląd: `html[data-green="light"|"dark"]` (domyślnie zgodnie z systemem, `localStorage skrot-green`).
+
+| Zmienna | Jasny | Ciemny | Do czego |
+|---|---|---|---|
+| `--h-paper` | `#F7F8F4` | własna ciemna | tło strony (z drobną kratką) |
+| `--h-card` | `#FFFFFF` | własna ciemna | karty, okna, toast |
+| `--h-line` | `#E1E8DD` | — | obrysy kart |
+| `--h-edge` | `#BFCBBA` | — | dolna krawędź 3D przycisków i kart |
+| `--h-ink` | `#10231A` | jasny tusz | tekst główny |
+| `--h-muted` | `#3E5046` | jasny pomocniczy | tekst pomocniczy (≥ 4,5:1 na tle) |
+| `--h-acc` / `--h-acc-edge` | `#1A7F45` / `#0F5A2F` | jasny akcent | główny przycisk, aktywne elementy |
+| `--h-acc-soft` | `#DDF3D0` | — | miękkie tło akcentu |
+| `--h-lime` / `--h-lime-edge` | `#CDF25E` / `#8FB52A` | — | limonkowy główny przycisk na Dziś (`primary-hero`), liczby na ciemnym panelu |
+| `--h-orange` / `-soft` | `#B35400` / `#FFE8CC` | — | powtórki, ostrzeżenia |
+| `--h-blue` / `-soft` | `#1C6FB8` / `#E3F0FD` | — | informacje, kafle |
+| `--h-red` / `-soft` | `#A3261E` / `#FDE4E1` | — | błędy, termin ≤ 3 dni, toast błędu |
+
+Panel Stasia na Dziś: `#133B2A` / `#1D4A36` w obu wariantach (biały i jasnozielony tekst, limonkowe liczby).
+Moneta: `#FFC83D` / `#E0A20F` (ikona `coin`). Kontrast: każdy tekst ≥ 4,5:1 (duży ≥ 3:1), mierzony testami `docs/gry/test/*`.
+
+Zmienne bazowe sprzed H2 nadal są w `:root` (używają ich motywy ze sklepu i starsze reguły); testy `tests/tresci.test.js` pilnują, żeby te wartości zgadzały się z kodem i miały kontrast AA.
+
+## Zieleń marki (zmienne bazowe `:root`, pod spodem H2)
 
 | Zmienna | Kolor | Do czego |
 |---|---|---|
@@ -24,17 +49,6 @@ Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane ra
 | `--teal-600` | `#0F6E6E` | pasek marki u góry |
 | `--mint-100` | `#E6F7EE` | początek gradientu karty „dziś” |
 
-## Motyw „zeszyt w kratkę” i „słoje”
-
-- jeden powtarzalny wzór: **słoje** (koncentryczne linie z rogu) – w prawym górnym rogu strony (zielone), w lewym dolnym przy stopce (limonkowe), w karcie „Teraz zrób to”, w karcie zajęć, w Powtórkach i w pustych stanach
-- **falka** limonkowa pod tytułem każdego głównego ekranu (Dziś, Przedmioty, Powtórki, Terminy, Więcej), miętowa nad stopką
-- nagłówki paneli z krótką zielono-limonkową kreską z lewej
-
-- tło strony: drobna zielona kratka (24 px) z mocniejszą linią co 5 kratek
-- pasek marki u góry: zielony → morski → jasnozielony → limonka
-- każdy przedmiot ma okładkę z własnym wzorem (10 wzorów: kropki, skośne pasy, kratka, fale, szachownica, słoje, zygzak, linie z marginesem, groszki, prążki) w swoim odcieniu i skrót literowy (np. AM)
-- karta „dziś”: miętowo-limonkowy gradient i słoje w rogu; fiszki na papierze w kratkę; „Kup dostęp” w delikatne paski
-
 ## Neutralne
 
 | Zmienna | Kolor | Do czego |
@@ -54,32 +68,45 @@ Jeden jasny motyw w całej apce (bez trybu ciemnego). Kolory są zdefiniowane ra
 
 Wszystkie pary tekst/tło spełniają WCAG AA (kontrast ≥ 4,5:1).
 
+## Czcionki (z repo, bez Google Fonts)
+
+Pliki w `fonts/` (zmienne woff2, łaciński + łaciński rozszerzony), `@font-face` w `wyglad-ux.css`, preload tylko `pjs-latin.woff2`.
+
+- **Bricolage Grotesque 700** – wszystkie `h1`, `h2`, `h3` i nagłówki sekcji (`--f-head`).
+- **Plus Jakarta Sans 400–800** – reszta tekstu (`--f-display`).
+- Czcionki zastępcze o dopasowanych wymiarach (`PJS-fallback`, `BG-fallback`), żeby tekst nie przeskakiwał przy wczytaniu.
+- Motywy: Cormorant Garamond i Playfair Display, pobierane dopiero przy aktywnym motywie.
+
+Skala: **12 / 14 / 16 / 18 / 22 / 28 / 36 px** (`--fs-xs` … `--fs-3xl`), nic poniżej 12 px (poza znakiem wodnym).
+Tytuł ekranu 28, nagłówek sekcji 18, tytuł karty 16; na Dziś powitanie 22, tytuł lekcji 28.
+
+## Kształty
+
+- Karty bez obrysów lub z cienkim obrysem i dolną krawędzią 3D (4–5 px), duże promienie (22–32 px).
+- Przyciski: 3D z dolną krawędzią, wciśnięcie „w krawędź”; główny zielony, na Dziś limonkowy.
+- **Pigułki (999 px) dla chipów, filtrów i plakietek**; pole dotyku każdego przycisku ≥ 44×44 px (małe przyciski poszerzone przez `::after`).
+- Pomoc „?”: jeden komponent `.help-btn` (32 px, pole 44 px) w wierszu tytułu po prawej, otwiera okno „Jak działa …”.
+- Toast: do 420 px szerokości, nad dolną nawigacją, czas zależny od długości, błąd jako `role=alert` z „Ponów”.
+
+## Ikony
+
+SVG w jednym stylu: `viewBox 0 0 24 24`, `stroke="currentColor"`, kreska 2–2,2, zaokrąglone końce (`H2_ICO`, `ikony-ux.js`).
+Bez emoji jako ikon interfejsu (emoji tylko w treściach pisanych przez ludzi). Wyjątek marki: `coin`, `flame`, `miecze` i płaskie ikony gier.
+
 ## Przedmioty
 
-Każdy przedmiot ma własny odcień z rodziny zieleni i morskiego (`PALETTE` w kodzie), żeby dało się je odróżnić bez tęczy kolorów:
+Każdy przedmiot ma własny odcień z rodziny zieleni i morskiego (`PALETTE` w kodzie):
 `#1A7F45 #2E9E8F #6B9E2E #0F6E6E #4CAF72 #3D7A5C #8AAE3A #1F8FA3 #5C8C46 #2C6B4F #7FB59A #3B9C6E`
-
-## Czcionka
-
-Jedna: **Plus Jakarta Sans** (Google Fonts), wagi 400–800.
-
-## Kształt
-
-- **Przyciski** (`.btn`): prostokąt z rogami **12 px**. Główny przycisk ekranu (`.sk-cta`, `.sk-start`): rogi **14 px**, wysokość min. 54 px na telefonie i 48 px na komputerze. Bez „pigułek” na przyciskach.
-- **Chipy** (`.chip`, `.sk-chip`) i znaczniki zostają okrągłe.
-- Karty: 22 px (`.sk-card`, panele), wiersze list i kafelki 14–16 px, kalendarz 12 px.
 
 ## Logo (pliki w `icons/`)
 
 | Plik | Co to | Gdzie |
 |---|---|---|
-| `logo-mark.png` | książka ze strzałką (sam znak) | pasek u góry strony, nagłówek regulaminu i polityki prywatności |
-| `logo.png` | książka + napis „Skrót BM” | materiały do pobrania, posty, prezentacje |
-| `emblem.png` | heksagon z monogramem SB | ekran z kodem dostępu (przed startem) |
-| `icon-*.png`, `apple-touch-icon.png`, `favicon*`, `icon.svg` | ikona aplikacji: kartka ze strzałką na ciemnej zieleni `#14522E` | karta przeglądarki, ekran główny telefonu |
-| `og.png` | logo na kratce (1200×630) | podgląd linku na Messengerze, WhatsAppie, FB |
-
-Źródło: grafiki z Higgsfield (24.10.2026), wycięte na przezroczyste tło.
+| `logo-mark.png` | książka ze strzałką (sam znak) | pasek u góry, logowanie, regulamin i polityka prywatności |
+| `odznaka-zdawalni.svg` | heksagon ze znakiem, napisem ZDAWALNI i trzema gwiazdkami (1,3 KB) | odznaka „Mistrz Zdawalni” po teście przewodnika |
+| `icon-*.png`, `apple-touch-icon.png`, `favicon*`, `icon.svg` | ikona aplikacji | karta przeglądarki, ekran główny telefonu |
+| `og.png` | logo na kratce (1200×630) | podgląd linku |
+| `logo.png`, `emblem.png` | stare grafiki z nazwą „Skrót BM” | **nieużywane w aplikacji** (do usunięcia po decyzji Bartka) |
 
 ## Motyw „Kokardka” (nagroda za poziom 5)
 
