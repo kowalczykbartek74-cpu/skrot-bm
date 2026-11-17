@@ -1329,7 +1329,8 @@ html.calm .nw-conf { display: none; }
     let flaga = null; try { if (q === "on") localStorage.setItem("skrot-sw", "1"); flaga = localStorage.getItem("skrot-sw"); } catch (e) {}
     if (q === "off") {
       try { localStorage.removeItem("skrot-sw"); } catch (e) {}
-      navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister())).catch(() => {});
+      try { navigator.serviceWorker.controller?.postMessage("zdawalni-sw-off"); } catch (e) {}
+      navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => { try { r.active?.postMessage("zdawalni-sw-off"); } catch (e) {} r.unregister(); })).catch(() => {});
       if (W.caches) caches.keys().then((ks) => ks.filter((k) => k.startsWith("zdawalni-sw-")).forEach((k) => caches.delete(k))).catch(() => {});
     } else if (location.protocol === "https:" || (lokalnie && flaga === "1")) {
       const reg = () => navigator.serviceWorker.register("sw.js").catch(() => {});
