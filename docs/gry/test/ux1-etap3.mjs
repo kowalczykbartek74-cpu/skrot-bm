@@ -79,7 +79,7 @@ for (const [w, h, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "pl
   if (lang === "pl") {
     ok(`K5 ${tag}: jednorazowy ekran „Twoje 3 dni minęły” (nadtytuł „Okres próbny minął”)`, r && r.eyebrow === "Okres próbny minął" && /Twoje 3 dni minęły/.test(r.txt), r);
     ok(`K5 ${tag}: postęp z 3 dni (2 lekcje, 3 fiszki, 85 XP)`, r && /^Przez 3 dni zrobiłeś/.test(r.h2) && JSON.stringify(r.staty) === JSON.stringify(["2", "3", "85"]), r);
-    ok(`K5 ${tag}: najbliższe kolokwium „za n dni”`, r && /(Kolokwium|Egzamin) z .+ za \d+ dni/.test(r.txt), r?.txt);
+    ok(`K5 ${tag}: najbliższe kolokwium „za n dni”`, r && /(Kolokwium|Egzamin) · .+ · za \d+ dni/.test(r.txt), r?.txt);
     ok(`K5 ${tag}: dwa plany, 199 zł na górze i zaznaczony`, r && r.plany.length === 2 && /199 zł/.test(r.plany[0].t) && r.plany[0].on && /35 zł/.test(r.plany[1].t), r?.plany);
     ok(`K5 ${tag}: „Twoje postępy zostały na koncie” i link „Zostaję przy darmowych próbkach”`, r && /Twoje postępy zostały na koncie/.test(r.txt) && /Zostaję przy darmowych próbkach/.test(r.txt), r?.txt);
   } else ok("K5 EN: ekran po angielsku", r && r.eyebrow === "Your trial has ended" && /Your 3 days are over/.test(r.txt) && /^In 3 days you did/.test(r.h2) && /Your progress stays on your account/.test(r.txt) && /I’ll stay with the free samples/.test(r.txt), r);

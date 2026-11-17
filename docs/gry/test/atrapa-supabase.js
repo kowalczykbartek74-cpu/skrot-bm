@@ -484,7 +484,8 @@
       proba_do: PROBA ? probaDo : null, proba_mozna: KONTO === "darmowe", proba_dni: 3 }),
     nauka_ping: () => ({ stan: "ok" }),
     // === ux-1 ===
-    // (funkcje pętli UX-1 dochodzą tu w kolejnych etapach)
+    // v53: zgoda na mail przed końcem próby (stan w localStorage mock-proba-przypomnij)
+    nauka_proba_przypomnij: (a) => { if (!PROBA) return { ok: false, code: "brak_proby" }; try { localStorage.setItem("mock-proba-przypomnij", String(!!a.p)); } catch {} return { ok: true, przypomnij: !!a.p, do_kiedy: probaDo }; },
     // === koniec ux-1 ===
   };
   // === ux-1 === logowanie: mock-otp-blad = "rate" (limit maili/IP) | "sekundy" (kod przed chwilą) | inny tekst → błąd signInWithOtp

@@ -1517,6 +1517,8 @@
     return scrim;
   }
   skrot.trialOffer = trialOffer;
+  // ux-1 (etap 3): wywołania RPC okresu próbnego z ux-wejscie.js (zgoda na mail przed końcem, SQL v53).
+  skrot.rpcProba = (fn, args) => (sb && skrot.state === "in" && /^nauka_proba_/.test(fn) ? sb.rpc(fn, args) : Promise.resolve({ data: null, error: { message: "off" } }));
   const TRIAL_ERR = {
     ma_dostep: "Masz już pełny dostęp, okres próbny nie jest potrzebny.",
     wykorzystany: "Okres próbny na tym koncie został już wykorzystany. Pełny dostęp możesz kupić od 35 zł miesięcznie.",
@@ -1560,6 +1562,13 @@
     // Bez sesji: tylko ekran logowania (powód i pole na kod, jeśli kod już poszedł).
     // Link promocyjny skrotbm.pl/?proba=1: od razu tryb „3 dni za darmo” (bez sesji) albo start próby (po zalogowaniu).
     const q = new URLSearchParams(location.search);
+    // ux-1 (etap 3, K4): link z maila „jutro kończy się próba” (zdawalni.pl/?plan=1) → wybór planu (po zalogowaniu albo od razu).
+    if (q.has("plan")) {
+      q.delete("plan"); q.delete("pz");
+      history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
+      if (skrot.state === "out") ls.set("skrot-buy", "1");
+      else if (skrot.state === "in" && !skrot.paid) { setTimeout(() => skrot.buy(), 400); }
+    }
     if (q.has("proba")) {
       q.delete("proba");
       history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);

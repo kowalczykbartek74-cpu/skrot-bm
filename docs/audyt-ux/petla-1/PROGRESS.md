@@ -37,8 +37,8 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 |---|---|---|---|---|---|
 | 1 Pierwszy ekran i jedna ścieżka | **ZALICZONY** | 2 | 9,0 | brak | (ten commit) |
 | 2 Widoczna próba i przyciski zakupu | **ZALICZONY** | 2 | 8,5 | brak | (ten commit) |
-| 3 Koniec próby jako wydarzenie | w toku | 0 | – | – | – |
-| 4 Paywall, odzyskiwanie, zaufanie | – | – | – | – | – |
+| 3 Koniec próby jako wydarzenie | **ZALICZONY** | 1 | 8,0 | brak | (ten commit) |
+| 4 Paywall, odzyskiwanie, zaufanie | w toku | 0 | – | – | – |
 | 5 Lekcja dla gościa | – | – | – | – | – |
 
 ## Dziennik rund
@@ -56,3 +56,6 @@ Twardy błąd: „Napisz do nas” (`<a class="btn">`) w oknie błędu próby mi
 
 ### Etap 2 · runda 2 – 8,5/10, twarde błędy: brak, K1–K6 = true → ZALICZONY
 Uwagi przeniesione do etapu 3 (te same elementy): pasek „Próba minęła / Pełny dostęp” nie może ucinać ceny (2 linie zamiast wielokropka); kafelki postępu tylko dla wartości > 0 z poprawną odmianą; panel Stasia po próbie słabszy od „Kup dostęp” (C2 P0 pkt 4 – panel należy do pętli 2/3, w etapie 3 tylko ekran końca próby i pasek); przy pasku próby kolejne `przyciskZakupu()` jednolite; tag „Dostępne” w linii jak „Wkrótce”; po zamknięciu arkusza bez przewinięcia; poprawiona liczba CLS w „Uwagach stałych” (0,06 dotyczy tylko konta darmowego z kartą „Zadanie dnia”).
+
+### Etap 3 · runda 1 – 8,0/10, twarde błędy: brak, K1–K5 = true → ZALICZONY
+Uwagi recenzenta naprawiane na początku etapu 4 (logika, która trafi na stronę): po zakupie czyścić `skrot-proba-do` (inaczej po wygaśnięciu płatnego dostępu fałszywe „Próba minęła”); mail „próba” tylko w dzień (9–21 Warszawa) i dzień tygodnia w temacie liczony z kalendarza; koniec próby także bez localStorage (nowe RPC `nauka_proba_stan()` w v54); 360 px: główny przycisk przyklejony na dole arkusza, bez podwójnego tytułu; karty planów jako wybór + jeden przycisk; wariant bez postępu bez dubla; tytuł jako `h2`; tor przełącznika ≥ 3:1; „Zamknij” w „Wybierz plan” ≥ 44 px; seria w kafelkach i postęp ucięty na końcu próby; test etapu 3 odporny na cudze pliki PGlite.

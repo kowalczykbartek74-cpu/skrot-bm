@@ -111,11 +111,13 @@
       el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Później")]);
   }
   let ostZaplanowane = false;
-  // Trzy kafelki postępu (bez odmiany liczebników): lekcje, fiszki, XP.
-  const statyProby = (pp) => el("div", { class: "uxw-staty" },
-    el("span", { class: "uxw-stat" }, el("b", { text: String(pp.lekcje) }), el("small", { text: "lekcje" })),
-    el("span", { class: "uxw-stat" }, el("b", { text: String(pp.fiszki) }), el("small", { text: "fiszki" })),
-    el("span", { class: "uxw-stat" }, el("b", { text: String(pp.xp) }), el("small", { text: "XP" })));
+  // Odmiana: 1 lekcja, 2–4 lekcje, 5+ lekcji (12–14 też „lekcji”).
+  const odm = (n, a, b, c) => (n === 1 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? b : c);
+  // Kafelki postępu tylko dla tego, co student naprawdę zrobił (zera nie pokazujemy).
+  const statyProby = (pp) => {
+    const k = [[pp.lekcje, odm(pp.lekcje, "lekcja", "lekcje", "lekcji")], [pp.fiszki, odm(pp.fiszki, "fiszka", "fiszki", "fiszek")], [pp.xp, "XP"]].filter(([n]) => n > 0);
+    return k.length ? el("div", { class: "uxw-staty", style: `grid-template-columns:repeat(${k.length},1fr)` }, k.map(([n, t]) => el("span", { class: "uxw-stat" }, el("b", { text: String(n) }), el("small", { text: t })))) : null;
+  };
 
   // ---------- pigułka okresu próbnego nad panelem Stasia (Dziś) ----------
   function pasekProby() {
@@ -152,6 +154,55 @@
     return null;
   }
 
+  // ---------- powitanie próby: zgoda na jeden mail dzień przed końcem (SQL v53, domyślnie wyłączona) ----------
+  function przelacznikPrzypomnienia() {
+    const sk = SK();
+    const inp = el("input", { type: "checkbox", role: "switch", class: "uxw-sw-in" });
+    const msg = el("p", { class: "uxw-przyp-msg", role: "status", hidden: true });
+    inp.addEventListener("change", async () => {
+      const chce = inp.checked; inp.disabled = true;
+      let ok = false;
+      try { const { data, error } = await (sk.rpcProba?.("nauka_proba_przypomnij", { p: chce, p_jezyk: EN() ? "en" : "pl" }) || Promise.resolve({ error: 1 })); ok = !error && data?.ok !== false; } catch { ok = false; }
+      inp.disabled = false;
+      if (!ok) { inp.checked = !chce; msg.textContent = "Nie udało się zapisać. Spróbuj za chwilę."; }
+      else msg.textContent = chce ? "Przypomnimy jednym mailem dzień przed końcem." : "Bez przypomnienia. Koniec próby zobaczysz na ekranie Dziś.";
+      msg.hidden = false;
+    });
+    return el("div", { class: "uxw-przyp-box" },
+      el("label", { class: "uxw-przyp" }, el("span", { class: "uxw-przyp-t", text: "Przypomnij mi mailem dzień przed końcem próby" }), inp, el("span", { class: "uxw-sw", "aria-hidden": "true" })),
+      el("p", { class: "uxw-przyp-note", text: "Jeden mail. Nic nie pobieramy samo." }), msg);
+  }
+
+  // ---------- jednorazowy ekran „Twoje 3 dni minęły” (tryStart w index.html, raz: bm-proba-koniec-pokazane) ----------
+  function najblizszyTermin() {
+    const app = A();
+    let t = null; try { t = (app.termItems?.() || []).filter((x) => !x.done && x.n != null && x.n >= 0 && ["kolokwium", "egzamin"].includes(x.kind)).sort((a, b) => a.n - b.n)[0] || null; } catch { t = null; }
+    if (!t) return null;
+    const subj = (app.subjects?.() || []).find((x) => x.id === t.sid);
+    return { n: t.n, kind: t.kind, nazwa: subj ? (EN() ? subj.en || subj.pl : subj.pl) : (t.title || "") };
+  }
+  function koniecProby() {
+    const sk = SK(), n = sk.trialDays || 3;
+    const od = Date.parse(ls.get("skrot-proba-do") || "") - n * 864e5;
+    const pp = postep(od > 0 ? od : 0), t = najblizszyTermin();
+    const kiedy = t ? (t.n === 0 ? "dziś" : t.n === 1 ? "jutro" : `za ${t.n} dni`) : "";
+    // Nazwa przedmiotu w mianowniku (bez odmiany „z Makroekonomii”): „Kolokwium · Makroekonomia · za 66 dni”.
+    const termin = t ? `${t.kind === "egzamin" ? "Egzamin" : "Kolokwium"} · ${t.nazwa} · ${kiedy}` : null;
+    const h2 = pp.zero
+      ? (t ? `Nie zdążyłeś? Zostało ${t.n} dni do: ${t.nazwa}.` : "Nie zdążyłeś? Materiały czekają, a postępy liczą się od pierwszej lekcji.")
+      : `Przez ${n} dni zrobiłeś:`;
+    return okno("uxw-koniec", "Okres próbny minął", (zamknij) => [
+      el("span", { class: "eyebrow", text: "Okres próbny minął" }),
+      el("p", { class: "uxw-koniec-t", text: `Twoje ${n} dni minęły` }),
+      el("h2", { style: "margin:0", text: h2 }),
+      pp.zero ? null : statyProby(pp),
+      termin ? el("p", { class: "uxw-termin" }, ico("ux1-clock", 18), el("span", { text: termin })) : null,
+      planKarty(zamknij),
+      el("button", { type: "button", class: "btn primary uxw-big uxw-kup", onclick: () => { zamknij(); sk.buy?.("rok"); } }, "Wybierz 199 zł"),
+      el("p", { class: "uxw-koniec-note", text: "Twoje postępy zostały na koncie: fiszki, wpisy i XP." }),
+      el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Zostaję przy darmowych próbkach")]);
+  }
+
   // ---------- przycisk zakupu zależny od stanu konta (umowa z pętlą 2) ----------
   // Próba możliwa → „Wypróbuj 3 dni” (+ link „Kup dostęp” tylko przy pierwszym na ekranie); po próbie / bez próby → zielony
   // „Kup dostęp” (pierwszy na Dziś), kolejne jako link „Zobacz plany”. Konto z dostępem → null (miejsca wywołań tego nie rysują).
@@ -160,8 +211,9 @@
     if (app.PAID?.() || sk.paid) return null;
     const d = sk.trialDays || 3;
     if (app.canTrial ? app.canTrial() : sk.trialCan) {
-      const kup = kupWolny() ? (kupZajmij(), el("button", { type: "button", class: "link uxw-kup-link", onclick: () => sk.buy?.() }, "Kup dostęp")) : null;
       const lekki = naDzis() && stan() === "darmowe-proba"; // na Dziś główne wezwanie to pasek „Masz jeszcze 3 dni”
+      if (lekki && !kupWolny()) return document.createTextNode(""); // kolejne miejsca: bez trzeciego wezwania
+      const kup = kupWolny() ? (kupZajmij(), el("button", { type: "button", class: "link uxw-kup-link", onclick: () => sk.buy?.() }, "Kup dostęp")) : null;
       return el("span", { class: "uxw-zakup", "data-kontekst": kontekst || "" },
         el("button", { type: "button", class: (lekki ? "link" : "btn primary uxw-lime") + " uxw-wyprobuj", onclick: () => sk.startTrial?.() }, `Wypróbuj ${d} dni`), kup);
     }
@@ -194,7 +246,7 @@
         el("button", { type: "button", class: "btn ghost uxw-big", onclick: zamknij }, "Zamknij"))]);
   }
 
-  window.ZD_WEJSCIE = Object.assign(window.ZD_WEJSCIE || {}, { pasekProby, przyciskZakupu, stan, kupNaDzis, bladProby, ostatnieGodziny, planKarty, postep, proba });
+  window.ZD_WEJSCIE = Object.assign(window.ZD_WEJSCIE || {}, { pasekProby, przyciskZakupu, stan, kupNaDzis, bladProby, ostatnieGodziny, planKarty, postep, proba, przelacznikPrzypomnienia, koniecProby });
   // Aplikacja mogła narysować ekran, zanim ten plik się wczytał (ładuje się na końcu strony): wtedy rysujemy ją jeszcze raz,
   // żeby pigułka próby i przyciski zakupu z tej pętli zastąpiły zapasowe.
   try { if (window.ZD_APP?.render && window.ZD_APP.S?.ready) window.ZD_APP.render(); } catch {}

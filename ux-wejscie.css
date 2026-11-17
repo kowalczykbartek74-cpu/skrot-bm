@@ -162,7 +162,7 @@ html:not([data-theme]) .uxw-zakup .btn.primary.uxw-kup { background: var(--accen
 :is(.uxw-ost, .uxw-blad) .btn.uxw-big { width: 100%; min-height: 52px; justify-content: center; text-align: center; }
 .uxw-blad .uxw-actions, .uxw-sheet .uxw-actions { display: grid; gap: 8px; }
 /* Okna: fokus na nagłówku (bez grubego pierścienia), pierścień tylko przy klawiaturze. */
-:is(.uxw-sheet, .uxw-ost, .uxw-blad) h2:focus { outline: none; }
+:is(.uxw-sheet, .uxw-ost, .uxw-blad, .uxw-koniec) h2:focus { outline: none; }
 .uxw-sheet .uxw-face { margin-bottom: 8px; }
 @media (min-width: 900px) { .uxw-sheet .uxw-face .stas-face { width: 80px; height: 80px; } }
 /* Powitanie próby: przyciski kroków ≥ 44 px. */
@@ -196,3 +196,31 @@ html:not([data-theme]) .uxw-pasek .btn.primary.uxw-pasek-kup { flex: none; min-h
 html:not([data-theme]) :is(.uxw-ost, .uxw-koniec) .btn.primary.uxw-kup { background: var(--accent); color: var(--accent-ink); border: 0; box-shadow: 0 4px 0 var(--h-acc-edge); border-radius: 999px; font-weight: 800; }
 /* Ekran kierunków: gotowe kierunki z zielonym tagiem „Dostępne” (na górze listy). */
 html:not([data-theme]) #login .lk-card.gotowe .lk-tag { display: inline-block; flex: none; }
+
+/* ===== Etap 3: koniec próby jako wydarzenie ===== */
+/* Przełącznik „Przypomnij mi mailem…” w powitaniu próby: cały wiersz to cel dotyku (≥ 44 px), gałka jak przełączniki H2. */
+.uxw-przyp-box { display: grid; gap: 4px; padding: 12px 14px; border-radius: 18px; background: var(--h-acc-soft, #DDF3D0); }
+.uxw-przyp { display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer; font-weight: 700; color: var(--h-ink, #10231A); }
+.uxw-przyp .uxw-przyp-t { flex: 1; }
+.uxw-przyp .uxw-sw-in { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.uxw-przyp .uxw-sw { position: relative; flex: none; width: 52px; height: 32px; border-radius: 999px; background: var(--h-edge, #BFCBBA); transition: background .2s; }
+.uxw-przyp .uxw-sw::after { content: ""; position: absolute; left: 3px; top: 3px; width: 26px; height: 26px; border-radius: 50%; background: var(--h-card, #FFFFFF); box-shadow: 0 2px 4px rgba(16,35,26,.3); transition: transform .2s var(--h-spring, ease); }
+.uxw-przyp .uxw-sw-in:checked + .uxw-sw { background: var(--h-acc, #1A7F45); }
+.uxw-przyp .uxw-sw-in:checked + .uxw-sw::after { transform: translateX(20px); }
+.uxw-przyp .uxw-sw-in:focus-visible + .uxw-sw { outline: 3px solid var(--h-ink, #10231A); outline-offset: 2px; }
+.uxw-przyp-note { margin: 0; font-size: 14px; color: var(--h-muted, #3E5046); }
+.uxw-przyp-msg { margin: 0; font-size: 14px; font-weight: 700; color: var(--h-ink, #10231A); }
+/* Ekran „Twoje 3 dni minęły”. */
+.uxw-koniec .uxw-koniec-t { margin: 0; font: 600 26px/1.15 var(--dz-head, var(--lg-head, "Bricolage Grotesque")), system-ui, sans-serif; letter-spacing: -.02em; color: var(--h-ink, #10231A); }
+.uxw-koniec h2 { font-size: 18px; }
+.uxw-koniec .uxw-termin { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 14px; border-radius: 16px; background: var(--h-orange-soft, #FFE8CC); color: var(--h-ink, #10231A); font-weight: 700; }
+.uxw-koniec .uxw-termin .uxw-ico { display: inline-flex; color: var(--h-orange, #B35400); }
+.uxw-koniec .uxw-koniec-note { margin: 0; font-size: 14px; color: var(--h-muted, #3E5046); text-align: center; }
+.uxw-koniec .btn.uxw-big { width: 100%; min-height: 52px; justify-content: center; }
+/* Paski po próbie / bez dostępu: cena nigdy nie urywa się wielokropkiem (2 linie zamiast tego). */
+.uxw-pasek:is(.uxw-po, .uxw-pelny) .uxw-pasek-t { display: block; overflow: visible; -webkit-line-clamp: unset; text-overflow: clip; line-height: 1.25; }
+@media (max-width: 380px) { .uxw-pasek:is(.uxw-po, .uxw-pelny) { font-size: 13px; padding-left: 14px; } .uxw-pasek:is(.uxw-po, .uxw-pelny) .uxw-ico { display: none; } }
+/* Ekran kierunków: „Dostępne” w karcie (nie nad jej krawędzią), jak „Wkrótce”. */
+html:not([data-theme]) #login .lk-card.gotowe .lk-tag { position: static !important; transform: none; margin: 0 2px 0 auto; padding: 1px 8px; font-size: 12px; box-shadow: none; align-self: center; }
+@media (prefers-reduced-motion: reduce) { .uxw-przyp .uxw-sw, .uxw-przyp .uxw-sw::after { transition: none !important; } }
+html.calm .uxw-przyp .uxw-sw, html.calm .uxw-przyp .uxw-sw::after { transition: none !important; }
