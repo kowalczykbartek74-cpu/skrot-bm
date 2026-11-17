@@ -287,6 +287,69 @@
   const sez24 = (k) => { if (!k) return true; const s = SEZ24[k], d = dzis(); return !!s && d >= s.od && d <= s.do; };
   MON.zal ||= {}; MON.gab ||= []; MON.zam ||= { reqs: [], dni: [] };
   const zamMa = () => MON.zam.reqs.length - MON.zam.dni.length;
+  // === ux-2 === v57 (etap 5): zrobione Zadania dnia i tygodnia odbiera baza sama (trigger monet) – tu przy odczycie listy.
+  if (ls("mock-auto-misje", "1") === "1") {
+    const misjeOryg = V14FN.nauka_misje;
+    V14FN.nauka_misje = () => {
+      const r = misjeOryg(); if (!r?.ok || !paid) return r;
+      for (const m of [...r.misje, ...(r.osobista ? [r.osobista] : [])]) if (m.postep >= m.ile && !m.odebrana) {
+        // klucz jak przy ręcznym odbiorze w atrapie (V14FN.nauka_misja_odbierz), żeby „Odbierz” odpowiadało „already”
+        const klucz = m.id === "osobista" ? "misja:osobista:" + dzis() : "misja:" + m.id + ":" + dzis();
+        if (saldo() + m.nagroda > 100000) continue; // max_saldo jak w bazie
+        if (!MON.ksiega.some((w) => w.klucz === klucz)) { MON.ksiega.push({ delta: m.nagroda, zrodlo: "misja", klucz, opis: (m.okres === "tydzien" ? "Zadanie tygodnia: " : "Zadanie dnia: ") + (m.opis_pl || ""), dzien: dzis() }); monZapisz(); }
+        m.odebrana = true;
+      }
+      return r;
+    };
+  }
+  // === ux-2 === pomocnicze dla funkcji v55–v56 (niżej w BASE): dni jako ISO po czasie lokalnym, jak nauka_dzis() w Warszawie.
+  const UX2 = (() => {
+    const iso = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+    const dzisL = () => iso(new Date());
+    const od = (k, n) => { const [y, m, d] = k.split("-").map(Number); return iso(new Date(y, m - 1, d + n)); };
+    const zDayN = (n) => iso(new Date(2026, 0, 1 + n));
+    const przerwa = (k) => ["2026-10-01", "2026-11-02", "2026-11-11"].includes(k) || (k >= "2026-12-24" && k <= "2027-01-06") || (k >= "2027-02-16" && k <= "2027-02-21");
+    // progress.nd zastępuje tu historię nauka_dni z poprzednich dni (w bazie powstaje z codziennych xp.d i punktów).
+    const dniNauki = () => { const s = new Set(RP.rows.map((r) => r.d)); const p = DOCS.progress?.[UID] || {}; if (p.xp && p.xp.n > 0 && Number.isFinite(p.xp.d)) s.add(zDayN(p.xp.d)); (p.nd || []).forEach((d) => Number.isFinite(d) && s.add(zDayN(d))); return s; };
+    const nauka = (k) => dniNauki().has(k);
+    const zam = (k) => MON.zam.dni.includes(k);
+    return {
+      dzis: dzisL, przerwa,
+      uzyjDni(dni) {
+        if (!dni.length || dni.length > 3) return { ok: false, code: "bad_days" };
+        const t = dzisL(), out = [], lista = [...new Set(dni)].sort();
+        // wszystkie albo żaden (jak v55): gdy zapasu nie starcza albo dzień za stary, nic się nie zużywa
+        const potrzeba = lista.filter((d) => !(d >= t || d < od(t, -3)) && !zam(d) && !przerwa(d) && !nauka(d));
+        let ok = !lista.some((d) => d >= t || d < od(t, -3)) && potrzeba.length <= MON.zam.reqs.length - MON.zam.dni.length;
+        if (ls("mock-v55-blad", "") === "1") return null; // atrapa zerwanego połączenia (strona dostaje błąd)
+        for (const d of lista) {
+          let w;
+          if (d >= t || d < od(t, -3)) w = "za_stary"; else if (zam(d)) w = "juz"; else if (przerwa(d)) w = "przerwa"; else if (nauka(d)) w = "nauka";
+          else if (!ok) w = "brak"; else { MON.zam.dni.push(d); w = "uzyte"; }
+          out.push({ dzien: d, wynik: w });
+        }
+        monZapisz(); (window.__ux2 ||= []).push({ fn: "uzyj_dni", dni, out });
+        return { ok, dni: out, zostalo: MON.zam.reqs.length - MON.zam.dni.length };
+      },
+      prezent() {
+        (window.__ux2 ||= []).push({ fn: "prezent" });
+        if (MON.zam.reqs.includes("prezent:konto")) return { ok: true, juz: true, zostalo: MON.zam.reqs.length - MON.zam.dni.length };
+        if (this.seriaNa(dzisL()) < 2) return { ok: false, code: "za_wczesnie" };
+        if (MON.zam.reqs.length - MON.zam.dni.length >= 2) return { ok: false, code: "pelne" };
+        MON.zam.reqs.push("prezent:konto"); monZapisz();
+        return { ok: true, nowe: true, zostalo: MON.zam.reqs.length - MON.zam.dni.length };
+      },
+      seriaNa(k, zapas = 0) {
+        let d = nauka(k) ? k : od(k, -1), n = 0, z = Math.min(2, zapas);
+        for (let i = 0; i < 400; i++, d = od(d, -1)) { if (nauka(d)) n++; else if (przerwa(d) || zam(d)) continue; else if (!n && z > 0 && d >= od(k, -3)) z--; else break; }
+        return n;
+      },
+      seria() { const k = dzisL(), ma = MON.zam.reqs.length - MON.zam.dni.length, s0 = this.seriaNa(k), s1 = this.seriaNa(k, ma);
+        let c = 0; if (s1 > s0 && !nauka(k)) for (let d = od(k, -1); d >= od(k, -3) && !nauka(d); d = od(d, -1)) if (!przerwa(d) && !zam(d)) c++;
+        return { ok: true, dzien: k, seria: s1, czeka: c, bez_zamrozen: s0, przerwa: przerwa(k) }; },
+    };
+  })();
+  // === koniec ux-2 ===
   const zal24 = () => Object.fromEntries(Object.entries(MON.zal).filter(([, v]) => ma24(v)));
   const INNI24 = JSON.parse(ls("mock-wyglad", '{"Łoś Ania":{"zalozone":{"ramka":"ramka:gwiazdy","kolor":"kolor:glebia","tytul":"tytul:nocny-marek"},"gablota":["frun10","pary0"],"poziom":9},"Cela":{"zalozone":{"ramka":"ramka:zlota","kolor":"kolor:wrzos","tytul":"tytul:pogromca:makroekonomia"},"gablota":["top10"],"poziom":11}}'));
   const V24FN = {
@@ -492,6 +555,15 @@
     nauka_proba_stan: () => (KONTO === "proba-koniec" ? { minela: true, do_kiedy: ls("mock-proba-koniec-do", "2026-11-14T17:00:00+01:00") } : { minela: false }),
     nauka_proba_przypomnij: (a) => { if (!PROBA) return { ok: false, code: "brak_proby" }; try { localStorage.setItem("mock-proba-przypomnij", String(!!a.p)); } catch {} return { ok: true, przypomnij: !!a.p, do_kiedy: probaDo }; },
     // === koniec ux-1 ===
+    // === ux-2 === (pętla UX-2: zamrożenia na dni, prezent, seria w bazie, dni nauki; v55–v56). Dni nauki jak nauka_dni:
+    // punkty z RP.rows + dni z XP z zapisanego postępu (progress.xp.d przy n > 0 i progress.nd). Przerwy jak nauka_przerwa().
+    // mock-v55 = "0" → funkcji nie ma (PGRST202, strona używa starej nauka_zamrozenie_uzyj).
+    nauka_zamrozenie_uzyj_dni: (a) => UX2.uzyjDni(a.p_dni || []),
+    nauka_zamrozenie_prezent: () => UX2.prezent(),
+    nauka_seria: () => UX2.seria(),
+    // etap 4: link do kalendarza w telefonie (okno z przełącznikiem „5 min po zajęciach”)
+    nauka_kalendarz_token: () => "a".repeat(48),
+    // === koniec ux-2 ===
   };
   // === ux-1 === logowanie: mock-otp-blad = "rate" (limit maili/IP) | "sekundy" (kod przed chwilą) | inny tekst → błąd signInWithOtp
   const UX1_OTP = async () => { const e = ls("mock-otp-blad", ""); window.__otp = (window.__otp || 0) + 1;
@@ -515,6 +587,10 @@
     else if (/^nauka_(paczka|duet)/.test(fn) && ls("mock-paczka", "") === "off") out = brak; // v37 jeszcze nie w bazie
     else if (/^nauka_(admin_karnet|zrodlo_ustaw)/.test(fn) && ls("mock-v38", "") === "0") out = brak; // v38 jeszcze nie w bazie
     else if (fn === "nauka_rocznik_do_kupienia" && ls("mock-v45", "1") === "0") out = brak;
+    // === ux-2 === v55 jeszcze nie w bazie
+    else if (/^nauka_(zamrozenie_uzyj_dni|zamrozenie_prezent|seria)$/.test(fn) && ls("mock-v55", "1") === "0") out = brak;
+    else if (fn === "nauka_zamrozenie_uzyj_dni" && ls("mock-v55-blad", "") === "1") { window.__rpc.push({ fn, args, res: "Failed to fetch" }); (window.__ux2 ||= []).push({ fn: "uzyj_dni", dni: args.p_dni, blad: true }); return { data: null, error: { message: "TypeError: Failed to fetch", code: "" } }; }
+    // === koniec ux-2 ===
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;

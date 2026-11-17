@@ -1,0 +1,527 @@
+{
+ "etap": 2,
+ "runda": 2,
+ "pomiary": [
+  {
+   "nazwa": "K1 baner zamrożeń 390",
+   "teksty": 2,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Chroni 390 jasny",
+   "teksty": 10,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Koniec serii od wejścia 390",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Baner uzupełnij 390",
+   "teksty": 2,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 360-jasny",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 360-jasny-en",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 360-ciemny",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 okno serii w przerwie 390 jasny",
+   "teksty": 35,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 390-jasny",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 390-jasny-en",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 390-ciemny",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 1280-jasny",
+   "teksty": 13,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 Dziś w przerwie 1280-ciemny",
+   "teksty": 13,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 Dziś z „Ten tydzień” 360-jasny",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 Dziś z „Ten tydzień” 390-jasny",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 Dziś z „Ten tydzień” 390-ciemny",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 Dziś z „Ten tydzień” 1280-jasny",
+   "teksty": 13,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 Dziś z „Ten tydzień” 360-jasny-en",
+   "teksty": 12,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 karta zamrożenia 390-jasny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 karta zamrożenia 360-jasny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 karta zamrożenia 390-ciemny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 karta zamrożenia 390-jasny-en",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 oferta zamrożenia 390 jasny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Baner prezentu 390 jasny",
+   "teksty": 1,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "zrzuty": [
+  "k1-pon-2zam-przed.png",
+  "k1-pon-2zam-po-nauce.png",
+  "chroni-390-jasny.png",
+  "piatek-weekend-chroniony-390-jasny.png",
+  "koniec-serii-od-wejscia-390-jasny.png",
+  "baner-uzupelnij-390-jasny.png",
+  "k3-dzis-przerwa-360-jasny.png",
+  "k3-dzis-przerwa-360-jasny-en.png",
+  "k3-dzis-przerwa-360-ciemny.png",
+  "k3-okno-przerwa-390-jasny.png",
+  "k3-dzis-przerwa-390-jasny.png",
+  "k3-dzis-przerwa-390-jasny-en.png",
+  "k3-dzis-przerwa-390-ciemny.png",
+  "k3-dzis-przerwa-1280-jasny.png",
+  "k3-dzis-przerwa-1280-ciemny.png",
+  "k4-tydzien-360-jasny.png",
+  "k4-tydzien-390-jasny.png",
+  "k4-tydzien-390-ciemny.png",
+  "k4-tydzien-1280-jasny.png",
+  "k4-tydzien-360-jasny-en.png",
+  "k5-karta-zamrozenia-390-jasny.png",
+  "k5-kbuy-390-jasny.png",
+  "k5-karta-zamrozenia-360-jasny.png",
+  "k5-karta-zamrozenia-390-ciemny.png",
+  "k5-karta-zamrozenia-390-jasny-en.png",
+  "k5-oferta-390-jasny.png",
+  "prezent-baner-390-jasny.png"
+ ],
+ "ruch": [
+  {
+   "nazwa": "baner zwykle",
+   "anim": {
+    ".nw-baner": "nw-up"
+   }
+  },
+  {
+   "nazwa": "baner reduced-motion",
+   "anim": {
+    ".nw-baner": "none"
+   }
+  },
+  {
+   "nazwa": "baner calm",
+   "anim": {
+    ".nw-baner": "none"
+   }
+  }
+ ],
+ "dodatkowe": [
+  "## PGlite (v55, v56)",
+  "```",
+  "    OK D6 nauka_odp.wybor = 3\n    OK D1 trudność: md:0 50%, md:1 100%, md:2 brak\n    OK D1b > 80 kluczy → too_many\n    OK D2 rozkład [1,3,1,1] / za_malo\n    OK D2b bez mojej odpowiedzi (5 osób)\n    OK D2c bez dostępu → no_access\n    OK D3 5 szczebli przy 2 dobrych → podejrzana, 0 pkt\n    OK D4 1 szczebel w 1 s → podejrzana\n    OK D5 4 szczeble w 40 s → ok, +5, nowy rekord\n    OK D4b powód: za szybko\n    OK Z1 pierwsza zła, potem dobra: 0 pkt\n    OK Z2 dobra: 10 pkt raz dziennie\n    OK Z3 brak pytania\n    OK Z4 Staś: 2 dobre, 1 zła, 20 pkt; powtórka 0\n    OK Z5 3 wiersze punktów, 3 monety\n    OK Z6 osobista: stas, nie da się podmienić\n    OK Z7 odbiór 8 🪙 raz\n    OK Z8 wspólne zadanie dalej przez tę samą funkcję\n    OK Z9 bez dostępu: no_access\n    OK Z1 anon nie woła nauka_zdjecie_bierz\n    OK Z2 bez dostępu: not_granted, stan ok=false\n    OK Z2 bez dostępu: brak wpisu\n    OK Z3 płacący: 5 razy ok, szósty limit\n    OK Z3 stan: uzyte 5 z 5\n    OK Z4 student nie czyta nauka_zdjecia\n    OK Z4 student nie woła nauka_zdjecie_zwroc\n    OK Z5 zwrot: własny tak, cudzy nie\n    OK Z5 po zwrocie jedno miejsce wolne\n    OK Z6 cyr: własny licznik od 1\n    OK Z6 tabela ma tylko id, user_id, dzien, rocznik_id, at\n    OK Z6 rocznik zapisany\n    OK Z7 starosta: 7 z 7 mimo limitu 5\n    OK Z8 nowy dzień: licznik od 1\n    OK Z8 stare (> 90 dni) skasowane, wczorajsze zostają\n    OK D1 lejek ma nadal swoje pola (v35) i „ld”\n    OK D2 dziś: kartę skończyło 5 osób, lekcję 3 osoby (3 lekcje)\n    OK D3 przerwania: segment 3, 5 porzuceń, 5 osób\n    OK D4 mechaniki: Fruń porzucony 5×, Drabina 4× ukończona dobrze, Staś 2× pominięty; zły wpis pominięty\n    OK D5 czy uczy: tematy z bloku 5/5 dobrze, spoza bloku z nowych wpisów źle\n    OK D6 osoby w bloku (28 dni)\n    OK D7 „*” = wszystkie roczniki też ma „ld”\n    OK D7b „*” zachowuje lejek według źródła z v38\n    OK D8 przeglądarka nie woła nauka_lejek_ld\n    OK D1 wszystkie dotychczasowe dostępy w BM (t44 też: kupił przed v45, czyli BM)\n    OK D1 klucz główny (email, rocznik_id)\n    OK D1 rocznik obowiązkowy\n    OK D2 a@x.pl: nauka_ja i dostęp jak przed v45\n    OK D2 b@x.pl: nauka_ja i dostęp jak przed v45\n    OK D2 c@x.pl: nauka_ja i dostęp jak przed v45\n    OK D2 s@x.pl: nauka_ja i dostęp jak przed v45\n    OK D2 st1@x.pl: nauka_ja i dostęp jak przed v45\n    OK D2 przyp1@x.pl: nauka_ja i dostęp jak przed v45\n    OK D3 zakup BM nie daje dostępu w roczniku testowym\n    OK D4 dostęp w roczniku testowym, data i plan z jego wiersza\n    OK D5 zakup rocznika testowego nie daje dostępu w BM\n    OK D5 ktoś, kto już płacił (inny rocznik), nie dostaje okresu próbnego\n    OK D6 karnet bez rocznika → rocznik z profilu konta\n    OK D6 karnet bez konta i bez rocznika → BM\n    OK D7 karnet BM dla osoby z płatnym BM → ma_dostep\n    OK D7 karnet na inny rocznik tej osoby → ok (płatny BM zostaje)\n    OK D7 a@x.pl: dwa wiersze, BM płatny bez zmian\n    OK D8 karnet działa w roczniku testowym\n    OK D8 karnet testowy nie zmienia dostępu a@x.pl w BM\n    OK D9 cofnięcie po e-mailu: tylko karnet, płatny BM zostaje\n    OK D9 drugi raz → juz_cofniety\n    OK D9 płatnego BM nie da się cofnąć → nie_karnet\n    OK D9 cofnięcie po e-mailu i roczniku\n    OK D9 a@x.pl dalej ma płatny BM\n    OK D10 kalendarz rocznika testowego: płatny (wiersz rocznika testowego), terminy tylko jego\n    OK D10 kalendarz BM bez zmian\n    OK D11 BM da się kupić, rocznik oczekujący nie, nieznany nie\n    OK D12 nieznany rocznik zatrzymany\n    OK D13 przed usunięciem: t44 ma wiersze w dwóch rocznikach\n    OK D13 usunięcie konta: oba wiersze nauka_dostep znikają\n    OK D14 jedna funkcja cofania (bez starej jednoargumentowej)\n    OK Z1 BM: plan.json na plan.zdawalni.pl\n    OK Z2 żaden rocznik nie został na plan.skrotbm.pl\n    OK Z3 nowy rocznik: adres na plan.zdawalni.pl\n    OK Z4 stary host dozwolony, obcy zatrzymany\n✓ skrot-v55-seria-zamrozenia.sql\n✓ skrot-v55-seria-zamrozenia.sql\n    OK Z1 2 dni bez nauki + 2 zamrożenia: oba użyte, zostało 0\n    OK Z1 drugie wywołanie: juz, juz (bez zużycia)\n    OK Z1 seria w bazie po weekendzie: 1 dzień nauki + 2 zamrożone = 1\n    OK Z1 seria po dzisiejszej nauce = 2\n    OK Z2 2 dni, 1 zamrożenie: wszystkie albo żaden – brak + brak, ok = false, zamrożenie zostaje (1)\n    OK Z2 jeden dzień, 1 zamrożenie: uzyte, zostało 0\n    OK Z3 dziś i dzień sprzed 4 dni: za_stary\n    OK Z3 pusta lista / 4 dni: bad_days\n    OK Z4 dzień z nauką: „nauka”, nic nie zużyte\n    OK Z5 nauka_przerwa: 24.12, 1.01, 6.01, 11.11, 18.02 tak; 23.12, 7.01, 12.11 nie\n    OK Z5 28.12 (przerwa), ostatnia nauka 23.12: seria czeka = 3\n    OK Z5 7.01 (pierwszy dzień zajęć) bez nauki: seria nadal 3\n    OK Z5 8.01 bez nauki 7.01: seria 0 (7.01 to zwykły opuszczony dzień)\n    OK Z5 nauka 7.01: seria 4 (przerwa nie dodała dni)\n    OK Z5 zwykły dzień bez nauki zrywa: 20.12 bez nauki, seria na 19.12 = 0\n    OK Z6 1 dzień nauki: za_wczesnie\n    OK Z6 2 dni nauki: prezent (nowe), zostało 1\n    OK Z6 drugi raz: juz, nadal 1\n    OK Z6 jeden wpis prezentu z ceną 0, bez wpisu w księdze monet\n    OK Z6 pełny zapas (2/2): pelne, bez wpisu\n    OK Z6 2 dni nauki, ale nie z rzędu (seria 1): bez prezentu\n    OK Z10 seria_na bez zapasu = 0 (2 opuszczone dni), z zapasem 2 = 10\n    OK Z10 z zapasem 1 = 0 (nie starcza na 2 dni)\n    OK Z10 nauka_seria(): seria 10, czeka 2, bez_zamrozen 0\n    OK Z7 nauka_seria(): ok, seria 2, dzień = dziś\n    OK Z8 nauka_zamrozenie_uzyj() nadal istnieje\n    OK Z9 anon bez prawa do uzyj_dni i prezentu\n    OK Z9 nauka_seria_na i nauka_dzien_nauki niedostępne dla zalogowanych (tylko wewnątrz bazy)\n    OK v55: Z1–Z9\n✓ test/v55.sql\n✓ skrot-v56-dni-nauki.sql\n✓ skrot-v56-dni-nauki.sql\n    OK D1 XP wczoraj bez punktów → nauka_dni (wczoraj, xp)\n    OK D1 bez punktów rankingu\n    OK D2 wczoraj tylko czytanie: „nauka”, zamrożenie zostaje (1)\n    OK D2 nauka_seria(): wczoraj = dzień nauki, seria 1\n    OK D3 nd z dokumentu i XP 0 dziś: żadnego dnia nauki\n    OK D4 punkty dziś → jeden wpis (dziś, pkt)\n    OK D7 dzień sprzed 2 dni i zapis bez wzrostu XP: brak dnia nauki\n    OK D5 student nie czyta nauka_dni\n    OK D5 student nie pisze nauka_dni\n    OK D6 jeden wiersz na osobę i dzień\n    OK D6 wpisy z nauka_rp sprzed v56 są w nauka_dni\n    OK v56: D1–D6\n✓ test/v56.sql",
+  "```"
+ ],
+ "testy": [
+  {
+   "name": "K1 weekend + 2 zamrożenia: seria trwa, szary płomień „10 dni”",
+   "ok": true
+  },
+  {
+   "name": "K1 po nauce: seria 11, zamrożone sob. i niedz. (jedno wywołanie bazy z 2 dniami), zapas 0",
+   "ok": true
+  },
+  {
+   "name": "K1 baner „Zamrożenia uratowały serię … zostało 0/2” nad dolnym paskiem (ikona SVG, bez emoji)",
+   "ok": true
+  },
+  {
+   "name": "K1 weekend + 1 zamrożenie: seria spadła (0, bez szarego „10 dni”)",
+   "ok": true
+  },
+  {
+   "name": "K1 z 1 zamrożeniem po nauce: seria 1, zamrożenie niezużyte",
+   "ok": true
+  },
+  {
+   "name": "K1 1 opuszczony dzień + 1 zamrożenie: seria 5",
+   "ok": true
+  },
+  {
+   "name": "K1 bez v55: stara nauka_zamrozenie_uzyj chroni wczoraj, seria 5",
+   "ok": true
+  },
+  {
+   "name": "K1 bez v55: brak błędów konsoli",
+   "ok": true
+  },
+  {
+   "name": "Stan „ostatnie zamrożenie chroni” przy 390 px w jednej linii",
+   "ok": true
+  },
+  {
+   "name": "Stan „do północy”: płomień zapalony (bez szarości), alarm widać bez najechania",
+   "ok": true
+  },
+  {
+   "name": "Luka w środku tygodnia: „· zamrożenia: zużyje 1 z 1” (bez słowa „weekend”)",
+   "ok": true
+  },
+  {
+   "name": "Piątek z 2 zamrożeniami: „· weekend chroniony”",
+   "ok": true
+  },
+  {
+   "name": "Weekend z 1 zamrożeniem: od wejścia „0 dni · koniec serii 10 dni” (nie po cichu)",
+   "ok": true
+  },
+  {
+   "name": "K3 baza przed nauką = strona: nauka_seria 10, czeka 2",
+   "ok": true
+  },
+  {
+   "name": "Baner po zużyciu ostatnich zamrożeń: w treści pod paskiem (nic nie zasłania) z „Uzupełnij w sklepie”",
+   "ok": true
+  },
+  {
+   "name": "Tydzień w przerwie świątecznej: „Ten tydzień: przerwa”, kropki przerwy, dni w aria-label",
+   "ok": true
+  },
+  {
+   "name": "Okno w przerwie: bez zdania o spadku serii o północy",
+   "ok": true
+  },
+  {
+   "name": "Tydzień z 1 dniem wolnym (11.11): „Ten tydzień: 1/4 dni”",
+   "ok": true
+  },
+  {
+   "name": "K2 PGlite: skrot-v55 2× + test/v55.sql (Z1–Z9)",
+   "ok": true
+  },
+  {
+   "name": "K6 PGlite: skrot-v56 2× + test/v56.sql (D1–D6: samo czytanie nie zużywa zamrożenia)",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 360-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3 EN 360: „break, streak paused”",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 360-jasny-en: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 360-ciemny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3 28.12 (przerwa), nauka 23.12: pigułka „8 dni · przerwa, seria czeka”, bez „do północy” mimo 19:30",
+   "ok": true
+  },
+  {
+   "name": "K3 to samo liczy baza (nauka_seria: 8, przerwa)",
+   "ok": true
+  },
+  {
+   "name": "K3 okno serii w przerwie: opis „seria czeka” i dni przerwy w kalendarzu",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 390-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3 EN 390: „break, streak paused”",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 390-jasny-en: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 390-ciemny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 1280-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3/K4 1280-ciemny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3 7.01 po przerwie: seria 8 widoczna, po nauce 9, zamrożenie niezużyte",
+   "ok": true
+  },
+  {
+   "name": "K4 360-jasny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px",
+   "ok": true
+  },
+  {
+   "name": "K4 360-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K4 390-jasny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px",
+   "ok": true
+  },
+  {
+   "name": "K4 390-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K4 390-ciemny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px",
+   "ok": true
+  },
+  {
+   "name": "K4 390-ciemny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K4 1280-jasny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px",
+   "ok": true
+  },
+  {
+   "name": "K4 1280-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K4 EN: „This week: 3/5 days”",
+   "ok": true
+  },
+  {
+   "name": "K4 360-jasny-en: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K5 kartaZamrozenia: opis z C2, „Masz 1/2”, przycisk „Kup za 40” z monetą SVG",
+   "ok": true
+  },
+  {
+   "name": "K5 przycisk otwiera istniejące potwierdzenie zakupu (kBuy) z ceną 40",
+   "ok": true
+  },
+  {
+   "name": "K5 po zakupie: „Masz 2/2” i „Masz komplet” bez przycisku",
+   "ok": true
+  },
+  {
+   "name": "K5 EN karta zamrożenia",
+   "ok": true
+  },
+  {
+   "name": "K5 ofertaZamrozenia: seria 5, saldo 120, 0 zamrożeń → karta",
+   "ok": true
+  },
+  {
+   "name": "K5 po zakupie z oferty: oferta znika (ma 1 zamrożenie)",
+   "ok": true
+  },
+  {
+   "name": "K5 „Nie teraz” chowa ofertę (na 7 dni)",
+   "ok": true
+  },
+  {
+   "name": "K5 ofertaZamrozenia: saldo 30 → brak",
+   "ok": true
+  },
+  {
+   "name": "K5 ofertaZamrozenia: ma 1 zamrożenie → brak",
+   "ok": true
+  },
+  {
+   "name": "K5 ofertaZamrozenia: seria 2 → brak",
+   "ok": true
+  },
+  {
+   "name": "K6 atrapa: wczoraj samo czytanie (XP, 0 pkt) → „nauka”, zamrożenie zostaje",
+   "ok": true
+  },
+  {
+   "name": "K6 nauka dziś po dniu czytania: seria 5, bez wywołania zamrożeń",
+   "ok": true
+  },
+  {
+   "name": "Prezent: seria 2 → jedno zamrożenie w prezencie i baner",
+   "ok": true
+  },
+  {
+   "name": "Prezent: raz (kolejne XP nie pyta bazy drugi raz)",
+   "ok": true
+  },
+  {
+   "name": "ruch: baner bez animacji (reduced-motion)",
+   "ok": true
+  },
+  {
+   "name": "ruch: baner bez animacji (calm)",
+   "ok": true
+  },
+  {
+   "name": "konsola bez błędów (wszystkie stany)",
+   "ok": true
+  }
+ ],
+ "wynik": {
+  "pass": 61,
+  "fail": 0
+ }
+}

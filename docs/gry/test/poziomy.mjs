@@ -31,7 +31,9 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   const p = await page(b, { w, h: hh, ls: { "mock-progress": prog(1250), "mock-saldo": "85" } });
   await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
   const g = await txt(p, ".greet .rk-line");
-  ok(`${w} Dziś: ranga Ogarnięty, poz. 5, monety 85, seria 4`, /Ogarnięty/.test(g) && /poz\. 5/.test(g) && /🪙\s*85/.test(g) && /🔥\s*4/.test(g), g);
+  // Wygląd H2: moneta i płomień to ikony SVG (bez emoji w tekście); UX-2 etap 1: poniżej 420 px „poz. N” jest tylko w odznace rangi.
+  const ic = await p.evaluate(() => ({ coin: document.querySelector(".greet .hud-coin")?.innerText.trim(), seria: document.querySelector(".greet .nw-streak b, .greet .xp-chip:last-child b")?.textContent, plomien: !!document.querySelector(".greet .nw-streak :is(.h2-flame, .kflame)") }));
+  ok(`${w} Dziś: ranga Ogarnięty, poz. 5, monety 85, seria 4`, /Ogarnięty/.test(g) && (w < 420 || /poz\. 5/.test(g)) && ic.coin === "85" && ic.seria === "4" && ic.plomien, { g, ic });
   await shot(p, `dzis-${w}`);
   const sw = await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
   ok(`${w} Dziś: bez poziomego przewijania`, sw);

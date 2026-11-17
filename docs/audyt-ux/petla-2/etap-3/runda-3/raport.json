@@ -1,0 +1,388 @@
+{
+ "etap": 3,
+ "runda": 3,
+ "pomiary": [
+  {
+   "nazwa": "Karta powrotu 390-jasny",
+   "teksty": 7,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Karta powrotu 360-jasny",
+   "teksty": 7,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Karta powrotu 390-ciemny",
+   "teksty": 7,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Karta powrotu 1280-jasny",
+   "teksty": 7,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Karta powrotu 390-jasny-en",
+   "teksty": 7,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Karta powrotu z naprawą 390",
+   "teksty": 9,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Utrata serii od wejścia 390-jasny",
+   "teksty": 86,
+   "kontrast": [
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "data szacowana",
+     "cel": "SPAN",
+     "kontrast": 8.6,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Utrata serii od wejścia 390-ciemny",
+   "teksty": 86,
+   "kontrast": [
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "data szacowana",
+     "cel": "SPAN",
+     "kontrast": 9.53,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "Utrata serii od wejścia 360-jasny-en",
+   "teksty": 86,
+   "kontrast": [
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "estimated date",
+     "cel": "SPAN",
+     "kontrast": 8.6,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "zrzuty": [
+  "k1-powrot-390-jasny.png",
+  "k1-powrot-360-jasny.png",
+  "k1-powrot-390-ciemny.png",
+  "k1-powrot-1280-jasny.png",
+  "k1-powrot-390-jasny-en.png",
+  "k3-naprawa-bez-karty-390-jasny.png",
+  "k2-wracam-odtwarzacz-390-jasny.png",
+  "k3-naprawa-wiersz-390-jasny.png",
+  "k3-seria-odzyskana-390-jasny.png",
+  "k4-z-maila-390-jasny.png",
+  "k5-utrata-390-jasny.png",
+  "k5-utrata-390-ciemny.png",
+  "k5-utrata-360-jasny-en.png"
+ ],
+ "ruch": [
+  {
+   "nazwa": "zwykle",
+   "anim": {
+    "plomien": "nw-pop",
+    "liczba": "nw-up",
+    "baner": "nw-up"
+   }
+  },
+  {
+   "nazwa": "reduced-motion",
+   "anim": {
+    "plomien": "none",
+    "liczba": "none",
+    "baner": "none"
+   }
+  },
+  {
+   "nazwa": "calm",
+   "anim": {
+    "plomien": "none",
+    "liczba": "none",
+    "baner": "none"
+   }
+  }
+ ],
+ "dodatkowe": [
+  "Punkty karty powrotu (390 jasny): [\"Zajęcia od ostatniej wizyty: 5\",\"Nowe terminy: 1\"]",
+  "## node --test tests/lekcja-dnia.test.js tests/nawyk.test.js",
+  "```",
+  "▶ powrót po przerwie (pętla UX-2, etap 3)\n✔ powrót po przerwie (pętla UX-2, etap 3) (0.246417ms)\n✔ naprawa serii wysiłkiem: seria ≥ 3, 2–4 opuszczone dni, 2 dni nauki z rzędu → n + 2, raz na 30 dni (0.240125ms)\nℹ tests 68\nℹ pass 68\nℹ fail 0",
+  "```"
+ ],
+ "testy": [
+  {
+   "name": "K1 przerwa 5 dni: „Dobrze, że jesteś. Ostatnio 5 dni temu.” nad kartą dnia, ze Stasiem",
+   "ok": true
+  },
+  {
+   "name": "K1 najwyżej 3 punkty, tylko te, które są (liczby > 0), jako przyciski ≥ 44 px prowadzące dalej",
+   "ok": true
+  },
+  {
+   "name": "K1 jeden główny przycisk „Wracam: 3 minuty” (bez konkurencyjnego „Zaczynamy · 5 min” w karcie dnia)",
+   "ok": true
+  },
+  {
+   "name": "K1 punkt „Nowe terminy” otwiera Terminy",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K1 360×640: „Wracam” mieści się w pierwszym ekranie nad dolnym paskiem",
+   "ok": true
+  },
+  {
+   "name": "K1 360-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K1 390-ciemny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K1 1280-jasny: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K1 EN: „Good to see you. Last time: 5 days ago.”, „I'm back: 3 minutes”",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny-en: nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K1 wczoraj była nauka (1 dzień): bez karty powrotu",
+   "ok": true
+  },
+  {
+   "name": "K1 dziś już XP: karta znika",
+   "ok": true
+  },
+  {
+   "name": "K1 zwykły rytm: piątek → poniedziałek (weekend) bez karty powrotu",
+   "ok": true
+  },
+  {
+   "name": "K1 czwartek → poniedziałek, piątek chroniony zamrożeniem: bez karty powrotu",
+   "ok": true
+  },
+  {
+   "name": "K3 czwartek → poniedziałek bez zamrożeń (1 dzień zajęć opuszczony): bez karty powrotu, ale z wierszem naprawy „Seria 6 dni do odzyskania … 0/2”; karta dnia zostaje",
+   "ok": true
+  },
+  {
+   "name": "K2 trybDnia uwzględnia przerwaDni (3 opuszczone dni zajęć: wt.–czw.; pon. 2.11 wolny) → „lekko”",
+   "ok": true
+  },
+  {
+   "name": "K2 karta powrotu: znany temat (A1, nie nowy), tryb lekko, 3 min; bez zaległych fiszek rozgrzewka = 4 pytania ze znanego tematu + 1 pytanie",
+   "ok": true
+  },
+  {
+   "name": "K2 odtwarzacz pokazuje powtórkę/pytanie, a nie „Najważniejsze z tematu” ani czytanie",
+   "ok": true
+  },
+  {
+   "name": "K2 całe przejście karty powrotu: 5 pytań (4 + 1) ze znanego tematu, bez czytania nowego materiału",
+   "ok": true
+  },
+  {
+   "name": "K2 bez żadnego znanego tematu: uczciwie „Wracam: 5 minut” i „Zaczniemy spokojnie od jednego krótkiego tematu.”",
+   "ok": true
+  },
+  {
+   "name": "K2/K3 testy jednostkowe (lekcja-dnia: przerwaDni, kartaPowrotu; nawyk: naprawa)",
+   "ok": true
+  },
+  {
+   "name": "K3 seria 12 spadła po 3 dniach: wiersz „Seria 12 dni do odzyskania: ucz się dziś i jutro…” z postępem 0/2, pigułka „odzyskaj 12 dni (0/2)” (nie „koniec serii”), nic poza ekranem",
+   "ok": true
+  },
+  {
+   "name": "K3 dzień 1 naprawy: seria 1, streakRepair zapisany, baner naprawy, pigułka „· jutro seria wróci do 14 dni”, wiersz dla ekranu końca „Naprawa serii: 1/2…”",
+   "ok": true
+  },
+  {
+   "name": "K3 dzień 2 przed nauką: „· odzyskaj 12 dni (1/2)”",
+   "ok": true
+  },
+  {
+   "name": "K3 dzień 2 z XP: seria 14 (n + 2), okno nagrody „Seria odzyskana! 14 dni z rzędu!”, zapisany dzień naprawy",
+   "ok": true
+  },
+  {
+   "name": "K3 naprawa raz na 30 dni: 10 dni po poprzedniej bez wiersza naprawy (zamiast tego jasny komunikat o końcu serii)",
+   "ok": true
+  },
+  {
+   "name": "K4 ?wracam=1: karta powrotu widoczna i w widoku, adres bez parametru, bez „Nie ma takiej strony”",
+   "ok": true
+  },
+  {
+   "name": "K4 po przeładowaniu tego samego dnia karta zostaje (skrot-wracam)",
+   "ok": true
+  },
+  {
+   "name": "K4 po dzisiejszej nauce karta z maila znika",
+   "ok": true
+  },
+  {
+   "name": "K4 mail „powrót”: link /?pz=…&wracam=1#/ (tests/przypomnienia.test.js)",
+   "ok": true
+  },
+  {
+   "name": "K5 390-jasny: od wejścia pigułka „koniec serii 10 dni” i w karcie „Seria 10 dni się skończyła. Dziś zaczynasz nową.”",
+   "ok": true
+  },
+  {
+   "name": "K5 390-ciemny: od wejścia pigułka „koniec serii 10 dni” i w karcie „Seria 10 dni się skończyła. Dziś zaczynasz nową.”",
+   "ok": true
+  },
+  {
+   "name": "K5 EN: „Your 10-day streak ended. Today you start a new one.”",
+   "ok": true
+  },
+  {
+   "name": "ruch wyłączony (reduced-motion): okno nagrody i baner",
+   "ok": true
+  },
+  {
+   "name": "ruch wyłączony (calm): okno nagrody i baner",
+   "ok": true
+  },
+  {
+   "name": "konsola bez błędów (wszystkie stany)",
+   "ok": true
+  }
+ ],
+ "wynik": {
+  "pass": 37,
+  "fail": 0
+ }
+}

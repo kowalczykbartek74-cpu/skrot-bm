@@ -1,0 +1,26 @@
+3c3
+< PRODID:-//skrotbm.pl//Skrot BM//PL
+---
+> PRODID:-//zdawalni.pl//Zdawalni//PL
+6c6
+< X-WR-CALNAME:Skrót BM · C111 lab A
+---
+> X-WR-CALNAME:Zdawalni · C111 lab A
+1911c1911
+< DESCRIPTION:Szczegóły w Skrócie BM: https://zdawalni.pl
+---
+> DESCRIPTION:Szczegóły w Zdawalni: https://zdawalni.pl
+1927c1927
+<  kładnego terminu.\nSzczegóły w Skrócie BM: https://zdawalni.pl
+---
+>  kładnego terminu.\nSzczegóły w Zdawalni: https://zdawalni.pl
+1942c1942
+< DESCRIPTION:Twój wpis w Skrócie BM: https://zdawalni.pl
+---
+> DESCRIPTION:Twój wpis w Zdawalni: https://zdawalni.pl
+1951,1952c1951,1952
+< DESCRIPTION:Data wpisana przez Ciebie w Skrócie BM (Przygotuj się). Plan 
+<  nauki liczy się do niej.\nhttps://zdawalni.pl
+---
+> DESCRIPTION:Data wpisana przez Ciebie w Zdawalni (Przygotuj się). Plan nau
+>  ki liczy się do niej.\nhttps://zdawalni.pl

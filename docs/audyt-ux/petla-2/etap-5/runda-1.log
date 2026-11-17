@@ -1,0 +1,64 @@
+✓ K1 390-jasny: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → „Więcej na dziś”
+✓ K1 390-jasny: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)
+✓ K1 390-jasny: wysokość Dziś (treść bez stopki) ≤ 1800 px
+✓ K1 390-jasny: bez poziomego przewijania
+✓ K1 „Więcej na dziś” rozwija Bossa i Na luzie
+✓ K1 360-ciemny: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → „Więcej na dziś”
+✓ K1 360-ciemny: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)
+✓ K1 360-ciemny: wysokość Dziś (treść bez stopki) ≤ 1800 px
+✓ K1 360-ciemny: bez poziomego przewijania
+✓ K1 390-jasny-en: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → „Więcej na dziś”
+✓ K1 390-jasny-en: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)
+✓ K1 390-jasny-en: wysokość Dziś (treść bez stopki) ≤ 1800 px
+✓ K1 390-jasny-en: bez poziomego przewijania
+✓ K1 ZD_WEJSCIE.pasekProby() pierwsza pod powitaniem, przed kartą dnia
+✓ K1 nowe konto (1. dzień): Profil nauki na karcie dnia i Przewodnik w „Więcej na dziś”
+✓ K1 przyciski zakupu na Dziś (ldBlock, ptsHome, ptsDzis) przez ZD_WEJSCIE.przyciskZakupu z komentarzem // ux-1 (jak na gałęzi pętli 1)
+✓ K2 360 pl: wszystkie chipy pod „Zaczynamy” w całości w karcie (zawijają się, tekst nieucięty, ≥ 44 px)
+✓ K2 360 pl: Lekcje dla Ciebie jedna pod drugą (ta sama kolumna, cała szerokość)
+✓ K2 360 en: wszystkie chipy pod „Zaczynamy” w całości w karcie (zawijają się, tekst nieucięty, ≥ 44 px)
+✓ K2 360 en: Lekcje dla Ciebie jedna pod drugą (ta sama kolumna, cała szerokość)
+✓ K2 390 pl: wszystkie chipy pod „Zaczynamy” w całości w karcie (zawijają się, tekst nieucięty, ≥ 44 px)
+✓ K2 390 pl: Lekcje dla Ciebie jedna pod drugą (ta sama kolumna, cała szerokość)
+✓ K3 390-jasny: „Zadania dnia: 1/3 · +8 · nowe za H h” z monetą SVG (bez emoji)
+✓ K3 390-jasny: rozwinięta lista: 3 zadania dnia + zadanie tygodnia; zrobione „Odebrane +8” bez wchodzenia do Sklepu
+✓ K3 atrapa: nagroda za zrobione zadanie w księdze monet raz (auto-odbiór, bez Sklepu)
+✓ K3 ZD_NAWYK.zadaniaStan() i zadaniaLinia() dla Sklepu i ekranu końca
+✓ K3 360-ciemny: „Zadania dnia: 1/3 · +8 · nowe za H h” z monetą SVG (bez emoji)
+✓ K3 360-ciemny: rozwinięta lista: 3 zadania dnia + zadanie tygodnia; zrobione „Odebrane +8” bez wchodzenia do Sklepu
+✓ K3 390-jasny-en: „Daily tasks: 1/3 · +8 · new in H h”
+✓ K3 link z maila ?zadania=1#/ rozwija linię zadań, przewija do niej i czyści adres
+✓ K3 przypomnienia.js: rodzaj „zadanie” z path „?zadania=1#/” (PL i EN), kopia w funkcji Edge identyczna
+✓ K3 PGlite v57: 10 dobrych odpowiedzi → +8 bez Sklepu, bez podwójnej nagrody, ręczny odbiór → already
+✓ K4 390-jasny: „Duet z Kasia: 5/8 w tym tygodniu · Kasia dziś ✓”
+✓ K4 wiersz duetu otwiera Paczkę i duet
+✓ K4 360-ciemny: „Duet z Kasia: 5/8 w tym tygodniu · Kasia dziś ✓”
+✓ K4 390-jasny-en: „Duo with Kasia: 5/8 this week · Kasia today ✓”
+✓ K4 390-jasny: bez duetu, 4. dzień nauki – zaproszenie „Ucz się w duecie… Wyślij link”
+✓ K4 „Wyślij link”: zakłada paczkę i wywołuje navigator.share z linkiem ?paczka=KOD; po wysłaniu zaproszenie znika
+✓ K4 360-ciemny: bez duetu, 4. dzień nauki – zaproszenie „Ucz się w duecie… Wyślij link”
+✓ K4 390-jasny-en: EN „Study as a duo… Send link”
+✓ K4 bez navigator.share: link do schowka (kopiuj link)
+✓ K4 zaproszenie tylko jednego dnia (pokazane wczoraj → dziś brak)
+✓ K4 przed 3. dniem nauki bez zaproszenia
+✓ K5 390-jasny: przy przedmiocie z najbliższym terminem „W tym tygodniu: 0 z 1 tematu”
+✓ K5 390-jasny: przedmiot bez daty – „Znasz datę kolokwium? Wpisz” (z nazwą, gdy przedmiot schowany)
+✓ K5 „Wpisz” otwiera pole daty (to samo co w „Przygotuj się”: examSet().date)
+✓ K5 zapis daty: progress.exams[…].date + toast „Plan i przypomnienia ułożą się do …”
+✓ K5 360-ciemny: przy przedmiocie z najbliższym terminem „W tym tygodniu: 0 z 1 tematu”
+✓ K5 360-ciemny: przedmiot bez daty – „Znasz datę kolokwium? Wpisz” (z nazwą, gdy przedmiot schowany)
+✓ K5 390-jasny-en: EN „This week: 0 of 1 topic”
+✓ K5 starosta (> 3 zaliczenia bez daty): „N zaliczeń bez daty. Uzupełnij, a rok dostanie plan i bossa.” + Terminy
+✓ K5 link prowadzi do Terminów
+✓ K5 zwykłe konto: bez linii starosty
+✓ K6 390-jasny: „Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.” + „Karta 5 minut” + „Wybierz przedmiot”
+✓ K6 „Karta 5 minut” prowadzi na Dziś i otwiera kartę dnia
+✓ K6 360-ciemny: „Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.” + „Karta 5 minut” + „Wybierz przedmiot”
+✓ K6 390-jasny-en: EN „Nothing to review yet… 5-minute card”
+✓ K6 390-jasny: wersja darmowa – kafelki terminów widoczne, notka „Plan nauki do każdego terminu jest w pełnej wersji.”
+✓ K6 360-ciemny: wersja darmowa – kafelki terminów widoczne, notka „Plan nauki do każdego terminu jest w pełnej wersji.”
+✓ K6 390-jasny-en: EN „A study plan for every deadline is in the full version.”
+✓ ruch: html.calm – ikona Przewodnika bez animacji g-wave
+✓ testy jednostkowe nawyk + przypomnienia
+✓ konsola bez błędów (wszystkie stany)
+63/63

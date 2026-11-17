@@ -75,7 +75,7 @@
   function godziny() { var out = []; for (var g = GODZ_OD; g <= GODZ_DO; g += GODZ_KROK) out.push(g); return out; }
   function coZ(v) {
     var o = v && typeof v === "object" ? v : {};
-    return { terminy: o.terminy !== false, powtorki: o.powtorki !== false, zadanie: o.zadanie !== false };
+    return { terminy: o.terminy !== false, powtorki: o.powtorki !== false, zadanie: o.zadanie !== false, seria: o.seria !== false };
   }
 
   // ---------- stan liczony na stronie ----------
@@ -98,7 +98,13 @@
         return { d: t.d, n: String(t.n || "").slice(0, 80), ne: String(t.ne || t.n || "").slice(0, 80), r: ["K", "E", "W", "LAB"].indexOf(t.r) >= 0 ? t.r : "K",
           dl: t.dl ? String(t.dl).slice(0, 120) : null, own: !!t.own, ok: !!t.ok, sid: t.sid ? String(t.sid).slice(0, 60) : null };
       });
-    return { v: 1, od: o.od, ter: ter, pow: licz(o.pow), rew: licz(o.rew), zad: !!o.zadanie };
+    // ok = dni (ISO), w które dzisiejsza nauka jeszcze przedłuży serię (wczoraj, zamrożenia, przerwy) – liczy strona (nawyk.js).
+    var ser = o.seria && Number.isFinite(o.seria.n) && isKey(o.seria.d) ? { n: Math.max(0, Math.min(9999, Math.floor(o.seria.n))), d: o.seria.d,
+      ok: (Array.isArray(o.seria.ok) ? o.seria.ok : []).filter(isKey).slice(0, 7) } : null;
+    var out = { v: 1, od: o.od, ter: ter, pow: licz(o.pow), rew: licz(o.rew), zad: !!o.zadanie };
+    if (o.znane === false) out.zn = false; // UX-2: tylko gdy różne od domyślnego (stary stan bez pola = jak dotąd)
+    if (ser) out.ser = ser;
+    return out;
   }
 
   // Terminy z dzisiejszymi datami: termin starosty (dl) bierze datę z bazy (przesunięty → nowa data, usunięty → znika),
@@ -126,7 +132,7 @@
     var at = function (a) { return i >= 0 && Array.isArray(a) && Number.isFinite(a[i]) ? Math.max(0, a[i]) : 0; };
     var hist = ((row && row.historia) || []).filter(function (h) { return h && isKey(h.day) && h.day < today; })
       .sort(function (a, b) { return a.day < b.day ? 1 : -1; })
-      .map(function (h) { return { day: h.day, helped: !!h.opened || dni.has(h.day) }; });
+      .map(function (h) { var o = { day: h.day, helped: !!h.opened || dni.has(h.day) }; if (h.rodzaj) o.kind = h.rodzaj; return o; });
     var last = isKey(row && row.ostatni) && row.ostatni < today ? row.ostatni : null;
     return {
       today: today,
@@ -139,6 +145,8 @@
       powtorki: at(st.pow),
       rewanze: at(st.rew),
       zadanie: !!st.zad,
+      znane: st.zn !== false, // UX-2: czy strona ma kartę powrotu „3 minuty” (znany temat albo rewanż)
+      seria: st.ser && Number.isFinite(st.ser.n) && isKey(st.ser.d) ? { n: st.ser.n, d: st.ser.d, ok: Array.isArray(st.ser.ok) ? st.ser.ok : [] } : null, // UX-2: seria
     };
   }
 
@@ -177,17 +185,46 @@
         };
       }
     }
+    // UX-2: „ratuj serię” – seria ≥ 3, wczoraj była nauka, dziś jeszcze nie (dni 2–3 po przerwie ma „powrót”, nie to).
+    // 3 warianty bez poczucia winy; wariant = pierwszy z A/B/C nieużyty w ostatnich 3 mailach „seria” (historia z rodzajem seria_x).
+    var ser = ctx.seria;
+    // Seria żyje dziś: wczoraj była nauka albo strona policzyła, że dzisiejsza nauka ją przedłuży (zamrożenia, przerwa).
+    if (co.seria && ser && ser.n >= 3 && (ser.d === addDays(ctx.today, -1) || (ser.ok || []).indexOf(ctx.today) >= 0)) {
+      var uzyte = (ctx.history || []).filter(function (h) { return h.kind && /^seria_[abc]$/.test(h.kind); }).slice(0, 3).map(function (h) { return h.kind.slice(6); });
+      var w = ["a", "b", "c"].filter(function (x) { return uzyte.indexOf(x) < 0; })[0] || uzyte[uzyte.length - 1] || "a";
+      var n1 = ser.n, n2 = ser.n + 1;
+      var T = en ? {
+        a: [n1 + "-day streak. 5 minutes today?", "You're on a " + n1 + "-day streak in Zdawalni. Five minutes today and tomorrow it's " + n2 + "."],
+        b: ["Your " + n1 + "-day streak is waiting", "One 5-minute card keeps it going."],
+        c: ["Today: 5 minutes and a " + n2 + "-day streak", "One short card and you're done."],
+      } : {
+        a: [n1 + " dni z rzędu. Dziś 5 minut?", "Masz serię " + n1 + " dni w Zdawalni. Pięć minut dziś i jutro będzie " + n2 + "."],
+        b: ["Seria " + n1 + " dni czeka na dziś", "Wystarczy jedna karta 5 minut, żeby seria została."],
+        c: ["Na dziś: 5 minut i seria " + n2, "Jedna krótka karta i masz to z głowy."],
+      };
+      return { kind: "seria", wariant: w, title: T[w][0], body: T[w][1], cta: en ? "5 minutes now" : "5 minut teraz", path: "#/" };
+    }
     var cokolwiek = (co.powtorki && ctx.powtorki + ctx.rewanze > 0) || (co.zadanie && ctx.zadanie);
     if (cokolwiek && ctx.lastStudyDay && diffDays(ctx.today, ctx.lastStudyDay) >= NOTIFY.comebackAfterDays) {
       var dd = diffDays(ctx.today, ctx.lastStudyDay);
-      return en ? {
-        kind: "powrot", title: "One short task to start",
-        body: "Your last study session in Zdawalni was " + dd + " days ago. Start with one short task, the rest can wait.",
-        cta: "One task", path: "#/",
+      // Bez znanego tematu strona pokaże „Wracam: 5 minut” i jeden krótki temat: mail obiecuje to samo, bez „3 minut”.
+      if (ctx.znane === false) return en ? {
+        kind: "powrot", title: "Back, nice and easy",
+        body: "Your last study session in Zdawalni was " + dd + " days ago. One short topic to start, the rest can wait.",
+        cta: "I'm back", path: "?wracam=1#/",
       } : {
-        kind: "powrot", title: "Jedno krótkie zadanie na start",
-        body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.",
-        cta: "Jedno zadanie", path: "#/",
+        kind: "powrot", title: "Wracasz? Zacznijmy spokojnie",
+        body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. Jeden krótki temat na start, reszta spokojnie poczeka.",
+        cta: "Wracam", path: "?wracam=1#/",
+      };
+      return en ? {
+        kind: "powrot", title: "Back in 3 minutes",
+        body: "Your last study session in Zdawalni was " + dd + " days ago. 3 minutes of review to start, the rest can wait.",
+        cta: "I'm back: 3 minutes", path: "?wracam=1#/",
+      } : {
+        kind: "powrot", title: "Wracasz? 3 minuty na start",
+        body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. 3 minuty powtórki na start, reszta spokojnie poczeka.",
+        cta: "Wracam: 3 minuty", path: "?wracam=1#/",
       };
     }
     if (co.powtorki && ctx.powtorki + ctx.rewanze > 0) {
@@ -211,11 +248,11 @@
       return en ? {
         kind: "zadanie", title: "Your daily task is waiting",
         body: "Today's daily task takes a few minutes and earns coins.",
-        cta: "Open the daily task", path: "#/",
+        cta: "Open the daily task", path: "?zadania=1#/",
       } : {
         kind: "zadanie", title: "Zadanie dnia czeka",
         body: "Dzisiejsze Zadanie dnia zajmie kilka minut, a za ukończenie są monety.",
-        cta: "Otwórz Zadanie dnia", path: "#/",
+        cta: "Otwórz Zadanie dnia", path: "?zadania=1#/",
       };
     }
     return null;
@@ -224,7 +261,14 @@
   // ---------- mail (port lib/reminder-email.ts) ----------
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   // Link z przypomnienia: ?pz=<id wpisu w logu> (strona oznacza przypomnienie jako otwarte), potem trasa.
-  function link(site, path, id) { return String(site).replace(/\/$/, "") + "/" + (id ? "?pz=" + encodeURIComponent(id) : "") + (path || "#/"); }
+  // path może zaczynać się od zapytania („?wracam=1#/”, UX-2): router strony nie przyjmuje zapytań w części „#”, więc parametr
+  // idzie przed „#” i łączy się z ?pz=.
+  function link(site, path, id) {
+    var p = path || "#/", q = "", i = p.indexOf("#");
+    if (p.charAt(0) === "?") { q = i < 0 ? p.slice(1) : p.slice(1, i); p = i < 0 ? "#/" : p.slice(i); }
+    var qs = [id ? "pz=" + encodeURIComponent(id) : "", q].filter(Boolean).join("&");
+    return String(site).replace(/\/$/, "") + "/" + (qs ? "?" + qs : "") + p;
+  }
   function mail(o) {
     var en = o.lang === "en", p = o.pick, go = link(o.site, p.path, o.id), off = o.unsubscribeUrl;
     var hello = en ? "Hi!" : "Cześć!";

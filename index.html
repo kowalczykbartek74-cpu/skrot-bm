@@ -7242,7 +7242,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       const [hh, mm] = x.time.split(":").map(Number), end = hh * 60 + mm + 60;
       when = [`DTSTART:${d}T${pad(hh)}${pad(mm)}00`, `DTEND:${d}T${pad(Math.min(23, Math.floor(end / 60)))}${pad(end >= 1440 ? 59 : end % 60)}00`];
     } else when = [`DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${TL.addDays(x.date, 1).replace(/-/g, "")}`];
-    const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Skrot BM//Terminy//PL", "BEGIN:VEVENT", `UID:${String(x.key).replace(/[^\w:-]/g, "")}@skrotbm.pl`,
+    const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Zdawalni//Terminy//PL", "BEGIN:VEVENT", `UID:${String(x.key).replace(/[^\w:-]/g, "")}@skrotbm.pl`,
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`, ...when, `SUMMARY:${esc(x.title)}`, s ? `DESCRIPTION:${esc(s.pl)}` : null, "END:VEVENT", "END:VCALENDAR"].filter(Boolean).join("\r\n");
     const a = h("a", { href: URL.createObjectURL(new Blob([body], { type: "text/calendar" })), download: (x.title || "termin").replace(/[^\p{L}\p{N}]+/gu, "-").slice(0, 60) + ".ics" });
     document.body.append(a); a.click(); a.remove();
@@ -8020,34 +8020,40 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const annFresh = ann && Date.now() - (ann.createdAt || 0) < 7 * 864e5;
     return [
       h("section", { class: "greet" }, h("h1", { text: greeting() }), h("p", { class: "sub", text: weekLine() }), greetBadges()),
-      window.ZD_WEJSCIE?.pasekProby?.() ?? null, // ux-1 tymczasowo
-      // Od góry: „Twój postęp” z najbliższymi terminami (mniejszy), potem karta 5 min i lekcje dla Ciebie. Planu zajęć na Dziś nie ma (jest w Kalendarzu).
-      // Wygląd H (15.11.2026): najpierw karta „Dziś · 5 min” (na telefonie przycisk na pierwszym ekranie), potem „Twój postęp” z terminami.
+      // ux-2 (etap 5): pigułka próby (pętla 1) pierwsza pod powitaniem.
+      needGroup() ? null : window.ZD_WEJSCIE?.pasekProby?.() ?? null,
+      // Kolejność (ux-2 etap 5): karta dnia (Staś + „Zaczynamy · 5 min”) → linia zadań/tygodnia/duetu → Lekcje dla Ciebie
+      // (obie w ldBlock) → Twój postęp → Boss (gdy trwa) → Na luzie. Jednorazowe (Przewodnik, Profil nauki) tylko w 3 pierwszych dniach.
+      // ux-2: po przerwie (≥ 2 dni) albo z maila „powrót” (?wracam=1): „Dobrze, że jesteś” nad kartą dnia.
+      needGroup() ? null : window.ZD_NAWYK?.kartaPowrotu?.(),
       !needGroup() && ldOn() ? ldBlock() : null,
+      needGroup() ? groupStep() : ldOn() ? null : nowCard(),
+      needGroup() || ldOn() ? null : window.ZD_NAWYK?.linia?.(),
+      needGroup() || ldOn() ? null : nowSecond(),
+      needGroup() || ldOn() ? null : dzPanel(),
+      // ux-2: przypomnienia mailem tuż pod kartą dnia (jednorazowa zachęta, znika po „Włącz” albo „Nie teraz”).
+      needGroup() ? null : przypHomeCard(),
       needGroup() || !S.ready ? null : ptsDzis(),
+      needGroup() ? null : window.ZD_NAWYK?.ofertaInstalacji?.(),
       S.noDb ? accessNotice() : buyBanner(),
       annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
-      // Krótki ekran: „Teraz zrób to”, zajęcia dziś lub jutro, najbliższy termin. Postęp i nowości są zwinięte na dole.
-      // W dniu zajęć, po ich końcu: „Po zajęciach w 5 minut” na samej górze (powód, żeby wejść).
       v4Notice(),
       nocHomeCard(),
       needGroup() || ldOn() ? null : poHomeCard("top"),
       needGroup() ? null : jzHomeCard(),
-      needGroup() ? null : bsHomeCard(),
-      // „Dla Ciebie na dziś” (flaga ?ld=1, admin): jeden blok zamiast „Teraz zrób to”, drugiej karty, „Ile masz dziś czasu?” i „Powtórki w 5 minut” (D2).
-      needGroup() ? groupStep() : ldOn() ? null : nowCard(),
-      needGroup() || ldOn() ? null : nowSecond(),
-      needGroup() || ldOn() ? null : dzPanel(),
       // Gdy nie ma świeżych zajęć: strona i tak proponuje 5-minutowe podsumowanie (przed zajęciami, nieprzeczytane, odświeżenie).
       needGroup() || ldOn() ? null : poHomeCard("mid"),
-      needGroup() ? null : guideStrip(),
-      needGroup() ? null : przypHomeCard(),
-      // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
-      needGroup() || (ldOn() && ldHasStas()) ? null : stasHomeCard(),
-      // Hasło dnia nie ma już karty na Dziś (16.11.2026): gra jest w menu gier (#/gry) i w Więcej.
-      needGroup() ? null : funRow(gryHomeRow()),
-      homeFold("new", newPanel(), needGroup() || (S.canEdit && odwPending().length > 0)),
+      // ux-2 (etap 5): Boss (gdy trwa), Na luzie, Przewodnik (3 pierwsze dni) i nowości w jednym zwiniętym bloku „Więcej na dziś”,
+      // żeby Dziś mieściło się w ok. 1800 px na telefonie. Bez nawyk.js bloki stoją jak dawniej.
+      ...((w) => (needGroup() ? w : window.ZD_NAWYK?.wiecej ? [window.ZD_NAWYK.wiecej(w)] : w))([
+        needGroup() ? null : bsHomeCard(),
+        // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
+        needGroup() || (ldOn() && ldHasStas()) ? null : stasHomeCard(),
+        // Hasło dnia nie ma już karty na Dziś (16.11.2026): gra jest w menu gier (#/gry) i w Więcej.
+        needGroup() ? null : funRow(gryHomeRow()),
+        needGroup() || !(window.ZD_NAWYK?.kontoNowe?.() ?? true) ? null : guideStrip(),
+        homeFold("new", newPanel(), needGroup() || (S.canEdit && odwPending().length > 0))]),
     ];
   }
 
@@ -8151,6 +8157,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         body.replaceChildren(
           h("p", { text: S.group ? `Zajęcia grupy ${S.group}${S.sub ? ", lab " + S.sub : ", oba laby"} oraz zaliczenia i zadania z przypomnieniem dzień wcześniej.` : "Zaliczenia i zadania z przypomnieniem dzień wcześniej. Wybierz grupę w „Więcej”, a dojdą też Twoje zajęcia." }),
           h("p", { class: "muted", text: "To subskrypcja: nowe terminy i zmiany w planie same pojawią się w telefonie. Po zmianie grupy w „Więcej” kalendarz też się dostosuje." }),
+          // ux-2: opcjonalny wpis „Zdawalni · 5 min po zajęciach” z alarmem (domyślnie wyłączony, SQL v57 + funkcja kalendarz).
+          window.ZD_NAWYK?.przelacznikKalendarza?.() ?? null,
           h("div", { class: "calopts" },
             opt(`https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`, "G", "#1A73E8", "Google Calendar", "Android i komputer. Otwórz na koncie Google, którego używasz w telefonie.", true),
             opt(webcal, "A", "#16231B", "iPhone, iPad, Mac", "Kalendarz Apple. Potwierdź „Subskrybuj”.", false),
@@ -9869,7 +9877,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   // LEKCJE V3 — odtwarzacz lekcji w krótkich krokach (z docs/lekcje-v3/prototyp.html, część B).
   // =====================================================================
   // ---------- stałe ----------
-  const LP_DAILY_GOAL = 50; // XP dziennie
+  const LP_DAILY_GOAL = 30; // XP dziennie (pętla UX-2, D5: seria za dowolne XP, cel dnia osobno)
   // Poziomy za XP z całej nauki (S.progress.xp.t). Próg poziomu n = 50·n·(n−1): 0, 100, 300, 600, 1000…, każdy kolejny o 100 XP dłuższy.
   // Poziom, od którego odblokowuje się różowy motyw „Jednorożec”.
   const PINK_LEVEL = 3;
@@ -10068,7 +10076,9 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const chips = [
       compact ? null : h("span", { class: "xp-chip", title: "XP łącznie: za każdą część lekcji, odpowiedź i powtórkę" }, h("span", { "aria-hidden": "true", text: "⚡" }), h("b", { class: "num", text: fmtN(xp) }), h("span", { text: " XP" })),
       coinChip(),
-      h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) }))];
+      // ux-2: pigułka serii jako przycisk (stan dnia, „do północy”, pierścień celu dnia, okno „Twoja seria”) z nawyk.js.
+      window.ZD_NAWYK?.pigulka?.(compact) ?? h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) })),
+      compact ? window.ZD_NAWYK?.tydzienMini?.() : null];
     return h("div", { class: "xp-line rk-line" + (compact ? " rk-compact" : "") + (cls ? " " + cls : "") }, rank, h("span", { class: "rk-chips" }, chips));
   }
 
@@ -10683,6 +10693,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const t = dayN(), x = S.progress?.xp || {};
     const patch = { xp: { t: (x.t || 0) + n, d: t, n: (x.d === t ? x.n || 0 : 0) + n } };
     const sn = streakNext(t); if (sn) patch.streak = sn;
+    // ux-2: dzień nauki w progress.nd (kalendarz serii) i najlepsza seria (progress.streakBest).
+    Object.assign(patch, window.ZD_NAWYK?.poXp?.(S.progress, t, patch.streak || S.progress?.streak) || {});
     const before = lpLevel(x.t || 0), after = lpLevel(patch.xp.t);
     progSoon(patch);
     // Poza odtwarzaczem i grą „+N XP” pokazuje dymek (w odtwarzaczu XP lata przy każdej karcie, gra ma własny licznik).
@@ -11684,14 +11696,20 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     rows.sort((a, b) => (a.t ? a.t.n : 1e9) - (b.t ? b.t.n : 1e9) || a.k.pct - b.k.pct);
     const all = rows.reduce((a, x) => ({ known: a.known + x.k.known, started: a.started + x.k.started, n: a.n + x.k.n }), { known: 0, started: 0, n: 0 });
     const lockedN = PAID() ? 0 : SUBJECTS.reduce((a, x) => a + lessonsOf(x.id).filter(locked).length, 0);
-    const top = rows.slice(0, 3), rest = rows.slice(3);
+    // ux-2 (etap 5): na telefonie 2 przedmioty na wierzchu (reszta pod „Pokaż wszystkie”), żeby Dziś było krótsze.
+    const nTop = window.matchMedia?.("(max-width: 599px)").matches ? 2 : 3;
+    const top = rows.slice(0, nTop), rest = rows.slice(nTop);
     const inDays = (n) => (n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni`);
+    // ux-2 (etap 5): tempo „W tym tygodniu: k z cel tematów” przy przedmiocie z najbliższym terminem.
+    const tempoSid = top.find((x) => x.t)?.s.id || null;
     const row = ({ s, k, t }) => {
+      const tmp = t && s.id === tempoSid ? window.ZD_NAWYK?.tempo?.(s.id, k, t) : null;
       const left = k.n - k.known, risk = t && t.n <= 14 && k.pct < 0.5 && left;
       const more = risk ? `do nauki: ${left} ${plural(left, "temat", "tematy", "tematów")}` : "";
       return h("button", { type: "button", class: "pz-row" + (risk ? " risk" : ""), style: `--c:${s.color}`, title: more || null, onclick: () => go({ view: "subject", id: s.id }) },
         h("span", { class: "dot", "aria-hidden": "true" }),
-        h("span", { class: "pz-t" }, h("b", { text: s.pl }), h("span", { class: "pz-when" }, h("span", { text: t ? whenExam(t) : "bez terminu" }), risk ? h("span", { class: "pz-left", text: " · " + more }) : null)),
+        h("span", { class: "pz-t" }, h("b", { text: s.pl }), h("span", { class: "pz-when" }, h("span", { text: t ? whenExam(t) : "bez terminu" }), risk ? h("span", { class: "pz-left", text: " · " + more }) : null),
+          tmp ? h("span", { class: "pz-tempo", text: tmp }) : null),
         knowBar(k, { label: `Tematy, które umiesz: ${s.pl}` }),
         h("span", { class: "pc num", text: `${k.known}/${k.n}` }));
     };
@@ -11710,9 +11728,11 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         h("span", { class: "pz-tk", text: kind }),
         x.approx ? h("span", { class: "pz-est", text: "data szacowana" }) : null);
     };
-    const terms = !PAID() ? h("p", { class: "muted pz-note", text: "Terminy zaliczeń zobaczysz z pełnym dostępem." })
-      : tiles.length ? h("div", { class: "pz-tiles" }, tiles.map(tile))
-      : top.some((x) => x.t) ? null : h("p", { class: "muted pz-note", text: "Nic w najbliższym czasie." });
+    // ux-2 (etap 5): kafelki terminów także w wersji darmowej; zablokowany jest tylko plan nauki.
+    const terms = [tiles.length ? h("div", { class: "pz-tiles" }, tiles.map(tile))
+      : top.some((x) => x.t) ? null : h("p", { class: "muted pz-note", text: "Nic w najbliższym czasie." }),
+      !PAID() && (tiles.length || top.some((x) => x.t)) ? h("p", { class: "muted pz-note", text: window.ZD_NAWYK?.PL?.planPelna ?? "Plan nauki do każdego terminu jest w pełnej wersji." }) : null];
+    const bez = rows.find((x) => !x.t);
     return h("section", { class: "panel pts-card pts-dzis pz", "aria-label": "Twój postęp" },
       h("div", { class: "pz-head" },
         h("h2", { text: "Twój postęp" }),
@@ -11721,9 +11741,11 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         rows.length ? onceHelp("pts-why", "Temat umiesz, gdy zdasz bilet wyjścia z lekcji albo dobrze idą Ci quiz i fiszki. Jasna część paska to tematy zaczęte.", "pts-why pz-q") : null),
       h("div", { class: "pz-body" },
         rows.length ? h("div", { class: "pz-subj" },
-          h("div", { class: "pz-list" }, top.map(row)),
+          // ux-2: przedmiot bez daty zaliczenia → to samo pole co w „Przygotuj się” (link tuż pod wierszem przedmiotu).
+          h("div", { class: "pz-list" }, top.flatMap((x) => [row(x), x === bez ? window.ZD_NAWYK?.bezDaty?.(x.s, true) ?? null : null])),
+          bez && !top.includes(bez) ? window.ZD_NAWYK?.bezDaty?.(bez.s, false) ?? null : null,
           rest.length ? h("details", { class: "pts-more pz-more" }, h("summary", {}, `Pokaż wszystkie przedmioty (${rows.length})`), h("div", { class: "pz-list" }, rest.map(row))) : null) : null,
-        h("div", { class: "pz-terms" }, terms,
+        h("div", { class: "pz-terms" }, ...terms, window.ZD_NAWYK?.starostaBezDat?.() ?? null,
           h("button", { type: "button", class: "link pz-all", onclick: () => go({ view: "terms" }) }, h("span", { text: "Wszystkie terminy" }), icon("strzalka")))),
       !PAID() && lockedN ? h("p", { class: "muted pts-lockline" }, h("span", { text: `${lockedN} ${plural(lockedN, "lekcja czeka", "lekcje czekają", "lekcji czeka")} w pełnym dostępie.` }), " ", window.ZD_WEJSCIE?.przyciskZakupu?.("pts") ?? h("button", { type: "button", class: "link", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null); // ux-1
   }
@@ -14943,7 +14965,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       for (const [k, v] of Object.entries(all)) if (Array.isArray(v) && v[0] !== 0 && !nb.has(k)) pow.push(v[1] - t);
       for (const [k, st] of rewStates()) if ((st.status === "due" || st.status === "waiting") && keySubject(k)) rew.push(st.due - t);
     }
-    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid });
+    const sr = S.progress?.streak; // ux-2: seria do maila „ratuj serię” (dzień ostatniej nauki jako data)
+    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid, znane: window.ZD_NAWYK?.maKartePowrotu?.() ?? true, seria: sr?.n > 0 ? { n: sr.n, d: dayIso(sr.d), ok: window.ZD_NAWYK?.dniSeriiZywej?.() || [] } : null });
   }
   function przypSync() {
     const sk = window.skrot || {};
@@ -14968,15 +14991,17 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     const nie = ls.get("skrot-przyp-nie"); if (nie && daysUntil(nie) > -30) return null;
     let ex = null;
     for (const s of SUBJECTS) { const nx = nextExam(s.id); if (nx && daysUntil(nx.date) >= 0 && daysUntil(nx.date) <= 14 && (!ex || nx.date < ex.date)) ex = { ...nx, s }; }
-    if (!ex) return null;
+    // ux-2: bez zaliczenia w ciągu 14 dni wersja ogólna, ale dopiero po co najmniej 1 dniu nauki (raz na 30 dni przez „Nie teraz”).
+    if (!ex) return window.ZD_NAWYK?.kartaPrzypomnieniaDzis?.() ?? null;
     const n = daysUntil(ex.date);
     return h("section", { class: "panel sk-panel przyp-card", "aria-label": "Przypomnienia mailem" },
       h("div", { class: "panel-head" }, h("h2", { text: "Przypomnieć Ci mailem?" }),
         h("button", { type: "button", class: "link przyp-nie", onclick: () => { ls.set("skrot-przyp-nie", todayKey()); render(); } }, "Nie teraz")),
       h("p", { class: "przyp-ex" }, h("b", { text: EN && ex.s.en ? ex.s.en : ex.s.pl }), " · ", h("span", { text: partLabel(ex.s.id, ex.part) }), " · ", h("span", { text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` })),
-      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Najwyżej jeden mail dziennie o 18:00 i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia." }),
+      // ux-2: godzina z planu zajęć (albo zapisana wcześniej), ta sama, którą zapisze „Włącz”.
+      h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: window.ZD_NAWYK?.przypOpisTermin?.() ?? "Najwyżej jeden mail dziennie o 18:00 i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia." }),
       h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", disabled: PRZ.saving ? true : null,
-        onclick: () => przypSave(PRZ.d.nowe ? { wlaczone: true, godz: PZ.GODZ_DOMYSLNA } : { wlaczone: true }, "Przypomnienia włączone. Godzinę i rodzaje zmienisz w Ustawieniach.") }, "Włącz")));
+        onclick: () => przypSave(PRZ.d.nowe ? { wlaczone: true, godz: window.ZD_NAWYK?.godzinaPrzypomnienia?.() ?? PZ.GODZ_DOMYSLNA } : { wlaczone: true }, "Przypomnienia włączone. Godzinę i rodzaje zmienisz w Ustawieniach.") }, "Włącz")));
   }
   function setPrzyp() {
     const sk = window.skrot || {};
@@ -14994,7 +15019,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     const godz = h("select", { class: "input", id: "pz-godz", disabled: dis || !on ? true : null, onchange: (e) => przypSave({ godz: +e.target.value }, "Godzina zapisana.") },
       PZ.godziny().map((g) => h("option", { value: String(g), selected: g === d.godz ? true : null }, PZ.godzTekst(g))));
     const CO_ROWS = [["terminy", "Zaliczenia za 7, 3 i 1 dzień", "kolokwia i egzaminy z Terminów i Twoje daty z „Przygotuj się”"],
-      ["powtorki", "Zaległe powtórki i rewanże", "dzisiejsza porcja i ile to minut"], ["zadanie", "Zadanie dnia", "gdy nie ma nic ważniejszego"]];
+      ["powtorki", "Zaległe powtórki i rewanże", "dzisiejsza porcja i ile to minut"], ["zadanie", "Zadanie dnia", "gdy nie ma nic ważniejszego"],
+      ["seria", "Seria dni", "gdy seria trwa, a dziś jeszcze nie było nauki"]]; // ux-2
     const chk = CO_ROWS.map(([k, l, sub]) => h("label", { class: "pz-co" },
       h("input", { type: "checkbox", "data-co": k, checked: co[k] ? true : null, disabled: dis || !on ? true : null, onchange: (e) => przypSave({ co: { ...co, [k]: e.target.checked } }, "Zapisano.") }),
       h("span", { class: "more-txt" }, h("span", { text: l }), h("small", { text: sub }))));
@@ -16927,6 +16953,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   // Seria po dzisiejszej nauce. Jeden opuszczony dzień (wczoraj) chroni zamrożenie: baza zaznacza wczoraj jako chroniony,
   // seria rośnie o dzisiejszy dzień. Zamrożony dzień nie daje XP, punktów rankingu ani monet.
   function streakNext(t) {
+    // ux-2: zasady serii w nawyk.js (zamrożenia na 2 dni z rzędu, przerwy w zajęciach nie zrywają serii).
+    if (window.ZD_NAWYK?.seriaNastepna) return window.ZD_NAWYK.seriaNastepna(t);
     const sk = S.progress?.streak;
     if (sk?.d === t) return null;
     if (sk?.d === t - 1) return { d: t, n: (sk.n || 0) + 1 };
@@ -16943,7 +16971,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     });
   }
   // Seria widoczna dziś: także gdy wczoraj jest chroniony albo czeka zamrożenie, które użyje się przy dzisiejszej nauce.
-  function kStreakAlive(st, t) { return st.d === t || st.d === t - 1 || (st.d === t - 2 && st.n > 0 && (kFrozen(t - 1) || (kSk().zamrozenia?.ma || 0) > 0)); }
+  function kStreakAlive(st, t) { if (window.ZD_NAWYK?.seriaZywa) return window.ZD_NAWYK.seriaZywa(st, t); return st.d === t || st.d === t - 1 || (st.d === t - 2 && st.n > 0 && (kFrozen(t - 1) || (kSk().zamrozenia?.ma || 0) > 0)); }
 
   // ---------- sklep: zakładki i karty przedmiotów ----------
   const K_TABS = [["motywy", "Motywy", "🎨"], ["profil", "Profil", "🙂"], ["gry", "Gry", "🎮"], ["nauka", "Nauka", "📚"], ["zestawy", "Zestawy", "🎁"], ["sezon", "Sezonowe", "❄️"]];
@@ -19805,6 +19833,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       : P.blokZ === "data" ? { blockMinutes: P.blok } : null;
     const nieudane = Math.max(LDE.serieNieudanych(ldDni.get(), dayN()), P.lzej ? LDE.WAGI.nieudaneLekko : 0);
     return {
+      przerwaDni: window.ZD_NAWYK?.przerwaDni?.() ?? 0, // ux-2: powrót po przerwie włącza „lekko” (trybDnia)
       dayN: dayN(), teraz, profil, profilDanych: P,
       dobraPora: P.dobraPora, rewanzeDzis: (due.rew || []).length, fiszkiZalegle: (due.due || []).length, nieudaneDni: nieudane, wDrodze: ls.get("bm-ld-droga") === "1",
       hist: { dzis: st.tem || [], pominiete: st.pom || {}, przedCzasem: +(ls.get("bm-ld-krotko") || 0), ostatnieLekcje: ldOst.get(), mech: ldMech.get() },
@@ -20421,12 +20450,15 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const d = ldPlan();
     if (!d?.karta) return nowCard(); // nic do ułożenia (np. bez lekcji): stara karta
     const st = ldDay.get(), all = PAID() && ["karta", ...d.lekcje.map((_, i) => "l" + i)].every((k) => st.done[k]);
-    const road = ls.get("bm-ld-droga") === "1", prof = !(S.learner && !S.learner.off && S.learner.testAt) && ls.get("bm-ld-prof") !== String(dayN());
+    const road = ls.get("bm-ld-droga") === "1", prof = !(S.learner && !S.learner.off && S.learner.testAt) && ls.get("bm-ld-prof") !== String(dayN()) && (window.ZD_NAWYK?.kontoNowe?.() ?? true); // ux-2: tylko 3 pierwsze dni
     // D5: bez pełnego dostępu (konto bez zakupu, po okresie próbnym) karta 5 min i jedna lekcja pokazowa z darmowych lekcji + zakup.
     const paid = PAID(), lekcje = paid ? d.lekcje : d.lekcje.slice(0, 1);
     const zk = dayN() + ":" + (d.karta?.temat || ""); if (zhAnimKey !== zk) { zhAnimKey = zk; zhAnimAt = performance.now(); } const anim = performance.now() - zhAnimAt < 1500;
     return h("div", { class: "ld-block" + (anim ? " zh-anim" : "") },
-      ldHero(d, st),
+      // ux-2: przy karcie powrotu („Wracam: 3 minuty”) bez drugiego głównego przycisku „Zaczynamy · 5 min”.
+      window.ZD_NAWYK?.powrotAktywny?.() ? null : ldHero(d, st),
+      // ux-2 (etap 5): Zadania dnia, tydzień i duet jedną linią tuż pod kartą dnia.
+      window.ZD_NAWYK?.linia?.() ?? null,
       d.lekcje.length ? h("div", { class: "ld-head row" }, h("span", { class: "eyebrow", text: "Lekcje dla Ciebie" }),
         h("label", { class: "ld-road" }, h("input", { type: "checkbox", checked: road ? true : null, onchange: (e) => ldRoad(e.target.checked) }), h("span", { text: "Jestem w drodze" }))) : null,
       lekcje.length ? h("div", { class: "ld-lessons" }, lekcje.map((_, i) => ldTile(d, st, i))) : null,
@@ -20856,10 +20888,11 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
         h("span", { class: "eyebrow", text: "Dziś do powtórki" }),
         n ? h("p", { class: "sk-bignum" }, h("b", { class: "num", text: n }), h("span", { text: plural(n, "fiszka", "fiszki", "fiszek") })) : null,
         n ? h("p", { class: "muted num", style: "margin:0", text: srsTodayTxt(td) })
-          : h("p", { class: "big", style: "margin:0", text: has ? (tomorrow ? `Na dziś koniec. Następne powtórki jutro (${tomorrow} ${plural(tomorrow, "fiszka", "fiszki", "fiszek")}).` : "Na dziś koniec. Nic nie czeka.") : "Jeszcze nic tu nie ma." }),
-        n ? null : has ? null : h("p", { class: "muted", style: "margin:0", text: "Przejrzyj fiszki w dowolnym materiale albo dodaj cały przedmiot (zakładka Ćwicz). Wrócą tutaj w dobrym momencie." }),
+          : has ? h("p", { class: "big", style: "margin:0", text: tomorrow ? `Na dziś koniec. Następne powtórki jutro (${tomorrow} ${plural(tomorrow, "fiszka", "fiszki", "fiszek")}).` : "Na dziś koniec. Nic nie czeka." })
+          // ux-2 (etap 5): pusty stan z obietnicą jutra i kartą 5 minut.
+          : window.ZD_NAWYK?.powtorkiPusto?.() ?? h("p", { class: "big", style: "margin:0", text: "Jeszcze nic tu nie ma." }),
         n ? h("button", { type: "button", class: "btn primary sk-start", disabled: S.route.rvLoading ? true : null, onclick: () => reviewStart(sid) }, S.route.rvLoading ? "Zbieram karty…" : "Zaczynamy →") : null,
-        !n && !has ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot")) : null,
+        !n && !has && !window.ZD_NAWYK?.powtorkiPusto ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot")) : null,
         h("div", { class: "rv-meta" }, skGoal(), sk ? h("span", { class: "sk-goal", title: "Dni z rzędu z nauką" }, kFlame(), h("span", { text: ` ${sk} ${plural(sk, "dzień", "dni", "dni")} z rzędu` })) : null,
           n ? h("button", { type: "button", class: "link rv-classic", onclick: () => { S.route = { ...S.route, start: true }; render(); } }, "Klasyczny widok") : null)),
       rewPanel(sid),
@@ -23116,9 +23149,14 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
   // === most ux-3 ===
   Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, LP, lpReduced, lpCards, lpCur, lpFloat, inline, ls, icon, kSound, LP_DAILY_GOAL });
   // === koniec mostu ux-3 ===
+  // === most ux-2 ===
+  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, dayIso, dparse, SLOTS, saveProgress, przypSave, przypLoad, PAID, prz: () => PRZ, pz: () => PZ, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN,
+    pk: () => PK, paczkaLoad, saveExamSet, partsOf, prepPart, zalUndated, fmtKey, misjaClaim });
+  // === koniec mostu ux-2 ===
 })();
 </script>
 <script src="ux-wejscie.js?v=20261117-ux1h"></script>
 <script src="lekcja-ux.js?v=20261117-ux3g"></script>
+<script src="nawyk.js?v=20261117-ux2"></script>
 
 </body></html>

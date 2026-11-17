@@ -35,7 +35,9 @@ test("kolejność: zaliczenie za 7 / 3 / 1 dzień → powrót → powtórki i re
   assert.equal(P.wybierz(ctx({ terminy: [ter("2026-11-05", { n: "Prawo" }), ter("2026-11-07")] })).title, "Kolokwium: Prawo, jutro");
   const back = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3 }));
   assert.equal(back.kind, "powrot");
-  assert.equal(back.body, "Ostatnia nauka w Zdawalni: 5 dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.");
+  assert.equal(back.path, "?wracam=1#/", "UX-2 etap 3: link otwiera kartę powrotu na Dziś");
+  assert.equal(back.body, "Ostatnia nauka w Zdawalni: 5 dni temu. 3 minuty powtórki na start, reszta spokojnie poczeka.", "UX-2: jedna obietnica „3 minuty” w mailu i na stronie");
+  assert.equal(back.cta, "Wracam: 3 minuty");
   const r = P.wybierz(ctx({ rewanze: 8, powtorki: 0 }));
   assert.equal(r.kind, "powtorki");
   assert.equal(r.body, "Na dziś: 5 rewanży. 10 minut i masz to z głowy.", "port: 5 rewanży, 2 min na każdy");
@@ -210,4 +212,55 @@ test("funkcja Edge: błąd Resend zostawia możliwość ponowienia; strona wypis
   const bez = atrapa(); const deps2 = { ...bez.deps, env: (k) => (k.startsWith("RESEND") ? undefined : bez.deps.env(k)) };
   r = await (await obsluz(cron(), deps2)).json();
   assert.equal(r.code, "no_mail"); assert.equal(bez.db.maile.length, 0);
+});
+
+test("UX-2: link z maila „powrót” = /?pz=<id>&wracam=1#/ (zapytanie przed #, router strony nie przyjmuje go w #)", () => {
+  const m = P.mail({ lang: "pl", site: "https://zdawalni.pl", id: "abc", pick: { kind: "powrot", title: "t", body: "b", cta: "c", path: "?wracam=1#/" }, unsubscribeUrl: "https://x/u" });
+  const s = JSON.stringify(m);
+  assert.ok(s.includes("https://zdawalni.pl/?pz=abc&wracam=1#/"), s.slice(0, 300));
+  const z = JSON.stringify(P.mail({ lang: "pl", site: "https://zdawalni.pl/", id: "x1", pick: { kind: "termin", title: "t", body: "b", cta: "c", path: "#/exam/mikro" }, unsubscribeUrl: "https://x/u" }));
+  assert.ok(z.includes("https://zdawalni.pl/?pz=x1#/exam/mikro"));
+});
+
+test("UX-2: mail „powrót” obiecuje „3 minuty” tylko, gdy strona ma kartę powrotu (znany temat albo rewanż)", () => {
+  const z = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3, znane: true }));
+  assert.equal(z.cta, "Wracam: 3 minuty");
+  const n = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3, znane: false }));
+  assert.equal(n.kind, "powrot"); assert.equal(n.cta, "Wracam"); assert.ok(!/3 minut/.test(n.title + n.body), n.body);
+  assert.equal(P.stanZ({ od: "2026-11-04", znane: false }).zn, false);
+  assert.equal(P.kontekst({ stan: P.stanZ({ od: "2026-11-04", znane: false }) }, "2026-11-04").znane, false);
+  assert.equal(P.kontekst({ stan: { v: 1, od: "2026-11-04" } }, "2026-11-04").znane, true, "stary stan bez pola: jak dotąd");
+});
+
+test("UX-2: mail „seria” – seria ≥ 3, wczoraj nauka, dziś nie; 3 warianty PL/EN po kolei, wariant w rodzaju; bez maila po dzisiejszej nauce", () => {
+  const ser = { n: 9, d: "2026-11-03" };
+  const a = P.wybierz(ctx({ seria: ser, zadanie: false }));
+  assert.equal(a.kind, "seria"); assert.equal(a.wariant, "a");
+  assert.equal(a.title, "9 dni z rzędu. Dziś 5 minut?"); assert.equal(a.body, "Masz serię 9 dni w Zdawalni. Pięć minut dziś i jutro będzie 10."); assert.equal(a.cta, "5 minut teraz"); assert.equal(a.path, "#/");
+  const h1 = [{ day: "2026-11-03", helped: true, kind: "seria_a" }];
+  const b = P.wybierz(ctx({ seria: ser, zadanie: false, history: h1 }));
+  assert.equal(b.wariant, "b"); assert.equal(b.title, "Seria 9 dni czeka na dziś");
+  const c = P.wybierz(ctx({ seria: ser, zadanie: false, history: [{ day: "2026-11-03", helped: true, kind: "seria_b" }, { day: "2026-11-02", helped: true, kind: "seria_a" }] }));
+  assert.equal(c.wariant, "c"); assert.equal(c.title, "Na dziś: 5 minut i seria 10");
+  const d4 = P.wybierz(ctx({ seria: ser, zadanie: false, history: [{ day: "2026-11-03", helped: true, kind: "seria_c" }, { day: "2026-11-02", helped: true, kind: "seria_b" }, { day: "2026-11-01", helped: true, kind: "seria_a" }] }));
+  assert.equal(d4.wariant, "a", "po trzech: najdawniej użyty");
+  assert.equal(P.wybierz(ctx({ seria: ser, studiedToday: true })), null, "dziś już nauka: nic");
+  assert.notEqual(P.wybierz(ctx({ seria: { n: 2, d: "2026-11-03" }, zadanie: false }))?.kind, "seria", "seria < 3");
+  assert.notEqual(P.wybierz(ctx({ seria: { n: 9, d: "2026-11-02" }, zadanie: false }))?.kind, "seria", "przedwczoraj: to już nie „ratuj serię”");
+  const en = P.wybierz(ctx({ seria: ser, zadanie: false, lang: "en" }));
+  assert.equal(en.title, "9-day streak. 5 minutes today?"); assert.equal(en.cta, "5 minutes now");
+  // termin ma pierwszeństwo przed serią
+  assert.equal(P.wybierz(ctx({ seria: ser, terminy: [ter("2026-11-07")] })).kind, "termin");
+  // stanZ → kontekst przenosi serię
+  assert.deepEqual(P.kontekst({ stan: P.stanZ({ od: "2026-11-04", seria: ser }) }, "2026-11-04").seria, { ...ser, ok: [] });
+  assert.equal(P.kontekst({ historia: [{ day: "2026-11-03", opened: false, rodzaj: "seria_b" }] }, "2026-11-04").history[0].kind, "seria_b");
+});
+
+test("UX-2: „seria” także po weekendzie chronionym zamrożeniem (strona podaje dni ok); przełącznik co.seria", () => {
+  const pon = ctx({ today: "2026-11-09", lastStudyDay: "2026-11-06", seria: { n: 10, d: "2026-11-06", ok: ["2026-11-09"] }, zadanie: false });
+  assert.equal(P.wybierz(pon)?.kind, "seria", "poniedziałek po weekendzie z 2 zamrożeniami");
+  assert.notEqual(P.wybierz(ctx({ today: "2026-11-09", lastStudyDay: "2026-11-06", seria: { n: 10, d: "2026-11-06", ok: [] }, zadanie: false }))?.kind, "seria", "bez zamrożeń: seria już nie żyje");
+  assert.notEqual(P.wybierz(ctx({ seria: { n: 9, d: "2026-11-03" }, co: { terminy: true, powtorki: true, zadanie: true, seria: false }, zadanie: false }))?.kind, "seria", "wyłączone w Ustawieniach");
+  assert.equal(P.coZ({}).seria, true);
+  assert.deepEqual(P.stanZ({ od: "2026-11-09", seria: { n: 10, d: "2026-11-06", ok: ["2026-11-09", "x"] } }).ser, { n: 10, d: "2026-11-06", ok: ["2026-11-09"] });
 });

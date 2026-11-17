@@ -1,0 +1,47 @@
+✓ K1 390-jasny: przed skończoną kartą dnia – brak propozycji
+✓ K1 390-jasny: „Przypomnieć Ci jutro o 16:30?” (godzina z planu, pełne 30 min, ≤ 21:00), opis i „Tak, przypominaj” / „Nie teraz”
+✓ K1 „Tak” włącza przypomnienia z godziną z planu
+✓ K1 po włączeniu propozycja znika
+✓ K1 360-jasny: przed skończoną kartą dnia – brak propozycji
+✓ K1 360-jasny: „Przypomnieć Ci jutro o 16:30?” (godzina z planu, pełne 30 min, ≤ 21:00), opis i „Tak, przypominaj” / „Nie teraz”
+✓ K1 390-ciemny: przed skończoną kartą dnia – brak propozycji
+✓ K1 390-ciemny: „Przypomnieć Ci jutro o 16:30?” (godzina z planu, pełne 30 min, ≤ 21:00), opis i „Tak, przypominaj” / „Nie teraz”
+✓ K1 390-jasny-en: przed skończoną kartą dnia – brak propozycji
+✓ K1 EN: „Remind you tomorrow at …?” / „Yes, remind me”
+✓ K1 „Nie teraz” chowa propozycję na dziś
+✓ K1 konto bez dostępu: brak propozycji
+✓ K1 przypomnienia już włączone: brak propozycji
+✓ K1 godzina z planu: test jednostkowy (koniec + 60, w górę do 30 min, ≤ 21:00, bez planu 18:00)
+✓ K2 390-jasny: bez zaliczenia w 14 dni, po 1 dniu nauki – „Przypomnieć Ci mailem?” z godziną z planu
+✓ K2 390-jasny: nic poza ekranem
+✓ K2 „Nie teraz” chowa kartę (30 dni)
+✓ K2 360-ciemny: bez zaliczenia w 14 dni, po 1 dniu nauki – „Przypomnieć Ci mailem?” z godziną z planu
+✓ K2 360-ciemny: nic poza ekranem
+✓ K2 EN: „Get an email reminder?” (istniejące tłumaczenie) z godziną
+✓ K2 390-jasny-en: nic poza ekranem
+✓ K2 przed pierwszym dniem nauki: bez karty przypomnień
+✓ K3 tests/przypomnienia.test.js (rodzaj „seria”, warianty A/B/C, rotacja, studiedToday → null, termin pierwszy)
+✓ K3/K4 PGlite v57: historia z rodzajem (seria_x), flaga kalendarza
+✓ K3 funkcja Edge zapisuje wariant w rodzaju logu („seria_b”)
+✓ K4 tests/kalendarz.test.js: złoty plik, UID-y @skrotbm.pl bez zmian, wpis nauki tylko po włączeniu, VALARM, Zdawalni
+✓ K4 różnica złotego pliku .ics: tylko linie z nazwą (PRODID, X-WR-CALNAME, opisy), bez UID
+✓ K4 jednorazowe .ics (termIcs): PRODID Zdawalni
+✓ K4 390-jasny: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony
+✓ K4 włączenie zapisuje progress.calStudy = true
+✓ K4 360-jasny: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony
+✓ K4 390-ciemny: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony
+✓ K4 EN: „Remind me about 5 minutes after class”
+✓ K5 service worker zarejestrowany i steruje stroną (127.0.0.1 z ?sw=on)
+✓ K5 w pamięci tylko adresy z tej samej domeny (bez Supabase, Stripe, plan.zdawalni.pl, CDN)
+✓ K5 nowe ?v= wymienia plik w pamięci (jeden nawyk.js, najnowszy)
+✓ K5 offline po pierwszym wejściu: Dziś się renderuje (powitanie z serią)
+✓ K5 ?sw=off wyrejestrowuje workera i kasuje pamięci
+✓ K5 sw.js: tylko GET z tej samej domeny, stała wersji, kasowanie starych pamięci
+✓ K5 bez ?sw=on na 127.0.0.1 worker się nie rejestruje (zwykłe testy bez pamięci podręcznej)
+✓ K5 390-jasny: 2. dzień nauki na iPhonie – „Dodaj Zdawalni do ekranu głównego…” z 2 krokami (Udostępnij → Do ekranu początkowego)
+✓ K5 „Nie teraz” chowa zachętę (30 dni)
+✓ K5 360-ciemny: 2. dzień nauki na iPhonie – „Dodaj Zdawalni do ekranu głównego…” z 2 krokami (Udostępnij → Do ekranu początkowego)
+✓ K5 EN: „Add Zdawalni to your home screen” + „Add to Home Screen”
+✓ K5 zachęta tylko w 2. dniu nauki (5. dzień: brak)
+✓ konsola bez błędów (wszystkie stany)
+46/46

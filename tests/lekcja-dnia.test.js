@@ -398,3 +398,23 @@ describe("wybrany temat karty 5 min", () => {
     assert.equal(LD.wybranaKarta(null, d, {}), null);
   });
 });
+
+describe("powrót po przerwie (pętla UX-2, etap 3)", () => {
+  test("przerwaDni ≥ 2 włącza tryb „lekko” (bez nowego materiału); 1 dzień nie", () => {
+    const ts = zbior();
+    assert.equal(LD.trybDnia(ts, K({ przerwaDni: 2 })).tryb, "lekko");
+    assert.equal(LD.trybDnia(ts, K({ przerwaDni: 5 })).nowe, false);
+    assert.notEqual(LD.trybDnia(ts, K({ przerwaDni: 1 })).tryb, "lekko");
+  });
+  test("kartaPowrotu: rozgrzewka do 6 kart + 1 pytanie, 3 minuty, bez nowego tematu", () => {
+    const ts = [T({ id: "n1", poziom: "nowy", p: 90 }), T({ id: "z1", poziom: "zrobione", p: 40 })];
+    const c = LD.kartaPowrotu(ts, K({ przerwaDni: 5, fiszkiZalegle: 3 }));
+    assert.equal(c.temat, "z1", "temat już znany, nie nowy");
+    assert.deepEqual(c.kroki.map((s) => [s.k, s.mech, s.n]), [["rozgrzewka", "fiszki", 6], ["sprawdzenie", "pytania", 1]]);
+    const c0 = LD.kartaPowrotu(ts, K({ przerwaDni: 5 }));
+    assert.deepEqual(c0.kroki.map((s) => [s.k, s.mech, s.n]), [["rozgrzewka", "pytania", 4], ["sprawdzenie", "pytania", 1]], "bez zaległych fiszek: 4 pytania ze znanego tematu + 1");
+    assert.equal(c.min, 3); assert.equal(c.tryb, "lekko"); assert.equal(c.powrot, true); assert.equal(c.nowe, false);
+    assert.equal(LD.kartaPowrotu([], K()), null);
+    assert.equal(LD.kartaPowrotu([T({ id: "n2", poziom: "nowy" }), T({ id: "n3", poziom: "nowy" })], K({ przerwaDni: 4 })), null, "same nowe tematy: brak karty powrotu (nigdy nowy temat)");
+  });
+});
