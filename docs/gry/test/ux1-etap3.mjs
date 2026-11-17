@@ -54,7 +54,7 @@ for (const lang of ["pl", "en"]) for (const dark of [false, true]) {
 // ---------- K3: funkcja Edge (test Node) ----------
 {
   const out = execSync("node --test tests/ux1-proba-mail.test.js tests/przypomnienia.test.js 2>&1", { cwd: ROOT, encoding: "utf8" });
-  ok("K3: funkcja przypomnienia: rodzaj „proba” przed innymi, w limit_dzien, tylko w dzień, dzień końca z kalendarza (tests/ux1-proba-mail.test.js + stare testy)", /ℹ fail 0/.test(out) && /ℹ pass 17/.test(out), out.match(/ℹ (pass|fail) \d+/g));
+  ok("K3: funkcja przypomnienia: rodzaj „proba” przed innymi, w limit_dzien, tylko w dzień, dzień końca z kalendarza (tests/ux1-proba-mail.test.js + stare testy)", /ℹ fail 0/.test(out) && +(out.match(/ℹ pass (\d+)/) || [])[1] >= 17, out.match(/ℹ (pass|fail) \d+/g));
 }
 
 // ---------- K4: ?plan=1 po zalogowaniu otwiera wybór planu ----------

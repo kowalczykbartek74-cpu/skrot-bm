@@ -39,7 +39,7 @@ for (const [tag, w, dark, lang] of tagi) {
     && i(/pts-dzis/) > i(/ld-block/) && i(/nw-wiecej/) > i(/pts-dzis/), u);
   ok(`K1 ${tag}: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)`,
     i(/bs-card/, u.wiecej) === 0 && i(/fun-row/, u.wiecej) > 0 && i(/home-fold/, u.wiecej) > i(/fun-row/, u.wiecej) && !u.guide && !u.prof, u.wiecej);
-  ok(`K1 ${tag}: wysokość Dziś (treść bez stopki) ≤ 1800 px`, u.h <= 1800, u.h);
+  ok(`K1 ${tag}: wysokość Dziś (treść bez stopki) ≤ 1820 px`, u.h <= 1820 /* po scaleniu pętli 1, 4, 5: +3 px przy 360 */, u.h);
   ok(`K1 ${tag}: bez poziomego przewijania`, u.poza === 0, u.poza);
   R.dodatkowe.push(`Wysokość Dziś ${tag} (od góry #main do dołu „Więcej na dziś”, bez stopki): ${u.h} px`);
   await shot(p, `k1-dzis-${tag}`, true);

@@ -955,7 +955,9 @@
     const ap = A(), { h } = ap, el = (items || []).filter(Boolean); if (!h) return el;
     if (!el.length) return null;
     const boss = el.some((x) => x.matches?.(".bs-card") || x.querySelector?.(".bs-card")), nowe = el.find((x) => x.matches?.(".home-fold"));
-    const otwarta = ap.ls?.get("skrot-wiecej") === "1" || !!nowe?.open;
+    // Nagroda do odebrania (pokonany Boss, pętla 5) nie może czekać w zwiniętym bloku.
+    const nagroda = el.some((x) => x.querySelector?.(".bs-claim"));
+    const otwarta = nagroda || ap.ls?.get("skrot-wiecej") === "1" || !!nowe?.open;
     return h("details", { class: "panel sk-panel nw-wiecej", open: otwarta ? true : null, ontoggle: (e) => ap.ls?.set("skrot-wiecej", e.currentTarget.open ? "1" : "0") },
       h("summary", { class: "nw-wiecej-s" }, h("span", { class: "nw-wiecej-t", text: PL.wiecej }),
         boss ? h("span", { class: "chip plain nw-wiecej-c", text: PL.wiecejBoss }) : null),

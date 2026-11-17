@@ -31,7 +31,7 @@ export const typo = (p) => p.evaluate(() => {
     const el = t.parentElement, s = t.textContent.trim(); if (!s || !el || seen.has(el)) continue; seen.add(el);
     if (el.closest("svg, script, style, #skrot-wm, #login, noscript")) continue;
     if (!vis(el)) continue;
-    const px = parseFloat(getComputedStyle(el).fontSize); if (px < 11.995) small.push({ t: s.slice(0, 30), cel: el.tagName + (typeof el.className === "string" && el.className ? "." + el.className.split(" ").join(".") : ""), px: +px.toFixed(2) });
+    const px = parseFloat(getComputedStyle(el).fontSize); if (px > 0 && px < 11.995) small.push({ t: s.slice(0, 30), cel: el.tagName + (typeof el.className === "string" && el.className ? "." + el.className.split(" ").join(".") : ""), px: +px.toFixed(2) }); // 0 px = tekst ukryty przy przycisku-ikonie (np. „Otwórz lekcję” w pętli 2)
   }
   return { heads, small };
 });

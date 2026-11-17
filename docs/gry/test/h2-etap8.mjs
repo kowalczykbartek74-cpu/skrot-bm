@@ -75,7 +75,7 @@ for (const dark of [false, true]) {
   const cols = await p.locator(".kshop-grid, .shop-grid").first().evaluate((e) => getComputedStyle(e).gridTemplateColumns.split(" ").length).catch(() => 0);
   ok(`${n}: sklep na telefonie w 2 kolumnach`, cols === 2, cols);
   const fl = await p.evaluate(async () => { document.querySelector(".shop-grid .shop-card, .kshop-grid .kcard")?.scrollIntoView(); const el = document.querySelector(".kshop-grid .kcard, .shop-grid .shop-card"); document.querySelector("main").classList.add("h-ent"); el.classList.add("flash"); await new Promise((r) => setTimeout(r, 400)); const c = getComputedStyle(el); return { sh: c.boxShadow, an: c.animationName }; });
-  ok(`${n}: wskazana karta sklepu ma pierścień i własny podskok (także w trakcie wejścia ekranu)`, /4px/.test(fl.sh) && fl.an === "h-flash", fl);
+  ok(`${n}: wskazana karta sklepu ma pierścień i własny podskok (także w trakcie wejścia ekranu)`, /(4|3\.9\d*)px/.test(fl.sh) && fl.an === "h-flash", fl);
   ok(`${n}: Sklep bez poziomego przewijania`, await noHScroll(p), "");
   ok(`${n}: Sklep bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();

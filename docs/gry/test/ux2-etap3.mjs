@@ -76,7 +76,7 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
     const st = await p.evaluate(() => ({ q: document.querySelector(".lp-card h2, .lp-q, .lp-body h2, .lp-card .q")?.innerText || document.querySelector(".lp-opts")?.closest("section,div")?.innerText?.split("\n")[1] || "", opts: document.querySelectorAll(".lp-opts .opt").length, txt: document.body.innerText, done: !!document.querySelector(".lp-done-screen") }));
     if (st.done) break;
     if (/Czytaj dalej|Najważniejsze z tematu/.test(st.txt)) czyt = true;
-    if (st.opts) { pyt.add(st.q || String(i)); await p.locator(".lp-opts .opt").first().click().catch(() => {}); await p.waitForTimeout(250); }
+    if (st.opts) { pyt.add(st.q || String(i)); await p.locator(".lp-opts .opt").first().click().catch(() => {}); await p.waitForTimeout(250); await p.getByRole("button", { name: "Pewny ✓", exact: true }).click({ timeout: 800 }).catch(() => {}); await p.waitForTimeout(250); } // po scaleniu z pętlą 3: pewność przed sprawdzeniem
     await p.locator(".lp-cta").click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(350);
   }
   ok("K2 całe przejście karty powrotu: 5 pytań (4 + 1) ze znanego tematu, bez czytania nowego materiału", pyt.size === 5 && !czyt, { n: pyt.size, czyt });

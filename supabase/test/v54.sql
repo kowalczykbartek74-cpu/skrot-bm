@@ -25,13 +25,13 @@ select test.chk('B1 nauka_proba_bonus → brak_terminu', test.blad54('nauka_prob
 reset role;
 -- kolokwium BM za 10 dni (poza oknem) i za 5 dni (w oknie)
 insert into public.nauka_docs (kolekcja, id, data, rocznik_id) values
-  ('deadlines', 'd54far', jsonb_build_object('title', 'Kolokwium: Makro', 'type', 'kolokwium', 'subjectId', 'makro', 'date', to_char(current_date + 10, 'YYYY-MM-DD')), 'wefiz-test-1-st-2026')
+  ('deadlines', 'd54far', jsonb_build_object('title', 'Kolokwium: Makro', 'type', 'kolokwium', 'subjectId', 'makro', 'date', to_char((now() at time zone 'Europe/Warsaw')::date + 10, 'YYYY-MM-DD')), 'wefiz-test-1-st-2026')
 on conflict (kolekcja, id) do update set data = excluded.data;
 select test.jako('b54a@x.pl'); set role authenticated;
 select test.chk('B2 kolokwium za 10 dni (poza oknem 7 dni): mozna = false', not (public.nauka_proba_bonus_stan()->>'mozna')::boolean, public.nauka_proba_bonus_stan());
 reset role;
 insert into public.nauka_docs (kolekcja, id, data, rocznik_id) values
-  ('deadlines', 'd54near', jsonb_build_object('title', 'Kolokwium: Prawo', 'type', 'kolokwium', 'subjectId', 'prawo', 'date', to_char(current_date + 5, 'YYYY-MM-DD')), 'wefiz-test-1-st-2026')
+  ('deadlines', 'd54near', jsonb_build_object('title', 'Kolokwium: Prawo', 'type', 'kolokwium', 'subjectId', 'prawo', 'date', to_char((now() at time zone 'Europe/Warsaw')::date + 5, 'YYYY-MM-DD')), 'wefiz-test-1-st-2026')
 on conflict (kolekcja, id) do update set data = excluded.data;
 -- B3: po próbie, kolokwium za 5 dni → karta i +2 dni
 select test.jako('b54a@x.pl'); set role authenticated;

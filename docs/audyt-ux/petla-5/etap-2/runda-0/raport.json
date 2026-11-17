@@ -1,0 +1,902 @@
+{
+ "ekrany": [
+  {
+   "nazwa": "sklep-360-jasny",
+   "axe": [],
+   "tekstow": 102,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-360-jasny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [
+    {
+     "tekst": "Ł",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "C",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.18,
+     "wymagany": 4.5,
+     "px": 12.24
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-360-jasny",
+   "axe": [],
+   "tekstow": 72,
+   "kontrast": [
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.08,
+     "wymagany": 3,
+     "px": 23.04
+    },
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "120",
+     "w": 69,
+     "h": 30
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "awans-4-360-jasny",
+   "axe": [],
+   "tekstow": 15,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "strona": 360,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-360-ciemny",
+   "axe": [],
+   "tekstow": 102,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-360-ciemny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-360-ciemny",
+   "axe": [],
+   "tekstow": 72,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "120",
+     "w": 69,
+     "h": 30
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "awans-4-360-ciemny",
+   "axe": [],
+   "tekstow": 15,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "strona": 360,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-390-jasny",
+   "axe": [],
+   "tekstow": 102,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-390-jasny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [
+    {
+     "tekst": "Ł",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "C",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.18,
+     "wymagany": 4.5,
+     "px": 12.24
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-390-jasny",
+   "axe": [],
+   "tekstow": 72,
+   "kontrast": [
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.08,
+     "wymagany": 3,
+     "px": 23.04
+    },
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "120",
+     "w": 69,
+     "h": 30
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "awans-4-390-jasny",
+   "axe": [],
+   "tekstow": 15,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-390-ciemny",
+   "axe": [],
+   "tekstow": 102,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-390-ciemny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-390-ciemny",
+   "axe": [],
+   "tekstow": 72,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "120",
+     "w": 69,
+     "h": 30
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "awans-4-390-ciemny",
+   "axe": [],
+   "tekstow": 15,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-1280-jasny",
+   "axe": [],
+   "tekstow": 111,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-1280-jasny",
+   "axe": [],
+   "tekstow": 50,
+   "kontrast": [
+    {
+     "tekst": "Ł",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "C",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.18,
+     "wymagany": 4.5,
+     "px": 12.24
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-1280-jasny",
+   "axe": [],
+   "tekstow": 74,
+   "kontrast": [
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.08,
+     "wymagany": 3,
+     "px": 23.04
+    },
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "120",
+     "w": 69,
+     "h": 30
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-1280-ciemny",
+   "axe": [],
+   "tekstow": 111,
+   "kontrast": [
+    {
+     "tekst": "Odznaka:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "Pierwszy krok",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-1280-ciemny",
+   "axe": [],
+   "tekstow": 50,
+   "kontrast": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-390-en",
+   "axe": [],
+   "tekstow": 102,
+   "kontrast": [
+    {
+     "tekst": "Badge:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "First step",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nMore",
+     "w": 84,
+     "h": 36
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-390-en",
+   "axe": [],
+   "tekstow": 51,
+   "kontrast": [
+    {
+     "tekst": "Ł",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "C",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.18,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "Badge:",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    },
+    {
+     "tekst": "First step",
+     "cel": "B",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nMore",
+     "w": 84,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Nickname: Bartek · visible",
+     "w": 197,
+     "h": 35
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "All subjects\nMathematical Analysis\nBusin",
+     "w": 320,
+     "h": 43
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "poziomy-i-rangi-390-jasny",
+   "axe": [],
+   "tekstow": 97,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  },
+  {
+   "nazwa": "jak-zdobywac-390-jasny",
+   "axe": [],
+   "tekstow": 48,
+   "kontrast": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Jasne",
+     "w": 76,
+     "h": 43
+    },
+    {
+     "cel": "BUTTON.btn.ghost",
+     "tekst": "Sklep i Zadania dnia",
+     "w": 175,
+     "h": 43
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  }
+ ],
+ "testy": [
+  "✓ K1 ranking podpisany „XP w tym tygodniu”",
+  "✓ K1 bez „pkt” na Przedmiocie, Sklepie, Rankingu, Bossie, Grach i w Haśle po grze",
+  "✓ K1 Hasło po grze: „+N XP” i seria „Hasło: N dni z rzędu”",
+  "✓ K2 wygrana w Haśle dodaje XP",
+  "✓ K2 samo Hasło przedłuża główną serię: wczoraj 2 → dziś 3",
+  "✓ K2 Hasło dodaje tyle XP, ile pokazuje („+N XP” = przyrost XP)",
+  "✓ K2 odbiór bossa: przycisk „Odbierz +N XP” i XP rośnie",
+  "✓ K3 SQL v59 = tabela B1 (poziomy i ceny 8 motywów; niewybrane 10/12)",
+  "✓ K3 stałe index.html (THEME_BASE, THEME_CHOICE, THEME_LATE) zgodne z SQL v59",
+  "✓ K3 katalog w sklepie (atrapa = SQL po v59) ma ceny z tabeli",
+  "✓ K3 karta Kokardki: „Albo wybór na poziomie 6”, Jednorożca: kup za 80 (przy 120 monetach aktywne)",
+  "✓ K3 motywy zdobyte z poziomu po starych progach zostają (Jednorożec, Kokardka, Łąka), reszta nie",
+  "✓ K4 awans na 4: dwie karty „Wybieram” (pink / sea)",
+  "✓ K4 wybór pink: zapisany, pink odblokowany, sea dopiero na poziomie 10",
+  "✓ K4 poziom 10: niewybrany sea odblokowany",
+  "✓ K4 awans na 6: dwie karty „Wybieram” (bow / noc)",
+  "✓ K4 wybór bow: zapisany, bow odblokowany, noc dopiero na poziomie 12",
+  "✓ K4 poziom 12: niewybrany noc odblokowany",
+  "✓ K4 odłożony wybór: w Sklepie „Wybierz motyw za poziom 4” i „Wybierz za darmo” na kartach pary",
+  "✓ K4 odłożony wybór otwiera okno z dwiema kartami",
+  "✓ K4 „Poziomy i rangi”: wybór na 4 i 6, niewybrany na 10 i 12, nagroda najwyżej w 2 liniach",
+  "✓ K5 /shop: bez emoji 🪙 ⚡ 🔥 jako ikon",
+  "✓ K5 sklep: moneta SVG (saldo, zadania, ceny), bez „Do następnej monety”",
+  "✓ K5 okno „Jak zdobywać XP i monety”: bez emoji monety i XP",
+  "✓ K5 /profil: bez emoji 🪙 ⚡ 🔥 jako ikon",
+  "✓ K4 Profil: następna nagroda to wybór na poziomie 6 (nie jeden motyw)",
+  "✓ K5 /ranking: bez emoji 🪙 ⚡ 🔥 jako ikon",
+  "✓ K5 z Dziś: „Poziomy i rangi” i „Jak zdobywać XP i monety” bez emoji 🪙 ⚡ 🔥",
+  "✓ EN sklep: bez polskich tekstów",
+  "✓ EN okno wyboru motywu: bez polskich tekstów",
+  "✓ EN ranking: „XP this week”",
+  "✓ K1 wiersze rankingu z jednostką „XP”"
+ ],
+ "ruch": [
+  {
+   "n": "zwykle",
+   "#layer .modal": "h-sheet 0.35s",
+   "#layer .lvup-burst": "none 0s",
+   ".lp-confetti i": "lp-fall 2.2s"
+  },
+  {
+   "n": "reduced-motion",
+   "#layer .modal": "none 0s",
+   "#layer .lvup-burst": "none 0.001s",
+   ".lp-confetti i": "brak"
+  },
+  {
+   "n": "calm",
+   "#layer .modal": "none 0s",
+   "#layer .lvup-burst": "none 0.001s",
+   ".lp-confetti i": "brak"
+  }
+ ]
+}
