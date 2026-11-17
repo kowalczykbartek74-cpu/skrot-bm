@@ -68,7 +68,7 @@ for (const v of [{ n: "abcd", docs: undefined }, { n: "luka", docs: docsBold }])
   const p = await open(b, { docs: v.docs });
   await startLesson(p);
   await goToCard(p, isCheck); await answer(p, true); await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400);
-  const c2 = await goToCard(p, isCheck);
+  await goToCard(p, isCheck); const c2 = await cur(p);
   await answer(p, false);
   const fbt = await p.locator(".lp-fbar").innerText();
   ok(`${v.n}: K3 przy błędzie od razu „Poprawna:” i zapowiedź drugiej szansy później`, /Poprawna:/.test(fbt) && /wróci/.test(fbt), fbt.slice(0, 200));
@@ -86,7 +86,7 @@ for (const v of [{ n: "abcd", docs: undefined }, { n: "luka", docs: docsBold }])
     if (c.type === "recall" && c.ans == null) { const bank = p.locator(".lp-bank .opt"); if (await bank.count()) { await bank.first().click(); await p.locator(".lp-bottom .lp-cta").filter({ hasText: "Sprawdź" }).click(); await p.waitForTimeout(300); } }
   }
   const ai = seq.findIndex((x) => x.startsWith("AGAIN")), between = seq.slice(0, ai).filter((x) => x !== "ekran").length;
-  ok(`${v.n}: K3 druga szansa ≥ 2 karty po błędzie, w następnej części (nie jako kolejna karta)`, ai > 0 && between >= 2 && !seq[0].startsWith("AGAIN") && +seq[ai].split(":")[2] > c2.bite ? true : ai > 0 && between >= 2, { seq, bite: c2?.bite });
+  ok(`${v.n}: K3 druga szansa ≥ 2 karty po błędzie, w następnej części (nie jako kolejna karta)`, ai > 0 && between >= 2 && !seq[0].startsWith("AGAIN") && +seq[ai].split(":")[2] > c2.bite, { seq, bite: c2?.bite });
   if (v.n === "luka") ok("luka: K3 druga szansa jako luka z bankiem pojęć zamiast tego samego ABCD", seq[ai]?.startsWith("AGAIN:recall"), seq[ai]);
   await shot(p, `360-${v.n}-druga-szansa`);
   // dobra druga szansa → „Teraz siedzi.”

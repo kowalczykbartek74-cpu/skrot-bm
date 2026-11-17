@@ -28,9 +28,9 @@ const scanEmoji = async (p, tag, acc) => { const t = await chrome(p); const m = 
   await shot(p, "360-pasek");
   // 3 dobre z rzędu → combo w nagłówku, pasek nadal ≥ 200 px
   for (let k = 0; k < 3; k++) { await goToCard(p, (c) => c.type === "mc" && (c.check || c.exit || c.again) && !c.done); await answer(p, true); if (k < 2) { await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400); } }
-  const m2 = await p.evaluate(() => ({ bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), chip: document.querySelector(".lp-combo")?.textContent.trim(), vis: document.querySelector(".lp-combo")?.innerText.trim(), float: !!document.querySelector(".lp-float") }));
+  const m2 = await p.evaluate(() => ({ bar: Math.round(document.querySelector(".lp-bar").getBoundingClientRect().width), chip: document.querySelector(".lp-combo")?.textContent.trim(), vis: Math.round(document.querySelector(".lp-combo")?.getBoundingClientRect().width || 0), lab: document.querySelector(".lp-combo")?.getAttribute("aria-label"), float: !!document.querySelector(".lp-float") }));
   await shot(p, "360-pasek-combo");
-  ok("K1 przy combo pasek nadal ≥ 200 px (w nagłówku „×3”, pełny tekst „×3 z rzędu” dla czytnika)", m2.bar >= 200 && m2.chip === "×3 z rzędu" && /^×3$/.test(m2.vis), m2);
+  ok("K1 przy combo pasek nadal ≥ 200 px (w nagłówku krótko „×3”, pełny tekst w DOM i aria-label)", m2.bar >= 200 && m2.chip === "×3 z rzędu" && m2.vis <= 80 && m2.lab === "3 z rzędu", m2);
   ok("K1 lpFloat dalej działa (pastylka „+N” przy werdykcie)", m2.float, m2);
   const hs = await noHScroll(p); ok("bez przewijania w bok", hs.sw <= hs.w, hs);
   ok("bez błędów (K1)", p.errors.length === 0, p.errors);
@@ -121,7 +121,7 @@ for (const v of [{ w: 360, h: 640 }, { w: 390, h: 844 }, { w: 1280, h: 900 }, { 
   const p = await open(b, { theme: "pink" });
   await startLesson(p); await goToCard(p, (c) => c.type === "mc" && c.check && !c.done);
   await shot(p, "390-pink-pytanie");
-  ok("pink: odtwarzacz działa (kicker z tekstem), bez błędów", p.errors.length === 0 && /Sprawdź się/.test(await p.locator(".lp-kick").first().innerText()), p.errors);
+  ok("pink: odtwarzacz działa (kicker z tekstem), bez błędów", p.errors.length === 0 && /Sprawdź się/i.test(await p.locator(".lp-kick").first().innerText()), p.errors);
   await p.close();
 }
 {

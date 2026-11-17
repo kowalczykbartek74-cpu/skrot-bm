@@ -5581,7 +5581,15 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "To pytanie wróci w następnej części, w innej formie.": "This one comes back in the next part, in a different form.",
 "Które pojęcie pasuje? Najpierw spróbuj w myślach.": "Which term fits? Try in your head first.",
 "Pojęcia do wyboru": "Terms to choose from",
-"Nie tym razem. Poprawne pojęcie: {0}.": "Not this time. The right term: {0}."
+"Nie tym razem. Poprawne pojęcie: {0}.": "Not this time. The right term: {0}.",
+"{0} z rzędu": "{0} in a row",
+"Wcześniej: błąd w części {0}": "Missed in part {0}",
+"Twój wybór: ": "Your pick: ",
+"Twój wybór:": "Your pick:",
+"Pominięto.": "Skipped.",
+"Pomiń krok": "Skip step",
+"Nie łapię": "I don't get it",
+"Szybkie przypomnienie": "Quick recall"
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],

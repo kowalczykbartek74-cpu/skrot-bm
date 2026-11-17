@@ -9,9 +9,9 @@ Wznowienie: „Kontynuuj pętlę UX-3 według ~/zdawalni/ux/petla-3.md i docs/au
 |---|---|---|---|---|---|
 | 1 Panel werdyktu na dole | ZALICZONY | 1 | 8/10 | brak | 6a7ed93 |
 | 2 Dźwięk, dotyk, Staś, combo | ZALICZONY | 1 | 8/10 | brak | 50f7c2c |
-| 3 Mechanika odpowiedzi | ZALICZONY | 1 | 8/10 | brak | (ten commit) |
-| 4 Pasek, karty, ikony | w toku | 1 | – | – | – |
-| 5 Ekran końca | – | – | – | – | – |
+| 3 Mechanika odpowiedzi | ZALICZONY | 1 | 8/10 | brak | 1928926 |
+| 4 Pasek, karty, ikony | ZALICZONY | 1 | 8/10 | brak | (ten commit) |
+| 5 Ekran końca | w toku | 1 | – | – | – |
 
 ## Decyzje (B1 przyjęte domyślnie, plik polecenia bez zmian)
 - D3 dźwięk: darmowe „ok” / „no” dla wszystkich, jedno pytanie po pierwszej skończonej części (`bm-dzwieki` = „1”/„0”), paczki ze sklepu jako inne brzmienia (`<paczka>-no`), przełącznik w Ustawieniach (jeden wiersz).
@@ -33,3 +33,4 @@ Wznowienie: „Kontynuuj pętlę UX-3 według ~/zdawalni/ux/petla-3.md i docs/au
 - Decyzja etap 2: stałe chipy XP i monet w nagłówku odtwarzacza schowane już teraz (wizualnie, w DOM zostają dla lpFloat), bo combo przy 360 px dawało przewijanie w bok; etap 4 to domyka.
 - Etap 3 runda 1: 8/10, twarde błędy: brak, K1–K5 true → ZALICZONY. Poprawki recenzenta (emoji w kickerach, wyjaśnienie złego pojęcia, nieprzezroczysty dolny pasek w motywach, konfetti gaśnie przy zmianie karty, krótszy stagger, „Wcześniej: błąd w części N”, twardszy test K3) wchodzą w etap 4.
 - Decyzje etap 3: `tf` zostaje jednym dotknięciem; karty z pewnością zawsze ją zapisują; druga szansa na koniec części po ≥ 2 kartach, inaczej w następnej części (indeks 3), w formie luki z bankiem pojęć, gdy w lekcji są ≥ 3 pojęcia.
+- Etap 4 runda 1: 8/10, twarde błędy: brak, K1–K4 true → ZALICZONY (recenzja przerwana limitem API, wznowiona 17.11). Drobne poprawki (toast nad paskiem, „Pomiń krok” w rzędzie z podpowiedzią, karta czytania bez pustej bieli, nowrap „Część N”, stałe „+N XP” w werdykcie) wchodzą w etap 5.

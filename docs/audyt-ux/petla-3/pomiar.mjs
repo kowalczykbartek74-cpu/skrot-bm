@@ -24,10 +24,32 @@ const HS = (s) => { let x = 2166136261; for (const ch of String(s)) { x ^= ch.co
 const SRS = Object.fromEntries(FL.map((f) => ["U1:" + HS(f.q), [1, 0]]));
 const toGrade = async (p) => { await p.locator(".rv-hero .sk-start").click(); await p.waitForTimeout(800); await p.locator(".lp-bottom .lp-cta").filter({ hasText: /Odwróć|Flip|Turn/ }).click(); await p.waitForTimeout(500); };
 const toSwipe = async (p) => { await startLesson(p); await goToCard(p, (c) => c.type === "swipe", 30); await p.locator(".lp-bottom .lp-cta").filter({ hasText: "Odwróć" }).click(); await p.waitForTimeout(500); };
+import { open as openDzis } from "../../gry/test/h2-lib.mjs";
+const toRead = async (p) => { await startLesson(p); await goToCard(p, (c) => c.type === "read"); await p.waitForTimeout(400); };
+const toDzis = async (p) => { await p.locator(".zh-hero .zh-go").click(); await p.locator(".lp").waitFor({ timeout: 15000 }); await p.waitForTimeout(800); };
+const toSkip = async (p) => { await toDzis(p); await p.locator(".lp-bottom .ld-skip").click(); await p.waitForTimeout(400); };
 const isQ = (c) => c.type === "mc" && (c.check || c.exit || c.again) && !c.done;
 const toCombo = (n) => async (p) => { await startLesson(p); for (let k = 0; k < n; k++) { await goToCard(p, isQ); await answer(p, true); if (k < n - 1) { await p.locator(".lp-bottom .lp-cta").click(); await p.waitForTimeout(400); } } await p.waitForTimeout(300); };
 const toAsk = async (p) => { await startLesson(p); for (let i = 0; i < 30 && !(await p.locator(".lp-snd-ask").count()); i++) await goToCard(p, () => false, 1); };
 const SC = {
+  4: [
+    { n: "360-jasny-czytaj", o: {}, run: toRead, scope: ".lp" },
+    { n: "360-ciemny-czytaj", o: { dark: true }, run: toRead, scope: ".lp" },
+    { n: "390-jasny-czytaj", o: { w: 390, h: 844 }, run: toRead, scope: ".lp" },
+    { n: "1280-jasny-czytaj", o: { w: 1280, h: 900 }, run: toRead, scope: ".lp" },
+    { n: "1280-ciemny-czytaj", o: { w: 1280, h: 900, dark: true }, run: toRead, scope: ".lp" },
+    { n: "360-jasny-combo3", o: { ls: { "bm-dzwieki": "0" } }, run: toCombo(3), scope: ".lp" },
+    { n: "360-jasny-fiszki", o: { docs: DFL }, run: toSwipe, scope: ".lp" },
+    { n: "360-jasny-dzis-pomin", dzis: true, o: { w: 360, h: 640 }, run: toDzis, scope: ".lp" },
+    { n: "360-ciemny-dzis-pomin", dzis: true, o: { w: 360, h: 640, dark: true }, run: toDzis, scope: ".lp" },
+    { n: "390-jasny-pominieto-cofnij", dzis: true, o: { w: 390, h: 844 }, run: toSkip, scope: ".lp" },
+    { n: "390-en-czytaj", o: { w: 390, h: 844, lang: "en" }, run: toRead, scope: ".lp" },
+    { n: "390-en-dzis", dzis: true, o: { w: 390, h: 844, lang: "en" }, run: toDzis, scope: ".lp" },
+    { n: "360-reduced-czytaj", o: { motion: "reduce" }, run: toRead, scope: ".lp", motion: true },
+    { n: "360-calm-dzis", dzis: true, o: { w: 360, h: 640, ls: { "skrot-calm": "1" } }, run: toDzis, scope: ".lp", motion: true },
+    { n: "390-pink-czytaj", o: { w: 390, h: 844, theme: "pink" }, run: toRead, scope: ".lp", other: true },
+    { n: "390-noc-pytanie", o: { w: 390, h: 844, theme: "noc" }, run: toSel, scope: ".lp", other: true },
+  ],
   3: [
     { n: "360-jasny-zaznaczona", o: {}, run: toSel, scope: ".lp" },
     { n: "360-ciemny-zaznaczona", o: { dark: true }, run: toSel, scope: ".lp" },
@@ -91,7 +113,7 @@ const scenes = (globalThis.UX3_SCENES || SC)[ETAP] || [];
 const b = await chromium.launch();
 const R = { etap: +ETAP, runda: +RUNDA, sceny: [] };
 for (const s of scenes) {
-  const p = await open(b, s.o);
+  const p = s.dzis ? await openDzis(b, { ...s.o }) : await open(b, s.o);
   const anims = new Set();
   await p.exposeFunction("__anim", (n) => anims.add(n)).catch(() => {});
   await p.evaluate(() => document.addEventListener("animationstart", (e) => window.__anim?.(e.animationName), true));

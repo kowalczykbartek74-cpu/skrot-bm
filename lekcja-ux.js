@@ -30,8 +30,20 @@
   };
   const IKONY_UX3 = {
     "ux3-glos": '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',
-    "ux3-wibr": '<rect x="8" y="3" width="8" height="18" rx="2"/><path d="M4 8v8M20 8v8M11 18h2"/>'
+    "ux3-wibr": '<rect x="8" y="3" width="8" height="18" rx="2"/><path d="M4 8v8M20 8v8M11 18h2"/>',
+    "ux3-num": '<path d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"/>',
+    "ux3-pen": '<path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/>',
+    "ux3-puzzle": '<path d="M5 8h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4H5z"/>',
+    "ux3-target": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    "ux3-pin": '<path d="M9 3h6l-1 6 3 3H7l3-3z"/><path d="M12 12v9"/>',
+    "ux3-talk": '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8"/>',
+    "ux3-link": '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    "ux3-abc": '<path d="M4 18l4-12 4 12M5.5 14h5"/><path d="M15 6v12h3a3 3 0 0 0 0-6h-3M15 6h2.5a3 3 0 0 1 0 6"/>',
+    "ux3-star": '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    "ux3-user": '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    "ux3-cam": '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'
   };
+  const KICK = { "📖": "book", "🧠": "bulb", "✅": "check", "⚠": "warn", "👀": "eye", "🔢": "ux3-num", "✍": "ux3-pen", "🧩": "ux3-puzzle", "💡": "bulb", "🎯": "ux3-target", "🎟": "ticket", "🔁": "retry", "⚡": "bolt", "📌": "ux3-pin", "🗣": "ux3-talk", "🔗": "ux3-link", "🔤": "ux3-abc", "🤓": "ux3-user", "📘": "book", "⭐": "ux3-star", "💪": "bolt", "🏁": "ticket", "✨": "ux3-star", "📊": "ux3-num" };
   const RYS = { ...IKONY_WSPOLNE, ...IKONY_UX3 };
   const svg = (k) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${RYS[k]}</svg>`;
   const ANY_THEME = new Set(["bolt", "check", "cross", "retry"]); // proste znaki w currentColor: także w innych motywach
@@ -45,6 +57,50 @@
   function icons() {
     const I = A().H2_ICO; if (!I || icoDone) return; icoDone = true;
     for (const k of Object.keys(RYS)) if (!I[k]) I[k] = svg(k);
+  }
+
+  // ---------- etap 4: ikony w kickerach, emoji poza treścią, „Cofnij”, mały Staś przy czytaniu ----------
+  function kickIco(e) {
+    const k = String(e || "").replace(/\uFE0F/g, "");
+    if (!green()) return null;
+    if (k === "🔥" || k === "⚔") { const H = A().h2Ico; return H ? H(k === "🔥" ? "flame" : "miecze", e) : null; }
+    return KICK[k] ? ico(KICK[k], "lp-kick-i") : null;
+  }
+  const EMO = /[\p{Extended_Pictographic}\uFE0F\u200D\u20E3]/gu;
+  const CONTENT = ".lp-text, .lp-big, .lp-quote, .q, [translate=no], .lp-sw .face, .lp-formula, textarea, input, .lp-gap, .lp-flow, .lp-steps, .lp-marks, .lp-layers, .lv-table, .lv-chart, .lp-tip, .lp-fb-why, .lp-ans";
+  const STAR = '<svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.5 1.1 6.3L12 17.3l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z" fill="currentColor"/></svg>';
+  function scrub(root) {
+    if (!green() || !root) return;
+    root.querySelectorAll?.(".lp-star:not([data-ux3])").forEach((s) => { s.dataset.ux3 = "1"; s.innerHTML = STAR; });
+    root.querySelectorAll?.("[data-ux3ico]:not([data-ux3done])").forEach((b) => { b.dataset.ux3done = "1"; const i = ico(b.dataset.ux3ico, "lp-tf-i"); if (i) b.prepend(i); });
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const fix = [];
+    for (let n = w.nextNode(); n; n = w.nextNode()) { if (!EMO.test(n.textContent)) continue; EMO.lastIndex = 0; const e = n.parentElement; if (!e || e.closest(CONTENT)) continue; fix.push(n); }
+    for (const n of fix) { const t = n.textContent.replace(EMO, "").replace(/\s{2,}/g, " "); n.textContent = /^\s*$/.test(t) ? "" : n.previousSibling || n.parentElement.firstChild !== n ? t : t.replace(/^\s+/, ""); }
+  }
+  let mo = null;
+  function watch() {
+    if (mo) return;
+    mo = new MutationObserver((recs) => {
+      for (const r of recs) {
+        const t = r.target.nodeType === 3 ? r.target.parentElement : r.target;
+        const lp = t?.closest?.(".lp"); if (lp) { scrub(lp); if ([...r.addedNodes].some((x) => x.classList?.contains("lp-card"))) lp.querySelectorAll(".lp-confetti").forEach((c) => c.classList.add("lpux-fade")); }
+        for (const x of r.addedNodes) if (x.nodeType === 1 && (x.classList.contains("lp") || x.classList.contains("lp-banner"))) scrub(x);
+      }
+    });
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+  function undo(msg, fn) {
+    const { h, LP } = A(); if (!h || !LP?.el?.root) return;
+    LP.el.root.querySelectorAll(".lp-undo").forEach((x) => x.remove());
+    let t = 0;
+    const box = h("div", { class: "lp-undo", role: "status" }, h("span", { text: msg }), h("button", { type: "button", class: "btn", onclick: () => { clearTimeout(t); box.remove(); fn(); } }, "Cofnij"));
+    LP.el.root.append(box); t = setTimeout(() => box.remove(), 4000);
+    try { const f = LP.el.root.querySelector(".lp-bottom").getBoundingClientRect(); box.style.bottom = Math.round(innerHeight - f.top + 12) + "px"; } catch {}
+  }
+  function readStas() {
+    const { stasFace } = A(); if (!green() || !stasFace) return null;
+    const f = stasFace("hi"); f.classList.add("lp-read-stas"); return f;
   }
 
   // ---------- etap 1–2: werdykt w dolnym pasku, Staś, combo ----------
@@ -193,6 +249,44 @@ html:not([data-theme]) .lp-combo { background: var(--h-lime); color: var(--h-lim
 /* Inne motywy: dolny pasek też barwi się werdyktem (kolory motywu). */
 html[data-theme] .lp[data-fb="ok"] .lp-bottom { background: var(--good-soft); }
 html[data-theme] .lp[data-fb="no"] .lp-bottom { background: var(--bad-soft); }
+/* Etap 4: nagłówek, „Pomiń krok”, karta czytania, ikony. */
+.lp-kick-ico { display: flex; align-items: center; gap: 6px; }
+.lp-kick-ico > .lp-ux-ico svg, .lp-kick-ico > .h2-ico svg { width: 16px; height: 16px; }
+.lp-kick-was { color: var(--muted); font-weight: 700; }
+.lp-help .lp-ux-ico { margin-right: 2px; }
+.lp-tf-i svg { width: 20px; height: 20px; }
+.lp-star svg { width: 1em; height: 1em; display: inline-block; vertical-align: -0.1em; }
+html:not([data-theme]) .lp-star { color: var(--h-lime-edge); }
+html:not([data-theme]) .lp-star.off { color: var(--line); }
+@media (max-width: 420px) { .lp-top .lp-combo { padding-left: 7px; padding-right: 8px; } .lp-top .lp-combo > span:last-child { display: inline-block; width: 1.55em; overflow: hidden; white-space: nowrap; vertical-align: bottom; } .lp-top .lp-combo[data-d="2"] > span:last-child { width: 2.15em; } }
+html:not([data-theme]) .lp-top .lp-bar { flex: 1 1 auto; min-width: 0; }
+.lp-top.ld-top { flex-wrap: wrap; row-gap: 2px; }
+.lp-top.ld-top .ld-seg { order: 9; flex: 1 0 100% !important; background: none !important; box-shadow: none !important; padding: 0 0 0 52px !important; font-size: .78rem; font-weight: 700; color: var(--muted); min-height: 0; max-width: none; }
+.lp-top.ld-top .ld-seg > span:first-child { display: none; }
+.lp-top.ld-top .ld-seg > span:last-child { position: static !important; width: auto !important; height: auto !important; clip: auto !important; overflow: visible !important; }
+.lp-bottom .ld-skip { flex: 0 0 auto; min-height: 54px; border-radius: 16px; display: inline-flex; align-items: center; gap: 6px; font-weight: 800; }
+.lp-bottom .ld-skip[hidden], .lp[data-fb] .lp-bottom .ld-skip { display: none; }
+.lp-undo { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 96; display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 16px; border-radius: 16px; background: var(--ink); color: var(--paper); font-weight: 700; max-width: calc(100vw - 32px); box-shadow: 0 8px 24px -10px rgba(0,0,0,.5); }
+.lp-undo .btn { min-height: 44px; background: var(--paper); color: var(--ink); border-color: var(--paper); }
+/* Karta czytania: wyśrodkowana, tekst 20 px, mały Staś; ≥ 900 px karta ≤ 720 px i Staś obok. */
+.lp-stage:has(> .lp-card[data-type="read"]) { display: grid; align-content: center; }
+.lp-card[data-type="read"] { position: relative; min-height: min(46dvh, 420px); display: grid; align-content: center; gap: 10px; width: 100%; box-sizing: border-box; }
+.lp-card[data-type="read"] .lp-text, .lp-card[data-type="read"] .lp-text p, .lp-card[data-type="read"] .lp-text li { font-size: 1.25rem; line-height: 1.5; }
+.lp-read-stas { position: absolute; top: 10px; right: 12px; width: 40px; height: 40px; }
+.lp-read-stas svg { width: 40px; height: 40px; display: block; }
+.lp-card[data-type="read"] .lp-kick { padding-right: 48px; }
+@media (min-width: 900px) {
+  .lp-card[data-type="read"] { max-width: 720px; margin: 0 auto; }
+  .lp-card[data-type="read"] .lp-read-stas { top: 50%; right: auto; left: -132px; width: 112px; height: 112px; transform: translateY(-50%); }
+  .lp-card[data-type="read"] .lp-read-stas svg { width: 112px; height: 112px; }
+  .lp-card[data-type="read"] .lp-kick { padding-right: 0; }
+}
+/* Dolny pasek nieprzezroczysty i nad konfetti we wszystkich motywach; konfetti gaśnie przy nowej karcie; krótsze wejście opcji. */
+.lp .lp-bottom { background: var(--surface, var(--paper)); border-top: 1.5px solid var(--line); z-index: 3; }
+html[data-theme] .lp:not([data-fb]) .lp-bottom { background: var(--surface, var(--paper)); }
+.lp-confetti.lpux-fade { opacity: 0; transition: opacity .3s; }
+.lp-fresh .lp-stag > * { animation-delay: calc(var(--i, 0) * 40ms) !important; }
+@media (max-width: 380px) { .lp-barx .sk-grade4 .opt { font-size: .82rem; padding: 6px 2px; } }
 /* Karta „Dziś do powtórki” w limonce H2 (zamiast pomarańczu), w ciemnym bez brązu. */
 html:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100); --h-rv-line: color-mix(in srgb, var(--h-lime) 70%, var(--h-line)); --h-rv-edge: var(--lime-400); --h-rv-num: var(--ink); --h-rv-ink: var(--h-muted); }
 html[data-green="dark"]:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100); --h-rv-line: color-mix(in srgb, var(--lime-400) 30%, var(--h-line)); --h-rv-edge: color-mix(in srgb, var(--lime-400) 45%, var(--h-paper)); --h-rv-num: var(--ink); --h-rv-ink: var(--h-muted); }
@@ -203,5 +297,6 @@ html[data-green="dark"]:not([data-theme]) .rv-hero { --h-rv-bg: var(--lime-100);
     document.head.append(s);
   }
   css();
-  window.ZD_LEKCJA = { fbar, ico, icons, pytanieDzwieki, ustawienia, IKONY: RYS };
+  window.ZD_LEKCJA = { fbar, ico, icons, pytanieDzwieki, ustawienia, kickIco, undo, readStas, scrub, IKONY: RYS };
+  if (document.body) watch(); else document.addEventListener("DOMContentLoaded", watch);
 })();
