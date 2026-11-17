@@ -12,7 +12,7 @@ const PW = [
   T + "poziomy.mjs", T + "scalenie-zdawalni.mjs", T + "lekcja-dnia.mjs", T + "lekcja-dnia-3.mjs", T + "lekcja-dnia-4.mjs", T + "lekcja-dnia-5.mjs", T + "lekcja-dnia-6.mjs",
   T + "przypomnienia.mjs", T + "paczka.mjs", T + "dzien.mjs", T + "po-zajeciach.mjs", T + "przygotuj-sie.mjs", T + "kopie.mjs", T + "smoke.mjs",
   "docs/kosmetyki/test/etap4.mjs", "docs/kosmetyki/test/podglad.mjs",
-  ...fs.readdirSync(ROOT + T).filter((f) => /^ux2-etap\d+\.mjs$/.test(f)).sort().map((f) => T + f),
+  ...fs.readdirSync(ROOT + T).filter((f) => /^ux[123]-etap\d+\.mjs$/.test(f)).sort().map((f) => T + f),
 ].filter((f) => fs.existsSync(ROOT + f));
 const run = (cmd, args, ms = 900000) => new Promise((res) => {
   const t0 = Date.now(), ch = spawn(cmd, args, { cwd: ROOT, env: { ...process.env, BASE, OUT: "/tmp/ux-2", RUNDA: "" } });
@@ -29,7 +29,7 @@ wyniki.push({ f: "node supabase/test/pglite.mjs", code: pg.code, ok: (pg.out.mat
 const changed = execSync("git diff --name-only origin/main -- '*.js' ; git ls-files --others --exclude-standard -- '*.js'", { cwd: ROOT, encoding: "utf8" }).split("\n").filter((f) => f && fs.existsSync(ROOT + f));
 for (const f of changed) { const r = await run("node", ["--check", f]); wyniki.push({ f: "node --check " + f, code: r.code, ok: r.code ? 0 : 1, zle: r.code ? 1 : 0, out: r.out }); }
 // Ciężkie testy (pomiar klatek, długie przejścia) idą na końcu pojedynczo: przy 3 naraz przekraczają czas albo próg fps.
-const SAMO = /h2-etap3|paczka\.mjs|kosmetyki\/test\/etap4|h2-etap7|h2-etap8|ux2-etap/;
+const SAMO = /h2-etap3|paczka\.mjs|kosmetyki\/test\/etap4|h2-etap7|h2-etap8|ux[123]-etap/;
 const wszystkie = process.argv.includes("--szybko") ? PW.filter((f) => /ux2-|h2-etap(3|1)\b/.test(f)) : PW.slice();
 const kolejka = wszystkie.filter((f) => !SAMO.test(f)), pojedynczo = wszystkie.filter((f) => SAMO.test(f));
 const N = 3;

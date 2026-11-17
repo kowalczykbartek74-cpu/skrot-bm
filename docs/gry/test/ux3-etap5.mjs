@@ -139,7 +139,8 @@ const NAWYK = () => {
 };
 for (const v of [{ n: "bez-nawyku-zle", bad: true }, { n: "nawyk-zle", bad: true, nawyk: true }, { n: "nawyk-dobrze", bad: false, nawyk: true }, { n: "ciemny-dobrze", bad: false, dark: true }]) {
   const p = await openDzis(b, { w: 390, h: 844, dark: v.dark });
-  if (v.nawyk) await p.evaluate(NAWYK); else await p.evaluate(() => { delete window.ZD_NAWYK; }); // po scaleniu z pętlą 2 nawyk.js jest na stronie
+  if (v.nawyk) await p.evaluate(NAWYK);
+  else await p.evaluate(() => { delete window.ZD_NAWYK; }); // po scaleniu z pętlą 2 nawyk.js jest: wariant „bez ZD_NAWYK” go usuwa
   await p.locator(".zh-hero .zh-go").click(); await p.locator(".lp").waitFor({ timeout: 15000 }); await p.waitForTimeout(800);
   for (let i = 0; i < 40 && !(await p.locator(".lp-done-screen").count()); i++) {
     const opt = p.locator(".lp-opts .opt:not([disabled]):not(.sel)").filter({ hasText: v.bad ? /Zła/ : /Dobra|Dobrze/ }).first();

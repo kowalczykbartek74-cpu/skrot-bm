@@ -4,7 +4,7 @@ do $$ begin
   end if;
 end $$;
 -- Skrót v55 (pętla UX-2, etapy 1–2): seria przyjazna studentom.
--- Wklej w Supabase → SQL Editor → Run, po v51 (i po v24 z zamrożeniami serii).
+-- Wklej w Supabase → SQL Editor → Run, po v54 (pętla UX-1; bez niej po v51) i po v24 z zamrożeniami serii.
 -- Kopiuj z github.com (przycisk „Copy raw file”), nie przez Terminal. Można uruchomić ponownie (drugi raz nic nie zmienia).
 --
 -- Co daje:

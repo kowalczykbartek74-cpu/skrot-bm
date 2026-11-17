@@ -3,7 +3,7 @@
 //  - HTML i skrypty/style (także z ?v=): najpierw sieć, kopia w pamięci na wypadek braku sieci.
 //  - ikony, obrazki, fonty, manifest: najpierw pamięć (zmieniają się rzadko).
 // Wyłącznik: zmiana WERSJA kasuje stare pamięci przy aktywacji; strona z ?sw=off wyrejestrowuje workera (nawyk.js).
-const WERSJA = "zdawalni-sw-20261117-3";
+const WERSJA = "zdawalni-sw-20261117-4";
 const STRONA = WERSJA + "-strona", PLIKI = WERSJA + "-pliki";
 
 const sameOrigin = (url) => url.origin === self.location.origin;
@@ -46,9 +46,18 @@ async function polozJedna(c, req, res) {
   await c.put(req, res);
 }
 
+// ?sw=off (nawyk.js): strona prosi o wyłączenie. Worker steruje nią do zamknięcia karty, więc od teraz nic nie zapisuje
+// do pamięci i od razu kasuje swoje pamięci (inaczej pliki wczytane po kasowaniu odtworzyłyby pamięć).
+let wylaczony = false;
+self.addEventListener("message", (e) => {
+  if (e.data !== "zdawalni-sw-off") return;
+  wylaczony = true;
+  e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith("zdawalni-sw-")).map((k) => caches.delete(k)))));
+});
+
 self.addEventListener("fetch", (e) => {
   const req = e.request;
-  if (req.method !== "GET") return;
+  if (wylaczony || req.method !== "GET") return;
   const url = new URL(req.url);
   if (!sameOrigin(url)) return; // Supabase, Stripe, plan.zdawalni.pl, CDN, fonty Google: zawsze prosto do sieci
   if (url.searchParams.has("sw")) return;
