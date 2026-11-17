@@ -1,6 +1,7 @@
 -- Testy D1–D7 dla skrot-v58-nagroda-dzial.sql (pętla UX-5, etap G1). Tylko lokalnie (PGlite, po test/v51.sql).
 -- Osoby: d1 (dostęp), d2 (bez dostępu), d3 (dostęp, inny rocznik). Lekcje: przedmiot ux5-makro, dział 1 (dl1, dl2), dział 2 (dl3).
 reset role;
+select test.jako('s@x.pl'); -- administrator wgrywa lekcje (wyzwalacz v44 bez admina bierze rocznik z poprzedniej osoby)
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000058' || lpad(i::text, 2, '0'))::uuid, e
 from (values (1,'ux5d1@x.pl'),(2,'ux5d2@x.pl'),(3,'ux5d3@x.pl')) v(i, e) on conflict do nothing;
