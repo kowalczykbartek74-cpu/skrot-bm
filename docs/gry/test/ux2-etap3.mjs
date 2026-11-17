@@ -72,12 +72,13 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   await shot(p, "k2-wracam-odtwarzacz-390-jasny");
   // Całe przejście: liczba pytań w odtwarzaczu (≈ 3 minuty, nie 1 pytanie), bez ekranów czytania.
   const pyt = new Set(); let czyt = false;
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 40; i++) {
     const st = await p.evaluate(() => ({ q: document.querySelector(".lp-card h2, .lp-q, .lp-body h2, .lp-card .q")?.innerText || document.querySelector(".lp-opts")?.closest("section,div")?.innerText?.split("\n")[1] || "", opts: document.querySelectorAll(".lp-opts .opt").length, txt: document.body.innerText, done: !!document.querySelector(".lp-done-screen") }));
     if (st.done) break;
     if (/Czytaj dalej|Najważniejsze z tematu/.test(st.txt)) czyt = true;
     if (st.opts) { pyt.add(st.q || String(i)); await p.locator(".lp-opts .opt").first().click().catch(() => {}); await p.waitForTimeout(250); }
-    await p.locator(".lp-cta").click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(350);
+    // po pętli 3: zaznacz → „Sprawdź” / „Pewny ✓” (dolny pasek) → „Dalej”
+    await p.locator('.lp-bottom [data-conf="1"]:not([disabled]), .lp-bottom .lp-cta:not([disabled]):not([hidden])').first().click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(350);
   }
   ok("K2 całe przejście karty powrotu: 5 pytań (4 + 1) ze znanego tematu, bez czytania nowego materiału", pyt.size === 5 && !czyt, { n: pyt.size, czyt });
   await p.close();
