@@ -11,7 +11,7 @@ Wznowienie: „Kontynuuj pętlę UX-3 według ~/zdawalni/ux/petla-3.md i docs/au
 | 2 Dźwięk, dotyk, Staś, combo | ZALICZONY | 1 | 8/10 | brak | 50f7c2c |
 | 3 Mechanika odpowiedzi | ZALICZONY | 1 | 8/10 | brak | 1928926 |
 | 4 Pasek, karty, ikony | ZALICZONY | 1 | 8/10 | brak | 121d6e1 |
-| 5 Ekran końca | ZALICZONY | 2 | 8/10 | brak | (ten commit) |
+| 5 Ekran końca | ZALICZONY | 2 | 8/10 | brak | 0f0c47a |
 
 ## Decyzje (B1 przyjęte domyślnie, plik polecenia bez zmian)
 - D3 dźwięk: darmowe „ok” / „no” dla wszystkich, jedno pytanie po pierwszej skończonej części (`bm-dzwieki` = „1”/„0”), paczki ze sklepu jako inne brzmienia (`<paczka>-no`), przełącznik w Ustawieniach (jeden wiersz).
@@ -36,3 +36,4 @@ Wznowienie: „Kontynuuj pętlę UX-3 według ~/zdawalni/ux/petla-3.md i docs/au
 - Etap 4 runda 1: 8/10, twarde błędy: brak, K1–K4 true → ZALICZONY (recenzja przerwana limitem API, wznowiona 17.11). Drobne poprawki (toast nad paskiem, „Pomiń krok” w rzędzie z podpowiedzią, karta czytania bez pustej bieli, nowrap „Część N”, stałe „+N XP” w werdykcie) wchodzą w etap 5.
 - Etap 5 runda 1: 7/10, twarde błędy: brak, K1 false (brak sprawdzenia Powtórek/rewanży i wariantu „1/2”) → poprawki.
 - Etap 5 runda 2: 8/10, twarde błędy: brak, K1–K6 true → ZALICZONY. Przed commitem poprawione 2 błędy z uwag (oceny fiszki w dolnym pasku na ekranie końca Powtórek, cel dnia z ZD_NAWYK = max z wartością po zapisie XP). Pozostałe uwagi (kosmetyka ekranów końca Powtórek i karty przejścia) w RAPORT.md.
+- KONIEC PĘTLI (17.11.2026): origin/main bez nowych commitów; końcowa regresja: node --test 368/0, PGlite OK, ux3-etap1–5 74/61/50/50/66, h2-etap1–10 zielone, lekcje-v4 31, lekcja-dnia-4/5/6 103/24/21, rewanze 23, sprawdzian 50, poziomy 3 ✗ jak na main, dzis-review identyczny z runda-3. RAPORT: docs/audyt-ux/petla-3/RAPORT.md.
