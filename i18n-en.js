@@ -5647,7 +5647,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "W tej lekcji:": "In this lesson:",
 "Twoja subskrypcja": "Your subscription",
 "Płacąc co miesiąc, do lipca zapłacisz razem ok. {0} zł. Plan do lipca kosztuje 199 zł.": "Paying monthly, you'll pay about {0} zł in total until July. The plan until July costs 199 zł.",
-"Otwórz portal płatności (karta, faktury, anulowanie)": "Open the payment portal (card, invoices, cancelling)"
+"Otwórz portal płatności (karta, faktury, anulowanie)": "Open the payment portal (card, invoices, cancelling)",
+"Pamiętaj: po zakupie anuluj subskrypcję 35 zł w portalu płatności (Więcej → Konto i dostęp → Zarządzaj subskrypcją).": "Remember: after buying, cancel the 35 zł subscription in the payment portal (More → Account and access → Manage subscription)."
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],

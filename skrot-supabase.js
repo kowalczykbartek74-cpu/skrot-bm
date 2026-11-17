@@ -1445,6 +1445,8 @@
         row(terms, "Znam i akceptuję ", el("a", { class: "link", href: "regulamin.html", target: "_blank", rel: "noopener" }, "Regulamin"), " oraz ", el("a", { class: "link", href: "prywatnosc.html", target: "_blank", rel: "noopener" }, "Politykę prywatności"), "."),
         row(now, CONSENT_NOW),
         kodBox,
+        // ux-1: przejście z planu miesięcznego na 199 zł – subskrypcji nikt nie anuluje automatycznie (bez podwójnej opłaty).
+        plan === "rok" && skrot.plan === "miesiac" ? el("p", { class: "notice", style: "margin:0", text: "Pamiętaj: po zakupie anuluj subskrypcję 35 zł w portalu płatności (Więcej → Konto i dostęp → Zarządzaj subskrypcją)." }) : null,
         zgodyMsg,
         el("p", { class: "foot-note", style: "margin:0", text: "Zaznaczenie zgody zapisujemy razem z datą i adresem e-mail konta." }),
         el("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, pay, el("button", { type: "button", class: "btn ghost", onclick: close }, "Anuluj"))));

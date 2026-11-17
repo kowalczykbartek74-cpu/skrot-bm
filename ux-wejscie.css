@@ -272,3 +272,6 @@ html:not([data-theme]) .uxw-bonus .btn.primary.uxw-kup { justify-self: start; mi
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E") center / contain no-repeat; }
 .uxw-porownanie h2:focus { outline: none; }
+/* Spis lekcji jako zwykła lista (nie pigułki jak przyciski). */
+.uxw-spis li { background: none; box-shadow: none; border-radius: 0; padding: 6px 4px 6px 26px; color: var(--h-ink, #10231A); border-bottom: 1px solid var(--h-line, #E1E8DD); }
+.uxw-spis li::before { left: 4px; }

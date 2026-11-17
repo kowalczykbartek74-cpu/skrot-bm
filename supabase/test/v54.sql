@@ -56,6 +56,13 @@ reset role; select test.jako('b54a@x.pl'); set role authenticated;
 select test.chk('S1 po próbie: minela = true', (public.nauka_proba_stan()->>'minela')::boolean, public.nauka_proba_stan());
 reset role; select test.jako('b54c@x.pl'); set role authenticated;
 select test.chk('S2 kto płacił: minela = false (bez „Próba minęła”)', not (public.nauka_proba_stan()->>'minela')::boolean, public.nauka_proba_stan());
+-- B6b: wygasły zakup (płacił kiedyś) → też nie (ta sama reguła co nauka_proba_stan)
+reset role;
+update public.nauka_dostep set do_kiedy = current_date - 30 where email = 'b54c@x.pl';
+select test.jako('b54c@x.pl'); set role authenticated;
+select test.chk('B6b wygasły zakup: mozna = false, bonus → ma_dostep', not (public.nauka_proba_bonus_stan()->>'mozna')::boolean and test.blad54('nauka_proba_bonus()') like '%ma_dostep%', null);
+reset role;
+update public.nauka_dostep set do_kiedy = current_date + 200 where email = 'b54c@x.pl';
 -- B7: gość i przeglądarka bez dostępu do funkcji pomocniczej
 reset role; set role anon;
 do $$ begin

@@ -45,8 +45,9 @@ declare uid uuid := auth.uid(); p public.nauka_proby; t jsonb;
 begin
   if uid is null then return jsonb_build_object('mozna', false); end if;
   select * into p from public.nauka_proby where user_id = uid;
+  -- Jedna reguła z nauka_proba_stan: tylko kto nigdy nie płacił (C4: „po próbie bez zakupu”).
   if not found or p.do_kiedy > now() or p.bonus_at is not null
-     or exists (select 1 from public.nauka_dostep d where d.do_kiedy >= current_date and (d.user_id = uid or d.email = p.email)) then
+     or exists (select 1 from public.nauka_dostep d where d.user_id = uid or d.email = p.email) then
     return jsonb_build_object('mozna', false);
   end if;
   t := public.nauka_proba_bonus_termin(uid);
@@ -65,7 +66,7 @@ begin
   if not found then raise exception 'brak_proby'; end if;
   if p.do_kiedy > now() then raise exception 'trwa'; end if;
   if p.bonus_at is not null then raise exception 'wykorzystany'; end if;
-  if exists (select 1 from public.nauka_dostep d where d.do_kiedy >= current_date and (d.user_id = uid or d.email = p.email)) then raise exception 'ma_dostep'; end if;
+  if exists (select 1 from public.nauka_dostep d where d.user_id = uid or d.email = p.email) then raise exception 'ma_dostep'; end if;
   t := public.nauka_proba_bonus_termin(uid);
   if t is null then raise exception 'brak_terminu'; end if;
   update public.nauka_proby set do_kiedy = now() + interval '2 days', bonus_at = now() where user_id = uid returning do_kiedy into koniec;

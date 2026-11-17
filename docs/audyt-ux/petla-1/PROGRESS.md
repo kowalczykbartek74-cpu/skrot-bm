@@ -43,8 +43,8 @@ limonkowa karta próby, ikona oka – część znalezisk C1 była więc już cz�
 | 1 Pierwszy ekran i jedna ścieżka | **ZALICZONY** | 2 | 9,0 | brak | (ten commit) |
 | 2 Widoczna próba i przyciski zakupu | **ZALICZONY** | 2 | 8,5 | brak | (ten commit) |
 | 3 Koniec próby jako wydarzenie | **ZALICZONY** | 1 | 8,0 | brak | (ten commit) |
-| 4 Paywall, odzyskiwanie, zaufanie | w toku | 1 | 5 (twardy błąd) | przyciski 43 px (paywall przy 1280, „Zanim zapłacisz”) | – |
-| 5 Lekcja dla gościa | – | – | – | – | – |
+| 4 Paywall, odzyskiwanie, zaufanie | **ZALICZONY** | 2 | 8,0 | brak | (ten commit) |
+| 5 Lekcja dla gościa | **NIEZROBIONY (odłożony)** | 0 | – | – | – |
 
 ## Dziennik rund
 
@@ -68,3 +68,10 @@ Uwagi recenzenta naprawiane na początku etapu 4 (logika, która trafi na stron�
 ### Etap 4 · runda 1 – 5/10 (twardy błąd), K1–K6 = true → poprawki
 Twardy błąd: przyciski 43 px w paywallu przy 1280 px i w oknie „Zanim zapłacisz”. Poprawione: wszystkie ≥ 48 px (test sprawdza 390 i 1280); powitanie po „+2 dni” mówi „Masz 2 dni” (liczba dni z faktycznego końca próby); arkusz przed portalem jako „Twoja subskrypcja” z „Otwórz portal płatności (karta, faktury, anulowanie)” i jasnym zdaniem o sumie do lipca; spis lekcji z nagłówkiem „W tej lekcji:” i kłódkami; próba w paywallu limonkowa; stopka paywalla lekcji bez powtórzonych cen; bez ramki fokusu na nagłówku arkusza.
 Zostaje (RAPORT / uwagi): zielony „Kup dostęp” w nagłówku aplikacji obok paywalla (nagłówek poza B3); przypomnienie o anulowaniu subskrypcji po zakupie 199 zł (wymaga automatycznego anulowania w webhooku – decyzja Bartka); licznik nad FAQ (decyzja: bez CLS); „Wybierz plan” bez przycisku „Dalej” (karty same są przyciskami – zostawione jak było).
+
+### Etap 4 · runda 2 – 8,0/10, twarde błędy: brak, K1–K6 = true → ZALICZONY
+Po ocenie, przed wdrożeniem: w oknie zgód przy przejściu z planu miesięcznego linia „Pamiętaj: po zakupie anuluj subskrypcję 35 zł…”; v54 – „+2 dni” tylko dla kogoś, kto nigdy nie płacił (ta sama reguła co `nauka_proba_stan`, test B6b); spis lekcji jako zwykła lista.
+Zostaje do RAPORT: automatyczne anulowanie subskrypcji w webhooku, przycisk „Kup dostęp” w nagłówku obok paywalla, „Wybierz plan” w tym samym wzorze co ekran końca próby, powitanie po „+2 dni” z przedmiotem kolokwium, indeks pod `nauka_rocznik_licznik` przy dużym ruchu.
+
+### Etap 5 – NIEZROBIONY (odłożony)
+Blokada: K1 wymaga „prawdziwego odtwarzacza” (`lpOpen`, `lpBuild`, `lpCards`…) w trybie gościa bez zapisu do bazy – to obszar pętli 3, przebudowywany w tym samym czasie. Zmiana w środku odtwarzacza z tej pętli zderzyłaby się przy scalaniu (A4 pkt 10–11). Poprawka: po scaleniu pętli 3 dodać w odtwarzaczu opcję `opts.gosc` (bez `progSoon`/RPC, XP w `sessionStorage`), w `skrotPokaz` wołać ją z 4 kartami, a w v55+ dać `anon` jawną listę par (kolekcja, id) na rocznik (`nauka_pokaz_lista`). Nic z etapu 5 nie jest w kodzie.
