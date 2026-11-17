@@ -5617,7 +5617,6 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "{0} zamrożenia": "{0} freezes",
 "{0} zamrożeń": "{0} freezes",
 "· zamrożenia: zużyje {0} z {1}": "· freezes: uses {0} of {1}",
-"· weekend chroniony": "· weekend covered",
 "· koniec serii {0}": "· {0} streak ended",
 "Ten tydzień: przerwa": "This week: break",
 "Ten tydzień: {0}/{1} dni": "This week: {0}/{1} days",
@@ -5625,7 +5624,22 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Ten tydzień: {0}": "This week: {0}",
 "· ostatnie zamrożenie chroni": "· last freeze covers today",
 "zostało {0}/{1}": "{0}/{1} left",
-"Zamrożenia: {0}/{1}": "Freezes: {0}/{1}"
+"Zamrożenia: {0}/{1}": "Freezes: {0}/{1}",
+"Dobrze, że jesteś. Ostatnio {0} temu.": "Good to see you. Last time: {0} ago.",
+"Dobrze, że jesteś.": "Good to see you.",
+"Zajęcia, które minęły: {0}": "Classes you missed: {0}",
+"Nowe terminy: {0}": "New deadlines: {0}",
+"Fiszki do odświeżenia: {0}": "Cards to refresh: {0}",
+"Wracam: 3 minuty": "I'm back: 3 minutes",
+"Dziś lżej: same powtórki i jedno pytanie, bez nowego tematu.": "Lighter today: just reviews and one question, no new topic.",
+"Twoja seria {0} się przerwała. Zrób dziś i jutro po 5 minut, a wróci.": "Your {0} streak broke. Do 5 minutes today and tomorrow and it comes back.",
+"· jutro seria wróci do {0}": "· tomorrow your streak returns to {0}",
+"Seria odzyskana: {0}": "Streak restored: {0}",
+"Seria {0} się skończyła. Dziś zaczynasz nową.": "Your {0} streak ended. Today you start a new one.",
+"· ucz się dziś: seria wróci do {0}": "· study today: your streak returns to {0}",
+"· dziś ✓, weekend chroniony": "· done today, weekend covered",
+"· ucz się dziś: weekend chroniony": "· study today: weekend covered",
+"Zamrożenie kosztuje {0} monet. Zbieraj je w zadaniach dnia.": "A freeze costs {0} coins. Collect them in daily tasks."
 // koniec ux-2
 },
 "plural": {

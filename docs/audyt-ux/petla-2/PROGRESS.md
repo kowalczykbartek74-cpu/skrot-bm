@@ -49,3 +49,8 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - `prezent()`: przy „pelne”/„za_wczesnie” pytać bazę najwyżej raz dziennie.
 - v56: komentarz o zakresie dni zgodny z kodem.
 - 360 px: krótszy tekst stanu „chroni”.
+- Etap 3: link z maila „powrót” = `/?pz=<id>&wracam=1#/` zamiast `#/?wracam=1` — router strony (`routeFromHash`/`render`, nie obszar pętli 2) traktuje zapytanie w „#” jako nieznaną stronę („Nie ma takiej strony”); `link()` w `przypomnienia.js` łączy zapytanie z `?pz=`. Strona zapamiętuje `wracam` na cały dzień (`skrot-wracam`) i usuwa parametr z adresu.
+- Etap 3: `ldKontekst` dostaje jedno wywołanie z umowy (`przerwaDni: window.ZD_NAWYK?.przerwaDni?.()`), żeby `trybDnia` włączał „lekko” po przerwie; karta „Wracam: 3 minuty” = `LDE.kartaPowrotu` (rozgrzewka do 6 + 1 pytanie, tryb lekko, bez nowego tematu).
+- Etap 3: naprawa serii w `progress.streakRepair` / `streakRepairAt` (raz na 30 dni); gdy naprawa możliwa, zamiast banera końca serii baner naprawy.
+- Etap 3: banery w treści Dziś wracają po przerysowaniu ekranu (MutationObserver na `#main`), dopóki trwają.
+- Etap 3: poprawki z recenzji etapu 2 wykonane (piątek, „Uzupełnij” tylko przy saldzie, dziś w przerwie, v55 po v56 + test D8, prezent raz dziennie, komentarz v56).

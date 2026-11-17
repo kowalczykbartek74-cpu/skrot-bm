@@ -30,10 +30,17 @@ language sql immutable set search_path = '' as $$
 $$;
 
 -- Czy dzień był dniem nauki. v55: punkty rankingu (nauka_rp). v56 zmienia to na tabelę nauka_dni (jedno źródło dnia nauki).
+-- Gdy jest już tabela nauka_dni (v56), pyta też ją: ponowne uruchomienie v55 po v56 niczego nie cofa.
 create or replace function public.nauka_dzien_nauki(p_user uuid, p_dzien date) returns boolean
-language sql stable security definer set search_path = '' as $$
-  select exists (select 1 from public.nauka_rp where user_id = p_user and dzien = p_dzien)
-$$;
+language plpgsql stable security definer set search_path = '' as $$
+declare r boolean := false;
+begin
+  if exists (select 1 from public.nauka_rp where user_id = p_user and dzien = p_dzien) then return true; end if;
+  if to_regclass('public.nauka_dni') is not null then
+    execute 'select exists (select 1 from public.nauka_dni where user_id = $1 and dzien = $2)' into r using p_user, p_dzien;
+  end if;
+  return coalesce(r, false);
+end $$;
 
 -- Zamrożenia na listę dni (strona woła przy pierwszej nauce dnia z dniami opuszczonymi od ostatniej nauki).
 -- Wynik dla każdego dnia: uzyte | juz (już chroniony) | przerwa (dzień przerwy, bez zużycia) | nauka (był dniem nauki) |

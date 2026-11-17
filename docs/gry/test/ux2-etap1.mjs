@@ -174,7 +174,7 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   ok("K3 ten sam weekend z 1 zamrożeniem: seria spada do 0 (zgodnie z zasadą „do 2 dni”)", /^0 dni/.test((await pill(p)).txt));
   await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(1300);
   const kon = await p.evaluate(() => ({ ban: document.querySelector(".nw-baner")?.innerText, z: window.skrot.sklep.zamrozenia.ma, s: window.ZD_APP.S.progress.streak.n }));
-  ok("K3 utrata serii nie jest cicha: baner „Seria 10 dni się skończyła…”, zamrożenie niezużyte, seria 1", /Seria 10 dni się skończyła/.test(kon.ban || "") && kon.z === 1 && kon.s === 1, kon);
+  ok("K3 utrata serii nie jest cicha: baner „Seria 10 dni się skończyła…”, zamrożenie niezużyte, seria 1", /Seria 10 dni się skończyła|Twoja seria 10 dni się przerwała/.test(kon.ban || "") && kon.z === 1 && kon.s === 1, kon);
   await shot(p, "baner-koniec-serii-390-jasny");
   await p.close();
   // błąd sieci przy zamrożeniu: seria zostaje, prośba czeka i przechodzi przy ponowieniu

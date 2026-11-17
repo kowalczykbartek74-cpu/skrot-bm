@@ -236,7 +236,8 @@
   // ---------------- tryby (3) ----------------
   /** Tryb dnia (karta) i ustawienia: { tryb, nowe, spokojnie, przedSnem, egzamin: { sid, dni } | null }. */
   function trybDnia(tematy, k) {
-    var snem = przedSnem(k), lekko = snem || (k.nieudaneDni || 0) >= WAGI.nieudaneLekko;
+    // Powrót po przerwie (≥ 2 dni bez nauki, pętla UX-2) też włącza „lekko”: powtórki bez nowego materiału.
+    var snem = przedSnem(k), lekko = snem || (k.nieudaneDni || 0) >= WAGI.nieudaneLekko || (k.przerwaDni || 0) >= 2;
     var ex = null;
     (tematy || []).forEach(function (t) { if (t.egzaminDni != null && t.egzaminDni >= 0 && (!ex || t.egzaminDni < ex.dni)) ex = { sid: t.sid, dni: t.egzaminDni }; });
     var blisko = ex && ex.dni <= WAGI.kolokwiumDni;
@@ -514,7 +515,20 @@
     return r;
   }
 
+  /** Karta „Wracam: 3 minuty” (pętla UX-2): tryb lekko, rozgrzewka (najwyżej 6 fiszek / rewanży) + 1 pytanie, bez nowego tematu. */
+  function kartaPowrotu(tematy, k) {
+    var kk = {}; for (var x in k) kk[x] = k[x];
+    kk.przerwaDni = Math.max(2, k.przerwaDni || 0);
+    var d = trybDnia(tematy, kk), t = wybierzKarte(tematy, d, kk);
+    var c = ulozKarte(t, d, kk); if (!c) return null;
+    var rew = c.kroki[0].mech === "rewanze";
+    c.kroki = [{ k: "rozgrzewka", mech: rew ? "rewanze" : "fiszki", n: 6, min: 2 }, { k: "sprawdzenie", mech: "pytania", n: 1, pewnosc: true, min: 1 }];
+    c.min = 3; c.powrot = true; c.nowe = false;
+    return c;
+  }
+
   return {
+    kartaPowrotu: kartaPowrotu,
     WAGI: WAGI, KATALOG: KATALOG, MECH: MECH, ROLE: ROLE, DLUGOSCI: DLUGOSCI,
     dlugoscLekcji: dlugoscLekcji, graCo: graCo, pamiec: pamiec, czesciPo: czesciPo, hasloNorm: hasloNorm, hasloOcena: hasloOcena, hasloPodpowiedzi: hasloPodpowiedzi, serieNieudanych: serieNieudanych, tygodnie: tygodnie, odpowiedziLearner: odpowiedziLearner, reszty: reszty, doSnu: doSnu, wynikTematu: wynikTematu, powody: powody, powodTekst: powodTekst,
     trybDnia: trybDnia, trybTematu: trybTematu, ulozKarte: ulozKarte, wybranaKarta: wybranaKarta, ulozLekcje: ulozLekcje, ulozDzien: ulozDzien, jeszczeJedna: jeszczeJedna,

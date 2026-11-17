@@ -35,6 +35,7 @@ test("kolejność: zaliczenie za 7 / 3 / 1 dzień → powrót → powtórki i re
   assert.equal(P.wybierz(ctx({ terminy: [ter("2026-11-05", { n: "Prawo" }), ter("2026-11-07")] })).title, "Kolokwium: Prawo, jutro");
   const back = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3 }));
   assert.equal(back.kind, "powrot");
+  assert.equal(back.path, "?wracam=1#/", "UX-2 etap 3: link otwiera kartę powrotu na Dziś");
   assert.equal(back.body, "Ostatnia nauka w Zdawalni: 5 dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.");
   const r = P.wybierz(ctx({ rewanze: 8, powtorki: 0 }));
   assert.equal(r.kind, "powtorki");
@@ -210,4 +211,12 @@ test("funkcja Edge: błąd Resend zostawia możliwość ponowienia; strona wypis
   const bez = atrapa(); const deps2 = { ...bez.deps, env: (k) => (k.startsWith("RESEND") ? undefined : bez.deps.env(k)) };
   r = await (await obsluz(cron(), deps2)).json();
   assert.equal(r.code, "no_mail"); assert.equal(bez.db.maile.length, 0);
+});
+
+test("UX-2: link z maila „powrót” = /?pz=<id>&wracam=1#/ (zapytanie przed #, router strony nie przyjmuje go w #)", () => {
+  const m = P.mail({ lang: "pl", site: "https://zdawalni.pl", id: "abc", pick: { kind: "powrot", title: "t", body: "b", cta: "c", path: "?wracam=1#/" }, unsubscribeUrl: "https://x/u" });
+  const s = JSON.stringify(m);
+  assert.ok(s.includes("https://zdawalni.pl/?pz=abc&wracam=1#/"), s.slice(0, 300));
+  const z = JSON.stringify(P.mail({ lang: "pl", site: "https://zdawalni.pl/", id: "x1", pick: { kind: "termin", title: "t", body: "b", cta: "c", path: "#/exam/mikro" }, unsubscribeUrl: "https://x/u" }));
+  assert.ok(z.includes("https://zdawalni.pl/?pz=x1#/exam/mikro"));
 });

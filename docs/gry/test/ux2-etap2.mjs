@@ -80,7 +80,10 @@ const P8 = { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 }, nd: [T23 -
   const PT = "2026-11-13T19:00:00+01:00", tp = dayN(PT);
   p = await open(b, { prog: { xp: { t: 300, d: tp - 1, n: 9 }, streak: { d: tp - 1, n: 5 }, nd: [tp - 4, tp - 3, tp - 2, tp - 1] }, czas: PT, ls: mon(["a1", "a2"]) });
   a = await pill(p);
-  ok("Piątek z 2 zamrożeniami: „· weekend chroniony”", /streak-chroni/.test(a.cls) && /· weekend chroniony/.test(a.txt), a);
+  ok("Piątek z 2 zamrożeniami przed nauką: „· ucz się dziś: weekend chroniony” z alarmem (pt + sob. + ndz. to 3 dni)", /streak-risk/.test(a.cls) && /· ucz się dziś: weekend chroniony/.test(a.txt), a);
+  await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(500);
+  const a2 = await pill(p);
+  ok("Piątek po nauce: „· dziś ✓, weekend chroniony”", /streak-done/.test(a2.cls) && /dziś ✓, weekend chroniony/.test(a2.txt), a2);
   await shot(p, "piatek-weekend-chroniony-390-jasny");
   await p.close();
   p = await open(b, { prog: P10, czas: PON, ls: mon(["a1"]) });
@@ -93,7 +96,7 @@ const P8 = { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 }, nd: [T23 -
   ok("K3 baza przed nauką = strona: nauka_seria 10, czeka 2", db?.seria === 10 && db.czeka === 2 && /^10 dni/.test((await pill(p)).txt), db);
   await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(1500);
   const bb = await p.evaluate(() => { const b = document.querySelector(".nw-baner"); return b && { txt: b.innerText.replace(/\s+/g, " "), wTresci: b.classList.contains("w-tresci"), sklep: !!b.querySelector(".nw-baner-sklep") }; });
-  ok("Baner po zużyciu ostatnich zamrożeń: w treści pod paskiem (nic nie zasłania) z „Uzupełnij w sklepie”", bb && bb.wTresci && bb.sklep && /zostało 0\/2/.test(bb.txt), bb);
+  ok("Baner po zużyciu ostatnich zamrożeń przy saldzie 0: w treści pod paskiem, bez przycisku zakupu, z podpowiedzią o zadaniach dnia", bb && bb.wTresci && !bb.sklep && /zostało 0\/2/.test(bb.txt) && /zadaniach dnia/.test(bb.txt), bb);
   await shot(p, "baner-uzupelnij-390-jasny"); R.pomiary.push(await pomiar(p, "Baner uzupełnij 390", ".nw-baner", ".nw-baner"));
   await p.close();
   // tydzień w przerwie i okno bez alarmu o północy
@@ -112,7 +115,7 @@ try {
   const out = execSync("node supabase/test/pglite.mjs", { cwd: ROOT, encoding: "utf8", maxBuffer: 32 << 20 });
   const v = (f) => new RegExp("^✓ " + f.replace(/[.]/g, "\\.") + "$", "m").test(out);
   const lines = out.split("\n").filter((l) => /skrot-v5[56]|test\/v5[56]|OK (Z|D)\d|OK v5[56]/.test(l));
-  ok("K2 PGlite: skrot-v55 2× + test/v55.sql (Z1–Z9)", (out.match(/^✓ skrot-v55-seria-zamrozenia\.sql$/gm) || []).length === 2 && v("test/v55.sql") && /OK v55: Z1–Z9/.test(out), lines);
+  ok("K2 PGlite: skrot-v55 2× + test/v55.sql (Z1–Z9)", (out.match(/^✓ skrot-v55-seria-zamrozenia\.sql$/gm) || []).length >= 2 && v("test/v55.sql") && /OK v55: Z1–Z9/.test(out), lines);
   ok("K6 PGlite: skrot-v56 2× + test/v56.sql (D1–D6: samo czytanie nie zużywa zamrożenia)", (out.match(/^✓ skrot-v56-dni-nauki\.sql$/gm) || []).length === 2 && v("test/v56.sql") && /OK v56: D1–D6/.test(out), lines);
   R.dodatkowe.push("## PGlite (v55, v56)", "```", lines.join("\n"), "```");
 } catch (e) { ok("K2/K6 PGlite", false, String(e.stdout || e).slice(-400)); }

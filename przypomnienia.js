@@ -183,11 +183,11 @@
       return en ? {
         kind: "powrot", title: "One short task to start",
         body: "Your last study session in Zdawalni was " + dd + " days ago. Start with one short task, the rest can wait.",
-        cta: "One task", path: "#/",
+        cta: "One task", path: "?wracam=1#/",
       } : {
         kind: "powrot", title: "Jedno krótkie zadanie na start",
         body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.",
-        cta: "Jedno zadanie", path: "#/",
+        cta: "Jedno zadanie", path: "?wracam=1#/",
       };
     }
     if (co.powtorki && ctx.powtorki + ctx.rewanze > 0) {
@@ -224,7 +224,14 @@
   // ---------- mail (port lib/reminder-email.ts) ----------
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   // Link z przypomnienia: ?pz=<id wpisu w logu> (strona oznacza przypomnienie jako otwarte), potem trasa.
-  function link(site, path, id) { return String(site).replace(/\/$/, "") + "/" + (id ? "?pz=" + encodeURIComponent(id) : "") + (path || "#/"); }
+  // path może zaczynać się od zapytania („?wracam=1#/”, UX-2): router strony nie przyjmuje zapytań w części „#”, więc parametr
+  // idzie przed „#” i łączy się z ?pz=.
+  function link(site, path, id) {
+    var p = path || "#/", q = "", i = p.indexOf("#");
+    if (p.charAt(0) === "?") { q = i < 0 ? p.slice(1) : p.slice(1, i); p = i < 0 ? "#/" : p.slice(i); }
+    var qs = [id ? "pz=" + encodeURIComponent(id) : "", q].filter(Boolean).join("&");
+    return String(site).replace(/\/$/, "") + "/" + (qs ? "?" + qs : "") + p;
+  }
   function mail(o) {
     var en = o.lang === "en", p = o.pick, go = link(o.site, p.path, o.id), off = o.unsubscribeUrl;
     var hello = en ? "Hi!" : "Cześć!";

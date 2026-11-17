@@ -9,8 +9,8 @@ end $$;
 -- Problem: strona liczy serię z XP (każde XP > 0 to dzień nauki, także samo czytanie lekcji bez punktów), a zamrożenie w bazie
 -- patrzyło na punkty rankingu (nauka_rp). Dzień z samym czytaniem był dla bazy „opuszczony”, więc zamrożenie mogło się zużyć
 -- mimo nauki, a seria na stronie i w bazie mogły się rozjechać.
--- Rozwiązanie: tabela nauka_dni (osoba, dzień). Wpis robią dwa wyzwalacze: zapis postępu (progress.xp.d z XP > 0, najwyżej 7 dni
--- wstecz; tylko dziś/wczoraj i przy rosnącym xp.t; listy progress.nd celowo NIE liczymy, bo klient mógłby dopisać sobie dowolne dni) i każdy punkt rankingu.
+-- Rozwiązanie: tabela nauka_dni (osoba, dzień). Wpis robią dwa wyzwalacze: zapis postępu (progress.xp.d z XP > 0, tylko dziś
+-- albo wczoraj (+1 dzień tolerancji strefy telefonu) i przy rosnącym xp.t; listy progress.nd celowo NIE liczymy, bo klient mógłby dopisać sobie dowolne dni) i każdy punkt rankingu.
 -- Uwaga: progress.xp.d to dzień według zegara telefonu; dla telefonu poza Polską może różnić się o 1 od nauka_dzis(). Dlatego seria
 -- z bazy (nauka_seria) służy do zamrożeń i podglądu, a nie do nagród ani rankingu z monetami. nauka_dzien_nauki (v55) od teraz pyta tę tabelę, więc zamrożenia
 -- (nauka_zamrozenie_uzyj_dni), prezent i seria w bazie (nauka_seria_na) liczą dzień nauki tak samo jak strona.

@@ -8000,6 +8000,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       h("section", { class: "greet" }, h("h1", { text: greeting() }), h("p", { class: "sub", text: weekLine() }), greetBadges()),
       // Od góry: „Twój postęp” z najbliższymi terminami (mniejszy), potem karta 5 min i lekcje dla Ciebie. Planu zajęć na Dziś nie ma (jest w Kalendarzu).
       // Wygląd H (15.11.2026): najpierw karta „Dziś · 5 min” (na telefonie przycisk na pierwszym ekranie), potem „Twój postęp” z terminami.
+      // ux-2: po przerwie (≥ 2 dni) albo z maila „powrót” (?wracam=1): „Dobrze, że jesteś” nad kartą dnia.
+      needGroup() ? null : window.ZD_NAWYK?.kartaPowrotu?.(),
       !needGroup() && ldOn() ? ldBlock() : null,
       needGroup() || !S.ready ? null : ptsDzis(),
       S.noDb ? accessNotice() : buyBanner(),
@@ -19640,6 +19642,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       : P.blokZ === "data" ? { blockMinutes: P.blok } : null;
     const nieudane = Math.max(LDE.serieNieudanych(ldDni.get(), dayN()), P.lzej ? LDE.WAGI.nieudaneLekko : 0);
     return {
+      przerwaDni: window.ZD_NAWYK?.przerwaDni?.() ?? 0, // ux-2: powrót po przerwie włącza „lekko” (trybDnia)
       dayN: dayN(), teraz, profil, profilDanych: P,
       dobraPora: P.dobraPora, rewanzeDzis: (due.rew || []).length, fiszkiZalegle: (due.due || []).length, nieudaneDni: nieudane, wDrodze: ls.get("bm-ld-droga") === "1",
       hist: { dzis: st.tem || [], pominiete: st.pom || {}, przedCzasem: +(ls.get("bm-ld-krotko") || 0), ostatnieLekcje: ldOst.get(), mech: ldMech.get() },
@@ -22925,7 +22928,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
     if (S.isStarosta) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
   // === most ux-2 ===
-  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, kBuy, kPrice, coins, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
+  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
   // === koniec mostu ux-2 ===
 })();
 </script>

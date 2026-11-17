@@ -1,0 +1,27 @@
+✓ K1 przerwa 5 dni: „Dobrze, że jesteś. Ostatnio 5 dni temu.” nad kartą dnia, ze Stasiem
+✓ K1 najwyżej 3 punkty i tylko te, które są (liczby > 0)
+✓ K1 jeden przycisk „Wracam: 3 minuty”
+✓ K1 390-jasny: nic poza ekranem
+✓ K1 360-jasny: nic poza ekranem
+✓ K1 390-ciemny: nic poza ekranem
+✓ K1 1280-jasny: nic poza ekranem
+✓ K1 EN: „Good to see you. Last time: 5 days ago.”, „I'm back: 3 minutes”
+✓ K1 390-jasny-en: nic poza ekranem
+✓ K1 wczoraj była nauka (1 dzień): bez karty powrotu
+✓ K1 dziś już XP: karta znika
+✓ K2 trybDnia uwzględnia przerwaDni (5) → „lekko”
+✓ K2 karta powrotu: tryb lekko, bez nowego, 3 min, rozgrzewka 6 + 1 pytanie, odtwarzacz otwarty
+✓ K2/K3 testy jednostkowe (lekcja-dnia: przerwaDni, kartaPowrotu; nawyk: naprawa)
+✓ K3 seria 12 spadła po 3 dniach: wiersz „Twoja seria 12 dni się przerwała. Zrób dziś i jutro po 5 minut, a wróci.”
+✓ K3 dzień 1 naprawy: seria 1, streakRepair zapisany, baner naprawy, pigułka „· jutro seria wróci do 14 dni”
+✓ K3 dzień 2 przed nauką: „· ucz się dziś: seria wróci do 14 dni”
+✓ K3 dzień 2 z XP: seria 14 (n + 2), baner „Seria odzyskana: 14 dni”, zapisany dzień naprawy
+✓ K3 naprawa raz na 30 dni: 10 dni po poprzedniej bez wiersza naprawy (zamiast tego jasny komunikat o końcu serii)
+✓ K4 ?wracam=1: karta powrotu widoczna i w widoku, adres bez parametru, bez „Nie ma takiej strony”
+✓ K4 po przeładowaniu tego samego dnia karta zostaje (skrot-wracam)
+✓ K4 mail „powrót”: link /?pz=…&wracam=1#/ (tests/przypomnienia.test.js)
+✓ K5 390-jasny: od wejścia pigułka „koniec serii 10 dni” i w karcie „Seria 10 dni się skończyła. Dziś zaczynasz nową.”
+✓ K5 390-ciemny: od wejścia pigułka „koniec serii 10 dni” i w karcie „Seria 10 dni się skończyła. Dziś zaczynasz nową.”
+✓ K5 EN: „Your 10 days streak ended”
+✓ konsola bez błędów (wszystkie stany)
+26/26

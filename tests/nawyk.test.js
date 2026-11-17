@@ -113,3 +113,18 @@ test("dni przerw w SQL v55 (nauka_przerwa) = CAL_DEFAULT w index.html (okresy z 
   assert.deepEqual(wolne, Object.keys(cal.wolne).sort());
   assert.deepEqual(okresy, cal.okresy.filter((o) => /przerwa/i.test(o.opis)).map((o) => [o.od, o.do]));
 });
+
+test("naprawa serii wysiłkiem: seria ≥ 3, 2–4 opuszczone dni, 2 dni nauki z rzędu → n + 2, raz na 30 dni", () => {
+  const t = 320, c = { przerwa: () => false };
+  const p = { streak: { d: t - 4, n: 12 } }; // 3 opuszczone dni
+  assert.deepEqual(L.naprawaMozna(p, t, c), { n: 12 });
+  assert.equal(L.naprawaMozna({ streak: { d: t - 2, n: 12 } }, t, c), null, "1 opuszczony dzień: to zwykła seria");
+  assert.equal(L.naprawaMozna({ streak: { d: t - 6, n: 12 } }, t, c), null, "5 dni: za długo");
+  assert.equal(L.naprawaMozna({ streak: { d: t - 4, n: 2 } }, t, c), null, "seria < 3");
+  assert.equal(L.naprawaMozna({ ...p, streakRepairAt: t - 10 }, t, c), null, "raz na 30 dni");
+  const k1 = L.naprawaKrok(p, t, c);
+  assert.deepEqual(k1, { streakRepair: { n: 12, od: t, dni: [t] } });
+  const k2 = L.naprawaKrok({ streak: { d: t, n: 1 }, streakRepair: k1.streakRepair }, t + 1, c);
+  assert.deepEqual(k2, { streak: { d: t + 1, n: 14 }, streakRepair: null, streakRepairAt: t + 1, odzyskana: 14 });
+  assert.deepEqual(L.naprawaKrok({ streak: { d: t, n: 1 }, streakRepair: k1.streakRepair }, t + 2, c), { streakRepair: null }, "przerwa w naprawie: przepada");
+});

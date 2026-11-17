@@ -68,4 +68,8 @@ do $$ begin
   perform test.chk('D6 jeden wiersz na osobę i dzień', not exists (select user_id, dzien from public.nauka_dni group by 1, 2 having count(*) > 1), null);
   perform test.chk('D6 wpisy z nauka_rp sprzed v56 są w nauka_dni', not exists (select 1 from public.nauka_rp r where not exists (select 1 from public.nauka_dni d where d.user_id = r.user_id and d.dzien = r.dzien)), null);
 end $$;
+-- D8: v55 uruchomione jeszcze raz po v56 nie cofa dnia nauki z nauka_dni (samo czytanie dalej chroni przed zużyciem zamrożenia)
+do $$ begin
+  perform test.chk('D8 nauka_dzien_nauki widzi dzień z nauka_dni', public.nauka_dzien_nauki('56565656-0000-4000-8000-000000000001', (now() at time zone 'Europe/Warsaw')::date - 1), null);
+end $$;
 do $$ begin raise notice 'OK v56: D1–D6'; end $$;
