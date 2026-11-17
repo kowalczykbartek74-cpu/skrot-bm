@@ -1,0 +1,3329 @@
+{
+ "etap": "W3",
+ "runda": 1,
+ "ekrany": [
+  {
+   "n": "przedmioty-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌙",
+     "t": "🌙",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 71,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "☀️",
+     "t": "☀️",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 71,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "po5-nie-ma-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H2 18px/700 „To podsumowanie wygasło”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 17,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPo zajęciach",
+     "w": 135,
+     "h": 36,
+     "pole": "119×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "po5-nie-ma-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H2 18px/700 „To podsumowanie wygasło”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 17,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPo zajęciach",
+     "w": 135,
+     "h": 36,
+     "pole": "119×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "po5-nie-ma-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H2 18px/700 „To podsumowanie wygasło”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 17,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPo zajęciach",
+     "w": 135,
+     "h": 36,
+     "pole": "119×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "po5-nie-ma-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H2 18px/700 „To podsumowanie wygasło”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 17,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPo zajęciach",
+     "w": 135,
+     "h": 36,
+     "pole": "119×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "po5-nie-ma-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H2 18px/700 „To podsumowanie wygasło”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌙",
+     "t": "🌙",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 19,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPo zajęciach",
+     "w": 135,
+     "h": 36,
+     "pole": "119×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "po5-nie-ma-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H2 18px/700 „To podsumowanie wygasło”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "☀️",
+     "t": "☀️",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 19,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPo zajęciach",
+     "w": 135,
+     "h": 36,
+     "pole": "119×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "material-A1-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H2 18px/700 „1pochodne 1”",
+    "H2 18px/700 „2pochodne 2”",
+    "H2 18px/700 „3pochodne 3”",
+    "H2 18px/700 „4pochodne 4”",
+    "H2 18px/700 „5pochodne 5”",
+    "H2 18px/700 „6pochodne 6”",
+    "H2 18px/700 „Zadania do przećwiczenia”",
+    "H2 18px/700 „Pojęcia”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 75,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 203,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "Ściągawka do druku",
+     "w": 135,
+     "h": 21,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "1\nPrzeczytaj",
+     "w": 123,
+     "h": 34,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "2\nFiszki",
+     "w": 86,
+     "h": 34,
+     "pole": "86×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "3\nQuiz",
+     "w": 79,
+     "h": 34,
+     "pole": "79×44"
+    },
+    {
+     "cel": "BUTTON.btn.sun",
+     "tekst": "Oznacz lekcję jako przerobioną",
+     "w": 257,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "material-A1-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H2 18px/700 „1pochodne 1”",
+    "H2 18px/700 „2pochodne 2”",
+    "H2 18px/700 „3pochodne 3”",
+    "H2 18px/700 „4pochodne 4”",
+    "H2 18px/700 „5pochodne 5”",
+    "H2 18px/700 „6pochodne 6”",
+    "H2 18px/700 „Zadania do przećwiczenia”",
+    "H2 18px/700 „Pojęcia”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 75,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 203,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "Ściągawka do druku",
+     "w": 135,
+     "h": 21,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "1\nPrzeczytaj",
+     "w": 123,
+     "h": 34,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "2\nFiszki",
+     "w": 86,
+     "h": 34,
+     "pole": "86×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "3\nQuiz",
+     "w": 79,
+     "h": 34,
+     "pole": "79×44"
+    },
+    {
+     "cel": "BUTTON.btn.sun",
+     "tekst": "Oznacz lekcję jako przerobioną",
+     "w": 257,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "material-A1-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H2 18px/700 „1pochodne 1”",
+    "H2 18px/700 „2pochodne 2”",
+    "H2 18px/700 „3pochodne 3”",
+    "H2 18px/700 „4pochodne 4”",
+    "H2 18px/700 „5pochodne 5”",
+    "H2 18px/700 „6pochodne 6”",
+    "H2 18px/700 „Zadania do przećwiczenia”",
+    "H2 18px/700 „Pojęcia”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 75,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 203,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "Ściągawka do druku",
+     "w": 135,
+     "h": 21,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "1\nPrzeczytaj",
+     "w": 123,
+     "h": 34,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "2\nFiszki",
+     "w": 86,
+     "h": 34,
+     "pole": "86×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "3\nQuiz",
+     "w": 79,
+     "h": 34,
+     "pole": "79×44"
+    },
+    {
+     "cel": "BUTTON.btn.sun",
+     "tekst": "Oznacz lekcję jako przerobioną",
+     "w": 257,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "material-A1-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H2 18px/700 „1pochodne 1”",
+    "H2 18px/700 „2pochodne 2”",
+    "H2 18px/700 „3pochodne 3”",
+    "H2 18px/700 „4pochodne 4”",
+    "H2 18px/700 „5pochodne 5”",
+    "H2 18px/700 „6pochodne 6”",
+    "H2 18px/700 „Zadania do przećwiczenia”",
+    "H2 18px/700 „Pojęcia”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 75,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 203,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "Ściągawka do druku",
+     "w": 135,
+     "h": 21,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "1\nPrzeczytaj",
+     "w": 123,
+     "h": 34,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "2\nFiszki",
+     "w": 86,
+     "h": 34,
+     "pole": "86×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "3\nQuiz",
+     "w": 79,
+     "h": 34,
+     "pole": "79×44"
+    },
+    {
+     "cel": "BUTTON.btn.sun",
+     "tekst": "Oznacz lekcję jako przerobioną",
+     "w": 257,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "material-A1-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H2 18px/700 „1pochodne 1”",
+    "H2 18px/700 „2pochodne 2”",
+    "H2 18px/700 „3pochodne 3”",
+    "H2 18px/700 „4pochodne 4”",
+    "H2 18px/700 „5pochodne 5”",
+    "H2 18px/700 „6pochodne 6”",
+    "H2 18px/700 „Zadania do przećwiczenia”",
+    "H2 18px/700 „Pojęcia”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌙",
+     "t": "🌙",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 78,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 203,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "Ściągawka do druku",
+     "w": 135,
+     "h": 21,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "1\nPrzeczytaj",
+     "w": 135,
+     "h": 40,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "2\nFiszki",
+     "w": 98,
+     "h": 40,
+     "pole": "98×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "3\nQuiz\n10",
+     "w": 113,
+     "h": 40,
+     "pole": "114×44"
+    },
+    {
+     "cel": "BUTTON.btn.sun",
+     "tekst": "Oznacz lekcję jako przerobioną",
+     "w": 257,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "material-A1-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H2 18px/700 „1pochodne 1”",
+    "H2 18px/700 „2pochodne 2”",
+    "H2 18px/700 „3pochodne 3”",
+    "H2 18px/700 „4pochodne 4”",
+    "H2 18px/700 „5pochodne 5”",
+    "H2 18px/700 „6pochodne 6”",
+    "H2 18px/700 „Zadania do przećwiczenia”",
+    "H2 18px/700 „Pojęcia”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "☀️",
+     "t": "☀️",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 78,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nAnaliza matematyczna",
+     "w": 203,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "Ściągawka do druku",
+     "w": 135,
+     "h": 21,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "1\nPrzeczytaj",
+     "w": 135,
+     "h": 40,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "2\nFiszki",
+     "w": 98,
+     "h": 40,
+     "pole": "98×44"
+    },
+    {
+     "cel": "BUTTON.step",
+     "tekst": "3\nQuiz\n10",
+     "w": 113,
+     "h": 40,
+     "pole": "114×44"
+    },
+    {
+     "cel": "BUTTON.btn.sun",
+     "tekst": "Oznacz lekcję jako przerobioną",
+     "w": 257,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🔒",
+     "t": "Co znaczy kłódka 🔒?",
+     "cel": "SUMMARY"
+    },
+    {
+     "e": "⚡",
+     "t": "Wejdź w Więcej → Powtórka w 5 minut (alb",
+     "cel": "P"
+    },
+    {
+     "e": "🤓",
+     "t": "To nowy stażysta, który tłumaczy temat z",
+     "cel": "P"
+    }
+   ],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka 🔒?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🔒",
+     "t": "Co znaczy kłódka 🔒?",
+     "cel": "SUMMARY"
+    },
+    {
+     "e": "⚡",
+     "t": "Wejdź w Więcej → Powtórka w 5 minut (alb",
+     "cel": "P"
+    },
+    {
+     "e": "🤓",
+     "t": "To nowy stażysta, który tłumaczy temat z",
+     "cel": "P"
+    }
+   ],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka 🔒?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🔒",
+     "t": "Co znaczy kłódka 🔒?",
+     "cel": "SUMMARY"
+    },
+    {
+     "e": "⚡",
+     "t": "Wejdź w Więcej → Powtórka w 5 minut (alb",
+     "cel": "P"
+    },
+    {
+     "e": "🤓",
+     "t": "To nowy stażysta, który tłumaczy temat z",
+     "cel": "P"
+    }
+   ],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka 🔒?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🔒",
+     "t": "Co znaczy kłódka 🔒?",
+     "cel": "SUMMARY"
+    },
+    {
+     "e": "⚡",
+     "t": "Wejdź w Więcej → Powtórka w 5 minut (alb",
+     "cel": "P"
+    },
+    {
+     "e": "🤓",
+     "t": "To nowy stażysta, który tłumaczy temat z",
+     "cel": "P"
+    }
+   ],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka 🔒?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌙",
+     "t": "🌙",
+     "cel": "BUTTON.btn"
+    },
+    {
+     "e": "🔒",
+     "t": "Co znaczy kłódka 🔒?",
+     "cel": "SUMMARY"
+    },
+    {
+     "e": "⚡",
+     "t": "Wejdź w Więcej → Powtórka w 5 minut (alb",
+     "cel": "P"
+    },
+    {
+     "e": "🤓",
+     "t": "To nowy stażysta, który tłumaczy temat z",
+     "cel": "P"
+    }
+   ],
+   "tekstow": 102,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 347,
+     "h": 24,
+     "pole": "119×25"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka 🔒?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "☀️",
+     "t": "☀️",
+     "cel": "BUTTON.btn"
+    },
+    {
+     "e": "🔒",
+     "t": "Co znaczy kłódka 🔒?",
+     "cel": "SUMMARY"
+    },
+    {
+     "e": "⚡",
+     "t": "Wejdź w Więcej → Powtórka w 5 minut (alb",
+     "cel": "P"
+    },
+    {
+     "e": "🤓",
+     "t": "To nowy stażysta, który tłumaczy temat z",
+     "cel": "P"
+    }
+   ],
+   "tekstow": 102,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 347,
+     "h": 24,
+     "pole": "119×25"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka 🔒?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "powtorki-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Powtórki”",
+    "H2 18px/700 „Powtarzaj grając”",
+    "H2 18px/700 „Mapa postępów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Wybierz przedmiot",
+     "w": 172,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Analiza matematyczna",
+     "w": 141,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Pochodne funkcji: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Całki oznaczone: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Logistyka",
+     "w": 141,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Łańcuch dostaw: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Zapasy i magazyny: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Makroekonomia",
+     "w": 141,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Polityka pieniężna: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "PKB i inflacja: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none.extra",
+     "tekst": "Moje notatki: nieruszone",
+     "w": 16,
+     "h": 16,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Podstawy zarządzania",
+     "w": 152,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Funkcje zarządzania: nieruszon",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Prawo",
+     "w": 152,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Źródła prawa: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "powtorki-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Powtórki”",
+    "H2 18px/700 „Powtarzaj grając”",
+    "H2 18px/700 „Mapa postępów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Wybierz przedmiot",
+     "w": 172,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Analiza matematyczna",
+     "w": 141,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Pochodne funkcji: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Całki oznaczone: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Logistyka",
+     "w": 141,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Łańcuch dostaw: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Zapasy i magazyny: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Makroekonomia",
+     "w": 141,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Polityka pieniężna: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "PKB i inflacja: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none.extra",
+     "tekst": "Moje notatki: nieruszone",
+     "w": 16,
+     "h": 16,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Podstawy zarządzania",
+     "w": 152,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Funkcje zarządzania: nieruszon",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Prawo",
+     "w": 152,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Źródła prawa: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "powtorki-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Powtórki”",
+    "H2 18px/700 „Powtarzaj grając”",
+    "H2 18px/700 „Mapa postępów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Wybierz przedmiot",
+     "w": 172,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Analiza matematyczna",
+     "w": 171,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Pochodne funkcji: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Całki oznaczone: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Logistyka",
+     "w": 171,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Łańcuch dostaw: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Zapasy i magazyny: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Makroekonomia",
+     "w": 171,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Polityka pieniężna: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "PKB i inflacja: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none.extra",
+     "tekst": "Moje notatki: nieruszone",
+     "w": 16,
+     "h": 16,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Podstawy zarządzania",
+     "w": 182,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Funkcje zarządzania: nieruszon",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Prawo",
+     "w": 182,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Źródła prawa: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "powtorki-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Powtórki”",
+    "H2 18px/700 „Powtarzaj grając”",
+    "H2 18px/700 „Mapa postępów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Wybierz przedmiot",
+     "w": 172,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Analiza matematyczna",
+     "w": 171,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Pochodne funkcji: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Całki oznaczone: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Logistyka",
+     "w": 171,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Łańcuch dostaw: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Zapasy i magazyny: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Makroekonomia",
+     "w": 171,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Polityka pieniężna: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "PKB i inflacja: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none.extra",
+     "tekst": "Moje notatki: nieruszone",
+     "w": 16,
+     "h": 16,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Podstawy zarządzania",
+     "w": 182,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Funkcje zarządzania: nieruszon",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Prawo",
+     "w": 182,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Źródła prawa: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "powtorki-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Powtórki”",
+    "H2 18px/700 „Powtarzaj grając”",
+    "H2 18px/700 „Mapa postępów”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌙",
+     "t": "🌙",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 48,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Wybierz przedmiot",
+     "w": 172,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Analiza matematyczna",
+     "w": 220,
+     "h": 24,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Pochodne funkcji: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Całki oznaczone: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Logistyka",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Łańcuch dostaw: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Zapasy i magazyny: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Makroekonomia",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Polityka pieniężna: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "PKB i inflacja: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none.extra",
+     "tekst": "Moje notatki: nieruszone",
+     "w": 16,
+     "h": 16,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Podstawy zarządzania",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Funkcje zarządzania: nieruszon",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Prawo",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Źródła prawa: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "powtorki-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Powtórki”",
+    "H2 18px/700 „Powtarzaj grając”",
+    "H2 18px/700 „Mapa postępów”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "☀️",
+     "t": "☀️",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 48,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.primary",
+     "tekst": "Wybierz przedmiot",
+     "w": 172,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Analiza matematyczna",
+     "w": 220,
+     "h": 24,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Pochodne funkcji: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Całki oznaczone: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Logistyka",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Łańcuch dostaw: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 2: Zapasy i magazyny: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Makroekonomia",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Polityka pieniężna: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "PKB i inflacja: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none.extra",
+     "tekst": "Moje notatki: nieruszone",
+     "w": 16,
+     "h": 16,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Podstawy zarządzania",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Lekcja 1: Funkcje zarządzania: nieruszon",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-name",
+     "tekst": "Prawo",
+     "w": 220,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.pm-sq.st-none",
+     "tekst": "Źródła prawa: nieruszone",
+     "w": 28,
+     "h": 28,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌙",
+     "t": "🌙",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 130,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "‹",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "›",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nKolokwium: Makroekonomia\nMakr",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Makroekon",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Prawo\nPra",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "☀️",
+     "t": "☀️",
+     "cel": "BUTTON.btn"
+    }
+   ],
+   "tekstow": 130,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "‹",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "›",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nKolokwium: Makroekonomia\nMakr",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Makroekon",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Prawo\nPra",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "dzis-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 22px/700 „Cześć, Student”",
+    "H2 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H3 16px/700 „Lekcja 2: Całki oznaczone”",
+    "H3 16px/700 „Lekcja 1: Łańcuch dostaw”",
+    "H2 18px/700 „Twój postęp”",
+    "H2 18px/700 „Nowe od ostatniej wizyty”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌱",
+     "t": "🌱",
+     "cel": "SPAN.ico"
+    }
+   ],
+   "tekstow": 99,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "dzis-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 22px/700 „Cześć, Student”",
+    "H2 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H3 16px/700 „Lekcja 2: Całki oznaczone”",
+    "H3 16px/700 „Lekcja 1: Łańcuch dostaw”",
+    "H2 18px/700 „Twój postęp”",
+    "H2 18px/700 „Nowe od ostatniej wizyty”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌱",
+     "t": "🌱",
+     "cel": "SPAN.ico"
+    }
+   ],
+   "tekstow": 99,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "dzis-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 22px/700 „Cześć, Student”",
+    "H2 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H3 16px/700 „Lekcja 2: Całki oznaczone”",
+    "H3 16px/700 „Lekcja 1: Łańcuch dostaw”",
+    "H2 18px/700 „Twój postęp”",
+    "H2 18px/700 „Nowe od ostatniej wizyty”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌱",
+     "t": "🌱",
+     "cel": "SPAN.ico"
+    }
+   ],
+   "tekstow": 99,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "dzis-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 22px/700 „Cześć, Student”",
+    "H2 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H3 16px/700 „Lekcja 2: Całki oznaczone”",
+    "H3 16px/700 „Lekcja 1: Łańcuch dostaw”",
+    "H2 18px/700 „Twój postęp”",
+    "H2 18px/700 „Nowe od ostatniej wizyty”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌱",
+     "t": "🌱",
+     "cel": "SPAN.ico"
+    }
+   ],
+   "tekstow": 99,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "dzis-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 22px/700 „Cześć, Student”",
+    "H2 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H3 16px/700 „Lekcja 2: Całki oznaczone”",
+    "H3 16px/700 „Lekcja 1: Łańcuch dostaw”",
+    "H2 18px/700 „Twój postęp”",
+    "H2 18px/700 „Nowe od ostatniej wizyty”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "🌙",
+     "t": "🌙",
+     "cel": "BUTTON.btn"
+    },
+    {
+     "e": "🌱",
+     "t": "🌱",
+     "cel": "SPAN.ico"
+    }
+   ],
+   "tekstow": 101,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "dzis-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 22px/700 „Cześć, Student”",
+    "H2 28px/700 „Lekcja 1: Pochodne funkcji”",
+    "H3 16px/700 „Lekcja 2: Całki oznaczone”",
+    "H3 16px/700 „Lekcja 1: Łańcuch dostaw”",
+    "H2 18px/700 „Twój postęp”",
+    "H2 18px/700 „Nowe od ostatniej wizyty”"
+   ],
+   "male": [],
+   "emoji": [
+    {
+     "e": "☀️",
+     "t": "☀️",
+     "cel": "BUTTON.btn"
+    },
+    {
+     "e": "🌱",
+     "t": "🌱",
+     "cel": "SPAN.ico"
+    }
+   ],
+   "tekstow": 101,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-390-en",
+   "pl": [],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "po5-nie-ma-390-en",
+   "pl": [],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "material-A1-390-en",
+   "pl": [],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "przewodnik-390-en",
+   "pl": [
+    "It’s part of full access: 199 zł until the end of semester 2"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "powtorki-390-en",
+   "pl": [],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "terminy-390-en",
+   "pl": [
+    "Projekt: Podstawy zarządzania"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "dzis-390-en",
+   "pl": [
+    "Staś",
+    "Project: Projekt: Podstawy zarządzania"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  }
+ ],
+ "ruch": [
+  {
+   "nazwa": "zwykle",
+   "anim": [
+    "sf-float",
+    "sf-hello",
+    "sf-brow",
+    "sf-blink",
+    "sf-glint",
+    "lg-hop",
+    "lg-rise",
+    "h-hop",
+    "h-rise",
+    "art-in",
+    "a-sway"
+   ],
+   "trans": [
+    "border-color",
+    "transform"
+   ]
+  },
+  {
+   "nazwa": "reduced-motion",
+   "anim": [],
+   "trans": []
+  },
+  {
+   "nazwa": "html.calm",
+   "anim": [],
+   "trans": []
+  }
+ ],
+ "test": "✓ K1 360 pl: wszystkie paski tej samej szerokości (5 pasków)\n✓ K1 360 pl: pasek zawsze nad tekstem\n✓ K1 360 pl: „77 dni” / „77 days” w jednej linii\n✓ K1 360 pl: krótkie pigułki terminów (bez „zaliczenie wykładu”)\n✓ K1 360 pl: bez poziomego przewijania, bez błędów\n✓ K1 390 pl ciemny: wszystkie paski tej samej szerokości (5 pasków)\n✓ K1 390 pl ciemny: pasek zawsze nad tekstem\n✓ K1 390 pl ciemny: „77 dni” / „77 days” w jednej linii\n✓ K1 390 pl ciemny: krótkie pigułki terminów (bez „zaliczenie wykładu”)\n✓ K1 390 pl ciemny: bez poziomego przewijania, bez błędów\n✓ K1 1280 pl: wszystkie paski tej samej szerokości (5 pasków)\n✓ K1 1280 pl: pasek zawsze nad tekstem\n✓ K1 1280 pl: „77 dni” / „77 days” w jednej linii\n✓ K1 1280 pl: krótkie pigułki terminów (bez „zaliczenie wykładu”)\n✓ K1 1280 pl: bez poziomego przewijania, bez błędów\n✓ K1 390 en: wszystkie paski tej samej szerokości (5 pasków)\n✓ K1 390 en: pasek zawsze nad tekstem\n✓ K1 390 en: „77 dni” / „77 days” w jednej linii\n✓ K1 390 en: krótkie pigułki terminów (bez „zaliczenie wykładu”)\n✓ K1 390 en: bez poziomego przewijania, bez błędów\n✓ K1 360 en ciemny: wszystkie paski tej samej szerokości (5 pasków)\n✓ K1 360 en ciemny: pasek zawsze nad tekstem\n✓ K1 360 en ciemny: „77 dni” / „77 days” w jednej linii\n✓ K1 360 en ciemny: krótkie pigułki terminów (bez „zaliczenie wykładu”)\n✓ K1 360 en ciemny: bez poziomego przewijania, bez błędów\n✓ K2 390 pl: wygasłe „Po zajęciach” = .empty ze Stasiem i jednym głównym przyciskiem\n✓ K2 390 pl: tytuł i przycisk przetłumaczone\n✓ K2 390 pl: kontrast AA w stanie pustym\n✓ K2 390 pl: przycisk prowadzi do Powtórki w 5 minut (#/po)\n✓ K2 bez błędów konsoli (390 pl)\n✓ K2 360 en ciemny: wygasłe „Po zajęciach” = .empty ze Stasiem i jednym głównym przyciskiem\n✓ K2 360 en ciemny: tytuł i przycisk przetłumaczone\n✓ K2 360 en ciemny: kontrast AA w stanie pustym\n✓ K2 360 en ciemny: przycisk prowadzi do Powtórki w 5 minut (#/po)\n✓ K2 bez błędów konsoli (360 en ciemny)\n✓ K2 1280 pl: wygasłe „Po zajęciach” = .empty ze Stasiem i jednym głównym przyciskiem\n✓ K2 1280 pl: tytuł i przycisk przetłumaczone\n✓ K2 1280 pl: kontrast AA w stanie pustym\n✓ K2 1280 pl: przycisk prowadzi do Powtórki w 5 minut (#/po)\n✓ K2 bez błędów konsoli (1280 pl)\n✓ K2 txt() globalnie: undefined/null → pusty tekst\n✓ K2 na ekranach pętli innerText bez „undefined”, „null”, „NaN”\n✓ K3 360: znak wodny w marginesie poza kolumną treści, nie przecina żadnej karty (8 ekranów, cała wysokość)\n✓ K3 360: krycie 0,14 na telefonie\n✓ K3 390: znak wodny w marginesie poza kolumną treści, nie przecina żadnej karty (8 ekranów, cała wysokość)\n✓ K3 390: krycie 0,14 na telefonie\n✓ K3 430: znak wodny w marginesie poza kolumną treści, nie przecina żadnej karty (8 ekranów, cała wysokość)\n✓ K3 430: krycie 0,14 na telefonie\n✓ K3 768: znak wodny w marginesie poza kolumną treści, nie przecina żadnej karty (8 ekranów, cała wysokość)\n✓ K3 768: krycie 0,22\n✓ K3 1280: znak wodny w marginesie poza kolumną treści, nie przecina żadnej karty (8 ekranów, cała wysokość)\n✓ K3 1280: krycie 0,22\n✓ K4 grep „Skróc|Skrót BM|emblem.png” w index.html: tylko komentarze i jednorazowe .ics (pętla 2)\n✓ K4 odznaka „Mistrz Zdawalni” jako SVG < 4 KB (1300 B)\n✓ K4 odznaka używana w przewodniku\n✓ K4 PALETA.md: tytuł Zdawalni, dwa kroje, ciemny motyw, pigułki dla chipów\n✓ K4 przewodnik pl: „Przewodnik po Zdawalni”, bez „Skrót BM”\n✓ K4 przewodnik en: „Guide to Zdawalni”, bez „Skrót BM”\n✓ K4 odznaka SVG wczytuje się w przeglądarce\n59/59\n"
+}
