@@ -75,3 +75,6 @@ Zostaje do RAPORT: automatyczne anulowanie subskrypcji w webhooku, przycisk „K
 
 ### Etap 5 – NIEZROBIONY (odłożony)
 Blokada: K1 wymaga „prawdziwego odtwarzacza” (`lpOpen`, `lpBuild`, `lpCards`…) w trybie gościa bez zapisu do bazy – to obszar pętli 3, przebudowywany w tym samym czasie. Zmiana w środku odtwarzacza z tej pętli zderzyłaby się przy scalaniu (A4 pkt 10–11). Poprawka: po scaleniu pętli 3 dodać w odtwarzaczu opcję `opts.gosc` (bez `progSoon`/RPC, XP w `sessionStorage`), w `skrotPokaz` wołać ją z 4 kartami, a w v55+ dać `anon` jawną listę par (kolekcja, id) na rocznik (`nauka_pokaz_lista`). Nic z etapu 5 nie jest w kodzie.
+
+## KONIEC PĘTLI (17.11.2026)
+Scalone `origin/main` (z pętlą 3) do `ux/1-wejscie` (merge, bez rebase); konflikty tylko w miejscach z A7 (linia 1 i linia `<script src>` w `index.html`, mosty, blok `i18n-en.js`), obie strony zachowane. Regresja po scaleniu i RAPORT: `RAPORT.md`. Na prośbę Bartka („jak skończyłeś, dodaj na stronę”) gałąź wypchnięta także na `main` (fast-forward).
