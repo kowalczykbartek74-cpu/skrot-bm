@@ -1,0 +1,103 @@
+# Log testów – etap G2 runda 2 (2026-11-16 22:41)
+
+## ux5-etap2.mjs (kod wyjścia 0)
+```
+✓ K1 ranking podpisany „XP w tym tygodniu”
+✓ K1 bez „pkt” na Przedmiocie, Sklepie, Rankingu, Bossie, Grach i w Haśle po grze
+✓ K1 Hasło po grze: „+N XP” i seria „Hasło: N dni z rzędu”
+✓ K2 wygrana w Haśle dodaje XP
+✓ K2 samo Hasło przedłuża główną serię: wczoraj 2 → dziś 3
+✓ K2 Hasło dodaje tyle XP, ile pokazuje („+N XP” = przyrost XP)
+✓ K2 odbiór bossa: przycisk „Odbierz +N XP” i XP rośnie
+✓ K3 SQL v59 = tabela B1 (poziomy i ceny 8 motywów; niewybrane 10/12)
+✓ K3 stałe index.html (THEME_BASE, THEME_CHOICE, THEME_LATE) zgodne z SQL v59
+✓ K3 katalog w sklepie (atrapa = SQL po v59) ma ceny z tabeli
+✓ K3 karta Kokardki: „Albo wybór na poziomie 6”, Jednorożca: kup za 80 (przy 120 monetach aktywne)
+✓ K3 motywy zdobyte z poziomu po starych progach zostają (Jednorożec, Kokardka, Łąka), reszta nie
+✓ K4 awans na 4: dwie karty „Wybieram” (pink / sea)
+✓ K4 wybór pink: zapisany, pink odblokowany, sea dopiero na poziomie 10
+✓ K4 poziom 10: niewybrany sea odblokowany
+✓ K4 awans na 6: dwie karty „Wybieram” (bow / noc)
+✓ K4 wybór bow: zapisany, bow odblokowany, noc dopiero na poziomie 12
+✓ K4 poziom 12: niewybrany noc odblokowany
+✓ K4 odłożony wybór: w Sklepie „Wybierz motyw za poziom 4” i „Wybierz za darmo” na kartach pary
+✓ K4 odłożony wybór otwiera okno z dwiema kartami
+✓ K4 „Poziomy i rangi”: wybór na 4 i 6, niewybrany na 10 i 12, nagroda w jednej linii
+✓ K5 /shop: bez emoji 🪙 ⚡ 🔥 jako ikon
+✓ K5 sklep: moneta SVG (saldo, zadania, ceny), bez „Do następnej monety”
+✓ K5 okno „Jak zdobywać XP i monety”: bez emoji monety i XP
+✓ K5 /profil: bez emoji 🪙 ⚡ 🔥 jako ikon
+✓ K4 Profil: następna nagroda to wybór na poziomie 6 (nie jeden motyw)
+✓ K5 /ranking: bez emoji 🪙 ⚡ 🔥 jako ikon
+✓ K5 z Dziś: „Poziomy i rangi” i „Jak zdobywać XP i monety” bez emoji 🪙 ⚡ 🔥
+✓ EN sklep: bez polskich tekstów
+✓ EN okno wyboru motywu: bez polskich tekstów
+✓ EN ranking: „XP this week”
+31/31
+```
+
+## node --test tests/*.test.js (kod wyjścia 0)
+ℹ tests 369
+ℹ pass 368
+ℹ fail 0
+ℹ skipped 1
+
+## PGlite (kod wyjścia 0; ✗ v12 limit_wpisow jest oczekiwany)
+```
+✗ skrot-v12-zabezpieczenia.sql → function public.limit_wpisow() does not exist
+✓ skrot-v58-nagroda-dzial.sql
+✓ skrot-v58-nagroda-dzial.sql
+    OK V58 D1 bez logowania: not_logged_in
+    OK V58 D1 bez dostępu: no_access
+    OK V58 D2 jedna z dwóch lekcji: nie_wszystkie (brak 1)
+    OK V58 D2 bez wpisu monet za dział
+    OK V58 D3 dział 1 zaliczony: +20
+    OK V58 D4 drugi raz: juz, 0 monet
+    OK V58 D4 jeden wpis +20 z kluczem misja:dzial:ux5-makro:1
+    OK V58 D5 dział 2 bez lekcji: nie_wszystkie
+    OK V58 D5 dział bez lekcji w bazie: no_unit
+    OK V58 D6 inny rocznik: liczy tylko swoje lekcje (1)
+    OK V58 D7 zalogowany czyta kwotę nagrody (20)
+    OK V58 D7 anon nie czyta konfiguracji
+✓ test/v58.sql
+✓ skrot-v59-motywy-ceny.sql
+✓ skrot-v59-motywy-ceny.sql
+    OK V59 M1 motyw pink w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw sea w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw bow w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw noc w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw meadow w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw lilia w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw riwiera w katalogu: cena i poziom jak w cfg
+    OK V59 M1 motyw klub w katalogu: cena i poziom jak w cfg
+    OK V59 M2 ceny: 80/450/200/600/200/350/750/900
+    OK V59 M2 poziomy: 4/4/6/6/8/9/14/16, niewybrane 10 i 12
+    OK V59 M3 pozostałe pozycje katalogu zostały
+    OK V59 M4 Jednorożec za 80 kupiony, saldo 20
+    OK V59 M4 Nocny rejs za 450: brak monet
+    OK V59 M5 zalogowany czyta cfg motywów
+✓ test/v59.sql
+✓ test/v59.sql
+✓ roczniki ze strony → v49: 11 (2× każdy, adres planu jak w rocznik.js)
+✓ strażnik kodowania: dobry plik przechodzi, zepsuty zatrzymany (Polskie znaki doszŇāy zepsute. Skopiuj p…)
+```
+
+## istniejące testy h2-*.mjs
+h2-etap1.mjs: 25/25
+h2-etap10.mjs: 24/24
+h2-etap2.mjs: 33/33
+h2-etap3.mjs: 48/48
+h2-etap4.mjs: 33/33
+h2-etap5.mjs: 36/36
+h2-etap6.mjs: 27/27
+h2-etap7.mjs: 47/47
+h2-etap8.mjs: 85/85
+h2-etap9.mjs: 92/92
+
+## wcześniejsze etapy pętli 5
+ux5-etap1.mjs: 33/33
+
+## stare testy gier
+etap9: 0 ✗ (poziomy: 3 = jak na main)
+poziomy: 3 ✗ po commicie „test: poziomy – karta rangi…” (te same 3 co na origin/main)
+(poziomy.mjs: te same 3 ✗ co na origin/main; etap7.mjs: TimeoutError też na main)

@@ -22,14 +22,21 @@
   };
   const IKONY_UX5 = {
     "ux5-chest-open": '<path d="M4 12h16v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 12L6 5h12l2 7"/><path d="M9 12v2h6v-2"/><path d="M12 2v1M8 3l.6.9M16 3l-.6.9"/>',
+    "ux5-word":    '<path d="M5 20L10.5 4h3L19 20"/><path d="M7.5 13h9"/>',
+    "ux5-palette": '<path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>',
+    "ux5-user":    '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+    "ux5-gift":    '<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13"/><path d="M12 8C10 4 6 4 7 7c.5 1 3 1 5 1zM12 8c2-4 6-4 5-1-.5 1-3 1-5 1z"/>',
+    "ux5-trophy":  '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/><path d="M12 14v4M8 21h8M9 18h6"/>',
+    "ux5-medal":   '<circle cx="12" cy="15" r="5"/><path d="M8.5 10.5L6 3h4l2 4 2-4h4l-2.5 7.5"/>',
     "ux5-star":   '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
     "ux5-chest":  '<path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 10V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M4 13h16"/><rect x="10" y="11.5" width="4" height="4" rx="1"/>',
   };
+  IKONY_WSPOLNE.eye = '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>';
   const ikony = { ...IKONY_WSPOLNE, ...IKONY_UX5 };
   // Węzeł ikony (span z SVG). Moneta to zawsze ten sam rysunek co w nagłówku (H2_ICO.coin, wyjątek marki).
   function ikona(k, cls) {
     const el = document.createElement("span"); el.className = "ux5-ico" + (cls ? " " + cls : ""); el.setAttribute("aria-hidden", "true");
-    el.innerHTML = k === "coin" ? (A().H2_ICO?.coin || "") : ikony[k] ? SVG(ikony[k]) : "";
+    el.innerHTML = k === "coin" || k === "flame" ? (A().H2_ICO?.[k] || "") : ikony[k] ? SVG(ikony[k]) : "";
     return el;
   }
   // „N [moneta]” jako tekst z ikoną SVG (zamiast emoji 🪙). Zwraca span: liczba czytana przez czytnik + „monet”.
@@ -72,6 +79,25 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
 .sk-node.ux5-chest .ux5-odbierz, .sk-node.ux5-chest .ux5-kup, .sk-node.ux5-chest .t > .btn { min-height: 44px; margin-top: 4px; display: inline-flex; align-items: center; gap: 6px; }
 /* Awatar Stasia przy kropce „Teraz” po prawej stronie kropki (z lewej wychodził poza ekran w lewej kolumnie zygzaku). */
 #main .sk-course .sk-node.now .sk-dot::after { left: auto !important; right: -24px; top: -20px; }
+.ux5-znak svg { width: 1.05em; height: 1.05em; vertical-align: -.16em; }
+.ux5-znak-bolt { color: var(--h-orange, var(--warn)); }
+.shop-hero .sk-bignum { display: inline-flex; align-items: center; gap: 8px; }
+.shop-hero .shop-bigcoin svg { width: 36px; height: 36px; }
+.ux5-wybor { min-height: 44px; justify-self: start; }
+.lvup-choice { display: grid; gap: 10px; width: 100%; }
+.lvup-pick { display: grid !important; grid-template-columns: 64px minmax(0, 1fr); gap: 4px 12px; align-items: center; text-align: left; }
+.lvup-pick .lvup-sw { grid-row: span 2; }
+.lvup-pick .lvup-wybieram { grid-column: 2; min-height: 44px; justify-self: start; }
+.lvup-pick .lvup-or { grid-column: 2; }
+.lvup-ask { margin: 4px 0 0; font-weight: 700; }
+.hd-seria { display: flex; align-items: center; gap: 6px; }
+.hd-streak { display: inline-flex; align-items: center; gap: 4px; }
+.kshop-tab .ux5-ico svg, .shop-lockbtn .ux5-ico svg, .shop-pv .ux5-ico svg { width: 18px; height: 18px; }
+.shop-sw-zoom .ux5-ico svg { width: 16px; height: 16px; }
+/* Sklep: cele dotyku ≥ 44 px (przyciski kart, zadań, rozwijane sekcje). */
+#main .shop-hero .shop-how > summary, #main .shop-hist > summary, #main .shop-card .btn, #main .sk-misje .btn, #main .misja .btn, #main .shop-misje .btn, #main .shop-mission .btn, #main .kshop .btn, #main .kshop-tab, #layer .lvup .btn { min-height: 44px; }
+#main .shop-hero .shop-how > summary, #main .shop-hist > summary { display: flex; align-items: center; }
+#layer .lv-prize.ux5-prize { color: var(--h-acc, var(--accent-text)); display: block; max-width: 100%; overflow-wrap: anywhere; }
 .ux5-banner { display: inline-flex; align-items: center; gap: 8px; }
 `;
   function css() {
@@ -177,6 +203,31 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
   }
 
   Object.assign(ZD, { ikona, coinTxt, baner, rpc, dzialSprawdz, dzialWezel, dzialOdbierz });
+
+  // ---------- G2: jedna moneta (SVG) zamiast emoji na ekranach pętli 5 ----------
+  // Teksty w kodzie zostają (słownik EN ich szuka), a na ekranie znak 🪙 / ⚡ / 🔥 zamieniamy na ikonę SVG z H2
+  // (ta sama moneta co w nagłówku). Zamiana idzie po tłumaczeniu (i18n działa wcześniej, w tej samej kolejce zdarzeń).
+  const ZNAKI = { "🪙": "coin", "⚡": "bolt", "🔥": "flame", "🏆": "ux5-trophy", "🏅": "ux5-medal", "🔒": "lock" }, ZNAK_RE = /(🪙|⚡️?|🔥|🏆|🏅|🔒)/u;
+  const MOJE = ["shop", "profil", "ranking", "haslo", "boss", "subject", "games", "paczka"];
+  function znakiNaSvg(root) {
+    if (!root) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), lista = [];
+    for (let t; (t = w.nextNode());) if (ZNAK_RE.test(t.data) && !t.parentElement?.closest("script, style, textarea, input, [contenteditable], [translate=no]")) lista.push(t);
+    for (const t of lista) {
+      const frag = document.createDocumentFragment();
+      for (const cz of t.data.split(ZNAK_RE)) { if (!cz) continue; const k = ZNAKI[cz.replace("\uFE0F", "")]; frag.append(k ? ikona(k, "ux5-znak ux5-znak-" + k) : document.createTextNode(cz)); }
+      t.replaceWith(frag);
+    }
+  }
+  let znakT = 0;
+  function znakiTeraz() {
+    znakT = 0; const v = A().S?.route?.view;
+    if (MOJE.includes(v)) znakiNaSvg(document.getElementById("main"));
+    const L = document.getElementById("layer"); if (L?.querySelector(".lvup-modal, .lv-modal, .lv-how-modal, .kshop-modal, .k-modal, .rk-modal, .lvup") || (L && MOJE.includes(v))) znakiNaSvg(L);
+    znakiNaSvg(document.getElementById("gain-tray"));
+  }
+  new MutationObserver(() => { if (!znakT) znakT = setTimeout(znakiTeraz, 0); }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+  ZD.znakiNaSvg = znakiNaSvg;
 
   css();
   // Pierwsze rysowanie aplikacji mogło być przed wczytaniem tego pliku: rysujemy jeszcze raz.

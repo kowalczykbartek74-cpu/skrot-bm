@@ -99,7 +99,9 @@ export async function zmierz(p, dir, nazwa, o = {}) {
   fs.mkdirSync(dir, { recursive: true });
   await p.screenshot({ path: `${dir}${nazwa}-ekran1.png` });
   if (o.full !== false) await zrzut(p, `${dir}${nazwa}.png`);
-  const a = await axe(p), K = await kontrast(p, o.root || "body"), C = await cele(p, o.cele || "#main, #layer"), P = await poziomo(p);
+  const a = await axe(p), K = await kontrast(p, o.root || "body"), C = await cele(p, o.cele || "#main, #layer");
+  // o.root = okno (#layer): przewijanie w bok liczymy dla elementów okna (strona pod oknem to inny ekran).
+  const P = o.root && o.root !== "body" ? await p.evaluate((r) => { const els = [...document.querySelectorAll(r + " *")]; const mx = Math.max(0, ...els.map((e) => e.getBoundingClientRect().right)); return { sw: Math.round(mx), iw: innerWidth, poziomo: mx > innerWidth + 1, strona: document.documentElement.scrollWidth }; }, o.root) : await poziomo(p);
   return { nazwa, axe: a.map((v) => ({ id: v.id, n: v.n, nodes: v.nodes })), tekstow: K.n, kontrast: K.out, cele44: C, ...P, bledy: [...p.errors] };
 }
 export function zapiszRaport(dir, tytul, R, extra = []) {

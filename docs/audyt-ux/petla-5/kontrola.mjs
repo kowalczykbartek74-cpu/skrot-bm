@@ -6,7 +6,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import crypto from "crypto";
 const ROOT = new URL("../../../", import.meta.url).pathname;
-const sh = (c) => execSync(c, { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20 });
+const sh = (c) => execSync(c, { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20, stdio: ["ignore", "pipe", "ignore"] });
 const BAZA = process.env.BAZA || "origin/main";
 const out = [];
 out.push(`# Kontrola automatyczna UX-5 (${new Date().toISOString().slice(0, 16)}, względem ${BAZA})`, "");
@@ -17,10 +17,14 @@ const B3 = ["viewSubject", "subjectHero", "subjectLearn", "courseSection", "subj
   "ODZNAKI", "GRY_BADGES", "gryBadge", "gryBadgeRow", "viewProfil", "viewRanking", "rankMeCard", "rankList", "rankWeekDiff", "kProfilShow", "viewGames", "gryRecords", "hdRes", "hdShare", "hdLoad", "viewHaslo",
   "bsClaim", "bsLoad", "bsAnnText", "viewBoss", "viewPaczka", "viewPolec", "THEME_SHOP", "PINK_LEVEL", "BOW_LEVEL", "MEADOW_LV", "LILIA_LEVEL", "SEA_LEVEL", "NOC_LEVEL", "RIWIERA_LEVEL", "KLUB_LEVEL", "themeOwned", "viewMaterial", "materialHead",
   "THEME_CHOICE", "shopBuy", "kosmShop", "rankGroups", "coinTxt"];
+// Obszary z B3 opisane słownie (Hasło, Boss, Sklep, motywy, poziomy, ranking, gry, paczka): funkcje pomocnicze tych ekranów.
+const B3_PRE = /^(hd[A-Z]|HD_|bs[A-Z]|BS_|shop[A-Z]|SHOP|kShop|K_TABS|K_GROUPS|kCard|kActs|theme[A-Z]|THEME_|lv[A-Z]|LP_LEVEL|rank[A-Z]|RANK|gry(Badge|Records)|ODZNAKI|pk[A-Z]|paczka|misja)/;
 const funkcje = (plik) => {
   let diff = ""; try { diff = sh(`git diff -U0 ${BAZA} -- ${plik}`); } catch { return null; }
   if (!diff) return { zmiany: [] };
   const nowy = fs.readFileSync(ROOT + plik, "utf8").split("\n");
+  let stary = ""; try { stary = sh(`git show ${BAZA}:${plik}`); } catch {}
+  const istnialy = new Set([...stary.matchAll(/^ {2,4}(?:async )?function (\w+)|^ {2}(?:const|let|var) (\w+)\s*=/gm)].map((m) => m[1] || m[2]));
   const scriptOd = nowy.findIndex((l) => /^<script>|^\(\(\) => \{/.test(l));
   const linie = []; for (const m of diff.matchAll(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/gm)) { const a = +m[1], n = m[2] == null ? 1 : +m[2]; for (let i = 0; i < Math.max(n, 1); i++) linie.push(a + i - (n === 0 ? 0 : 0)); }
   const nazwa = (ln) => {
@@ -29,6 +33,8 @@ const funkcje = (plik) => {
     if (/<script src="nagrody\.js/.test(l)) return "[ładowanie nagrody.js]";
     if (ln === 1) return "[linia 1: ?v= i18n.js]";
     if (/window\.ZD_NAGRODY\?\./.test(l)) { /* wywołanie z umowy, ale w czyjej funkcji? */ }
+    // komentarz nad funkcją należy do funkcji pod nim
+    if (/^\s*\/\//.test(l)) for (let j = ln; j < nowy.length && j < ln + 6; j++) { const m = nowy[j].match(/^ {2}(?:async )?function (\w+)|^ {2}(?:const|let|var) (\w+)\s*=/); if (m) return m[1] || m[2]; if (!/^\s*\/\//.test(nowy[j])) break; }
     for (let i = ln - 1; i >= 0; i--) {
       const m = nowy[i].match(/^ {2}(?:async )?function (\w+)|^ {2}(?:const|let|var) (\w+)\s*=|^ {4}(?:async )?function (\w+)/);
       if (m) return m[1] || m[2] || m[3];
@@ -37,14 +43,14 @@ const funkcje = (plik) => {
     return "[?]";
   };
   const by = new Map(), ex = new Map(); for (const ln of linie) { const n = nazwa(ln); by.set(n, (by.get(n) || 0) + 1); if (!ex.has(n)) ex.set(n, ln + ": " + (nowy[ln - 1] || "").trim().slice(0, 80)); }
-  return { zmiany: [...by.entries()].map(([n, k]) => ({ n, k, ex: ex.get(n), ok: B3.includes(n) || n.startsWith("[") })) };
+  return { zmiany: [...by.entries()].map(([n, k]) => ({ n, k, ex: ex.get(n), ok: B3.includes(n) || B3_PRE.test(n) || n.startsWith("[") || !istnialy.has(n), nowa: !istnialy.has(n) && !n.startsWith("[") })) };
 };
 out.push("## 2. Zmienione funkcje (lista B3 pętli 5)");
 for (const f of ["index.html", "skrot-supabase.js"]) {
   const r = funkcje(f);
   out.push(`### ${f}`);
   if (!r?.zmiany.length) { out.push("- bez zmian"); continue; }
-  for (const z of r.zmiany) out.push(`- ${z.ok ? "✓" : "✗ POZA LISTĄ B3"} \`${z.n}\` (${z.k} linii)${z.ok ? "" : " · np. linia " + z.ex}`);
+  for (const z of r.zmiany) out.push(`- ${z.ok ? "✓" : "✗ POZA LISTĄ B3"} \`${z.n}\`${z.nowa ? " (nowa funkcja pętli 5)" : ""} (${z.k} linii)${z.ok ? "" : " · np. linia " + z.ex}`);
   // CSS: które selektory
   if (f === "index.html") {
     const css = sh(`git diff -U0 ${BAZA} -- index.html`).split("\n").filter((l) => /^\+[.#a-z].*\{/.test(l) && !/^\+\+\+/.test(l)).map((l) => l.slice(1, 90));

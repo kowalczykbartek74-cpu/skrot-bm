@@ -5750,7 +5750,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
 
   // Motyw „Łąka” (złota godzina, mgła, owce): nagroda za poziom MEADOW_LV. Kolory są w CSS (html[data-theme="meadow"]);
   // tu tylko owca w rogu, dmuchawce w tle i blokada poziomem. Raz włączony motyw zostaje (localStorage skrot-theme).
-  const MEADOW_LV = 5;
+  const MEADOW_LV = 8; // ux-5: tabela poziomów i cen z docs/audyt-ux (B1), ta sama co nauka_motywy_cfg() w SQL v59
   const meadowTheme = (() => {
     const root = document.documentElement;
     const on = () => root.getAttribute("data-theme") === "meadow";
@@ -5805,7 +5805,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   // Kolory są w CSS (html[data-theme="sea"]). To jedyny ciemny motyw, więc ma własne przemalowanie kolorów wpisanych na sztywno:
   // jasność odwrócona (białe tła → granat, czarny tekst → krem), zielenie → złoto żagla, inne barwy zostają z odwróconą jasnością.
   // Reguły z data-theme= w selektorze pomija (to już kolory docelowe). Wywoływany z pinkTheme.apply: reset() przed, apply() po.
-  const SEA_LEVEL = 8;
+  const SEA_LEVEL = 4; // ux-5: na poziomie 4 wybór 1 z 2 (Jednorożec albo Nocny rejs), niewybrany od poziomu 10
   const SEA_SAIL = "M30 4 L30 46 L10 46 Z M33 10 L33 46 L50 46 Z M4 49 L56 49 L50 56 L12 56 Z";
   function seaBoat() {
     const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), p = document.createElementNS(NS, "path");
@@ -9865,30 +9865,64 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   const LP_DAILY_GOAL = 50; // XP dziennie
   // Poziomy za XP z całej nauki (S.progress.xp.t). Próg poziomu n = 50·n·(n−1): 0, 100, 300, 600, 1000…, każdy kolejny o 100 XP dłuższy.
   // Poziom, od którego odblokowuje się różowy motyw „Jednorożec”.
-  const PINK_LEVEL = 3;
+  const PINK_LEVEL = 4;
   // Poziom, od którego odblokowuje się motyw „Kokardka” (nagroda w drabince rang i w Więcej).
-  const BOW_LEVEL = 5;
+  const BOW_LEVEL = 6;
   // Poziom, od którego odblokowuje się motyw „Nenufary” (fioletowy zmierzch nad stawem z liliami).
-  const LILIA_LEVEL = 7;
+  const LILIA_LEVEL = 9;
   // Poziom, od którego odblokowuje się motyw „Nokturn” (czarno-srebrna noc z księżycem w dzisiejszej fazie).
-  const NOC_LEVEL = 10;
+  const NOC_LEVEL = 6;
   // Poziom, od którego odblokowuje się motyw „Riwiera” (Monako o złotej godzinie: kremowe fasady, palmy, czerń i złoto).
-  const RIWIERA_LEVEL = 12;
+  const RIWIERA_LEVEL = 14;
   // Poziom, od którego odblokowuje się motyw „Jachtklub” (granat na kremowym papierze, żagle, znaczek z żaglówką, parasol w pasy).
-  const KLUB_LEVEL = 14;
+  const KLUB_LEVEL = 16;
   // Motywy-nagrody: za darmo od poziomu albo wcześniej za monety w Sklepie (ceny są w bazie, supabase/skrot-v14-monety.sql).
   // Zielony (jasny i ciemny) jest zawsze dla wszystkich.
+  // ux-5: na poziomach 4 i 6 wybór 1 z 2 motywów (jasny albo ciemny); niewybrany odblokowuje się sam na poziomie 10 / 12.
+  const THEME_CHOICE = { 4: ["pink", "sea"], 6: ["bow", "noc"] };
+  const THEME_LATE = { 4: 10, 6: 12 };
+  const THEME_BASE = { pink: PINK_LEVEL, bow: BOW_LEVEL, meadow: MEADOW_LV, lilia: LILIA_LEVEL, sea: SEA_LEVEL, noc: NOC_LEVEL, riwiera: RIWIERA_LEVEL, klub: KLUB_LEVEL };
+  // Progi sprzed ux-5: motyw zdobyty z poziomu po starych progach zostaje (S.progress.motywyZPoz), raz przy pierwszym wczytaniu postępu.
+  const THEME_OLD = { pink: 3, bow: 5, meadow: 5, lilia: 7, sea: 8, noc: 10, riwiera: 12, klub: 14 };
+  const themePair = (id) => { const b = THEME_BASE[id]; return THEME_CHOICE[b]?.includes(id) ? b : null; };
+  // Poziom, od którego TEN motyw jest za darmo dla tej osoby: wybrany (albo jeszcze nic) = poziom wyboru, drugi z pary = 10 / 12.
+  // Wybrany w parze: zapis wyboru albo motyw z pary zachowany ze starych progów (motywyZPoz) liczy się jak wybór.
+  const themePicked = (pb) => S.progress?.motywWybor?.[pb] || THEME_CHOICE[pb].find((id) => S.progress?.motywyZPoz?.[id]) || null;
+  function themeFreeLvl(id) {
+    const b = THEME_BASE[id], pb = themePair(id); if (!pb) return b;
+    const w = themePicked(pb); return !w || w === id ? b : THEME_LATE[pb];
+  }
+  const themeLv = () => lpLevel(lpXpTotal()).n;
+  // Para do wyboru czeka, gdy poziom ≥ 4 (6), nic nie wybrane, a poziom niewybranego (10 / 12) jeszcze nie przyszedł.
+  const themeChoicePending = () => Object.keys(THEME_CHOICE).map(Number).find((b) => themeLv() >= b && themeLv() < THEME_LATE[b] && !themePicked(b)) || null;
+  function themeChoose(b, id) { progSoon({ motywWybor: { ...(S.progress?.motywWybor || {}), [b]: id } }); }
   const THEME_SHOP = [
-    { id: "pink",   item: "motyw:pink",   name: "Jednorożec", ico: "🦄", lvl: PINK_LEVEL },
-    { id: "bow",    item: "motyw:bow",    name: "Kokardka",   ico: "🎀", lvl: BOW_LEVEL },
-    { id: "meadow", item: "motyw:meadow", name: "Łąka",       ico: "🌾", lvl: MEADOW_LV },
-    { id: "lilia",  item: "motyw:lilia",  name: "Nenufary",   ico: "🪷", lvl: LILIA_LEVEL },
-    { id: "sea",    item: "motyw:sea",    name: "Nocny rejs", ico: "🌙", lvl: SEA_LEVEL },
-    { id: "noc",    item: "motyw:noc",    name: "Nokturn",    ico: "🌘", lvl: NOC_LEVEL },
-    { id: "riwiera", item: "motyw:riwiera", name: "Riwiera",  ico: "🌴", lvl: RIWIERA_LEVEL },
-    { id: "klub",   item: "motyw:klub",   name: "Jachtklub",  ico: "⚓", lvl: KLUB_LEVEL },
+    { id: "pink",   item: "motyw:pink",   name: "Jednorożec", ico: "🦄" },
+    { id: "bow",    item: "motyw:bow",    name: "Kokardka",   ico: "🎀" },
+    { id: "meadow", item: "motyw:meadow", name: "Łąka",       ico: "🌾" },
+    { id: "lilia",  item: "motyw:lilia",  name: "Nenufary",   ico: "🪷" },
+    { id: "sea",    item: "motyw:sea",    name: "Nocny rejs", ico: "🌙" },
+    { id: "noc",    item: "motyw:noc",    name: "Nokturn",    ico: "🌘" },
+    { id: "riwiera", item: "motyw:riwiera", name: "Riwiera",  ico: "🌴" },
+    { id: "klub",   item: "motyw:klub",   name: "Jachtklub",  ico: "⚓" },
   ];
-  const themeByLevel = (t) => lpLevel(lpXpTotal()).n >= t.lvl;
+  // t.lvl liczone na bieżąco (wybór w parze zmienia poziom drugiego motywu), więc wszystkie stare miejsca pokazują właściwą liczbę.
+  THEME_SHOP.forEach((t) => Object.defineProperty(t, "lvl", { get: () => themeFreeLvl(t.id), enumerable: true }));
+  let themeMigDone = false;
+  function themeMig() {
+    if (themeMigDone || !S.progReady) return; themeMigDone = true;
+    if (S.progress?.motywyMig) return;
+    const xp = lpXpTotal(), n = lpLevel(xp).n, z = { ...(S.progress?.motywyZPoz || {}) };
+    for (const [id, lv] of Object.entries(THEME_OLD)) if (n >= lv) z[id] = 1;
+    progSoon({ motywyZPoz: z, motywyMig: 1 });
+  }
+  function themeByLevel(t) {
+    themeMig();
+    if (S.progress?.motywyZPoz?.[t.id]) return true;
+    const n = themeLv(), pb = themePair(t.id);
+    if (!pb) return n >= THEME_BASE[t.id];
+    return themePicked(pb) === t.id ? n >= pb : n >= THEME_LATE[pb];
+  }
   const themeBought = (t) => !!window.skrot?.sklep?.posiadane?.has(t.item);
   function themeOwned(id) {
     const t = THEME_SHOP.find((x) => x.id === id); if (!t) return true;
@@ -9913,6 +9947,14 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   const lpXpTotal = () => S.progress?.xp?.t || 0;
   // Podgląd wszystkich rang (klik w pasek poziomu): drabinka 10 rang z progami XP, zdobyte / tu jesteś / przed Tobą.
   const LP_LEVEL_ICO = ["🌱", "🔥", "🔍", "📅", "✅", "💡", "📊", "♟️", "🎓", "🏆", "🧭", "🚀", "🔭", "🦉", "💼", "🏢", "👔", "👑", "🌟", "💎"];
+  // ux-5: nagroda poziomu w jednej linii: „Nagroda: motyw X (albo w sklepie)”, na 4 i 6 „wybór: X albo Y”.
+  function lvPrizeLine(n) {
+    const pair = THEME_CHOICE[n], one = THEME_SHOP.filter((t) => !themePair(t.id) && THEME_BASE[t.id] === n), late = Object.keys(THEME_LATE).find((b) => THEME_LATE[b] === n);
+    const txt = pair ? `Wybór: ${pair.map((id) => THEME_SHOP.find((t) => t.id === id).name).join(" / ")}`
+      : one.length ? `Motyw ${one[0].name} · albo w sklepie`
+      : late ? `Drugi motyw z poziomu ${late}` : null;
+    return txt ? h("span", { class: "lv-prize ux5-prize", title: pair ? `Drugi motyw za darmo na poziomie ${THEME_LATE[n]} albo w sklepie` : null }, h("span", { text: txt })) : window.ZD_NAGRODY?.nagrodaPoziomu?.(n) ?? null;
+  }
   function lpLevelsShow() {
     const L = lpLevel(lpXpTotal()), top = LP_LEVELS.length, cur = Math.min(L.n, top);
     modal((close) => {
@@ -9924,14 +9966,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         return h("li", { class: "lv-row " + st, style: `--i:${Math.abs(i - cur + 1)}` + (st === "lv-now" ? `;--f:${(L.frac * 100).toFixed(1)}%` : "") },
           h("span", { class: "lv-badge t" + lvTier(n), "aria-hidden": "true" }, h("span", { class: "ico", text: LP_LEVEL_ICO[i] }), h("span", { class: "n num", text: String(n) })),
           h("span", { class: "lv-txt" }, h("b", { text: name }), h("span", { class: "muted num", text: n === top ? `Poziom ${n}+ · od ${fmtN(from)} XP` : `Poziom ${n} · od ${fmtN(from)} XP` }),
-            n === PINK_LEVEL ? h("span", { class: "lv-prize" }, h("span", { text: "🦄 Nagroda: motyw Jednorożec" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
-            n === BOW_LEVEL ? h("span", { class: "lv-prize" }, h("span", { text: "🎀 Nagroda: motyw Kokardka" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
-            n === MEADOW_LV ? h("span", { class: "lv-prize" }, h("span", { text: "🌾 Nagroda: motyw Łąka" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
-            n === LILIA_LEVEL ? h("span", { class: "lv-prize lilia" }, h("span", { text: "🪷 Nagroda: motyw Nenufary" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
-            n === SEA_LEVEL ? h("span", { class: "lv-prize sea" }, h("span", { text: "🌙 Nagroda: motyw Nocny rejs" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
-            n === NOC_LEVEL ? h("span", { class: "lv-prize noc" }, h("span", { text: "🌘 Nagroda: motyw Nokturn" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
-            n === RIWIERA_LEVEL ? h("span", { class: "lv-prize riwiera" }, h("span", { text: "🌴 Nagroda: motyw Riwiera" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
-            n === KLUB_LEVEL ? h("span", { class: "lv-prize klub" }, h("span", { text: "⚓ Nagroda: motyw Jachtklub" }), h("small", { class: "lv-or", text: "· albo w sklepie" })) : null,
+            lvPrizeLine(n),
             st === "lv-now" ? h("span", { class: "lp-lvbar lv-mini", "aria-hidden": "true" }, h("i", { style: `--w:${(L.frac * 100).toFixed(1)}%` })) : null),
           right);
       });
@@ -9970,8 +10005,14 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   function lvRewardLine(L) {
     const t = lvNextReward(L.n);
     if (!t) return h("p", { class: "lv-reward muted", text: "Wszystkie motywy za poziom są Twoje. Rangi rosną dalej." });
+    // ux-5: para do wyboru (poziom 4 / 6) – mówimy o wyborze, nie o jednym motywie
+    const pb = themePair(t.id), wyb = pb && !themePicked(pb) && t.lvl === pb ? THEME_CHOICE[pb].map((id) => THEME_SHOP.find((x) => x.id === id).name) : null;
+    if (wyb) return h("button", { type: "button", class: "lv-reward", onclick: () => (themeChoicePending() === pb ? themeChoiceShow(pb) : shopOpen(t.id)) },
+      window.ZD_NAGRODY?.ikona?.("ux5-palette", "lv-reward-ico") ?? null,
+      h("span", {}, h("b", { text: `Poziom ${pb}: wybór ${wyb.join(" albo ")}` }), h("small", { class: "num", text: L.n >= pb ? "wybór czeka · drugi za darmo na poziomie " + THEME_LATE[pb] : `brakuje ${fmtN(lpLevelAt(pb) - L.xp)} XP · albo wcześniej w sklepie` })),
+      h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
     return h("button", { type: "button", class: "lv-reward", onclick: () => shopOpen(t.id) },
-      h("span", { class: "lv-reward-ico", "aria-hidden": "true", text: t.ico }),
+      window.ZD_NAGRODY?.ikona?.("ux5-palette", "lv-reward-ico") ?? null,
       h("span", {}, h("b", { text: `Następna nagroda: motyw ${t.name}` }), h("small", { class: "num", text: `poziom ${t.lvl} · brakuje ${fmtN(lpLevelAt(t.lvl) - L.xp)} XP · albo wcześniej w sklepie` })),
       h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
   }
@@ -9994,7 +10035,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
             li("Po zajęciach: dobra odpowiedź w „Sprawdź się”", "10 XP"),
             li("Staś: znaleziony błąd albo dobra poprawka", "5 XP"),
             li("Próbny test", "do 50 XP")),
-          h("p", { class: "muted", text: "Cel dnia to 50 XP. Z poziomem rośnie ranga: od Świeżaka do Geniusza, a na niektórych poziomach dostajesz motyw strony." })),
+          h("p", { class: "muted", text: "Cel dnia to 50 XP. Z poziomem rośnie ranga: od Świeżaka do Geniusza, a na niektórych poziomach dostajesz motyw strony." }),
+          h("p", { class: "muted", text: "Ranking liczy tylko XP z tego tygodnia, sprawdzone przez bazę (10 XP za dobrą odpowiedź w quizie albo grze), dlatego jest mniejszy niż Twoje XP łącznie." })),
         h("section", {},
           h("h3", {}, h("span", { "aria-hidden": "true", text: "🪙 " }), h("span", { text: "Monety → sklep" })),
           h("ul", {},
@@ -10658,10 +10700,26 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     mo.observe(html, { attributes: true, attributeFilter: ["class"] });
   }
   // Okno awansu: nowa ranga, ile do następnej i motywy za ten poziom (raz; kto kupił motyw w sklepie, widzi „masz go już”).
+  // ux-5: wybór 1 z 2 motywów (poziom 4 i 6): dwie karty z „Wybieram”, drugi zostaje w sklepie i przychodzi sam na poziomie 10 / 12.
+  function themeChoiceCards(b, close) {
+    return h("div", { class: "lvup-choice", role: "group", "aria-label": `Wybierz motyw za poziom ${b}` }, THEME_CHOICE[b].map((id) => {
+      const t = THEME_SHOP.find((x) => x.id === id), it = shopItem(t);
+      return h("div", { class: "lvup-prize lvup-pick" }, h("span", { class: "shop-sw lvup-sw" }, themeSwatch(t.id)),
+        h("span", { class: "lvup-pt" }, h("b", { text: `Motyw ${t.name}` }), h("small", { class: "muted", text: THEME_TXT[t.id] || "" })),
+        h("button", { type: "button", class: "btn primary lvup-wybieram", onclick: (e) => { themeChoose(b, t.id); close(); themeSet(t.id, e); toast(`Masz motyw ${t.name}. Drugi: za darmo na poziomie ${THEME_LATE[b]} albo w sklepie.`); } }, "Wybieram"),
+        it ? h("small", { class: "muted lvup-or", text: `albo w sklepie za ${fmtN(it.cena)} monet` }) : null);
+    }));
+  }
+  function themeChoiceShow(b) {
+    modal((close) => [h("div", { class: "lvup" }, h("span", { class: "eyebrow", text: `Nagroda za poziom ${b}` }), h("h2", { text: "Wybierz motyw strony" }),
+      h("p", { class: "muted", text: `Jeden wybierasz teraz. Drugi: za darmo na poziomie ${THEME_LATE[b]} albo w sklepie.` }), themeChoiceCards(b, close),
+      h("button", { type: "button", class: "btn ghost", onclick: close }, "Później"))], "lvup-modal");
+  }
   function levelUpShow(from, to) {
     if (document.querySelector("#layer .lvup")) return;
     const xp = lpXpTotal(), L = lpLevel(xp); to = Math.max(to, L.n);
-    const prizes = THEME_SHOP.filter((t) => t.lvl > from && t.lvl <= to), nr = lvNextReward(to);
+    const choice = Object.keys(THEME_CHOICE).map(Number).find((b) => b > from && b <= to && !themePicked(b) && to < THEME_LATE[b]) || null;
+    const prizes = THEME_SHOP.filter((t) => t.lvl > from && t.lvl <= to && !(choice && THEME_CHOICE[choice].includes(t.id)) && themeByLevel(t)), nr = lvNextReward(to);
     setTimeout(() => lpConfetti(40), 150);
     modal((close) => [
       h("div", { class: "lvup" },
@@ -10669,12 +10727,15 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         h("span", { class: "eyebrow", text: "Awans!" }),
         h("h2", { text: `Poziom ${to} · ${lvName(to)}` }),
         h("p", { class: "muted", text: `Masz ${fmtN(xp)} XP. Następna ranga: ${lvName(to + 1)} (poziom ${to + 1}), brakuje ${fmtN(lpLevelAt(to + 1) - xp)} XP.` }),
+        choice ? [h("p", { class: "lvup-ask", text: `Nagroda: wybierz motyw. Drugi: za darmo na poziomie ${THEME_LATE[choice]} albo w sklepie.` }), themeChoiceCards(choice, close)] : null,
         prizes.length ? h("div", { class: "lvup-prizes" }, prizes.map((t) => h("div", { class: "lvup-prize" }, h("span", { class: "shop-sw lvup-sw" }, themeSwatch(t.id)),
-          h("span", { class: "lvup-pt" }, h("b", { text: `Nagroda: motyw ${t.name} ${t.ico}` }), h("small", { class: "muted", text: themeBought(t) ? "Masz go już ze sklepu." : "Twój za darmo, na zawsze." })),
+          h("span", { class: "lvup-pt" }, h("b", { text: `Nagroda: motyw ${t.name}` }), h("small", { class: "muted", text: themeBought(t) ? "Masz go już ze sklepu." : "Twój za darmo, na zawsze." })),
           h("button", { type: "button", class: "btn small", onclick: (e) => { close(); themeSet(t.id, e); } }, "Włącz")))) : null,
-        !prizes.length && nr ? h("p", { class: "lvup-next" }, h("span", { "aria-hidden": "true", text: nr.ico + " " }), h("span", { text: `Następna nagroda: motyw ${nr.name} na poziomie ${nr.lvl}.` })) : null,
+        window.ZD_NAGRODY?.nagrodaPoziomuOkno?.(from, to) ?? null,
+        !choice && !prizes.length && nr ? h("p", { class: "lvup-next" }, h("span", { text: `Następna nagroda: motyw ${nr.name} na poziomie ${nr.lvl}.` })) : null,
+        window.ZD_NAGRODY?.pokazZnajomym?.({ rodzaj: "awans", poziom: to, ranga: lvName(to) }) ?? null,
         h("div", { class: "row lvup-btns" },
-          h("button", { type: "button", class: "btn primary", onclick: close }, "Super!"),
+          h("button", { type: "button", class: choice ? "btn ghost" : "btn primary", onclick: close }, choice ? "Wybiorę później" : "Super!"),
           h("button", { type: "button", class: "btn ghost", onclick: () => { close(); lpLevelsShow(); } }, "Wszystkie rangi"))),
     ], "lvup-modal");
   }
@@ -11982,7 +12043,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   function rankMeCard(L) {
     const ja = L.ja || {}, R = S.rank;
     if (ja.w_grupie === false) return h("section", { class: "sk-hero rk-me" }, h("span", { class: "eyebrow", text: "Ty" }),
-      h("p", { class: "big", style: "margin:0", text: "Nie jesteś w tej grupie" }), h("p", { class: "muted", style: "margin:0", text: `${fmtN(ja.pkt || 0)} pkt rankingu` }));
+      h("p", { class: "big", style: "margin:0", text: "Nie jesteś w tej grupie" }), h("p", { class: "muted", style: "margin:0", text: `${fmtN(ja.pkt || 0)} XP w tym tygodniu` }));
     if (ja.miejsce == null && !ja.pkt) return h("section", { class: "sk-hero rk-me" }, h("span", { class: "eyebrow", text: "Ty" }),
       h("p", { class: "big", style: "margin:0", text: "Zdobądź pierwsze punkty: zagraj albo zrób quiz." }),
       h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "gry" }) }, "Graj"), h("button", { type: "button", class: "btn", onclick: () => go({ view: "materials" }) }, "Przedmioty")),
@@ -11991,15 +12052,15 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const lines = [];
     if (z >= 5 && m != null) lines.push(`Lepiej niż ${Math.round((100 * (z - m)) / Math.max(1, z - 1))}% osób z rankingu`);
     const diff = rankDefault(R.filtr) ? rankWeekDiff(L) : null;
-    if (diff != null) lines.push(`${diff >= 0 ? "+" : "−"}${fmtN(Math.abs(diff))} pkt od zeszłego tygodnia`);
+    if (diff != null) lines.push(`${diff >= 0 ? "+" : "−"}${fmtN(Math.abs(diff))} XP od zeszłego tygodnia`);
     let gap = null;
     if (ja.widoczny && m > 1) {
       const above = [...(L.top || []), ...(L.sasiedzi || [])].filter((x) => x.miejsce < m).sort((a, b) => b.miejsce - a.miejsce)[0];
-      if (above) { const d = Math.max(1, above.pkt - (ja.pkt || 0)), n = Math.ceil(d / 10); gap = `Do #${above.miejsce} brakuje Ci ${fmtN(d)} pkt – to ${n} ${plural(n, "dobra odpowiedź", "dobre odpowiedzi", "dobrych odpowiedzi")}.`; }
+      if (above) { const d = Math.max(1, above.pkt - (ja.pkt || 0)), n = Math.ceil(d / 10); gap = `Do #${above.miejsce} brakuje Ci ${fmtN(d)} XP – to ${n} ${plural(n, "dobra odpowiedź", "dobre odpowiedzi", "dobrych odpowiedzi")}.`; }
     }
     return h("section", { class: "sk-hero rk-me" },
       h("span", { class: "eyebrow", text: "Ty" }),
-      h("p", { class: "rk-place" }, h("b", { class: "num", text: m != null ? `#${m}` : "–" }), h("span", { text: m != null ? `z ${z} · ${fmtN(ja.pkt || 0)} pkt rankingu` : `${fmtN(ja.pkt || 0)} pkt rankingu` }), h("span", { class: "rk-cup", "aria-hidden": "true", text: "🏆" })),
+      h("p", { class: "rk-place" }, h("b", { class: "num", text: m != null ? `#${m}` : "–" }), h("span", { text: m != null ? `z ${z} · ${fmtN(ja.pkt || 0)} XP w tym tygodniu` : `${fmtN(ja.pkt || 0)} XP w tym tygodniu` }), h("span", { class: "rk-cup", "aria-hidden": "true", text: "🏆" })),
       lines.length ? h("p", { class: "muted rk-lines", style: "margin:0" }, lines.map((t) => h("span", { text: t }))) : null,
       gap ? h("p", { style: "margin:0;font-weight:700", text: gap }) : null,
       !ja.widoczny ? rankHiddenNote() : null);
@@ -12015,7 +12076,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const row = (x) => h("li", { class: "rk-row" + (x.ja ? " me" : "") },
       h("span", { class: "rk-pos num" + (x.miejsce <= 3 ? " m" + x.miejsce : "") , text: x.miejsce }),
       kosmOn() ? who(x) : h("span", { class: "rk-nick" }, x.ja ? [h("b", { text: "Ty" }), " "] : null, h("span", { translate: "no", text: x.ja ? `(${x.nick})` : x.nick })),
-      h("span", { class: "rk-pkt num", text: fmtN(x.pkt) }));
+      h("span", { class: "rk-pkt num", text: `${fmtN(x.pkt)} XP` }));
     if (!(L.top || []).length) return h("p", { class: "muted", text: "Nikt jeszcze nie jest widoczny w rankingu w tym zakresie." });
     return h("ol", { class: "rk-list", "aria-label": "Ranking" }, (L.top || []).map(row),
       (L.sasiedzi || []).length ? [h("li", { class: "rk-gap", "aria-hidden": "true", text: "⋯" }), L.sasiedzi.map(row)] : null);
@@ -12206,7 +12267,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     if (HD.err === "no_words") return hdNote();
     const d = HD.d; if (!d) return null;
     if (d.koniec) return h("button", { type: "button", class: "link hd-home-done", onclick: () => go({ view: "haslo" }) },
-      h("span", { "aria-hidden": "true", text: d.wynik > 0 ? "✓ " : "✗ " }), h("span", { text: "Hasło dnia" }), ` ${hdRes(d)}`, d.seria ? ` · 🔥 ${d.seria}` : "", " →");
+      h("span", { "aria-hidden": "true", text: d.wynik > 0 ? "✓ " : "✗ " }), h("span", { text: "Hasło dnia" }), ` ${hdRes(d)}`, d.seria ? ` · Hasło: ${d.seria} ${plural(d.seria, "dzień", "dni", "dni")} z rzędu` : "", " →");
     return h("button", { type: "button", class: "sk-row-big hd-home", onclick: () => go({ view: "haslo" }) },
       h("span", { class: "ic", "aria-hidden": "true", text: "🔤" }),
       h("span", { class: "t" }, h("b", { text: `Hasło dnia #${d.nr}` }), h("span", { text: [`${d.dlugosc} liter`, hdSubj(d.sid)].filter(Boolean).join(" · ") })),
@@ -12231,7 +12292,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     if (!hdIn()) return null;
     if (!HD.d && !HD.err) hdLoad();
     const d = HD.d; if (!d) return null;
-    return row("spark", "Hasło dnia", d.koniec ? `${hdRes(d)}${d.seria ? ` · 🔥 ${d.seria}` : ""}` : `#${d.nr} · ${d.dlugosc} liter`, () => go({ view: "haslo" }));
+    return row("spark", "Hasło dnia", d.koniec ? `${hdRes(d)}${d.seria ? ` · Hasło: ${d.seria} ${plural(d.seria, "dzień", "dni", "dni")} z rzędu` : ""}` : `#${d.nr} · ${d.dlugosc} liter`, () => go({ view: "haslo" }));
   }
   const hdLive = () => $("hd-live") || document.body.appendChild(h("div", { id: "hd-live", class: "vh", "aria-live": "polite", translate: "no" }));
   function hdSay(msg, shake) {
@@ -12287,7 +12348,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       HD.reveal = -1; HD.busy = false;
       if (r.koniec) {
         if (r.wynik > 0 && !lpReduced()) lpConfetti();
-        if (r.pkt > 0) lpBanner(`+${r.pkt} pkt rankingu`);
+        // ux-5: wygrana w Haśle daje też XP (poziom, cel dnia i główna seria), w limicie XP z gier.
+        if (r.pkt > 0) { lpBanner(`Hasło odgadnięte: +${r.pkt} XP`); xpFlush(r.pkt); } // raz dziennie, najwyżej 20: poza limitem XP z gier
         const got = await hdLoad(true);
         if (!got?.ok) { Object.assign(d, { koniec: true, wynik: r.wynik, pkt: r.pkt }); render(); }
         requestAnimationFrame(() => $("main").querySelector(".hd-end")?.scrollIntoView({ behavior: lpReduced() ? "auto" : "smooth", block: "start" }));
@@ -12324,17 +12386,17 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     return h("section", { class: "sk-card hd-end", "aria-labelledby": "hd-end-h" },
       h("div", { class: "hd-end-top" },
         h("h2", { id: "hd-end-h", class: "hd-end-res" }, h("span", { "aria-hidden": "true", text: won ? "✓ " : "✗ " }), h("span", { text: "Hasło dnia" }), ` #${d.nr} · ${hdRes(d)}`),
-        d.pkt > 0 ? h("span", { class: "chip good", text: `+${d.pkt} pkt rankingu` }) : null),
+        d.pkt > 0 ? h("span", { class: "chip good", text: `+${d.pkt} XP` }) : null),
       won ? null : h("p", { class: "hd-lost", text: `Tym razem się nie udało. Hasło: ${slowo.toUpperCase()}` }),
       h("p", { class: "hd-word", translate: "no" }, h("b", { text: slowo.toUpperCase() }), d.pl ? h("span", { text: ` — ${d.pl}` }) : null),
       d.def ? h("p", { class: "hd-def", translate: "no" }, inline(d.def)) : null,
       m && readable(m) ? h("p", { class: "hd-mat" }, h("span", { class: "muted", text: "Z materiału:" }), " ", h("button", { type: "button", class: "link", onclick: () => go({ view: "material", id: d.mid }) }, m.title || m.fileName || "", " →")) : null,
-      won && !PAID() ? h("div", { class: "hd-paywall" }, h("p", { text: `Z pełnym dostępem to byłoby +${HD_PKT[d.wynik] || 0} pkt rankingu` }),
+      won && !PAID() ? h("div", { class: "hd-paywall" }, h("p", { text: `Z pełnym dostępem to byłoby +${HD_PKT[d.wynik] || 0} XP` }),
         h("button", { type: "button", class: "btn small primary", onclick: () => window.skrot?.buy?.() }, "Kup dostęp")) : null,
       h("div", { class: "row hd-acts" },
         h("button", { type: "button", class: "btn primary", onclick: hdShare }, "Udostępnij wynik"),
         key && PAID() && !inSrs ? h("button", { type: "button", class: "btn", onclick: () => { srsAdd([key]); toast("Dodano do Powtórek."); render(); } }, "Dodaj do Powtórek") : null),
-      d.seria > 0 ? h("p", { class: "hd-seria" }, h("span", { "aria-hidden": "true", text: "🔥 " }), h("span", { text: d.seria === 1 ? "Seria: 1 dzień" : `Seria: ${d.seria} dni` })) : null,
+      d.seria > 0 ? h("p", { class: "hd-seria" }, window.ZD_NAGRODY?.ikona?.("ux5-word", "hd-seria-ico") ?? null, h("span", { text: d.seria === 1 ? "Hasło: 1 dzień z rzędu" : `Hasło: ${d.seria} dni z rzędu` })) : null,
       h("div", { class: "hd-stats" },
         h("h3", { text: "Jak poszło rokowi" }),
         st ? [h("p", { class: "muted small", text: `${st.grali} ${plural(st.grali, "osoba", "osoby", "osób")}, ${Math.round((100 * st.zgadli) / Math.max(1, st.grali))}% zgadło` }),
@@ -12352,7 +12414,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const d = HD.d, sk = window.skrot || {};
     const head = h("div", { class: "hd-head" }, backLink({ view: "gry" }),
       h("div", { class: "hd-title" }, h("h1", { class: "ptitle", text: d ? `Hasło dnia #${d.nr}` : "Hasło dnia" }),
-        d?.seria ? h("span", { class: "sk-chip hd-streak", title: "Seria: dni z odgadniętym Hasłem", text: `🔥 ${d.seria}` }) : null));
+        d?.seria ? h("span", { class: "sk-chip hd-streak", title: `Hasło: ${d.seria} dni z rzędu`, "aria-label": `Hasło: ${d.seria} dni z rzędu` }, window.ZD_NAGRODY?.ikona?.("ux5-word") ?? null, h("span", { class: "num", text: String(d.seria) })) : null));
     if (sk.state === "out") return h("div", { class: "hd-view" }, head, h("p", { class: "big", text: "Zaloguj się, żeby zagrać w Hasło dnia." }), h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => sk.openLogin?.() }, "Zaloguj się")));
     if (sk.state !== "in") return h("div", { class: "hd-view" }, head, h("p", { class: "muted", text: "Ładuję…" }));
     if (!sk.rp || HD.err === "not_enabled") return h("div", { class: "hd-view" }, head, h("p", { class: "notice", text: RANK_ERR.not_enabled }));
@@ -12628,7 +12690,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const r = await window.skrot.rp.bossOdbierz(b.id).catch(() => ({ ok: false, code: "offline" }));
     if (r?.ok || r?.code === "already") {
       b.odebrane = true; b.mozna_odebrac = false;
-      if (r.ok) { lpConfetti(46); lpBanner(`+${r.pkt} pkt rankingu`); S.rank.home = null; }
+      // ux-5: odbiór bossa daje też XP (poziom, cel dnia i seria).
+      if (r.ok) { lpConfetti(46); lpBanner(`Boss pokonany: +${r.pkt} XP`); xpFlush(r.pkt); S.rank.home = null; }
       render(); return;
     }
     if (r?.code === "too_few") { BS.msg[b.id] = `Zadałeś ${r.moje} z ${r.trzeba} ciosów – tym razem bez nagrody`; b.mozna_odebrac = false; render(); return; }
@@ -12652,7 +12715,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       return n === 1 ? `Rok pokonał ${acc} w 1 dzień! Odbierzcie nagrodę na Dziś.` : `Rok pokonał ${acc} w ${n} dni! Odbierzcie nagrodę na Dziś.`;
     }
     const przed = new Date(b.termin + "T12:00"); przed.setDate(przed.getDate() - 1);
-    return `⚔️ ${name} atakuje! ${b.typ === "egzamin" ? "Egzamin" : "Kolokwium"} z ${g} ${fmtDate(b.termin + "T12:00")}. Każda dobra odpowiedź na zdawalni.pl to cios. Jeśli go pokonamy do ${fmtDate(przed)}, każdy z ${d.min_ciosow ?? 10}+ ciosami dostaje +${d.pkt ?? 50} pkt.`;
+    return `⚔️ ${name} atakuje! ${b.typ === "egzamin" ? "Egzamin" : "Kolokwium"} z ${g} ${fmtDate(b.termin + "T12:00")}. Każda dobra odpowiedź na zdawalni.pl to cios. Jeśli go pokonamy do ${fmtDate(przed)}, każdy z ${d.min_ciosow ?? 10}+ ciosami dostaje +${d.pkt ?? 50} XP.`;
   }
   function bsAnnounce(b) {
     const text = (window.SKROT_I18N?.t?.(bsAnnText(b))) ?? bsAnnText(b); // pole tekstowe nie jest tłumaczone samo
@@ -12682,7 +12745,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       h("p", { class: "bs-won" }, h("span", { "aria-hidden": "true", text: "🏆 " }), h("span", { text: `Rok pokonał ${bossAcc(b.sid)}!` })),
       full ? null : bar, full ? null : nums,
       h("div", { class: "row bs-acts" }, mine,
-        b.mozna_odebrac && !few ? h("button", { type: "button", class: "btn primary bs-claim", onclick: (e) => bsClaim(b, e.currentTarget) }, `Odbierz +${d.pkt ?? 50} pkt`) : null),
+        b.mozna_odebrac && !few ? h("button", { type: "button", class: "btn primary bs-claim", onclick: (e) => bsClaim(b, e.currentTarget) }, `Odbierz +${d.pkt ?? 50} XP`) : null),
       few ? h("p", { class: "bs-msg bs-few" }, few) : null,
       few && !full ? h("div", { class: "row bs-acts" }, h("button", { type: "button", class: "btn small ghost", onclick: () => bsHide(b.id) }, "Zamknij")) : null];
     return [bar, nums,
@@ -12745,7 +12808,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         h("p", { class: "muted small", text: "Widać tylko pseudonimy osób, które pokazują się w rankingu." })),
       h("details", { class: "panel bs-rules" }, h("summary", { text: "Zasady" }),
         h("p", { text: `Każda dobra odpowiedź z ${bsGen(b.sid)} to cios, zadanie liczbowe – 3 ciosy. Nagroda dla osób z min. ${d.min_ciosow ?? 10} ciosami.` }),
-        h("p", { class: "muted small", text: `Boss ucieka o północy przed dniem zaliczenia. Pokonany boss daje +${d.pkt ?? 50} pkt rankingu, nagrodę odbierasz na Dziś do 14 dni po terminie.` })),
+        h("p", { class: "muted small", text: `Boss ucieka o północy przed dniem zaliczenia. Pokonany boss daje +${d.pkt ?? 50} XP, nagrodę odbierasz na Dziś do 14 dni po terminie.` })),
       others.length ? h("section", { class: "panel bs-others" }, h("div", { class: "panel-head" }, h("h2", { text: "Inne bossy" })),
         h("div", { class: "more-list" }, others.map((x) => h("button", { type: "button", class: "sk-row-big", onclick: () => go({ view: "boss", id: x.id }) },
           h("span", { class: "ic bs-ic" }, bsArt(x, "xs")), h("span", { class: "t" }, h("b", { text: bossName(x.sid) }), h("span", { text: bsWhen(x) })), h("span", { "aria-hidden": "true", text: "→" }))))) : null];
@@ -16235,36 +16298,41 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   matchMedia("(max-width: 520px)").addEventListener?.("change", () => document.querySelectorAll(".shop-sw-btn").forEach((b) => (shopSwTab() ? b.removeAttribute("tabindex") : b.setAttribute("tabindex", "-1"))));
   function shopThemeCard(t) {
     const sk = window.skrot || {}, it = shopItem(t), on = themeCur() === t.id;
-    const need = Math.max(0, lpLevelAt(t.lvl) - lpXpTotal()), lvlTxt = `albo za darmo od poziomu ${t.lvl} (brakuje ${fmtN(need)} XP)`;
+    const need = Math.max(0, lpLevelAt(t.lvl) - lpXpTotal()), pbW = themePair(t.id) && !themePicked(themePair(t.id)) ? themePair(t.id) : null;
+    // ux-5: motyw z pary przed wyborem: „za darmo: wybór na poziomie 4 (albo sam na 10)”
+    const lvlTxt = pbW ? `albo za darmo: wybór na poziomie ${pbW} (albo sam na ${THEME_LATE[pbW]})` : `albo za darmo od poziomu ${t.lvl} (brakuje ${fmtN(need)} XP)`;
     const ownTxt = themeBought(t) ? "kupiony" : themeByLevel(t) ? `masz za poziom ${t.lvl}` : "starosta ma wszystkie motywy";
     let btn, note, noteS = null, chip = null;
     if (on) { chip = h("span", { class: "chip", text: "Włączony" }); btn = h("button", { type: "button", class: "btn", onclick: (e) => pinkTheme.set("", e) }, "Wyłącz"); note = ownTxt; }
     else if (themeOwned(t.id)) { btn = h("button", { type: "button", class: "btn primary", onclick: (e) => themeSet(t.id, e) }, "Włącz"); note = ownTxt; }
+    // ux-5: poziom wyboru osiągnięty, wybór czeka: karta prowadzi do wyboru (za darmo), zakup zostaje w opisie.
+    else if (themePair(t.id) && themeChoicePending() === themePair(t.id)) { const pb = themePair(t.id); btn = h("button", { type: "button", class: "btn primary", onclick: () => themeChoiceShow(pb) }, "Wybierz za darmo"); note = `Do wyboru za poziom ${pb}: ten albo ${THEME_SHOP.find((x) => x.id === THEME_CHOICE[pb].find((y) => y !== t.id)).name}`; noteS = it ? `albo kup za ${fmtN(it.cena)} monet` : null; }
     // Przycisk „🔒 Poziom N” widać tylko w zielonych motywach (każda karta ma przycisk w tym samym miejscu).
-    else if (!it) { btn = sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: signIn }, "Zaloguj się, żeby kupić") : h("button", { type: "button", class: "btn shop-lockbtn", disabled: true }, `🔒 Poziom ${t.lvl}`); note = `Za darmo od poziomu ${t.lvl} · brakuje ${fmtN(need)} XP`; noteS = `Brakuje ${fmtN(need)} XP`; }
-    else if (coins() >= it.cena) { btn = h("button", { type: "button", class: "btn primary", onclick: () => shopBuy(t) }, `Kup za ${fmtN(it.cena)} 🪙`); note = lvlTxt; noteS = `Albo poziom ${t.lvl} · brakuje ${fmtN(need)} XP`; }
-    else { btn = h("button", { type: "button", class: "btn shop-short", disabled: true }, `Brakuje ${fmtN(it.cena - coins())} 🪙`); note = lvlTxt; noteS = `Albo poziom ${t.lvl} · brakuje ${fmtN(need)} XP`; }
-    const pv = on ? null : h("button", { type: "button", class: "btn shop-pv", onclick: () => themePreview(t.id) }, "👁 Podgląd");
+    else if (!it) { btn = sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: signIn }, "Zaloguj się, żeby kupić") : h("button", { type: "button", class: "btn shop-lockbtn", disabled: true }, window.ZD_NAGRODY?.ikona?.("lock") ?? null, ` Poziom ${t.lvl}`); note = `Za darmo od poziomu ${t.lvl} · brakuje ${fmtN(need)} XP`; noteS = `Brakuje ${fmtN(need)} XP`; }
+    else if (coins() >= it.cena) { btn = h("button", { type: "button", class: "btn primary", onclick: () => shopBuy(t) }, `Kup za ${fmtN(it.cena)} 🪙`); note = lvlTxt; noteS = pbW ? `Albo wybór na poziomie ${pbW}` : `Albo poziom ${t.lvl} · brakuje ${fmtN(need)} XP`; }
+    else { btn = h("button", { type: "button", class: "btn shop-short", disabled: true }, `Brakuje ${fmtN(it.cena - coins())} 🪙`); note = lvlTxt; noteS = pbW ? `Albo wybór na poziomie ${pbW}` : `Albo poziom ${t.lvl} · brakuje ${fmtN(need)} XP`; }
+    const pv = on ? null : h("button", { type: "button", class: "btn shop-pv", onclick: () => themePreview(t.id) }, window.ZD_NAGRODY?.ikona?.("eye") ?? null, " Podgląd");
     return h("article", { class: "shop-card" + (on ? " is-on" : ""), id: "shop-" + t.id },
       // Podgląd także po kliknięciu w obrazek (na telefonie w zielonych motywach zamiast osobnego przycisku).
       on ? h("div", { class: "shop-sw" }, themeSwatch(t.id))
-        : h("button", { type: "button", class: "shop-sw shop-sw-btn", "aria-label": `Podgląd: ${t.name}`, tabindex: shopSwTab() ? null : "-1", onclick: () => themePreview(t.id) }, themeSwatch(t.id), h("span", { class: "shop-sw-zoom", "aria-hidden": "true", text: "🔍" })),
+        : h("button", { type: "button", class: "shop-sw shop-sw-btn", "aria-label": `Podgląd: ${t.name}`, tabindex: shopSwTab() ? null : "-1", onclick: () => themePreview(t.id) }, themeSwatch(t.id), h("span", { class: "shop-sw-zoom", "aria-hidden": "true" }, window.ZD_NAGRODY?.ikona?.("eye") ?? null)),
       h("div", { class: "shop-body" },
-        h("div", { class: "shop-title" }, h("b", { text: `${t.ico} ${t.name}` }), chip),
+        h("div", { class: "shop-title" }, h("b", { text: t.name }), chip),
         h("p", { class: "muted", text: THEME_TXT[t.id] }),
         h("div", { class: "shop-act" }, btn, pv, note ? h("small", { class: "muted shop-note" }, h("span", { class: "sn-l", text: note }), noteS ? h("span", { class: "sn-s", text: noteS }) : null) : null)));
   }
   function shopHero() {
-    const st = window.skrot?.sklep || {}, n = st.dzis_nauka || 0, mx = st.dzis_max || 64;
+    const st = window.skrot?.sklep || {}, n = st.dzis_nauka || 0, mx = st.dzis_max || 64, wyb = themeChoicePending();
     return h("section", { class: "sk-hero shop-hero" },
+      // ux-5: wybór motywu za poziom 4 / 6 czeka (np. awans przed tą wersją albo „Wybiorę później”).
       h("span", { class: "eyebrow", text: "Twoje monety" }),
-      h("p", { class: "sk-bignum", id: "shop-saldo" }, h("b", { class: "num", text: st.loaded ? `🪙 ${fmtN(coinsShown())}` : "🪙 …" })),
+      h("p", { class: "sk-bignum", id: "shop-saldo" }, window.ZD_NAGRODY?.ikona?.("coin", "shop-bigcoin") ?? null, h("b", { class: "num", text: st.loaded ? fmtN(coinsShown()) : "…" })),
+      wyb ? h("button", { type: "button", class: "btn primary ux5-wybor", onclick: () => themeChoiceShow(wyb) }, `Wybierz motyw za poziom ${wyb}`) : null,
       h("div", { class: "shop-today" },
         h("span", { class: "muted num", text: `Monety z nauki dziś: ${n} z ${mx}`, title: "Za naukę dostajesz monety do dziennego limitu; Zadania dnia liczą się osobno." }),
         h("div", { class: "lp-lvbar", role: "progressbar", "aria-label": "Monety z nauki dziś", "aria-valuemin": "0", "aria-valuemax": String(mx), "aria-valuenow": String(n) }, h("i", { style: `--w:${Math.min(100, (n / mx) * 100).toFixed(1)}%` })),
-        // Z SQL v22 (dzis_pkt): ile punktów brakuje do kolejnej monety. Po dziennym limicie tej linii nie ma.
-        MONV.pkt != null && st.mozna && n < mx ? (() => { const k = st.kurs_pkt || 10, r = MONV.pkt % k;
-          return h("span", { class: "shop-next muted num" }, h("span", { class: "coin-dots", "aria-hidden": "true" }, Array.from({ length: k }, (_, i) => h("i", { class: i < r ? "on" : "" }))), h("span", { text: `Do następnej monety: ${r}/${k} pkt` })); })() : null),
+        // ux-5: bez „Do następnej monety: r/10 pkt” (jedna miara dla studenta: XP; monety liczy baza).
+        null),
       h("details", { class: "shop-how" }, h("summary", { text: "Jak zdobywać monety?" }),
         h("ul", {},
           h("li", { text: "Dobre odpowiedzi w quizach i rozwiązane zadania liczbowe." }),
@@ -16272,7 +16340,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
           h("li", { text: "Skończone lekcje." }),
           h("li", { text: "Gry." }),
           h("li", { text: "Hasło dnia i pokonany Boss przed kolokwium." })),
-        h("p", { class: "muted", text: `Za każde 10 pkt rankingu dostajesz 1 monetę (najwyżej ${mx} dziennie z nauki, do tego nagroda za Bossa). Zadania dnia i tygodnia dają więcej.` }),
+        h("p", { class: "muted", text: `Monety liczy baza z Twojej nauki: najwyżej ${mx} dziennie, do tego nagrody za Bossa, działy i Zadania dnia.` }),
         h("button", { type: "button", class: "link", onclick: lvHowShow }, "Ile dokładnie za co?")));
   }
   function shopHistory() {
@@ -16676,7 +16744,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
         kNick(x.nick, z.kolor, "kprof-nick"),
         z.tytul ? kTitle(z.tytul) : null,
         h("p", { class: "muted", style: "margin:0" }, h("span", { text: `${lvIco(lv)} ${lvName(lv)}` }), " · ", h("span", { class: "num", text: `poziom ${lv}` }),
-          x.miejsce != null ? [" · ", h("span", { class: "num", text: `#${x.miejsce} · ${fmtN(x.pkt)} pkt` })] : null),
+          x.miejsce != null ? [" · ", h("span", { class: "num", text: `#${x.miejsce} · ${fmtN(x.pkt)} XP` })] : null),
         h("div", { class: "kgab kgab-view", role: "list", "aria-label": "Gablota odznak" },
           gab.length ? gab.map(([, ic, name, how]) => h("span", { class: "kgab-slot on", role: "listitem", title: how }, h("span", { class: "ic", "aria-hidden": "true", text: ic }), h("small", { text: name })))
             : h("p", { class: "muted small", style: "margin:0", text: "Gablota jest pusta." })),
@@ -16797,7 +16865,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   function kStreakAlive(st, t) { return st.d === t || st.d === t - 1 || (st.d === t - 2 && st.n > 0 && (kFrozen(t - 1) || (kSk().zamrozenia?.ma || 0) > 0)); }
 
   // ---------- sklep: zakładki i karty przedmiotów ----------
-  const K_TABS = [["motywy", "Motywy", "🎨"], ["profil", "Profil", "🙂"], ["gry", "Gry", "🎮"], ["nauka", "Nauka", "📚"], ["zestawy", "Zestawy", "🎁"], ["sezon", "Sezonowe", "❄️"]];
+  const K_TABS = [["motywy", "Motywy", "ux5-palette"], ["profil", "Profil", "ux5-user"], ["gry", "Gry", "play"], ["nauka", "Nauka", "book"], ["zestawy", "Zestawy", "ux5-gift"], ["sezon", "Sezonowe", "snow"]];
   const K_GROUPS = {
     profil: [["ramka", "Ramki awatara"], ["kolor", "Kolor nicku w rankingu"], ["tytul", "Tytuły pod nickiem"], ["gablota", "Gablota odznak"]],
     gry: [["skorka", "Skórki postaci we Fruń i Przejdź"], ["tlo", "Tła plansz"]],
@@ -16818,7 +16886,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     const tab = ([k, t, ic]) => h("button", { type: "button", role: "tab", id: "ktab-" + k, class: "kshop-tab", "aria-selected": String(k === cur), "aria-controls": "kpanel", tabindex: k === cur ? "0" : "-1",
       onclick: () => { SHOP.tab = k; ls.set("bm-shop-tab", k); render(); requestAnimationFrame(() => $("ktab-" + k)?.focus()); },
       onkeydown: (e) => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; e.preventDefault(); const i = tabs.findIndex((x) => x[0] === cur), n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length][0]; SHOP.tab = n; ls.set("bm-shop-tab", n); render(); requestAnimationFrame(() => $("ktab-" + n)?.focus()); } },
-      h("span", { "aria-hidden": "true", text: ic }), h("span", { text: t }),
+      window.ZD_NAGRODY?.ikona?.(ic) ?? null, h("span", { text: t }),
       k === "sezon" && kat.some((x) => x.sezon && kSezonOtwarty(x.sezon)) ? h("i", { class: "ktab-dot", title: "Trwa sezon" }) : null);
     let body;
     if (cur === "motywy") body = [h("p", { class: "muted kshop-intro", text: "Za darmo od poziomu albo wcześniej za monety." }), h("div", { class: "shop-grid" }, THEME_SHOP.map(shopThemeCard))];
@@ -22936,7 +23004,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
     if (S.isStarosta) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
   // === most ux-5 ===
-  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, lpBanner, lpConfetti, lpReduced, progSoon, plural, fmtN, subjectById, lessonsOf, lessonDone, lessonNo, gainPop, coinFly, dayN, PAID, EN, MONV, subjects: () => SUBJECTS });
+  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, lpBanner, lpConfetti, lpReduced, progSoon, plural, fmtN, subjectById, lessonsOf, lessonDone, lessonNo, gainPop, coinFly, dayN, PAID, EN, MONV, xpFlush, xpTake, lpLevel, lpLevelAt, lpXpTotal, themeOwned, themeByLevel, themeChoicePending, levelUpShow, lpLevelsShow, lvHowShow, THEME_SHOP, THEME_CHOICE, THEME_LATE, THEME_BASE, subjects: () => SUBJECTS });
   // === koniec mostu ux-5 ===
 })();
 </script>
