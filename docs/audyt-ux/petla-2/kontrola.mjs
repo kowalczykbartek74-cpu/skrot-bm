@@ -16,6 +16,7 @@ const P = (...l) => out.push(...l);
 // Lista z B3 (pętla 2) + funkcje nowe w tej pętli. Wywołania z umów i blok mostu wypisujemy osobno.
 const MOJE = new Set(["viewHome", "lpLevelBar", "streakNext", "kStreakAlive", "kFreezeUse", "xpFlush", "LP_DAILY_GOAL", "przypHomeCard", "ptsDzis", "ptsHome", "ldBlock",
   "misjaClaim", "viewReview", "openPhoneCal", "homeQuests", "greetBadges", "CAL_FN", "termIcs", "przypStan",
+  "reviewHome", // B3 „pusty stan Powtórek” (etap 5)
   "setPrzyp" // B3 „funkcja przypomnienia”: wiersz „Seria dni” w rodzajach maili (recenzja etapu 4, runda 1)
 ]);
 const UMOWY = [/window\.ZD_WEJSCIE\?\./, /window\.ZD_NAWYK\?\./, /window\.ZD_NAGRODY\?\./];
@@ -41,7 +42,8 @@ function funkcje(plik) {
     if (l.startsWith("+")) {
       const at = ln - 1;
       let name = "(poza funkcją)";
-      if (/=== most ux-2 ===|ZD_APP \|\|=|=== koniec mostu ux-2 ===/.test(l)) name = "(blok mostu ux-2)";
+      const wMoscie = (() => { for (let i = at; i >= Math.max(0, at - 6); i--) { if (/=== koniec mostu ux-2 ===/.test(now[i]) && i !== at) return false; if (/=== most ux-2 ===/.test(now[i])) return true; } return false; })();
+      if (wMoscie || /=== most ux-2 ===|ZD_APP \|\|=|=== koniec mostu ux-2 ===/.test(l)) name = "(blok mostu ux-2)";
       else if (/<script src="nawyk\.js/.test(l)) name = "(linia <script> nawyk.js)";
       else for (let i = at; i >= 0; i--) { const d = def.exec(now[i]); if (d && (/^\s{2}\S/.test(now[i]) || /^\S/.test(now[i]))) { name = d[1] || d[2]; break; } }
       const e = res.get(name) || { dodane: 0, usuniete: 0, umowy: 0, przyklad: l.slice(1, 140).trim() };

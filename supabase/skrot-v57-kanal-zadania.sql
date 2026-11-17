@@ -12,6 +12,11 @@ end $$;
 --  3. nauka_przypomnienia_ustaw: nowy rodzaj maila „seria” (ratuj serię) w ustawieniach co (domyślnie włączony); kopia v36 + pole.
 --  2. nauka_kalendarz_nauka(token): czy osoba włączyła w kalendarzu w telefonie wpis „Zdawalni · 5 min po zajęciach”
 --     (progress.calStudy). Osobna funkcja: nauka_kalendarz_dane (v46) zostaje bez zmian.
+--
+-- Etap 5:
+--  4. Automatyczny odbiór zrobionych Zadań dnia i tygodnia (także osobistego z v28): trigger monet nauka_mon_z_rp (v14) po
+--     przeliczeniu monet woła nauka_misje_auto(user, dzień). Ten sam klucz w księdze co ręczny odbiór (on conflict do nothing),
+--     więc nagroda nigdy nie wpada dwa razy, a „Odbierz” w Sklepie dalej działa (odpowie „already”). Wymaga v14 i v28.
 
 create or replace function public.nauka_przypomnienia_kandydaci(p_teraz timestamptz default now()) returns jsonb
 language plpgsql stable security definer set search_path = public as $$
@@ -100,6 +105,64 @@ begin
     stan = case when excluded.wlaczone then t.stan else '{}'::jsonb end,
     stan_at = case when excluded.wlaczone then t.stan_at end;
   return public.nauka_przypomnienia_moje();
+end $$;
+
+-- ---------------------------------------------------------------- etap 5: auto-odbiór zadań
+do $$ begin
+  if to_regprocedure('public.nauka_misja_osobista_postep(uuid, public.nauka_misja_osobista)') is null then
+    raise exception 'Najpierw uruchom skrot-v28-zdarzenia-nauki.sql (osobiste Zadanie dnia).';
+  end if;
+end $$;
+
+create or replace function public.nauka_misje_auto(p_user uuid, d date) returns int
+language plpgsql security definer set search_path = '' as $$
+declare
+  m jsonb; o public.nauka_misja_osobista; oc jsonb := public.nauka_misja_osobista_cfg();
+  maxs int := (public.nauka_mon_cfg()->>'max_saldo')::int; n int := 0; k int;
+begin
+  if p_user is null or d is null then return 0; end if;
+  if exists (select 1 from public.nauka_konta x where x.user_id = p_user and x.zablokowane) then return 0; end if;
+  for m in select e from jsonb_array_elements(public.nauka_misje_na(d)) e loop
+    if public.nauka_misja_postep(p_user, m, d) >= (m->>'ile')::int
+       and not exists (select 1 from public.nauka_monety x where x.user_id = p_user and x.klucz = public.nauka_misja_klucz(m, d))
+       and public.nauka_saldo(p_user) + (m->>'nagroda')::int <= maxs then
+      insert into public.nauka_monety (user_id, dzien, delta, zrodlo, klucz, opis)
+      values (p_user, d, (m->>'nagroda')::int, 'misja', public.nauka_misja_klucz(m, d),
+              case when m->>'okres' = 'tydzien' then 'Zadanie tygodnia: ' else 'Zadanie dnia: ' end || (m->>'pl'))
+      on conflict (user_id, klucz) do nothing;
+      get diagnostics k = row_count; n := n + k;
+    end if;
+  end loop;
+  select * into o from public.nauka_misja_osobista x where x.user_id = p_user and x.dzien = d;
+  if found and public.nauka_misja_osobista_postep(p_user, o) >= (oc->>o.typ)::int
+     and public.nauka_saldo(p_user) + (oc->>'nagroda')::int <= maxs then
+    insert into public.nauka_monety (user_id, dzien, delta, zrodlo, klucz, opis)
+    values (p_user, d, (oc->>'nagroda')::int, 'misja', 'misja:osobista:' || d::text,
+            left('Twoje zadanie dnia: ' || coalesce(nullif(o.cel->>'pl', ''), o.typ), 200))
+    on conflict (user_id, klucz) do nothing;
+    get diagnostics k = row_count; n := n + k;
+  end if;
+  return n;
+end $$;
+revoke execute on function public.nauka_misje_auto(uuid, date) from public, anon, authenticated;
+
+-- Kopia v14 + wywołanie auto-odbioru na końcu (monety za naukę liczone jak dotąd).
+create or replace function public.nauka_mon_z_rp() returns trigger
+language plpgsql security definer set search_path = '' as $$
+declare
+  kurs int := (public.nauka_mon_cfg()->>'kurs_pkt')::int;
+  suma int; ile int;
+begin
+  select coalesce(sum(pkt), 0) into suma from public.nauka_rp where user_id = new.user_id and dzien = new.dzien;
+  ile := suma / kurs;                                  -- dzielenie całkowite = w dół
+  if ile > 0 then
+    insert into public.nauka_monety (user_id, dzien, delta, zrodlo, klucz, opis)
+    values (new.user_id, new.dzien, ile, 'nauka', 'nauka:' || new.dzien::text, 'Nauka: ' || suma || ' pkt')
+    on conflict (user_id, klucz) do update set delta = excluded.delta, opis = excluded.opis
+    where public.nauka_monety.delta < excluded.delta;    -- tylko w górę
+  end if;
+  perform public.nauka_misje_auto(new.user_id, new.dzien); -- ux-2 etap 5: zrobione zadania same trafiają do salda
+  return null;
 end $$;
 
 notify pgrst, 'reload schema';

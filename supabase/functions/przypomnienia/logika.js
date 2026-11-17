@@ -248,11 +248,11 @@
       return en ? {
         kind: "zadanie", title: "Your daily task is waiting",
         body: "Today's daily task takes a few minutes and earns coins.",
-        cta: "Open the daily task", path: "#/",
+        cta: "Open the daily task", path: "?zadania=1#/",
       } : {
         kind: "zadanie", title: "Zadanie dnia czeka",
         body: "Dzisiejsze Zadanie dnia zajmie kilka minut, a za ukończenie są monety.",
-        cta: "Otwórz Zadanie dnia", path: "#/",
+        cta: "Otwórz Zadanie dnia", path: "?zadania=1#/",
       };
     }
     return null;

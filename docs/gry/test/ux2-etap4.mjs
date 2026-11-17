@@ -104,7 +104,7 @@ try {
   const out = execSync("node --test tests/przypomnienia.test.js", { cwd: ROOT, encoding: "utf8" });
   ok("K3 tests/przypomnienia.test.js (rodzaj „seria”, warianty A/B/C, rotacja, studiedToday → null, termin pierwszy)", /ℹ fail 0/.test(out) && /seria/.test(out), out.split("\n").filter((l) => /seria|ℹ (pass|fail)/.test(l)).join(" | "));
   const pg = execSync("node supabase/test/pglite.mjs", { cwd: ROOT, encoding: "utf8", maxBuffer: 32 << 20 });
-  ok("K3/K4 PGlite v57: historia z rodzajem (seria_x), flaga kalendarza", /OK v57: K1–K4/.test(pg) && /^✓ test\/v57\.sql$/m.test(pg), pg.split("\n").filter((l) => /v57/.test(l)));
+  ok("K3/K4 PGlite v57: historia z rodzajem (seria_x), flaga kalendarza", /OK v57: K1–K[45]/.test(pg) && /^✓ test\/v57\.sql$/m.test(pg), pg.split("\n").filter((l) => /v57/.test(l)));
   const obs = fs.readFileSync(ROOT + "supabase/functions/przypomnienia/obsluga.ts", "utf8");
   ok("K3 funkcja Edge zapisuje wariant w rodzaju logu („seria_b”)", /pick\.wariant \? pick\.kind \+ "_" \+ pick\.wariant : pick\.kind/.test(obs));
 } catch (e) { ok("K3 testy", false, String(e.stdout || e).slice(-300)); }

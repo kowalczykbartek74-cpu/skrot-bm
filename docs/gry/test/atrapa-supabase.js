@@ -287,6 +287,19 @@
   const sez24 = (k) => { if (!k) return true; const s = SEZ24[k], d = dzis(); return !!s && d >= s.od && d <= s.do; };
   MON.zal ||= {}; MON.gab ||= []; MON.zam ||= { reqs: [], dni: [] };
   const zamMa = () => MON.zam.reqs.length - MON.zam.dni.length;
+  // === ux-2 === v57 (etap 5): zrobione Zadania dnia i tygodnia odbiera baza sama (trigger monet) – tu przy odczycie listy.
+  if (ls("mock-auto-misje", "1") === "1") {
+    const misjeOryg = V14FN.nauka_misje;
+    V14FN.nauka_misje = () => {
+      const r = misjeOryg(); if (!r?.ok || !paid) return r;
+      for (const m of [...r.misje, ...(r.osobista ? [r.osobista] : [])]) if (m.postep >= m.ile && !m.odebrana) {
+        const klucz = m.id === "osobista" ? "misja:osobista:" + dzis() : "misja:" + m.id + ":" + dzis();
+        if (!MON.ksiega.some((w) => w.klucz === klucz)) { MON.ksiega.push({ delta: m.nagroda, zrodlo: "misja", klucz, opis: (m.okres === "tydzien" ? "Zadanie tygodnia: " : "Zadanie dnia: ") + (m.opis_pl || ""), dzien: dzis() }); monZapisz(); }
+        m.odebrana = true;
+      }
+      return r;
+    };
+  }
   // === ux-2 === pomocnicze dla funkcji v55–v56 (niżej w BASE): dni jako ISO po czasie lokalnym, jak nauka_dzis() w Warszawie.
   const UX2 = (() => {
     const iso = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;

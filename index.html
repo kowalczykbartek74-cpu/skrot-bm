@@ -7998,38 +7998,40 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const annFresh = ann && Date.now() - (ann.createdAt || 0) < 7 * 864e5;
     return [
       h("section", { class: "greet" }, h("h1", { text: greeting() }), h("p", { class: "sub", text: weekLine() }), greetBadges()),
-      // Od góry: „Twój postęp” z najbliższymi terminami (mniejszy), potem karta 5 min i lekcje dla Ciebie. Planu zajęć na Dziś nie ma (jest w Kalendarzu).
-      // Wygląd H (15.11.2026): najpierw karta „Dziś · 5 min” (na telefonie przycisk na pierwszym ekranie), potem „Twój postęp” z terminami.
+      // ux-2 (etap 5): pigułka próby (pętla 1) pierwsza pod powitaniem.
+      needGroup() ? null : window.ZD_WEJSCIE?.pasekProby?.() ?? null,
+      // Kolejność (ux-2 etap 5): karta dnia (Staś + „Zaczynamy · 5 min”) → linia zadań/tygodnia/duetu → Lekcje dla Ciebie
+      // (obie w ldBlock) → Twój postęp → Boss (gdy trwa) → Na luzie. Jednorazowe (Przewodnik, Profil nauki) tylko w 3 pierwszych dniach.
       // ux-2: po przerwie (≥ 2 dni) albo z maila „powrót” (?wracam=1): „Dobrze, że jesteś” nad kartą dnia.
       needGroup() ? null : window.ZD_NAWYK?.kartaPowrotu?.(),
       !needGroup() && ldOn() ? ldBlock() : null,
-      // ux-2: przypomnienia mailem tuż pod kartą dnia (wcześniej prawie na dole strony).
+      needGroup() ? groupStep() : ldOn() ? null : nowCard(),
+      needGroup() || ldOn() ? null : window.ZD_NAWYK?.linia?.(),
+      needGroup() || ldOn() ? null : nowSecond(),
+      needGroup() || ldOn() ? null : dzPanel(),
+      // ux-2: przypomnienia mailem tuż pod kartą dnia (jednorazowa zachęta, znika po „Włącz” albo „Nie teraz”).
       needGroup() ? null : przypHomeCard(),
       needGroup() || !S.ready ? null : ptsDzis(),
+      needGroup() ? null : window.ZD_NAWYK?.ofertaInstalacji?.(),
       S.noDb ? accessNotice() : buyBanner(),
       annFresh ? h("div", { class: "announce" }, h("span", { class: "eyebrow", text: "Od starosty · " + ago(ann.createdAt) }), h("p", { text: ann.text }),
         S.canEdit ? h("div", {}, h("button", { type: "button", class: "btn small ghost", onclick: () => S.db.doc("announcements/" + ann.id).delete().then(() => toast("Usunięto ogłoszenie.")) }, "Usuń")) : null) : null,
-      // Krótki ekran: „Teraz zrób to”, zajęcia dziś lub jutro, najbliższy termin. Postęp i nowości są zwinięte na dole.
-      // W dniu zajęć, po ich końcu: „Po zajęciach w 5 minut” na samej górze (powód, żeby wejść).
       v4Notice(),
       nocHomeCard(),
       needGroup() || ldOn() ? null : poHomeCard("top"),
       needGroup() ? null : jzHomeCard(),
-      needGroup() ? null : bsHomeCard(),
-      // „Dla Ciebie na dziś” (flaga ?ld=1, admin): jeden blok zamiast „Teraz zrób to”, drugiej karty, „Ile masz dziś czasu?” i „Powtórki w 5 minut” (D2).
-      needGroup() ? groupStep() : ldOn() ? null : nowCard(),
-      needGroup() || ldOn() ? null : nowSecond(),
-      needGroup() || ldOn() ? null : dzPanel(),
       // Gdy nie ma świeżych zajęć: strona i tak proponuje 5-minutowe podsumowanie (przed zajęciami, nieprzeczytane, odświeżenie).
       needGroup() || ldOn() ? null : poHomeCard("mid"),
-      needGroup() ? null : guideStrip(),
-      // ux-2: zachęta „Dodaj Zdawalni do ekranu głównego” (raz, w 2. dniu nauki).
-      needGroup() ? null : window.ZD_NAWYK?.ofertaInstalacji?.(),
-      // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
-      needGroup() || (ldOn() && ldHasStas()) ? null : stasHomeCard(),
-      // Hasło dnia nie ma już karty na Dziś (16.11.2026): gra jest w menu gier (#/gry) i w Więcej.
-      needGroup() ? null : funRow(gryHomeRow()),
-      homeFold("new", newPanel(), needGroup() || (S.canEdit && odwPending().length > 0)),
+      // ux-2 (etap 5): Boss (gdy trwa), Na luzie, Przewodnik (3 pierwsze dni) i nowości w jednym zwiniętym bloku „Więcej na dziś”,
+      // żeby Dziś mieściło się w ok. 1800 px na telefonie. Bez nawyk.js bloki stoją jak dawniej.
+      ...((w) => (needGroup() ? w : window.ZD_NAWYK?.wiecej ? [window.ZD_NAWYK.wiecej(w)] : w))([
+        needGroup() ? null : bsHomeCard(),
+        // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
+        needGroup() || (ldOn() && ldHasStas()) ? null : stasHomeCard(),
+        // Hasło dnia nie ma już karty na Dziś (16.11.2026): gra jest w menu gier (#/gry) i w Więcej.
+        needGroup() ? null : funRow(gryHomeRow()),
+        needGroup() || !(window.ZD_NAWYK?.kontoNowe?.() ?? true) ? null : guideStrip(),
+        homeFold("new", newPanel(), needGroup() || (S.canEdit && odwPending().length > 0))]),
     ];
   }
 
@@ -11531,7 +11533,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       h("div", { class: "pts-list" }, top.map(row)),
       rest.length ? h("details", { class: "pts-more" }, h("summary", {}, `Pokaż wszystkie przedmioty (${rows.length})`), h("div", { class: "pts-list" }, rest.map(row))) : null,
       dziś ? ptsTerms() : null,
-      !PAID() && lockedN ? h("p", { class: "muted pts-lockline" }, h("span", { text: `${lockedN} ${plural(lockedN, "lekcja czeka", "lekcje czekają", "lekcji czeka")} w pełnym dostępie.` }), " ", h("button", { type: "button", class: "link", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null);
+      !PAID() && lockedN ? h("p", { class: "muted pts-lockline" }, h("span", { text: `${lockedN} ${plural(lockedN, "lekcja czeka", "lekcje czekają", "lekcji czeka")} w pełnym dostępie.` }), " ", window.ZD_WEJSCIE?.przyciskZakupu?.("pts") ?? h("button", { type: "button", class: "link", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null); // ux-1
   }
   // Dziś (16.11.2026, gałąź dzis-duolingo): „Twój postęp” jako jedna zwarta karta. Nagłówek z licznikiem w jednym wierszu,
   // 3 najbliższe przedmioty jako krótkie wiersze, reszta zwinięta, terminy jako rząd małych kafelków. Termin, który już widać
@@ -11542,14 +11544,20 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     rows.sort((a, b) => (a.t ? a.t.n : 1e9) - (b.t ? b.t.n : 1e9) || a.k.pct - b.k.pct);
     const all = rows.reduce((a, x) => ({ known: a.known + x.k.known, started: a.started + x.k.started, n: a.n + x.k.n }), { known: 0, started: 0, n: 0 });
     const lockedN = PAID() ? 0 : SUBJECTS.reduce((a, x) => a + lessonsOf(x.id).filter(locked).length, 0);
-    const top = rows.slice(0, 3), rest = rows.slice(3);
+    // ux-2 (etap 5): na telefonie 2 przedmioty na wierzchu (reszta pod „Pokaż wszystkie”), żeby Dziś było krótsze.
+    const nTop = window.matchMedia?.("(max-width: 599px)").matches ? 2 : 3;
+    const top = rows.slice(0, nTop), rest = rows.slice(nTop);
     const inDays = (n) => (n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni`);
+    // ux-2 (etap 5): tempo „W tym tygodniu: k z cel tematów” przy przedmiocie z najbliższym terminem.
+    const tempoSid = top.find((x) => x.t)?.s.id || null;
     const row = ({ s, k, t }) => {
+      const tmp = t && s.id === tempoSid ? window.ZD_NAWYK?.tempo?.(s.id, k, t) : null;
       const left = k.n - k.known, risk = t && t.n <= 14 && k.pct < 0.5 && left;
       const more = risk ? `do nauki: ${left} ${plural(left, "temat", "tematy", "tematów")}` : "";
       return h("button", { type: "button", class: "pz-row" + (risk ? " risk" : ""), style: `--c:${s.color}`, title: more || null, onclick: () => go({ view: "subject", id: s.id }) },
         h("span", { class: "dot", "aria-hidden": "true" }),
-        h("span", { class: "pz-t" }, h("b", { text: s.pl }), h("span", { class: "pz-when" }, h("span", { text: t ? whenExam(t) : "bez terminu" }), risk ? h("span", { class: "pz-left", text: " · " + more }) : null)),
+        h("span", { class: "pz-t" }, h("b", { text: s.pl }), h("span", { class: "pz-when" }, h("span", { text: t ? whenExam(t) : "bez terminu" }), risk ? h("span", { class: "pz-left", text: " · " + more }) : null),
+          tmp ? h("span", { class: "pz-tempo", text: tmp }) : null),
         knowBar(k, { label: `Tematy, które umiesz: ${s.pl}` }),
         h("span", { class: "pc num", text: `${k.known}/${k.n}` }));
     };
@@ -11568,9 +11576,11 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         h("span", { class: "pz-tk", text: kind }),
         x.approx ? h("span", { class: "pz-est", text: "data szacowana" }) : null);
     };
-    const terms = !PAID() ? h("p", { class: "muted pz-note", text: "Terminy zaliczeń zobaczysz z pełnym dostępem." })
-      : tiles.length ? h("div", { class: "pz-tiles" }, tiles.map(tile))
-      : top.some((x) => x.t) ? null : h("p", { class: "muted pz-note", text: "Nic w najbliższym czasie." });
+    // ux-2 (etap 5): kafelki terminów także w wersji darmowej; zablokowany jest tylko plan nauki.
+    const terms = [tiles.length ? h("div", { class: "pz-tiles" }, tiles.map(tile))
+      : top.some((x) => x.t) ? null : h("p", { class: "muted pz-note", text: "Nic w najbliższym czasie." }),
+      !PAID() && (tiles.length || top.some((x) => x.t)) ? h("p", { class: "muted pz-note", text: window.ZD_NAWYK?.PL?.planPelna ?? "Plan nauki do każdego terminu jest w pełnej wersji." }) : null];
+    const bez = rows.find((x) => !x.t);
     return h("section", { class: "panel pts-card pts-dzis pz", "aria-label": "Twój postęp" },
       h("div", { class: "pz-head" },
         h("h2", { text: "Twój postęp" }),
@@ -11579,11 +11589,13 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         rows.length ? onceHelp("pts-why", "Temat umiesz, gdy zdasz bilet wyjścia z lekcji albo dobrze idą Ci quiz i fiszki. Jasna część paska to tematy zaczęte.", "pts-why pz-q") : null),
       h("div", { class: "pz-body" },
         rows.length ? h("div", { class: "pz-subj" },
-          h("div", { class: "pz-list" }, top.map(row)),
+          // ux-2: przedmiot bez daty zaliczenia → to samo pole co w „Przygotuj się” (link tuż pod wierszem przedmiotu).
+          h("div", { class: "pz-list" }, top.flatMap((x) => [row(x), x === bez ? window.ZD_NAWYK?.bezDaty?.(x.s, true) ?? null : null])),
+          bez && !top.includes(bez) ? window.ZD_NAWYK?.bezDaty?.(bez.s, false) ?? null : null,
           rest.length ? h("details", { class: "pts-more pz-more" }, h("summary", {}, `Pokaż wszystkie przedmioty (${rows.length})`), h("div", { class: "pz-list" }, rest.map(row))) : null) : null,
-        h("div", { class: "pz-terms" }, terms,
+        h("div", { class: "pz-terms" }, ...terms, window.ZD_NAWYK?.starostaBezDat?.() ?? null,
           h("button", { type: "button", class: "link pz-all", onclick: () => go({ view: "terms" }) }, h("span", { text: "Wszystkie terminy" }), icon("strzalka")))),
-      !PAID() && lockedN ? h("p", { class: "muted pts-lockline" }, h("span", { text: `${lockedN} ${plural(lockedN, "lekcja czeka", "lekcje czekają", "lekcji czeka")} w pełnym dostępie.` }), " ", h("button", { type: "button", class: "link", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null);
+      !PAID() && lockedN ? h("p", { class: "muted pts-lockline" }, h("span", { text: `${lockedN} ${plural(lockedN, "lekcja czeka", "lekcje czekają", "lekcji czeka")} w pełnym dostępie.` }), " ", window.ZD_WEJSCIE?.przyciskZakupu?.("pts") ?? h("button", { type: "button", class: "link", onclick: () => window.skrot?.buy() }, "Kup dostęp")) : null); // ux-1
   }
   // Postęp lekcji jako jeden procent = punkty lekcji (części 50, bilet 10, utrwalenie 20, opanowanie 20; gwiazdki się nie liczą).
   function lessonPct(m) { return lessonPts(m).pts; }
@@ -20247,17 +20259,19 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const d = ldPlan();
     if (!d?.karta) return nowCard(); // nic do ułożenia (np. bez lekcji): stara karta
     const st = ldDay.get(), all = PAID() && ["karta", ...d.lekcje.map((_, i) => "l" + i)].every((k) => st.done[k]);
-    const road = ls.get("bm-ld-droga") === "1", prof = !(S.learner && !S.learner.off && S.learner.testAt) && ls.get("bm-ld-prof") !== String(dayN());
+    const road = ls.get("bm-ld-droga") === "1", prof = !(S.learner && !S.learner.off && S.learner.testAt) && ls.get("bm-ld-prof") !== String(dayN()) && (window.ZD_NAWYK?.kontoNowe?.() ?? true); // ux-2: tylko 3 pierwsze dni
     // D5: bez pełnego dostępu (konto bez zakupu, po okresie próbnym) karta 5 min i jedna lekcja pokazowa z darmowych lekcji + zakup.
     const paid = PAID(), lekcje = paid ? d.lekcje : d.lekcje.slice(0, 1);
     const zk = dayN() + ":" + (d.karta?.temat || ""); if (zhAnimKey !== zk) { zhAnimKey = zk; zhAnimAt = performance.now(); } const anim = performance.now() - zhAnimAt < 1500;
     return h("div", { class: "ld-block" + (anim ? " zh-anim" : "") },
       // ux-2: przy karcie powrotu („Wracam: 3 minuty”) bez drugiego głównego przycisku „Zaczynamy · 5 min”.
       window.ZD_NAWYK?.powrotAktywny?.() ? null : ldHero(d, st),
+      // ux-2 (etap 5): Zadania dnia, tydzień i duet jedną linią tuż pod kartą dnia.
+      window.ZD_NAWYK?.linia?.() ?? null,
       d.lekcje.length ? h("div", { class: "ld-head row" }, h("span", { class: "eyebrow", text: "Lekcje dla Ciebie" }),
         h("label", { class: "ld-road" }, h("input", { type: "checkbox", checked: road ? true : null, onchange: (e) => ldRoad(e.target.checked) }), h("span", { text: "Jestem w drodze" }))) : null,
       lekcje.length ? h("div", { class: "ld-lessons" }, lekcje.map((_, i) => ldTile(d, st, i))) : null,
-      !paid ? h("div", { class: "row ld-done" }, h("p", { style: "margin:0", text: "Codziennie dwie lekcje ułożone dla Ciebie są w pełnej wersji." }), h("button", { type: "button", class: "btn primary", style: "min-height:44px", onclick: () => window.skrot?.buy?.() }, "Kup dostęp")) : null,
+      !paid ? h("div", { class: "row ld-done" }, h("p", { style: "margin:0", text: "Codziennie dwie lekcje ułożone dla Ciebie są w pełnej wersji." }), window.ZD_WEJSCIE?.przyciskZakupu?.("ld") ?? h("button", { type: "button", class: "btn primary", style: "min-height:44px", onclick: () => window.skrot?.buy?.() }, "Kup dostęp")) : null, // ux-1
       all ? h("div", { class: "row ld-done" }, h("p", { style: "margin:0", text: "Na dziś zrobione. Jutro ułożymy nowe." }), h("button", { type: "button", class: "btn small ghost", onclick: () => ldMoreLesson() }, "Jeszcze jedna lekcja")) : null,
       prof ? h("p", { class: "muted ld-prof" }, icon("spark"), h("button", { type: "button", class: "link", onclick: () => { ls.set("bm-ld-prof", String(dayN())); go({ view: "learn" }); } }, "Ułożymy lepiej po 6-minutowym Profilu nauki"),
         h("button", { type: "button", class: "link", "aria-label": "Ukryj na dziś", onclick: () => { ls.set("bm-ld-prof", String(dayN())); render(); } }, icon("zamknij"))) : null);
@@ -20683,10 +20697,11 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
         h("span", { class: "eyebrow", text: "Dziś do powtórki" }),
         n ? h("p", { class: "sk-bignum" }, h("b", { class: "num", text: n }), h("span", { text: plural(n, "fiszka", "fiszki", "fiszek") })) : null,
         n ? h("p", { class: "muted num", style: "margin:0", text: srsTodayTxt(td) })
-          : h("p", { class: "big", style: "margin:0", text: has ? (tomorrow ? `Na dziś koniec. Następne powtórki jutro (${tomorrow} ${plural(tomorrow, "fiszka", "fiszki", "fiszek")}).` : "Na dziś koniec. Nic nie czeka.") : "Jeszcze nic tu nie ma." }),
-        n ? null : has ? null : h("p", { class: "muted", style: "margin:0", text: "Przejrzyj fiszki w dowolnym materiale albo dodaj cały przedmiot (zakładka Ćwicz). Wrócą tutaj w dobrym momencie." }),
+          : has ? h("p", { class: "big", style: "margin:0", text: tomorrow ? `Na dziś koniec. Następne powtórki jutro (${tomorrow} ${plural(tomorrow, "fiszka", "fiszki", "fiszek")}).` : "Na dziś koniec. Nic nie czeka." })
+          // ux-2 (etap 5): pusty stan z obietnicą jutra i kartą 5 minut.
+          : window.ZD_NAWYK?.powtorkiPusto?.() ?? h("p", { class: "big", style: "margin:0", text: "Jeszcze nic tu nie ma." }),
         n ? h("button", { type: "button", class: "btn primary sk-start", disabled: S.route.rvLoading ? true : null, onclick: () => reviewStart(sid) }, S.route.rvLoading ? "Zbieram karty…" : "Zaczynamy →") : null,
-        !n && !has ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot")) : null,
+        !n && !has && !window.ZD_NAWYK?.powtorkiPusto ? h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => go({ view: "materials" }) }, "Wybierz przedmiot")) : null,
         h("div", { class: "rv-meta" }, skGoal(), sk ? h("span", { class: "sk-goal", title: "Dni z rzędu z nauką" }, kFlame(), h("span", { text: ` ${sk} ${plural(sk, "dzień", "dni", "dni")} z rzędu` })) : null,
           n ? h("button", { type: "button", class: "link rv-classic", onclick: () => { S.route = { ...S.route, start: true }; render(); } }, "Klasyczny widok") : null)),
       rewPanel(sid),
@@ -22938,7 +22953,8 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
     if (S.isStarosta) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
   // === most ux-2 ===
-  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, dayIso, dparse, SLOTS, saveProgress, przypSave, przypLoad, PAID, prz: () => PRZ, pz: () => PZ, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
+  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, dayIso, dparse, SLOTS, saveProgress, przypSave, przypLoad, PAID, prz: () => PRZ, pz: () => PZ, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN,
+    pk: () => PK, paczkaLoad, saveExamSet, partsOf, zalUndated, fmtKey, misjaClaim });
   // === koniec mostu ux-2 ===
 })();
 </script>

@@ -58,6 +58,41 @@
     kalZapisanoOn: "Zapisano. Wpisy pojawią się przy najbliższym odświeżeniu kalendarza w telefonie.",
     kalZapisanoOff: "Zapisano. Wpisy znikną przy najbliższym odświeżeniu kalendarza w telefonie.",
     offline: "Bez sieci: pokazuję ostatni zapisany postęp.",
+    // etap 5
+    zadTytul: "Zadania dnia",
+    blad: "Nie udało się. Spróbuj za chwilę.",
+    wybierzPrzedmiot: "Wybierz przedmiot",
+    zadLinia: "Zadania dnia: {0}/{1} · +{2}",
+    zadNowe: "· nowe za {0} h",
+    zadWszystkie: "Wszystkie zadania dnia zrobione · +{0}",
+    zadTydz: "Zadanie tygodnia",
+    zadOdebrane: "Odebrane",
+    zadAuto: "Nagrody za zrobione zadania trafiają do monet same.",
+    zadPelna: "Zadania dnia z monetami są w pełnej wersji.",
+    zadWczytuje: "Wczytuję zadania…",
+    duetZ: "Duet z {0}: {1}/{2} w tym tygodniu",
+    duetDzis: "{0} dziś ✓",
+    duetNie: "{0}: dziś jeszcze nie",
+    duetZapr: "Ucz się w duecie: wspólny cel {0} dni w tygodniu, +{1} dla obojga. Wyślij link znajomemu z roku.",
+    duetWyslij: "Wyślij link",
+    duetShare: "Uczmy się razem w Zdawalni: wspólny cel na ten tydzień.",
+    linkSkop: "Link skopiowany.",
+    tempo: "W tym tygodniu: {0} z {1} tematów",
+    tempo1: "W tym tygodniu: {0} z 1 tematu",
+    bezDaty: "Znasz datę kolokwium? Wpisz",
+    bezDatyZ: "{0}: znasz datę kolokwium? Wpisz",
+    bezDatyTytul: "Data zaliczenia: {0}",
+    bezDatyOpis: "Plan nauki, Boss i przypomnienia ułożą się pod tę datę. Widzisz ją tylko Ty.",
+    zapisz: "Zapisz",
+    anuluj: "Anuluj",
+    dataZapisana: "Plan i przypomnienia ułożą się do {0}.",
+    starosta: "{0} zaliczeń bez daty. Uzupełnij, a rok dostanie plan i bossa.",
+    terminy: "Terminy",
+    planPelna: "Plan nauki do każdego terminu jest w pełnej wersji.",
+    rvPusto: "Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.",
+    rvKarta: "Karta 5 minut",
+    wiecej: "Więcej na dziś",
+    wiecejBoss: "Boss trwa",
     kalNauka: "Przypominaj o 5 minutach po zajęciach",
     kalNaukaOpis: "W kalendarzu pojawi się wpis „Zdawalni · 5 min po zajęciach” z przypomnieniem, pół godziny po Twoich ostatnich zajęciach.",
     instTytul: "Dodaj Zdawalni do ekranu głównego: jedno dotknięcie do 5 minut.",
@@ -433,6 +468,8 @@
     // Prezent po zapisie postępu (progSoon zapisuje po 2,5 s), żeby baza widziała już 2 dni nauki; w razie „za wcześnie” ponawia tik.
     if (sn && sn.n >= 2) setTimeout(() => { try { A().ls?.set("skrot-zam-prezent-dzien", ""); } catch (e) {} prezent(); }, 3500);
     setTimeout(odswiezPigulki, 0);
+    // Zadania dnia: punkty idą do bazy paczkami (co ok. 20 s), potem trigger odbiera zrobione zadania.
+    clearTimeout(poXp.zt); poXp.zt = setTimeout(() => zadaniaLaduj(true), 25000);
     return patch;
   }
   function odswiezPigulki() {
@@ -762,6 +799,172 @@
     const { h } = A(), t = jutroTytul(); if (!h || !t) return null;
     return h("p", { class: "nw-jutro-t" }, svg('<path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/>', 18), h("span", { text: fmt(PL.jutroTemat, t) }));
   }
+
+  // ---------------------------------------------------------------- etap 5: linia zadań, tygodnia i duetu na Dziś
+  // Zadania dnia z bazy (nauka_misje, te same co w Sklepie). Nagrody odbiera baza sama (SQL v57: trigger monet), więc tu tylko
+  // postęp. Własny stan (nie SHOP ze Sklepu), żeby Dziś nie zależało od widoku Sklepu (pętla 5).
+  const ZAD = { d: null, at: 0, busy: false };
+  function zadaniaLaduj(force) {
+    const sk = W.skrot; if (!sk?.misje || sk.state !== "in" || ZAD.busy || (!force && ZAD.d && Date.now() - ZAD.at < 60e3)) return;
+    ZAD.busy = true;
+    sk.misje().then((d) => { ZAD.d = d || { ok: false }; }, () => { ZAD.d = ZAD.d || { ok: false }; })
+      .finally(() => { ZAD.busy = false; ZAD.at = Date.now(); odswiezLinie(); });
+  }
+  const coin = () => { const ap = A(), s = document.createElement("span"); s.className = "nw-coin"; s.setAttribute("aria-hidden", "true"); s.innerHTML = ap.H2_ICO?.coin || ""; return s; };
+  // Stan dla Sklepu (pętla 5) i ekranu końca: { ok, zrobione, wszystkie, suma, godz, dzienne, tydz, zablokowane }.
+  function zadaniaStan() {
+    zadaniaLaduj();
+    const d = ZAD.d; if (!d || !d.ok) return d ? { ok: false } : null;
+    const dzienne = [...(d.osobista ? [d.osobista] : []), ...d.misje.filter((m) => m.okres === "dzien")];
+    const zrobione = dzienne.filter((m) => m.postep >= m.ile).length, suma = dzienne.filter((m) => m.postep >= m.ile).reduce((a, m) => a + (m.nagroda || 0), 0);
+    const koniec = dzienne[0]?.do_kiedy ? new Date(dzienne[0].do_kiedy) - Date.now() : null;
+    return { ok: true, zrobione, wszystkie: dzienne.length, suma, godz: koniec != null ? Math.max(1, Math.ceil(koniec / 36e5)) : null, dzienne,
+      tydz: d.misje.find((m) => m.okres === "tydzien") || null, zablokowane: !!d.zablokowane };
+  }
+  const opisZad = (m) => (W.SKROT_LANG === "en" ? m.opis_en : m.opis_pl) || m.opis_pl || "";
+  function zadWiersz(m, tydz) {
+    const { h } = A(), done = m.postep >= m.ile;
+    return h("li", { class: "nw-zad" + (done ? " done" : "") + (tydz ? " tydz" : "") },
+      done ? svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 18, "nw-zad-ok") : h("span", { class: "nw-zad-n num", text: `${m.postep}/${m.ile}` }),
+      h("span", { class: "nw-zad-t" }, tydz ? h("small", { class: "muted", text: PL.zadTydz }) : null, h("span", { "data-noi18n": "", translate: "no", text: opisZad(m) }),
+        tydz ? h("span", { class: "nw-zad-bar", role: "progressbar", "aria-label": PL.zadTydz, "aria-valuemin": "0", "aria-valuemax": String(m.ile), "aria-valuenow": String(m.postep) }, h("i", { style: `width:${Math.min(100, (m.postep / m.ile) * 100).toFixed(1)}%` })) : null),
+      h("span", { class: "nw-zad-p num" }, done ? h("span", { class: "nw-zad-odeb", text: PL.zadOdebrane + " " }) : null, "+" + m.nagroda, coin()));
+  }
+  // Duet (paczka.js, SQL v37): wiersz z postępem tygodnia i tym, czy partner już się dziś uczył.
+  function duetWiersz() {
+    const ap = A(), { h } = ap, PK = ap.pk?.(), PQ = W.SKROT_PACZKA; if (!h || !PQ) return null;
+    ap.paczkaLoad?.();
+    const d = PK?.d, duet = d?.duet; if (!duet || duet.stan !== "aktywny") return null;
+    const cz = d.paczka?.czlonkowie || [], i = cz.findIndex((m) => m.id === duet.z), m = cz[i], nick = PQ.nazwa(m, i < 0 ? 1 : i), pr = PQ.postepDuetu(duet, d.dzis);
+    return h("button", { type: "button", class: "nw-duet", onclick: () => ap.go({ view: "paczka" }) },
+      svg('<circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="9" r="2.8"/><path d="M2.5 19c.6-3.3 3-5 5.5-5s4.9 1.7 5.5 5M13 14.6c.9-.6 2.1-.9 3.5-.9 2.3 0 4.3 1.5 5 4.3"/>', 20),
+      h("span", { class: "nw-duet-t" }, h("span", { text: fmt(PL.duetZ, nick, pr.suma, pr.cel) }), h("span", { class: "nw-duet-k" + (m?.dzis ? " ok" : ""), text: fmt(m?.dzis ? PL.duetDzis : PL.duetNie, nick) })),
+      h("span", { class: "nw-pkt-chev", "aria-hidden": "true", text: "›" }));
+  }
+  // Bez duetu, od 3. dnia nauki, raz (pokazane jednego dnia; „Nie teraz” albo wysłanie kończy): zaproszenie z navigator.share.
+  async function duetLink() {
+    const ap = A(), sk = W.skrot, PQ = W.SKROT_PACZKA; let kod = ap.pk?.()?.d?.paczka?.kod;
+    if (!kod && sk?.paczka?.zaloz) { const r = await sk.paczka.zaloz(); kod = r?.paczka?.kod; if (r?.ok) ap.paczkaLoad?.(true); }
+    return kod && PQ ? PQ.link(kod) : null;
+  }
+  function zaproszenieDuetu() {
+    const ap = A(), { h } = ap, PK = ap.pk?.(), PQ = W.SKROT_PACZKA; if (!h || !PQ || W.skrot?.state !== "in" || !W.skrot?.paczka) return null;
+    ap.paczkaLoad?.();
+    if (!PK?.d || PK.d.duet) return null; // dane paczki jeszcze nie przyszły albo duet już jest (także zaproszenie)
+    const dz = String(today()), byla = ap.ls?.get("skrot-duet-zapr");
+    if (byla && byla !== dz) return null;
+    if (L.dniNauki(progress(), zamDni(), przerwa).size < 3) return null;
+    ap.ls?.set("skrot-duet-zapr", dz);
+    const cfg = PQ.cfgZ ? PQ.cfgZ(PK.d.cfg) : PQ.CFG;
+    const zamknij = (box) => { ap.ls.set("skrot-duet-zapr", "x"); box.remove(); };
+    const box = h("div", { class: "nw-zapr" },
+      h("p", { class: "nw-zapr-t" }, svg('<circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="9" r="2.8"/><path d="M2.5 19c.6-3.3 3-5 5.5-5s4.9 1.7 5.5 5M13 14.6c.9-.6 2.1-.9 3.5-.9 2.3 0 4.3 1.5 5 4.3"/>', 20),
+        h("span", { text: fmt(PL.duetZapr, cfg.duet_cel, cfg.duet_nagroda) })),
+      h("div", { class: "row nw-zapr-b" },
+        h("button", { type: "button", class: "btn primary", onclick: async (e) => {
+          const b = e.currentTarget; b.disabled = true;
+          try {
+            const url = await duetLink(); if (!url) { ap.toast?.(PL.blad); return; }
+            if (navigator.share) { try { await navigator.share({ title: "Zdawalni", text: PL.duetShare, url }); zamknij(box); } catch (er) {} }
+            else { try { await navigator.clipboard.writeText(url); ap.toast?.(PL.linkSkop); } catch (er) { prompt(PL.duetWyslij, url); } zamknij(box); }
+          } finally { b.disabled = false; }
+        } }, PL.duetWyslij),
+        h("button", { type: "button", class: "btn ghost", onclick: () => zamknij(box) }, PL.nieTeraz)));
+    return box;
+  }
+  // Jedna linia pod kartą dnia: Zadania dnia (zwijana lista), zadanie tygodnia, duet albo zaproszenie do duetu.
+  let liniaOtwarta = null;
+  function linia() {
+    const ap = A(), { h } = ap; if (!h || W.skrot?.state !== "in") return null;
+    const st = zadaniaStan(), duet = duetWiersz(), zapr = duet ? null : zaproszenieDuetu();
+    if (!st && !duet && !zapr) return null;
+    let zad = null;
+    if (st && st.ok && !st.zablokowane && st.wszystkie) {
+      const wszystko = st.zrobione >= st.wszystkie;
+      const sum = h("summary", { class: "nw-linia-s" }, coin(),
+        h("span", { class: "nw-linia-t" }, h("span", { text: wszystko ? fmt(PL.zadWszystkie, st.suma) : fmt(PL.zadLinia, st.zrobione, st.wszystkie, st.suma) }),
+          !wszystko && st.godz ? " " : null, !wszystko && st.godz ? h("span", { class: "muted", text: fmt(PL.zadNowe, st.godz) }) : null),
+        h("span", { class: "nw-linia-dots", "aria-hidden": "true" }, st.dzienne.map((m) => h("i", { class: m.postep >= m.ile ? "on" : "" }))));
+      zad = h("details", { class: "nw-linia-d", open: liniaOtwarta ? true : null, ontoggle: (e) => { liniaOtwarta = e.currentTarget.open; } }, sum,
+        h("ul", { class: "nw-zad-l" }, st.dzienne.map((m) => zadWiersz(m)), st.tydz ? zadWiersz(st.tydz, true) : null),
+        h("p", { class: "muted nw-zad-auto", text: PL.zadAuto }));
+    } else if (st && st.ok && st.zablokowane) zad = h("p", { class: "muted nw-linia-lock", text: PL.zadPelna });
+    else if (!st && !duet && !zapr) return null;
+    return h("section", { class: "panel sk-panel nw-linia", id: "nw-linia", "aria-label": PL.zadTytul }, zad, duet, zapr);
+  }
+  function odswiezLinie() {
+    const el = document.querySelector("#main .nw-linia"); if (!el) { if (A().S?.route?.view === "home" && ZAD.d?.ok) { try { A().render?.(); } catch (e) {} } return; }
+    const nw = linia(); if (nw) el.replaceWith(nw); else el.remove();
+  }
+  // Dla ekranu końca karty (pętla 3): „Zadania dnia: 2/4 · +16” jako jeden wiersz albo null.
+  function zadaniaLinia() {
+    const { h } = A(), st = zadaniaStan(); if (!h || !st?.ok || st.zablokowane || !st.wszystkie) return null;
+    return h("p", { class: "nw-jutro-t nw-zad-koniec" }, coin(), h("span", { text: st.zrobione >= st.wszystkie ? fmt(PL.zadWszystkie, st.suma) : fmt(PL.zadLinia, st.zrobione, st.wszystkie, st.suma) }));
+  }
+  // „Twój postęp” (ptsDzis): tempo do najbliższego zaliczenia. cel = tematy do „umiesz” / (tygodnie do terminu − 1, min. 1);
+  // k = tematy, które w tym tygodniu przeszły do „umiesz”.
+  // shortcut: k liczone od stanu z pierwszego wejścia w tym tygodniu (localStorage), bez historii w bazie; gdy potrzebna
+  // dokładność między urządzeniami, zapisać tygodniowy stan w progress.
+  function tempo(sid, k, t) {
+    if (!sid || !k || !t || t.n == null) return null;
+    const ap = A(), pon = L.poniedzialek(today()), key = "skrot-tempo-" + sid;
+    let base = null; try { base = JSON.parse(ap.ls?.get(key) || "null"); } catch (e) {}
+    if (!base || base.w !== pon) { base = { w: pon, b: k.known }; ap.ls?.set(key, JSON.stringify(base)); }
+    const done = Math.max(0, k.known - base.b), left = Math.max(0, k.n - base.b);
+    if (!left) return null;
+    const tyg = Math.ceil(Math.max(0, t.n) / 7), cel = Math.max(1, Math.ceil(left / Math.max(1, tyg - 1)));
+    return cel === 1 ? fmt(PL.tempo1, Math.min(done, 1)) : fmt(PL.tempo, Math.min(done, cel), cel);
+  }
+  // Przedmiot bez terminu: „Znasz datę kolokwium z X? Wpisz” → to samo pole co w „Przygotuj się” (examSet().date).
+  function bezDaty(s, przyWierszu) {
+    const ap = A(), { h } = ap; if (!h || !s || !ap.saveExamSet) return null;
+    const part = (ap.partsOf?.(s.id) || ["CW"])[0];
+    const nazwa = W.SKROT_LANG === "en" && s.en ? s.en : s.pl;
+    return h("button", { type: "button", class: "link nw-bezdaty nw-link44", onclick: () => ap.modal((close) => {
+      const inp = h("input", { class: "input", type: "date", id: "nw-data", min: ap.todayKey?.(), "aria-label": fmt(PL.bezDatyTytul, nazwa) });
+      return [h("h2", { text: fmt(PL.bezDatyTytul, nazwa) }), h("p", { class: "muted", style: "margin:0", text: PL.bezDatyOpis }), inp,
+        h("div", { class: "row" },
+          h("button", { type: "button", class: "btn primary", style: "min-height:48px", onclick: () => { const v = inp.value; if (!v) { inp.focus(); return; }
+            ap.saveExamSet(s.id, part, { date: v }); close(); ap.toast?.(fmt(PL.dataZapisana, ap.fmtKey ? ap.fmtKey(v) : v)); ap.render?.(); } }, PL.zapisz),
+          h("button", { type: "button", class: "btn ghost", style: "min-height:48px", onclick: close }, PL.anuluj))];
+    }), "aria-label": fmt(PL.bezDatyTytul, nazwa) }, przyWierszu ? PL.bezDaty : fmt(PL.bezDatyZ, nazwa));
+  }
+  // Starosta: > 3 zaliczenia bez daty → jedna linia z linkiem do Terminów.
+  function starostaBezDat() {
+    const ap = A(), { h } = ap; if (!h || !ap.S?.isStarosta || !ap.zalUndated) return null;
+    let n = 0; try { n = ap.zalUndated().length; } catch (e) {}
+    if (n <= 3) return null;
+    return h("p", { class: "nw-starosta" }, svg('<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M12 13v4"/>', 18),
+      h("span", { text: fmt(PL.starosta, n) + " " }), h("button", { type: "button", class: "link nw-link44", onclick: () => ap.go({ view: "terms" }) }, PL.terminy));
+  }
+  // Przewodnik i Profil nauki: tylko w pierwszych 3 dniach konta (pierwszy dzień nauki albo pierwsze wejście na tej przeglądarce).
+  // shortcut: bez daty założenia konta z bazy; gdy skrot poda created_at, liczyć od niej.
+  function kontoNowe() {
+    const ap = A(), t = today(); let od = +(ap.ls?.get("skrot-pierwszy-dzien") || NaN);
+    if (!Number.isFinite(od)) { od = t; ap.ls?.set("skrot-pierwszy-dzien", String(t)); }
+    const nd = progress().nd || []; const pierwsza = nd.length ? Math.min(...nd) : (progress().streak?.d ?? t) - Math.max(0, (progress().streak?.n || 1) - 1);
+    return t - Math.min(od, pierwsza) < 3;
+  }
+  // „Więcej na dziś”: zwinięty blok z Bossem, Na luzie, Przewodnikiem i nowościami (kolejność bez zmian). Stan otwarcia pamięta
+  // przeglądarka. Gdy trwa Boss albo starosta ma coś do zatwierdzenia w nowościach, w podsumowaniu jest krótka podpowiedź.
+  function wiecej(items) {
+    const ap = A(), { h } = ap, el = (items || []).filter(Boolean); if (!h) return el;
+    if (!el.length) return null;
+    const boss = el.some((x) => x.matches?.(".bs-card") || x.querySelector?.(".bs-card")), nowe = el.find((x) => x.matches?.(".home-fold"));
+    const otwarta = ap.ls?.get("skrot-wiecej") === "1" || !!nowe?.open;
+    return h("details", { class: "panel sk-panel nw-wiecej", open: otwarta ? true : null, ontoggle: (e) => ap.ls?.set("skrot-wiecej", e.currentTarget.open ? "1" : "0") },
+      h("summary", { class: "nw-wiecej-s" }, h("span", { class: "nw-wiecej-t", text: PL.wiecej }),
+        boss ? h("span", { class: "chip plain nw-wiecej-c", text: PL.wiecejBoss }) : null),
+      h("div", { class: "nw-wiecej-b" }, el));
+  }
+  // Pusty stan Powtórek: obietnica jutra i karta 5 minut.
+  function powtorkiPusto() {
+    const ap = A(), { h } = ap; if (!h) return null;
+    return [h("p", { class: "big", style: "margin:0", text: PL.rvPusto }),
+      h("div", { class: "row" },
+        h("button", { type: "button", class: "btn primary", style: "min-height:48px", onclick: () => { ap.go({ view: "home" }); setTimeout(() => ap.ldOpen?.("karta"), 50); } }, PL.rvKarta),
+        h("button", { type: "button", class: "btn ghost", style: "min-height:48px", onclick: () => ap.go({ view: "materials" }) }, PL.wybierzPrzedmiot))];
+  }
   // ---------------------------------------------------------------- ekran „Seria +1” (dla ekranu końca, pętla 3)
   let ekranSesja = null; // dzień, w którym ekran pokazano w tej karcie przeglądarki (kolejne render() rysują go bez konfetti)
   function konfetti(box) {
@@ -988,6 +1191,81 @@ main[data-view="home"] .greet .rk-compact .rk-chips { flex-wrap: nowrap; }
 @keyframes nw-dot { from { transform: scale(.4); } to { transform: none; } }
 html #main .nw-przyp .btn.primary { min-height: 48px; border: 0; border-radius: 999px; background: var(--h-lime, var(--accent)); color: var(--h-lime-ink, var(--accent-ink)); font-weight: 800; box-shadow: 0 4px 0 var(--h-lime-edge, var(--accent-strong)); padding-inline: 22px; }
 .nw-przyp-powod { margin: 0 0 4px; font-weight: 700; }
+/* etap 5: linia zadań / duet / tempo / bez daty */
+html #main .nw-linia { padding: 6px 14px; display: grid; gap: 0; }
+.nw-linia-d > summary { list-style: none; cursor: pointer; }
+.nw-linia-d > summary::-webkit-details-marker { display: none; }
+.nw-linia-s { display: flex; align-items: center; gap: 8px; min-height: 48px; font-weight: 700; font-size: .95rem; }
+.nw-linia-s::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin: -4px 4px 0 auto; flex: none; opacity: .7; }
+.nw-linia-d[open] .nw-linia-s::after { transform: rotate(-135deg); margin-top: 4px; }
+.nw-linia-t { min-width: 0; line-height: 1.3; }
+.nw-linia-t .muted { font-weight: 500; white-space: nowrap; }
+.nw-coin { display: inline-flex; flex: none; width: 20px; height: 20px; vertical-align: -4px; }
+.nw-coin svg { width: 100%; height: 100%; }
+.nw-linia-dots { display: inline-flex; gap: 3px; flex: none; }
+@media (max-width: 420px) { .nw-linia-dots { display: none; } }
+.nw-linia-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line, var(--border)); }
+.nw-linia-dots i.on { background: var(--h-lime-edge, var(--accent)); }
+.nw-zad-l { list-style: none; margin: 0 0 4px; padding: 0; display: grid; gap: 2px; }
+.nw-zad { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 8px; min-height: 44px; padding: 4px 0; border-top: 1px solid var(--line, var(--border)); }
+.nw-zad-n { font-weight: 700; font-size: .9rem; color: var(--muted); text-align: center; }
+.nw-zad-ok { color: var(--ok, var(--accent)); justify-self: center; }
+.nw-zad-t { display: grid; gap: 2px; min-width: 0; font-size: .95rem; }
+.nw-zad.done .nw-zad-t { color: var(--muted); }
+.nw-zad-p { display: inline-flex; align-items: center; gap: 2px; font-weight: 700; white-space: nowrap; }
+.nw-zad-odeb { font-weight: 500; color: var(--muted); font-size: .85rem; }
+.nw-zad-bar { display: block; height: 6px; border-radius: 3px; background: var(--line, var(--border)); overflow: hidden; }
+.nw-zad-bar i { display: block; height: 100%; background: var(--h-lime-edge, var(--accent)); border-radius: 3px; }
+.nw-zad-auto { margin: 0 0 8px; font-size: .85rem; }
+.nw-linia-lock { margin: 10px 0; font-size: .92rem; }
+.nw-duet { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; border: 0; border-top: 1px solid var(--line, var(--border)); background: none; color: inherit; font: inherit; text-align: left; padding: 6px 0; cursor: pointer; }
+.nw-linia > .nw-duet:first-child, .nw-linia > .nw-zapr:first-child { border-top: 0; }
+.nw-duet-t { display: flex; flex-wrap: wrap; column-gap: 6px; flex: 1; min-width: 0; font-weight: 600; }
+.nw-duet-k { color: var(--muted); font-weight: 500; }
+.nw-duet-k.ok { color: var(--ok, var(--text)); font-weight: 700; }
+.nw-zapr { border-top: 1px solid var(--line, var(--border)); padding: 10px 0 6px; display: grid; gap: 8px; }
+.nw-zapr-t { display: flex; gap: 10px; align-items: flex-start; margin: 0; }
+.nw-zapr-b .btn { min-height: 44px; }
+.pz-tempo { display: block; font-size: .85rem; font-weight: 700; color: var(--text); }
+html #main .nw-bezdaty { display: inline-flex; align-items: center; min-height: 44px; margin: 2px 0 0; text-align: left; }
+.nw-starosta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 6px 0 0; font-size: .92rem; }
+html.calm .g-strip-ic { animation: none !important; }
+html #main .nw-wiecej { padding: 0 14px; }
+.nw-wiecej > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; min-height: 52px; font-weight: 800; }
+.nw-wiecej > summary::-webkit-details-marker { display: none; }
+.nw-wiecej > summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin: -4px 4px 0 auto; opacity: .7; }
+.nw-wiecej[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
+.nw-wiecej-b { display: grid; gap: 14px; padding: 0 0 14px; }
+.nw-wiecej-b > .home-fold, .nw-wiecej-b > .sk-hero, .nw-wiecej-b > .panel { margin: 0; }
+/* K2: chipy pod głównym przyciskiem karty dnia bez ucięcia (zawijanie), lekcje dla Ciebie jedna pod drugą na telefonie */
+html #main .ld-hero .ld-links { flex-wrap: wrap !important; overflow: visible !important; mask-image: none !important; -webkit-mask-image: none !important; }
+html #main .ld-hero .ld-links > .btn { flex: 0 1 auto; max-width: 100%; white-space: normal; min-height: 44px; }
+@media (max-width: 599px) {
+  /* Lekcje dla Ciebie jako zwarte wiersze: ikona, rodzaj i przedmiot, tytuł, strzałka (cały wiersz otwiera lekcję). */
+  html #main .ld-lessons { display: grid; grid-template-columns: 1fr; overflow: visible; margin: 0; padding: 0; gap: 8px; scroll-snap-type: none; }
+  html #main .ld-lessons > .zh-card { position: relative; flex: none; display: grid; grid-template-columns: 40px minmax(0, 1fr) 44px; grid-template-rows: auto auto; align-items: center; column-gap: 12px; row-gap: 2px; padding: 12px 14px; min-height: 0; }
+  html #main .ld-lessons > .zh-card > .zh-kind { display: contents; }
+  html #main .ld-lessons > .zh-card > .zh-kind > .zh-ico { grid-column: 1; grid-row: 1 / 3; align-self: center; margin: 0; }
+  html #main .ld-lessons > .zh-card > .zh-kind > .zh-kt { grid-column: 2; grid-row: 1; min-width: 0; }
+  html #main .ld-lessons > .zh-card > h3 { grid-column: 2; grid-row: 2; margin: 0; font-size: 1rem; line-height: 1.25; }
+  html #main .ld-lessons > .zh-card > :not(.zh-kind):not(h3):not(.zh-go):not(.ld-links) { display: none; }
+  html #main .ld-lessons > .zh-card { padding-bottom: 0; }
+  html #main .ld-lessons > .zh-card > .ld-links { grid-column: 2 / -1; grid-row: 3; margin: 0; min-height: 0; position: relative; z-index: 1; }
+  html #main .ld-lessons > .zh-card > .ld-links .link, html #main .ld-lessons > .zh-card > .ld-links button { min-height: 44px; padding: 0; font-size: .9rem; }
+  html #main .ld-lessons > .zh-card > .zh-go { position: static; grid-column: 3; grid-row: 1 / 3; width: 44px; height: 44px; min-height: 44px; padding: 0; margin: 0; border-radius: 50%; font-size: 0; display: grid; place-items: center; }
+  html #main .ld-lessons > .zh-card > .zh-go::before { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+  html #main .ld-lessons > .zh-card > .zh-go::after { content: ""; width: 9px; height: 9px; border-top: 2.5px solid currentColor; border-right: 2.5px solid currentColor; transform: translateX(-2px) rotate(45deg); }
+  /* Karta dnia: kroki („1 min Fiszki · …”) w jednej zwartej linii, tytuł mniejszy. */
+  html #main .ld-hero .zh-steps { gap: 4px 6px; }
+  html #main .ld-hero .zh-step { padding: 6px 10px; font-size: .85rem; gap: 4px; }
+  html #main .ld-hero h1, html #main .ld-hero h2 { font-size: clamp(1.5rem, 7vw, 1.9rem); line-height: 1.1; }
+  /* Twój postęp: kafelki terminów niższe. */
+  html #main .pz-tile { padding: 8px 4px; }
+  html #main .pz-days { width: 42px; height: 42px; margin-bottom: 0; }
+  html #main .nw-bezdaty { margin: -4px 0 0 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .g-strip-ic { animation: none !important; } }
 @keyframes nw-pop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes nw-up { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes nw-fall { to { transform: translate(var(--x), 320px) rotate(var(--r)); opacity: 0; } }
@@ -1003,7 +1281,7 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, ofertaPrzypomnienia, kartaPrzypomnieniaDzis, przelacznikKalendarza, ofertaInstalacji, godzinaPrzypomnienia, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu, powrotAktywny, oknoOdzyskana, maKartePowrotu, naprawaLinia, dniSeriiZywej, przypOpisTermin, postepOffline });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, ofertaPrzypomnienia, kartaPrzypomnieniaDzis, przelacznikKalendarza, ofertaInstalacji, godzinaPrzypomnienia, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu, powrotAktywny, oknoOdzyskana, maKartePowrotu, naprawaLinia, dniSeriiZywej, przypOpisTermin, postepOffline, linia, zadaniaStan, zadaniaLinia, zadaniaLaduj, duetWiersz, zaproszenieDuetu, tempo, bezDaty, starostaBezDat, kontoNowe, powtorkiPusto, wiecej });
   // Bez sieci logowanie się nie kończy (S.uid puste), więc S.progress jest puste i Dziś pokazałoby „0 dni”. Wtedy (tylko do
   // pokazania) bierzemy ostatni postęp zapisany w tej przeglądarce (bm-progress-<uid>, ten sam zapis co progLocal w index.html).
   let offlinePokazany = false;
@@ -1058,6 +1336,16 @@ html.calm .nw-conf { display: none; }
   if (wracamZLinku()) {
     try { A().ls?.set("skrot-wracam", String(today())); } catch (e) {}
     const pokaz = (i = 0) => { const el = document.querySelector("#main .nw-powrot"); if (el) { el.scrollIntoView({ block: "center" }); el.classList.add("nw-mig"); setTimeout(() => el.classList.remove("nw-mig"), 2500); el.querySelector(".nw-powrot-go")?.focus({ preventScroll: true }); try { const u = new URL(location.href); u.searchParams.delete("wracam"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); } catch (e) {} } else if (i < 40) setTimeout(() => pokaz(i + 1), 250); };
+    setTimeout(pokaz, 300);
+  }
+  // Link z maila „zadanie” (?zadania=1#/): rozwinięta linia zadań na Dziś, przewinięcie do niej i adres bez parametru.
+  let zq = null; try { zq = new URLSearchParams(location.search).get("zadania"); } catch (e) {}
+  if (zq === "1") {
+    liniaOtwarta = true;
+    const pokaz = (i = 0) => { const el = document.querySelector("#main .nw-linia"); const d = el?.querySelector("details");
+      if (d) { d.open = true; el.scrollIntoView({ block: "center" }); el.classList.add("nw-mig"); setTimeout(() => el.classList.remove("nw-mig"), 2500);
+        try { const u = new URL(location.href); u.searchParams.delete("zadania"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); } catch (e) {} }
+      else if (i < 60) setTimeout(() => pokaz(i + 1), 250); };
     setTimeout(pokaz, 300);
   }
   // Aplikacja mogła już narysować ekran ze starą pigułką (plik wczytuje się po niej).

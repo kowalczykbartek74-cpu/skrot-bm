@@ -1,0 +1,681 @@
+{
+ "etap": 5,
+ "runda": 1,
+ "pomiary": [
+  {
+   "nazwa": "K1 Dziś 390-jasny",
+   "teksty": 81,
+   "kontrast": [
+    {
+     "tekst": "Otwórz lekcję",
+     "cel": "BUTTON",
+     "kontrast": 14.38,
+     "wymagany": 4.5,
+     "px": 0,
+     "maly": true
+    },
+    {
+     "tekst": "Otwórz lekcję",
+     "cel": "BUTTON",
+     "kontrast": 14.38,
+     "wymagany": 4.5,
+     "px": 0,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "data szacowana",
+     "cel": "SPAN",
+     "kontrast": 8.6,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K1 Dziś 360-ciemny",
+   "teksty": 81,
+   "kontrast": [
+    {
+     "tekst": "Otwórz lekcję",
+     "cel": "BUTTON",
+     "kontrast": 12.07,
+     "wymagany": 4.5,
+     "px": 0,
+     "maly": true
+    },
+    {
+     "tekst": "Otwórz lekcję",
+     "cel": "BUTTON",
+     "kontrast": 12.07,
+     "wymagany": 4.5,
+     "px": 0,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "data szacowana",
+     "cel": "SPAN",
+     "kontrast": 9.53,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K1 Dziś 390-jasny-en",
+   "teksty": 81,
+   "kontrast": [
+    {
+     "tekst": "Open lesson",
+     "cel": "BUTTON",
+     "kontrast": 14.38,
+     "wymagany": 4.5,
+     "px": 0,
+     "maly": true
+    },
+    {
+     "tekst": "Open lesson",
+     "cel": "BUTTON",
+     "kontrast": 14.38,
+     "wymagany": 4.5,
+     "px": 0,
+     "maly": true
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "estimated date",
+     "cel": "SPAN",
+     "kontrast": 8.6,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 linia zadań rozwinięta 390-jasny",
+   "teksty": 16,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 linia zadań rozwinięta 360-ciemny",
+   "teksty": 16,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K3 linia zadań rozwinięta 390-jasny-en",
+   "teksty": 16,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 zaproszenie do duetu 390-jasny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 zaproszenie do duetu 360-ciemny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K4 zaproszenie do duetu 390-jasny-en",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 Twój postęp 390-jasny",
+   "teksty": 27,
+   "kontrast": [
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "data szacowana",
+     "cel": "SPAN",
+     "kontrast": 8.6,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 Twój postęp 360-ciemny",
+   "teksty": 27,
+   "kontrast": [
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "data szacowana",
+     "cel": "SPAN",
+     "kontrast": 9.53,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "dni",
+     "cel": "SMALL",
+     "kontrast": 13.63,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K5 Twój postęp 390-jasny-en",
+   "teksty": 27,
+   "kontrast": [
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "estimated date",
+     "cel": "SPAN",
+     "kontrast": 8.6,
+     "wymagany": 4.5,
+     "px": 10.24,
+     "maly": true
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    },
+    {
+     "tekst": "days",
+     "cel": "SMALL",
+     "kontrast": 16.44,
+     "wymagany": 4.5,
+     "px": 9.92,
+     "maly": true
+    }
+   ],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K6 pusty stan Powtórek 390-jasny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K6 pusty stan Powtórek 360-ciemny",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "K6 pusty stan Powtórek 390-jasny-en",
+   "teksty": 5,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "zrzuty": [
+  "k1-dzis-390-jasny.png",
+  "k1-wiecej-otwarte-390-jasny.png",
+  "k1-dzis-360-ciemny.png",
+  "k1-dzis-390-jasny-en.png",
+  "k2-chipy-lekcje-360-pl.png",
+  "k2-chipy-lekcje-360-en.png",
+  "k3-zadania-390-jasny.png",
+  "k3-zadania-360-ciemny.png",
+  "k3-zadania-390-jasny-en.png",
+  "k4-duet-360-ciemny.png",
+  "k4-duet-390-jasny-en.png",
+  "k4-zaproszenie-390-jasny.png",
+  "k4-zaproszenie-360-ciemny.png",
+  "k4-zaproszenie-390-jasny-en.png",
+  "k5-postep-390-jasny.png",
+  "k5-wpisz-date-390-jasny.png",
+  "k5-postep-360-ciemny.png",
+  "k5-postep-390-jasny-en.png",
+  "k6-powtorki-pusto-390-jasny.png",
+  "k6-powtorki-pusto-360-ciemny.png",
+  "k6-powtorki-pusto-390-jasny-en.png",
+  "k6-darmowe-terminy-390-jasny.png",
+  "k6-darmowe-terminy-360-ciemny.png",
+  "k6-darmowe-terminy-390-jasny-en.png"
+ ],
+ "ruch": [
+  {
+   "calm": "none"
+  }
+ ],
+ "dodatkowe": [
+  "Wysokość Dziś 390-jasny (od góry #main do dołu „Więcej na dziś”, bez stopki): 1744 px",
+  "Wysokość Dziś 360-ciemny (od góry #main do dołu „Więcej na dziś”, bez stopki): 1785 px",
+  "Wysokość Dziś 390-jasny-en (od góry #main do dołu „Więcej na dziś”, bez stopki): 1760 px"
+ ],
+ "testy": [
+  {
+   "name": "K1 390-jasny: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → „Więcej na dziś”",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny: wysokość Dziś (treść bez stopki) ≤ 1800 px",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny: bez poziomego przewijania",
+   "ok": true
+  },
+  {
+   "name": "K1 „Więcej na dziś” rozwija Bossa i Na luzie",
+   "ok": true
+  },
+  {
+   "name": "K1 360-ciemny: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → „Więcej na dziś”",
+   "ok": true
+  },
+  {
+   "name": "K1 360-ciemny: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)",
+   "ok": true
+  },
+  {
+   "name": "K1 360-ciemny: wysokość Dziś (treść bez stopki) ≤ 1800 px",
+   "ok": true
+  },
+  {
+   "name": "K1 360-ciemny: bez poziomego przewijania",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny-en: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → „Więcej na dziś”",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny-en: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny-en: wysokość Dziś (treść bez stopki) ≤ 1800 px",
+   "ok": true
+  },
+  {
+   "name": "K1 390-jasny-en: bez poziomego przewijania",
+   "ok": true
+  },
+  {
+   "name": "K1 ZD_WEJSCIE.pasekProby() pierwsza pod powitaniem, przed kartą dnia",
+   "ok": true
+  },
+  {
+   "name": "K1 nowe konto (1. dzień): Profil nauki na karcie dnia i Przewodnik w „Więcej na dziś”",
+   "ok": true
+  },
+  {
+   "name": "K1 przyciski zakupu na Dziś (ldBlock, ptsHome, ptsDzis) przez ZD_WEJSCIE.przyciskZakupu z komentarzem // ux-1 (jak na gałęzi pętli 1)",
+   "ok": true
+  },
+  {
+   "name": "K2 360 pl: wszystkie chipy pod „Zaczynamy” w całości w karcie (zawijają się, tekst nieucięty, ≥ 44 px)",
+   "ok": true
+  },
+  {
+   "name": "K2 360 pl: Lekcje dla Ciebie jedna pod drugą (ta sama kolumna, cała szerokość)",
+   "ok": true
+  },
+  {
+   "name": "K2 360 en: wszystkie chipy pod „Zaczynamy” w całości w karcie (zawijają się, tekst nieucięty, ≥ 44 px)",
+   "ok": true
+  },
+  {
+   "name": "K2 360 en: Lekcje dla Ciebie jedna pod drugą (ta sama kolumna, cała szerokość)",
+   "ok": true
+  },
+  {
+   "name": "K2 390 pl: wszystkie chipy pod „Zaczynamy” w całości w karcie (zawijają się, tekst nieucięty, ≥ 44 px)",
+   "ok": true
+  },
+  {
+   "name": "K2 390 pl: Lekcje dla Ciebie jedna pod drugą (ta sama kolumna, cała szerokość)",
+   "ok": true
+  },
+  {
+   "name": "K3 390-jasny: „Zadania dnia: 1/3 · +8 · nowe za H h” z monetą SVG (bez emoji)",
+   "ok": true
+  },
+  {
+   "name": "K3 390-jasny: rozwinięta lista: 3 zadania dnia + zadanie tygodnia; zrobione „Odebrane +8” bez wchodzenia do Sklepu",
+   "ok": true
+  },
+  {
+   "name": "K3 atrapa: nagroda za zrobione zadanie w księdze monet raz (auto-odbiór, bez Sklepu)",
+   "ok": true
+  },
+  {
+   "name": "K3 ZD_NAWYK.zadaniaStan() i zadaniaLinia() dla Sklepu i ekranu końca",
+   "ok": true
+  },
+  {
+   "name": "K3 360-ciemny: „Zadania dnia: 1/3 · +8 · nowe za H h” z monetą SVG (bez emoji)",
+   "ok": true
+  },
+  {
+   "name": "K3 360-ciemny: rozwinięta lista: 3 zadania dnia + zadanie tygodnia; zrobione „Odebrane +8” bez wchodzenia do Sklepu",
+   "ok": true
+  },
+  {
+   "name": "K3 390-jasny-en: „Daily tasks: 1/3 · +8 · new in H h”",
+   "ok": true
+  },
+  {
+   "name": "K3 link z maila ?zadania=1#/ rozwija linię zadań, przewija do niej i czyści adres",
+   "ok": true
+  },
+  {
+   "name": "K3 przypomnienia.js: rodzaj „zadanie” z path „?zadania=1#/” (PL i EN), kopia w funkcji Edge identyczna",
+   "ok": true
+  },
+  {
+   "name": "K3 PGlite v57: 10 dobrych odpowiedzi → +8 bez Sklepu, bez podwójnej nagrody, ręczny odbiór → already",
+   "ok": true
+  },
+  {
+   "name": "K4 390-jasny: „Duet z Kasia: 5/8 w tym tygodniu · Kasia dziś ✓”",
+   "ok": true
+  },
+  {
+   "name": "K4 wiersz duetu otwiera Paczkę i duet",
+   "ok": true
+  },
+  {
+   "name": "K4 360-ciemny: „Duet z Kasia: 5/8 w tym tygodniu · Kasia dziś ✓”",
+   "ok": true
+  },
+  {
+   "name": "K4 390-jasny-en: „Duo with Kasia: 5/8 this week · Kasia today ✓”",
+   "ok": true
+  },
+  {
+   "name": "K4 390-jasny: bez duetu, 4. dzień nauki – zaproszenie „Ucz się w duecie… Wyślij link”",
+   "ok": true
+  },
+  {
+   "name": "K4 „Wyślij link”: zakłada paczkę i wywołuje navigator.share z linkiem ?paczka=KOD; po wysłaniu zaproszenie znika",
+   "ok": true
+  },
+  {
+   "name": "K4 360-ciemny: bez duetu, 4. dzień nauki – zaproszenie „Ucz się w duecie… Wyślij link”",
+   "ok": true
+  },
+  {
+   "name": "K4 390-jasny-en: EN „Study as a duo… Send link”",
+   "ok": true
+  },
+  {
+   "name": "K4 bez navigator.share: link do schowka (kopiuj link)",
+   "ok": true
+  },
+  {
+   "name": "K4 zaproszenie tylko jednego dnia (pokazane wczoraj → dziś brak)",
+   "ok": true
+  },
+  {
+   "name": "K4 przed 3. dniem nauki bez zaproszenia",
+   "ok": true
+  },
+  {
+   "name": "K5 390-jasny: przy przedmiocie z najbliższym terminem „W tym tygodniu: 0 z 1 tematu”",
+   "ok": true
+  },
+  {
+   "name": "K5 390-jasny: przedmiot bez daty – „Znasz datę kolokwium? Wpisz” (z nazwą, gdy przedmiot schowany)",
+   "ok": true
+  },
+  {
+   "name": "K5 „Wpisz” otwiera pole daty (to samo co w „Przygotuj się”: examSet().date)",
+   "ok": true
+  },
+  {
+   "name": "K5 zapis daty: progress.exams[…].date + toast „Plan i przypomnienia ułożą się do …”",
+   "ok": true
+  },
+  {
+   "name": "K5 360-ciemny: przy przedmiocie z najbliższym terminem „W tym tygodniu: 0 z 1 tematu”",
+   "ok": true
+  },
+  {
+   "name": "K5 360-ciemny: przedmiot bez daty – „Znasz datę kolokwium? Wpisz” (z nazwą, gdy przedmiot schowany)",
+   "ok": true
+  },
+  {
+   "name": "K5 390-jasny-en: EN „This week: 0 of 1 topic”",
+   "ok": true
+  },
+  {
+   "name": "K5 starosta (> 3 zaliczenia bez daty): „N zaliczeń bez daty. Uzupełnij, a rok dostanie plan i bossa.” + Terminy",
+   "ok": true
+  },
+  {
+   "name": "K5 link prowadzi do Terminów",
+   "ok": true
+  },
+  {
+   "name": "K5 zwykłe konto: bez linii starosty",
+   "ok": true
+  },
+  {
+   "name": "K6 390-jasny: „Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.” + „Karta 5 minut” + „Wybierz przedmiot”",
+   "ok": true
+  },
+  {
+   "name": "K6 „Karta 5 minut” prowadzi na Dziś i otwiera kartę dnia",
+   "ok": true
+  },
+  {
+   "name": "K6 360-ciemny: „Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.” + „Karta 5 minut” + „Wybierz przedmiot”",
+   "ok": true
+  },
+  {
+   "name": "K6 390-jasny-en: EN „Nothing to review yet… 5-minute card”",
+   "ok": true
+  },
+  {
+   "name": "K6 390-jasny: wersja darmowa – kafelki terminów widoczne, notka „Plan nauki do każdego terminu jest w pełnej wersji.”",
+   "ok": true
+  },
+  {
+   "name": "K6 360-ciemny: wersja darmowa – kafelki terminów widoczne, notka „Plan nauki do każdego terminu jest w pełnej wersji.”",
+   "ok": true
+  },
+  {
+   "name": "K6 390-jasny-en: EN „A study plan for every deadline is in the full version.”",
+   "ok": true
+  },
+  {
+   "name": "ruch: html.calm – ikona Przewodnika bez animacji g-wave",
+   "ok": true
+  },
+  {
+   "name": "testy jednostkowe nawyk + przypomnienia",
+   "ok": true
+  },
+  {
+   "name": "konsola bez błędów (wszystkie stany)",
+   "ok": true
+  }
+ ],
+ "wynik": {
+  "pass": 63,
+  "fail": 0
+ }
+}
