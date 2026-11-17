@@ -36,7 +36,8 @@ test("kolejność: zaliczenie za 7 / 3 / 1 dzień → powrót → powtórki i re
   const back = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3 }));
   assert.equal(back.kind, "powrot");
   assert.equal(back.path, "?wracam=1#/", "UX-2 etap 3: link otwiera kartę powrotu na Dziś");
-  assert.equal(back.body, "Ostatnia nauka w Zdawalni: 5 dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.");
+  assert.equal(back.body, "Ostatnia nauka w Zdawalni: 5 dni temu. 3 minuty powtórki na start, reszta spokojnie poczeka.", "UX-2: jedna obietnica „3 minuty” w mailu i na stronie");
+  assert.equal(back.cta, "Wracam: 3 minuty");
   const r = P.wybierz(ctx({ rewanze: 8, powtorki: 0 }));
   assert.equal(r.kind, "powtorki");
   assert.equal(r.body, "Na dziś: 5 rewanży. 10 minut i masz to z głowy.", "port: 5 rewanży, 2 min na każdy");

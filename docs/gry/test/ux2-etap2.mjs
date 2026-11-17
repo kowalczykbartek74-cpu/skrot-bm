@@ -35,7 +35,7 @@ const P8 = { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 }, nd: [T23 -
 {
   const p = await open(b, { prog: P10, czas: PON, ls: mon(["a1"]) });
   const a = await pill(p);
-  ok("K1 weekend + 1 zamrożenie: seria spadła (0, bez szarego „10 dni”)", a && /^0 dni/.test(a.txt), a);
+  ok("K1 weekend + 1 zamrożenie: seria spadła (0, bez szarego „10 dni”)", a && /^0\b/.test(a.txt) && !/streak-todo/.test(a.cls), a);
   await p.evaluate(() => window.ZD_APP.xpFlush(12)); await p.waitForTimeout(1200);
   const s = await st(p);
   ok("K1 z 1 zamrożeniem po nauce: seria 1, zamrożenie niezużyte", s.streak.n === 1 && s.zam?.ma === 1 && !s.ux2.some((x) => x.fn === "uzyj_dni"), s);
@@ -88,7 +88,7 @@ const P8 = { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 }, nd: [T23 -
   await p.close();
   p = await open(b, { prog: P10, czas: PON, ls: mon(["a1"]) });
   a = await pill(p);
-  ok("Weekend z 1 zamrożeniem: od wejścia „0 dni · koniec serii 10 dni” (nie po cichu)", /^0 dni · koniec serii 10 dni/.test(a.txt) && /streak-koniec/.test(a.cls), a);
+  ok("Weekend z 1 zamrożeniem: od wejścia widać, że seria 10 dni spadła i da się ją odzyskać (0/2), nie po cichu", /^0 (dni )?· odzyskaj 10 dni \(0\/2\)/.test(a.txt) && /streak-naprawa/.test(a.cls) && /do odzyskania/.test(a.title), a);
   await shot(p, "koniec-serii-od-wejscia-390-jasny"); R.pomiary.push(await pomiar(p, "Koniec serii od wejścia 390", "#main .greet"));
   await p.close();
   p = await open(b, { prog: P10, czas: PON, ls: mon(["a1", "a2"]) });

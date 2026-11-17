@@ -181,13 +181,13 @@
     if (cokolwiek && ctx.lastStudyDay && diffDays(ctx.today, ctx.lastStudyDay) >= NOTIFY.comebackAfterDays) {
       var dd = diffDays(ctx.today, ctx.lastStudyDay);
       return en ? {
-        kind: "powrot", title: "One short task to start",
-        body: "Your last study session in Zdawalni was " + dd + " days ago. Start with one short task, the rest can wait.",
-        cta: "One task", path: "?wracam=1#/",
+        kind: "powrot", title: "Back in 3 minutes",
+        body: "Your last study session in Zdawalni was " + dd + " days ago. 3 minutes of review to start, the rest can wait.",
+        cta: "I'm back: 3 minutes", path: "?wracam=1#/",
       } : {
-        kind: "powrot", title: "Jedno krótkie zadanie na start",
-        body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. Zacznij od jednego krótkiego zadania, reszta spokojnie poczeka.",
-        cta: "Jedno zadanie", path: "?wracam=1#/",
+        kind: "powrot", title: "Wracasz? 3 minuty na start",
+        body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. 3 minuty powtórki na start, reszta spokojnie poczeka.",
+        cta: "Wracam: 3 minuty", path: "?wracam=1#/",
       };
     }
     if (co.powtorki && ctx.powtorki + ctx.rewanze > 0) {

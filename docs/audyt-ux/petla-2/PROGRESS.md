@@ -54,3 +54,7 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - Etap 3: naprawa serii w `progress.streakRepair` / `streakRepairAt` (raz na 30 dni); gdy naprawa możliwa, zamiast banera końca serii baner naprawy.
 - Etap 3: banery w treści Dziś wracają po przerysowaniu ekranu (MutationObserver na `#main`), dopóki trwają.
 - Etap 3: poprawki z recenzji etapu 2 wykonane (piątek, „Uzupełnij” tylko przy saldzie, dziś w przerwie, v55 po v56 + test D8, prezent raz dziennie, komentarz v56).
+- Etap 3 runda 2: „Wracam: 3 minuty” zamraża plan w `ldDay.plany.karta` (inaczej `ldOpen` składał kartę od nowa z „Najważniejsze z tematu”); `LDE.kartaPowrotu` tylko ze znanych tematów/rewanży, bez nich uczciwie „Wracam: 5 minut” + „Zaczniemy spokojnie…”. Przy karcie powrotu `ldBlock` nie pokazuje hero (jeden główny przycisk).
+- „Powrót po przerwie” = ≥ 2 opuszczone dni zajęć (bez sobót, niedziel, przerw i dni zamrożonych); piątek → poniedziałek to zwykły rytm.
+- Teksty EN „{0}-day streak”: liczba dni wstawiana zawsze po polsku („10 dni”), żeby słownik dobrał wzór „Seria {0} dni …”.
+- Mail „powrót”: jedna obietnica „3 minuty” (PL/EN, przycisk „Wracam: 3 minuty”).

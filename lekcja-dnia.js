@@ -519,7 +519,10 @@
   function kartaPowrotu(tematy, k) {
     var kk = {}; for (var x in k) kk[x] = k[x];
     kk.przerwaDni = Math.max(2, k.przerwaDni || 0);
-    var d = trybDnia(tematy, kk), t = wybierzKarte(tematy, d, kk);
+    // Tylko temat już znany albo z rewanżem: nigdy nowy (obietnica „bez nowego tematu”). Brak takiego tematu = null.
+    var znane = (tematy || []).filter(function (x) { return nieNowy(x) || x.rewanz; });
+    if (!znane.length) return null;
+    var d = trybDnia(znane, kk), t = wybierzKarte(znane, d, kk);
     var c = ulozKarte(t, d, kk); if (!c) return null;
     var rew = c.kroki[0].mech === "rewanze";
     c.kroki = [{ k: "rozgrzewka", mech: rew ? "rewanze" : "fiszki", n: 6, min: 2 }, { k: "sprawdzenie", mech: "pytania", n: 1, pewnosc: true, min: 1 }];

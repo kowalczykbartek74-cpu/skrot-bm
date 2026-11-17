@@ -20243,7 +20243,8 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     const paid = PAID(), lekcje = paid ? d.lekcje : d.lekcje.slice(0, 1);
     const zk = dayN() + ":" + (d.karta?.temat || ""); if (zhAnimKey !== zk) { zhAnimKey = zk; zhAnimAt = performance.now(); } const anim = performance.now() - zhAnimAt < 1500;
     return h("div", { class: "ld-block" + (anim ? " zh-anim" : "") },
-      ldHero(d, st),
+      // ux-2: przy karcie powrotu („Wracam: 3 minuty”) bez drugiego głównego przycisku „Zaczynamy · 5 min”.
+      window.ZD_NAWYK?.powrotAktywny?.() ? null : ldHero(d, st),
       d.lekcje.length ? h("div", { class: "ld-head row" }, h("span", { class: "eyebrow", text: "Lekcje dla Ciebie" }),
         h("label", { class: "ld-road" }, h("input", { type: "checkbox", checked: road ? true : null, onchange: (e) => ldRoad(e.target.checked) }), h("span", { text: "Jestem w drodze" }))) : null,
       lekcje.length ? h("div", { class: "ld-lessons" }, lekcje.map((_, i) => ldTile(d, st, i))) : null,

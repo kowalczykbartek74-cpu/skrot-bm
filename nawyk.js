@@ -52,8 +52,14 @@
     powrotTerminy: "Nowe terminy: {0}",
     powrotFiszki: "Fiszki do odświeżenia: {0}",
     powrotWracam: "Wracam: 3 minuty",
-    powrotLekko: "Dziś lżej: same powtórki i jedno pytanie, bez nowego tematu.",
-    naprawaWiersz: "Twoja seria {0} się przerwała. Zrób dziś i jutro po 5 minut, a wróci.",
+    powrotLekko: "Same powtórki i jedno pytanie, bez nowego tematu.",
+    powrotWracam5: "Wracam: 5 minut",
+    powrotSpokojnie: "Zaczniemy spokojnie od jednego krótkiego tematu.",
+    naprawaPill: "· odzyskaj {0} (0/2)",
+    naprawaPill1: "· odzyskaj {0} (1/2)",
+    seriaOdzyskanaH: "Seria odzyskana!",
+    super: "Super!",
+    naprawaWiersz: "Seria {0} do odzyskania: ucz się dziś i jutro (wystarczy krótka karta), a wróci.",
     naprawaJutro: "· jutro seria wróci do {0}",
     naprawaOk: "Seria odzyskana: {0}",
     naprawaDzis: "· ucz się dziś: seria wróci do {0}",
@@ -218,6 +224,12 @@
       const m = L.naprawaMozna(prog, t, c);
       return m ? { streakRepair: { n: m.n, od: t, dni: [t] } } : null;
     },
+    // Opuszczone dni zajęć między ostatnią nauką (od) a dziś (t), bez weekendów, przerw i dni zamrożonych.
+    opuszczone(od, t, c = {}) {
+      const zam = c.zamrozone || new Set(), prz = c.przerwa || (() => false); let n = 0;
+      for (let d = od + 1; d < t; d++) if (L.dow(d) < 5 && !prz(d) && !zam.has(d)) n++;
+      return n;
+    },
     tydzien(t, nauka, zamrozone, przerwa) { return L.kalendarz(t, 1, nauka, zamrozone, przerwa)[0]; },
     kamien: (n) => KAMIENIE.includes(n),
     nastepnyKamien: (n) => KAMIENIE.find((k) => k > n) || null,
@@ -240,6 +252,7 @@
   const IKONY = {
     snow: '<path d="M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5"/><path d="M9.5 3.5L12 6l2.5-2.5M9.5 20.5L12 18l2.5 2.5"/>',
     check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.5"/>',
+    retry: '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
     cross: '<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
     lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
     "ux2-klepsydra": '<path d="M6 3h12M6 21h12"/><path d="M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/>',
@@ -312,6 +325,8 @@
     return out;
   };
   const dni = (n) => `${n} ${A().plural ? A().plural(n, "dzień", "dni", "dni") : "dni"}`;
+  // Zawsze po polsku („10 dni”): słownik EN tłumaczy wtedy cały wzór „Seria {0} dni …” jako „{0}-day streak …”.
+  const dniPL = (n) => { const m10 = n % 10, m100 = n % 100; return `${n} ${n === 1 ? "dzień" : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "dni" : "dni"}`; };
   function stanTeraz() {
     const ap = A(), t = today(), p = progress(), sk = ap.streakN ? ap.streakN() : 0;
     const doneToday = !!(p.streak && p.streak.d === t && (p.streak.n || 0) > 0), c = kontekstSerii();
@@ -342,6 +357,11 @@
   function pigulka(compact) {
     const ap = A(), { h } = ap; if (!h) return null;
     let { sk, stan, czeka, zostanie, ma, weekend, przepadla, t } = stanTeraz(); const g = celDnia();
+    const rep = progress().streakRepair;
+    const repJutro = rep && rep.dni && rep.dni[rep.dni.length - 1] === t && rep.dni.length === 1;
+    const repDzis = rep && rep.dni && rep.dni.length === 1 && rep.dni[0] === t - 1 && stan !== "done";
+    const napT = przepadla && !rep ? L.naprawaMozna(progress(), t, kontekstSerii()) : null;
+    if (napT) przepadla = 0;
     // Piątek z 2 zamrożeniami: przed nauką „ucz się dziś: weekend chroniony” (pt + sob. + ndz. bez nauki to 3 dni, za dużo),
     // po nauce „weekend chroniony”.
     const piatek = L.dow(t) === 4 && ma >= 2 && sk > 0, piatekPo = piatek && stan === "done", piatekPrzed = piatek && (stan === "chroni" || stan === "todo" || stan === "risk") && !czeka;
@@ -351,12 +371,10 @@
     const word = compact ? ap.plural(sk, "dzień", "dni", "dni") : ap.plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu");
     const rg = ring(g.xp / g.cel); rg.setAttribute("role", "img"); rg.setAttribute("aria-label", fmt(PL.celDnia, g.xp, g.cel)); rg.removeAttribute("aria-hidden");
     rg.title = fmt(PL.celDnia, g.xp, g.cel);
-    const cls = "xp-chip nw-streak streak-" + stan + (sk ? "" : " off") + (przepadla ? " streak-koniec" : "");
-    const rep = progress().streakRepair, repJutro = rep && rep.dni && rep.dni[rep.dni.length - 1] === t && rep.dni.length === 1;
-    const repDzis = rep && rep.dni && rep.dni.length === 1 && rep.dni[0] === t - 1 && stan !== "done";
-    const dop = repJutro ? fmt(PL.naprawaJutro, dni(rep.n + 2)) : repDzis ? fmt(PL.naprawaDzis, dni(rep.n + 2)) : przepadla ? fmt(PL.koniecPill, dni(przepadla)) : stan === "todo" && czeka ? fmt(weekend ? PL.czekaKoszt : PL.czekaKoszt2, czeka, ma) : piatekWeekend ? PL.weekendChroniony : piatekPrzed ? PL.piatekUcz
+    const cls = "xp-chip nw-streak streak-" + stan + (sk ? "" : " off") + (przepadla ? " streak-koniec" : "") + (napT || repDzis ? " streak-naprawa" : "");
+    const dop = napT ? fmt(PL.naprawaPill, dniPL(napT.n)) : repJutro ? fmt(PL.naprawaJutro, dni(rep.n + 2)) : repDzis ? fmt(PL.naprawaPill1, dniPL(rep.n)) : przepadla ? fmt(PL.koniecPill, dniPL(przepadla)) : stan === "todo" && czeka ? fmt(weekend ? PL.czekaKoszt : PL.czekaKoszt2, czeka, ma) : piatekWeekend ? PL.weekendChroniony : piatekPrzed ? PL.piatekUcz
       : { todo: PL.dzisJeszcze, risk: PL.doPolnocy, chroni: zostanie ? fmt(PL.chroniZam, zostanie) : PL.chroniOst, pauza: PL.pauzaTxt, done: PL.dzisOk }[stan];
-    return h("button", { type: "button", class: cls, title: tytul, "aria-haspopup": "dialog", onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
+    return h("button", { type: "button", class: cls, title: napT ? fmt(PL.naprawaWiersz, dniPL(napT.n)) : tytul, "aria-haspopup": "dialog", onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
       h("span", { class: "nw-s-l" }, ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
         stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" || (stan === "todo" && czeka) ? svg(IKONY.snow, 16, "nw-klep") : null,
         dop ? h("span", { class: "nw-risk", text: " " + dop }) : null),
@@ -381,7 +399,7 @@
     let patch = L.seriaPatch(prog, t, sn);
     if (!prog?.xp || prog.xp.d !== t) { // pierwsze XP dnia: krok naprawy serii
       const k = L.naprawaKrok(prog, t, kontekstSerii());
-      if (k) { const { odzyskana, ...rest } = k; patch = { ...(patch || {}), ...rest }; if (odzyskana) setTimeout(() => baner("check", fmt(PL.naprawaOk, dni(odzyskana))), 700); }
+      if (k) { const { odzyskana, ...rest } = k; patch = { ...(patch || {}), ...rest }; if (odzyskana) setTimeout(() => oknoOdzyskana(odzyskana), 900); }
     }
     // Prezent po zapisie postępu (progSoon zapisuje po 2,5 s), żeby baza widziała już 2 dni nauki; w razie „za wcześnie” ponawia tik.
     if (sn && sn.n >= 2) setTimeout(() => { try { A().ls?.set("skrot-zam-prezent-dzien", ""); } catch (e) {} prezent(); }, 3500);
@@ -400,7 +418,7 @@
     const st = progress().streak, r = L.seriaDalej(st, t, kontekstSerii());
     if (!r) return null;
     if (r.uzyj.length) zuzyj(t, st, r.uzyj);
-    if (r.przerwana > 1) { if (L.naprawaMozna(progress(), t, kontekstSerii())) setTimeout(() => baner("ux2-klepsydra", fmt(PL.naprawaWiersz, dni(r.przerwana)), 0), 700); else koniecSerii(r.przerwana); }
+    if (r.przerwana > 1) { if (L.naprawaMozna(progress(), t, kontekstSerii())) setTimeout(() => baner("ux2-klepsydra", fmt(PL.naprawaWiersz, dniPL(r.przerwana)), 0), 700); else koniecSerii(r.przerwana); }
     return r.next;
   }
   function seriaZywa(st, t) { return L.seriaZywa(st, t, kontekstSerii()); }
@@ -430,7 +448,18 @@
   }
   function koniecSerii(n) {
     if (!(n > 1)) return;
-    setTimeout(() => baner("ux2-klepsydra", fmt(PL.koniecSerii, dni(n)), 0), 700);
+    setTimeout(() => baner("ux2-klepsydra", fmt(PL.koniecSerii, dniPL(n)), 0), 700);
+  }
+  // Seria odzyskana wysiłkiem: okno nagrody jak „Seria +1” (płomień, liczba; ruch wyłączany przez calm i reduced-motion).
+  function oknoOdzyskana(n) {
+    const ap = A(), { h, modal } = ap; if (!h || !modal) { baner("check", fmt(PL.naprawaOk, dni(n))); return; }
+    modal((close) => [h("div", { class: "nw-seria nw-odzyskana" + (reduced() ? "" : " anim") },
+      h("span", { class: "eyebrow nw-seria-h", text: PL.seriaOdzyskanaH }),
+      h("span", { class: "nw-seria-flame", "aria-hidden": "true" }, ap.kFlame()),
+      h("b", { class: "nw-seria-n num", text: String(n) }),
+      h("p", { class: "nw-seria-t", text: ap.plural(n, "dzień z rzędu!", "dni z rzędu!", "dni z rzędu!") }),
+      h("p", { class: "nw-jutro", text: fmt(PL.jutroSeria, dni(n + 1)) }),
+      h("button", { type: "button", class: "btn primary", style: "min-height:48px", onclick: close }, PL.super))], "nw-okno-modal");
   }
   // ---------------------------------------------------------------- okno „Twoja seria”
   function kalendarzEl(t, tygodni) {
@@ -537,37 +566,47 @@
   }
   // ---------------------------------------------------------------- etap 3: powroty po przerwie
   // Dni od ostatniego XP (0 = dziś już była nauka). „Ostatnio N dni temu”: N = dziś − dzień ostatniego XP.
-  function przerwaDni() { const x = progress().xp, t = today(); return x && Number.isFinite(x.d) && x.d < t ? t - x.d : 0; }
+  // Opuszczone dni zajęć od ostatniego XP: bez sobót i niedziel, dni przerw z kalendarza uczelni i dni zamrożonych.
+  // Zwykły rytm pon–pt (piątek → poniedziałek) i dzień chroniony zamrożeniem to nie „powrót po przerwie”.
+  function przerwaDni() { const x = progress().xp, t = today(); return x && Number.isFinite(x.d) && x.d < t ? L.opuszczone(x.d, t, kontekstSerii()) : 0; }
+  const dniOdNauki = () => { const x = progress().xp, t = today(); return x && Number.isFinite(x.d) && x.d < t ? t - x.d : 0; };
   const wracamZLinku = () => { try { return new URLSearchParams(location.search).get("wracam") === "1"; } catch (e) { return false; } };
+  // Karta „Wracam: 3 minuty” (null, gdy nie ma żadnego znanego tematu ani rewanżu: wtedy uczciwie zwykła karta 5 min).
+  function kartaPowrotuPlan() { const ap = A(); try { const k = ap.ldKontekst(); k.przerwaDni = Math.max(2, przerwaDni()); return ap.LDE?.kartaPowrotu?.(ap.ldTematy(), k) || null; } catch (e) { return null; } }
   function startPowrotu() {
-    const ap = A();
+    const ap = A(), c = kartaPowrotuPlan();
     try {
-      const k = ap.ldKontekst(); k.przerwaDni = Math.max(2, przerwaDni());
-      const c = ap.LDE?.kartaPowrotu?.(ap.ldTematy(), k), st = ap.ldDay.get();
-      if (c && st.dzien) { st.dzien.karta = c; delete st.plany.karta; delete st.done.karta; ap.ldDay.set(st); }
+      const st = ap.ldDay.get();
+      // Plan zamrożony w st.plany: ldOpen nie składa wtedy karty od nowa (inaczej wróciłoby „Najważniejsze z tematu”).
+      if (c && st.dzien) { st.dzien.karta = c; st.plany = { ...(st.plany || {}), karta: c }; delete st.done.karta; ap.ldDay.set(st); }
     } catch (e) {}
     ap.ldOpen?.("karta");
   }
+  function powrotAktywny() { return !!document.querySelector("#main .nw-powrot") || !!kartaPowrotuWarunek(); }
+  function kartaPowrotuWarunek() {
+    const ap = A(); if (!ap.S?.ready) return false;
+    if (progress().xp?.d === today()) return false; // po dzisiejszej nauce karta znika (także z maila)
+    return przerwaDni() >= 2 || wracamZLinku() || ap.ls?.get("skrot-wracam") === String(today());
+  }
   function kartaPowrotu() {
     const ap = A(), { h } = ap; if (!h || !ap.S?.ready) return null;
-    const gap = przerwaDni(), z = wracamZLinku() || ap.ls?.get("skrot-wracam") === String(today());
-    if (!(gap >= 2) && !z) return null;
-    if (progress().xp?.d === today() && !z) return null;
-    const t = today(), od = gap >= 2 ? t - gap + 1 : t, p = progress();
+    if (!kartaPowrotuWarunek()) return null;
+    const gap = dniOdNauki(), t = today(), od = gap >= 1 ? t - gap + 1 : t, p = progress();
     let zaj = 0; try { for (let d = od; d < t; d++) zaj += (ap.classesOn(dzienKey(d), ap.S.group, ap.S.sub) || []).length; } catch (e) {}
     const odMs = new Date(2026, 0, 1 + od).getTime();
     let ter = 0; try { ter = (ap.visDeadlines() || []).filter((x) => (x.createdAt || 0) >= odMs).length; } catch (e) {}
     let fis = 0; try { const dd = ap.srsDue(""); fis = (dd.due || []).length + (dd.rew || []).length; } catch (e) {}
-    const pkt = [zaj ? fmt(PL.powrotZajecia, zaj) : null, ter ? fmt(PL.powrotTerminy, ter) : null, fis ? fmt(PL.powrotFiszki, fis) : null].filter(Boolean).slice(0, 3);
-    const nap = L.naprawaMozna(p, t, kontekstSerii()), st = stanTeraz();
+    // Punkty jako działania (przyciski), tylko te, które są: zajęcia → Kalendarz, terminy → Terminy, fiszki → Powtórki.
+    const pkt = [zaj ? [fmt(PL.powrotZajecia, zaj), "calendar"] : null, ter ? [fmt(PL.powrotTerminy, ter), "terms"] : null, fis ? [fmt(PL.powrotFiszki, fis), "review"] : null].filter(Boolean).slice(0, 3);
+    const nap = L.naprawaMozna(p, t, kontekstSerii()), st = stanTeraz(), plan = kartaPowrotuPlan();
     const box = h("section", { class: "panel sk-panel nw-powrot", "aria-label": PL.powrotTytulDzis },
       h("div", { class: "nw-powrot-top" }, h("span", { class: "nw-powrot-stas", "aria-hidden": "true" }, ap.stasFace ? ap.stasFace("hi") : null),
         h("h2", { class: "nw-powrot-h", text: gap >= 2 ? fmt(PL.powrotTytul, dni(gap)) : PL.powrotTytulDzis })),
-      pkt.length ? h("ul", { class: "nw-powrot-pkt" }, pkt.map((x) => h("li", { text: x }))) : null,
-      nap ? h("p", { class: "nw-powrot-nap" }, svg(IKONY["ux2-klepsydra"], 18), h("span", { text: fmt(PL.naprawaWiersz, dni(nap.n)) }))
-        : st.przepadla ? h("p", { class: "nw-powrot-nap" }, svg(IKONY["ux2-klepsydra"], 18), h("span", { text: fmt(PL.seriaPrzepadla, dni(st.przepadla)) })) : null,
-      h("p", { class: "nw-powrot-lekko muted", text: PL.powrotLekko }),
-      h("button", { type: "button", class: "btn primary nw-powrot-go", onclick: () => startPowrotu() }, PL.powrotWracam));
+      pkt.length ? h("div", { class: "nw-powrot-pkt" }, pkt.map(([x, v]) => h("button", { type: "button", class: "nw-pkt", onclick: () => ap.go?.({ view: v }) }, h("span", { text: x }), h("span", { class: "nw-pkt-chev", "aria-hidden": "true", text: "›" })))) : null,
+      nap ? h("p", { class: "nw-powrot-nap naprawa" }, svg(IKONY.retry, 18), h("span", { text: fmt(PL.naprawaWiersz, dniPL(nap.n)) }), h("b", { class: "num nw-nap-post", text: "0/2" }))
+        : st.przepadla >= 3 ? h("p", { class: "nw-powrot-nap" }, svg(IKONY["ux2-klepsydra"], 18), h("span", { text: fmt(PL.seriaPrzepadla, dniPL(st.przepadla)) })) : null,
+      h("button", { type: "button", class: "btn primary nw-powrot-go", onclick: () => startPowrotu() }, plan ? PL.powrotWracam : PL.powrotWracam5),
+      h("p", { class: "nw-powrot-lekko muted", text: plan ? PL.powrotLekko : PL.powrotSpokojnie }));
     return box;
   }
   // Wiersz „Jutro: {temat}, 5 min” (ekran końca, pętla 3): karta 5 min z tematu spoza dzisiejszych, jak „Jeszcze 5 min”.
@@ -651,7 +690,7 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 .xp-chip.nw-streak .nw-s-l, .xp-chip.nw-streak .nw-s-r { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
 .xp-chip.nw-streak .nw-goal-t { font-size: .8rem; font-weight: 700; white-space: nowrap; }
 .xp-chip.nw-streak .nw-s-l { flex: 1 1 auto; }
-@media (max-width: 420px) { .xp-chip.nw-streak.streak-chroni .nw-xp { display: none; } }
+@media (max-width: 420px) { .xp-chip.nw-streak:is(.streak-chroni, .streak-naprawa, .streak-koniec) .nw-xp { display: none; } .xp-chip.nw-streak:is(.streak-naprawa, .streak-koniec) .nw-word { display: none; } }
 .xp-chip.nw-streak .nw-s-r { flex: none; }
 .xp-chip.nw-streak.streak-chroni .nw-risk { white-space: normal; text-align: left; line-height: 1.2; }
 .xp-chip.nw-streak.streak-chroni { outline: 2px dashed var(--h-blue, var(--accent-text)); outline-offset: -2px; background: var(--h-blue-soft, var(--accent-soft)) !important; color: var(--h-ink, var(--ink)) !important; }
@@ -677,13 +716,24 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 @media (max-width: 399px) { #main .greet .rk-compact .xp-chip.nw-tyg { order: 10; } }
 .nw-powrot { display: grid; gap: 10px; }
 .nw-powrot-top { display: flex; align-items: center; gap: 12px; }
-.nw-powrot-stas { flex: none; width: 52px; height: 52px; display: grid; place-items: center; }
-.nw-powrot-stas > * { width: 52px; height: 52px; }
+.nw-powrot-stas { flex: none; width: 44px; height: 44px; display: grid; place-items: center; }
+.nw-powrot-stas > *, .nw-powrot-stas svg { width: 44px !important; height: 44px !important; max-width: 44px; overflow: hidden; }
+.nw-powrot-stas { overflow: hidden; border-radius: 50%; }
+.nw-pkt { min-height: 44px; padding: 0 10px; font-size: .85rem; }
+.nw-powrot-h { font-size: 1.1rem; }
 .nw-powrot-h { margin: 0; font-family: var(--dz-head, inherit); font-size: 1.2rem; line-height: 1.25; }
-.nw-powrot-pkt { margin: 0; padding-left: 20px; display: grid; gap: 2px; }
+.nw-powrot-pkt { display: flex; flex-wrap: wrap; gap: 6px; }
+.nw-pkt { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--sunk, var(--h-line)); color: var(--ink); font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; }
+.nw-pkt-chev { font-weight: 800; }
+.nw-powrot-nap.naprawa { background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-ink, var(--ink)); }
+.nw-powrot-nap.naprawa .nw-ico { color: var(--h-acc, var(--accent-text)); }
+.nw-nap-post { margin-left: auto; padding: 2px 8px; border-radius: 999px; background: var(--h-card, var(--surface)); }
+.xp-chip.nw-streak.streak-naprawa { outline: 2px dashed var(--h-acc, var(--accent)) !important; background: var(--h-acc-soft, var(--accent-soft)) !important; color: var(--h-ink, var(--ink)) !important; }
+html #main .nw-powrot .btn.primary.nw-powrot-go { width: 100%; min-height: 52px; border: 0; border-radius: 999px; background: var(--h-lime, var(--accent)); color: var(--h-lime-ink, var(--accent-ink)); font-weight: 800; box-shadow: 0 4px 0 var(--h-lime-edge, var(--accent-strong)); }
+.nw-odzyskana { padding-top: 6px; }
 .nw-powrot-nap { display: flex; gap: 8px; align-items: flex-start; margin: 0; padding: 10px 12px; border-radius: 14px; background: var(--warn-soft); color: var(--warn); font-weight: 700; }
-.nw-powrot-lekko { margin: 0; font-size: .9rem; }
-.nw-powrot-go { min-height: 48px; justify-self: start; }
+.nw-powrot-lekko { margin: -4px 0 0; font-size: .85rem; text-align: center; }
+.nw-powrot { gap: 10px; }
 .nw-powrot.nw-mig { outline: 3px solid var(--h-lime-edge, var(--accent)); outline-offset: 3px; }
 .nw-zcard, .nw-oferta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 12px; align-items: center; padding: 14px 16px; border-radius: 22px; background: var(--h-blue-soft, var(--accent-soft)); color: var(--ink); }
 .nw-zcard > .btn, .nw-zcard > .nw-zam-full, .nw-oferta-btns { grid-column: 1 / -1; }
@@ -798,7 +848,7 @@ html.calm .nw-conf { display: none; }
   if (!W) return;
   if (document.head) css(); else document.addEventListener("DOMContentLoaded", css);
 
-  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu });
+  W.ZD_NAWYK = Object.assign(W.ZD_NAWYK || {}, { L, PL, fmt, pigulka, oknoSerii, ekranSerii, celDnia, ring, stanTeraz, przerwa, kalendarzEl, poXp, odswiezPigulki, seriaNastepna, seriaZywa, zamrozDni, baner, kontekstSerii, ponow, prezent, jutro, kartaZamrozenia, ofertaZamrozenia, tydzienMini, kartaPowrotu, przerwaDni, startPowrotu, powrotAktywny, oknoOdzyskana });
   // Stan dnia zmienia się z czasem (18:00 → „do północy”, północ → nowy dzień): co minutę i po powrocie do karty.
   let stanKey = null;
   function tik() {

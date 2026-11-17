@@ -413,5 +413,6 @@ describe("powrót po przerwie (pętla UX-2, etap 3)", () => {
     assert.deepEqual(c.kroki.map((s) => [s.k, s.n]), [["rozgrzewka", 6], ["sprawdzenie", 1]]);
     assert.equal(c.min, 3); assert.equal(c.tryb, "lekko"); assert.equal(c.powrot, true); assert.equal(c.nowe, false);
     assert.equal(LD.kartaPowrotu([], K()), null);
+    assert.equal(LD.kartaPowrotu([T({ id: "n2", poziom: "nowy" }), T({ id: "n3", poziom: "nowy" })], K({ przerwaDni: 4 })), null, "same nowe tematy: brak karty powrotu (nigdy nowy temat)");
   });
 });

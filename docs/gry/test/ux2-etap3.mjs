@@ -11,23 +11,27 @@ const b = await chromium.launch();
 const T = dayN("2026-11-06");
 const PR = { "skrot-zam-prezent": "1" };
 const karta = (p) => p.evaluate(() => { const e = document.querySelector("#main .nw-powrot"); if (!e) return null; const ld = document.querySelector("#main .ld-block, #main .sk-hero");
-  return { h: e.querySelector(".nw-powrot-h")?.textContent, pkt: [...e.querySelectorAll(".nw-powrot-pkt li")].map((x) => x.textContent), nap: e.querySelector(".nw-powrot-nap")?.textContent || null,
-    btn: [...e.querySelectorAll("button")].map((x) => x.textContent.trim()), stas: !!e.querySelector(".nw-powrot-stas svg, .nw-powrot-stas img, .nw-powrot-stas > *"),
+  return { h: e.querySelector(".nw-powrot-h")?.textContent, pkt: [...e.querySelectorAll(".nw-pkt")].map((x) => x.firstChild.textContent), pktH: [...e.querySelectorAll(".nw-pkt")].map((x) => Math.round(x.getBoundingClientRect().height)), nap: e.querySelector(".nw-powrot-nap > span:not(.nw-ico)")?.textContent || null,
+    btn: [...e.querySelectorAll(".nw-powrot-go")].map((x) => x.textContent.trim()), lekko: e.querySelector(".nw-powrot-lekko")?.textContent, hero: !!document.querySelector("#main .zh-hero"), goBottom: Math.round(e.querySelector(".nw-powrot-go").getBoundingClientRect().bottom), vh: innerHeight, stas: !!e.querySelector(".nw-powrot-stas svg, .nw-powrot-stas img, .nw-powrot-stas > *"),
     nadLekcja: !!ld && !!(e.compareDocumentPosition(ld) & Node.DOCUMENT_POSITION_FOLLOWING), top: Math.round(e.getBoundingClientRect().top) }; });
 const pill = (p) => p.evaluate(() => document.querySelector("#main .greet .nw-streak")?.innerText.replace(/\s+/g, " ").trim());
 
 // ---------- K1: przerwa 5 dni, dziś bez XP → „Dobrze, że jesteś. Ostatnio 5 dni temu.” nad kartą dnia, Staś, ≤ 3 prawdziwe punkty
-const P5 = { xp: { t: 400, d: T - 5, n: 15 }, streak: { d: T - 5, n: 2 }, nd: [T - 6, T - 5] };
+const P5 = { xp: { t: 400, d: T - 5, n: 15 }, streak: { d: T - 5, n: 2 }, nd: [T - 6, T - 5], done: { A1: Date.now() - 6 * 864e5 }, seen: ["A1"] };
 for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "pl"], [390, 844, true, "pl"], [1280, 900, false, "pl"], [390, 844, false, "en"]]) {
   const tag = `${w}-${dark ? "ciemny" : "jasny"}${lang === "en" ? "-en" : ""}`;
   const p = await open(b, { w, h: hh, dark, lang, prog: P5, ls: PR });
   const k = await karta(p);
   if (tag === "390-jasny") {
     ok("K1 przerwa 5 dni: „Dobrze, że jesteś. Ostatnio 5 dni temu.” nad kartą dnia, ze Stasiem", k && k.h === "Dobrze, że jesteś. Ostatnio 5 dni temu." && k.nadLekcja && k.stas, k);
-    ok("K1 najwyżej 3 punkty i tylko te, które są (liczby > 0)", k && k.pkt.length <= 3 && k.pkt.every((x) => /: [1-9]\d*$/.test(x)) && k.pkt.some((x) => /^Nowe terminy: 1$/.test(x)), k?.pkt);
-    ok("K1 jeden przycisk „Wracam: 3 minuty”", k && k.btn.length === 1 && k.btn[0] === "Wracam: 3 minuty", k?.btn);
+    ok("K1 najwyżej 3 punkty, tylko te, które są (liczby > 0), jako przyciski ≥ 44 px prowadzące dalej", k && k.pkt.length <= 3 && k.pkt.every((x) => /: [1-9]\d*$/.test(x)) && k.pkt.some((x) => /^Nowe terminy: 1$/.test(x)) && k.pktH.every((x) => x >= 44), k);
+    ok("K1 jeden główny przycisk „Wracam: 3 minuty” (bez konkurencyjnego „Zaczynamy · 5 min” w karcie dnia)", k && k.btn.length === 1 && k.btn[0] === "Wracam: 3 minuty" && !k.hero && /bez nowego tematu/.test(k.lekko), k);
+    await p.click("#main .nw-powrot .nw-pkt:nth-child(2)"); await p.waitForTimeout(500);
+    ok("K1 punkt „Nowe terminy” otwiera Terminy", await p.evaluate(() => window.ZD_APP.S.route.view === "terms"));
+    await p.evaluate(() => window.ZD_APP.go({ view: "home" })); await p.waitForTimeout(500);
     R.dodatkowe.push(`Punkty karty powrotu (390 jasny): ${JSON.stringify(k?.pkt)}`);
   }
+  if (w === 360) ok("K1 360×640: „Wracam” mieści się w pierwszym ekranie nad dolnym paskiem", k && k.goBottom <= k.vh - 72, k);
   if (lang === "en") ok("K1 EN: „Good to see you. Last time: 5 days ago.”, „I'm back: 3 minutes”", k && k.h === "Good to see you. Last time: 5 days ago." && k.btn[0] === "I'm back: 3 minutes", k);
   ok(`K1 ${tag}: nic poza ekranem`, (await pozaEkranem(p, "#main .nw-powrot *")).length === 0 && !(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)));
   await shot(p, `k1-powrot-${tag}`);
@@ -41,19 +45,31 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   const q = await open(b, { prog: { ...P5, xp: { t: 420, d: T, n: 5 }, streak: { d: T, n: 1 } }, ls: PR });
   ok("K1 dziś już XP: karta znika", (await karta(q)) === null);
   await q.close();
+  const PON = "2026-11-09T10:00:00+01:00", tp = dayN(PON);
+  const r = await open(b, { prog: { xp: { t: 400, d: tp - 3, n: 15 }, streak: { d: tp - 3, n: 6 } }, czas: PON, ls: PR });
+  ok("K1 zwykły rytm: piątek → poniedziałek (weekend) bez karty powrotu", (await karta(r)) === null);
+  await r.close();
+  const z = await open(b, { prog: { xp: { t: 400, d: tp - 4, n: 15 }, streak: { d: tp - 4, n: 6 } }, czas: PON, ls: { ...PR, "mock-v24": "1", "mock-mon": JSON.stringify({ start: 0, ksiega: [], pos: [], zam: { reqs: ["a"], dni: ["2026-11-06"] }, zal: {}, gab: [] }) } });
+  ok("K1 czwartek → poniedziałek, piątek chroniony zamrożeniem: bez karty powrotu", (await karta(z)) === null);
+  await z.close();
 }
 
 // ---------- K2: „Wracam: 3 minuty” → lżejsza karta (lekko: rozgrzewka ≤ 6 + 1 pytanie, bez nowego tematu); trybDnia z przerwaDni
 {
   const p = await open(b, { prog: P5, ls: PR });
   const tr = await p.evaluate(() => { const A = window.ZD_APP, k = A.ldKontekst(); return { przerwaDni: k.przerwaDni, tryb: A.LDE.trybDnia(A.ldTematy(), k).tryb }; });
-  ok("K2 trybDnia uwzględnia przerwaDni (5) → „lekko”", tr.przerwaDni === 5 && tr.tryb === "lekko", tr);
-  await p.click("#main .nw-powrot-go"); await p.waitForTimeout(1500);
-  const c = await p.evaluate(() => { const k = window.ZD_APP.ldDay.get().dzien?.karta; return k && { powrot: k.powrot, tryb: k.tryb, nowe: k.nowe, min: k.min, kroki: k.kroki.map((s) => [s.k, s.n]) }; });
-  const lp = await p.evaluate(() => !!document.querySelector(".lp-root, .lp, [class*='lp-']") && document.documentElement.classList.contains("lp-lock") || !!document.querySelector(".lp-top, .lp-card"));
-  ok("K2 karta powrotu: tryb lekko, bez nowego, 3 min, rozgrzewka 6 + 1 pytanie, odtwarzacz otwarty", c && c.powrot && c.tryb === "lekko" && c.nowe === false && c.min === 3 && JSON.stringify(c.kroki) === JSON.stringify([["rozgrzewka", 6], ["sprawdzenie", 1]]) && lp, { c, lp });
+  ok("K2 trybDnia uwzględnia przerwaDni (3 opuszczone dni zajęć: wt.–czw.; pon. 2.11 wolny) → „lekko”", tr.przerwaDni === 3 && tr.tryb === "lekko", tr);
+  await p.click("#main .nw-powrot-go"); await p.waitForTimeout(2500);
+  const c = await p.evaluate(() => { const k = window.ZD_APP.ldDay.get().plany?.karta; return k && { temat: k.temat, powrot: k.powrot, tryb: k.tryb, nowe: k.nowe, min: k.min, kroki: k.kroki.map((s) => [s.k, s.n]) }; });
+  const ekran = await p.evaluate(() => document.body.innerText.replace(/\s+/g, " "));
+  ok("K2 karta powrotu: znany temat (A1, nie nowy), tryb lekko, 3 min, rozgrzewka 6 + 1 pytanie", c && c.temat === "A1" && c.powrot && c.tryb === "lekko" && c.nowe === false && c.min === 3 && JSON.stringify(c.kroki) === JSON.stringify([["rozgrzewka", 6], ["sprawdzenie", 1]]), c);
+  ok("K2 odtwarzacz pokazuje powtórkę/pytanie, a nie „Najważniejsze z tematu” ani czytanie", /Sprawdzenie|Fiszk|Rewanż/i.test(ekran) && !/Najważniejsze z tematu|Czytaj dalej/.test(ekran), ekran.slice(0, 200));
   await shot(p, "k2-wracam-odtwarzacz-390-jasny");
   await p.close();
+  const q = await open(b, { prog: { ...P5, done: {}, seen: [] }, ls: PR });
+  const k = await karta(q);
+  ok("K2 bez żadnego znanego tematu: uczciwie „Wracam: 5 minut” i „Zaczniemy spokojnie od jednego krótkiego tematu.”", k && k.btn[0] === "Wracam: 5 minut" && /Zaczniemy spokojnie/.test(k.lekko), k);
+  await q.close();
 }
 try { const out = execSync("node --test tests/lekcja-dnia.test.js tests/nawyk.test.js", { cwd: ROOT, encoding: "utf8" }); const m = out.match(/ℹ pass (\d+)[\s\S]*ℹ fail (\d+)/); ok("K2/K3 testy jednostkowe (lekcja-dnia: przerwaDni, kartaPowrotu; nawyk: naprawa)", m && +m[2] === 0, m?.[0]); R.dodatkowe.push("## node --test tests/lekcja-dnia.test.js tests/nawyk.test.js", "```", out.split("\n").filter((l) => /powrót|naprawa|ℹ (tests|pass|fail)/.test(l)).join("\n"), "```"); }
 catch (e) { ok("K2/K3 testy jednostkowe", false, String(e.stdout || e).slice(-300)); }
@@ -63,20 +79,21 @@ catch (e) { ok("K2/K3 testy jednostkowe", false, String(e.stdout || e).slice(-30
   const P12 = { xp: { t: 900, d: T - 4, n: 20 }, streak: { d: T - 4, n: 12 }, nd: [T - 15, T - 14, T - 13, T - 12, T - 11, T - 10, T - 9, T - 8, T - 7, T - 6, T - 5, T - 4], streakBest: 12 };
   let p = await open(b, { prog: P12, ls: PR, czas: "2026-11-06T10:00:00+01:00" });
   let k = await karta(p);
-  ok("K3 seria 12 spadła po 3 dniach: wiersz „Twoja seria 12 dni się przerwała. Zrób dziś i jutro po 5 minut, a wróci.”", k && k.nap === "Twoja seria 12 dni się przerwała. Zrób dziś i jutro po 5 minut, a wróci.", k);
+  const pl0 = await pill(p);
+  ok("K3 seria 12 spadła po 3 dniach: wiersz „Seria 12 dni do odzyskania: ucz się dziś i jutro…” z postępem 0/2, pigułka „odzyskaj 12 dni (0/2)” (nie „koniec serii”), nic poza ekranem", k && k.nap === "Seria 12 dni do odzyskania: ucz się dziś i jutro (wystarczy krótka karta), a wróci." && /odzyskaj 12 dni \(0\/2\)/.test(pl0) && (await pozaEkranem(p, "#main .greet *")).length === 0 && !/koniec serii/.test(pl0), { k, pl0 });
   await shot(p, "k3-naprawa-wiersz-390-jasny");
   R.pomiary.push(await pomiar(p, "Karta powrotu z naprawą 390", "#main .nw-powrot", "#main .nw-powrot"));
   await p.evaluate(() => window.ZD_APP.xpFlush(10)); await p.waitForTimeout(3200);
   const d1 = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak, rep: window.ZD_APP.S.progress.streakRepair, ban: document.querySelector(".nw-baner")?.innerText }));
   const pl1 = await pill(p);
-  ok("K3 dzień 1 naprawy: seria 1, streakRepair zapisany, baner naprawy, pigułka „· jutro seria wróci do 14 dni”", d1.s.n === 1 && d1.rep?.n === 12 && d1.rep.dni.length === 1 && /Zrób dziś i jutro/.test(d1.ban || "") && /jutro seria wróci do 14 dni/.test(pl1), { d1, pl1 });
+  ok("K3 dzień 1 naprawy: seria 1, streakRepair zapisany, baner naprawy, pigułka „· jutro seria wróci do 14 dni”", d1.s.n === 1 && d1.rep?.n === 12 && d1.rep.dni.length === 1 && /ucz się dziś i jutro/.test(d1.ban || "") && /jutro seria wróci do 14 dni/.test(pl1), { d1, pl1 });
   await p.clock.setFixedTime(new Date("2026-11-07T11:00:00+01:00"));
   await p.reload(); await p.waitForTimeout(2600);
   const pl2 = await pill(p);
-  ok("K3 dzień 2 przed nauką: „· ucz się dziś: seria wróci do 14 dni”", /ucz się dziś: seria wróci do 14 dni/.test(pl2 || ""), pl2);
+  ok("K3 dzień 2 przed nauką: „· odzyskaj 12 dni (1/2)”", /odzyskaj 12 dni \(1\/2\)/.test(pl2 || ""), pl2);
   await p.evaluate(() => window.ZD_APP.xpFlush(10)); await p.waitForTimeout(1600);
-  const d2 = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak, rep: window.ZD_APP.S.progress.streakRepair, at: window.ZD_APP.S.progress.streakRepairAt, ban: document.querySelector(".nw-baner")?.innerText }));
-  ok("K3 dzień 2 z XP: seria 14 (n + 2), baner „Seria odzyskana: 14 dni”, zapisany dzień naprawy", d2.s.n === 14 && !d2.rep && d2.at === T + 1 && /Seria odzyskana: 14 dni/.test(d2.ban || ""), d2);
+  const d2 = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak, rep: window.ZD_APP.S.progress.streakRepair, at: window.ZD_APP.S.progress.streakRepairAt, okno: document.querySelector("#layer .nw-odzyskana")?.innerText.replace(/\s+/g, " ") }));
+  ok("K3 dzień 2 z XP: seria 14 (n + 2), okno nagrody „Seria odzyskana! 14 dni z rzędu!”, zapisany dzień naprawy", d2.s.n === 14 && !d2.rep && d2.at === T + 1 && /Seria odzyskana!/i.test(d2.okno || "") && /14/.test(d2.okno || ""), d2);
   await shot(p, "k3-seria-odzyskana-390-jasny");
   await p.close();
   p = await open(b, { prog: { ...P12, streakRepairAt: T - 10 }, ls: PR });
@@ -95,6 +112,8 @@ catch (e) { ok("K2/K3 testy jednostkowe", false, String(e.stdout || e).slice(-30
   await shot(p, "k4-z-maila-390-jasny");
   await p.reload(); await p.waitForTimeout(2600);
   ok("K4 po przeładowaniu tego samego dnia karta zostaje (skrot-wracam)", !!(await karta(p)));
+  await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(400); await p.evaluate(() => window.ZD_APP.render()); await p.waitForTimeout(400);
+  ok("K4 po dzisiejszej nauce karta z maila znika", (await karta(p)) === null);
   await p.close();
 }
 try { const out = execSync("node --test tests/przypomnienia.test.js", { cwd: ROOT, encoding: "utf8" }); ok("K4 mail „powrót”: link /?pz=…&wracam=1#/ (tests/przypomnienia.test.js)", /ℹ fail 0/.test(out), out.slice(-200)); }
@@ -106,9 +125,21 @@ for (const [w, dark, lang] of [[390, false, "pl"], [390, true, "pl"], [360, fals
   const p = await open(b, { w, h: 800, dark, lang, prog: { xp: { t: 900, d: T - 7, n: 20 }, streak: { d: T - 7, n: 10 } }, ls: PR });
   const k = await karta(p), pl = await pill(p);
   if (lang === "pl") ok(`K5 ${tag}: od wejścia pigułka „koniec serii 10 dni” i w karcie „Seria 10 dni się skończyła. Dziś zaczynasz nową.”`, /koniec serii 10 dni/.test(pl || "") && k && k.nap === "Seria 10 dni się skończyła. Dziś zaczynasz nową.", { pl, k });
-  else ok("K5 EN: „Your 10 days streak ended”", /streak ended/.test(k?.nap || ""), k);
+  else ok("K5 EN: „Your 10-day streak ended. Today you start a new one.”", (k?.nap || "") === "Your 10-day streak ended. Today you start a new one.", k?.nap);
   await shot(p, `k5-utrata-${tag}`);
   R.pomiary.push(await pomiar(p, `Utrata serii od wejścia ${tag}`, "#main", "#main .nw-powrot"));
+  await p.close();
+}
+// Ruch: wyróżnienie karty z maila, okno nagrody i baner przy reduced-motion i html.calm
+for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" }], ["calm", { calm: true }]]) {
+  const p = await open(b, { prog: P5, ls: PR, ...o });
+  await p.evaluate(() => window.ZD_NAWYK.oknoOdzyskana(14)); await p.waitForTimeout(150);
+  const an = await p.evaluate(() => ({ plomien: getComputedStyle(document.querySelector("#layer .nw-seria-flame")).animationName, liczba: getComputedStyle(document.querySelector("#layer .nw-seria-n")).animationName }));
+  await p.keyboard.press("Escape"); await p.waitForTimeout(300);
+  await p.evaluate(() => window.ZD_NAWYK.baner("check", "test")); await p.waitForTimeout(50);
+  an.baner = await p.evaluate(() => getComputedStyle(document.querySelector(".nw-baner")).animationName);
+  R.ruch.push({ nazwa, anim: an });
+  if (nazwa !== "zwykle") ok(`ruch wyłączony (${nazwa}): okno nagrody i baner`, an.plomien === "none" && an.liczba === "none" && an.baner === "none", an);
   await p.close();
 }
 await b.close();
