@@ -139,7 +139,7 @@ await bezOkien(P); await P.locator(".lp-start").click(); await P.waitForTimeout(
 const types = []; let warmTxt = "", confShot = false; guard = 0;
 while (guard++ < 40) {
   await bezOkien(P);
-  const card = P.locator(".lp-card"); if (!(await card.count())) { if (await P.locator(".lp-done-screen").count() && !/Lekcja (zrobiona|przerobiona)/.test(await P.locator(".lp-done-screen").innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
+  const card = P.locator(".lp-card"); if (!(await card.count())) { if (await P.locator(".lp-step").count()) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } /* UX-3 etap 5: karta przejścia między częściami */ if (await P.locator(".lp-done-screen").count() && !/Lekcja (zrobiona|przerobiona)/.test(await P.locator(".lp-done-screen").innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
   const type = await card.getAttribute("data-type"), txt = await card.innerText(); types.push(type);
   if (/rozgrzewka/i.test(txt)) warmTxt += txt + "\n";
   if (type === "hook" || type === "mc") {
@@ -182,7 +182,7 @@ const solve = (task) => { const [a, b, c] = (task.match(/\d+/g) || []).map(Numbe
 while (guard++ < 40) {
   await bezOkien(P);
   const card = P.locator(".lp-card");
-  if (!(await card.count())) { const d = P.locator(".lp-done-screen"); if (await d.count() && !/Lekcja (zrobiona|przerobiona)/.test(await d.innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
+  if (!(await card.count())) { if (await P.locator(".lp-step").count()) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } /* UX-3 etap 5 */ const d = P.locator(".lp-done-screen"); if (await d.count() && !/Lekcja (zrobiona|przerobiona)/.test(await d.innerText())) { await P.locator(".lp-cta").click(); await P.waitForTimeout(600); continue; } break; }
   const type = await card.getAttribute("data-type"), txt = await card.innerText(); t3.push(type);
   if (type === "read" && !sheet) { await P.locator(".lp-help").click(); await P.waitForTimeout(400); sheet = await P.locator(".lp-sheet").innerText(); await shotX(P, "v4-prosciej"); await P.locator(".lp-sheet .btn.primary").click(); await P.waitForTimeout(300); }
   if (type === "mc") {

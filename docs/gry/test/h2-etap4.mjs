@@ -60,7 +60,7 @@ for (const dark of [false, true]) {
   const p = await open(b, { ctx: undefined, ls: { "skrot-calm": "1" } });
   await p.locator(".zh-hero .zh-go").click(); await p.locator(".lp").waitFor({ timeout: 15000 });
   const done = await play(p, 60);
-  if (done) { await p.waitForTimeout(100); const t = await p.locator(".lp-stat b").allInnerTexts(); await p.waitForTimeout(900); const t2 = await p.locator(".lp-stat b").allInnerTexts(); ok("html.calm: liczby od razu końcowe (bez liczenia)", JSON.stringify(t) === JSON.stringify(t2), { t, t2 });
+  if (done) { await p.waitForTimeout(100); /* UX-3 etap 5: wyniki karty 5 min są w zwijanych „Szczegółach”, więc tekst bez innerText */ const tx = () => p.locator(".lp-stat b").evaluateAll((bs) => bs.map((b) => (b.querySelector('[aria-hidden="true"]') || b).textContent.trim())); const t = await tx(); await p.waitForTimeout(900); const t2 = await tx(); ok("html.calm: liczby od razu końcowe (bez liczenia)", JSON.stringify(t) === JSON.stringify(t2), { t, t2 });
     ok("liczenie w górę kończy na tych samych liczbach co ekran bez animacji", JSON.stringify(finals.jasny) === JSON.stringify(t2), { anim: finals.jasny, calm: t2 }); }
   else ok("html.calm: dojście do końca", false, "");
   await p.close();
@@ -78,7 +78,7 @@ for (const dark of [false, true]) {
     const cta = p.locator(".lp-bottom .lp-cta:not([disabled]):not([hidden])").first();
     if (await cta.count()) { await cta.click(); await p.waitForTimeout(200); } else await p.waitForTimeout(150);
   }
-  ok("quiz, złe odpowiedzi: na końcu części Staś „myślę” (nie radość)", part === "think", part);
+  /* UX-3 etap 5: mina według wyniku: 0% → „oops”, 40–60% → „think” */ ok("quiz, złe odpowiedzi: na końcu części Staś „myślę” albo „ups” (nie radość)", part === "think" || part === "oops", part);
   if (stars) {
     await p.waitForTimeout(1200); await p.screenshot({ path: `${OUT}/h2e4-quiz-gwiazdki.png` });
     const off = await p.locator(".lp-bigstars .off").evaluateAll((e) => e.map((x) => +getComputedStyle(x).opacity));
