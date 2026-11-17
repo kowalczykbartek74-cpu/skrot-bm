@@ -293,7 +293,9 @@
     V14FN.nauka_misje = () => {
       const r = misjeOryg(); if (!r?.ok || !paid) return r;
       for (const m of [...r.misje, ...(r.osobista ? [r.osobista] : [])]) if (m.postep >= m.ile && !m.odebrana) {
+        // klucz jak przy ręcznym odbiorze w atrapie (V14FN.nauka_misja_odbierz), żeby „Odbierz” odpowiadało „already”
         const klucz = m.id === "osobista" ? "misja:osobista:" + dzis() : "misja:" + m.id + ":" + dzis();
+        if (saldo() + m.nagroda > 100000) continue; // max_saldo jak w bazie
         if (!MON.ksiega.some((w) => w.klucz === klucz)) { MON.ksiega.push({ delta: m.nagroda, zrodlo: "misja", klucz, opis: (m.okres === "tydzien" ? "Zadanie tygodnia: " : "Zadanie dnia: ") + (m.opis_pl || ""), dzien: dzis() }); monZapisz(); }
         m.odebrana = true;
       }

@@ -118,13 +118,19 @@ for (const [tag, w, dark, lang] of tagi) {
   } catch (e) { ok("K3 PGlite", false, String(e.stdout || e).slice(-400)); }
 }
 
+{
+  const p = await open(b, { prog: P4, ls: LS });
+  const s0 = await txt(p, "#main .nw-linia-s");
+  ok("K3 przy 0 zrobionych: pula do zdobycia zamiast „+0”", /^Zadania dnia: 0\/3 · do zdobycia \+\d+ · nowe za \d+ h$/.test(s0 || ""), s0);
+  await p.close();
+}
 // ---------- K4: duet na Dziś; bez duetu po 3. dniu nauki raz zaproszenie (navigator.share, inaczej kopiowanie)
 for (const [tag, w, dark, lang] of tagi) {
   const p = await open(b, { w, dark, lang, prog: P4, ls: { ...LS, "mock-paczka": DUET } });
   await p.waitForTimeout(600);
   const d = await txt(p, "#main .nw-duet");
-  if (lang === "pl") ok(`K4 ${tag}: „Duet z Kasia: 5/8 w tym tygodniu · Kasia dziś ✓”`, d && /Duet z Kasia: 5\/8 w tym tygodniu/.test(d) && /Kasia dziś ✓/.test(d), d);
-  else ok(`K4 ${tag}: „Duo with Kasia: 5/8 this week · Kasia today ✓”`, d && /Duo with Kasia: 5\/8 this week/.test(d) && /Kasia today ✓/.test(d), d);
+  if (lang === "pl") ok(`K4 ${tag}: „Duet: Ty i Kasia · 5/8 w tym tygodniu · Kasia dziś ✓”`, d && /Duet: Ty i Kasia · 5\/8 w tym tygodniu/.test(d) && /Kasia dziś ✓/.test(d), d);
+  else ok(`K4 ${tag}: „Duo: you and Kasia · 5/8 this week · Kasia today ✓”`, d && /Duo: you and Kasia · 5\/8 this week/.test(d) && /Kasia today ✓/.test(d), d);
   if (tag === "390-jasny") { await p.click("#main .nw-duet"); await p.waitForTimeout(500); ok("K4 wiersz duetu otwiera Paczkę i duet", await p.evaluate(() => /paczka/.test(location.hash))); }
   else { await p.evaluate(() => document.querySelector("#main .nw-linia")?.scrollIntoView({ block: "center" })); await shot(p, `k4-duet-${tag}`); }
   await p.close();
@@ -133,7 +139,7 @@ for (const [tag, w, dark, lang] of tagi) {
   const p = await open(b, { w, dark, lang, prog: P4, ls: { ...LS, "skrot-duet-zapr": "" }, ctx: {} });
   await p.waitForTimeout(600);
   const z = await txt(p, "#main .nw-zapr");
-  if (lang === "pl") ok(`K4 ${tag}: bez duetu, 4. dzień nauki – zaproszenie „Ucz się w duecie… Wyślij link”`, z && /Ucz się w duecie: wspólny cel 8 dni w tygodniu, \+20 dla obojga/.test(z) && /Wyślij link/.test(z) && /Nie teraz/.test(z), z);
+  if (lang === "pl") ok(`K4 ${tag}: bez duetu, 4. dzień nauki – zaproszenie „Ucz się w duecie… Wyślij link”`, z && /Ucz się w duecie: razem 8 dni nauki w tym tygodniu \(Ty \+ znajomy\), \+20 dla obojga/.test(z) && /Wyślij link/.test(z) && /Nie teraz/.test(z), z);
   else ok(`K4 ${tag}: EN „Study as a duo… Send link”`, z && /Study as a duo/.test(z) && /Send link/.test(z), z);
   await p.evaluate(() => document.querySelector("#main .nw-linia")?.scrollIntoView({ block: "center" })); await p.waitForTimeout(200);
   await shot(p, `k4-zaproszenie-${tag}`);
@@ -180,6 +186,8 @@ for (const [tag, w, dark, lang] of tagi) {
     await p.fill("#layer input[type=date]", "2026-12-15"); await p.click("#layer .btn.primary"); await p.waitForTimeout(600);
     const po = await p.evaluate(() => ({ ex: JSON.stringify(window.ZD_APP.S.progress.exams || {}), toast: document.body.innerText.match(/Plan i przypomnienia ułożą się do[^\n]*/)?.[0] }));
     ok("K5 zapis daty: progress.exams[…].date + toast „Plan i przypomnienia ułożą się do …”", /2026-12-15/.test(po.ex) && !!po.toast, po);
+    const kol = await p.evaluate(() => [...document.querySelectorAll("#main .pz-row, #main .pz-tile")].map((e) => e.innerText.replace(/\s+/g, " ")).find((t) => /Analiza|Mathematical/.test(t)) || null);
+    ok("K5 po zapisie przedmiot ma kolokwium z tą datą (część jak w „Przygotuj się”)", /kolokwium/i.test(kol || "") && !/bez terminu/.test(kol || ""), kol);
   }
   await p.close();
 }
@@ -224,7 +232,7 @@ for (const [tag, w, dark, lang] of tagi) {
   const p = await open(b, { prog: {}, ls: { ...LS, "skrot-pierwszy-dzien": String(T), "skrot-wiecej": "1" }, calm: true });
   const a = await p.evaluate(() => { const e = document.querySelector(".g-strip-ic"); return e ? getComputedStyle(e).animationName : "brak"; });
   ok("ruch: html.calm – ikona Przewodnika bez animacji g-wave", a === "none" || a === "brak", a);
-  R.ruch.push({ calm: a });
+  R.ruch.push({ element: ".g-strip-ic (Przewodnik)", calm: a });
   await p.close();
 }
 try { const out = execSync("node --test tests/nawyk.test.js tests/przypomnienia.test.js", { cwd: ROOT, encoding: "utf8" }); ok("testy jednostkowe nawyk + przypomnienia", /ℹ fail 0/.test(out)); }

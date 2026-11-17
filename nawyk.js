@@ -63,6 +63,8 @@
     blad: "Nie udało się. Spróbuj za chwilę.",
     wybierzPrzedmiot: "Wybierz przedmiot",
     zadLinia: "Zadania dnia: {0}/{1} · +{2}",
+    zadLinia0: "Zadania dnia: 0/{0} · do zdobycia +{1}",
+    zadZrobione: "zrobione",
     zadNowe: "· nowe za {0} h",
     zadWszystkie: "Wszystkie zadania dnia zrobione · +{0}",
     zadTydz: "Zadanie tygodnia",
@@ -70,10 +72,10 @@
     zadAuto: "Nagrody za zrobione zadania trafiają do monet same.",
     zadPelna: "Zadania dnia z monetami są w pełnej wersji.",
     zadWczytuje: "Wczytuję zadania…",
-    duetZ: "Duet z {0}: {1}/{2} w tym tygodniu",
+    duetZ: "Duet: Ty i {0} · {1}/{2} w tym tygodniu",
     duetDzis: "{0} dziś ✓",
     duetNie: "{0}: dziś jeszcze nie",
-    duetZapr: "Ucz się w duecie: wspólny cel {0} dni w tygodniu, +{1} dla obojga. Wyślij link znajomemu z roku.",
+    duetZapr: "Ucz się w duecie: razem {0} dni nauki w tym tygodniu (Ty + znajomy), +{1} dla obojga. Wyślij link znajomemu z roku.",
     duetWyslij: "Wyślij link",
     duetShare: "Uczmy się razem w Zdawalni: wspólny cel na ten tydzień.",
     linkSkop: "Link skopiowany.",
@@ -816,9 +818,10 @@
     zadaniaLaduj();
     const d = ZAD.d; if (!d || !d.ok) return d ? { ok: false } : null;
     const dzienne = [...(d.osobista ? [d.osobista] : []), ...d.misje.filter((m) => m.okres === "dzien")];
-    const zrobione = dzienne.filter((m) => m.postep >= m.ile).length, suma = dzienne.filter((m) => m.postep >= m.ile).reduce((a, m) => a + (m.nagroda || 0), 0);
+    const zrobione = dzienne.filter((m) => m.postep >= m.ile).length, suma = dzienne.filter((m) => m.odebrana).reduce((a, m) => a + (m.nagroda || 0), 0);
+    const pula = dzienne.reduce((a, m) => a + (m.nagroda || 0), 0);
     const koniec = dzienne[0]?.do_kiedy ? new Date(dzienne[0].do_kiedy) - Date.now() : null;
-    return { ok: true, zrobione, wszystkie: dzienne.length, suma, godz: koniec != null ? Math.max(1, Math.ceil(koniec / 36e5)) : null, dzienne,
+    return { ok: true, zrobione, wszystkie: dzienne.length, suma, pula, godz: koniec != null ? Math.max(1, Math.ceil(koniec / 36e5)) : null, dzienne,
       tydz: d.misje.find((m) => m.okres === "tydzien") || null, zablokowane: !!d.zablokowane };
   }
   const opisZad = (m) => (W.SKROT_LANG === "en" ? m.opis_en : m.opis_pl) || m.opis_pl || "";
@@ -828,7 +831,8 @@
       done ? svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 18, "nw-zad-ok") : h("span", { class: "nw-zad-n num", text: `${m.postep}/${m.ile}` }),
       h("span", { class: "nw-zad-t" }, tydz ? h("small", { class: "muted", text: PL.zadTydz }) : null, h("span", { "data-noi18n": "", translate: "no", text: opisZad(m) }),
         tydz ? h("span", { class: "nw-zad-bar", role: "progressbar", "aria-label": PL.zadTydz, "aria-valuemin": "0", "aria-valuemax": String(m.ile), "aria-valuenow": String(m.postep) }, h("i", { style: `width:${Math.min(100, (m.postep / m.ile) * 100).toFixed(1)}%` })) : null),
-      h("span", { class: "nw-zad-p num" }, done ? h("span", { class: "nw-zad-odeb", text: PL.zadOdebrane + " " }) : null, "+" + m.nagroda, coin()));
+      // „Odebrane” tylko, gdy baza naprawdę zapisała nagrodę (m.odebrana); zrobione, a jeszcze nie zapisane: „zrobione”.
+      h("span", { class: "nw-zad-p num" }, done ? h("span", { class: "nw-zad-odeb", text: (m.odebrana ? PL.zadOdebrane : PL.zadZrobione) + " " }) : null, "+" + m.nagroda, coin()));
   }
   // Duet (paczka.js, SQL v37): wiersz z postępem tygodnia i tym, czy partner już się dziś uczył.
   function duetWiersz() {
@@ -882,7 +886,7 @@
     if (st && st.ok && !st.zablokowane && st.wszystkie) {
       const wszystko = st.zrobione >= st.wszystkie;
       const sum = h("summary", { class: "nw-linia-s" }, coin(),
-        h("span", { class: "nw-linia-t" }, h("span", { text: wszystko ? fmt(PL.zadWszystkie, st.suma) : fmt(PL.zadLinia, st.zrobione, st.wszystkie, st.suma) }),
+        h("span", { class: "nw-linia-t" }, h("span", { text: wszystko ? fmt(PL.zadWszystkie, st.suma) : st.zrobione ? fmt(PL.zadLinia, st.zrobione, st.wszystkie, st.suma) : fmt(PL.zadLinia0, st.wszystkie, st.pula) }),
           !wszystko && st.godz ? " " : null, !wszystko && st.godz ? h("span", { class: "muted", text: fmt(PL.zadNowe, st.godz) }) : null),
         h("span", { class: "nw-linia-dots", "aria-hidden": "true" }, st.dzienne.map((m) => h("i", { class: m.postep >= m.ile ? "on" : "" }))));
       zad = h("details", { class: "nw-linia-d", open: liniaOtwarta ? true : null, ontoggle: (e) => { liniaOtwarta = e.currentTarget.open; } }, sum,
@@ -918,7 +922,7 @@
   // Przedmiot bez terminu: „Znasz datę kolokwium z X? Wpisz” → to samo pole co w „Przygotuj się” (examSet().date).
   function bezDaty(s, przyWierszu) {
     const ap = A(), { h } = ap; if (!h || !s || !ap.saveExamSet) return null;
-    const part = (ap.partsOf?.(s.id) || ["CW"])[0];
+    const part = ap.prepPart ? ap.prepPart(s.id, null, "kolokwium") : (ap.partsOf?.(s.id) || ["CW"])[0]; // ta sama część co „Przygotuj się”
     const nazwa = W.SKROT_LANG === "en" && s.en ? s.en : s.pl;
     return h("button", { type: "button", class: "link nw-bezdaty nw-link44", onclick: () => ap.modal((close) => {
       const inp = h("input", { class: "input", type: "date", id: "nw-data", min: ap.todayKey?.(), "aria-label": fmt(PL.bezDatyTytul, nazwa) });

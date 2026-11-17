@@ -118,24 +118,27 @@ create or replace function public.nauka_misje_auto(p_user uuid, d date) returns 
 language plpgsql security definer set search_path = '' as $$
 declare
   m jsonb; o public.nauka_misja_osobista; oc jsonb := public.nauka_misja_osobista_cfg();
-  maxs int := (public.nauka_mon_cfg()->>'max_saldo')::int; n int := 0; k int;
+  maxs int := (public.nauka_mon_cfg()->>'max_saldo')::int; n int := 0; k int; s int;
 begin
   if p_user is null or d is null then return 0; end if;
   if exists (select 1 from public.nauka_konta x where x.user_id = p_user and x.zablokowane) then return 0; end if;
+  perform pg_advisory_xact_lock(hashtext('nauka_mon:' || p_user::text)); -- jak w nauka_misja_odbierz (limit salda)
+  s := public.nauka_saldo(p_user);
   for m in select e from jsonb_array_elements(public.nauka_misje_na(d)) e loop
-    if public.nauka_misja_postep(p_user, m, d) >= (m->>'ile')::int
-       and not exists (select 1 from public.nauka_monety x where x.user_id = p_user and x.klucz = public.nauka_misja_klucz(m, d))
-       and public.nauka_saldo(p_user) + (m->>'nagroda')::int <= maxs then
+    -- najpierw tani test „już odebrane”, dopiero potem liczenie postępu
+    continue when exists (select 1 from public.nauka_monety x where x.user_id = p_user and x.klucz = public.nauka_misja_klucz(m, d));
+    if s + (m->>'nagroda')::int <= maxs and public.nauka_misja_postep(p_user, m, d) >= (m->>'ile')::int then
       insert into public.nauka_monety (user_id, dzien, delta, zrodlo, klucz, opis)
       values (p_user, d, (m->>'nagroda')::int, 'misja', public.nauka_misja_klucz(m, d),
               case when m->>'okres' = 'tydzien' then 'Zadanie tygodnia: ' else 'Zadanie dnia: ' end || (m->>'pl'))
       on conflict (user_id, klucz) do nothing;
-      get diagnostics k = row_count; n := n + k;
+      get diagnostics k = row_count; n := n + k; s := s + k * (m->>'nagroda')::int;
     end if;
   end loop;
   select * into o from public.nauka_misja_osobista x where x.user_id = p_user and x.dzien = d;
-  if found and public.nauka_misja_osobista_postep(p_user, o) >= (oc->>o.typ)::int
-     and public.nauka_saldo(p_user) + (oc->>'nagroda')::int <= maxs then
+  if found and s + (oc->>'nagroda')::int <= maxs
+     and not exists (select 1 from public.nauka_monety x where x.user_id = p_user and x.klucz = 'misja:osobista:' || d::text)
+     and public.nauka_misja_osobista_postep(p_user, o) >= (oc->>o.typ)::int then
     insert into public.nauka_monety (user_id, dzien, delta, zrodlo, klucz, opis)
     values (p_user, d, (oc->>'nagroda')::int, 'misja', 'misja:osobista:' || d::text,
             left('Twoje zadanie dnia: ' || coalesce(nullif(o.cel->>'pl', ''), o.typ), 200))
