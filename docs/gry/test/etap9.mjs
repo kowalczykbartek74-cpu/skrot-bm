@@ -33,7 +33,7 @@ for (const lang of ["pl", "en"]) for (const [w, hgt] of [[390, 844], [1280, 800]
         : /112 \/ 300 health taken · 9 people fighting/.test(c) && /Macroeconomics test in 5 days/.test(c) && /Your strikes: 14/.test(c)) && (await txt(p, ".bs-strike")) === t.strike, c);
       ok(`${tag} trwa: kolor obramowania = kolor przedmiotu`, await p.evaluate(() => { const el = document.getElementById("boss-card"); return getComputedStyle(el).borderTopColor !== "rgba(0, 0, 0, 0)" && /--c:\s*#/.test(el.getAttribute("style")); }));
     }
-    if (sc === "pokonany") ok(`${tag} pokonany: „Rok pokonał …!” i „Odbierz +50 pkt”`, (lang === "pl" ? c.includes("Rok pokonał Paragrafusa!") && (await txt(p, ".bs-claim")) === "Odbierz +50 pkt" : c.includes("Your year beat Paragraphus!") && (await txt(p, ".bs-claim")) === "Claim +50 pts") && first, c);
+    if (sc === "pokonany") ok(`${tag} pokonany: „Rok pokonał …!” i „Odbierz +100 XP i 20 monet” (v61)`, (lang === "pl" ? c.includes("Rok pokonał Paragrafusa!") && /^Odbierz \+100 XP i 20/.test(await txt(p, ".bs-claim")) : c.includes("Your year beat Paragraphus!") && /^Claim \+100 XP and 20/.test(await txt(p, ".bs-claim"))) && first, c);
     if (sc === "uciekl") ok(`${tag} uciekł: podsumowanie bez kary`, lang === "pl" ? c.includes("Inflator uciekł. Zabrakło 30% życia.") : c.includes("The Inflator got away. 30% health left."), c);
     if (sc === "dwa") {
       ok(`${tag} dwa bossy: jedna karta z najbliższym terminem + „+1 boss”`, (await card.count()) === 1 && (await card.getAttribute("data-id")) === "d-kol-prawo" && (await txt(p, ".bs-more")) === "+1 boss", c);
@@ -100,7 +100,7 @@ for (const calm of [false, true]) {
   await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2600);
   await p.locator(".bs-claim").click(); await p.waitForTimeout(300);
   const conf = await p.locator(".lp-confetti").count(), od = await calls(p, "nauka_boss_odbierz");
-  ok("odbiór ok: konfetti, banner, karta znika", conf === 1 && od[0]?.res?.ok && od[0].res.pkt === 50 && /\+50 pkt rankingu/.test(await txt(p, ".lp-banner")) && !(await p.locator("#boss-card").count()), { conf, od });
+  ok("odbiór ok: konfetti, banner, karta znika", conf === 1 && od[0]?.res?.ok && od[0].res.pkt === 100 && /Boss pokonany: \+100 XP i 20 monet/.test(await txt(p, ".lp-banner")) && !(await p.locator("#boss-card").count()), { conf, od });
   await done(p, "odbior ok");
 }
 {
@@ -152,8 +152,8 @@ for (const lang of ["pl", "en"]) {
   ok(`starosta ${lang}: chip „Nowy boss – ogłoś rokowi”`, (await txt(p, "#boss-card .bs-ann")).includes(lang === "pl" ? "Nowy boss – ogłoś rokowi" : "New boss – tell your year"));
   await p.locator("#boss-card .bs-ann").click(); await p.waitForTimeout(300);
   const ta = await p.locator(".bs-ann-ta").inputValue();
-  ok(`starosta ${lang}: tekst ogłoszenia`, lang === "pl" ? /^⚔️ Inflator atakuje! Kolokwium z Makroekonomii \d+ \S+\. Każda dobra odpowiedź na zdawalni\.pl to cios\. Jeśli go pokonamy do \d+ \S+, każdy z 10\+ ciosami dostaje \+50 pkt\.$/.test(ta)
-    : /^⚔️ The Inflator attacks! Macroeconomics test on \d+ \w+\. Every correct answer on zdawalni\.pl is a strike\. If we beat it by \d+ \w+, everyone with 10\+ strikes gets \+50 pts\.$/.test(ta), ta);
+  ok(`starosta ${lang}: tekst ogłoszenia`, lang === "pl" ? /^⚔️ Inflator atakuje! Kolokwium z Makroekonomii \d+ \S+\. Każda dobra odpowiedź na zdawalni\.pl to cios\. Jeśli go pokonamy do \d+ \S+, każdy z 10\+ ciosami dostaje \+100 XP i 20 monet\.$/.test(ta)
+    : /^⚔️ The Inflator attacks! Macroeconomics test on \d+ \w+\. Every correct answer on zdawalni\.pl is a strike\. If we beat it by \d+ \w+, everyone with 10\+ strikes gets \+100 XP and 20 coins\.$/.test(ta), ta);
   if (lang === "pl") await shot(p, "starosta-ogloszenie-390");
   await p.locator(".modal .btn.primary").click(); await p.waitForTimeout(300);
   ok(`starosta ${lang}: „Kopiuj” → schowek`, (await p.evaluate(() => navigator.clipboard.readText())) === ta);

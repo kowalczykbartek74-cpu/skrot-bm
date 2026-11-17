@@ -48,6 +48,8 @@ for (const dark of [false, true]) {
   await p.close();
   // Ranking
   p = await open(b, { dark, hash: "/ranking" });
+  // UX-5 (etap G4): domyślna zakładka to „Grupy”; wiersze listy są w zakładce „Ten tydzień”.
+  if (await p.locator(".ux5-rk-tab", { hasText: "Ten tydzień" }).count()) { await p.locator(".ux5-rk-tab", { hasText: "Ten tydzień" }).click(); await p.waitForTimeout(2000); }
   await p.screenshot({ path: `${OUT}/h2e8-${n}-ranking.png`, fullPage: true });
   const rows = await p.locator(".rk-list .rk-row").evaluateAll((rs) => rs.map((r) => { const c = getComputedStyle(r), pos = r.querySelector(".rk-pos"), pc = pos && getComputedStyle(pos); return { me: r.classList.contains("me"), bb: c.borderBottomWidth, col: c.color, bg: c.backgroundColor, pcol: pc?.color, pbg: pc?.backgroundColor, m: pos?.className }; }));
   if (rows.length) {

@@ -62,7 +62,7 @@ for (const dark of [false, true]) {
   await p.close();
 }
 { // inny motyw (różowy): wybrana ocena bez zaznaczenia H2 (nie robi się zielona)
-  const p = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: { srs } }), "skrot-theme": "pink" } });
+  const p = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: { srs, xp: { t: 700 }, motywWybor: { 4: "pink" }, motywyMig: 1 } }), "skrot-theme": "pink" } }); // UX-5: motyw zdobyty (poziom 4, wybór Jednorożca)
   await p.clock.install({ time: new Date(now) }); await p.goto(BASE + "index.html#/review"); await p.waitForTimeout(2500);
   await p.getByRole("button", { name: /Zaczynamy/ }).first().click(); await p.locator(".lp").waitFor({ timeout: 15000 }); await p.waitForTimeout(400);
   await p.evaluate(() => document.documentElement.setAttribute("data-theme", "pink")); // motyw może wymagać poziomu: ustawiamy go wprost

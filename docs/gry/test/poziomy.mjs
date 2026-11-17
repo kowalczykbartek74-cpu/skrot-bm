@@ -39,12 +39,12 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   ok(`${w} Dziś: bez poziomego przewijania`, sw);
   await p.evaluate(() => { location.hash = "#/profil"; }); await p.waitForTimeout(900);
   const m = await txt(p, ".sk-profile");
-  ok(`${w} Więcej: karta rangi z XP do poziomu 6 i nagrodą Nenufary (poziom 7)`, /Ogarnięty/.test(m) && /250 \/ 500 XP do poziomu 6/.test(m) && /Następna nagroda: motyw Nenufary/.test(m) && /brakuje 850 XP/.test(m), m);
+  ok(`${w} Więcej: karta rangi z XP do poziomu 6 i nagrodą na poziomie 6 (UX-5: wybór Kokardka/Nokturn)`, /Ogarnięty/.test(m) && /250 \/ 500 XP do poziomu 6/.test(m) && /Poziom 6: wybór Kokardka albo Nokturn/.test(m) && /brakuje 250 XP/.test(m), m);
   await shot(p, `wiecej-${w}`);
   if (w === 390) {
     await p.locator(".lv-howlink").click(); await p.waitForTimeout(400);
     const how = await txt(p, ".lv-how-modal");
-    ok("Ściąga: XP, monety, seria", /XP → poziom i ranga/.test(how) && /Monety → sklep/.test(how) && /Skończona lekcja\s*3 🪙/.test(how), how.slice(0, 300));
+    ok("Ściąga: XP, monety, seria", /XP → poziom i ranga/.test(how) && /Monety → sklep/.test(how) && /Skończona lekcja\s*3/.test(how) && !/🪙/.test(how), how.slice(0, 300));
     await shot(p, "sciaga-390");
     await p.evaluate(() => document.getElementById("layer").replaceChildren());
     await p.locator(".sk-profile .rk").click(); await p.waitForTimeout(600);
@@ -74,7 +74,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   // zamknięcie: XP z quizu przekracza 1500 → awans
   await p.locator(".lp-x").first().click(); await p.waitForTimeout(1200);
   const up = await txt(p, ".lvup");
-  ok(`${w} awans: okno „Poziom 6 · Bystrzak”`, /Awans!/i.test(up) && /Poziom 6 · Bystrzak/.test(up) && /Następna nagroda: motyw Nenufary na poziomie 7/.test(up), up);
+  ok(`${w} awans: okno „Poziom 6 · Bystrzak”`, /Awans!/i.test(up) && /Poziom 6 · Bystrzak/.test(up) && /Wybieram/.test(up) && /Kokardka/.test(up) && /Nokturn/.test(up), up); // UX-5: na poziomie 6 wybór 1 z 2
   await shot(p, `awans-${w}`);
   await done(p, `quiz ${w}`);
 }
@@ -91,7 +91,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   await shot(p, "koniec-quizu-390");
   await p.waitForTimeout(1800);
   const up = await txt(p, ".lvup");
-  ok("awans na 7: nagroda Nenufary z przyciskiem Włącz", /Poziom 7 · Analityk/.test(up) && /Nagroda: motyw Nenufary/.test(up) && /Włącz/.test(up), up);
+  ok("awans na 7: następna nagroda Łąka na poziomie 8 (UX-5: nowe progi)", /Poziom 7 · Analityk/.test(up) && /Następna nagroda: motyw Łąka na poziomie 8/.test(up), up);
   await shot(p, "awans-nagroda-390");
   await done(p, "awans 7");
 }
@@ -104,7 +104,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   const before = await p.locator(".gain-coin").count();
   await p.waitForTimeout(1800);
   const pop = await txt(p, ".gain-tray"), chip = await txt(p, ".greet .hud-coin");
-  ok("bez v22: brak monety przed odświeżeniem, potem dymek „+1 🪙” i 11 na Dziś", before === 0 && /\+1 🪙/.test(pop) && /11/.test(chip), { before, pop, chip });
+  ok("bez v22: brak monety przed odświeżeniem, potem dymek „+1 🪙” i 11 na Dziś", before === 0 && /\+1/.test(pop) && /11/.test(chip), { before, pop, chip });
   await shot(p, "bez-v22-dymek-390");
   await done(p, "bez v22");
 }
@@ -113,7 +113,7 @@ for (const [w, hh] of [[390, 844], [1280, 800]]) {
   const p = await page(b, { lang: "en", ls: { "mock-progress": prog(1250), "mock-saldo": "85" } });
   await p.goto(BASE + "index.html#/profil"); await p.waitForTimeout(2500);
   const m = await txt(p, ".sk-profile");
-  ok("EN: karta rangi po angielsku", /Your level/i.test(m) && /lvl 5/.test(m) && /Next reward/.test(m) && !/Następna|poziomu|brakuje/.test(m), m);
+  ok("EN: karta rangi po angielsku", /Your level/i.test(m) && /lvl 5/.test(m) && /Level 6: pick Bow or Nocturne/.test(m) && !/Następna|poziomu|brakuje/.test(m), m);
   await shot(p, "en-wiecej-390");
   await p.locator(".lv-howlink").click(); await p.waitForTimeout(400);
   const how = await txt(p, ".lv-how-modal");

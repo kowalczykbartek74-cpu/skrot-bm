@@ -385,7 +385,7 @@
       if (!ma24(a.p_item)) return { ok: false, code: "not_owned" };
       MON.zal[a.p_slot] = a.p_item; monZapisz(); return { ok: true, slot: a.p_slot, item: a.p_item }; },
     nauka_gablota_ustaw: (a) => {
-      const m = 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length, lista = [...new Set(a.p_odznaki || [])];
+      const m = (ls("mock-v60", "1") === "1" ? 3 : 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length), lista = [...new Set(a.p_odznaki || [])];
       if (lista.length > m) return { ok: false, code: "too_many", miejsca: m };
       if (lista.some((x) => !(x in (prog24().odznaki || {})))) return { ok: false, code: "not_earned" };
       MON.gab = lista; monZapisz(); return { ok: true, odznaki: lista, miejsca: m }; },
@@ -398,7 +398,7 @@
       ja: { zalozone: zal24(), gablota: MON.gab, poziom: lv24() } }),
   };
   const stan24 = () => (V24 ? { katalog: KAT24, dzis: dzis(), poziom: lv24(), zalozone: zal24(), tytuly: Object.keys(prog24().tytuly || {}),
-    gablota: { miejsca: 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length, odznaki: MON.gab },
+    gablota: { miejsca: (ls("mock-v60", "1") === "1" ? 3 : 1 + ["gablota:2", "gablota:3"].filter((x) => MON.pos.includes(x)).length), odznaki: MON.gab },
     zamrozenia: { ma: zamMa(), max: 2, dni: MON.zam.dni }, sezony: SEZ24 } : {});
   // aktywność dla panelu starosty (v11) – tylko tyle, żeby dało się otworzyć zakładkę Monety
   const AKT = { nauka_admin_aktywnosc: () => (KONTO === "starosta" ? { online: [], logowania: [], wizyty: [], konta: [
@@ -564,6 +564,24 @@
     // etap 4: link do kalendarza w telefonie (okno z przełącznikiem „5 min po zajęciach”)
     nauka_kalendarz_token: () => "a".repeat(48),
     // === koniec ux-2 ===
+    // === ux-5 ===
+    // v58: nagroda za dział. Lekcja działu „ma punkt lekcja”, gdy w RP.rows jest l:<id> albo w postępie jest zdany bilet (mastery.ok).
+    //   mock-v58 = "0" → brak funkcji (PGRST202) · wywołania w window.__ux5
+    nauka_dzial_nagroda: (a) => {
+      (window.__ux5 ||= []).push({ fn: "dzial", a });
+      if (!paid) return { ok: false, code: "no_access" };
+      const ls2 = Object.entries(DOCS.materials).filter(([, m]) => m.kind === "lesson" && m.subjectId === a.p_sid && String(m.unit) === String(a.p_unit));
+      if (!ls2.length) return { ok: false, code: "no_unit" };
+      const pr = DOCS.progress?.[UID] || {};
+      const brak = ls2.filter(([id]) => !RP.rows.some((r) => r.klucz === "l:" + id) && !pr.mastery?.[id]?.ok).length;
+      if (brak) return { ok: false, code: "nie_wszystkie", brak, lekcji: ls2.length };
+      const klucz = "misja:dzial:" + a.p_sid + ":" + a.p_unit;
+      if (MON.ksiega.some((w) => w.klucz === klucz)) return { ok: true, juz: true, monety: 0 };
+      MON.ksiega.push({ delta: 20, zrodlo: "misja", klucz, opis: "Dział " + a.p_unit + " zaliczony", dzien: dzis() }); monZapisz();
+      return { ok: true, juz: false, monety: 20, lekcji: ls2.length };
+    },
+    nauka_dzial_cfg: () => ({ monety: +ls("mock-dzial-monety", "20") }),
+    // === koniec ux-5 ===
   };
   // === ux-1 === logowanie: mock-otp-blad = "rate" (limit maili/IP) | "sekundy" (kod przed chwilą) | inny tekst → błąd signInWithOtp
   const UX1_OTP = async () => { const e = ls("mock-otp-blad", ""); window.__otp = (window.__otp || 0) + 1;
@@ -591,6 +609,7 @@
     else if (/^nauka_(zamrozenie_uzyj_dni|zamrozenie_prezent|seria)$/.test(fn) && ls("mock-v55", "1") === "0") out = brak;
     else if (fn === "nauka_zamrozenie_uzyj_dni" && ls("mock-v55-blad", "") === "1") { window.__rpc.push({ fn, args, res: "Failed to fetch" }); (window.__ux2 ||= []).push({ fn: "uzyj_dni", dni: args.p_dni, blad: true }); return { data: null, error: { message: "TypeError: Failed to fetch", code: "" } }; }
     // === koniec ux-2 ===
+    else if (/^nauka_dzial_/.test(fn) && ls("mock-v58", "1") === "0") out = brak; // ux-5: v58 jeszcze nie w bazie
     else out = { data: BASE[fn] ? BASE[fn](args) : null, error: null };
     window.__rpc.push({ fn, args, res: out.data ?? out.error });
     return out;

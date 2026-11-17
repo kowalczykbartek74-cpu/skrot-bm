@@ -1,0 +1,461 @@
+# Kontrola automatyczna UX-5 (2026-11-17T15:35, względem origin/main)
+
+## 1. git diff --stat
+```
+docs/audyt-ux/petla-5/PROGRESS.md                  |   35 +
+ docs/audyt-ux/petla-5/etap-1/runda-1/kontrola.md   |   48 +
+ .../etap-1/runda-1/material-390-jasny-ekran1.png   |  Bin 0 -> 74401 bytes
+ .../petla-5/etap-1/runda-1/material-390-jasny.png  |  Bin 0 -> 194652 bytes
+ docs/audyt-ux/petla-5/etap-1/runda-1/ocena.json    |    1 +
+ .../przedmiot-darmowe-1280-jasny-ekran1.png        |  Bin 0 -> 119723 bytes
+ .../runda-1/przedmiot-darmowe-1280-jasny.png       |  Bin 0 -> 241256 bytes
+ .../przedmiot-darmowe-360-ciemny-ekran1.png        |  Bin 0 -> 45320 bytes
+ .../runda-1/przedmiot-darmowe-360-ciemny.png       |  Bin 0 -> 193386 bytes
+ .../runda-1/przedmiot-darmowe-360-jasny-ekran1.png |  Bin 0 -> 45731 bytes
+ .../etap-1/runda-1/przedmiot-darmowe-360-jasny.png |  Bin 0 -> 195567 bytes
+ .../przedmiot-darmowe-390-ciemny-ekran1.png        |  Bin 0 -> 70499 bytes
+ .../runda-1/przedmiot-darmowe-390-ciemny.png       |  Bin 0 -> 194453 bytes
+ .../runda-1/przedmiot-darmowe-390-jasny-ekran1.png |  Bin 0 -> 74449 bytes
+ .../etap-1/runda-1/przedmiot-darmowe-390-jasny.png |  Bin 0 -> 197614 bytes
+ ...rzedmiot-dzial-zaliczony-1280-ciemny-ekran1.png |  Bin 0 -> 115872 bytes
+ .../przedmiot-dzial-zaliczony-1280-ciemny.png      |  Bin 0 -> 245686 bytes
+ ...przedmiot-dzial-zaliczony-1280-jasny-ekran1.png |  Bin 0 -> 127902 bytes
+ .../przedmiot-dzial-zaliczony-1280-jasny.png       |  Bin 0 -> 258192 bytes
+ ...przedmiot-dzial-zaliczony-360-ciemny-ekran1.png |  Bin 0 -> 45320 bytes
+ .../przedmiot-dzial-zaliczony-360-ciemny.png       |  Bin 0 -> 204630 bytes
+ .../przedmiot-dzial-zaliczony-360-jasny-ekran1.png |  Bin 0 -> 45455 bytes
+ .../przedmiot-dzial-zaliczony-360-jasny.png        |  Bin 0 -> 206611 bytes
+ ...przedmiot-dzial-zaliczony-390-ciemny-ekran1.png |  Bin 0 -> 72639 bytes
+ .../przedmiot-dzial-zaliczony-390-ciemny.png       |  Bin 0 -> 206132 bytes
+ .../przedmiot-dzial-zaliczony-390-jasny-ekran1.png |  Bin 0 -> 75860 bytes
+ .../przedmiot-dzial-zaliczony-390-jasny.png        |  Bin 0 -> 208774 bytes
+ .../przedmiot-w-trakcie-1280-ciemny-ekran1.png     |  Bin 0 -> 109595 bytes
+ .../runda-1/przedmiot-w-trakcie-1280-ciemny.png    |  Bin 0 -> 236900 bytes
+ .../przedmiot-w-trakcie-1280-jasny-ekran1.png      |  Bin 0 -> 120823 bytes
+ .../runda-1/przedmiot-w-trakcie-1280-jasny.png     |  Bin 0 -> 247828 bytes
+ .../przedmiot-w-trakcie-360-ciemny-ekran1.png      |  Bin 0 -> 45157 bytes
+ .../runda-1/przedmiot-w-trakcie-360-ciemny.png     |  Bin 0 -> 200620 bytes
+ .../przedmiot-w-trakcie-360-jasny-ekran1.png       |  Bin 0 -> 45303 bytes
+ .../runda-1/przedmiot-w-trakcie-360-jasny.png      |  Bin 0 -> 203146 bytes
+ .../przedmiot-w-trakcie-390-ciemny-ekran1.png      |  Bin 0 -> 71604 bytes
+ .../runda-1/przedmiot-w-trakcie-390-ciemny.png     |  Bin 0 -> 201778 bytes
+ .../runda-1/przedmiot-w-trakcie-390-en-ekran1.png  |  Bin 0 -> 74300 bytes
+ .../etap-1/runda-1/przedmiot-w-trakcie-390-en.png  |  Bin 0 -> 202883 bytes
+ .../przedmiot-w-trakcie-390-jasny-ekran1.png       |  Bin 0 -> 75338 bytes
+ .../runda-1/przedmiot-w-trakcie-390-jasny.png      |  Bin 0 -> 205140 bytes
+ .../petla-5/etap-1/runda-1/przejscie-1-przed.png   |  Bin 0 -> 75244 bytes
+ .../petla-5/etap-1/runda-1/przejscie-2-baner.png   |  Bin 0 -> 86725 bytes
+ .../petla-5/etap-1/runda-1/przejscie-3-po.png      |  Bin 0 -> 216758 bytes
+ docs/audyt-ux/petla-5/etap-1/runda-1/raport.json   | 1646 ++++++++++++
+ docs/audyt-ux/petla-5/etap-1/runda-1/raport.md     |  296 +++
+ docs/audyt-ux/petla-5/etap-1/runda-1/testy.log     |   66 +
+ docs/audyt-ux/petla-5/etap-1/runda-2/kontrola.md   |   46 +
+ .../etap-1/runda-2/material-390-jasny-ekran1.png   |  Bin 0 -> 74386 bytes
+ .../petla-5/etap-1/runda-2/material-390-jasny.png  |  Bin 0 -> 194652 bytes
+ docs/audyt-ux/petla-5/etap-1/runda-2/ocena.json    |    1 +
+ .../petla-5/etap-1/runda-2/odbior-1-przed.png      |  Bin 0 -> 87136 bytes
+ .../petla-5/etap-1/runda-2/odbior-2-po.png         |  Bin 0 -> 101404 bytes
+ .../przedmiot-darmowe-1280-jasny-ekran1.png        |  Bin 0 -> 135562 bytes
+ .../runda-2/przedmiot-darmowe-1280-jasny.png       |  Bin 0 -> 269098 bytes
+ .../przedmiot-darmowe-360-ciemny-ekran1.png        |  Bin 0 -> 45273 bytes
+ .../runda-2/przedmiot-darmowe-360-ciemny.png       |  Bin 0 -> 214331 bytes
+ .../runda-2/przedmiot-darmowe-360-jasny-ekran1.png |  Bin 0 -> 45719 bytes
+ .../etap-1/runda-2/przedmiot-darmowe-360-jasny.png |  Bin 0 -> 219605 bytes
+ .../przedmiot-darmowe-390-ciemny-ekran1.png        |  Bin 0 -> 79251 bytes
+ .../runda-2/przedmiot-darmowe-390-ciemny.png       |  Bin 0 -> 218293 bytes
+ .../runda-2/przedmiot-darmowe-390-jasny-ekran1.png |  Bin 0 -> 85852 bytes
+ .../etap-1/runda-2/przedmiot-darmowe-390-jasny.png |  Bin 0 -> 225310 bytes
+ ...rzedmiot-dzial-zaliczony-1280-ciemny-ekran1.png |  Bin 0 -> 123711 bytes
+ .../przedmiot-dzial-zaliczony-1280-ciemny.png      |  Bin 0 -> 263314 bytes
+ ...przedmiot-dzial-zaliczony-1280-jasny-ekran1.png |  Bin 0 -> 140270 bytes
+ .../przedmiot-dzial-zaliczony-1280-jasny.png       |  Bin 0 -> 280142 bytes
+ ...przedmiot-dzial-zaliczony-360-ciemny-ekran1.png |  Bin 0 -> 45241 bytes
+ .../przedmiot-dzial-zaliczony-360-ciemny.png       |  Bin 0 -> 221013 bytes
+ .../przedmiot-dzial-zaliczony-360-jasny-ekran1.png |  Bin 0 -> 45469 bytes
+ .../przedmiot-dzial-zaliczony-360-jasny.png        |  Bin 0 -> 225587 bytes
+ ...przedmiot-dzial-zaliczony-390-ciemny-ekran1.png |  Bin 0 -> 81332 bytes
+ .../przedmiot-dzial-zaliczony-390-ciemny.png       |  Bin 0 -> 221397 bytes
+ .../przedmiot-dzial-zaliczony-390-jasny-ekran1.png |  Bin 0 -> 87136 bytes
+ .../przedmiot-dzial-zaliczony-390-jasny.png        |  Bin 0 -> 227287 bytes
+ .../przedmiot-w-trakcie-1280-ciemny-ekran1.png     |  Bin 0 -> 120773 bytes
+ .../runda-2/przedmiot-w-trakcie-1280-ciemny.png    |  Bin 0 -> 249805 bytes
+ .../przedmiot-w-trakcie-1280-jasny-ekran1.png      |  Bin 0 -> 136871 bytes
+ .../runda-2/przedmiot-w-trakcie-1280-jasny.png     |  Bin 0 -> 265963 bytes
+ .../przedmiot-w-trakcie-360-ciemny-ekran1.png      |  Bin 0 -> 45092 bytes
+ .../runda-2/przedmiot-w-trakcie-360-ciemny.png     |  Bin 0 -> 212213 bytes
+ .../przedmiot-w-trakcie-360-jasny-ekran1.png       |  Bin 0 -> 45321 bytes
+ .../runda-2/przedmiot-w-trakcie-360-jasny.png      |  Bin 0 -> 216813 bytes
+ .../przedmiot-w-trakcie-390-ciemny-ekran1.png      |  Bin 0 -> 80418 bytes
+ .../runda-2/przedmiot-w-trakcie-390-ciemny.png     |  Bin 0 -> 213450 bytes
+ .../runda-2/przedmiot-w-trakcie-390-en-ekran1.png  |  Bin 0 -> 84176 bytes
+ .../etap-1/runda-2/przedmiot-w-trakcie-390-en.png  |  Bin 0 -> 219464 bytes
+ .../przedmiot-w-trakcie-390-jasny-ekran1.png       |  Bin 0 -> 86633 bytes
+ .../runda-2/przedmiot-w-trakcie-390-jasny.png      |  Bin 0 -> 220222 bytes
+ .../petla-5/etap-1/runda-2/przejscie-1-przed.png   |  Bin 0 -> 86535 bytes
+ .../petla-5/etap-1/runda-2/przejscie-2-baner.png   |  Bin 0 -> 90728 bytes
+ .../petla-5/etap-1/runda-2/przejscie-3-po.png      |  Bin 0 -> 237400 bytes
+ docs/audyt-ux/petla-5/etap-1/runda-2/raport.json   | 1651 ++++++++++++
+ docs/audyt-ux/petla-5/etap-1/runda-2/raport.md     |  301 +++
+ docs/audyt-ux/petla-5/etap-1/runda-2/testy.log     |   27 +
+ docs/audyt-ux/petla-5/etap-1/runda-3/kontrola.md   |   46 +
+ .../etap-1/runda-3/material-390-jasny-ekran1.png   |  Bin 0 -> 74416 bytes
+ .../petla-5/etap-1/runda-3/material-390-jasny.png  |  Bin 0 -> 194652 bytes
+ docs/audyt-ux/petla-5/etap-1/runda-3/ocena.json    |    1 +
+ .../petla-5/etap-1/runda-3/odbior-1-przed.png      |  Bin 0 -> 95243 bytes
+ .../petla-5/etap-1/runda-3/odbior-2-po.png         |  Bin 0 -> 101542 bytes
+ .../przedmiot-darmowe-1280-jasny-ekran1.png        |  Bin 0 -> 142144 bytes
+ .../runda-3/przedmiot-darmowe-1280-jasny.png       |  Bin 0 -> 280101 bytes
+ .../przedmiot-darmowe-360-ciemny-ekran1.png        |  Bin 0 -> 45233 bytes
+ .../runda-3/przedmiot-darmowe-360-ciemny.png       |  Bin 0 -> 227835 bytes
+ .../runda-3/przedmiot-darmowe-360-jasny-ekran1.png |  Bin 0 -> 45501 bytes
+ .../etap-1/runda-3/przedmiot-darmowe-360-jasny.png |  Bin 0 -> 234510 bytes
+ .../przedmiot-darmowe-390-ciemny-ekran1.png        |  Bin 0 -> 85960 bytes
+ .../runda-3/przedmiot-darmowe-390-ciemny.png       |  Bin 0 -> 230814 bytes
+ .../runda-3/przedmiot-darmowe-390-jasny-ekran1.png |  Bin 0 -> 94014 bytes
+ .../etap-1/runda-3/przedmiot-darmowe-390-jasny.png |  Bin 0 -> 239368 bytes
+ ...rzedmiot-dzial-zaliczony-1280-ciemny-ekran1.png |  Bin 0 -> 130090 bytes
+ .../przedmiot-dzial-zaliczony-1280-ciemny.png      |  Bin 0 -> 269537 bytes
+ ...przedmiot-dzial-zaliczony-1280-jasny-ekran1.png |  Bin 0 -> 146684 bytes
+ .../przedmiot-dzial-zaliczony-1280-jasny.png       |  Bin 0 -> 287035 bytes
+ ...przedmiot-dzial-zaliczony-360-ciemny-ekran1.png |  Bin 0 -> 45217 bytes
+ .../przedmiot-dzial-zaliczony-360-ciemny.png       |  Bin 0 -> 228364 bytes
+ .../przedmiot-dzial-zaliczony-360-jasny-ekran1.png |  Bin 0 -> 45175 bytes
+ .../przedmiot-dzial-zaliczony-360-jasny.png        |  Bin 0 -> 234401 bytes
+ ...przedmiot-dzial-zaliczony-390-ciemny-ekran1.png |  Bin 0 -> 87737 bytes
+ .../przedmiot-dzial-zaliczony-390-ciemny.png       |  Bin 0 -> 229397 bytes
+ .../przedmiot-dzial-zaliczony-390-jasny-ekran1.png |  Bin 0 -> 95186 bytes
+ .../przedmiot-dzial-zaliczony-390-jasny.png        |  Bin 0 -> 237363 bytes
+ .../przedmiot-w-trakcie-1280-ciemny-ekran1.png     |  Bin 0 -> 127202 bytes
+ .../runda-3/przedmiot-w-trakcie-1280-ciemny.png    |  Bin 0 -> 255921 bytes
+ .../przedmiot-w-trakcie-1280-jasny-ekran1.png      |  Bin 0 -> 143091 bytes
+ .../runda-3/przedmiot-w-trakcie-1280-jasny.png     |  Bin 0 -> 272675 bytes
+ .../przedmiot-w-trakcie-360-ciemny-ekran1.png      |  Bin 0 -> 45071 bytes
+ .../runda-3/przedmiot-w-trakcie-360-ciemny.png     |  Bin 0 -> 220933 bytes
+ .../przedmiot-w-trakcie-360-jasny-ekran1.png       |  Bin 0 -> 45031 bytes
+ .../runda-3/przedmiot-w-trakcie-360-jasny.png      |  Bin 0 -> 227137 bytes
+ .../przedmiot-w-trakcie-390-ciemny-ekran1.png      |  Bin 0 -> 86710 bytes
+ .../runda-3/przedmiot-w-trakcie-390-ciemny.png     |  Bin 0 -> 222479 bytes
+ .../runda-3/przedmiot-w-trakcie-390-en-ekran1.png  |  Bin 0 -> 93876 bytes
+ .../etap-1/runda-3/przedmiot-w-trakcie-390-en.png  |  Bin 0 -> 229942 bytes
+ .../przedmiot-w-trakcie-390-jasny-ekran1.png       |  Bin 0 -> 94623 bytes
+ .../runda-3/przedmiot-w-trakcie-390-jasny.png      |  Bin 0 -> 230578 bytes
+ .../petla-5/etap-1/runda-3/przejscie-1-przed.png   |  Bin 0 -> 94496 bytes
+ .../petla-5/etap-1/runda-3/przejscie-2-baner.png   |  Bin 0 -> 99419 bytes
+ .../petla-5/etap-1/runda-3/przejscie-3-po.png      |  Bin 0 -> 246160 bytes
+ docs/audyt-ux/petla-5/etap-1/runda-3/raport.json   | 1659 ++++++++++++
+ docs/audyt-ux/petla-5/etap-1/runda-3/raport.md     |  306 +++
+ docs/audyt-ux/petla-5/etap-1/runda-3/testy.log     |   80 +
+ .../etap-2/runda-1/awans-4-360-ciemny-ekran1.png   |  Bin 0 -> 64166 bytes
+ .../etap-2/runda-1/awans-4-360-jasny-ekran1.png    |  Bin 0 -> 63465 bytes
+ .../etap-2/runda-1/awans-4-390-ciemny-ekran1.png   |  Bin 0 -> 91073 bytes
+ .../etap-2/runda-1/awans-4-390-jasny-ekran1.png    |  Bin 0 -> 90085 bytes
+ .../petla-5/etap-2/runda-1/awans-4-wybor-390.png   |  Bin 0 -> 101286 bytes
+ .../petla-5/etap-2/runda-1/haslo-po-grze-390.png   |  Bin 0 -> 81464 bytes
+ .../runda-1/jak-zdobywac-390-jasny-ekran1.png      |  Bin 0 -> 88837 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-1/kontrola.md   |  319 +++
+ docs/audyt-ux/petla-5/etap-2/runda-1/ocena.json    |    1 +
+ .../runda-1/poziomy-i-rangi-390-jasny-ekran1.png   |  Bin 0 -> 112431 bytes
+ .../etap-2/runda-1/profil-1280-jasny-ekran1.png    |  Bin 0 -> 214006 bytes
+ .../petla-5/etap-2/runda-1/profil-1280-jasny.png   |  Bin 0 -> 201991 bytes
+ .../etap-2/runda-1/profil-360-ciemny-ekran1.png    |  Bin 0 -> 70219 bytes
+ .../petla-5/etap-2/runda-1/profil-360-ciemny.png   |  Bin 0 -> 122966 bytes
+ .../etap-2/runda-1/profil-360-jasny-ekran1.png     |  Bin 0 -> 76780 bytes
+ .../petla-5/etap-2/runda-1/profil-360-jasny.png    |  Bin 0 -> 136299 bytes
+ .../etap-2/runda-1/profil-390-ciemny-ekran1.png    |  Bin 0 -> 111036 bytes
+ .../petla-5/etap-2/runda-1/profil-390-ciemny.png   |  Bin 0 -> 120831 bytes
+ .../etap-2/runda-1/profil-390-jasny-ekran1.png     |  Bin 0 -> 125883 bytes
+ .../petla-5/etap-2/runda-1/profil-390-jasny.png    |  Bin 0 -> 136619 bytes
+ .../etap-2/runda-1/ranking-1280-ciemny-ekran1.png  |  Bin 0 -> 133030 bytes
+ .../petla-5/etap-2/runda-1/ranking-1280-ciemny.png |  Bin 0 -> 158163 bytes
+ .../etap-2/runda-1/ranking-1280-jasny-ekran1.png   |  Bin 0 -> 152495 bytes
+ .../petla-5/etap-2/runda-1/ranking-1280-jasny.png  |  Bin 0 -> 177377 bytes
+ .../etap-2/runda-1/ranking-360-ciemny-ekran1.png   |  Bin 0 -> 59677 bytes
+ .../petla-5/etap-2/runda-1/ranking-360-ciemny.png  |  Bin 0 -> 130572 bytes
+ .../etap-2/runda-1/ranking-360-jasny-ekran1.png    |  Bin 0 -> 61116 bytes
+ .../petla-5/etap-2/runda-1/ranking-360-jasny.png   |  Bin 0 -> 135530 bytes
+ .../etap-2/runda-1/ranking-390-ciemny-ekran1.png   |  Bin 0 -> 89369 bytes
+ .../petla-5/etap-2/runda-1/ranking-390-ciemny.png  |  Bin 0 -> 128716 bytes
+ .../etap-2/runda-1/ranking-390-en-ekran1.png       |  Bin 0 -> 89342 bytes
+ .../petla-5/etap-2/runda-1/ranking-390-en.png      |  Bin 0 -> 125004 bytes
+ .../etap-2/runda-1/ranking-390-jasny-ekran1.png    |  Bin 0 -> 94845 bytes
+ .../petla-5/etap-2/runda-1/ranking-390-jasny.png   |  Bin 0 -> 133285 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-1/raport.json   | 2741 +++++++++++++++++++
+ docs/audyt-ux/petla-5/etap-2/runda-1/raport.md     |  488 ++++
+ .../etap-2/runda-1/sklep-1280-ciemny-ekran1.png    |  Bin 0 -> 145803 bytes
+ .../petla-5/etap-2/runda-1/sklep-1280-ciemny.png   |  Bin 0 -> 603267 bytes
+ .../etap-2/runda-1/sklep-1280-jasny-ekran1.png     |  Bin 0 -> 177901 bytes
+ .../petla-5/etap-2/runda-1/sklep-1280-jasny.png    |  Bin 0 -> 626625 bytes
+ .../etap-2/runda-1/sklep-360-ciemny-ekran1.png     |  Bin 0 -> 67383 bytes
+ .../petla-5/etap-2/runda-1/sklep-360-ciemny.png    |  Bin 0 -> 338219 bytes
+ .../etap-2/runda-1/sklep-360-jasny-ekran1.png      |  Bin 0 -> 76589 bytes
+ .../petla-5/etap-2/runda-1/sklep-360-jasny.png     |  Bin 0 -> 343703 bytes
+ .../etap-2/runda-1/sklep-390-ciemny-ekran1.png     |  Bin 0 -> 88144 bytes
+ .../petla-5/etap-2/runda-1/sklep-390-ciemny.png    |  Bin 0 -> 355914 bytes
+ .../petla-5/etap-2/runda-1/sklep-390-en-ekran1.png |  Bin 0 -> 98304 bytes
+ .../petla-5/etap-2/runda-1/sklep-390-en.png        |  Bin 0 -> 349757 bytes
+ .../etap-2/runda-1/sklep-390-jasny-ekran1.png      |  Bin 0 -> 97203 bytes
+ .../petla-5/etap-2/runda-1/sklep-390-jasny.png     |  Bin 0 -> 361844 bytes
+ .../etap-2/runda-1/sklep-wybor-odlozony-390.png    |  Bin 0 -> 83358 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-1/testy.log     |  100 +
+ .../petla-5/etap-2/runda-1/wybor-390-en.png        |  Bin 0 -> 78656 bytes
+ .../etap-2/runda-2/awans-4-360-ciemny-ekran1.png   |  Bin 0 -> 65216 bytes
+ .../etap-2/runda-2/awans-4-360-jasny-ekran1.png    |  Bin 0 -> 64685 bytes
+ .../etap-2/runda-2/awans-4-390-ciemny-ekran1.png   |  Bin 0 -> 92174 bytes
+ .../etap-2/runda-2/awans-4-390-jasny-ekran1.png    |  Bin 0 -> 91185 bytes
+ .../petla-5/etap-2/runda-2/awans-4-wybor-390.png   |  Bin 0 -> 103554 bytes
+ .../petla-5/etap-2/runda-2/haslo-po-grze-390.png   |  Bin 0 -> 81464 bytes
+ .../runda-2/jak-zdobywac-390-jasny-ekran1.png      |  Bin 0 -> 86566 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-2/kontrola.md   |  323 +++
+ docs/audyt-ux/petla-5/etap-2/runda-2/ocena.json    |    1 +
+ .../runda-2/poziomy-i-rangi-390-jasny-ekran1.png   |  Bin 0 -> 107796 bytes
+ .../etap-2/runda-2/profil-1280-jasny-ekran1.png    |  Bin 0 -> 212943 bytes
+ .../petla-5/etap-2/runda-2/profil-1280-jasny.png   |  Bin 0 -> 201461 bytes
+ .../etap-2/runda-2/profil-360-ciemny-ekran1.png    |  Bin 0 -> 70105 bytes
+ .../petla-5/etap-2/runda-2/profil-360-ciemny.png   |  Bin 0 -> 121638 bytes
+ .../etap-2/runda-2/profil-360-jasny-ekran1.png     |  Bin 0 -> 76780 bytes
+ .../petla-5/etap-2/runda-2/profil-360-jasny.png    |  Bin 0 -> 135046 bytes
+ .../etap-2/runda-2/profil-390-ciemny-ekran1.png    |  Bin 0 -> 109827 bytes
+ .../petla-5/etap-2/runda-2/profil-390-ciemny.png   |  Bin 0 -> 119613 bytes
+ .../etap-2/runda-2/profil-390-jasny-ekran1.png     |  Bin 0 -> 125063 bytes
+ .../petla-5/etap-2/runda-2/profil-390-jasny.png    |  Bin 0 -> 135699 bytes
+ .../etap-2/runda-2/ranking-1280-ciemny-ekran1.png  |  Bin 0 -> 133041 bytes
+ .../petla-5/etap-2/runda-2/ranking-1280-ciemny.png |  Bin 0 -> 158158 bytes
+ .../etap-2/runda-2/ranking-1280-jasny-ekran1.png   |  Bin 0 -> 152509 bytes
+ .../petla-5/etap-2/runda-2/ranking-1280-jasny.png  |  Bin 0 -> 177393 bytes
+ .../etap-2/runda-2/ranking-360-ciemny-ekran1.png   |  Bin 0 -> 59678 bytes
+ .../petla-5/etap-2/runda-2/ranking-360-ciemny.png  |  Bin 0 -> 130572 bytes
+ .../etap-2/runda-2/ranking-360-jasny-ekran1.png    |  Bin 0 -> 61116 bytes
+ .../petla-5/etap-2/runda-2/ranking-360-jasny.png   |  Bin 0 -> 135530 bytes
+ .../etap-2/runda-2/ranking-390-ciemny-ekran1.png   |  Bin 0 -> 89350 bytes
+ .../petla-5/etap-2/runda-2/ranking-390-ciemny.png  |  Bin 0 -> 128716 bytes
+ .../etap-2/runda-2/ranking-390-en-ekran1.png       |  Bin 0 -> 89336 bytes
+ .../petla-5/etap-2/runda-2/ranking-390-en.png      |  Bin 0 -> 125004 bytes
+ .../etap-2/runda-2/ranking-390-jasny-ekran1.png    |  Bin 0 -> 95021 bytes
+ .../petla-5/etap-2/runda-2/ranking-390-jasny.png   |  Bin 0 -> 133285 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-2/raport.json   | 2744 +++++++++++++++++++
+ docs/audyt-ux/petla-5/etap-2/runda-2/raport.md     |  491 ++++
+ .../etap-2/runda-2/sklep-1280-ciemny-ekran1.png    |  Bin 0 -> 146193 bytes
+ .../petla-5/etap-2/runda-2/sklep-1280-ciemny.png   |  Bin 0 -> 602954 bytes
+ .../etap-2/runda-2/sklep-1280-jasny-ekran1.png     |  Bin 0 -> 178439 bytes
+ .../petla-5/etap-2/runda-2/sklep-1280-jasny.png    |  Bin 0 -> 626875 bytes
+ .../etap-2/runda-2/sklep-360-ciemny-ekran1.png     |  Bin 0 -> 67548 bytes
+ .../petla-5/etap-2/runda-2/sklep-360-ciemny.png    |  Bin 0 -> 337121 bytes
+ .../etap-2/runda-2/sklep-360-jasny-ekran1.png      |  Bin 0 -> 76744 bytes
+ .../petla-5/etap-2/runda-2/sklep-360-jasny.png     |  Bin 0 -> 342676 bytes
+ .../etap-2/runda-2/sklep-390-ciemny-ekran1.png     |  Bin 0 -> 88441 bytes
+ .../petla-5/etap-2/runda-2/sklep-390-ciemny.png    |  Bin 0 -> 354125 bytes
+ .../petla-5/etap-2/runda-2/sklep-390-en-ekran1.png |  Bin 0 -> 98731 bytes
+ .../petla-5/etap-2/runda-2/sklep-390-en.png        |  Bin 0 -> 348853 bytes
+ .../etap-2/runda-2/sklep-390-jasny-ekran1.png      |  Bin 0 -> 97479 bytes
+ .../petla-5/etap-2/runda-2/sklep-390-jasny.png     |  Bin 0 -> 360339 bytes
+ .../etap-2/runda-2/sklep-wybor-odlozony-390.png    |  Bin 0 -> 83632 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-2/testy.log     |  103 +
+ .../petla-5/etap-2/runda-2/wybor-390-en.png        |  Bin 0 -> 78369 bytes
+ .../etap-2/runda-3/awans-4-360-ciemny-ekran1.png   |  Bin 0 -> 65216 bytes
+ .../etap-2/runda-3/awans-4-360-jasny-ekran1.png    |  Bin 0 -> 64497 bytes
+ .../etap-2/runda-3/awans-4-390-ciemny-ekran1.png   |  Bin 0 -> 92316 bytes
+ .../etap-2/runda-3/awans-4-390-jasny-ekran1.png    |  Bin 0 -> 91175 bytes
+ .../petla-5/etap-2/runda-3/awans-4-wybor-390.png   |  Bin 0 -> 103554 bytes
+ .../petla-5/etap-2/runda-3/haslo-po-grze-390.png   |  Bin 0 -> 72539 bytes
+ .../runda-3/jak-zdobywac-390-jasny-ekran1.png      |  Bin 0 -> 87739 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-3/kontrola.md   |  326 +++
+ docs/audyt-ux/petla-5/etap-2/runda-3/ocena.json    |    1 +
+ .../runda-3/poziomy-i-rangi-390-jasny-ekran1.png   |  Bin 0 -> 109475 bytes
+ .../etap-2/runda-3/profil-1280-jasny-ekran1.png    |  Bin 0 -> 212977 bytes
+ .../petla-5/etap-2/runda-3/profil-1280-jasny.png   |  Bin 0 -> 200886 bytes
+ .../etap-2/runda-3/profil-360-ciemny-ekran1.png    |  Bin 0 -> 70098 bytes
+ .../petla-5/etap-2/runda-3/profil-360-ciemny.png   |  Bin 0 -> 121397 bytes
+ .../etap-2/runda-3/profil-360-jasny-ekran1.png     |  Bin 0 -> 76763 bytes
+ .../petla-5/etap-2/runda-3/profil-360-jasny.png    |  Bin 0 -> 134807 bytes
+ .../etap-2/runda-3/profil-390-ciemny-ekran1.png    |  Bin 0 -> 109700 bytes
+ .../petla-5/etap-2/runda-3/profil-390-ciemny.png   |  Bin 0 -> 119522 bytes
+ .../etap-2/runda-3/profil-390-jasny-ekran1.png     |  Bin 0 -> 124645 bytes
+ .../petla-5/etap-2/runda-3/profil-390-jasny.png    |  Bin 0 -> 135331 bytes
+ .../etap-2/runda-3/ranking-1280-ciemny-ekran1.png  |  Bin 0 -> 134395 bytes
+ .../petla-5/etap-2/runda-3/ranking-1280-ciemny.png |  Bin 0 -> 159512 bytes
+ .../etap-2/runda-3/ranking-1280-jasny-ekran1.png   |  Bin 0 -> 153891 bytes
+ .../petla-5/etap-2/runda-3/ranking-1280-jasny.png  |  Bin 0 -> 178797 bytes
+ .../etap-2/runda-3/ranking-360-ciemny-ekran1.png   |  Bin 0 -> 59677 bytes
+ .../petla-5/etap-2/runda-3/ranking-360-ciemny.png  |  Bin 0 -> 131753 bytes
+ .../etap-2/runda-3/ranking-360-jasny-ekran1.png    |  Bin 0 -> 61116 bytes
+ .../petla-5/etap-2/runda-3/ranking-360-jasny.png   |  Bin 0 -> 136774 bytes
+ .../etap-2/runda-3/ranking-390-ciemny-ekran1.png   |  Bin 0 -> 89768 bytes
+ .../petla-5/etap-2/runda-3/ranking-390-ciemny.png  |  Bin 0 -> 130025 bytes
+ .../etap-2/runda-3/ranking-390-en-ekran1.png       |  Bin 0 -> 89796 bytes
+ .../petla-5/etap-2/runda-3/ranking-390-en.png      |  Bin 0 -> 126373 bytes
+ .../etap-2/runda-3/ranking-390-jasny-ekran1.png    |  Bin 0 -> 95245 bytes
+ .../petla-5/etap-2/runda-3/ranking-390-jasny.png   |  Bin 0 -> 134593 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-3/raport.json   | 2745 ++++++++++++++++++++
+ docs/audyt-ux/petla-5/etap-2/runda-3/raport.md     |  492 ++++
+ .../etap-2/runda-3/sklep-1280-ciemny-ekran1.png    |  Bin 0 -> 146193 bytes
+ .../petla-5/etap-2/runda-3/sklep-1280-ciemny.png   |  Bin 0 -> 602947 bytes
+ .../etap-2/runda-3/sklep-1280-jasny-ekran1.png     |  Bin 0 -> 178439 bytes
+ .../petla-5/etap-2/runda-3/sklep-1280-jasny.png    |  Bin 0 -> 626980 bytes
+ .../etap-2/runda-3/sklep-360-ciemny-ekran1.png     |  Bin 0 -> 67542 bytes
+ .../petla-5/etap-2/runda-3/sklep-360-ciemny.png    |  Bin 0 -> 336873 bytes
+ .../etap-2/runda-3/sklep-360-jasny-ekran1.png      |  Bin 0 -> 76631 bytes
+ .../petla-5/etap-2/runda-3/sklep-360-jasny.png     |  Bin 0 -> 342430 bytes
+ .../etap-2/runda-3/sklep-390-ciemny-ekran1.png     |  Bin 0 -> 88441 bytes
+ .../petla-5/etap-2/runda-3/sklep-390-ciemny.png    |  Bin 0 -> 354176 bytes
+ .../petla-5/etap-2/runda-3/sklep-390-en-ekran1.png |  Bin 0 -> 98718 bytes
+ .../petla-5/etap-2/runda-3/sklep-390-en.png        |  Bin 0 -> 349119 bytes
+ .../etap-2/runda-3/sklep-390-jasny-ekran1.png      |  Bin 0 -> 97462 bytes
+ .../petla-5/etap-2/runda-3/sklep-390-jasny.png     |  Bin 0 -> 360188 bytes
+ .../etap-2/runda-3/sklep-wybor-odlozony-390.png    |  Bin 0 -> 83628 bytes
+ docs/audyt-ux/petla-5/etap-2/runda-3/testy.log     |  104 +
+ .../petla-5/etap-2/runda-3/wybor-390-en.png        |  Bin 0 -> 78368 bytes
+ docs/audyt-ux/petla-5/kontrola.mjs                 |  107 +
+ docs/audyt-ux/petla-5/runda.sh                     |   21 +
+ docs/audyt-ux/petla-5/uwagi-dla-innych.md          |   22 +
+ docs/gry/test/atrapa-supabase.js                   |   23 +-
+ docs/gry/test/etap9.mjs                            |    8 +-
+ docs/gry/test/h2-etap5.mjs                         |    2 +-
+ docs/gry/test/lib.mjs                              |   13 +
+ docs/gry/test/poziomy.mjs                          |   12 +-
+ docs/gry/test/ux5-etap1.mjs                        |  158 ++
+ docs/gry/test/ux5-etap2.mjs                        |  191 ++
+ docs/gry/test/ux5-lib.mjs                          |  118 +
+ i18n-en.js                                         |  142 +-
+ index.html                                         |  289 ++-
+ kosmetyki.js                                       |   12 +
+ nagrody.js                                         |  509 ++++
+ supabase/skrot-v58-nagroda-dzial.sql               |   51 +
+ supabase/skrot-v59-motywy-ceny.sql                 |   51 +
+ supabase/test/pglite.mjs                           |    2 +-
+ supabase/test/v58.sql                              |   86 +
+ supabase/test/v59.sql                              |   32 +
+ 322 files changed, 18926 insertions(+), 112 deletions(-)
+```
+
+## 2. Zmienione funkcje (lista B3 pętli 5)
+### index.html
+- ✓ `[linia 1: ?v= i18n.js]` (1 linii)
+- ✓ `[CSS/HTML przed skryptem]` (6 linii)
+- ✓ `MEADOW_LV` (1 linii)
+- ✓ `SEA_LEVEL` (1 linii)
+- ✓ `subjectHero` (6 linii)
+- ✓ `courseSection` (32 linii)
+- ✓ `viewMaterial` (1 linii)
+- ✓ `PINK_LEVEL` (1 linii)
+- ✓ `BOW_LEVEL` (1 linii)
+- ✓ `LILIA_LEVEL` (1 linii)
+- ✓ `NOC_LEVEL` (1 linii)
+- ✓ `RIWIERA_LEVEL` (1 linii)
+- ✓ `KLUB_LEVEL` (1 linii)
+- ✓ `THEME_CHOICE` (nowa funkcja pętli 5) (2 linii)
+- ✓ `THEME_LATE` (nowa funkcja pętli 5) (1 linii)
+- ✓ `THEME_BASE` (nowa funkcja pętli 5) (1 linii)
+- ✓ `THEME_OLD` (nowa funkcja pętli 5) (2 linii)
+- ✓ `themePair` (nowa funkcja pętli 5) (1 linii)
+- ✓ `themePicked` (nowa funkcja pętli 5) (3 linii)
+- ✓ `themeFreeLvl` (nowa funkcja pętli 5) (4 linii)
+- ✓ `themeLv` (nowa funkcja pętli 5) (1 linii)
+- ✓ `themeChoicePending` (nowa funkcja pętli 5) (2 linii)
+- ✓ `themeChoose` (nowa funkcja pętli 5) (1 linii)
+- ✓ `THEME_SHOP` (2 linii)
+- ✓ `themeMigDone` (nowa funkcja pętli 5) (1 linii)
+- ✓ `themeMig` (nowa funkcja pętli 5) (7 linii)
+- ✓ `themeByLevel` (7 linii)
+- ✓ `lvPrizeLine` (nowa funkcja pętli 5) (8 linii)
+- ✓ `lpLevelsShow` (3 linii)
+- ✓ `lvBadge` (1 linii)
+- ✓ `lvRewardLine` (7 linii)
+- ✓ `lvHowShow` (2 linii)
+- ✓ `themeChoiceCards` (nowa funkcja pętli 5) (10 linii)
+- ✓ `themeChoiceShow` (nowa funkcja pętli 5) (5 linii)
+- ✓ `levelUpShow` (8 linii)
+- ✓ `ptsMilestone` (1 linii)
+- ✓ `rankMeCard` (4 linii)
+- ✓ `rankList` (2 linii)
+- ✓ `hdHomeCard` (1 linii)
+- ✓ `hdMoreRow` (1 linii)
+- ✓ `hdSubmit` (2 linii)
+- ✓ `hdEnd` (3 linii)
+- ✓ `viewHaslo` (1 linii)
+- ✓ `bsLoad` (1 linii)
+- ✓ `bsClaim` (2 linii)
+- ✓ `bsAnnText` (1 linii)
+- ✓ `bsBody` (1 linii)
+- ✓ `viewBoss` (1 linii)
+- ✓ `viewProfil` (2 linii)
+- ✓ `paczkaWynik` (1 linii)
+- ✓ `shopThemeCard` (10 linii)
+- ✓ `[most ux-5]` (4 linii)
+- ✓ `shopHero` (7 linii)
+- ✓ `ODZNAKI` (2 linii)
+- ✓ `odzIc` (nowa funkcja pętli 5) (1 linii)
+- ✓ `kProfilShow` (3 linii)
+- ✓ `kGablotaSlots` (2 linii)
+- ✓ `kGablotaEdit` (2 linii)
+- ✓ `K_TABS` (1 linii)
+- ✓ `kShopTabs` (1 linii)
+- ✓ `viewShop` (1 linii)
+- ✓ `[ładowanie nagrody.js]` (1 linii)
+- CSS (dodane/zmienione reguły):
+  - `.sk-node, .lp-node { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px`
+  - `.sk-node .t, .lp-node .t { min-width: 0; overflow-wrap: anywhere; display: grid; gap: 2px`
+  - `.sk-node.now, .lp-node.now, .sk-node.opt, .lp-node.opt { display: grid; grid-template-col`
+  - `.sk-node.lock { white-space: normal; font-size: inherit; color: inherit; } /* ux-5: ogóln`
+  - `.sk-node .t { grid-template-columns: minmax(0, 1fr); }`
+- wywołania z umów:
+  - `    return txt ? h("span", { class: "lv-prize ux5-prize", title: pair ? `Drugi motyw za darmo na poziomie ${THEME_LATE[n]} albo w sklepie` `
+  - `          h("span", { class: "lv-badge t" + lvTier(n), "aria-hidden": "true" }, window.ZD_NAGRODY?.ikonaPoziomu?.(n) ?? h("span", { class: `
+  - `            h("span", { class: "lv-badge big t" + lvTier(cur), "aria-hidden": "true" }, window.ZD_NAGRODY?.ikonaPoziomu?.(cur) ?? h("span",`
+  - `  const lvBadge = (n, cls) => h("span", { class: `rk-badge t${lvTier(n)}${cls ? " " + cls : ""}`, "aria-hidden": "true" }, window.ZD_NAGROD`
+  - `      window.ZD_NAGRODY?.ikona?.("ux5-palette", "lv-reward-ico") ?? null,`
+  - `      window.ZD_NAGRODY?.ikona?.("ux5-palette", "lv-reward-ico") ?? null,`
+  - `        window.ZD_NAGRODY?.nagrodaPoziomuOkno?.(from, to) ?? null,`
+  - `        window.ZD_NAGRODY?.pokazZnajomym?.({ rodzaj: "awans", poziom: to, ranga: lvName(to) }) ?? null,`
+  - `    window.ZD_NAGRODY?.dzialSprawdz?.(sid); // ux-5: koniec działu = nagroda z bazy (v58)`
+  - `      h("p", { class: "rk-place" }, h("b", { class: "num", text: m != null ? `#${m}` : "–" }), h("span", { text: m != null ? `z ${z} · ${fm`
+  - `      d.seria > 0 ? h("p", { class: "hd-seria" }, window.ZD_NAGRODY?.ikona?.("ux5-word", "hd-seria-ico") ?? null, h("span", { text: d.seria`
+  - `        d?.seria ? h("span", { class: "sk-chip hd-streak", title: `Hasło: ${d.seria} dni z rzędu`, "aria-label": `Hasło: ${d.seria} dni z r`
+  - `      BS.d = r; BS.err = null; window.ZD_NAGRODY?.bossStan?.(r.bossy); // ux-5: odznaka „Pierwszy cios”`
+  - `      if (r.ok) { lpConfetti(46); lpBanner(`Boss pokonany: +${r.pkt} XP`); xpFlush(r.pkt); S.rank.home = null; window.ZD_NAGRODY?.odznaka?.`
+  - `        window.ZD_NAGRODY?.odznakiSekcja ? null : PAID() ? gryBadgeRow() : null),`
+  - `      window.ZD_NAGRODY?.odznakiSekcja?.() ?? null,`
+  - `      const by = PK.nagroda; PK.d = r; PK.err = false; window.ZD_NAGRODY?.duetStan?.(r); // ux-5: odznaka „Duet tygodnia”`
+  - `    else if (!it) { btn = sk.state === "out" ? h("button", { type: "button", class: "btn", onclick: signIn }, "Zaloguj się, żeby kupić") : `
+  - `    const pv = on ? null : h("button", { type: "button", class: "btn shop-pv", onclick: () => themePreview(t.id) }, window.ZD_NAGRODY?.ikon`
+  - `        : h("button", { type: "button", class: "shop-sw shop-sw-btn", "aria-label": `Podgląd: ${t.name}`, tabindex: shopSwTab() ? null : "-`
+  - `      h("p", { class: "sk-bignum", id: "shop-saldo" }, window.ZD_NAGRODY?.ikona?.("coin", "shop-bigcoin") ?? null, h("b", { class: "num", t`
+  - `  const ODZNAKI = () => [...GRY_BADGES, ["mistrz", "", "Mistrz Zdawalni", "7 z 10 w teście przewodnika"], ...(window.ZD_NAGRODY?.odzLista?.`
+  - `  const odzIc = (b) => window.ZD_NAGRODY?.odzIkonaId?.(b[0]) || h("span", { class: "ic", "aria-hidden": "true", text: b[1] });`
+  - `        h("p", { class: "muted", style: "margin:0" }, window.ZD_NAGRODY?.ikonaPoziomu?.(lv) ?? null, h("span", { text: ` ${lvName(lv)}` }),`
+  - `        window.ZD_NAGRODY?.ikona?.("lock") ?? null, h("small", { text: `${i + 1}. miejsce` })));`
+  - `      window.ZD_NAGRODY?.ikona?.(ic) ?? null, h("span", { text: t }),`
+  - `      inn ? window.ZD_NAGRODY?.kartaPrezentu?.() ?? null : null, // ux-5: monety z prezentu (100 na start)`
+### skrot-supabase.js
+- bez zmian
+
+## 3. Emoji w dodanych liniach kodu
+- ✗ `return `⚔️ ${name} atakuje! ${b.typ === "egzamin" ? "Egzamin" : "Kolokwium"} z ${g} ${fmtDate(b.termin + "T12:00")}. Każda dobra odpowiedź na zdawalni.pl t`
+
+## 4. Tablice quiz (hash linii z „quiz”)
+- atrapa: przed d9b925bb92c73b96 · po d9b925bb92c73b96 ✓ równe
+- pliki docs/*.json|js z innym hashem: brak ✓
+
+## 5. Nowe migracje
+- `skrot-v58-nagroda-dzial.sql`: strażnik kodowania ✓; `funkcje-sql.mjs --nadpisane`: (pusto: żadna funkcja nie ma późniejszej wersji) ✓
+- `skrot-v59-motywy-ceny.sql`: strażnik kodowania ✓; `funkcje-sql.mjs --nadpisane`: 
+```
+public.nauka_sklep_katalog(): nowsza wersja w skrot-v60-start-gablota.sql
+```
+- `skrot-v60-start-gablota.sql`: strażnik kodowania ✓; `funkcje-sql.mjs --nadpisane`: (pusto: żadna funkcja nie ma późniejszej wersji) ✓
+
+## 6. Nowe teksty PL bez pary EN (przybliżenie: literał w całości; zdania składane z kilku części mogą być fałszywym alarmem)
+- nagrody.js: Ucz się {n} dni z rzędu.
+- nagrody.js: Zrób {n} lekcji.
+- nagrody.js: Zdobądź {n} XP jednego dnia.
+- index.html: : hasU ? `Dział {0}: ${u.title ||
+- index.html: {0}. {1}{2}{3}{4}
+- index.html: Wybór: {0}
+- index.html: , { text: `Poziom {0}: wybór ${wyb.join(
+- index.html: }), h("small", { class: "num", text: L.n >= pb ? "wybór czeka · drugi za darmo na poziomie " + THEME_LATE[pb] :
+- index.html: {0}{1} XP od zeszłego tygodnia
+- index.html: · Hasło: {0} {1} z rzędu
+- index.html: , title: `Hasło: {0} dni z rzędu`,
+- index.html: : `Hasło: {0} dni z rzędu` }, window.ZD_NAGRODY?.ikona?.(
+- index.html: ⚔️ {0} atakuje! {1} z {2} {3}. Każda dobra odpowiedź na zdawalni.pl to cios. Jeśli go pokonamy do {4}, każdy z {5}+ ciosami dostaje +{6} XP.
+- index.html: : `Podgląd: {0}`, tabindex: shopSwTab() ? null :
+

@@ -1,0 +1,1771 @@
+{
+ "ekrany": [
+  {
+   "nazwa": "profil-360-jasny",
+   "axe": [],
+   "tekstow": 76,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.08,
+     "wymagany": 3,
+     "px": 23.04
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "100",
+     "w": 69,
+     "h": 30
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "arkusz-360-jasny",
+   "axe": [],
+   "tekstow": 9,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "strona": 360,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-360-jasny",
+   "axe": [],
+   "tekstow": 99,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "poziomy-360-jasny",
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "html": "<div id=\"skrot-wm\" aria-hidden=\"true\" translate=\"no\" style=\"position: fixed; rig...\">",
+       "info": "Element has insufficient color contrast of 1.57 (foreground color: #cacfcd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 97,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "strona": 360,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-360-jasny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Ł",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "C",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.18,
+     "wymagany": 4.5,
+     "px": 12.24
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "Cały rok",
+     "w": 88,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C111",
+     "w": 59,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C112",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C113",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-360-ciemny",
+   "axe": [],
+   "tekstow": 76,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "100",
+     "w": 69,
+     "h": 30
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "arkusz-360-ciemny",
+   "axe": [],
+   "tekstow": 9,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "strona": 360,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-360-ciemny",
+   "axe": [],
+   "tekstow": 99,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "poziomy-360-ciemny",
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "html": "<div id=\"skrot-wm\" aria-hidden=\"true\" translate=\"no\" style=\"position: fixed; rig...\">",
+       "info": "Element has insufficient color contrast of 1.91 (foreground color: #4a5b52, background color: #1d3126, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 97,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "strona": 360,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-360-ciemny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "Cały rok",
+     "w": 88,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C111",
+     "w": 59,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C112",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C113",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 360,
+   "iw": 360,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-390-jasny",
+   "axe": [],
+   "tekstow": 76,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.08,
+     "wymagany": 3,
+     "px": 23.04
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "100",
+     "w": 69,
+     "h": 30
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "arkusz-390-jasny",
+   "axe": [],
+   "tekstow": 9,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-390-jasny",
+   "axe": [],
+   "tekstow": 99,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "poziomy-390-jasny",
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "html": "<div id=\"skrot-wm\" aria-hidden=\"true\" translate=\"no\" style=\"position: fixed; rig...\">",
+       "info": "Element has insufficient color contrast of 1.57 (foreground color: #cacfcd, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 97,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-390-jasny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Ł",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "C",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.18,
+     "wymagany": 4.5,
+     "px": 12.24
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "Cały rok",
+     "w": 88,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C111",
+     "w": 59,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C112",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C113",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-390-ciemny",
+   "axe": [],
+   "tekstow": 76,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "100",
+     "w": 69,
+     "h": 30
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "arkusz-390-ciemny",
+   "axe": [],
+   "tekstow": 9,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-390-ciemny",
+   "axe": [],
+   "tekstow": 99,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "poziomy-390-ciemny",
+   "axe": [
+    {
+     "id": "color-contrast",
+     "n": 1,
+     "nodes": [
+      {
+       "cel": "#skrot-wm",
+       "html": "<div id=\"skrot-wm\" aria-hidden=\"true\" translate=\"no\" style=\"position: fixed; rig...\">",
+       "info": "Element has insufficient color contrast of 1.91 (foreground color: #4a5b52, background color: #1d3126, font size: 7.5pt (10px), font weight: normal). Expected c"
+      }
+     ]
+    }
+   ],
+   "tekstow": 97,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "strona": 390,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-390-ciemny",
+   "axe": [],
+   "tekstow": 49,
+   "kontrast": [
+    {
+     "tekst": "Dziś",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Przedmioty",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Powtórki",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Terminy",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Kalendarz",
+     "cel": "SPAN",
+     "kontrast": 11.3,
+     "maly": 11.84
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "Cały rok",
+     "w": 88,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C111",
+     "w": 59,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C112",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C113",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-1280-jasny",
+   "axe": [],
+   "tekstow": 78,
+   "kontrast": [
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.08,
+     "wymagany": 3,
+     "px": 23.04
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "100",
+     "w": 69,
+     "h": 30
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "arkusz-1280-jasny",
+   "axe": [],
+   "tekstow": 9,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "strona": 1280,
+   "bledy": []
+  },
+  {
+   "nazwa": "sklep-1280-jasny",
+   "axe": [],
+   "tekstow": 109,
+   "kontrast": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "poziomy-1280-jasny",
+   "axe": [],
+   "tekstow": 97,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "strona": 1280,
+   "bledy": []
+  },
+  {
+   "nazwa": "ranking-1280-jasny",
+   "axe": [],
+   "tekstow": 51,
+   "kontrast": [
+    {
+     "tekst": "Ł",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "C",
+     "cel": ".kav-l",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 12.24
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.18,
+     "wymagany": 4.5,
+     "px": 12.24
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "Pseudonim: Bartek · widoczny",
+     "w": 226,
+     "h": 35
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "Cały rok",
+     "w": 88,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C111",
+     "w": 59,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C112",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "BUTTON.fchip",
+     "tekst": "C113",
+     "w": 62,
+     "h": 40
+    },
+    {
+     "cel": "SELECT.input.rk-sel",
+     "tekst": "Wszystkie przedmioty\nAnaliza matematyczn",
+     "w": 320,
+     "h": 43
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-1280-ciemny",
+   "axe": [],
+   "tekstow": 78,
+   "kontrast": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "100",
+     "w": 69,
+     "h": 30
+    },
+    {
+     "cel": "A",
+     "tekst": "Plan zajęć (za darmo)",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Skrzynka do opiekunki roku",
+     "w": 174,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Regulamin",
+     "w": 67,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Polityka prywatności",
+     "w": 133,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Kontakt",
+     "w": 51,
+     "h": 21
+    }
+   ],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "nazwa": "arkusz-1280-ciemny",
+   "axe": [],
+   "tekstow": 9,
+   "kontrast": [],
+   "cele44": [],
+   "sw": 1280,
+   "iw": 1280,
+   "poziomo": false,
+   "strona": 1280,
+   "bledy": []
+  },
+  {
+   "nazwa": "profil-390-en",
+   "axe": [],
+   "tekstow": 77,
+   "kontrast": [
+    {
+     "tekst": "Today",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Subjects",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Reviews",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Deadlines",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "Calendar",
+     "cel": "SPAN",
+     "kontrast": 16.79,
+     "maly": 11.84
+    },
+    {
+     "tekst": "B",
+     "cel": ".kav-l",
+     "kontrast": 1.08,
+     "wymagany": 3,
+     "px": 23.04
+    },
+    {
+     "tekst": "New badges: 6",
+     "cel": "SPAN",
+     "kontrast": 1,
+     "wymagany": 4.5,
+     "px": 15.5
+    }
+   ],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nMore",
+     "w": 84,
+     "h": 36
+    },
+    {
+     "cel": "BUTTON.xp-chip.hud-coin.h-shine",
+     "tekst": "100",
+     "w": 69,
+     "h": 30
+    },
+    {
+     "cel": "A",
+     "tekst": "Timetable (free)",
+     "w": 102,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Message box for the year supervisor",
+     "w": 229,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Terms of service",
+     "w": 103,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Privacy policy",
+     "w": 89,
+     "h": 21
+    },
+    {
+     "cel": "A",
+     "tekst": "Contact",
+     "w": 53,
+     "h": 21
+    }
+   ],
+   "sw": 390,
+   "iw": 390,
+   "poziomo": false,
+   "bledy": []
+  }
+ ],
+ "testy": [
+  "✓ K1 sekcja „Na start”: Pierwszy krok, Trzy dni, Pierwsza powtórka, Pierwszy cios, Cel 3 razy",
+  "✓ K1 sekcja „Nauka”: Seria, Lekcje, Przedmiot przerobiony, Boss pokonany, Przygotowany, Rekord dnia, Duet tygodnia",
+  "✓ K1 odznaki z gier w osobnej sekcji „Gry” (zwiniętej)",
+  "✓ K1 z postępu przyznane: start1, seria3, pow1, lekcje1, cel3, rekord60, przygotowany",
+  "✓ K1 baner przy zdobyciu (kilka naraz: „Nowe odznaki: N”)",
+  "✓ K1 „Pierwszy cios” po ciosie w bossa (bsLoad)",
+  "✓ K2 każda odznaka to przycisk ≥ 44×44 px",
+  "✓ K2 arkusz „Seria”: nazwa, data zdobycia, jak zdobyć, postęp „Seria 5/7”, stopnie",
+  "✓ K2 ZD_NAGRODY.odznaka(id) przyznaje raz i pokazuje baner „Odznaka: Duet tygodnia”",
+  "✓ K2 po przyznaniu siatka odświeżona: kafel „Duet tygodnia” zdobyty (.on)",
+  "✓ K3 PGlite: v60 (start +100 raz przez wyzwalacze na próbie i dostępie, gablota 3, zwrot, nagrody 15/17/20)",
+  "✓ K3 Sklep przy 100 monetach bez zakupów: „Kup coś za monety z prezentu” (zamrożenie i kolor pseudonimu)",
+  "✓ K3 sklep bez miejsc gabloty do kupienia",
+  "✓ K3 przy 30 monetach karty prezentu nie ma",
+  "✓ K3 „Prezent na start: +100” widać raz (okno z „Do Sklepu”), po przeładowaniu już nie",
+  "✓ K3 gablota: 3 miejsca bez dopłaty (bez kłódek)",
+  "✓ K4 ranking: plakietka w linii nicku (≤ 24 px wysokości), tytuły ≥ 12 px",
+  "✓ K4 ranking: plakietka poziomu przy nicku (ikona SVG + numer)",
+  "✓ K4 „Poziomy i rangi”: nagrody na 15 (Platynowa ramka), 17 (Prezes roku), 20 (Ramka Geniusza)",
+  "✓ K4 ikony poziomów: 20 SVG, bez emoji",
+  "✓ K4 zablokowane poziomy: przerywany obrys, bez przezroczystości",
+  "✓ K4 nagroda w jednej (najwyżej dwóch) liniach",
+  "✓ K4 awans na 15: okno pokazuje „Nagroda: Platynowa ramka”",
+  "✓ K4 karta nagrody za poziom na pełną szerokość z podglądem ramki (bez łamania po słowie)",
+  "✓ EN odznaki: bez polskich tekstów",
+  "✓ EN arkusz odznaki: bez polskich tekstów",
+  "✓ EN karta prezentu"
+ ],
+ "ruch": [
+  {
+   "n": "zwykle",
+   "#layer .modal": "h-sheet 0.35s",
+   ".ux5-odz": "none 0s"
+  },
+  {
+   "n": "reduced-motion",
+   "#layer .modal": "none 0s",
+   ".ux5-odz": "none 0.001s"
+  },
+  {
+   "n": "calm",
+   "#layer .modal": "none 0s",
+   ".ux5-odz": "none 0.001s"
+  }
+ ]
+}
