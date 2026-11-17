@@ -12,7 +12,7 @@ const P = (...a) => out.push(...a);
 
 // Miejsca pętli 4 z B3 (etap A). Wywołania z umów i blok mostu wypisujemy osobno.
 const MOJE = new Set(["toast", "viewMaterials", "viewPo", "viewGuide", "guideTest", "gRing", "viewTerms", "viewCalendar", "viewReview", "viewGlossary", "viewMaterial",
-  "viewMore", "viewUstawienia", "reviewHome" /* Powtórki: tylko nagłówek */, "subjectLabel", "subjectTile" /* kafle Przedmiotów (.nb-*) */, "viewPo5" /* „Po zajęciach”: wygasłe podsumowanie */, "openTermsHelp", "lessonPanel", "lessonPanel2" /* materiał: bez „undefined” */, "GTEST", "guideHome", "guideSource" /* marka w przewodniku */, "tlSection" /* Terminy */, "pastBox", "estBox", "flushProgress" /* komunikat błędu zapisu (B4) */, "font", "apply", "pinkTheme" /* font() motywów (B4) */, "seaTheme" /* motyw nocny: usunięte ładowanie Cormorant z Google (B4) */, "nocOn", "theme", "h2Ico", "saveErr", "CSS (główny arkusz)", "<head> (czcionki)", "linia 1 (wspólna: tylko ?v= i18n.js)", "linia ładowania własnych plików", "most ux-4", "ładowanie własnych plików"]);
+  "viewMore", "viewUstawienia", "reviewHome" /* Powtórki: tylko nagłówek */, "subjectLabel", "subjectTile" /* kafle Przedmiotów (.nb-*) */, "viewPo5" /* „Po zajęciach”: wygasłe podsumowanie */, "openTermsHelp", "renderNav" /* górny pasek: tylko ikona przełącznika motywu (W4) */, "setWyglad" /* Ustawienia: ikony motywów */, "moreProfile" /* Więcej */, "setPrzyp" /* Ustawienia: przypomnienia (ikona) */, "lessonPanel", "lessonPanel2" /* materiał: bez „undefined” */, "GTEST", "guideHome", "guideSource" /* marka w przewodniku */, "tlSection" /* Terminy */, "pastBox", "estBox", "flushProgress" /* komunikat błędu zapisu (B4) */, "font", "apply", "pinkTheme" /* font() motywów (B4) */, "seaTheme" /* motyw nocny: usunięte ładowanie Cormorant z Google (B4) */, "nocOn", "theme", "h2Ico", "saveErr", "CSS (główny arkusz)", "<head> (czcionki)", "linia 1 (wspólna: tylko ?v= i18n.js)", "linia ładowania własnych plików", "most ux-4", "ładowanie własnych plików"]);
 
 P(`# Kontrola automatyczna – ${new Date().toISOString().slice(0, 16)} (porównanie z ${BASEREF}, z niezatwierdzonymi zmianami)`, "");
 P("## git diff --stat", "```", sh(`git diff --stat ${BASEREF}`).trim(), "```", "");
@@ -57,8 +57,13 @@ let addedNew = [];
 for (const f of untracked.split("\n").filter((x) => /\.(js|css|html)$/.test(x) && !x.startsWith("docs/"))) addedNew.push(...fs.readFileSync(ROOT + f, "utf8").split("\n").map((l) => "+" + l));
 const EMO = /\p{Emoji_Presentation}|\p{Extended_Pictographic}\uFE0F/u;
 const emo = [...added, ...addedNew].filter((l) => EMO.test(l) && !/^\+\s*\/\//.test(l));
-P(`## Emoji w dodanych liniach kodu (poza komentarzami): ${emo.length}`);
-for (const l of emo.slice(0, 40)) P("- `" + l.slice(1, 160).trim().replace(/`/g, "'") + "`");
+// Zastępcze: linie, w których emoji to stara wartość używana tylko bez ikony-ux.js (… ?? emo("🔔"), ZD_UX4 ? … : "🔗 …"),
+// dopasowanie starych danych (mapa emoji→motyw, „🔒 ” z THEME_SHOP) albo emoji h2Ico dla motywów ze sklepu (etap B).
+const zast = (l) => /ZD_UX4|\bU && |tid = \{|h2Ico\("(coin|flame)"|`🔒 poziom/.test(l);
+const emoNowe = emo.filter((l) => !zast(l)), emoZast = emo.filter(zast);
+P(`## Emoji w dodanych liniach kodu (poza komentarzami): ${emoNowe.length} jako ikony + ${emoZast.length} zastępczych`);
+for (const l of emoNowe.slice(0, 40)) P("- ✗ `" + l.slice(1, 160).trim().replace(/`/g, "'") + "`");
+for (const l of emoZast.slice(0, 40)) P("- zastępcze (tylko bez ikony-ux.js / dane wejściowe): `" + l.slice(1, 140).trim().replace(/`/g, "'") + "`");
 P("");
 // --- skrót tablic quiz ---
 // Wszystkie linie, w których jest tablica albo generator pytań quizu (quiz: [...], const quiz = ..., "quiz":[...]).

@@ -23,13 +23,17 @@ Narzędzia: `docs/gry/test/ux4-lib.mjs` (pomiary), `docs/gry/test/ux4-runda.mjs`
 - W3: znak wodny `#skrot-wm` przez CSS (`!important`, bo styl jest w atrybucie z `skrot-supabase.js`): prawy margines poza kolumną 1040 px, 9 px, krycie 0,14 do 430 px (0,22 szerzej i na wydruku), `z-index: -1` – leży na tle strony pod kartami (karuzele na Dziś dochodzą do krawędzi ekranu i inaczej by go przecinały).
 - W3: odznaka „Mistrz Zdawalni” `icons/odznaka-zdawalni.svg` (1,3 KB, bez polskiego tekstu w obrazie); `emblem.png` i `logo.png` zostają w repo nieużywane (do decyzji Bartka). `.ics` z `PRODID:-//Skrot BM` to obszar pętli 2.
 
+- W4: ikony w `ikony-ux.js`: 15 wspólnych z A4d (dosłownie) + 17 własnych `ux4-*`, dopisywane do `H2_ICO` przez `Object.assign` przy pierwszym użyciu; `ZD_UX4.ikona(nazwa)`, `ikonaMotywu(id)`, `odznakaPoziomu(n)`, `liczniki(xp, monety, seria)`. W widokach wywołanie przez `window.ZD_UX4?.… ?? <stare emoji>` – emoji zostają tylko jako zachowanie zastępcze bez pliku (kontrola.mjs liczy je osobno).
+- W4: ikony motywów jednym kolorem akcentu (`currentColor` = zieleń H2), różne kształty dla każdego motywu (słońce, księżyc, jednorożec, kokardka, łąka, lotos, żagiel, noc z gwiazdami, palma, kotwica). Odznaka poziomu na Więcej: sześciokąt z numerem (emoji poziomów z `LP_LEVEL_ICO` są w obszarze pętli 5 – uwagi).
+- W4: FAQ przewodnika bez emoji w tekście („Co znaczy kłódka?”, „→ Po zajęciach w 5 minut”, „→ Popraw Stasia”), nowe pary EN.
+
 ## Etapy
 | etap | stan | runda | wynik | twarde błędy | commit |
 |---|---|---|---|---|---|
 | W1 czcionki i typografia | **ZALICZONY 8/10** | 3 | r1: 7, r2: 5, r3: 8 | r2: 1 (kontrast .ev), r3: 0 | (ten commit) |
 | W2 dotyk, pomoc, toast | **ZALICZONY 8/10** | 1 | r1: 8 | 0 | (ten commit) |
 | W3 Przedmioty, stany puste, znak wodny, marka | **ZALICZONY 8,5/10** | 1 | r1: 8,5 | 0 | (ten commit) |
-| W4 ikony SVG | – | – | – | – | – |
+| W4 ikony SVG | **ZALICZONY 8,5/10** | 2 | r1: 8 (K1 false), r2: 8,5 | 0 | (ten commit) |
 
 ## Dziennik rund
 - **W1 r1 – 7/10**, kryteria K1–K4 true, bez twardych błędów. Poprawki: kafle Przedmiotów łamały słowa („Makroekonomi/a”) przy 18 px → 16 px, łamanie tylko między słowami; pigułki terminów (W3); tytuły kart Terminów i dni agendy krojem nagłówków; powitanie na Dziś 28 px od 768 px; dni spoza miesiąca w kalendarzu bez `opacity` (kontrast); podpis pierścienia przewodnika w ciemnym; „Słowniczek” z falą `.ptitle`; „undefined” w materiale → W3 (`txt`).
@@ -39,3 +43,5 @@ Narzędzia: `docs/gry/test/ux4-lib.mjs` (pomiary), `docs/gry/test/ux4-runda.mjs`
 - Zrzuty: w repo tylko pierwszy ekran z rundy zaliczonej (`etap-X/zaliczone/`); zrzuty pozostałych rund i całe strony są lokalnie w `etap-X/runda-R/` (wykluczone w `.git/info/exclude`, ok. 30 MB na rundę), raporty `raport.md`/`raport.json` wszystkich rund są w repo.
 - **W2 r1 – 8/10 ZALICZONY**, twarde błędy: brak, K1–K3 true. Przed commitem poprawione uwagi recenzenta we własnym kodzie: link w nagłówku panelu („Wszystkie gry →”) z polem 44 px także przy 360 px; „?” w Kalendarzu przy prawej krawędzi obok „+ Mój wpis”; „⋯” w Terminach 32 px w stylu „?”; „Zamknij” w oknach „Jak działa …” jako pełny przycisk 48 px. Asercja h2-etap10 (kwadrat mapy 24 → 28 px) poprawiona w osobnym commicie `ae45e57`. Na później: ikona × w toaście, zrzuty toastu błędu w ciemnym; „?” na ścieżce przedmiotu → pętla 5 (uwagi).
 - **W3 r1 – 8,5/10 ZALICZONY**, twarde błędy: brak, K1–K4 true. Przed commitem: stan pusty wyśrodkowany (Staś 96–104 px nad tytułem, przycisk na pełną szerokość, karta do 560 px) z krótkim wejściem `h-rise`/`h-pop` (wyłączane przez reduced-motion i `html.calm`). PALETA.md: przywrócone sekcje zmiennych bazowych `:root` (czyta je `tests/tresci.test.js`). Na później: smutniejsza mina Stasia (nowy nastrój w `STAS_MOOD` – kod Stasia nie jest w B3 pętli 4), ikona kafla „Moje materiały”, pigułki w rzędzie na jednej linii, „0 z 2” bez łamania.
+- **W4 r1 – 8/10, K1 = false**: emoji ☀️/🌙/🌿 w przycisku motywu w górnym pasku (1280 px), test patrzył tylko w `#main`. Poprawki: przycisk motywu z ikoną SVG (`ux4-slonce`/`ux4-ksiezyc`/`ux4-lisc`), test K1 sprawdza też górny pasek, nawigację i okna; prostsze ikony jednorożca i kokardki; siatka motywów 5×2 od 760 px; okrąg pod ikoną w wybranym kaflu; kłódka SVG przy pytaniu FAQ; własne ikony „Sklep i monety” (`ux4-sklep`) i „Profil nauki” (`ux4-wykres`); bolt w kolorze krawędzi akcentu; zakładki Ustawień i „Podgląd w sklepie” ≥ 44 px; „mies..” w FAQ.
+- **W4 r2 – 8,5/10 ZALICZONY**, twarde błędy: brak, K1–K3 true. Przed commitem: prostsze ikony jednorożca, łąki i lotosu; „Jachtklub” w szerokości jednej kolumny; pytania FAQ ≥ 44 px. Na później (poza kryteriami): ikona kafla „Moje materiały” i wierszy „Dla wszystkich przedmiotów” na Przedmiotach, strzałki „→” jako SVG (`.tl-prep`), krótszy podpis „Ranking kierunku” na Więcej (kafle Więcej), kolumna emoji w raporcie także dla górnego paska.

@@ -171,3 +171,46 @@ html:not([data-theme]) .empty.ux4-empty > .stas-face { animation: h-pop .45s var
 @media (prefers-reduced-motion: reduce) { .empty.ux4-empty, .empty.ux4-empty > .stas-face { animation: none !important; } }
 html.calm .empty.ux4-empty, html.calm .empty.ux4-empty > .stas-face { animation: none !important; }
 #main .nb > .foot { margin-top: auto; }
+
+/* ---------- W4. Ikony SVG w jednym stylu (viewBox 24, currentColor, kreska 2,2) na Więcej, w Ustawieniach i Słowniczku ---------- */
+.ux4-ico { display: inline-grid; place-items: center; flex: none; color: var(--h-acc, var(--accent-text)); }
+.ux4-ico svg { width: 20px; height: 20px; display: block; }
+html[data-green="dark"]:not([data-theme]) .ux4-ico { color: var(--h-acc); }
+.more-row > .ux4-ico, .mi > .ux4-ico { width: 24px; }
+.sk-kick > .ux4-ico, .btn > .ux4-ico { margin-right: 6px; vertical-align: -4px; }
+.btn > .ux4-ico { color: inherit; }
+.sk-kick:has(> .ux4-ico) { display: flex; align-items: center; gap: 6px; }
+.sk-kick > .ux4-ico { margin: 0; }
+/* Kafle motywów: ikona 28 px w okręgu */
+.set-theme .e.ux4-e { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--h-acc-soft, var(--accent-soft)); font-size: 0; }
+.set-theme .e.ux4-e .ux4-ico svg { width: 24px; height: 24px; }
+.set-theme.is-locked .e.ux4-e .ux4-ico { color: var(--h-muted, var(--muted)); }
+.set-theme .ux4-zamek { display: inline-flex; align-items: center; gap: 4px; }
+.set-theme .ux4-zamek .ux4-ico svg { width: 14px; height: 14px; }
+.set-theme .ux4-zamek .ux4-ico { color: inherit; }
+/* Więcej: liczniki XP · monety · seria jako ikona + liczba */
+.ux4-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.ux4-stat { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.ux4-stat .ux4-ico svg, .ux4-stat .h2-ico svg { width: 16px; height: 16px; }
+.ux4-stat .h2-ico { display: inline-grid; place-items: center; }
+/* Więcej: odznaka poziomu – sześciokąt z numerem */
+.rk-badge.ux4-lv { position: relative; display: inline-grid; place-items: center; width: 52px; height: 52px; flex: none; border-radius: 16px; background: var(--h-acc-soft, var(--accent-soft)); }
+.rk-badge.ux4-lv .ux4-ico svg { width: 40px; height: 40px; }
+.rk-badge.ux4-lv .ux4-lv-n { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 3px; font: 800 16px/1 var(--f-display); color: var(--h-ink, var(--ink)); }
+/* Runda 1 W4 – poprawki: ikona przełącznika motywu w górnym pasku, kłódka w FAQ przewodnika, siatka motywów 5×2 na szerokim ekranie,
+   okrąg pod ikoną także w wybranym kaflu, bolt optycznie równy monecie i płomieniowi, zakładki Ustawień i link „Podgląd w sklepie” ≥ 44 px. */
+.theme-btn .ux4-ico { color: inherit; }
+.theme-btn .ux4-ico svg { width: 20px; height: 20px; }
+.g-faq summary .ux4-inline { display: inline-grid; vertical-align: -3px; margin-left: 6px; color: inherit; }
+.g-faq summary .ux4-inline svg { width: 16px; height: 16px; }
+@media (min-width: 760px) { html:not([data-theme]) #main .set-themes { grid-template-columns: repeat(5, minmax(0, 1fr)); } html:not([data-theme]) #main .set-themes > .set-theme { grid-column: auto; } }
+.set-theme[aria-pressed="true"] .e.ux4-e { background: var(--h-card, var(--surface)); }
+.ux4-stat > .ux4-ico { color: var(--h-acc-edge, var(--accent-text)); }
+html[data-green="dark"]:not([data-theme]) .ux4-stat > .ux4-ico { color: var(--h-lime); }
+.ux4-stats { gap: 4px 16px; }
+#main[data-view="ustawienia"] .seg button, #main[data-view="ustawienia"] [role="tab"] { min-height: 44px; }
+#main[data-view="ustawienia"] .panel > p > button.link { display: inline-block; padding: 11px 0; margin: -11px 0; }
+/* Runda 2 W4: ostatni kafel motywu w szerokości jednej kolumny (bez rozciągania na cały rząd), pytania FAQ przewodnika ≥ 44 px. */
+html:not([data-theme]) #main .set-themes > .set-theme:last-child:nth-child(n) { grid-column: auto; grid-template-columns: none; grid-template-rows: none; justify-content: normal; text-align: center; }
+html:not([data-theme]) #main .set-themes > .set-theme:last-child:nth-child(n) .e { grid-row: auto; }
+#main .g-faq summary { min-height: 44px; display: flex; align-items: center; gap: 6px; }

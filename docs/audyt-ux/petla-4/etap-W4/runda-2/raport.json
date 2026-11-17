@@ -1,0 +1,3984 @@
+{
+ "etap": "W4",
+ "runda": 2,
+ "ekrany": [
+  {
+   "n": "wiecej-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Więcej”",
+    "H2 18px/700 „Nauka”",
+    "H2 18px/700 „Studia”",
+    "H2 18px/700 „Ty”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 69,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "wiecej-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Więcej”",
+    "H2 18px/700 „Nauka”",
+    "H2 18px/700 „Studia”",
+    "H2 18px/700 „Ty”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 69,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "wiecej-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Więcej”",
+    "H2 18px/700 „Nauka”",
+    "H2 18px/700 „Studia”",
+    "H2 18px/700 „Ty”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 69,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "wiecej-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Więcej”",
+    "H2 18px/700 „Nauka”",
+    "H2 18px/700 „Studia”",
+    "H2 18px/700 „Ty”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 69,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "wiecej-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Więcej”",
+    "H2 18px/700 „Nauka”",
+    "H2 18px/700 „Studia”",
+    "H2 18px/700 „Ty”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 71,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "wiecej-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Więcej”",
+    "H2 18px/700 „Nauka”",
+    "H2 18px/700 „Studia”",
+    "H2 18px/700 „Ty”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 71,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-wyglad-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Ustawienia”",
+    "H2 18px/700 „Motyw”",
+    "H2 18px/700 „Animacje”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "pole": "97×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-wyglad-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Ustawienia”",
+    "H2 18px/700 „Motyw”",
+    "H2 18px/700 „Animacje”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "pole": "97×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-wyglad-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Ustawienia”",
+    "H2 18px/700 „Motyw”",
+    "H2 18px/700 „Animacje”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "pole": "97×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-wyglad-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Ustawienia”",
+    "H2 18px/700 „Motyw”",
+    "H2 18px/700 „Animacje”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 46,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "pole": "97×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-wyglad-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Ustawienia”",
+    "H2 18px/700 „Motyw”",
+    "H2 18px/700 „Animacje”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 47,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "pole": "97×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "ustawienia-wyglad-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Ustawienia”",
+    "H2 18px/700 „Motyw”",
+    "H2 18px/700 „Animacje”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 47,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nWięcej",
+     "w": 96,
+     "h": 36,
+     "pole": "97×44"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 288,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 100,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 318,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 101,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 347,
+     "h": 24,
+     "pole": "119×25"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przewodnik-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Poznaj całą stronę krok po kroku”",
+    "H2 18px/700 „Twoja ścieżka”",
+    "H2 18px/700 „Skróty klawiszowe”",
+    "H2 18px/700 „Częste pytania”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 101,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nUstawienia",
+     "w": 125,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Szybki przegląd ekranów · 1 min",
+     "w": 260,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co kupię w sklepie poza motywami?",
+     "w": 347,
+     "h": 24,
+     "pole": "119×25"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co znaczy kłódka?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie byłem na wykładzie. Co teraz?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Kim jest Stażysta Staś?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Co to jest „10 minut przed snem”?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd biorę monety?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy inni widzą moje imię w rankingu?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Skąd są materiały?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Czy postęp się zapisuje?",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie widzę swoich zajęć albo terminów",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Nie mogę znaleźć jakiejś funkcji",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Znalazłem błąd w materiale",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "SUMMARY",
+     "tekst": "Mail z kodem nie przychodzi",
+     "w": 347,
+     "h": 24,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 88,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 129,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "‹",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "›",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nKolokwium: Makroekonomia\nMakr",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Makroekon",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Prawo\nPra",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "terminy-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Terminy”",
+    "H2 18px/700 „Styczeń 2027, 6”",
+    "H2 18px/700 „Szacowane terminy, 1, Data szacowana”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 129,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "46×47"
+    },
+    {
+     "cel": "BUTTON.th-more",
+     "tekst": "⋯",
+     "w": 32,
+     "h": 32,
+     "pole": "44×45"
+    },
+    {
+     "cel": "BUTTON.btn.primary.small",
+     "tekst": "Przygotuj się",
+     "w": 111,
+     "h": 35,
+     "pole": "112×48"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "‹",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.mc-nav",
+     "tekst": "›",
+     "w": 32,
+     "h": 32,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nKolokwium: Makroekonomia\nMakr",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Makroekon",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-main",
+     "tekst": "Kolokwium:\nZaliczenie wykładu: Prawo\nPra",
+     "w": 512,
+     "h": 22,
+     "pole": "119×57"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "44×44"
+    },
+    {
+     "cel": "BUTTON.tl-tick",
+     "tekst": "✓",
+     "w": 26,
+     "h": 26,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.tl-prep",
+     "tekst": "→",
+     "w": 34,
+     "h": 34,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "kalendarz-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Kalendarz”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 108,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "kalendarz-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Kalendarz”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 108,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "kalendarz-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Kalendarz”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 108,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "kalendarz-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Kalendarz”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 108,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "kalendarz-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Kalendarz”",
+    "H2 18px/700 „Listopad 2026”",
+    "H2 18px/700 „Piątek, 6 lis”",
+    "H3 16px/700 „Twoje wpisy”",
+    "H2 18px/700 „Zajęcia”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 171,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "+ Dodaj",
+     "w": 78,
+     "h": 35,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "A.link",
+     "tekst": "stronie z planem",
+     "w": 108,
+     "h": 17,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "kalendarz-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Kalendarz”",
+    "H2 18px/700 „Listopad 2026”",
+    "H2 18px/700 „Piątek, 6 lis”",
+    "H3 16px/700 „Twoje wpisy”",
+    "H2 18px/700 „Zajęcia”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 171,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn.small",
+     "tekst": "+ Dodaj",
+     "w": 78,
+     "h": 35,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "A.link",
+     "tekst": "stronie z planem",
+     "w": 108,
+     "h": 17,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "slowniczek-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Słowniczek”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 897,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPrzedmioty",
+     "w": 128,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pary ze słowniczka",
+     "w": 296,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pokaż wszystkie (156)",
+     "w": 328,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "slowniczek-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Słowniczek”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 897,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPrzedmioty",
+     "w": 128,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pary ze słowniczka",
+     "w": 296,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pokaż wszystkie (156)",
+     "w": 328,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "slowniczek-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Słowniczek”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 897,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPrzedmioty",
+     "w": 128,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pary ze słowniczka",
+     "w": 318,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pokaż wszystkie (156)",
+     "w": 358,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "slowniczek-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Słowniczek”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 897,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPrzedmioty",
+     "w": 128,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pary ze słowniczka",
+     "w": 318,
+     "h": 43,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pokaż wszystkie (156)",
+     "w": 358,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "slowniczek-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Słowniczek”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 898,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPrzedmioty",
+     "w": 128,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pary ze słowniczka",
+     "w": 968,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pokaż wszystkie (156)",
+     "w": 1008,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "slowniczek-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Słowniczek”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 898,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [
+    {
+     "cel": "BUTTON.back",
+     "tekst": "←\nPrzedmioty",
+     "w": 128,
+     "h": 36,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.help-btn.ux4-help",
+     "tekst": "?",
+     "w": 32,
+     "h": 32,
+     "pole": "48×47"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pary ze słowniczka",
+     "w": 968,
+     "h": 43,
+     "pole": "119×44"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.link",
+     "tekst": "w materiale →",
+     "w": 92,
+     "h": 21,
+     "pole": "poza ekranem"
+    },
+    {
+     "cel": "BUTTON.btn",
+     "tekst": "Pokaż wszystkie (156)",
+     "w": 1008,
+     "h": 43,
+     "pole": "poza ekranem"
+    }
+   ],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-360-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-360-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-390-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-390-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 58,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-1280-jasny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 70,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "przedmioty-1280-ciemny",
+   "kroje": [
+    "Bricolage Grotesque"
+   ],
+   "naglowki": [
+    "H1 28px/700 „Przedmioty”",
+    "H3 16px/700 „Makroekonomia”",
+    "H3 16px/700 „Zarządzanie zasobami ludzkimi”",
+    "H3 16px/700 „Prawo”",
+    "H3 16px/700 „Narzędzia IT w zarządzaniu”",
+    "H3 16px/700 „Podstawy finansów”",
+    "H3 16px/700 „Ekonomia biznesu”",
+    "H3 16px/700 „Analiza matematyczna”",
+    "H3 16px/700 „Logistyka”",
+    "H3 16px/700 „Ochrona własności intelektualnej”",
+    "H3 16px/700 „Podstawy zarządzania”",
+    "H3 16px/700 „Moje materiały”",
+    "H2 18px/700 „Dla wszystkich przedmiotów”"
+   ],
+   "male": [],
+   "emoji": [],
+   "tekstow": 70,
+   "kontrast": [],
+   "axe": [],
+   "cele44": [],
+   "poziomo": false,
+   "bledy": []
+  },
+  {
+   "n": "wiecej-390-en",
+   "pl": [
+    "English · przełącz na polski"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "ustawienia-wyglad-390-en",
+   "pl": [],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "przewodnik-390-en",
+   "pl": [
+    "It’s part of full access: 199 zł until the end of semester 2"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "terminy-390-en",
+   "pl": [
+    "Projekt: Podstawy zarządzania"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "kalendarz-390-en",
+   "pl": [
+    "· • · sala 002a dr Barbara Batóg",
+    "? Projekt: Podstawy zarządzania",
+    "room SIL 116 (lab) · dr inż. Piotr Niemcewicz",
+    "room 002 · dr Barbara Batóg",
+    "room 002 · dr inż. Alicja Nerć-Pełka"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "slowniczek-390-en",
+   "pl": [
+    "The share of each additional złoty of income that people spe"
+   ],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  },
+  {
+   "n": "przedmioty-390-en",
+   "pl": [],
+   "poziomo": false,
+   "bledy": [],
+   "axe": []
+  }
+ ],
+ "ruch": [
+  {
+   "nazwa": "zwykle",
+   "anim": [
+    "sf-float",
+    "sf-hello",
+    "sf-brow",
+    "sf-blink",
+    "sf-glint",
+    "lg-hop",
+    "lg-rise",
+    "h-hop",
+    "h-rise",
+    "art-in",
+    "a-bob",
+    "h-pop"
+   ],
+   "trans": [
+    "border-color",
+    "transform",
+    "width"
+   ]
+  },
+  {
+   "nazwa": "reduced-motion",
+   "anim": [],
+   "trans": []
+  },
+  {
+   "nazwa": "html.calm",
+   "anim": [],
+   "trans": []
+  }
+ ],
+ "test": "✓ K1 platne 390 pl: bez emoji jako ikon na Więcej, Ustawieniach, Przewodniku, Terminach, Kalendarzu, Słowniczku, Przedmiotach\n✓ K1 platne 390 pl: bez błędów konsoli\n✓ K1 platne 360 ciemny pl: bez emoji jako ikon na Więcej, Ustawieniach, Przewodniku, Terminach, Kalendarzu, Słowniczku, Przedmiotach\n✓ K1 platne 360 ciemny pl: bez błędów konsoli\n✓ K1 starosta 390 en: bez emoji jako ikon na Więcej, Ustawieniach, Przewodniku, Terminach, Kalendarzu, Słowniczku, Przedmiotach\n✓ K1 starosta 390 en: bez błędów konsoli\n✓ K1 platne 1280 pl: bez emoji jako ikon na Więcej, Ustawieniach, Przewodniku, Terminach, Kalendarzu, Słowniczku, Przedmiotach\n✓ K1 platne 1280 pl: bez błędów konsoli\n✓ K2 390: każdy kafel motywu ma ikonę SVG (10 kafli)\n✓ K2 390: ikony motywów są różne (np. „Zielony ciemny” ≠ „Nocny rejs”)\n✓ K2 390: kontrast AA w Ustawieniach\n✓ K2 1280 ciemny: każdy kafel motywu ma ikonę SVG (10 kafli)\n✓ K2 1280 ciemny: ikony motywów są różne (np. „Zielony ciemny” ≠ „Nocny rejs”)\n✓ K2 1280 ciemny: kontrast AA w Ustawieniach\n✓ K3 ikony-ux.js dopisuje ikony przez Object.assign(I = H2_ICO, …)\n✓ K3 wspólna ikona „bolt” dokładnie jak w A4d\n✓ K3 wspólna ikona „book” dokładnie jak w A4d\n✓ K3 wspólna ikona „bulb” dokładnie jak w A4d\n✓ K3 wspólna ikona „check” dokładnie jak w A4d\n✓ K3 wspólna ikona „cross” dokładnie jak w A4d\n✓ K3 wspólna ikona „retry” dokładnie jak w A4d\n✓ K3 wspólna ikona „skip” dokładnie jak w A4d\n✓ K3 wspólna ikona „warn” dokładnie jak w A4d\n✓ K3 wspólna ikona „eye” dokładnie jak w A4d\n✓ K3 wspólna ikona „ticket” dokładnie jak w A4d\n✓ K3 wspólna ikona „help” dokładnie jak w A4d\n✓ K3 wspólna ikona „lock” dokładnie jak w A4d\n✓ K3 wspólna ikona „play” dokładnie jak w A4d\n✓ K3 wspólna ikona „snow” dokładnie jak w A4d\n✓ K3 wspólna ikona „share” dokładnie jak w A4d\n✓ K3 własne ikony z prefiksem ux4- (20)\n✓ K3 ikony na ekranach w jednym stylu: viewBox 24, currentColor, kreska 2–2,2, bez wypełnienia (29 ikon)\n✓ K3 H2_ICO ma wspólne i własne ikony; coin i flame bez zmian\n✓ K3 Więcej: kontrast AA\n✓ ikony-ux.js: bez emoji (poza zastępczymi dla h2Ico w motywach ze sklepu)\n35/35\n"
+}
