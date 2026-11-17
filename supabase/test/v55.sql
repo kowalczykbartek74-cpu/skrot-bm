@@ -97,6 +97,20 @@ do $$ declare r jsonb; begin
   r := public.nauka_zamrozenie_prezent();
   perform test.chk('Z6 2 dni nauki, ale nie z rzędu (seria 1): bez prezentu', r->>'code' = 'za_wczesnie', r);
 end $$;
+-- Z10: poniedziałek przed nauką, 2 zamrożenia na weekend → seria jak na stronie (czeka 2)
+reset role;
+insert into auth.users (id, email) values ('55555555-0000-4000-8000-000000000007', 'seria7@x.pl') on conflict do nothing;
+do $$ declare u uuid := '55555555-0000-4000-8000-000000000007'; d date := (now() at time zone 'Europe/Warsaw')::date; i int; begin
+  for i in 3..12 loop perform test.rp55(u, d - i); end loop;
+  perform test.zam55(u, 2);
+  perform test.chk('Z10 seria_na bez zapasu = 0 (2 opuszczone dni), z zapasem 2 = 10', public.nauka_seria_na(u, d) = 0 and public.nauka_seria_na(u, d, 2) = 10, null);
+  perform test.chk('Z10 z zapasem 1 = 0 (nie starcza na 2 dni)', public.nauka_seria_na(u, d, 1) = 0, null);
+end $$;
+select test.jako('seria7@x.pl'); set role authenticated;
+do $$ declare r jsonb := public.nauka_seria(); begin
+  perform test.chk('Z10 nauka_seria(): seria 10, czeka 2, bez_zamrozen 0', (r->>'seria')::int = 10 and (r->>'czeka')::int = 2 and (r->>'bez_zamrozen')::int = 0, r);
+end $$;
+reset role;
 -- Z7: nauka_seria() dla zalogowanego
 reset role; select test.jako('seria1@x.pl'); set role authenticated;
 do $$ declare r jsonb := public.nauka_seria(); begin
@@ -110,6 +124,6 @@ do $$ begin
   perform test.chk('Z9 anon bez prawa do uzyj_dni i prezentu', not has_function_privilege('anon', 'public.nauka_zamrozenie_uzyj_dni(date[])', 'execute')
     and not has_function_privilege('anon', 'public.nauka_zamrozenie_prezent()', 'execute') and has_function_privilege('authenticated', 'public.nauka_zamrozenie_uzyj_dni(date[])', 'execute'), null);
   perform test.chk('Z9 nauka_seria_na i nauka_dzien_nauki niedostępne dla zalogowanych (tylko wewnątrz bazy)',
-    not has_function_privilege('authenticated', 'public.nauka_seria_na(uuid, date)', 'execute') and not has_function_privilege('authenticated', 'public.nauka_dzien_nauki(uuid, date)', 'execute'), null);
+    not has_function_privilege('authenticated', 'public.nauka_seria_na(uuid, date, int)', 'execute') and not has_function_privilege('authenticated', 'public.nauka_dzien_nauki(uuid, date)', 'execute'), null);
 end $$;
 do $$ begin raise notice 'OK v55: Z1–Z9'; end $$;

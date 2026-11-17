@@ -19,6 +19,8 @@ end $$;
 -- Monet, punktów rankingu ani XP to nie zmienia.
 
 -- Dni przerw 2026/27 (kalendarz uczelni: plan.zdawalni.pl/plan.json → kalendarz; kopia w index.html CAL_DEFAULT).
+-- Uwaga: to kalendarz Uniwersytetu Szczecińskiego (wspólny dla roczników US z plan.zdawalni.pl). Rocznik z innym kalendarzem
+-- potrzebuje okresów w danych rocznika; do tego czasu baza zna tylko te daty (zapis w RAPORT pętli UX-2).
 -- Nowy rok akademicki: dopisz okresy i dni wolne tutaj i uruchom plik ponownie.
 create or replace function public.nauka_przerwa(p_dzien date) returns boolean
 language sql immutable set search_path = '' as $$
@@ -93,10 +95,11 @@ begin
 end $$;
 
 -- Seria w bazie, tym samym wzorem co strona: od dziś (albo od wczoraj, gdy dziś jeszcze bez nauki) wstecz; dzień nauki +1,
--- dzień zamrożony albo przerwy nic nie zmienia, inny dzień bez nauki kończy serię.
-create or replace function public.nauka_seria_na(p_user uuid, p_dzien date) returns int
+-- dzień zamrożony albo przerwy nic nie zmienia, inny dzień bez nauki kończy serię. p_zapas = ile niezużytych zamrożeń może pokryć
+-- opuszczone dni tuż przed dziś (najwyżej 2, tylko z ostatnich 3 dni) – tak jak strona, zanim zamrożenia zużyje dzisiejsza nauka.
+create or replace function public.nauka_seria_na(p_user uuid, p_dzien date, p_zapas int default 0) returns int
 language plpgsql stable security definer set search_path = '' as $$
-declare d date := p_dzien; n int := 0; i int := 0;
+declare d date := p_dzien; n int := 0; i int := 0; zapas int := least(greatest(coalesce(p_zapas, 0), 0), 2);
 begin
   if p_user is null or p_dzien is null then return 0; end if;
   if not public.nauka_dzien_nauki(p_user, d) then d := d - 1; end if;
@@ -104,22 +107,37 @@ begin
     i := i + 1;
     if public.nauka_dzien_nauki(p_user, d) then n := n + 1;
     elsif public.nauka_przerwa(d) or exists (select 1 from public.nauka_zamrozenia where user_id = p_user and uzyte_dzien = d) then null;
+    elsif n = 0 and zapas > 0 and d >= p_dzien - 3 then zapas := zapas - 1;
     else exit;
     end if;
     d := d - 1;
   end loop;
   return n;
 end $$;
+drop function if exists public.nauka_seria_na(uuid, date);
 
+-- seria = jak na stronie (z dniami, które pokryją zamrożenia przy dzisiejszej nauce); czeka = ile takich dni; bez_zamrozen = seria
+-- bez nich (gdyby dziś nie było nauki ani zamrożeń).
 create or replace function public.nauka_seria() returns jsonb
-language sql stable security definer set search_path = '' as $$
-  select case when auth.uid() is null then jsonb_build_object('ok', false, 'code', 'not_logged_in')
-    else jsonb_build_object('ok', true, 'dzien', public.nauka_dzis(), 'seria', public.nauka_seria_na(auth.uid(), public.nauka_dzis()),
-      'przerwa', public.nauka_przerwa(public.nauka_dzis())) end
-$$;
+language plpgsql stable security definer set search_path = '' as $$
+declare u uuid := auth.uid(); d date := public.nauka_dzis(); ma int; s0 int; s1 int; c int := 0; x date;
+begin
+  if u is null then return jsonb_build_object('ok', false, 'code', 'not_logged_in'); end if;
+  select count(*) into ma from public.nauka_zamrozenia where user_id = u and uzyte_dzien is null;
+  s0 := public.nauka_seria_na(u, d, 0);
+  s1 := public.nauka_seria_na(u, d, ma);
+  if s1 > s0 and not public.nauka_dzien_nauki(u, d) then
+    x := d - 1;
+    while x >= d - 3 and not public.nauka_dzien_nauki(u, x) loop
+      if not public.nauka_przerwa(x) and not exists (select 1 from public.nauka_zamrozenia where user_id = u and uzyte_dzien = x) then c := c + 1; end if;
+      x := x - 1;
+    end loop;
+  end if;
+  return jsonb_build_object('ok', true, 'dzien', d, 'seria', s1, 'czeka', c, 'bez_zamrozen', s0, 'przerwa', public.nauka_przerwa(d));
+end $$;
 
 revoke all on function public.nauka_przerwa(date), public.nauka_dzien_nauki(uuid, date), public.nauka_zamrozenie_uzyj_dni(date[]),
-  public.nauka_zamrozenie_prezent(), public.nauka_seria_na(uuid, date), public.nauka_seria() from public, anon, authenticated;
+  public.nauka_zamrozenie_prezent(), public.nauka_seria_na(uuid, date, int), public.nauka_seria() from public, anon, authenticated;
 grant execute on function public.nauka_przerwa(date), public.nauka_zamrozenie_uzyj_dni(date[]), public.nauka_zamrozenie_prezent(), public.nauka_seria()
   to authenticated;
 

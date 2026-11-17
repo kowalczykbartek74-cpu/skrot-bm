@@ -10046,8 +10046,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       compact ? null : h("span", { class: "xp-chip", title: "XP łącznie: za każdą część lekcji, odpowiedź i powtórkę" }, h("span", { "aria-hidden": "true", text: "⚡" }), h("b", { class: "num", text: fmtN(xp) }), h("span", { text: " XP" })),
       coinChip(),
       // ux-2: pigułka serii jako przycisk (stan dnia, „do północy”, pierścień celu dnia, okno „Twoja seria”) z nawyk.js.
-      compact ? window.ZD_NAWYK?.tydzienMini?.() : null,
-      window.ZD_NAWYK?.pigulka?.(compact) ?? h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) }))];
+      window.ZD_NAWYK?.pigulka?.(compact) ?? h("span", { class: "xp-chip" + (sk ? "" : " off"), title: sk ? "Seria: dni nauki z rzędu" : "Ucz się dziś, żeby zacząć serię" }, kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { text: " " + (compact ? plural(sk, "dzień", "dni", "dni") : plural(sk, "dzień z rzędu", "dni z rzędu", "dni z rzędu")) })),
+      compact ? window.ZD_NAWYK?.tydzienMini?.() : null];
     return h("div", { class: "xp-line rk-line" + (compact ? " rk-compact" : "") + (cls ? " " + cls : "") }, rank, h("span", { class: "rk-chips" }, chips));
   }
 

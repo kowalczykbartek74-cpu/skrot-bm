@@ -14,7 +14,9 @@ const st = (p) => p.evaluate(() => ({ streak: window.ZD_APP.S.progress.streak, z
 
 // ---------- K1: poniedziałek 9.11.2026, ostatnia nauka piątek 6.11 (seria 10), weekend bez nauki
 const PON = "2026-11-09T17:00:00+01:00", T = dayN(PON);
-const P10 = { xp: { t: 900, d: T - 3, n: 20 }, streak: { d: T - 3, n: 10 }, nd: [T - 7, T - 6, T - 5, T - 4, T - 3], streakBest: 10 };
+const P10 = { xp: { t: 900, d: T - 3, n: 20 }, streak: { d: T - 3, n: 10 }, nd: [T - 12, T - 11, T - 10, T - 9, T - 8, T - 7, T - 6, T - 5, T - 4, T - 3], streakBest: 10 };
+const SW = "2026-12-28T19:30:00+01:00", TS = dayN(SW), T23 = dayN("2026-12-23");
+const P8 = { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 }, nd: [T23 - 7, T23 - 6, T23 - 5, T23 - 4, T23 - 3, T23 - 2, T23 - 1, T23] };
 {
   const p = await open(b, { prog: P10, czas: PON, ls: mon(["a1", "a2"]) });
   const a = await pill(p);
@@ -61,12 +63,48 @@ const P10 = { xp: { t: 900, d: T - 3, n: 20 }, streak: { d: T - 3, n: 10 }, nd: 
   const P6 = { xp: { t: 650, d: dayN("2026-11-06") - 1, n: 20 }, streak: { d: dayN("2026-11-06") - 1, n: 6 } };
   let p = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ls: mon(["a1"]) });
   const a = await p.evaluate(() => { const e = document.querySelector("#main .greet .nw-streak"); return { txt: e.innerText.replace(/\s+/g, " "), h: Math.round(e.getBoundingClientRect().height), linie: e.querySelector(".nw-risk").getClientRects().length, gora: [...e.querySelectorAll(".nw-s-l > *, .nw-s-r > *")].filter((x) => x.getBoundingClientRect().height).map((x) => Math.round(x.getBoundingClientRect().top + x.getBoundingClientRect().height / 2)) }; });
-  ok("Stan „zamrożenie chroni (ostatnie)” przy 390 px w jednej linii", /zamrożenie chroni \(ostatnie\)/.test(a.txt) && a.linie === 1 && Math.max(...a.gora) - Math.min(...a.gora) <= 4, a);
+  ok("Stan „ostatnie zamrożenie chroni” przy 390 px w jednej linii", /ostatnie zamrożenie chroni/.test(a.txt) && a.linie === 1 && Math.max(...a.gora) - Math.min(...a.gora) <= 4, a);
   await shot(p, "chroni-390-jasny"); R.pomiary.push(await pomiar(p, "Chroni 390 jasny", "#main .greet"));
   await p.close();
   p = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00" });
   const f = await p.evaluate(() => getComputedStyle(document.querySelector("#main .greet .nw-streak.streak-risk .h2-flame")).filter);
   ok("Stan „do północy”: płomień zapalony (bez szarości), alarm widać bez najechania", f === "none", f);
+  await p.close();
+}
+{ // runda 2: luka w środku tygodnia (nie „weekend”), piątek „weekend chroniony”, utrata serii widoczna od wejścia, baza = strona przed nauką
+  const CZW = "2026-11-19T10:00:00+01:00", t = dayN(CZW); // czwartek, opuszczona środa
+  let p = await open(b, { prog: { xp: { t: 300, d: t - 2, n: 9 }, streak: { d: t - 2, n: 5 }, nd: [t - 6, t - 5, t - 4, t - 3, t - 2] }, czas: CZW, ls: mon(["a1"]) });
+  let a = await pill(p);
+  ok("Luka w środku tygodnia: „· zamrożenia: zużyje 1 z 1” (bez słowa „weekend”)", /· zamrożenia: zużyje 1 z 1/.test(a.txt) && !/weekend/.test(a.txt), a);
+  await p.close();
+  const PT = "2026-11-13T19:00:00+01:00", tp = dayN(PT);
+  p = await open(b, { prog: { xp: { t: 300, d: tp - 1, n: 9 }, streak: { d: tp - 1, n: 5 }, nd: [tp - 4, tp - 3, tp - 2, tp - 1] }, czas: PT, ls: mon(["a1", "a2"]) });
+  a = await pill(p);
+  ok("Piątek z 2 zamrożeniami: „· weekend chroniony”", /streak-chroni/.test(a.cls) && /· weekend chroniony/.test(a.txt), a);
+  await shot(p, "piatek-weekend-chroniony-390-jasny");
+  await p.close();
+  p = await open(b, { prog: P10, czas: PON, ls: mon(["a1"]) });
+  a = await pill(p);
+  ok("Weekend z 1 zamrożeniem: od wejścia „0 dni · koniec serii 10 dni” (nie po cichu)", /^0 dni · koniec serii 10 dni/.test(a.txt) && /streak-koniec/.test(a.cls), a);
+  await shot(p, "koniec-serii-od-wejscia-390-jasny"); R.pomiary.push(await pomiar(p, "Koniec serii od wejścia 390", "#main .greet"));
+  await p.close();
+  p = await open(b, { prog: P10, czas: PON, ls: mon(["a1", "a2"]) });
+  const db = await p.evaluate(async () => (await window.skrot.sb.rpc("nauka_seria", {})).data);
+  ok("K3 baza przed nauką = strona: nauka_seria 10, czeka 2", db?.seria === 10 && db.czeka === 2 && /^10 dni/.test((await pill(p)).txt), db);
+  await p.evaluate(() => window.ZD_APP.xpFlush(5)); await p.waitForTimeout(1500);
+  const bb = await p.evaluate(() => { const b = document.querySelector(".nw-baner"); return b && { txt: b.innerText.replace(/\s+/g, " "), wTresci: b.classList.contains("w-tresci"), sklep: !!b.querySelector(".nw-baner-sklep") }; });
+  ok("Baner po zużyciu ostatnich zamrożeń: w treści pod paskiem (nic nie zasłania) z „Uzupełnij w sklepie”", bb && bb.wTresci && bb.sklep && /zostało 0\/2/.test(bb.txt), bb);
+  await shot(p, "baner-uzupelnij-390-jasny"); R.pomiary.push(await pomiar(p, "Baner uzupełnij 390", ".nw-baner", ".nw-baner"));
+  await p.close();
+  // tydzień w przerwie i okno bez alarmu o północy
+  p = await open(b, { prog: P8, czas: SW, ls: mon([]) });
+  const wk = await p.evaluate(() => { const e = document.querySelector("#main .greet .nw-tyg"); return { txt: e.innerText.trim(), prz: e.querySelectorAll(".s-przerwa").length, aria: e.getAttribute("aria-label") }; });
+  ok("Tydzień w przerwie świątecznej: „Ten tydzień: przerwa”, kropki przerwy, dni w aria-label", wk.txt === "Ten tydzień: przerwa" && wk.prz >= 5 && /przerwa/.test(wk.aria), wk);
+  await p.click("#main .greet .nw-streak"); await p.waitForTimeout(600);
+  ok("Okno w przerwie: bez zdania o spadku serii o północy", !(await p.evaluate(() => /o północy/.test(document.querySelector("#layer .nw-okno").innerText))));
+  await p.close();
+  p = await open(b, { prog: { xp: { t: 300, d: dayN("2026-11-11") - 1, n: 9 }, streak: { d: dayN("2026-11-11") - 1, n: 1 }, nd: [dayN("2026-11-11") - 1] }, czas: "2026-11-11T12:00:00+01:00", ls: mon([]) });
+  ok("Tydzień z 1 dniem wolnym (11.11): „Ten tydzień: 1/4 dni”", (await p.evaluate(() => document.querySelector("#main .greet .nw-tyg").innerText.trim())) === "Ten tydzień: 1/4 dni");
   await p.close();
 }
 // ---------- K2 i K6: PGlite (v55 2×, v56 2×, testy Z1–Z9 i D1–D6)
@@ -80,8 +118,6 @@ try {
 } catch (e) { ok("K2/K6 PGlite", false, String(e.stdout || e).slice(-400)); }
 
 // ---------- K3: przerwa świąteczna 28.12.2026, ostatnia nauka 23.12 (seria 8)
-const SW = "2026-12-28T19:30:00+01:00", TS = dayN(SW), T23 = dayN("2026-12-23");
-const P8 = { xp: { t: 900, d: T23, n: 20 }, streak: { d: T23, n: 8 }, nd: [T23 - 7, T23 - 6, T23 - 5, T23 - 4, T23 - 3, T23 - 2, T23 - 1, T23] };
 for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of [false, true]) for (const lang of ["pl", "en"]) {
   if (lang === "en" && (dark || w === 1280)) continue;
   const tag = `${w}-${dark ? "ciemny" : "jasny"}${lang === "en" ? "-en" : ""}`;
@@ -117,7 +153,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
 // ---------- K4: „Ten tydzień: k/5 dni” (7 kropek) w rzędzie z rangą, bez nowego bloku
 for (const [w, hh, dark, lang] of [[360, 640, false, "pl"], [390, 844, false, "pl"], [390, 844, true, "pl"], [1280, 900, false, "pl"], [360, 640, false, "en"]]) {
   const tag = `${w}-${dark ? "ciemny" : "jasny"}${lang === "en" ? "-en" : ""}`;
-  const SR = "2026-11-12T17:00:00+01:00", t = dayN(SR); // czwartek: nauka pon (9), wt (10), śr (11)
+  const SR = "2026-11-19T17:00:00+01:00", t = dayN(SR); // czwartek: nauka pon (16), wt (17), śr (18)
   const p = await open(b, { w, h: hh, dark, lang, prog: { xp: { t: 650, d: t - 1, n: 20 }, streak: { d: t - 1, n: 3 }, nd: [t - 3, t - 2, t - 1] }, czas: SR });
   const k = await p.evaluate(() => { const e = document.querySelector("#main .greet .rk-line .nw-tyg"); if (!e) return null; const r = e.getBoundingClientRect();
     return { txt: e.innerText.trim(), dots: e.querySelectorAll(".nw-tyg-dots i").length, nauka: e.querySelectorAll(".nw-tyg-dots i.s-nauka").length, tag: e.tagName, w: Math.round(r.width), h: Math.round(r.height),
@@ -163,6 +199,10 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
       await shot(p, "k5-oferta-390-jasny");
       R.pomiary.push(await pomiar(p, "K5 oferta zamrożenia 390 jasny", "#nw-test", "#nw-test"));
       await p.click("#nw-test .nw-oferta .btn.ghost"); await p.waitForTimeout(300);
+      const p2 = await open(b, { prog, ls }); await wstaw(p2, "ofertaZamrozenia");
+      await p2.click("#nw-test .nw-oferta .btn.primary"); await p2.waitForTimeout(400); await p2.click("#layer .kbuy .btn.primary"); await p2.waitForTimeout(1500);
+      ok("K5 po zakupie z oferty: oferta znika (ma 1 zamrożenie)", (await p2.evaluate(() => window.ZD_NAWYK.ofertaZamrozenia())) === null);
+      await p2.close();
       ok("K5 „Nie teraz” chowa ofertę (na 7 dni)", (await p.evaluate(() => [!document.querySelector("#nw-test .nw-oferta"), window.ZD_NAWYK.ofertaZamrozenia()])).join() === "true,");
     }
     await p.close();

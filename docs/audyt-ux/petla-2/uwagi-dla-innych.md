@@ -13,3 +13,9 @@
 
 ## Pętla 5 (rangi) / pętla 4 (wygląd)
 - Odznaka rangi poziomu 4 („Systematyczny”) ma ikonę kalendarza z liczbą „17”; obok „Dziś piątek…” wygląda jak data (recenzent UX-2 etap 1, runda 3). `lvBadge` / ikony rang to nie obszar pętli 2.
+
+## Pętla 5 (Sklep)
+- `kBuy` dla zamrożenia mówi „Tylko wygląd: nie zmienia punktów ani wyników. Zakupu nie da się cofnąć.” — nieprawda dla zamrożenia (audyt C2 pkt 5). Propozycja dla `it.id === "zamrozenie"`: PL „Chroni serię w opuszczony dzień. Nie daje XP ani punktów. Zakupu nie da się cofnąć.” / EN „Protects your streak on a missed day. Gives no XP or points. This purchase can't be undone.” Karta `ZD_NAWYK.kartaZamrozenia()` i oferta `ofertaZamrozenia()` otwierają właśnie `kBuy`.
+
+## Pętla 4 / ogólne (EN)
+- Podtytuł powitania na Dziś (`weekLine`, ok. 7507) w przerwie świątecznej pokazuje po angielsku „Today: przerwa świąteczna.” — opis okresu z kalendarza uczelni (`CAL.PERIODS[].opis`) nie ma tłumaczenia EN.

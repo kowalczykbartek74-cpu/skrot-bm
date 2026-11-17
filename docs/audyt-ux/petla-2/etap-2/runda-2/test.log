@@ -1,0 +1,62 @@
+✓ K1 weekend + 2 zamrożenia: seria trwa, szary płomień „10 dni”
+✓ K1 po nauce: seria 11, zamrożone sob. i niedz. (jedno wywołanie bazy z 2 dniami), zapas 0
+✓ K1 baner „Zamrożenia uratowały serię … zostało 0/2” nad dolnym paskiem (ikona SVG, bez emoji)
+✓ K1 weekend + 1 zamrożenie: seria spadła (0, bez szarego „10 dni”)
+✓ K1 z 1 zamrożeniem po nauce: seria 1, zamrożenie niezużyte
+✓ K1 1 opuszczony dzień + 1 zamrożenie: seria 5
+✓ K1 bez v55: stara nauka_zamrozenie_uzyj chroni wczoraj, seria 5
+✓ K1 bez v55: brak błędów konsoli
+✓ Stan „ostatnie zamrożenie chroni” przy 390 px w jednej linii
+✓ Stan „do północy”: płomień zapalony (bez szarości), alarm widać bez najechania
+✓ Luka w środku tygodnia: „· zamrożenia: zużyje 1 z 1” (bez słowa „weekend”)
+✓ Piątek z 2 zamrożeniami: „· weekend chroniony”
+✓ Weekend z 1 zamrożeniem: od wejścia „0 dni · koniec serii 10 dni” (nie po cichu)
+✓ K3 baza przed nauką = strona: nauka_seria 10, czeka 2
+✓ Baner po zużyciu ostatnich zamrożeń: w treści pod paskiem (nic nie zasłania) z „Uzupełnij w sklepie”
+✓ Tydzień w przerwie świątecznej: „Ten tydzień: przerwa”, kropki przerwy, dni w aria-label
+✓ Okno w przerwie: bez zdania o spadku serii o północy
+✓ Tydzień z 1 dniem wolnym (11.11): „Ten tydzień: 1/4 dni”
+✓ K2 PGlite: skrot-v55 2× + test/v55.sql (Z1–Z9)
+✓ K6 PGlite: skrot-v56 2× + test/v56.sql (D1–D6: samo czytanie nie zużywa zamrożenia)
+✓ K3/K4 360-jasny: nic poza ekranem
+✓ K3 EN 360: „break, streak paused”
+✓ K3/K4 360-jasny-en: nic poza ekranem
+✓ K3/K4 360-ciemny: nic poza ekranem
+✓ K3 28.12 (przerwa), nauka 23.12: pigułka „8 dni · przerwa, seria czeka”, bez „do północy” mimo 19:30
+✓ K3 to samo liczy baza (nauka_seria: 8, przerwa)
+✓ K3 okno serii w przerwie: opis „seria czeka” i dni przerwy w kalendarzu
+✓ K3/K4 390-jasny: nic poza ekranem
+✓ K3 EN 390: „break, streak paused”
+✓ K3/K4 390-jasny-en: nic poza ekranem
+✓ K3/K4 390-ciemny: nic poza ekranem
+✓ K3/K4 1280-jasny: nic poza ekranem
+✓ K3/K4 1280-ciemny: nic poza ekranem
+✓ K3 7.01 po przerwie: seria 8 widoczna, po nauce 9, zamrożenie niezużyte
+✓ K4 360-jasny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px
+✓ K4 360-jasny: nic poza ekranem
+✓ K4 390-jasny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px
+✓ K4 390-jasny: nic poza ekranem
+✓ K4 390-ciemny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px
+✓ K4 390-ciemny: nic poza ekranem
+✓ K4 1280-jasny: „Ten tydzień: 3/5 dni”, 7 kropek (3 z nauką) w rzędzie z rangą, przycisk ≥ 44 px
+✓ K4 1280-jasny: nic poza ekranem
+✓ K4 EN: „This week: 3/5 days”
+✓ K4 360-jasny-en: nic poza ekranem
+✓ K5 kartaZamrozenia: opis z C2, „Masz 1/2”, przycisk „Kup za 40” z monetą SVG
+✓ K5 przycisk otwiera istniejące potwierdzenie zakupu (kBuy) z ceną 40
+✓ K5 po zakupie: „Masz 2/2” i „Masz komplet” bez przycisku
+✓ K5 EN karta zamrożenia
+✓ K5 ofertaZamrozenia: seria 5, saldo 120, 0 zamrożeń → karta
+✓ K5 po zakupie z oferty: oferta znika (ma 1 zamrożenie)
+✓ K5 „Nie teraz” chowa ofertę (na 7 dni)
+✓ K5 ofertaZamrozenia: saldo 30 → brak
+✓ K5 ofertaZamrozenia: ma 1 zamrożenie → brak
+✓ K5 ofertaZamrozenia: seria 2 → brak
+✓ K6 atrapa: wczoraj samo czytanie (XP, 0 pkt) → „nauka”, zamrożenie zostaje
+✓ K6 nauka dziś po dniu czytania: seria 5, bez wywołania zamrożeń
+✓ Prezent: seria 2 → jedno zamrożenie w prezencie i baner
+✓ Prezent: raz (kolejne XP nie pyta bazy drugi raz)
+✓ ruch: baner bez animacji (reduced-motion)
+✓ ruch: baner bez animacji (calm)
+✓ konsola bez błędów (wszystkie stany)
+61/61

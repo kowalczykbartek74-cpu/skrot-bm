@@ -5597,7 +5597,6 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "· zamrożenie: zostanie {0}": "· freeze: {0} left",
 "· dziś jeszcze nie": "· not yet today",
 "· {0} pod zamrożeniem": "· {0} under a freeze",
-"zostało {0}/2": "{0}/2 left",
 "Seria {0} się skończyła: zabrakło zamrożeń. Dziś zaczynasz nową.": "Your {0} streak ended: not enough freezes. Today you start a new one.",
 "przed Tobą": "still ahead",
 "Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.": "You got a free streak freeze. One missed day won't break your streak.",
@@ -5613,12 +5612,20 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Ten tydzień: {0}/5 dni": "This week: {0}/5 days",
 "5 dni nauki w tygodniu wystarczy: pasuje do zajęć od poniedziałku do piątku.": "5 study days a week is enough: it fits classes from Monday to Friday.",
 "Masz {0}: dziś możesz odpuścić, jutro już nie.": "You have {0}: you can skip today, but not tomorrow.",
-"Zamrożenia: {0}/2": "Freezes: {0}/2",
-"· zamrożenie chroni (ostatnie)": "· freeze covers today (last one)",
 "· zamrożenie chroni (zostanie {0})": "· freeze covers today ({0} left)",
 "1 zamrożenie": "1 freeze",
 "{0} zamrożenia": "{0} freezes",
-"{0} zamrożeń": "{0} freezes"
+"{0} zamrożeń": "{0} freezes",
+"· zamrożenia: zużyje {0} z {1}": "· freezes: uses {0} of {1}",
+"· weekend chroniony": "· weekend covered",
+"· koniec serii {0}": "· {0} streak ended",
+"Ten tydzień: przerwa": "This week: break",
+"Ten tydzień: {0}/{1} dni": "This week: {0}/{1} days",
+"Uzupełnij w sklepie": "Restock in the shop",
+"Ten tydzień: {0}": "This week: {0}",
+"· ostatnie zamrożenie chroni": "· last freeze covers today",
+"zostało {0}/{1}": "{0}/{1} left",
+"Zamrożenia: {0}/{1}": "Freezes: {0}/{1}"
 // koniec ux-2
 },
 "plural": {

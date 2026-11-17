@@ -142,7 +142,7 @@ for (const [nazwa, o] of [["zwykle", {}], ["reduced-motion", { motion: "reduce" 
   const zam = (reqs) => ({ "mock-v24": "1", "mock-mon": JSON.stringify({ start: 0, ksiega: [], pos: [], zam: { reqs, dni: [] }, zal: {}, gab: [] }) });
   let p = await open(b, { prog: P6, czas: "2026-11-06T19:00:00+01:00", ls: zam(["a1"]) });
   const a = await pill(p);
-  ok("K1 19:00 z 1 zamrożeniem: „· zamrożenie chroni (ostatnie)”, szary płomień, bez alarmu „do północy”, nic poza ekranem", (await pozaEkranem(p, "#main .greet *")).length === 0 && /streak-chroni/.test(a.cls) && /zamrożenie chroni \(ostatnie\)/.test(a.txt) && !/północy/.test(a.txt) && /grayscale/.test(a.flameFilter), a);
+  ok("K1 19:00 z 1 zamrożeniem: „· ostatnie zamrożenie chroni”, szary płomień, bez alarmu „do północy”, nic poza ekranem", (await pozaEkranem(p, "#main .greet *")).length === 0 && /streak-chroni/.test(a.cls) && /ostatnie zamrożenie chroni/.test(a.txt) && !/północy/.test(a.txt) && /grayscale/.test(a.flameFilter), a);
   await shot(p, "dzis-19-chroni-390-jasny");
   await p.click("#main .greet .nw-streak"); await p.waitForTimeout(700);
   const ok2 = await p.evaluate(() => ({ dzis: document.querySelector("#layer .nw-cal .nw-day.dzis")?.className, leg: document.querySelector("#layer .nw-legend")?.innerText }));

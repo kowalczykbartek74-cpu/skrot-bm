@@ -10,7 +10,7 @@ end $$;
 -- patrzyło na punkty rankingu (nauka_rp). Dzień z samym czytaniem był dla bazy „opuszczony”, więc zamrożenie mogło się zużyć
 -- mimo nauki, a seria na stronie i w bazie mogły się rozjechać.
 -- Rozwiązanie: tabela nauka_dni (osoba, dzień). Wpis robią dwa wyzwalacze: zapis postępu (progress.xp.d z XP > 0, najwyżej 7 dni
--- wstecz; listy progress.nd celowo NIE liczymy, bo klient mógłby dopisać sobie dowolne dni) i każdy punkt rankingu.
+-- wstecz; tylko dziś/wczoraj i przy rosnącym xp.t; listy progress.nd celowo NIE liczymy, bo klient mógłby dopisać sobie dowolne dni) i każdy punkt rankingu.
 -- Uwaga: progress.xp.d to dzień według zegara telefonu; dla telefonu poza Polską może różnić się o 1 od nauka_dzis(). Dlatego seria
 -- z bazy (nauka_seria) służy do zamrożeń i podglądu, a nie do nagród ani rankingu z monetami. nauka_dzien_nauki (v55) od teraz pyta tę tabelę, więc zamrożenia
 -- (nauka_zamrozenie_uzyj_dni), prezent i seria w bazie (nauka_seria_na) liczą dzień nauki tak samo jak strona.
@@ -36,7 +36,10 @@ begin
   x := new.data->'xp';
   if jsonb_typeof(x) = 'object' and jsonb_typeof(x->'d') = 'number' and coalesce((x->>'n')::numeric, 0) > 0 then
     d := date '2026-01-01' + floor((x->>'d')::numeric)::int;
-    if d between dzis - 7 and dzis + 1 then insert into public.nauka_dni (user_id, dzien, zrodlo) values (u, d, 'xp') on conflict do nothing; end if;
+    -- tylko dziś albo wczoraj (+1 dzień tolerancji strefy telefonu) i tylko gdy XP łącznie rośnie (nie da się dopisać dnia bez nauki)
+    if d between dzis - 1 and dzis + 1 and (tg_op = 'INSERT' or coalesce((x->>'t')::numeric, 0) > coalesce((old.data->'xp'->>'t')::numeric, 0)) then
+      insert into public.nauka_dni (user_id, dzien, zrodlo) values (u, d, 'xp') on conflict do nothing;
+    end if;
   end if;
   return null;
 end $$;

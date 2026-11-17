@@ -324,11 +324,14 @@
         MON.zam.reqs.push("prezent:konto"); monZapisz();
         return { ok: true, nowe: true, zostalo: MON.zam.reqs.length - MON.zam.dni.length };
       },
-      seriaNa(k) {
-        let d = nauka(k) ? k : od(k, -1), n = 0;
-        for (let i = 0; i < 400; i++, d = od(d, -1)) { if (nauka(d)) n++; else if (przerwa(d) || zam(d)) continue; else break; }
+      seriaNa(k, zapas = 0) {
+        let d = nauka(k) ? k : od(k, -1), n = 0, z = Math.min(2, zapas);
+        for (let i = 0; i < 400; i++, d = od(d, -1)) { if (nauka(d)) n++; else if (przerwa(d) || zam(d)) continue; else if (!n && z > 0 && d >= od(k, -3)) z--; else break; }
         return n;
       },
+      seria() { const k = dzisL(), ma = MON.zam.reqs.length - MON.zam.dni.length, s0 = this.seriaNa(k), s1 = this.seriaNa(k, ma);
+        let c = 0; if (s1 > s0 && !nauka(k)) for (let d = od(k, -1); d >= od(k, -3) && !nauka(d); d = od(d, -1)) if (!przerwa(d) && !zam(d)) c++;
+        return { ok: true, dzien: k, seria: s1, czeka: c, bez_zamrozen: s0, przerwa: przerwa(k) }; },
     };
   })();
   // === koniec ux-2 ===
@@ -533,7 +536,7 @@
     // mock-v55 = "0" → funkcji nie ma (PGRST202, strona używa starej nauka_zamrozenie_uzyj).
     nauka_zamrozenie_uzyj_dni: (a) => UX2.uzyjDni(a.p_dni || []),
     nauka_zamrozenie_prezent: () => UX2.prezent(),
-    nauka_seria: () => ({ ok: true, dzien: UX2.dzis(), seria: UX2.seriaNa(UX2.dzis()), przerwa: UX2.przerwa(UX2.dzis()) }),
+    nauka_seria: () => UX2.seria(),
     // === koniec ux-2 ===
   };
   window.__rpc = [];

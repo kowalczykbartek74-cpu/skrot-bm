@@ -7,7 +7,7 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 | etap | runda | wynik | twarde błędy | stan | commit |
 |---|---|---|---|---|---|
 | 1 Seria i cel dnia na Dziś | 5 | **8/10** (r1 7,5 · r2 6,5 · r3 7,5 · r4 7,5 · r5 8) | brak | **ZALICZONY** | e3084da |
-| 2 Zasady serii | — | — | — | — | — |
+| 2 Zasady serii | 2 | **8/10** (r1 7 · r2 8) | brak | **ZALICZONY** | (commit tej rundy) |
 | 3 Powroty | — | — | — | — | — |
 | 4 Kanał poza stroną | — | — | — | — | — |
 | 5 Dziś: układ, zadania, duet, tempo | — | — | — | — | — |
@@ -37,3 +37,15 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - Etap 5: hero „Dziś · 5 min” po nauce zgodny ze stanem dnia, wiersz „Jutro: …” na Dziś.
 - Etap 2 K4: „Ten tydzień: k/5 dni” jest w tym samym rzędzie (`.rk-line`) co ranga; przy < 400 px nie mieści się obok rangi i monet (ok. 200 px), więc zawija się do trzeciego wiersza pod paskiem serii. Bez nowego bloku.
 - Etap 2: v56 nie liczy `progress.nd` (tylko `xp.d` bieżącego zapisu i punkty), prezent dopiero przy serii ≥ 2 (`nauka_seria_na`). Seria z bazy nie zasila nagród ani rankingu z monetami (dzień telefonu vs Warszawa).
+- Etap 2 runda 2: `nauka_seria()` zwraca też dni czekające na zamrożenie (`czeka`, `bez_zamrozen`) — baza = strona przed nauką; `nauka_seria_na(u, d, zapas)`; wyzwalacz v56 tylko dla dziś/wczoraj i rosnącego `xp.t`. Przerwy w SQL to kalendarz US (wspólny dla roczników z plan.zdawalni.pl) — rocznik z innym kalendarzem wymaga okresów w danych rocznika (RAPORT).
+- „Ten tydzień”: cel = 5 dni zajęć minus dni przerwy w pon–pt („Ten tydzień: 1/4 dni”, w przerwie „Ten tydzień: przerwa”); w DOM po pigułce serii.
+- Banery na Dziś w treści strony pod paskiem (przesuwają kartę, nie zasłaniają); po zużyciu ostatniego zamrożenia „Uzupełnij w sklepie”. Utrata serii widoczna od wejścia w pigułce („0 dni · koniec serii 10 dni”).
+
+## Do przeniesienia z recenzji etapu 2 (runda 2) — robię na początku etapu 3
+- Piątek przed nauką: „· ucz się dziś: weekend chroniony” (z alarmem), „weekend chroniony” dopiero po nauce w piątek (pt+sob+nd bez nauki = 3 dni > 2).
+- „Uzupełnij w sklepie” tylko przy saldzie ≥ cenie; inaczej podpowiedź, jak zarobić monety.
+- Dziś w przerwie: kropka i kratka w stylu przerwy, nie „do zrobienia”.
+- v55 uruchomione ponownie po v56 nie może przywrócić `nauka_dzien_nauki` do samego `nauka_rp` (`to_regclass('public.nauka_dni')`).
+- `prezent()`: przy „pelne”/„za_wczesnie” pytać bazę najwyżej raz dziennie.
+- v56: komentarz o zakresie dni zgodny z kodem.
+- 360 px: krótszy tekst stanu „chroni”.

@@ -42,6 +42,17 @@ do $$ declare u uuid := '56565656-0000-4000-8000-000000000002'; d date := (now()
   perform test.chk('D4 punkty dziś → jeden wpis (dziś, pkt)', (select count(*) = 1 from public.nauka_dni where user_id = u and dzien = d and zrodlo = 'pkt'), null);
 end $$;
 
+-- D7: ten sam zapis bez wzrostu XP i dzień sprzed 2 dni nie tworzą dnia nauki
+reset role; insert into auth.users (id, email) values ('56565656-0000-4000-8000-000000000003', 'dni3@x.pl') on conflict do nothing;
+select test.jako('dni3@x.pl'); set role authenticated;
+insert into public.nauka_docs (kolekcja, id, data) values ('progress', '56565656-0000-4000-8000-000000000003',
+  jsonb_build_object('xp', jsonb_build_object('t', 50, 'd', test.dayn56((now() at time zone 'Europe/Warsaw')::date - 2), 'n', 5)));
+update public.nauka_docs set data = jsonb_build_object('xp', jsonb_build_object('t', 50, 'd', test.dayn56((now() at time zone 'Europe/Warsaw')::date - 1), 'n', 5))
+ where kolekcja = 'progress' and id = '56565656-0000-4000-8000-000000000003';
+reset role;
+do $$ begin
+  perform test.chk('D7 dzień sprzed 2 dni i zapis bez wzrostu XP: brak dnia nauki', not exists (select 1 from public.nauka_dni where user_id = '56565656-0000-4000-8000-000000000003'), null);
+end $$;
 -- D5: student nie czyta i nie pisze nauka_dni bezpośrednio
 select test.jako('dni2@x.pl'); set role authenticated;
 do $$ begin
