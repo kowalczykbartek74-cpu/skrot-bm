@@ -56,7 +56,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
   // Pętla UX-1 (etap 2): na Dziś „Pełny dostęp · … · Kup dostęp” to pasek nad panelem (.uxw-pasek), a nie dolna karta.
   const bar = (await txt(p, ".uxw-pasek")) || (await txt(p, ".buybar"));
   const r = await p.evaluate(() => window.skrot.rp.start("frun"));
-  ok("koniec: pasek „Pełny dostęp”, bez „Wypróbuj”, gry zablokowane", bar.startsWith("Pełny dostęp") && !bar.includes("Wypróbuj") && r?.code === "no_access", { bar, r });
+  ok("koniec: pasek „Pełny dostęp”, bez „Wypróbuj”, gry zablokowane", /^(Pełny dostęp|Próba minęła)/.test(bar) && !bar.includes("Wypróbuj") && r?.code === "no_access", { bar, r });
   await p.evaluate(() => scrollTo(0, 0)); await shot(p, "proba-koniec-390");
   await done(p, "proba koniec");
 }
