@@ -31,7 +31,9 @@ for (const [w, hh] of [[375, 812], [1280, 900]]) {
   if (w === 375) {
     await btn.click(); await p.waitForTimeout(800);
     const c = await calls(p);
-    ok("A: Włącz → zapis wlaczone + 18:00 + język", c.some((x) => x.fn === "ustaw" && x.p.wlaczone === true && x.p.godz === 1080 && x.p.jezyk === "pl"), c);
+    // UX-2 etap 4: domyślna godzina z planu zajęć (koniec ostatnich zajęć + 60 min, w górę do 30 min, ≤ 21:00; bez planu 18:00).
+    const gp = await p.evaluate(() => window.ZD_NAWYK?.godzinaPrzypomnienia?.() ?? 1080);
+    ok("A: Włącz → zapis wlaczone + godzina z planu + język", c.some((x) => x.fn === "ustaw" && x.p.wlaczone === true && x.p.godz === gp && x.p.godz % 30 === 0 && x.p.godz <= 1260 && x.p.jezyk === "pl"), { c, gp });
     ok("A: karta znika, komunikat", (await card.count()) === 0 && /Przypomnienia włączone/.test(await p.locator("body").innerText()));
     await p.waitForTimeout(5000);
     const st = (await calls(p)).filter((x) => x.fn === "stan").pop()?.p;
