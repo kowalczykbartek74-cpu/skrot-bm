@@ -5627,7 +5627,6 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Zamrożenia: {0}/{1}": "Freezes: {0}/{1}",
 "Dobrze, że jesteś. Ostatnio {0} temu.": "Good to see you. Last time: {0} ago.",
 "Dobrze, że jesteś.": "Good to see you.",
-"Zajęcia, które minęły: {0}": "Classes you missed: {0}",
 "Nowe terminy: {0}": "New deadlines: {0}",
 "Fiszki do odświeżenia: {0}": "Cards to refresh: {0}",
 "Wracam: 3 minuty": "I'm back: 3 minutes",
@@ -5638,7 +5637,6 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "· dziś ✓, weekend chroniony": "· done today, weekend covered",
 "· ucz się dziś: weekend chroniony": "· study today: weekend covered",
 "Zamrożenie kosztuje {0} monet. Zbieraj je w zadaniach dnia.": "A freeze costs {0} coins. Collect them in daily tasks.",
-"Same powtórki i jedno pytanie, bez nowego tematu.": "Just reviews and one question, no new topic.",
 "Wracam: 5 minut": "I'm back: 5 minutes",
 "Zaczniemy spokojnie od jednego krótkiego tematu.": "We'll start gently with one short topic.",
 "Seria odzyskana!": "Streak restored!",
@@ -5651,7 +5649,12 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "· odzyskaj {0} (0/2)": "· win back {0} (0/2)",
 "· odzyskaj {0} (1/2)": "· win back {0} (1/2)",
 "· odzyskaj {0} dni (0/2)": "· win back {0}-day streak (0/2)",
-"· odzyskaj {0} dni (1/2)": "· win back {0}-day streak (1/2)"
+"· odzyskaj {0} dni (1/2)": "· win back {0}-day streak (1/2)",
+"Zajęcia od ostatniej wizyty: {0}": "Classes since your last visit: {0}",
+"Powtórka z tego, co już znasz, i jedno pytanie. Bez nowego tematu.": "A review of what you already know, plus one question. No new topic.",
+"Naprawa serii: 1/2. Jutro wróci seria {0}.": "Streak repair: 1/2. Tomorrow your {0} streak comes back.",
+"Naprawa serii: 1/2. Jutro wróci seria {0} dni.": "Streak repair: 1/2. Tomorrow your {0}-day streak comes back.",
+"Wracasz? Zacznijmy spokojnie": "Back, nice and easy"
 // koniec ux-2
 },
 "plural": {

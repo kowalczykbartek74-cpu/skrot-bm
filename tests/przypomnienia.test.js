@@ -221,3 +221,13 @@ test("UX-2: link z maila „powrót” = /?pz=<id>&wracam=1#/ (zapytanie przed #
   const z = JSON.stringify(P.mail({ lang: "pl", site: "https://zdawalni.pl/", id: "x1", pick: { kind: "termin", title: "t", body: "b", cta: "c", path: "#/exam/mikro" }, unsubscribeUrl: "https://x/u" }));
   assert.ok(z.includes("https://zdawalni.pl/?pz=x1#/exam/mikro"));
 });
+
+test("UX-2: mail „powrót” obiecuje „3 minuty” tylko, gdy strona ma kartę powrotu (znany temat albo rewanż)", () => {
+  const z = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3, znane: true }));
+  assert.equal(z.cta, "Wracam: 3 minuty");
+  const n = P.wybierz(ctx({ lastStudyDay: "2026-10-30", rewanze: 3, znane: false }));
+  assert.equal(n.kind, "powrot"); assert.equal(n.cta, "Wracam"); assert.ok(!/3 minut/.test(n.title + n.body), n.body);
+  assert.equal(P.stanZ({ od: "2026-11-04", znane: false }).zn, false);
+  assert.equal(P.kontekst({ stan: P.stanZ({ od: "2026-11-04", znane: false }) }, "2026-11-04").znane, false);
+  assert.equal(P.kontekst({ stan: { v: 1, od: "2026-11-04" } }, "2026-11-04").znane, true, "stary stan bez pola: jak dotąd");
+});

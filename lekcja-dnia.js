@@ -524,8 +524,10 @@
     if (!znane.length) return null;
     var d = trybDnia(znane, kk), t = wybierzKarte(znane, d, kk);
     var c = ulozKarte(t, d, kk); if (!c) return null;
-    var rew = c.kroki[0].mech === "rewanze";
-    c.kroki = [{ k: "rozgrzewka", mech: rew ? "rewanze" : "fiszki", n: 6, min: 2 }, { k: "sprawdzenie", mech: "pytania", n: 1, pewnosc: true, min: 1 }];
+    var rew = c.kroki[0].mech === "rewanze", zalegle = (k.fiszkiZalegle || 0) + (k.rewanzeDzis || 0);
+    // Nic do powtórki (0 fiszek i rewanży): rozgrzewka z pytań tego znanego tematu, żeby „3 minuty powtórki” były prawdą.
+    var rozgrzewka = zalegle > 0 ? { k: "rozgrzewka", mech: rew ? "rewanze" : "fiszki", n: 6, min: 2 } : { k: "rozgrzewka", mech: "pytania", n: 4, min: 2 };
+    c.kroki = [rozgrzewka, { k: "sprawdzenie", mech: "pytania", n: 1, pewnosc: true, min: 1 }];
     c.min = 3; c.powrot = true; c.nowe = false;
     return c;
   }

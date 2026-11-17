@@ -14788,7 +14788,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       for (const [k, v] of Object.entries(all)) if (Array.isArray(v) && v[0] !== 0 && !nb.has(k)) pow.push(v[1] - t);
       for (const [k, st] of rewStates()) if ((st.status === "due" || st.status === "waiting") && keySubject(k)) rew.push(st.due - t);
     }
-    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid });
+    return PZ.stanZ({ od: todayKey(), terminy: paid ? przypTerminy() : [], pow, rew, zadanie: paid, znane: window.ZD_NAWYK?.maKartePowrotu?.() ?? true });
   }
   function przypSync() {
     const sk = window.skrot || {};
@@ -22929,7 +22929,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
     if (S.isStarosta) db.collection("reports").orderBy("at", "desc").limit(200).onSnapshot((snap) => { S.reports = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
   })();
   // === most ux-2 ===
-  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
+  Object.assign(window.ZD_APP ||= {}, { h, S, go, render, toast, modal, H2_ICO, h2Ico, stasFace, kFlame, kSk, kShopGo, dayN, todayKey, dkey, plural, fmtN, ls, streakN, progSoon, ldOpen, lpReduced, xpFlush, dayIso, dparse, kBuy, kPrice, coins, classesOn, srsDue, visDeadlines, LDE, ldTematy, ldKontekst, ldDay, materialById, celXp: () => LP_DAILY_GOAL, cal: () => CAL, EN });
   // === koniec mostu ux-2 ===
 })();
 </script>

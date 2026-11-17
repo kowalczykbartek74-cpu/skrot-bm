@@ -10,9 +10,9 @@ const shot = async (p, name, full) => { if (!DIR) return; const f = DIR + name +
 const b = await chromium.launch();
 const T = dayN("2026-11-06");
 const PR = { "skrot-zam-prezent": "1" };
-const karta = (p) => p.evaluate(() => { const e = document.querySelector("#main .nw-powrot"); if (!e) return null; const ld = document.querySelector("#main .ld-block, #main .sk-hero");
+const karta = (p) => p.evaluate(() => { const e = document.querySelector("#main .nw-powrot:not(.nw-powrot-mini)"); if (!e) return null; const ld = document.querySelector("#main .ld-block, #main .sk-hero");
   return { h: e.querySelector(".nw-powrot-h")?.textContent, pkt: [...e.querySelectorAll(".nw-pkt")].map((x) => x.firstChild.textContent), pktH: [...e.querySelectorAll(".nw-pkt")].map((x) => Math.round(x.getBoundingClientRect().height)), nap: e.querySelector(".nw-powrot-nap > span:not(.nw-ico)")?.textContent || null,
-    btn: [...e.querySelectorAll(".nw-powrot-go")].map((x) => x.textContent.trim()), lekko: e.querySelector(".nw-powrot-lekko")?.textContent, hero: !!document.querySelector("#main .zh-hero"), goBottom: Math.round(e.querySelector(".nw-powrot-go").getBoundingClientRect().bottom), vh: innerHeight, stas: !!e.querySelector(".nw-powrot-stas svg, .nw-powrot-stas img, .nw-powrot-stas > *"),
+    btn: [...e.querySelectorAll(".nw-powrot-go")].map((x) => x.textContent.trim()), lekko: e.querySelector(".nw-powrot-lekko")?.textContent, hero: !!document.querySelector("#main .zh-hero"), goBottom: Math.round(e.querySelector(".nw-powrot-go")?.getBoundingClientRect().bottom || 0), vh: innerHeight, stas: !!e.querySelector(".nw-powrot-stas svg, .nw-powrot-stas img, .nw-powrot-stas > *"),
     nadLekcja: !!ld && !!(e.compareDocumentPosition(ld) & Node.DOCUMENT_POSITION_FOLLOWING), top: Math.round(e.getBoundingClientRect().top) }; });
 const pill = (p) => p.evaluate(() => document.querySelector("#main .greet .nw-streak")?.innerText.replace(/\s+/g, " ").trim());
 
@@ -25,7 +25,7 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   if (tag === "390-jasny") {
     ok("K1 przerwa 5 dni: „Dobrze, że jesteś. Ostatnio 5 dni temu.” nad kartą dnia, ze Stasiem", k && k.h === "Dobrze, że jesteś. Ostatnio 5 dni temu." && k.nadLekcja && k.stas, k);
     ok("K1 najwyżej 3 punkty, tylko te, które są (liczby > 0), jako przyciski ≥ 44 px prowadzące dalej", k && k.pkt.length <= 3 && k.pkt.every((x) => /: [1-9]\d*$/.test(x)) && k.pkt.some((x) => /^Nowe terminy: 1$/.test(x)) && k.pktH.every((x) => x >= 44), k);
-    ok("K1 jeden główny przycisk „Wracam: 3 minuty” (bez konkurencyjnego „Zaczynamy · 5 min” w karcie dnia)", k && k.btn.length === 1 && k.btn[0] === "Wracam: 3 minuty" && !k.hero && /bez nowego tematu/.test(k.lekko), k);
+    ok("K1 jeden główny przycisk „Wracam: 3 minuty” (bez konkurencyjnego „Zaczynamy · 5 min” w karcie dnia)", k && k.btn.length === 1 && k.btn[0] === "Wracam: 3 minuty" && !k.hero && /bez nowego tematu/i.test(k.lekko), k);
     await p.click("#main .nw-powrot .nw-pkt:nth-child(2)"); await p.waitForTimeout(500);
     ok("K1 punkt „Nowe terminy” otwiera Terminy", await p.evaluate(() => window.ZD_APP.S.route.view === "terms"));
     await p.evaluate(() => window.ZD_APP.go({ view: "home" })); await p.waitForTimeout(500);
@@ -52,6 +52,11 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   const z = await open(b, { prog: { xp: { t: 400, d: tp - 4, n: 15 }, streak: { d: tp - 4, n: 6 } }, czas: PON, ls: { ...PR, "mock-v24": "1", "mock-mon": JSON.stringify({ start: 0, ksiega: [], pos: [], zam: { reqs: ["a"], dni: ["2026-11-06"] }, zal: {}, gab: [] }) } });
   ok("K1 czwartek → poniedziałek, piątek chroniony zamrożeniem: bez karty powrotu", (await karta(z)) === null);
   await z.close();
+  const m = await open(b, { prog: { xp: { t: 400, d: tp - 4, n: 15 }, streak: { d: tp - 4, n: 6 } }, czas: PON, ls: PR });
+  const mm = await m.evaluate(() => ({ mini: document.querySelector("#main .nw-powrot-mini")?.innerText.replace(/\s+/g, " "), hero: !!document.querySelector("#main .zh-hero") }));
+  ok("K3 czwartek → poniedziałek bez zamrożeń (1 dzień zajęć opuszczony): bez karty powrotu, ale z wierszem naprawy „Seria 6 dni do odzyskania … 0/2”; karta dnia zostaje", /Seria 6 dni do odzyskania/.test(mm.mini || "") && /0\/2/.test(mm.mini) && mm.hero, mm);
+  await shot(m, "k3-naprawa-bez-karty-390-jasny");
+  await m.close();
 }
 
 // ---------- K2: „Wracam: 3 minuty” → lżejsza karta (lekko: rozgrzewka ≤ 6 + 1 pytanie, bez nowego tematu); trybDnia z przerwaDni
@@ -62,9 +67,19 @@ for (const [w, hh, dark, lang] of [[390, 844, false, "pl"], [360, 640, false, "p
   await p.click("#main .nw-powrot-go"); await p.waitForTimeout(2500);
   const c = await p.evaluate(() => { const k = window.ZD_APP.ldDay.get().plany?.karta; return k && { temat: k.temat, powrot: k.powrot, tryb: k.tryb, nowe: k.nowe, min: k.min, kroki: k.kroki.map((s) => [s.k, s.n]) }; });
   const ekran = await p.evaluate(() => document.body.innerText.replace(/\s+/g, " "));
-  ok("K2 karta powrotu: znany temat (A1, nie nowy), tryb lekko, 3 min, rozgrzewka 6 + 1 pytanie", c && c.temat === "A1" && c.powrot && c.tryb === "lekko" && c.nowe === false && c.min === 3 && JSON.stringify(c.kroki) === JSON.stringify([["rozgrzewka", 6], ["sprawdzenie", 1]]), c);
-  ok("K2 odtwarzacz pokazuje powtórkę/pytanie, a nie „Najważniejsze z tematu” ani czytanie", /Sprawdzenie|Fiszk|Rewanż/i.test(ekran) && !/Najważniejsze z tematu|Czytaj dalej/.test(ekran), ekran.slice(0, 200));
+  ok("K2 karta powrotu: znany temat (A1, nie nowy), tryb lekko, 3 min; bez zaległych fiszek rozgrzewka = 4 pytania ze znanego tematu + 1 pytanie", c && c.temat === "A1" && c.powrot && c.tryb === "lekko" && c.nowe === false && c.min === 3 && JSON.stringify(c.kroki) === JSON.stringify([["rozgrzewka", 4], ["sprawdzenie", 1]]), c);
+  ok("K2 odtwarzacz pokazuje powtórkę/pytanie, a nie „Najważniejsze z tematu” ani czytanie", /Sprawdzenie|Pytanie|Fiszk|Rewanż/i.test(ekran) && !/Najważniejsze z tematu|Czytaj dalej/.test(ekran), ekran.slice(0, 200));
   await shot(p, "k2-wracam-odtwarzacz-390-jasny");
+  // Całe przejście: liczba pytań w odtwarzaczu (≈ 3 minuty, nie 1 pytanie), bez ekranów czytania.
+  const pyt = new Set(); let czyt = false;
+  for (let i = 0; i < 20; i++) {
+    const st = await p.evaluate(() => ({ q: document.querySelector(".lp-card h2, .lp-q, .lp-body h2, .lp-card .q")?.innerText || document.querySelector(".lp-opts")?.closest("section,div")?.innerText?.split("\n")[1] || "", opts: document.querySelectorAll(".lp-opts .opt").length, txt: document.body.innerText, done: !!document.querySelector(".lp-done-screen") }));
+    if (st.done) break;
+    if (/Czytaj dalej|Najważniejsze z tematu/.test(st.txt)) czyt = true;
+    if (st.opts) { pyt.add(st.q || String(i)); await p.locator(".lp-opts .opt").first().click().catch(() => {}); await p.waitForTimeout(250); }
+    await p.locator(".lp-cta").click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(350);
+  }
+  ok("K2 całe przejście karty powrotu: 5 pytań (4 + 1) ze znanego tematu, bez czytania nowego materiału", pyt.size === 5 && !czyt, { n: pyt.size, czyt });
   await p.close();
   const q = await open(b, { prog: { ...P5, done: {}, seen: [] }, ls: PR });
   const k = await karta(q);
@@ -86,7 +101,8 @@ catch (e) { ok("K2/K3 testy jednostkowe", false, String(e.stdout || e).slice(-30
   await p.evaluate(() => window.ZD_APP.xpFlush(10)); await p.waitForTimeout(3200);
   const d1 = await p.evaluate(() => ({ s: window.ZD_APP.S.progress.streak, rep: window.ZD_APP.S.progress.streakRepair, ban: document.querySelector(".nw-baner")?.innerText }));
   const pl1 = await pill(p);
-  ok("K3 dzień 1 naprawy: seria 1, streakRepair zapisany, baner naprawy, pigułka „· jutro seria wróci do 14 dni”", d1.s.n === 1 && d1.rep?.n === 12 && d1.rep.dni.length === 1 && /ucz się dziś i jutro/.test(d1.ban || "") && /jutro seria wróci do 14 dni/.test(pl1), { d1, pl1 });
+  const lin = await p.evaluate(() => window.ZD_NAWYK.naprawaLinia()?.innerText);
+  ok("K3 dzień 1 naprawy: seria 1, streakRepair zapisany, baner naprawy, pigułka „· jutro seria wróci do 14 dni”, wiersz dla ekranu końca „Naprawa serii: 1/2…”", d1.s.n === 1 && d1.rep?.n === 12 && d1.rep.dni.length === 1 && /ucz się dziś i jutro/.test(d1.ban || "") && /jutro seria wróci do 14 dni/.test(pl1) && /Naprawa serii: 1\/2\. Jutro wróci seria 14 dni\./.test(lin || ""), { d1, pl1, lin });
   await p.clock.setFixedTime(new Date("2026-11-07T11:00:00+01:00"));
   await p.reload(); await p.waitForTimeout(2600);
   const pl2 = await pill(p);

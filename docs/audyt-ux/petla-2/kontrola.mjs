@@ -8,6 +8,9 @@ import crypto from "crypto";
 const ROOT = new URL("../../../", import.meta.url).pathname;
 const sh = (c) => execSync(c, { cwd: ROOT, encoding: "utf8", maxBuffer: 64 << 20, stdio: ["ignore", "pipe", "ignore"] });
 const out = [], problemy = [];
+// Porównujemy z punktem rozgałęzienia (merge-base), nie z bieżącym origin/main: gdy na main wejdą inne pętle, ich zmiany
+// nie mogą wyglądać na nasze.
+const BAZA = execSync("git merge-base HEAD origin/main", { cwd: ROOT, encoding: "utf8" }).trim();
 const P = (...l) => out.push(...l);
 
 // Lista z B3 (pętla 2) + funkcje nowe w tej pętli. Wywołania z umów i blok mostu wypisujemy osobno.
@@ -16,14 +19,14 @@ const MOJE = new Set(["viewHome", "lpLevelBar", "streakNext", "kStreakAlive", "k
 const UMOWY = [/window\.ZD_WEJSCIE\?\./, /window\.ZD_NAWYK\?\./, /window\.ZD_NAGRODY\?\./];
 
 P("# Kontrola automatyczna UX-2", "", `Gałąź: ${sh("git branch --show-current").trim()} · HEAD ${sh("git rev-parse --short HEAD").trim()} · origin/main ${sh("git rev-parse --short origin/main").trim()}`, "");
-P("## git diff --stat origin/main...HEAD", "```", sh("git diff --stat origin/main...HEAD").trim() || "(brak commitów)", "```", "");
-P("## Zmiany w drzewie roboczym względem origin/main (z niezacommitowanymi)", "```", sh("git diff --stat origin/main").trim(), sh("git ls-files --others --exclude-standard").trim(), "```", "");
+P(`## git diff --stat ${BAZA.slice(0, 7)}..HEAD`, "```", sh(`git diff --stat ${BAZA}..HEAD`).trim() || "(brak commitów)", "```", "");
+P(`## Zmiany w drzewie roboczym względem punktu rozgałęzienia ${BAZA.slice(0, 7)} (z niezacommitowanymi)`, "```", sh(`git diff --stat ${BAZA}`).trim(), sh("git ls-files --others --exclude-standard").trim(), "```", "");
 
 // --- zmienione funkcje: dla każdej zmienionej linii najbliższa definicja powyżej (2 spacje wcięcia w index.html)
 function funkcje(plik) {
   if (!fs.existsSync(ROOT + plik)) return null;
   const now = fs.readFileSync(ROOT + plik, "utf8").split("\n");
-  const diff = sh(`git diff -U0 origin/main -- ${plik}`);
+  const diff = sh(`git diff -U0 ${BAZA} -- ${plik}`);
   const hunks = [...diff.matchAll(/^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/gm)];
   const lines = diff.split("\n");
   const def = /^\s{0,4}(?:async\s+)?function\s+([A-Za-z0-9_$]+)|^\s{0,4}(?:const|let)\s+([A-Za-z0-9_$]+)\s*=/;
@@ -68,7 +71,7 @@ for (const plik of ["index.html", "skrot-supabase.js"]) {
 
 // --- emoji w dodanych liniach kodu (poza tekstami treści i komentarzami z cytatami)
 const EMO = /\p{Extended_Pictographic}/u;
-const added = sh("git diff -U0 origin/main -- '*.js' '*.html' '*.css' '*.mjs' '*.ts'").split("\n");
+const added = sh(`git diff -U0 ${BAZA} -- '*.js' '*.html' '*.css' '*.mjs' '*.ts'`).split("\n");
 let file = "", emo = [];
 for (const l of added) {
   if (l.startsWith("+++ b/")) { file = l.slice(6); continue; }
@@ -92,7 +95,7 @@ const pliki = sh("git ls-files docs/ | grep -E '\\.(js|json|mjs)$'").split("\n")
 const zmienione = [];
 let hA = crypto.createHash("sha256"), hB = crypto.createHash("sha256");
 for (const f of pliki) {
-  let a = ""; try { a = sh(`git show origin/main:${f}`); } catch { continue; }
+  let a = ""; try { a = sh(`git show ${BAZA}:${f}`); } catch { continue; }
   const b = fs.existsSync(ROOT + f) ? fs.readFileSync(ROOT + f, "utf8") : "";
   const x = quizHash(a), y = quizHash(b); hA.update(x); hB.update(y);
   if (x !== y) zmienione.push(`${f}: ${x} → ${y}`);
@@ -102,7 +105,7 @@ P("## Skrót tablic `quiz` (atrapa i docs/)", `- przed (origin/main): \`${hA}\``
 if (hA !== hB) problemy.push("zmienione tablice quiz");
 
 // --- nowe migracje + nadpisane funkcje
-const nowe = sh("git diff --name-only --diff-filter=A origin/main -- supabase/; git ls-files --others --exclude-standard supabase/").split("\n").filter((f) => /supabase\/skrot-v\d+.*\.sql$/.test(f));
+const nowe = sh(`git diff --name-only --diff-filter=A ${BAZA} -- supabase/; git ls-files --others --exclude-standard supabase/`).split("\n").filter((f) => /supabase\/skrot-v\d+.*\.sql$/.test(f));
 P("## Nowe migracje", ...(nowe.length ? [] : ["- brak"]));
 for (const f of [...new Set(nowe)]) {
   let w; try { w = sh(`node scripts/funkcje-sql.mjs --nadpisane ${f.replace("supabase/", "")}`).trim(); } catch (e) { w = "BŁĄD: " + String(e.stderr || e.message).trim(); problemy.push(`${f}: funkcje-sql --nadpisane nie działa (brak w kolejce pglite.mjs?)`); }
@@ -117,7 +120,7 @@ const brak = [];
 const PLX = /[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/;
 try { const N = (await import(ROOT + "nawyk.js")).default; for (const v of Object.values(N.PL)) if (!(v in exact)) brak.push(`nawyk.js PL: „${v}”`); } catch (e) { brak.push("nawyk.js: " + e.message); }
 let f2 = "";
-for (const l of sh("git diff -U0 origin/main -- index.html lekcja-dnia.js").split("\n")) {
+for (const l of sh(`git diff -U0 ${BAZA} -- index.html lekcja-dnia.js`).split("\n")) {
   if (l.startsWith("+++ b/")) { f2 = l.slice(6); continue; }
   if (!l.startsWith("+") || l.startsWith("+++") || /^\+\s*\/\//.test(l)) continue;
   for (const m of l.matchAll(/(["'`])((?:(?!\1)[^\\]|\\.)*?)\1/g)) {

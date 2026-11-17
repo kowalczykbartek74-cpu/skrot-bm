@@ -8,7 +8,7 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 |---|---|---|---|---|---|
 | 1 Seria i cel dnia na Dziś | 5 | **8/10** (r1 7,5 · r2 6,5 · r3 7,5 · r4 7,5 · r5 8) | brak | **ZALICZONY** | e3084da |
 | 2 Zasady serii | 2 | **8/10** (r1 7 · r2 8) | brak | **ZALICZONY** | 4d32d19 |
-| 3 Powroty | — | — | — | — | — |
+| 3 Powroty | 3 | **8/10** (r1 5,5 · r2 7,5 · r3 8) | brak | **ZALICZONY** | (commit tej rundy) |
 | 4 Kanał poza stroną | — | — | — | — | — |
 | 5 Dziś: układ, zadania, duet, tempo | — | — | — | — | — |
 
@@ -58,3 +58,13 @@ Wznowienie: „Kontynuuj pętlę UX-2 według ~/zdawalni/ux/petla-2.md i docs/au
 - „Powrót po przerwie” = ≥ 2 opuszczone dni zajęć (bez sobót, niedziel, przerw i dni zamrożonych); piątek → poniedziałek to zwykły rytm.
 - Teksty EN „{0}-day streak”: liczba dni wstawiana zawsze po polsku („10 dni”), żeby słownik dobrał wzór „Seria {0} dni …”.
 - Mail „powrót”: jedna obietnica „3 minuty” (PL/EN, przycisk „Wracam: 3 minuty”).
+- Etap 3 runda 3: bez zaległych fiszek rozgrzewka karty powrotu = 4 pytania ze znanego tematu (+1) — „3 minuty powtórki” są prawdą (test przechodzi całą kartę: 5 pytań, bez czytania). Mail „powrót” obiecuje „3 minuty” tylko, gdy strona ma kartę powrotu (`stanZ.zn`, `ZD_NAWYK.maKartePowrotu`); inaczej „Wracasz? Zacznijmy spokojnie”. Wiersz naprawy także bez karty powrotu (mała karta, karta dnia zostaje). `ZD_NAWYK.naprawaLinia()` dla ekranu końca (pętla 3).
+- Naprawa serii istnieje tylko na stronie (`progress.streak = n + 2`); `nauka_seria` w bazie jej nie zna — seria z bazy służy do zamrożeń i podglądu, nie do nagród ani rankingu (RAPORT).
+- 17.11.2026, polecenie Bartka w czacie: „jak skończysz scal i dodaj na main” — po zakończeniu pętli (etapy 1–5 + RAPORT) scalić `ux/2-nawyk` z aktualnym `origin/main` i wypchnąć na `main` (zmiana zasady A4 pkt 2 / A7 dla tej pętli; kolejność A7 przy innych pętlach zostaje dla nich).
+
+## Do przeniesienia z recenzji etapu 3 (runda 3) — na początku etapu 4
+- Nieudana naprawa (1. dzień, przerwa, powrót w 3.) nie może przepaść po cichu: komunikat „Naprawa serii {n} nie wyszła. Dziś zaczynasz nową.” + test.
+- „Zajęcia / Nowe terminy od ostatniej nauki” zamiast „od ostatniej wizyty”.
+- Przy karcie powrotu pigułka bez powtarzania straty (strata w karcie).
+- 360: opis pod „Wracam” w pierwszym ekranie.
+- Do RAPORT: naprawa serii tylko na stronie (baza nie zna n + 2); lżejsza karta po długiej przerwie z kalendarza – propozycja.

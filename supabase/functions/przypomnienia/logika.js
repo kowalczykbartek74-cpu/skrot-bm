@@ -98,7 +98,7 @@
         return { d: t.d, n: String(t.n || "").slice(0, 80), ne: String(t.ne || t.n || "").slice(0, 80), r: ["K", "E", "W", "LAB"].indexOf(t.r) >= 0 ? t.r : "K",
           dl: t.dl ? String(t.dl).slice(0, 120) : null, own: !!t.own, ok: !!t.ok, sid: t.sid ? String(t.sid).slice(0, 60) : null };
       });
-    return { v: 1, od: o.od, ter: ter, pow: licz(o.pow), rew: licz(o.rew), zad: !!o.zadanie };
+    return { v: 1, od: o.od, ter: ter, pow: licz(o.pow), rew: licz(o.rew), zad: !!o.zadanie, zn: o.znane !== false };
   }
 
   // Terminy z dzisiejszymi datami: termin starosty (dl) bierze datę z bazy (przesunięty → nowa data, usunięty → znika),
@@ -139,6 +139,7 @@
       powtorki: at(st.pow),
       rewanze: at(st.rew),
       zadanie: !!st.zad,
+      znane: st.zn !== false, // UX-2: czy strona ma kartę powrotu „3 minuty” (znany temat albo rewanż)
     };
   }
 
@@ -180,6 +181,16 @@
     var cokolwiek = (co.powtorki && ctx.powtorki + ctx.rewanze > 0) || (co.zadanie && ctx.zadanie);
     if (cokolwiek && ctx.lastStudyDay && diffDays(ctx.today, ctx.lastStudyDay) >= NOTIFY.comebackAfterDays) {
       var dd = diffDays(ctx.today, ctx.lastStudyDay);
+      // Bez znanego tematu strona pokaże „Wracam: 5 minut” i jeden krótki temat: mail obiecuje to samo, bez „3 minut”.
+      if (ctx.znane === false) return en ? {
+        kind: "powrot", title: "Back, nice and easy",
+        body: "Your last study session in Zdawalni was " + dd + " days ago. One short topic to start, the rest can wait.",
+        cta: "I'm back", path: "?wracam=1#/",
+      } : {
+        kind: "powrot", title: "Wracasz? Zacznijmy spokojnie",
+        body: "Ostatnia nauka w Zdawalni: " + dd + " dni temu. Jeden krótki temat na start, reszta spokojnie poczeka.",
+        cta: "Wracam", path: "?wracam=1#/",
+      };
       return en ? {
         kind: "powrot", title: "Back in 3 minutes",
         body: "Your last study session in Zdawalni was " + dd + " days ago. 3 minutes of review to start, the rest can wait.",
