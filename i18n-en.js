@@ -5547,7 +5547,19 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Inny przedmiot na zmianę lepiej utrwala": "Switching to another subject helps it stick",
 "Mieszanka tematów z zakresu": "A mix of topics from the test scope",
 "Przed snem: same powtórki, spokojnie": "Before sleep: only reviews, nice and calm",
-"Dziś lżej: powtórki bez nowego materiału": "Lighter today: reviews, no new material"
+"Dziś lżej: powtórki bez nowego materiału": "Lighter today: reviews, no new material",
+// ux-4
+"Jak działa Kalendarz": "How the Calendar works",
+"Jak działają Powtórki": "How Reviews work",
+"Jak działa Słowniczek": "How the Glossary works",
+"Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.": "Tap a day to see details and add your own entry.",
+"Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach.": "The checklist and the link for your phone calendar are in Deadlines.",
+"Fiszki wracają same, zanim zdążysz je zapomnieć: najpierw po kilku dniach, potem coraz rzadziej.": "Flashcards come back on their own before you forget them: first after a few days, then less and less often.",
+"Termin liczy algorytm FSRS z Twoich ocen.": "The FSRS algorithm sets the date from your ratings.",
+"Znaczek EN albo PL mówi, w jakim języku jest opis (materiały z zajęć są po angielsku, tematy z sylabusa często po polsku).": "The EN or PL badge shows the language of the description (class materials are in English, syllabus topics are often in Polish).",
+"Szukaj w obu językach, ogonki nie są potrzebne.": "Search in either language; Polish diacritics are optional.",
+"Dotknij, żeby zamknąć": "Tap to close",
+"Ponów": "Retry"
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],

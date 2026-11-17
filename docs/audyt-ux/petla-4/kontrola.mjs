@@ -12,7 +12,7 @@ const P = (...a) => out.push(...a);
 
 // Miejsca pętli 4 z B3 (etap A). Wywołania z umów i blok mostu wypisujemy osobno.
 const MOJE = new Set(["toast", "viewMaterials", "viewPo", "viewGuide", "guideTest", "gRing", "viewTerms", "viewCalendar", "viewReview", "viewGlossary", "viewMaterial",
-  "viewMore", "viewUstawienia", "font", "apply" /* motyw nocny: usunięte ładowanie Cormorant z Google (B4) */, "nocOn", "theme", "h2Ico", "saveErr", "CSS (główny arkusz)", "<head> (czcionki)", "linia ładowania własnych plików", "most ux-4", "ładowanie własnych plików"]);
+  "viewMore", "viewUstawienia", "reviewHome" /* Powtórki: tylko nagłówek */, "tlSection" /* Terminy */, "pastBox", "estBox", "flushProgress" /* komunikat błędu zapisu (B4) */, "font", "apply", "pinkTheme" /* font() motywów (B4) */, "seaTheme" /* motyw nocny: usunięte ładowanie Cormorant z Google (B4) */, "nocOn", "theme", "h2Ico", "saveErr", "CSS (główny arkusz)", "<head> (czcionki)", "linia 1 (wspólna: tylko ?v= i18n.js)", "linia ładowania własnych plików", "most ux-4", "ładowanie własnych plików"]);
 
 P(`# Kontrola automatyczna – ${new Date().toISOString().slice(0, 16)} (porównanie z ${BASEREF}, z niezatwierdzonymi zmianami)`, "");
 P("## git diff --stat", "```", sh(`git diff --stat ${BASEREF}`).trim(), "```", "");
@@ -23,7 +23,8 @@ if (untracked) P("Nowe pliki (nieśledzone):", "```", untracked, "```", "");
 function enclosing(lines, n) {
   // n: numer linii (1-based) w nowym pliku. CSS główny arkusz: między <style> (linia ~75) a pierwszym </style> po nim.
   const s0 = lines.findIndex((l, i) => i > 1 && l === "<style>"), s1 = lines.findIndex((l, i) => i > s0 && l === "</style>");
-  if (n === 1) return "linia 1 (wspólna)";
+  if (n === 1) return "linia 1 (wspólna: tylko ?v= i18n.js)";
+  if (/^<script src="ikony-ux\.js/.test(lines[n - 1] || "")) return "ładowanie własnych plików";
   if (n - 1 > s0 && n - 1 < s1) return "CSS (główny arkusz)";
   if (n - 1 < s0) return "<head> (czcionki)";
   if (n - 1 === s1 + 1) return "ładowanie własnych plików";
@@ -33,7 +34,8 @@ function enclosing(lines, n) {
     const l = lines[i];
     if (/\/\/ === most ux-4 ===/.test(l)) return "most ux-4";
     if (/\/\/ === koniec mostu ux-4 ===/.test(l) && i !== n - 1) break;
-    const m = l.match(/^\s{0,6}(?:async\s+)?function\s+([\w$]+)\s*\(/) || l.match(/^\s{0,6}(?:const|let)\s+([\w$]+)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[\w$]+)\s*=>/) || l.match(/^\s{0,6}(?:const|let)\s+([\w$]+)\s*=/);
+    // Funkcje aplikacji leżą o 2 spacje w głąb funkcji (() => { … })() – wewnętrzne stałe pomijamy.
+    const m = l.match(/^\s{2}(?:async\s+)?function\s+([\w$]+)\s*\(/) || l.match(/^\s{2}(?:const|let)\s+([\w$]+)\s*=/);
     if (m) return m[1];
   }
   return "?";
@@ -64,7 +66,7 @@ const quizHash = (txt) => crypto.createHash("sha256").update(txt.split("\n").fil
 P("## Skrót tablic quiz (przed → po)");
 const files = sh(`git ls-files docs | grep -E '\\.(js|mjs|json)$'`).trim().split("\n");
 let same = true;
-for (const f of files) { let before = ""; try { before = sh(`git show ${BASEREF}:${f}`); } catch {} const after = fs.existsSync(ROOT + f) ? fs.readFileSync(ROOT + f, "utf8") : ""; const a = quizHash(before), b = quizHash(after); if (a !== b) same = false; if (a !== b || /atrapa|h2-lib/.test(f)) P(`- ${f}: ${a} → ${b} ${a === b ? "✓" : "✗ ZMIANA"}`); }
+for (const f of files) { let before = ""; try { before = execSync(`git show ${BASEREF}:${f}`, { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 1 << 28 }); } catch {} const after = fs.existsSync(ROOT + f) ? fs.readFileSync(ROOT + f, "utf8") : ""; if (!before) continue; /* nowe pliki pętli (testy, ten skrypt) nie niosą pytań quizu z bazy */ const a = quizHash(before), b = quizHash(after); if (a !== b) same = false; if (a !== b || /atrapa|h2-lib/.test(f)) P(`- ${f}: ${a} → ${b} ${a === b ? "✓" : "✗ ZMIANA"}`); }
 P(same ? "- wszystkie równe ✓" : "- ✗ są różnice", "");
 // --- migracje ---
 const mig = sh(`git diff --name-only --diff-filter=A ${BASEREF} -- supabase`).trim();

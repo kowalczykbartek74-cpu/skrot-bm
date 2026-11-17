@@ -17,7 +17,7 @@ const R = { etap: ETAP, runda: +RUNDA, ekrany: [], ruch: [], test: null };
 const cele = (p) => p.evaluate(() => [...document.querySelectorAll("#main :is(button, a[href], input, select, summary, label, [role=tab])")].filter((e) => { const r = e.getBoundingClientRect(); return r.width && r.height && getComputedStyle(e).visibility !== "hidden" && !e.closest("[hidden], details:not([open]) > :not(summary), .md, .site-foot p") && (Math.round(r.width) < 44 || Math.round(r.height) < 44) && !(e.tagName === "INPUT" && e.closest("label")); }).map((e) => {
   // faktyczne pole: rozszerzenie przez ::after liczymy z jego prostokąta (elementFromPoint wokół środka)
   const r = e.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2; const inn = (x, y) => { const t = document.elementFromPoint(x, y); return !!t && (t === e || e.contains(t)); };
-  const span = (dx, dy) => { let d = 0; for (let i = 1; i < 40; i++) { if (inn(cx + dx * i, cy + dy * i)) d = i; else break; } return d; };
+  const span = (dx, dy) => { let d = 0; for (let i = 1; i < 60; i++) { if (inn(cx + dx * i, cy + dy * i)) d = i; else break; } return d; };
   const vis = cy > 0 && cy < innerHeight && inn(cx, cy);
   return { cel: e.tagName + (typeof e.className === "string" && e.className ? "." + e.className.split(" ").join(".") : ""), tekst: (e.innerText || e.getAttribute("aria-label") || "").trim().slice(0, 40), w: Math.round(r.width), h: Math.round(r.height), pole: vis ? `${span(-1, 0) + span(1, 0) + 1}×${span(0, -1) + span(0, 1) + 1}` : "poza ekranem" };
 }));
