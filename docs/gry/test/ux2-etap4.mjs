@@ -130,7 +130,7 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, false, "pl"], [390, tru
   await p.waitForTimeout(900);
   let k = await p.evaluate(() => { const l = document.querySelector("#layer .nw-kal"); return l ? { txt: l.innerText.replace(/\s+/g, " "), on: l.querySelector("input").checked } : null; });
   if (!k) { await p.evaluate(() => window.ZD_APP.ls && document.querySelector("#layer") && 0); }
-  if (lang === "pl") ok(`K4 ${tag}: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony`, k && /Przypominaj o 5 minutach po zajęciach/.test(k.txt) && k.on === false, k);
+  if (lang === "pl") ok(`K4 ${tag}: w oknie „Kalendarz w telefonie” przełącznik „Dodawaj „5 minut nauki” po zajęciach”, domyślnie wyłączony`, k && /Dodawaj „5 minut nauki” po zajęciach/.test(k.txt) && k.on === false, k);
   else ok("K4 EN: „Remind me about 5 minutes after class”", k && /Remind me about 5 minutes after class/.test(k.txt), k);
   if (k) ok(`K4 ${tag}: przełącznik nad przyciskami Google/Apple/Outlook`, await p.evaluate(() => { const l = document.querySelector("#layer .nw-kal"), o = document.querySelector("#layer .calopts"); return !o || !!(l.compareDocumentPosition(o) & Node.DOCUMENT_POSITION_FOLLOWING); }));
   if (k) { await shot(p, `k4-kalendarz-okno-${tag}`); R.pomiary.push(await pomiar(p, `K4 okno kalendarza ${tag}`, "#layer", "#layer .nw-kal")); }
