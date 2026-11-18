@@ -749,7 +749,7 @@
         h("button", { type: "button", class: "link przyp-nie nw-link44", onclick: () => { ap.ls.set("skrot-przyp-nie", ap.todayKey()); ap.render(); } }, PL.nieTeraz)),
       sn >= 2 ? h("p", { class: "nw-przyp-powod", text: fmt(PL.przypPowod, dniPL(sn)) }) : null,
       h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: fmt(PL.przypDzisOpis, godzTxt(godz)) }),
-      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", onclick: () => ap.przypSave(PRZ.d.nowe ? { wlaczone: true, godz } : { wlaczone: true }, PL.przypWlaczone) }, PL.wlacz)));
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn przyp-on", style: "min-height:48px", onclick: () => ap.przypSave(PRZ.d.nowe ? { wlaczone: true, godz } : { wlaczone: true }, PL.przypWlaczone) }, PL.wlacz)));
   }
   // Przełącznik w oknie „Kalendarz w telefonie”: progress.calStudy (funkcja kalendarz czyta go przez SQL v57).
   function przelacznikKalendarza() {

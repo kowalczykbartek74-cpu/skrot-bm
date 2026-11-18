@@ -5399,11 +5399,19 @@ html .mc-d { height: 44px; }
 .pd-topic { position: relative; }
 html button.xp-chip { min-height: 44px; }
 /* link w zdaniu: pionowy margines pola dotyku bez zmiany wysokości wiersza */
-p a.link, p button.link, .lead-help a { padding-block: 13px; margin-block: -13px; }
 html:not([data-theme]) .nb .foot .chip { font-size: .75rem; }
 .calc-in { font-size: .75rem; }
 .zal-row .cell small, .calc-in small, .calc-res > span { font-size: max(12px, .75rem); }
-@media screen { .ch-foot { font-size: 12px; } }
+@media screen { .ch-foot { font-size: 12px; color: var(--muted); border-top-color: var(--line); } }
+p a.link, p button.link, .lead-help a, .zal-src a, .muted > a { padding-block: 13px; margin-block: -13px; position: relative; z-index: 1; }
+html .pts-more > summary { min-height: 44px; }
+html .kgab-slot { min-height: 46px; }
+.kgab { position: relative; z-index: 1; } /* przycisk pod spodem zachodził na dół miejsca w gablocie */
+html #main .calc-res > span { font-size: max(12px, .75rem); }
+.mc-d.has { position: relative; }
+.mc-d.has::after { content: ""; position: absolute; inset: 0 -3px; }
+/* ux-6: niski telefon (np. 360×640) – „Zaczynamy” bez przewijania i nad dolnym paskiem: bez dymka Stasia i listy kroków (są w samej karcie) */
+@media (max-height: 700px) and (max-width: 480px) { .sk-now .zh-bubble, .sk-now .zh-steps { display: none; } }
 </style>
 <link rel="stylesheet" href="wyglad-ux.css?v=20261117-ux4y">
 <link rel="stylesheet" href="ux-wejscie.css?v=20261117-ux1h">
@@ -12202,7 +12210,7 @@ html:not([data-theme]) .nb .foot .chip { font-size: .75rem; }
         h("h2", { text: g.name }), h("p", { class: "muted", text: g.text }),
         g.soon ? h("span", { class: "chip plain", text: "wkrótce" })
           : [h("p", { class: "gry-tile-meta small", text: meta.filter(Boolean).join(" · ") }),
-            h("button", { type: "button", class: "btn primary", disabled: few || (g.id === "pary" && pairsN == null) ? true : null, onclick: () => gryOpenTile(g.id, sid) }, "Graj")]);
+            h("button", { type: "button", class: "btn", disabled: few || (g.id === "pary" && pairsN == null) ? true : null, onclick: () => gryOpenTile(g.id, sid) }, "Graj")]); // ux-6: równorzędne gry, żadna nie jest „główna”
     };
     return [head,
       h("div", { class: "gry-pick" }, h("label", { for: "gry-sid", text: "Przedmiot:" }), sel, h("p", { class: "muted small", text: meta })),
@@ -12999,7 +13007,7 @@ html:not([data-theme]) .nb .foot .chip { font-size: .75rem; }
       few && !full ? h("div", { class: "row bs-acts" }, h("button", { type: "button", class: "btn small ghost", onclick: () => bsHide(b.id) }, "Zamknij")) : null];
     return [bar, nums,
       h("div", { class: "row bs-acts" }, mine,
-        h("button", { type: "button", class: "btn primary bs-strike", onclick: () => bsStrike(b) }, h("span", { text: "Zadaj cios" }), icon("strzalka")),
+        h("button", { type: "button", class: "btn " + (full ? "primary " : "") + "bs-strike", onclick: () => bsStrike(b) }, h("span", { text: "Zadaj cios" }), icon("strzalka")), // ux-6: na Dziś drugorzędny (jeden główny przycisk na ekran)
         h("button", { type: "button", class: "link bs-play", onclick: () => bsPlay(b) }, "albo zagraj"))];
   }
   function bsCard(b, more) {
@@ -20604,7 +20612,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       h("div", { class: "zh-kind" }, ico, h("span", { class: "zh-kt" }, h("b", { text: kd.t }), h("small", {}, s ? h("span", { translate: "no", text: subjShort(s.id) }) : null, s ? " · " : null, h("span", { class: "num", text: `ok. ${p.min || 20} min` })))),
       h("h3", { translate: "no", text: m?.title || "" }),
       zhTopicBar(m),
-      h("button", { type: "button", class: "btn " + (done ? "" : "primary ") + "sk-cta zh-go", "aria-label": done || left ? null : `Otwórz lekcję: ${m?.title || ""}`, disabled: LD.busy ? true : null, onclick: () => ldOpen(i) }, done ? "Zrobione ✓ · jeszcze raz" : left ? `Wróć (zostało ok. ${left} min)` : "Otwórz lekcję"),
+      h("button", { type: "button", class: "btn sk-cta zh-go", /* ux-6: główny na Dziś jest „Zaczynamy” */ "aria-label": done || left ? null : `Otwórz lekcję: ${m?.title || ""}`, disabled: LD.busy ? true : null, onclick: () => ldOpen(i) }, done ? "Zrobione ✓ · jeszcze raz" : left ? `Wróć (zostało ok. ${left} min)` : "Otwórz lekcję"),
       h("div", { class: "row ld-links" }, ldWhy(key, p)));
   }
   // Wygląd H: animacje wejścia tylko przez 1,5 s od pokazania tematu. render() przebudowuje cały <main> (ładowanie danych, rozwinięcia),
@@ -22239,7 +22247,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
           h("b", {}, when, h("span", { class: "muted num plan-min", text: ` · ok. ${d.min} min${range ? " dziennie" : ""}` })),
           d.test ? h("div", { class: "plan-test-row" },
             h("span", { class: "stack", style: "gap:0" }, h("b", { text: TEST_ROW[d.test] }), h("span", { class: "muted", style: "font-size:.86rem", text: TEST_ROW_WHY[d.test] })),
-            startTest ? h("button", { type: "button", class: "btn small" + (today ? " primary" : ""), onclick: () => startTest(d.test) }, today ? "Zacznij →" : "Zrób teraz") : null) : null,
+            startTest ? h("button", { type: "button", class: "btn small", onclick: () => startTest(d.test) }, today ? "Zacznij →" : "Zrób teraz") : null /* ux-6: główny jest „Rozpocznij próbny test” */) : null,
           d.mats?.length ? h("span", { class: "sk-topics" }, d.mats.map((m) => h("button", { type: "button", class: "pd-topic", onclick: () => openMat(m) }, h("i", { class: "pm-sq st-" + topicScore(m).state, "aria-hidden": "true" }), m.title || m.fileName, weak.has(m.id) ? h("span", { class: "chip bad plan-weak", text: "do poprawy" }) : null))) : null,
           d.review ? h("span", { text: d.phase === "final" ? (range ? "Codziennie: powtórki fiszek (także z błędów w teście) i quiz z całości" : "Powtórki fiszek (także z błędów w teście) i quiz z całości") : "Tylko powtórki fiszek z tego, co już było" }) : null));
     }));
@@ -23330,7 +23338,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
   // === koniec mostu ux-4 ===
 })();
 </script>
-<script src="nawyk.js?v=20261118-scal2"></script>
+<script src="nawyk.js?v=20261119-ux6r1"></script>
 <script src="ux-wejscie.js?v=20261117-ux1h"></script>
 <script src="lekcja-ux.js?v=20261117-ux3g"></script>
 <script src="nagrody.js?v=20261117-ux5"></script>
