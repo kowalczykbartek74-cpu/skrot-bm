@@ -70,6 +70,11 @@ const Z = [
     sukces: async (p) => p.evaluate(() => !!document.querySelector(".lp, .ld-run, #layer .lp, [class*=lp-]")) },
   { id: "Z18", konto: "darmowe", limit: 4, sciezka: async (p) => { await klik(p, /^Kup dostęp$/); return 1; },
     sukces: async (p) => (await widac(p, /199 zł/)) && (await widac(p, /35 zł/)) },
+  // Sprawdzenia przekrojowe (nie zadania C1): „wstecz” zamyka okno i zostawia ekran pod spodem; ✕ zamyka okno.
+  { id: "W1", konto: "platne", limit: 3, sciezka: async (p) => { await klik(p, /^Terminy/); await klik(p, /Ochrona własności/); p.__otw = await p.evaluate(() => !!document.querySelector("#layer").firstElementChild); await p.goBack(); p.__k++; await p.waitForTimeout(800); },
+    sukces: async (p) => p.__otw && (await p.evaluate(() => !document.querySelector("#layer").firstElementChild && /#\/terms/.test(location.hash))) },
+  { id: "W2", konto: "platne", limit: 4, sciezka: async (p) => { await klik(p, /^Terminy/); await klik(p, /Ochrona własności/); await klik(p, /^Zamknij$/); await p.goBack(); p.__k++; await p.waitForTimeout(800); },
+    sukces: async (p) => p.evaluate(() => !document.querySelector("#layer").firstElementChild && location.hash === "#/") },
 ];
 
 const tylko = process.argv.slice(2);
