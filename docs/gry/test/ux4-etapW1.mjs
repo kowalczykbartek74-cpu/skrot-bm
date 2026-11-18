@@ -54,7 +54,7 @@ for (const [w, dark, lang, konto] of [[390, false, "pl", "starosta"], [390, true
       const sek = await p.evaluate(() => [...document.querySelectorAll("#main :is(.pz-head h2, .ld-head > .eyebrow, .fun-row > .eyebrow, .home-fold h2)")].filter((e) => e.getBoundingClientRect().width).map((e) => ({ t: e.textContent.trim().slice(0, 20), px: parseFloat(getComputedStyle(e).fontSize), fam: getComputedStyle(e).fontFamily.split(",")[0].replace(/"/g, "") })));
       ok("K2 Dziś: H1 powitania 22 px", h1 && h1.px === 22, h1);
       ok("K2 Dziś: tytuł lekcji 28 px", zh && zh.px === 28, zh);
-      ok("K2 Dziś: nagłówki sekcji 18 px, Bricolage", sek.length >= 3 && sek.every((x) => x.px === 18 && x.fam === "Bricolage Grotesque"), sek);
+      ok("K2 Dziś: nagłówki sekcji 18 px, Bricolage", sek.length >= 2 /* c1356b9: bez „Więcej na dziś” zostały 2 sekcje */ && sek.every((x) => x.px === 18 && x.fam === "Bricolage Grotesque"), sek);
     }
   }
   ok(`K2/K3 bez błędów konsoli (${w}${dark ? " ciemny" : ""} ${lang})`, p.errors.length === 0, p.errors);
