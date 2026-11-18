@@ -5412,6 +5412,13 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
 .mc-d.has::after { content: ""; position: absolute; inset: 0 -3px; }
 /* ux-6: niski telefon (np. 360×640) – „Zaczynamy” bez przewijania i nad dolnym paskiem: bez dymka Stasia i listy kroków (są w samej karcie) */
 @media (max-height: 700px) and (max-width: 480px) { .sk-now .zh-bubble, .sk-now .zh-steps { display: none; } }
+/* ux-6: przedmiot – „Następna lekcja” zaraz pod terminem zaliczenia, przed blokiem opanowania (co dalej, potem statystyki) */
+.sk-subj > .sk-start { order: 1; }
+.sk-subj > .know-line { order: 2; }
+.sk-subj > :not(.row):not(.sk-start):not(.know-line) { order: 3; }
+@media (max-height: 700px) and (max-width: 480px) { .cover > .pat { display: none; } html .cover { padding-top: 20px; gap: 6px; } }
+/* ux-6: materiał na telefonie – „Dalej” zawsze w zasięgu kciuka, nad dolnym paskiem */
+@media (max-width: 899px) { .steppanel .step-next { position: sticky; bottom: 76px; z-index: 3; margin-inline: -16px; padding: 8px 16px; background: color-mix(in srgb, var(--paper) 94%, transparent); } }
 </style>
 <link rel="stylesheet" href="wyglad-ux.css?v=20261117-ux4y">
 <link rel="stylesheet" href="ux-wejscie.css?v=20261117-ux1h">
@@ -14508,7 +14515,7 @@ Format JSON: {"title": "krótki polski tytuł zajęć", "lead": "...", "parts": 
             h("small", { class: "muted", text: its.length ? `do poprawienia: ${its.length}${fixed ? ` · poprawione: ${fixed}` : ""}` : "jeszcze bez wyjaśnień" })),
           h("span", { class: "chev", "aria-hidden": "true", text: "›" }));
       })),
-      STAS.idx && !subs.length ? h("p", { class: "muted", text: "Staś jeszcze nic nie przygotował. Zajrzyj później." }) : null];
+      STAS.idx && !subs.length ? h("div", { class: "stack", style: "gap:8px" }, h("p", { class: "muted", style: "margin:0", text: "Staś jeszcze nic nie przygotował. Zajrzyj później." }), h("div", {}, h("button", { type: "button", class: "btn", onclick: () => go({ view: "home" }) }, "Wróć do nauki na dziś"))) : null]; // ux-6: pusty stan z akcją
   }
   function stasSubject(s) {
     const done = stasDone.get(), star = poStarosta();
@@ -15162,7 +15169,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       h("p", { class: "przyp-ex" }, h("b", { text: EN && ex.s.en ? ex.s.en : ex.s.pl }), " · ", h("span", { text: partLabel(ex.s.id, ex.part) }), " · ", h("span", { text: n === 0 ? "dziś" : n === 1 ? "jutro" : `za ${n} dni` })),
       // ux-2: godzina z planu zajęć (albo zapisana wcześniej), ta sama, którą zapisze „Włącz”.
       h("p", { class: "muted", style: "margin:0;font-size:.92rem", text: window.ZD_NAWYK?.przypOpisTermin?.() ?? "Najwyżej jeden mail dziennie o 18:00 i tylko wtedy, gdy jest coś ważnego: zaliczenie za 7, 3 i 1 dzień, zaległe powtórki albo Zadanie dnia." }),
-      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", disabled: PRZ.saving ? true : null,
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn " + (S.route.view === "ustawienia" ? "primary " : "") + "przyp-on", style: "min-height:48px", disabled: PRZ.saving ? true : null, /* ux-6: na Dziś drugorzędny */
         onclick: () => przypSave(PRZ.d.nowe ? { wlaczone: true, godz: window.ZD_NAWYK?.godzinaPrzypomnienia?.() ?? PZ.GODZ_DOMYSLNA } : { wlaczone: true }, "Przypomnienia włączone. Godzinę i rodzaje zmienisz w Ustawieniach.") }, "Włącz")));
   }
   function setPrzyp() {
@@ -17409,9 +17416,15 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
   }
   function viewShop() {
     const sk = window.skrot || {}, st = sk.sklep || {}, inn = sk.state === "in";
+    // ux-6: bez dostępu jedyne realne działanie w Sklepie to zakup dostępu – karta zaraz pod tytułem, nie pod saldem 0
+    const shopPaid = inn && st.ok && !st.mozna && !sk.admin ? h("section", { class: "panel sk-panel shop-paid" },
+        h("h2", { text: "Monety zbierasz z pełnym dostępem" }),
+        h("p", { class: "muted", text: "Z pełnym dostępem każda dobra odpowiedź, powtórka i lekcja daje monety, a Zadania dnia dodatkowe nagrody. Motywy możesz kupić, jeśli masz monety." }),
+        h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => sk.buy?.() }, "Kup dostęp"))) : null;
     return [
       backLink({ view: "more" }),
       h("section", { class: "stack" }, h("h1", { class: "ptitle", text: "Sklep" }), h("p", { class: "muted", text: kosmOn() ? "Monety zbierasz za naukę i Zadania dnia. Wydajesz je na motywy i wygląd profilu, gier i nauki." : "Monety zbierasz za naukę i Zadania dnia. Wydajesz je na motywy." })),
+      shopPaid,
       !inn ? h("section", { class: "panel sk-panel" },
         h("h2", { text: "Zaloguj się, żeby zbierać monety" }),
         h("p", { class: "muted", text: "Monety, zadania i kupione motywy są przypisane do konta, więc działają na każdym Twoim urządzeniu." }),
@@ -17419,10 +17432,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       inn ? window.ZD_NAGRODY?.kartaPrezentu?.() ?? null : null, // ux-5: monety z prezentu (100 na start)
       // Polecanie mieszka w sklepie (wcześniej osobny wiersz w „Więcej”).
       inn ? h("div", { class: "more-list" }, moreRow("gift", "Polecaj i zarabiaj", "30 zł za każdą osobę, która kupi dostęp z Twoim kodem", () => go({ view: "polec" }))) : null,
-      inn && st.ok && !st.mozna && !sk.admin ? h("section", { class: "panel sk-panel shop-paid" },
-        h("h2", { text: "Monety zbierasz z pełnym dostępem" }),
-        h("p", { class: "muted", text: "Z pełnym dostępem każda dobra odpowiedź, powtórka i lekcja daje monety, a Zadania dnia dodatkowe nagrody. Motywy możesz kupić, jeśli masz monety." }),
-        h("div", {}, h("button", { type: "button", class: "btn primary", onclick: () => sk.buy?.() }, "Kup dostęp"))) : null,
+      null, // ux-6: „Monety zbierasz z pełnym dostępem” przeniesione pod tytuł (shopPaid)
       inn && st.err === "no_sql" ? h("p", { class: "muted", text: sk.admin ? "Baza nie ma jeszcze monet. Uruchom supabase/skrot-v14-monety.sql w Supabase → SQL Editor." : "Sklep jeszcze się uruchamia. Motywy za poziom działają jak dotąd." }) : null,
       shopMisje(),
       kosmOn() ? kShopTabs() : h("section", { class: "panel sk-panel" },
@@ -23347,7 +23357,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
   // === koniec mostu ux-4 ===
 })();
 </script>
-<script src="nawyk.js?v=20261119-ux6r1"></script>
+<script src="nawyk.js?v=20261119-ux6r2"></script>
 <script src="ux-wejscie.js?v=20261117-ux1h"></script>
 <script src="lekcja-ux.js?v=20261117-ux3g"></script>
 <script src="nagrody.js?v=20261117-ux5"></script>

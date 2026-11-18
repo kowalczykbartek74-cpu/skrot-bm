@@ -443,7 +443,7 @@
       h("span", { class: "nw-s-l" }, ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
         stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" || (stan === "todo" && czeka) ? svg(IKONY.snow, 16, "nw-klep") : null,
         dop ? h("span", { class: "nw-risk", text: " " + dop }) : null),
-      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true" }, g.xp >= g.cel ? PL.celOk : [`${g.xp}/${g.cel}`, h("span", { class: "nw-xp", text: " XP" })]) : null));
+      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true" }, g.xp >= g.cel ? PL.celOk : [h("span", { class: "nw-xp", text: "cel " }), `${g.xp}/${g.cel}`, h("span", { class: "nw-xp", text: " XP" })] /* ux-6: „cel”, żeby nie mylić z XP poziomu */) : null));
   }
 
   // Po XP (xpFlush): dopisanie dnia nauki i najlepszej serii; pigułki na ekranie odświeżamy w miejscu (xpFlush nie rysuje ekranu).
