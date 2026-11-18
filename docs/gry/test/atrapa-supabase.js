@@ -587,6 +587,10 @@
   const UX1_OTP = async () => { const e = ls("mock-otp-blad", ""); window.__otp = (window.__otp || 0) + 1;
     return e ? { error: { message: e === "rate" ? "email rate limit exceeded" : e === "sekundy" ? "For security purposes, you can only request this after 58 seconds." : e } } : {}; };
   // === koniec ux-1 ===
+  // === ux-6 === kod z maila loguje naprawdę: niezalogowany gość („brak”) po verifyOtp staje się kontem bez dostępu („darmowe”),
+  // jak nowe konto w Supabase; przeładowanie strony widzi już sesję (okres próbny włącza potem nauka_proba_start).
+  const UX6_VERIFY = async () => { if (KONTO === "brak") { try { localStorage.setItem("mock-konto", "darmowe"); localStorage.setItem("sb-zkyxujkdrovfzpasocmv-auth-token", "{}"); } catch {} } return {}; };
+  // === koniec ux-6 ===
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
     await new Promise((r) => setTimeout(r, 30));
@@ -664,7 +668,7 @@
   const session = KONTO === "brak" ? null : { access_token: "t", user: { id: UID, email: EMAIL, user_metadata: {} } };
   window.supabase = { createClient: () => ({
     auth: { getSession: async () => ({ data: { session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}),
-      signInWithOtp: UX1_OTP, signInWithPassword: async () => ({}), verifyOtp: async () => ({}), updateUser: async () => ({}), reauthenticate: async () => ({}) },
+      signInWithOtp: UX1_OTP, signInWithPassword: async () => ({}), verifyOtp: UX6_VERIFY, updateUser: async () => ({}), reauthenticate: async () => ({}) },
     rpc, from: () => table(),
     functions: { invoke: async () => ({ data: null, error: { message: "atrapa" } }) },
   }) };
