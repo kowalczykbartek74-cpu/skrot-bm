@@ -33,10 +33,10 @@ async function czekaj() {
   await p.waitForTimeout(250);
 }
 
-async function ekran() {
-  krok++;
+async function ekran(cichy = false) {
+  if (!cichy) krok++;
   const plik = `${zadanie}-${String(krok).padStart(2, "0")}.png`;
-  await p.screenshot({ path: DIR + "zrzuty/" + plik }).catch(() => {});
+  if (!cichy) await p.screenshot({ path: DIR + "zrzuty/" + plik }).catch(() => {});
   const info = await p.evaluate(() => {
     const vis = (e) => { const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return null; if (r.bottom <= 0 || r.top >= innerHeight || r.right <= 0 || r.left >= innerWidth) return null; const cs = getComputedStyle(e); if (cs.visibility === "hidden" || +cs.opacity === 0 || e.closest("[hidden],[inert],[aria-hidden=true]") || e.checkVisibility?.({ checkOpacity: true, checkVisibilityCSS: true }) === false) return null; return r; };
     const hit = (e, r) => { const pts = [[0.5, 0.5], [0.2, 0.5], [0.8, 0.5], [0.5, 0.25], [0.5, 0.75]]; for (const [fx, fy] of pts) { const x = Math.min(innerWidth - 1, Math.max(0, r.left + r.width * fx)), y = Math.min(innerHeight - 1, Math.max(0, r.top + r.height * fy)); const t = document.elementFromPoint(x, y); if (t && (t === e || e.contains(t) || t.contains(e) && t.tagName === "LABEL")) return true; } return false; };
@@ -64,7 +64,10 @@ async function ekran() {
     const parts = [], w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     for (let t; (t = w.nextNode());) { const s = t.textContent.replace(/\s+/g, " ").trim(); if (!s || !t.parentElement || t.parentElement.closest("script, style, #skrot-wm")) continue; if (!vis(t.parentElement)) continue; parts.push(s); }
     let tekst = ""; for (const s of parts) { if (tekst.length > 1500) break; tekst += (tekst ? " " : "") + s; }
-    const h = [...document.querySelectorAll("[role=dialog] h1, [role=dialog] h2, dialog h2, h1, h2")].find((e) => vis(e));
+    // otwarte okno (#layer) ma pierwszeństwo: jego nagłówek albo podpis, nie tytuł ekranu pod spodem
+    const okno = [...document.querySelectorAll("#layer [role=dialog], #layer .modal, [role=dialog][aria-modal=true]")].find((e) => vis(e));
+    const hOkna = okno && ([...okno.querySelectorAll("h1, h2, h3, b, strong")].find((e) => vis(e)) || null);
+    const h = hOkna || (okno && okno.getAttribute("aria-label") ? { innerText: okno.getAttribute("aria-label") } : null) || [...document.querySelectorAll("h1, h2")].find((e) => vis(e));
     const scrollables = [document.scrollingElement, ...[...document.querySelectorAll("*")].filter((e) => { const cs = getComputedStyle(e); return /(auto|scroll)/.test(cs.overflowY) && e.scrollHeight > e.clientHeight + 8 && vis(e); })];
     const nizej = scrollables.some((e) => e && e.scrollTop + e.clientHeight < e.scrollHeight - 8);
     return { tytul: (h?.innerText || document.title || "").replace(/\s+/g, " ").trim().slice(0, 120), tekst: tekst.slice(0, 1500), elementy: els, ponizej_jest_jeszcze_tresc: nizej ? "tak" : "nie" };
@@ -102,8 +105,13 @@ const srv = http.createServer(async (req, res) => {
     if (cmd === "ekran") { const e = await ekran(); await log("ekran", q, { zrzut: e.zrzut }); return send(e); }
     if (cmd === "klik") {
       const s = pickEl(q); if (!s) return send({ blad: "nie ma takiego elementu na ostatniej liście – zrób /ekran", elementy: lista.map((e) => `${e.n}: ${e.podpis}`) }, 404);
-      ruchy++; await p.locator(s).first().click({ timeout: 5000 }).catch(async () => { await p.locator(s).first().click({ timeout: 3000, force: true }).catch(() => {}); });
-      await czekaj(); const e = await ekran(); await log("klik", q, { zrzut: e.zrzut }); return send(e);
+      // Ekran mógł się przerysować między /ekran a /klik (np. doszły dane) – wtedy stary numer nie istnieje. Student klika
+      // w to, co widzi teraz, więc szukamy elementu o tym samym podpisie i roli na świeżej liście (bez nowego zrzutu).
+      let sel = s, przerys = false;
+      if (!(await p.locator(s).count())) { const st = lista.find((x) => `[data-sonda-n="${x.n}"]` === s); await ekran(true); const nw = st && lista.find((x) => x.podpis === st.podpis && x.rola === st.rola); if (nw) { sel = `[data-sonda-n="${nw.n}"]`; przerys = true; } }
+      ruchy++; let ok = true;
+      await p.locator(sel).first().click({ timeout: 5000 }).catch(async () => { await p.locator(sel).first().click({ timeout: 3000, force: true }).catch(() => { ok = false; }); });
+      await czekaj(); const e = await ekran(); await log("klik", q, { zrzut: e.zrzut, przerysowanie: przerys, nieudany: !ok }); return send(ok ? e : { ...e, uwaga: "kliknięcie nie trafiło w element (zasłonięty albo zniknął)" });
     }
     if (cmd === "wpisz") {
       const s = pickEl(q); if (!s) return send({ blad: "nie ma takiego elementu – zrób /ekran" }, 404);

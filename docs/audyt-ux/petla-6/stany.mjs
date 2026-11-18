@@ -13,7 +13,11 @@ export const DEADLINES = {
   log1: { title: "Kolokwium: Logistyka", type: "kolokwium", subjectId: "logistyka", date: "2026-12-04", createdAt: NOW - 8e6 },
   est1: { title: "Projekt: Podstawy zarządzania", type: "projekt", subjectId: "podstawy-zarzadzania", date: "2026-11-25", approx: true, createdAt: NOW - 7e6 },
 };
-const docsZ = (extra = {}) => JSON.stringify({ ...docs, deadlines: { ...DEADLINES, ...extra } });
+// Jak na produkcji każdy przedmiot BM z terminem ma lekcje: dokładamy lekcje z prawa i makroekonomii (treść = kopia lekcji testowej z h2-lib).
+const kopia = (id, sid, order, title) => [id, { ...docs.materials.A1, subjectId: sid, order, title }, JSON.parse(JSON.stringify(docs.materialContent.A1))];
+const LEKCJE = [kopia("P1", "prawo", 1, "Lekcja 1: Źródła prawa i hierarchia aktów"), kopia("P2", "prawo", 2, "Lekcja 2: Umowy i odpowiedzialność"), kopia("K1", "makroekonomia", 1, "Lekcja 1: Inflacja i jej pomiar")];
+const DOCS6 = { ...docs, materials: { ...docs.materials, ...Object.fromEntries(LEKCJE.map(([id, m]) => [id, m])) }, materialContent: { ...docs.materialContent, ...Object.fromEntries(LEKCJE.map(([id, , c]) => [id, c])) } };
+const docsZ = (extra = {}) => JSON.stringify({ ...DOCS6, deadlines: { ...DEADLINES, ...extra } });
 const prog = (o) => JSON.stringify({ [UID]: o });
 const srs = (n) => Object.fromEntries(Array.from({ length: n }, (_, i) => ["m1:" + hashStr(`PKB: pojęcie ${i + 1}`), [3, T - 1 - (i % 3), 0, 0, 0, 0, 0, 0]]));
 

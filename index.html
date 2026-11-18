@@ -20546,16 +20546,21 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
           d.lekcje.some((_, i) => !st.done["l" + i]) ? h("button", { type: "button", class: "btn sk-cta zh-ghost", onclick: () => ldOpen(d.lekcje.findIndex((_, i) => !st.done["l" + i])) }, "Przejdź do lekcji") : null)),
       ring);
     const why = ldPowody(p, 2);
+    const zrob = !!S.progress?.done?.[p.temat], dueN = (() => { try { return srsDue("").due.length; } catch { return 0; } })();
+    // „Utrwalanie” tylko przy temacie już przerobionym (nowy temat nie ma czego utrwalać)
+    const trybTxt = p.tryb && !(p.tryb === "utrwalanie" && !zrob) ? ldTrybTxt(p.tryb) : null;
     const head = days != null && days >= 0
       ? h("h2", { class: "zh-h" }, days === 0 ? h("span", { text: `Zaliczenie z ${subjShort(sid)} jest dziś.` })
         : [h("span", { text: `Do zaliczenia z ${subjShort(sid)} zostało` }), " ", h("span", { class: "zh-num num", text: days === 1 ? "1 dzień" : `${days} dni` }), h("span", { text: "." })])
       : h("h2", { class: "zh-h", translate: "no", text: m?.title || "" });
     return h("section", { class: "sk-hero sk-now ld-hero zh-hero" + tone, "aria-label": "Dziś · 5 min" },
       h("div", { class: "zh-col" },
-        h("span", { class: "eyebrow zh-date" }, h("span", { text: "Dziś · 5 min" }), p.tryb ? h("span", { text: " · " }) : null, p.tryb ? h("span", { text: ldTrybTxt(p.tryb) }) : null),
+        h("span", { class: "eyebrow zh-date" }, h("span", { text: "Dziś · 5 min" }), trybTxt ? h("span", { text: " · " }) : null, trybTxt ? h("span", { text: trybTxt }) : null),
         head,
         h("div", { class: "zh-bubble" },
-          k && k.n && k.known ? h("p", { text: `Umiesz ${k.known} z ${k.n} tematów. Dziś wystarczy 5 minut.` }) : k && k.n ? h("p", { text: "Zacznijmy od pierwszego tematu. Dziś wystarczy 5 minut." }) : h("p", { text: "Dziś wystarczy 5 minut." }),
+          // ux-6: dymek mówi, co się dzieje: temat już przerobiony → utrwalamy; zaległe fiszki → idą na rozgrzewkę
+          k && k.n && k.known ? h("p", { text: `Umiesz ${k.known} z ${k.n} tematów. Dziś wystarczy 5 minut.` }) : zrob ? h("p", { text: "Utrwalmy temat z ostatniej lekcji. Dziś wystarczy 5 minut." }) : k && k.n ? h("p", { text: "Zacznijmy od pierwszego tematu. Dziś wystarczy 5 minut." }) : h("p", { text: "Dziś wystarczy 5 minut." }),
+          dueN ? h("p", { text: `Na rozgrzewkę: ${dueN} ${plural(dueN, "fiszka", "fiszki", "fiszek")} do powtórki.` }) : null,
           why.length ? h("p", { class: "zh-why" }, why.flatMap((t, i) => [i ? h("span", { "aria-hidden": "true", text: " · " }) : null, h("span", { text: t })]).filter(Boolean)) : null,
           h("span", { class: "zh-sig", text: "Staś" })),
         steps.length ? h("div", { class: "zh-steps" }, steps) : null,

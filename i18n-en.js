@@ -6063,6 +6063,10 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Do telefonu": "To phone",
 "Sprint · 10 min": "Sprint · 10 min",
 "Plan: {0}": "Plan: {0}",
+"Utrwalmy temat z ostatniej lekcji. Dziś wystarczy 5 minut.": "Let's lock in the topic from your last lesson. 5 minutes is enough today.",
+"Na rozgrzewkę: {0} fiszka do powtórki.": "Warm-up: {0} flashcard to review.",
+"Na rozgrzewkę: {0} fiszki do powtórki.": "Warm-up: {0} flashcards to review.",
+"Na rozgrzewkę: {0} fiszek do powtórki.": "Warm-up: {0} flashcards to review.",
 "__ux6": "__ux6"
 // koniec ux-6
 },
