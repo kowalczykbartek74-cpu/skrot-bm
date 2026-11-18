@@ -18,7 +18,8 @@ const prog = (o) => JSON.stringify({ [UID]: o });
 const srs = (n) => Object.fromEntries(Array.from({ length: n }, (_, i) => ["m1:" + hashStr(`PKB: pojęcie ${i + 1}`), [3, T - 1 - (i % 3), 0, 0, 0, 0, 0, 0]]));
 
 export function STANY(nazwa) {
-  const ls = { "mock-docs": docsZ(), "mock-progress": prog({}), "mock-v24": "1" };
+  // mock-proba-koniec-do: koniec próby przed zegarem stron (6.11), inaczej konto „proba-koniec” wygląda jak próba w przyszłości
+  const ls = { "mock-docs": docsZ(), "mock-progress": prog({}), "mock-v24": "1", "mock-proba-koniec-do": "2026-11-05T17:00:00+01:00" };
   for (const s of String(nazwa || "").split(",").filter(Boolean)) {
     if (s === "termin-prawo-3dni") ls["mock-docs"] = docsZ({ pr1: { title: "Kolokwium: Prawo", type: "kolokwium", subjectId: "prawo", date: "2026-11-09", createdAt: NOW - 6e6 } });
     else if (s === "fiszki") ls["mock-progress"] = prog({ srs: srs(8), xp: { t: 120, d: T - 1, n: 10 }, streak: { d: T - 1, n: 2 }, nd: [T - 2, T - 1] });

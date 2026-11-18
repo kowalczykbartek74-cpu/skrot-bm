@@ -6046,6 +6046,20 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 // ux-6
 "Nie udało się wczytać. Odśwież stronę.": "Couldn't load this. Refresh the page.",
 "{0} liter · próba {1} z {2}": "{0} letters · try {1} of {2}",
+"Jednorazowo, od dziś do 11 lipca 2027 (koniec sesji letniej). Zostało ok. {0} miesiąc. Ten sam czas na planie miesięcznym to ok. {1} zł.": "One-off payment, from today until 11 July 2027 (end of the summer exam session). About {0} month left. The same time on the monthly plan costs about {1} zł.",
+"Jednorazowo, od dziś do 11 lipca 2027 (koniec sesji letniej). Zostało ok. {0} miesiące. Ten sam czas na planie miesięcznym to ok. {1} zł.": "One-off payment, from today until 11 July 2027 (end of the summer exam session). About {0} months left. The same time on the monthly plan costs about {1} zł.",
+"Jednorazowo, od dziś do 11 lipca 2027 (koniec sesji letniej). Zostało ok. {0} miesięcy. Ten sam czas na planie miesięcznym to ok. {1} zł.": "One-off payment, from today until 11 July 2027 (end of the summer exam session). About {0} months left. The same time on the monthly plan costs about {1} zł.",
+"Twój okres próbny się skończył. Postępy z tych dni zostały na koncie.": "Your free trial has ended. Your progress from those days is still on your account.",
+"W pełnym dostępie masz:": "Full access gives you:",
+"Lekcje, fiszki i quizy do każdego przedmiotu": "Lessons, flashcards and quizzes for every subject",
+"Próbne testy i plan nauki przed każdym kolokwium": "Mock tests and a study plan before every test",
+"Powtórki, gry i ranking roku": "Reviews, games and the year ranking",
+"Terminy w kalendarzu w telefonie": "Deadlines in your phone's calendar",
+"Grupy roku": "Groups in your year",
+"ten tydzień · średnio XP na osobę, która się uczyła": "this week · average XP per person who studied",
+"ten semestr · średnio XP na osobę, która się uczyła": "this semester · average XP per person who studied",
+"Twoja": "Yours",
+"za mało osób ({0})": "too few people ({0})",
 "__ux6": "__ux6"
 // koniec ux-6
 },
