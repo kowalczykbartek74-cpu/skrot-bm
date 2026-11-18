@@ -2144,9 +2144,10 @@ html.calm .dr-dot.cur { animation: none; }
 .rk-stats h3 { margin: 10px 0 0; font-size: 1rem; }
 .rk-stat-list, .rk-hard { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
 .rk-hard { list-style: decimal; padding-left: 1.3em; gap: 6px; }
-.rk-stat { display: grid; grid-template-columns: minmax(90px, 160px) minmax(60px, 1fr) auto; gap: 4px 10px; align-items: center; }
-.rk-stat > .small, .rk-stat > .muted { grid-column: 2 / -1; }
+.rk-stat, .rk-gr { display: grid; grid-template-columns: minmax(90px, 160px) minmax(60px, 1fr) auto; gap: 4px 10px; align-items: center; }
+.rk-stat > .small, .rk-stat > .muted, .rk-gr > .small, .rk-gr > .muted { grid-column: 2 / -1; }
 .rk-bar { height: 8px; border-radius: 8px; background: var(--green-100); overflow: hidden; }
+.rk-grupy .rk-gr.me .rk-sname { font-weight: 800; } /* ux-6: moja grupa */
 .rk-bar i { display: block; height: 100%; background: var(--accent); border-radius: 8px; }
 .rk-home { justify-self: start; font-weight: 700; }
 .rk-lines span + span::before { content: " · "; }
@@ -7288,7 +7289,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         isProject(x) && !x.done ? h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "projekt", id: x.key }); } }, "Plan projektu") : null,
         x.date ? h("button", { type: "button", class: "btn ghost", onclick: () => termIcs(x) }, "Dodaj do kalendarza") : null,
         s ? h("button", { type: "button", class: "btn ghost", onclick: () => { close(); go({ view: "subject", id: s.id, tab: x.src === "zal" ? "zal" : undefined }); } }, "Materiały z przedmiotu") : null),
-      S.canEdit && x.src === "dl" ? h("div", { class: "row ts-acts" }, (x.objs || [o]).map((d) => h("button", { type: "button", class: "btn small ghost", onclick: () => { close(); openDeadline(d); } }, (x.objs || []).length > 1 ? `Edytuj (${groupsLabel(d) || "cały rok"})` : "Edytuj termin"))) : null,
+      // ux-6: starosta widzi edycję zawsze; przy wyłączonym trybie starosty przycisk sam go włącza (wcześniej opcja była tylko w wyszukiwarce)
+      S.isStarosta && x.src === "dl" ? h("div", { class: "row ts-acts" }, (x.objs || [o]).map((d) => h("button", { type: "button", class: "btn small ghost", onclick: () => { close(); if (!S.canEdit) setStarosta(true); openDeadline(d); } }, (x.objs || []).length > 1 ? `Edytuj (${groupsLabel(d) || "cały rok"})` : "Edytuj termin"))) : null,
       S.canEdit && x.src === "task" ? h("div", { class: "row ts-acts" }, h("button", { type: "button", class: "btn small ghost danger", onclick: async () => {
         try { await S.db.doc("tasks/" + o.id).delete(); await S.db.doc("deadlines/task-" + o.id).delete().catch(() => {}); toast("Usunięto zadanie dla całego roku."); close(); } catch { toast("Nie udało się usunąć."); }
       } }, "Usuń dla całego roku")) : null,
@@ -12190,7 +12192,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const meta = force || !R.profil || now - R.metaAt > 30000;
     if (!force && !meta && R.cache[k] && now - (R.at[k] || 0) < 30000) { if (R.lista !== R.cache[k]) { R.lista = R.cache[k]; render(); } return; }
     R.loading = true; render();
-    const [lista, profil, stat] = await Promise.all([rp.ranking(R.filtr), meta ? rp.profil() : null, meta ? rp.stat() : null]);
+    const [lista, profil, stat, grupy] = await Promise.all([rp.ranking(R.filtr), meta ? rp.profil() : null, meta ? rp.stat() : null, rp.grupy ? rp.grupy(R.filtr.zakres) : null]);
+    R.grupy = grupy?.ok ? grupy : null; // ux-6: bez v63 (not_enabled) karty grup po prostu nie ma
     R.loading = false; R.at[k] = Date.now(); if (meta) R.metaAt = Date.now();
     R.err = [lista, profil].find((x) => x && !x.ok)?.code || null;
     if (lista?.ok) { R.lista = R.cache[k] = { ...lista, key: k }; kRankWyglad(lista); if (rankDefault(R.filtr)) { R.home = lista; rankWeekSave(lista); const ja = lista.ja; if (ja?.widoczny && ja.miejsce <= 10 && ja.z >= 10) gryBadge("top10"); } }
@@ -12272,6 +12275,20 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     return h("ol", { class: "rk-list", "aria-label": "Ranking" }, (L.top || []).map(row),
       (L.sasiedzi || []).length ? [h("li", { class: "rk-gap", "aria-hidden": "true", text: "⋯" }), L.sasiedzi.map(row)] : null);
   }
+  // ux-6: „Grupy roku” – średnia punktów na aktywną osobę w każdej grupie (v63), moja grupa wyróżniona.
+  function rankGroupsCard() {
+    const g = S.rank.grupy; if (!g || !(g.grupy || []).length) return null;
+    const max = Math.max(1, ...g.grupy.map((x) => x.srednia || 0));
+    const sorted = [...g.grupy].sort((a, b) => (b.srednia ?? -1) - (a.srednia ?? -1) || a.grupa.localeCompare(b.grupa));
+    return h("section", { class: "panel rk-grupy" },
+      h("div", { class: "panel-head" }, h("h2", { text: "Grupy roku" })),
+      h("p", { class: "muted small", style: "margin:0", text: `${g.zakres === "semestr" ? "ten semestr" : "ten tydzień"} · średnio XP na osobę, która się uczyła` }),
+      h("ul", { class: "rk-stat-list" }, sorted.map((x) => h("li", { class: "rk-gr" + (x.grupa === g.moja ? " me" : "") },
+        h("span", { class: "rk-sname" }, x.grupa, x.grupa === g.moja ? h("span", { class: "chip plain small", style: "margin-left:6px", text: "Twoja" }) : null),
+        h("span", { class: "rk-bar", "aria-hidden": "true" }, h("i", { style: `width:${x.srednia == null ? 0 : Math.round((x.srednia / max) * 100)}%` })),
+        h("b", { class: "num", text: x.srednia == null ? "–" : `${x.srednia} XP` }),
+        h("span", { class: "muted small", text: x.srednia == null ? `za mało osób (${x.aktywne})` : `${x.aktywne} ${pkOsob(x.aktywne)}` })))));
+  }
   function rankStats() {
     const st = S.rank.stat; if (!st) return null;
     const subj = (sid) => { const s = subjectById(sid); return s ? (EN && s.en ? s.en : s.pl) : sid; };
@@ -12313,6 +12330,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
     const needNick = R.profil && R.profil.nick == null && ls.get("bm-rank-nie-teraz") !== "1";
     return [head, ctrls,
       R.err && R.err !== "not_enabled" ? h("p", { class: "notice", text: RANK_ERR[R.err] || RANK_ERR.offline }) : null,
+      rankGroupsCard(),
       needNick ? rankNickCard() : loading || !L ? skel : rankMeCard(L),
       h("section", { class: "panel rk-panel", "aria-busy": loading ? "true" : null }, loading || !L ? skel : rankList(L)),
       rankStats()];

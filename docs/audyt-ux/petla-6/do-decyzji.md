@@ -1,0 +1,6 @@
+# Pętla UX-6 – do decyzji Bartka
+
+Każdy punkt ma propozycję domyślną, która już działa w kodzie (albo czeka). Odpowiedz numerami, np. „1 tak, 2 nie”.
+
+1. **Kto liczy się do średniej grupy w „Grupy roku” (Ranking, SQL v63).** Teraz: wszyscy aktywni z rocznika, także osoby ukryte w rankingu osób (do średniej wchodzi tylko suma, bez nicków; grupa z mniej niż 3 aktywnymi osobami nie ma średniej). Inaczej grupy prawie zawsze miałyby „za mało osób”, bo mało kto pokazuje się w rankingu. **Domyślnie: tak, tak zostaje.** Alternatywa: tylko osoby widoczne w rankingu.
+2. **Cena miesięczna.** Tester zauważył: wszędzie 35 zł / mies.; w notatkach projektu bywało 39 zł. Nie zmieniałem. **Domyślnie: 35 zł zostaje** (to cena z Payment Linka).

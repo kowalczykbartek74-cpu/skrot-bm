@@ -19,6 +19,8 @@
 //   v22 (Profil nauki): mock-v22 = "1" (domyślnie) | "0" (brak funkcji → not_enabled) · stan profilu w localStorage mock-profil
 //   v44 (rocznik przy treściach): mock-v44 = "1" (domyślnie: kolumna rocznik_id, filtr .or()) | "0" (brak kolumny → błąd 42703)
 //     · mock-docs-rok = JSON { kolekcja: { id: rocznik } } (domyślnie treści rocznika = BM, osobiste i meta/en = null) · zapisy w window.__zapisy
+//   ux-6: mock-v63 = "1" (domyślnie, nauka_ranking_grupy) | "0" (brak funkcji) · mock-grupy = "malo" (każda grupa < 3 aktywnych osób)
+//     · verifyOtp loguje gościa („brak” → „darmowe”) · update podbija updated_at, select honoruje order(updated_at) i limit
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
   const ls = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
@@ -114,7 +116,9 @@
     nauka_ranking: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
       const sc = ls("mock-rank", "top"), vis = RP.profil.w_rankingu, nick = RP.profil.nick || "?";
-      const od = "2026-10-26", base = { ok: true, zakres: a.p_zakres || "tydzien", od: a.p_zakres === "semestr" ? "2026-10-01" : od, do: a.p_zakres === "semestr" ? dzis() : "2026-11-01", grupa: a.p_grupa, sid: a.p_sid };
+      // ux-6: tydzień liczony od dzisiejszej daty strony (było na sztywno 26.10–01.11, czyli „zeszły tydzień” przy zegarze testów)
+      const pn = new Date(); pn.setDate(pn.getDate() - ((pn.getDay() + 6) % 7)); const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+      const od = iso(pn), base = { ok: true, zakres: a.p_zakres || "tydzien", od: a.p_zakres === "semestr" ? "2026-10-01" : od, do: a.p_zakres === "semestr" ? dzis() : iso(new Date(pn.getTime() + 6 * 864e5)), grupa: a.p_grupa, sid: a.p_sid };
       if (a.p_grupa && a.p_grupa !== "C111") return { ...base, n: 2, top: [{ miejsce: 1, nick: "Kuba_Z", pkt: 300, ja: false }, { miejsce: 2, nick: "Ola.B", pkt: 120, ja: false }], sasiedzi: [], ja: { pkt: 90, widoczny: vis, w_grupie: false, miejsce: null, z: null } };
       if (sc === "pusto") return { ...base, n: 0, top: [], sasiedzi: [], ja: { pkt: 0, widoczny: vis, w_grupie: true, miejsce: null, z: 0 } };
       if (sc === "daleko") {
@@ -590,6 +594,10 @@
   // === ux-6 === kod z maila loguje naprawdę: niezalogowany gość („brak”) po verifyOtp staje się kontem bez dostępu („darmowe”),
   // jak nowe konto w Supabase; przeładowanie strony widzi już sesję (okres próbny włącza potem nauka_proba_start).
   const UX6_VERIFY = async () => { if (KONTO === "brak") { try { localStorage.setItem("mock-konto", "darmowe"); localStorage.setItem("sb-zkyxujkdrovfzpasocmv-auth-token", "{}"); } catch {} } return {}; };
+  // Porównanie grup (v63): moja grupa z bm-group strony; mock-grupy = "malo" → wszystkie grupy poniżej 3 osób.
+  const UX6_GRUPY = (a) => { const moja = ls("bm-group", "C111") || null, malo = ls("mock-grupy", "") === "malo";
+    return { ok: true, zakres: a.p_zakres || "tydzien", od: "2026-11-02", do: "2026-11-08", moja, min: 3,
+      grupy: [["C111", 6, 84], ["C112", 4, 112], ["C113", 3, 57]].map(([g, n, sr]) => ({ grupa: g, aktywne: malo ? 2 : n, srednia: malo ? null : sr })) }; };
   // Znacznik zmiany wiersza: po update strona (porównuje updated_at przy odświeżeniu) widzi nową wersję, jak w prawdziwej bazie.
   const UX6_UPD = {};
   // === koniec ux-6 ===
@@ -600,7 +608,8 @@
     if (navigator.onLine === false) { window.__rpcOffline = (window.__rpcOffline || 0) + 1; return { data: null, error: { message: "TypeError: Failed to fetch", code: "" } }; }
     let out;
     const brak = { data: null, error: { code: "PGRST202", message: `Could not find the function public.${fn} in the schema cache` } };
-    if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;
+    if (fn === "nauka_ranking_grupy") out = V13 && ls("mock-v63", "1") === "1" ? { data: (KONTO === "darmowe" || KONTO === "brak" || KONTO === "proba-koniec") ? { ok: false, code: "no_access" } : UX6_GRUPY(args), error: null } : brak; // ux-6
+    else if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;
     else if (V15FN[fn]) out = V15 ? { data: V15FN[fn](args), error: null } : brak;
     else if (V24FN[fn] && V24) out = { data: V24FN[fn](args), error: null };
     else if (V14FN[fn]) out = V14 ? { data: V14FN[fn](args), error: null } : brak;
