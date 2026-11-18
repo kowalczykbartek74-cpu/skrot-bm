@@ -19,7 +19,7 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 | runda | wynik | twarde błędy | ★ (2/1/0) | poprawek | stan |
 |---|---|---|---|---|---|
 | 0 | 4,9 | czerwone testy (już na main), tekst < AA (5 ekranów), PL w EN | 4/2/0 (Z1 Z2 Z3 = 2; Z4 Z5 Z13 = 1) | – | audyt stanu wyjściowego, wynik zgodny z formułą (zadania 28/42 → 2,7; technika 0) |
-| 1 | (audyt w toku) | | | 11 pozycji planu | plan-1.md |
+| 1 | (audyt w toku) | kontrola: brak (technika 0,75) | | 11 pozycji planu + poprawki po regresji | plan-1.md |
 
 ### Runda 1 – co zrobione (commity)
 - test: 96cdf2d, f19c1df, 974ee7d (stare asercje po c1356b9), etap2 (XP zamiast pkt).
@@ -34,12 +34,14 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 - Przeniesione do rundy 2: Dziś zawsze „Lekcja 1”, wiele nazw sesji 5 min, Sklep bez listy cen, kolejność Przedmiotów, pigułki na pierwszym ekranie, P2.
 
 ## Gdzie jestem
-- Runda 1: poprawki zrobione, pełna regresja (`regresja.sh`) w toku, potem `runda.sh 1` i nowy Tester-Sędzia.
+- Runda 1: kontrola (166 ekranów: zero twardych błędów, technika 0,75) i Tester-Sędzia rundy 1 w toku; równolegle `regresja.sh` na końcowym kodzie (/tmp/ux-6/regresja1b.log).
+- Dalsze poprawki rundy 1 po pierwszej regresji: „wstecz” najpierw zamyka okno nad lekcją (ux3-etap5), `.btn` 44 px przez :where (pasek lekcji 48 px, ux3-etap3), „Kontakt” w stopce → Pomoc (wysokość Więcej, h2-etap9), EN „Teraz zrób to” (dzien.mjs – był czerwony już na main), jeden główny przycisk na Dziś/Gry/Przygotuj się, „Zaczynamy” bez przewijania przy 360×640, stopka ściągawki, gablota, linki w notkach 44 px.
 
 ## Decyzje
 - Zegar stron w sondzie i testach = 6.11.2026 17:00 (jak `h2-lib.mjs`), więc „termin za 3 dni” = 9.11.
 - Sonda: element, którego jedyny tekst to symbol (np. „→”), liczy się jako „tylko ikona”. Widoczność przez `checkVisibility()` (sekcje `hidden=until-found` mają rozmiar, ale nie są widoczne).
 - Kontrola: pomijane fałszywe alarmy pomiaru: cienka linia z gradientu (podkreślenie `.tl-t`), litery awatara na tle SVG (`.kav-l`), ozdobnik bez liter z kontrastem < 1,2 (✓ przed odhaczeniem, aria-hidden).
+- Polecenie testera od rundy 1: zdanie „Linki do zewnętrznych stron (poczta, Google, Apple) sonda blokuje – to nie jest błąd apki” (w rundzie 0 tester liczył zablokowany mailto jako martwy klik).
 - Z16 w poleceniu testera: dopisane „Jesteś starostą roku.” (konto starosty, inaczej zadanie jest bez sensu dla „studenta”).
 - Gry w kontroli: lista gier i ekrany Hasła/Bossa, bez ekranu końca każdej gry (shortcut w kontrola.mjs).
 - Atrapa: koniec próby konta „proba-koniec” = 5.11 (przed zegarem stron), inaczej strona nie wiedziała, że próba minęła; tydzień rankingu liczony od daty strony.
