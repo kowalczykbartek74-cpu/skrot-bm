@@ -19400,6 +19400,9 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
     // 3) termin bez oznaczonej części – tylko gdy przedmiot ma jedną część (inaczej łapało kolokwium z ćwiczeń jako wykład).
     const exact = ds.find((x) => dlPart(x) === part);
     if (exact) return { date: exact.date, approx: !!exact.approx, dl: exact };
+    // ux-6: przedmiot z jedną częścią – kolokwium wpisane przez starostę bez części, wcześniejsze niż data z opisu zaliczenia,
+    // jest najbliższym testem (inaczej „Przygotuj się” z karty „Kolokwium za 3 dni” pokazywało zaliczenie za 81 dni).
+    if (partsOf(sid).length === 1) { const d0 = ds.find((x) => !dlPart(x) && !x.approx); if (d0 && (!zpart?.date || zpart.date < k || d0.date < zpart.date)) return { date: d0.date, approx: false, dl: d0 }; }
     if (zpart?.date && zpart.date >= k) return { date: zpart.date };
     const single = partsOf(sid).length === 1;
     // Przy kilku częściach rodzaj rozstrzyga tylko wtedy, gdy jest jedyny (np. egzamin z wykładu i kolokwium z ćwiczeń).
