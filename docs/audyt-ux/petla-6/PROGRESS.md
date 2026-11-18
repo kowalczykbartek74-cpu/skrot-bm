@@ -13,10 +13,10 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
   - `docs/gry/test/ux6-zadania.mjs` – ścieżki wzorcowe Z1–Z18, wszystkie przechodzą. Kroki liczą się same (klik, wpisz, każde przewinięcie, gdy elementu nie widać). Ponad limit (do 2×) = ⚠, nie błąd: test pilnuje, że droga istnieje. Dziś ponad limit: Z5 (9/5), Z13 (5/4), Z16 (11/6).
   - `kontrola.mjs` – pełna: platne × (360, 390, 1280, 390 ciemny, 390 EN) × 26 ekranów + starosta, darmowe, proba, proba-koniec, brak; `szybko` = tylko 390 jasny.
   - `runda.sh <R>` – kontrola + testy dopisane do kontrola.md + sonda w tle. `tester-prompt.md` – polecenie dla Tester-Sędziego (E1) z wpisanymi parametrami startu.
-- Atrapa (`// === ux-6 ===`): `verifyOtp` dla gościa „brak” zakłada konto „darmowe” (bez tego kod z maila nie logował w atrapie); `update` dokumentu podbija `updated_at` i atrapa honoruje `order(updated_at)` + `limit` (bez tego strona nie widziała zmian, np. przesuniętego terminu – w prawdziwej bazie działa). Po zmianie zielone: H2 1–10, ux1 1–4, ux2 1–3, ux3 1–5, ux4 W2–W4, ux5 1–3. Czerwone **już na origin/main** (to samo z atrapą z main): `ux2-etap4` (K5 – adresy w pamięci sw), `ux2-etap5` (3 ✗: oczekuje bloku „Więcej na dziś”, usuniętego w c1356b9), `ux4-etapW1` (K2 – nagłówki sekcji Dziś 18 px). Do poprawy asercji w rundzie 1 osobnymi commitami „test: …”.
+- Atrapa (`// === ux-6 ===`): `verifyOtp` dla gościa „brak” zakłada konto „darmowe” (bez tego kod z maila nie logował w atrapie); `update` dokumentu podbija `updated_at` i atrapa honoruje `order(updated_at)` + `limit` (bez tego strona nie widziała zmian, np. przesuniętego terminu – w prawdziwej bazie działa). Po zmianie zielone: H2 1–10, ux1 1–4, ux2 1–3, ux3 1–5, ux4 W2–W4, ux5 1–3. Czerwone **już na origin/main** (to samo z atrapą z main): `ux2-etap4` (K5 – adresy w pamięci sw), `ux2-etap5` (3 ✗: oczekuje bloku „Więcej na dziś”, usuniętego w c1356b9), `ux4-etapW1` (K2 – nagłówki sekcji Dziś 18 px). Poprawione w czasie audytu rundy 0 (pliki testów, bez zmian strony): 96cdf2d, f19c1df, 974ee7d – wszystkie trzy zielone (65/65, 62/62, 50/50).
 
 ## Gdzie jestem
-- Krok 0, punkt 7: narzędzia gotowe; czekam na koniec regresji, potem commit „UX-6 krok 0 – narzędzia audytu” i runda 0 (`runda.sh 0` + Tester-Sędzia).
+- Runda 0: kontrola gotowa (166 ekranów, technika 0/1,5), Tester-Sędzia pracuje (E1). Strony nie zmieniam, dopóki audyt trwa.
 - Uwaga: pierwszy przebieg `ux6-zadania.mjs` przerwało zamknięcie aplikacji (kod 137). Testy uruchamiam w tle z logiem w `/tmp/ux-6/`.
 
 ## Decyzje
