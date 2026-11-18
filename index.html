@@ -8053,19 +8053,11 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       v4Notice(),
       nocHomeCard(),
       needGroup() || ldOn() ? null : poHomeCard("top"),
-      needGroup() ? null : jzHomeCard(),
       // Gdy nie ma świeżych zajęć: strona i tak proponuje 5-minutowe podsumowanie (przed zajęciami, nieprzeczytane, odświeżenie).
       needGroup() || ldOn() ? null : poHomeCard("mid"),
-      // ux-2 (etap 5): Boss (gdy trwa), Na luzie, Przewodnik (3 pierwsze dni) i nowości w jednym zwiniętym bloku „Więcej na dziś”,
-      // żeby Dziś mieściło się w ok. 1800 px na telefonie. Bez nawyk.js bloki stoją jak dawniej.
-      ...((w) => (needGroup() ? w : window.ZD_NAWYK?.wiecej ? [window.ZD_NAWYK.wiecej(w)] : w))([
-        needGroup() ? null : bsHomeCard(),
-        // Staś jest dziś w lekcji dla Ciebie: bez osobnej karty Stasia.
-        needGroup() || (ldOn() && ldHasStas()) ? null : stasHomeCard(),
-        // Hasło dnia nie ma już karty na Dziś (16.11.2026): gra jest w menu gier (#/gry) i w Więcej.
-        needGroup() ? null : funRow(gryHomeRow()),
-        needGroup() || !(window.ZD_NAWYK?.kontoNowe?.() ?? true) ? null : guideStrip(),
-        homeFold("new", newPanel(), needGroup() || (S.canEdit && odwPending().length > 0))]),
+      // 18.11.2026: bez karty „Jedziesz na zajęcia?” i bez bloku „Więcej na dziś” (prostsze Dziś). Przejazd, Staś, gry,
+      // Przewodnik i odwołania są w zakładce Więcej. Boss zostaje, ale tylko gdy trwa (inaczej nie byłoby do niego wejścia).
+      needGroup() ? null : bsHomeCard(),
     ];
   }
 
