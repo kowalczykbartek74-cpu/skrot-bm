@@ -81,7 +81,7 @@ for (const u of UKLADY) {
     // #skrot-wm: celowo blady znak wodny z adresem konta (aria-hidden, ochrona przed wyciekiem), nie tekst do czytania – jak w dzis-review.mjs
     const ax = (await axe(p, "body").catch(() => [])).filter((v) => ["color-contrast", "target-size", "button-name", "link-name"].includes(v.id)).map((v) => ({ ...v, nodes: v.nodes.filter((n) => !/skrot-wm/.test(n.cel)) })).map((v) => ({ ...v, n: v.nodes.length })).filter((v) => v.n);
     const em = await emoji(p, "#main, header.bar, nav, #layer, #login").catch(() => []);
-    const c44 = (await hit(p, ":is(#main, #layer, nav, header.bar, #login, [role=dialog]) :is(button, a[href], input:not([type=hidden]):not(label > [type=checkbox]):not(label > [type=radio]), select, summary, [role=button], [role=tab], label:has(> [type=checkbox]), label:has(> [type=radio]))").catch(() => [])).filter((x) => x.w && x.h && (x.w < 44 || x.h < 44));
+    const c44 = (await hit(p, ":is(#main, #layer, nav, header.bar, #login, [role=dialog]) :is(button, a[href], input:not([type=hidden]):not(label > [type=checkbox]):not(label > [type=radio]), select, summary, [role=button], [role=tab], label:has(> [type=checkbox]), label:has(> [type=radio]))").catch(() => [])).filter((x) => x.w && x.h && (x.w < 44 || x.h < 44) && !/hd-k/.test(x.cel)); // wyjątek: klawiatura QWERTY Hasła dnia (10 klawiszy w rzędzie – przy 360 px fizycznie max ~33 px szerokości; wysokość 48 px)
     await p.evaluate(() => scrollTo(0, 0));
     const pl = u.lang === "en" ? (await polskie(p, "body").catch(() => [])).filter(zInterfejsu) : [];
     let ruch = null; if (u.konto === "platne" && u.w === 390 && !u.dark && u.lang === "pl" && nazwa !== "logowanie") ruch = await ruchCalm(p).catch(() => null);

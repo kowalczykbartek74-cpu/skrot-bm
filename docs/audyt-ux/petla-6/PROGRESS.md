@@ -15,9 +15,26 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
   - `runda.sh <R>` – kontrola + testy dopisane do kontrola.md + sonda w tle. `tester-prompt.md` – polecenie dla Tester-Sędziego (E1) z wpisanymi parametrami startu.
 - Atrapa (`// === ux-6 ===`): `verifyOtp` dla gościa „brak” zakłada konto „darmowe” (bez tego kod z maila nie logował w atrapie); `update` dokumentu podbija `updated_at` i atrapa honoruje `order(updated_at)` + `limit` (bez tego strona nie widziała zmian, np. przesuniętego terminu – w prawdziwej bazie działa). Po zmianie zielone: H2 1–10, ux1 1–4, ux2 1–3, ux3 1–5, ux4 W2–W4, ux5 1–3. Czerwone **już na origin/main** (to samo z atrapą z main): `ux2-etap4` (K5 – adresy w pamięci sw), `ux2-etap5` (3 ✗: oczekuje bloku „Więcej na dziś”, usuniętego w c1356b9), `ux4-etapW1` (K2 – nagłówki sekcji Dziś 18 px). Poprawione w czasie audytu rundy 0 (pliki testów, bez zmian strony): 96cdf2d, f19c1df, 974ee7d – wszystkie trzy zielone (65/65, 62/62, 50/50).
 
+## Rundy
+| runda | wynik | twarde błędy | ★ (2/1/0) | poprawek | stan |
+|---|---|---|---|---|---|
+| 0 | 4,9 | czerwone testy (już na main), tekst < AA (5 ekranów), PL w EN | 4/2/0 (Z1 Z2 Z3 = 2; Z4 Z5 Z13 = 1) | – | audyt stanu wyjściowego, wynik zgodny z formułą (zadania 28/42 → 2,7; technika 0) |
+| 1 | (audyt w toku) | | | 11 pozycji planu | plan-1.md |
+
+### Runda 1 – co zrobione (commity)
+- test: 96cdf2d, f19c1df, 974ee7d (stare asercje po c1356b9), etap2 (XP zamiast pkt).
+- 83fa85b kontrast (ciemne Przygotuj się, ściągawka idzie za motywem, Hasło, kalendarz 1280) + podpowiedzi „?” tłumaczone przed ucięciem.
+- ac57446 brakujące EN; kontrola liczy PL w EN tylko dla tekstów interfejsu (z kodu strony).
+- okno „Wybierz plan”: lista „W pełnym dostępie masz”, „Twój okres próbny się skończył”, zdanie o 315 zł bez „co miesiąc”.
+- f52ca3f „Grupy roku” w Rankingu + SQL v63 (`nauka_ranking_grupy`, test PGlite G1–G5) + „Edytuj termin” dla starosty zawsze.
+- „wstecz” zamyka okno (#layer), ✕ w rogu każdego okna; W1/W2 w ux6-zadania.
+- „Przygotuj się”: przedmiot z jedną częścią bierze bliższe kolokwium starosty.
+- „Do telefonu” w Kalendarzu, adres w stopce, wyszukiwarka: „napisz do nas”, „zaproś”.
+- cele 44 px (menu, logo, zakładki, .btn, pola, przełącznik), tekst ≥ 12 px, SVG zamiast emoji w planie i kalendarzu; ?v= i18n.js i skrot-supabase.js.
+- Przeniesione do rundy 2: Dziś zawsze „Lekcja 1”, wiele nazw sesji 5 min, Sklep bez listy cen, kolejność Przedmiotów, pigułki na pierwszym ekranie, P2.
+
 ## Gdzie jestem
-- Runda 0: kontrola gotowa (166 ekranów, technika 0/1,5), Tester-Sędzia pracuje (E1). Strony nie zmieniam, dopóki audyt trwa.
-- Uwaga: pierwszy przebieg `ux6-zadania.mjs` przerwało zamknięcie aplikacji (kod 137). Testy uruchamiam w tle z logiem w `/tmp/ux-6/`.
+- Runda 1: poprawki zrobione, pełna regresja (`regresja.sh`) w toku, potem `runda.sh 1` i nowy Tester-Sędzia.
 
 ## Decyzje
 - Zegar stron w sondzie i testach = 6.11.2026 17:00 (jak `h2-lib.mjs`), więc „termin za 3 dni” = 9.11.
@@ -25,6 +42,10 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 - Kontrola: pomijane fałszywe alarmy pomiaru: cienka linia z gradientu (podkreślenie `.tl-t`), litery awatara na tle SVG (`.kav-l`), ozdobnik bez liter z kontrastem < 1,2 (✓ przed odhaczeniem, aria-hidden).
 - Z16 w poleceniu testera: dopisane „Jesteś starostą roku.” (konto starosty, inaczej zadanie jest bez sensu dla „studenta”).
 - Gry w kontroli: lista gier i ekrany Hasła/Bossa, bez ekranu końca każdej gry (shortcut w kontrola.mjs).
+- Atrapa: koniec próby konta „proba-koniec” = 5.11 (przed zegarem stron), inaczej strona nie wiedziała, że próba minęła; tydzień rankingu liczony od daty strony.
+- Kontrola: klawiatura Hasła dnia (`.hd-k`) poza miarą 44 px (10 klawiszy w rzędzie); znak wodny `#skrot-wm` poza axe (jak dzis-review.mjs).
+- „Grupy roku”: do średniej liczą się wszyscy aktywni z rocznika (także ukryci w rankingu osób), grupa < 3 osób bez średniej → do-decyzji.md pkt 1.
+- Niepowtarzalne w obecnym kodzie (sprawdzone, bez zmian): martwy „Przygotuj się” przy 360 px, tytuł w karcie „Najbliższe”, pierwszy klik „Mniej animacji”.
 
 ## Spostrzeżenia z rozpoznania (do audytu, nie poprawiane przed rundą 0)
 - Przycisk „→ Przygotuj się” przy kolokwium z przedmiotu bez materiałów (OWI) nic nie robi.
