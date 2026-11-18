@@ -5386,6 +5386,23 @@ html:not([data-theme]) #login .lg-or::before, html:not([data-theme]) #login .lg-
 html:not([data-theme]) #login #loginBox:has(.lg-trial) h2 { font-size: 22px; }
 html:not([data-theme]) #login .lg-demo-btn { background: transparent !important; box-shadow: none !important; color: #0E5A30; text-decoration: underline; text-decoration-color: rgba(14,90,48,.35); text-underline-offset: 4px; }
 html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decoration-color: currentColor; }
+/* ux-6: cele dotyku ≥ 44 px (faktyczne pole) i tekst ≥ 12 px – na wspólnych klasach, nie na pojedynczych ekranach */
+html .morebtn { width: 44px; height: 44px; margin-left: -10px; margin-right: -8px; }
+html .brand { min-height: 44px; }
+html .navbtn { min-height: 44px; }
+html .btn:not(.small) { min-height: 44px; }
+html .small-sel, html .kgab-slot, html .rk-check, html .scope-row { min-height: 44px; }
+html .mc-d { height: 44px; }
+/* małe elementy bez zmiany wyglądu: niewidoczne powiększenie pola dotyku */
+.switch::after, .pd-topic::after { content: ""; position: absolute; inset: -9px -4px; }
+.pd-topic { position: relative; }
+html button.xp-chip { min-height: 44px; }
+/* link w zdaniu: pionowy margines pola dotyku bez zmiany wysokości wiersza */
+p a.link, p button.link, .lead-help a { padding-block: 13px; margin-block: -13px; }
+html:not([data-theme]) .nb .foot .chip { font-size: .75rem; }
+.calc-in { font-size: .75rem; }
+.zal-row .cell small, .calc-in small, .calc-res > span { font-size: max(12px, .75rem); }
+@media screen { .ch-foot { font-size: 12px; } }
 </style>
 <link rel="stylesheet" href="wyglad-ux.css?v=20261117-ux4y">
 <link rel="stylesheet" href="ux-wejscie.css?v=20261117-ux1h">
@@ -8404,7 +8421,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         ...exams.map((x) => h("span", { class: "ev exam" + (x.approx ? " approx" : ""), style: `--t:${dlType(x.kind).c}`, title: x.title + (x.approx ? " · data szacowana" : ""), text: (x.approx ? "? " : "") + (subjectById(x.sid)?.abbr ? `${dlType(x.kind).label}: ${subjectById(x.sid).pl}` : x.title) })),
         ...others.map((x) => h("span", { class: "ev" + (x.approx ? " approx" : ""), style: `--t:${dlType(x.kind).c}`, title: x.title + (x.approx ? " · data szacowana" : ""), text: (x.approx ? "? " : "") + x.title })),
         ...mine.map((e) => h("span", { class: "ev mine", style: `--t:${myKind(e.kind).c}`, title: e.title, text: (e.time ? e.time + " " : "") + e.title })),
-        ...plans.map((x) => h("span", { class: "ev plan", style: `--t:${PLAN_C}`, title: "Plan nauki: " + x.title, text: "📘 " + subjShort(x.sid) })),
+        ...plans.map((x) => h("span", { class: "ev plan", style: `--t:${PLAN_C}`, title: "Plan nauki: " + x.title, text: "Plan: " + subjShort(x.sid) })), // ux-6: bez emoji
       ];
       cells.push(h("button", {
         type: "button",
@@ -22123,6 +22140,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
   // Dni bez nowego tematu łączą się w jeden wiersz „od … do …”. min = szacunek minut na dzień w tym wierszu.
   const PLAN_REVIEW_MIN = 10, PLAN_TEST_MIN = 60, PLAN_DIAG_MIN = 10, PLAN_FIX_MIN = 15;
   const TEST_ICON = { diag: "🧭", full: "📝", fix: "🎯", sprint: "⚡" };
+  const TEST_SVG = { diag: "map", full: "tasks", fix: "flag", sprint: "clock" }; // ux-6: w planie dnia ikony SVG zamiast emoji
   function topicMin(m) {
     const r = isLesson(m) ? lessonMinutes(m) : null;
     if (r) return Math.max(5, r.req);
@@ -22214,7 +22232,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
       const today = d.k === todayKey(), range = d.kEnd && d.kEnd !== d.k;
       const when = range ? `${today ? "Od dziś" : "Od " + fmtDate(dparse(d.k).getTime())} do ${fmtDate(dparse(d.kEnd).getTime())}` : today ? "Dziś" : fmtKey(d.k);
       return h("li", { class: "sk-node" + (today ? " now" : "") + (d.test ? " plan-test" : "") },
-        h("span", { class: "sk-dot", "aria-hidden": "true", text: d.test ? TEST_ICON[d.test] : d.mats?.length ? String(dparse(d.k).getDate()) : "🔁" }),
+        h("span", { class: "sk-dot", "aria-hidden": "true" }, d.test ? icon(TEST_SVG[d.test] || "tasks") : d.mats?.length ? String(dparse(d.k).getDate()) : icon("review")),
         h("div", { class: "t" },
           h("b", {}, when, h("span", { class: "muted num plan-min", text: ` · ok. ${d.min} min${range ? " dziennie" : ""}` })),
           d.test ? h("div", { class: "plan-test-row" },
@@ -22332,7 +22350,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
         PAID() ? readyLine(sid, part, tmpl.pass || 50, () => startExam(sid, part, "diag")) : null,
         PAID() ? h("div", { class: "row sk-start-row" },
           h("button", { type: "button", class: "btn primary sk-start", disabled: S.route.building ? true : null, onclick: () => startExam(sid, part) }, S.route.building === "full" ? "Składam test…" : `Rozpocznij próbny test · ${tmpl.min} min →`),
-          h("button", { type: "button", class: "btn sk-sprint", title: "5 pytań (4 wyboru + 1 otwarte) z 3 najsłabszych tematów, bez pytań z ostatnich podejść", disabled: S.route.building ? true : null, onclick: () => startExam(sid, part, "sprint") }, S.route.building === "sprint" ? "Składam…" : "⚡ Sprint · 10 min")) : null,
+          h("button", { type: "button", class: "btn sk-sprint", title: "5 pytań (4 wyboru + 1 otwarte) z 3 najsłabszych tematów, bez pytań z ostatnich podejść", disabled: S.route.building ? true : null, onclick: () => startExam(sid, part, "sprint") }, S.route.building === "sprint" ? "Składam…" : [icon("clock"), "Sprint · 10 min"])) : null,
         PAID() ? h("div", { class: "row" },
           h("button", { type: "button", class: "btn", onclick: () => go({ view: "cheat", sid }) }, "Ściągawka z przedmiotu"),
           h("button", { type: "button", class: "btn ghost", onclick: () => { go({ view: "review", sid }); reviewStart(sid); } }, "Powtórki z przedmiotu")) : null),
