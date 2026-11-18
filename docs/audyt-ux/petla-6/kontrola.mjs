@@ -53,6 +53,11 @@ const ekranInfo = (p) => p.evaluate(() => {
 const ruchCalm = (p) => p.evaluate(async () => { document.documentElement.classList.add("calm"); await new Promise((r) => setTimeout(r, 50)); const h = location.hash; location.hash = "#/__"; await new Promise((r) => setTimeout(r, 250)); location.hash = h; await new Promise((r) => setTimeout(r, 900));
   return [...new Set(document.getAnimations().filter((a) => a.playState === "running" && (a.effect?.getComputedTiming?.().duration || 0) > 0 && a.effect?.target && getComputedStyle(a.effect.target).visibility !== "hidden").map((a) => a.animationName || a.transitionProperty || "anim"))]; });
 
+// Polskie w EN liczymy tylko dla tekstów interfejsu (dosłownie w kodzie strony). Treść, która wg README zostaje po polsku
+// (lekcje, nazwiska z planu, wpisy starosty, imię Stasia, etykieta „przełącz na polski”), nie jest w kodzie albo jest wyłączona.
+const ROOT = new URL("../../../", import.meta.url).pathname;
+const ZRODLO = ["index.html", ...fs.readdirSync(ROOT).filter((f) => /\.js$/.test(f) && f !== "i18n-en.js")].map((f) => fs.readFileSync(ROOT + f, "utf8")).join("\n");
+const zInterfejsu = (t) => !/\b(dr|prof|mgr|inż)\b\.?|^Staś$|przełącz na polski/.test(t) && t.split(/[·|•]/).map((x) => x.trim()).some((x) => x.length >= 4 && ZRODLO.includes(x));
 const b = await chromium.launch();
 const wyniki = [];
 for (const u of UKLADY) {
@@ -73,11 +78,12 @@ for (const u of UKLADY) {
     // shortcut: litery awatara (.kav-l) leżą na tle z SVG, którego pomiar nie widzi – pomijane; sprawdzić ręcznie, gdy zmieni się awatar.
     const k0 = await kontrast(p, "body").catch(() => ({ out: [] })), k = { out: k0.out.filter((x) => !/kav-l/.test(x.cel) && !(x.kontrast < 1.2 && !/[\p{L}\p{N}]/u.test(x.tekst))) }; // znak-ozdobnik niewidoczny z założenia (np. ✓ przed odhaczeniem)
     await p.evaluate(() => document.querySelectorAll("[data-ux6bg]").forEach((e) => { e.style.backgroundImage = e.dataset.ux6bg === "-" ? "" : e.dataset.ux6bg; delete e.dataset.ux6bg; }));
-    const ax = (await axe(p, "body").catch(() => [])).filter((v) => ["color-contrast", "target-size", "button-name", "link-name"].includes(v.id));
+    // #skrot-wm: celowo blady znak wodny z adresem konta (aria-hidden, ochrona przed wyciekiem), nie tekst do czytania – jak w dzis-review.mjs
+    const ax = (await axe(p, "body").catch(() => [])).filter((v) => ["color-contrast", "target-size", "button-name", "link-name"].includes(v.id)).map((v) => ({ ...v, nodes: v.nodes.filter((n) => !/skrot-wm/.test(n.cel)) })).map((v) => ({ ...v, n: v.nodes.length })).filter((v) => v.n);
     const em = await emoji(p, "#main, header.bar, nav, #layer, #login").catch(() => []);
     const c44 = (await hit(p, ":is(#main, #layer, nav, header.bar, #login, [role=dialog]) :is(button, a[href], input:not([type=hidden]):not(label > [type=checkbox]):not(label > [type=radio]), select, summary, [role=button], [role=tab], label:has(> [type=checkbox]), label:has(> [type=radio]))").catch(() => [])).filter((x) => x.w && x.h && (x.w < 44 || x.h < 44));
     await p.evaluate(() => scrollTo(0, 0));
-    const pl = u.lang === "en" ? await polskie(p, "body").catch(() => []) : [];
+    const pl = u.lang === "en" ? (await polskie(p, "body").catch(() => [])).filter(zInterfejsu) : [];
     let ruch = null; if (u.konto === "platne" && u.w === 390 && !u.dark && u.lang === "pl" && nazwa !== "logowanie") ruch = await ruchCalm(p).catch(() => null);
     if (ruch) await p.evaluate(() => document.documentElement.classList.remove("calm"));
     wyniki.push({ uklad: tag, ekran: nazwa, zrzut: "zrzuty/kontrola/" + plik, ...info, bledyKonsoli: [...p.errors, ...bledy].slice(0, 6),

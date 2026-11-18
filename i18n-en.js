@@ -6042,7 +6042,12 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Odebrane! Monety są już w Sklepie.": "Collected! The coins are already in the Shop.",
 "Nagroda za dział jest w pełnym dostępie.": "The unit reward comes with full access.",
 "Zalicz bilet wyjścia w każdej lekcji działu, potem odbierz.": "Pass the exit ticket in every lesson of this unit, then collect.",
-"Odbierz": "Collect"
+"Odbierz": "Collect",
+// ux-6
+"Nie udało się wczytać. Odśwież stronę.": "Couldn't load this. Refresh the page.",
+"{0} liter · próba {1} z {2}": "{0} letters · try {1} of {2}",
+"__ux6": "__ux6"
+// koniec ux-6
 },
 "plural": {
 "dzień nauki": ["study day", "study days"],
