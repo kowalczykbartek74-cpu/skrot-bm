@@ -5389,8 +5389,9 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
 /* ux-6: cele dotyku ≥ 44 px (faktyczne pole) i tekst ≥ 12 px – na wspólnych klasach, nie na pojedynczych ekranach */
 html .morebtn { width: 44px; height: 44px; margin-left: -10px; margin-right: -8px; }
 html .brand { min-height: 44px; }
-html .navbtn { min-height: 44px; }
-html .btn:not(.small) { min-height: 44px; }
+/* :where – tylko tam, gdzie nic innego nie ustala wysokości (np. pasek lekcji ma 48 px) */
+:where(.navbtn) { min-height: 44px; }
+:where(.btn):not(.small) { min-height: 44px; }
 html .small-sel, html .kgab-slot, html .rk-check, html .scope-row { min-height: 44px; }
 html .mc-d { height: 44px; }
 /* małe elementy bez zmiany wyglądu: niewidoczne powiększenie pola dotyku */
@@ -6046,7 +6047,7 @@ html:not([data-theme]) .nb .foot .chip { font-size: .75rem; }
   if ($("layer")) new MutationObserver(() => { const open = !!$("layer").firstElementChild;
     try { if (open && !history.state?.ux6Layer) history.pushState({ ...(history.state || {}), ux6Layer: 1 }, "", location.href);
       else if (!open && history.state?.ux6Layer) { LAYER_POP.skip = true; history.back(); } } catch {} }).observe($("layer"), { childList: true });
-  addEventListener("popstate", (e) => { if (document.documentElement.classList.contains("gry-lek")) return; /* gra w lekcji obsługuje „wstecz” sama (gry.js) */ if (LP.open) { lpClose(true); return; } if (LP.skipPop) { LP.skipPop = false; render(); return; } if (LAYER_POP.skip) { LAYER_POP.skip = false; return; } if (layerClose()) return; S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash());
+  addEventListener("popstate", (e) => { if (LAYER_POP.skip) { LAYER_POP.skip = false; return; } /* ux-6: najpierw okno nad lekcją czy grą, potem one */ if (document.documentElement.classList.contains("gry-lek")) return; /* gra w lekcji obsługuje „wstecz” sama (gry.js) */ if (layerClose()) return; if (LP.open) { lpClose(true); return; } if (LP.skipPop) { LP.skipPop = false; render(); return; } S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash());
     if (S.route.gra != null) { delete S.route.gra; try { history.replaceState({ view: "review" }, "", "#/review"); } catch {} } // stary wpis gry w historii: same Powtórki
     render(); });
 
@@ -7724,7 +7725,8 @@ html:not([data-theme]) .nb .foot .chip { font-size: .75rem; }
       ROK.plan.skrzynka ? h("a", { href: ROK.plan.skrzynka }, "Skrzynka do opiekunki roku") : null,
       h("a", { href: "regulamin.html" }, "Regulamin"),
       h("a", { href: "prywatnosc.html" }, "Polityka prywatności"),
-      h("a", { href: "mailto:zdawalni.support@gmail.com" }, "Kontakt: zdawalni.support@gmail.com")); // ux-6: adres widać od razu, bez programu pocztowego
+      // ux-6: „Kontakt” otwiera Pomoc (adres, formularz, pytania), bo sam mailto bez programu pocztowego nic nie robi
+      h("a", { href: "#/ustawienia/pomoc", onclick: (e) => { e.preventDefault(); go({ view: "ustawienia", id: "pomoc" }); } }, "Kontakt"));
   }
   // Darmowa próbka: materiał oznaczony „free”, a gdy w przedmiocie żadnego takiego nie ma, najstarszy materiał przedmiotu.
   // Tę samą regułę stosuje baza (supabase/skrot-darmowe.sql), więc nowy przedmiot od razu ma próbkę.
@@ -7962,7 +7964,7 @@ html:not([data-theme]) .nb .foot .chip { font-size: .75rem; }
     if (!S.ready && !S.noDb) return h("section", { class: "sk-hero sk-now", "aria-busy": "true" }, h("span", { class: "eyebrow", text: "Teraz zrób to" }), h("p", { class: "muted", style: "margin:0", text: "Ładuję…" }));
     const a = nowAction(), one = dzOne();
     return h("section", { class: "sk-hero sk-now" + (a.tone ? " " + a.tone : ""), "aria-label": "Teraz zrób to" },
-      h("span", { class: "eyebrow", text: "Teraz zrób to · " + a.eyebrow }),
+      h("span", { class: "eyebrow" }, "Teraz zrób to", " · ", a.eyebrow), // ux-6: osobne kawałki – słownik EN zna każdy z nich
       h("h2", { text: a.title }),
       a.est ? h("p", { style: "margin:0" }, estBadge(), h("span", { class: "muted", style: "font-size:.88rem;margin-left:8px", text: "prowadzący jeszcze nie podał daty" })) : null,
       a.sub ? h("p", { class: "muted", style: "margin:0", text: a.sub }) : null,

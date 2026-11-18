@@ -6061,7 +6061,6 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Twoja": "Yours",
 "za mało osób ({0})": "too few people ({0})",
 "Do telefonu": "To phone",
-"Kontakt: zdawalni.support@gmail.com": "Contact: zdawalni.support@gmail.com",
 "Sprint · 10 min": "Sprint · 10 min",
 "Plan: {0}": "Plan: {0}",
 "__ux6": "__ux6"
