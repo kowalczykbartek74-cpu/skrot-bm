@@ -6060,6 +6060,8 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "ten semestr · średnio XP na osobę, która się uczyła": "this semester · average XP per person who studied",
 "Twoja": "Yours",
 "za mało osób ({0})": "too few people ({0})",
+"Do telefonu": "To phone",
+"Kontakt: zdawalni.support@gmail.com": "Contact: zdawalni.support@gmail.com",
 "__ux6": "__ux6"
 // koniec ux-6
 },

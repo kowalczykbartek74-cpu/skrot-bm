@@ -7707,7 +7707,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
       ROK.plan.skrzynka ? h("a", { href: ROK.plan.skrzynka }, "Skrzynka do opiekunki roku") : null,
       h("a", { href: "regulamin.html" }, "Regulamin"),
       h("a", { href: "prywatnosc.html" }, "Polityka prywatności"),
-      h("a", { href: "mailto:zdawalni.support@gmail.com" }, "Kontakt"));
+      h("a", { href: "mailto:zdawalni.support@gmail.com" }, "Kontakt: zdawalni.support@gmail.com")); // ux-6: adres widać od razu, bez programu pocztowego
   }
   // Darmowa próbka: materiał oznaczony „free”, a gdy w przedmiocie żadnego takiego nie ma, najstarszy materiał przedmiotu.
   // Tę samą regułę stosuje baza (supabase/skrot-darmowe.sql), więc nowy przedmiot od razu ma próbkę.
@@ -8330,6 +8330,8 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
         window.ZD_UX4?.pomoc ? h("div", { class: "stack", style: "gap:4px" }, window.ZD_UX4.wiersz(h("h1", { class: "ptitle", text: "Kalendarz" }), window.ZD_UX4.pomoc("Jak działa Kalendarz", ["Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy.", "Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.", "Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach."])), h("p", { class: "muted lead-1", text: "Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy." }))
           : h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), leadHelp("Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy.", "Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach. Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.")),
         h("div", { class: "row", style: "gap:8px" },
+          // ux-6: kalendarz w telefonie także tutaj (studenci szukają go w Kalendarzu, nie w menu ⋯ Terminów)
+          h("button", { type: "button", class: "btn small", onclick: openPhoneCal }, "Do telefonu"),
           h("button", { type: "button", class: "btn small primary", "data-tour": "myev", onclick: () => openMyEvent(null, S.calSel) }, "+ Mój wpis"))),
       needGroup() ? h("div", { class: "notice" }, "Zajęcia pokażę, gdy wybierzesz grupę i lab. ", h("button", { type: "button", class: "link", onclick: openGroupPicker }, "Wybierz grupę")) : null);
     // Telefon: domyślnie lista najbliższych 2 tygodni od dziś (siatka miesiąca na wąskim ekranie pokazuje same kreski). Na komputerze zawsze siatka.
@@ -14753,7 +14755,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       ["Ty", "spark", "Sklep i monety", "saldo monet, motywy i wygląd za monety", "sklep monety kup motyw saldo coins shop buy", () => go({ view: "shop" })],
       ["Ty", "tasks", "Zadania dnia", "małe cele na dziś i na tydzień, nagroda w monetach", "zadania dnia misje cel dzienne tygodniowe nagroda daily missions quests", () => go({ view: "shop" })],
       ["Ty", "gift", "Polecaj i zarabiaj", "kod polecający dla znajomych", "polecaj kod polecajacy znajomi zaproszenie zarabiaj referral invite", () => go({ view: "polec" })],
-      ["Ty", "group", "Paczka i duet", "ucz się ze znajomymi, także z innych kierunków", "paczka duet znajomi przyjaciele wspolnie razem nauka z kims friends study together", () => go({ view: "paczka" })],
+      ["Ty", "group", "Paczka i duet", "ucz się ze znajomymi, także z innych kierunków", "paczka duet znajomi przyjaciele wspolnie razem nauka z kims friends study together zapros zaprosic kolega kolege kolezanke invite", () => go({ view: "paczka" })],
       ["Ty", "spark", "Profil nauki", "6 minut: jak się uczysz (rytm, pamięć, skupienie)", "profil nauki test styl uczenia rytm pamiec skupienie motywacja learning profile", () => go({ view: "learn" }), { show: inn }],
       ["Wygląd", "spark", "Motywy", "Jednorożec, Kokardka, Łąka, Nenufary, Nocny rejs, Nokturn, Riwiera, Jachtklub", "motyw motywy wyglad kolor theme rozowy jednorozec kokardka laka nenufary nocny rejs nokturn riwiera monako palmy zloty riviera monaco gold jachtklub jacht granat zagle navy yacht club sailing", set("wyglad")],
       ["Wygląd", "spark", "Tryb ciemny i jasny", "zielony jasny albo zielony ciemny", "tryb ciemny jasny noc dark mode light ciemno", set("wyglad")],
@@ -14768,7 +14770,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
       inn ? ["Konto", "out", "Wyloguj", "", "wyloguj wyjdz log out sign out", () => sk.logout?.()]
         : ["Konto", "in", "Zaloguj się", "kodem z maila albo hasłem", "zaloguj logowanie kod login sign in", signIn],
       ["Konto", "user", "Usuń konto", "usuwa konto i Twoje dane", "usun konto skasuj dane rodo delete account", () => go({ view: "usunKonto" }), { show: inn }],
-      ["Pomoc", "help", "Pomoc i kontakt", "pytania, kontakt i przewodnik po stronie", "pomoc kontakt mail support problem pytania faq help contact", set("pomoc")],
+      ["Pomoc", "help", "Pomoc i kontakt", "pytania, kontakt i przewodnik po stronie", "pomoc kontakt mail support problem pytania faq help contact napisz do nas tworcy autor blad nie dziala zglos write us bug", set("pomoc")],
       ["Pomoc", "help", "Przewodnik po stronie", `${GUIDE.length} krótkich rozdziałów z ćwiczeniami`, "przewodnik samouczek tutorial jak korzystac instrukcja guide", () => go({ view: "guide" })],
       ["Pomoc", "help", "Szybki przegląd ekranów", "1 minuta: co jest na którym ekranie", "szybki przeglad wycieczka tour ekrany pokaz", () => startTour(QUICK, QUICK_OPTS())],
       ["Pomoc", "help", "Zainstaluj jak aplikację", "dodaj stronę do ekranu głównego telefonu", "zainstaluj instaluj aplikacja ekran glowny pwa telefon ikona install app home screen", () => go({ view: "guide", id: "start" })],
