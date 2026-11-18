@@ -520,7 +520,7 @@ label.field, div.field { display: grid; gap: 4px; font-size: .86rem; font-weight
 .day.has-exam { background: color-mix(in srgb, var(--t) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--t) 55%, var(--line)); box-shadow: inset 0 3px 0 var(--t); }
 .day.has-exam.today { border: 2px solid var(--accent); }
 .day .bang { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 999px; background: var(--t); color: #fff; font-size: .72rem; font-weight: 900; }
-.day .ev.exam { background: var(--t); color: #fff; font-weight: 800; }
+.day .ev.exam { background: color-mix(in srgb, var(--t) 30%, var(--surface)); color: var(--ink); box-shadow: inset 3px 0 0 var(--t); font-weight: 800; }
 .day .ev.mine { background: var(--surface); border: 1.5px dashed var(--t); color: var(--t); padding: 0 4px; }
 .day .cnt.more { font-weight: 700; color: var(--ink); }
 .dot.mine { background: transparent !important; border: 1.5px dashed #7A4FB0; }
@@ -542,7 +542,7 @@ label.field, div.field { display: grid; gap: 4px; font-size: .86rem; font-weight
 .myevs { display: grid; gap: 6px; }
 .myev { display: flex; gap: 10px; align-items: flex-start; text-align: left; width: 100%; padding: 9px 11px; border-radius: 12px; border: 1.5px dashed color-mix(in srgb, var(--t) 60%, var(--line)); background: color-mix(in srgb, var(--t) 6%, var(--surface)); cursor: pointer; color: var(--ink); font: inherit; }
 .myev:hover { border-style: solid; }
-.myev-time { flex: none; min-width: 64px; font-size: .82rem; font-weight: 800; color: var(--t); padding-top: 1px; }
+.myev-time { flex: none; min-width: 64px; font-size: .82rem; font-weight: 800; color: color-mix(in srgb, var(--t) 55%, var(--ink)); padding-top: 1px; }
 .myev-body { display: grid; gap: 2px; min-width: 0; }
 .myev-body .muted { font-size: .84rem; overflow-wrap: anywhere; }
 @media (max-width: 720px) {
@@ -1307,7 +1307,7 @@ button.pm-sq:hover { transform: scale(1.12); }
 .rub-row input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); }
 .tmpl summary { cursor: pointer; font-weight: 700; color: var(--accent-hover); }
 .tmpl[open] { display: grid; gap: 10px; }
-.cheat-page { background: #fff; color: #111; border: 1px solid var(--line); border-radius: 6px; padding: 14mm 12mm; max-width: 210mm; margin: 0 auto; box-shadow: var(--shadow); font-size: 10pt; line-height: 1.38; }
+.cheat-page { background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 14mm 12mm; max-width: 210mm; margin: 0 auto; box-shadow: var(--shadow); font-size: 10pt; line-height: 1.38; }
 .ch-top { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin-bottom: 10px; }
 .ch-top b { flex: 1 1 100%; font-size: 13pt; }
 .ch-brand { font-weight: 800; color: var(--accent); }
@@ -1326,6 +1326,8 @@ button.pm-sq:hover { transform: scale(1.12); }
   body { background: #fff !important; }
   body * { visibility: hidden !important; }
   .cheat-page, .cheat-page * { visibility: visible !important; }
+  /* ux-6: na ekranie ściągawka idzie za motywem; na papierze zawsze jasna */
+  .cheat-page { background: #fff; color: #111; --ink: #111; --ink-2: #222; --muted: #333; --accent: #1A7F45; --accent-text: #0E5A30; --surface: #fff; --green-50: #F5F8F6; --line: #BFCEC5; }
   .cheat-page { position: absolute; left: 0; top: 0; width: 100%; max-width: none; border: 0; box-shadow: none; padding: 0; font-size: 9pt; }
   .cheat-page.subj .ch-cols { column-gap: 6mm; }
   /* znak wodny z adresem konta na wydruku i w PDF */
@@ -2236,7 +2238,7 @@ html.calm .gry-sheet, html.calm .gry-cv { transition: none; }
 .hd-tile h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .hd-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .hd-meta { display: flex; align-items: center; justify-content: center; gap: 6px 12px; flex-wrap: wrap; margin-top: -8px; }
-.hd-subj { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 8px; border-radius: 999px; font-weight: 800; font-size: .88rem; background: color-mix(in srgb, var(--c, var(--accent)) 14%, var(--surface)); color: color-mix(in srgb, var(--c, var(--accent)) 65%, var(--ink)); border: 1px solid color-mix(in srgb, var(--c, var(--accent)) 35%, var(--surface)); }
+.hd-subj { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 8px; border-radius: 999px; font-weight: 800; font-size: .88rem; background: color-mix(in srgb, var(--c, var(--accent)) 14%, var(--surface)); color: color-mix(in srgb, var(--c, var(--accent)) 50%, var(--ink)); border: 1px solid color-mix(in srgb, var(--c, var(--accent)) 35%, var(--surface)); }
 .hd-subj .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--accent)); }
 .hd-hint { margin: -8px auto 0; max-width: 560px; padding: 10px 14px; border-radius: 12px; background: var(--warn-soft); color: var(--ink); font-size: .94rem; text-align: center; }
 .hd-hint b { margin-right: 2px; }
@@ -2959,7 +2961,7 @@ html.lp-lock .scrim { z-index: 97; }
 .ai-spin { width: 34px; height: 34px; border-radius: 50%; border: 3px solid color-mix(in srgb, var(--accent) 25%, transparent); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .ai-spin { animation-duration: 3s; } }
 /* Przygotuj się: gotowość, Sprint obok testu, wiersze testów w planie, „Co poprawić”, źródło daty szacowanej. */
-.ready { display: grid; gap: 4px; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 7%, var(--card, #fff)); border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent); }
+.ready { display: grid; gap: 4px; padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 7%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent); } /* ux-6: --card nie istnieje → w ciemnym było białe tło pod jasnym tekstem */
 .ready-n { font-size: 1.02rem; line-height: 1.8; }
 .ready-n .chip { margin: 0 2px; }
 .ready-n .muted { white-space: nowrap; }
@@ -9404,7 +9406,7 @@ html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decorat
   // Wyjaśnienie zawsze schowane pod „?” i zawsze jedna linijka (pierwsze zdanie). Bez „Rozumiem”,
   // więc nie ma czego pamiętać ani w przeglądarce, ani na koncie.
   function onceHelp(key, text, cls) {
-    return h("details", { class: "qhelp once-q" + (cls ? " " + cls : "") }, h("summary", { "aria-label": "Wyjaśnienie", title: "Wyjaśnienie" }, "?"), h("p", { class: "muted", text: firstSentence(text, 160) }));
+    return h("details", { class: "qhelp once-q" + (cls ? " " + cls : "") }, h("summary", { "aria-label": "Wyjaśnienie", title: "Wyjaśnienie" }, "?"), h("p", { class: "muted", text: firstSentence(EN && window.SKROT_I18N?.t ? window.SKROT_I18N.t(text) : text, 160) })); // ux-6: tłumaczymy całość, potem tniemy (słownik zna pełne zdania)
   }
   function leadHelp(first, more, style) {
     return h("div", { class: "lead-help", style },
