@@ -38,7 +38,7 @@ async function ekran() {
   const plik = `${zadanie}-${String(krok).padStart(2, "0")}.png`;
   await p.screenshot({ path: DIR + "zrzuty/" + plik }).catch(() => {});
   const info = await p.evaluate(() => {
-    const vis = (e) => { const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return null; if (r.bottom <= 0 || r.top >= innerHeight || r.right <= 0 || r.left >= innerWidth) return null; const cs = getComputedStyle(e); if (cs.visibility === "hidden" || +cs.opacity === 0 || e.closest("[hidden],[inert],[aria-hidden=true]")) return null; return r; };
+    const vis = (e) => { const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return null; if (r.bottom <= 0 || r.top >= innerHeight || r.right <= 0 || r.left >= innerWidth) return null; const cs = getComputedStyle(e); if (cs.visibility === "hidden" || +cs.opacity === 0 || e.closest("[hidden],[inert],[aria-hidden=true]") || e.checkVisibility?.({ checkOpacity: true, checkVisibilityCSS: true }) === false) return null; return r; };
     const hit = (e, r) => { const pts = [[0.5, 0.5], [0.2, 0.5], [0.8, 0.5], [0.5, 0.25], [0.5, 0.75]]; for (const [fx, fy] of pts) { const x = Math.min(innerWidth - 1, Math.max(0, r.left + r.width * fx)), y = Math.min(innerHeight - 1, Math.max(0, r.top + r.height * fy)); const t = document.elementFromPoint(x, y); if (t && (t === e || e.contains(t) || t.contains(e) && t.tagName === "LABEL")) return true; } return false; };
     const name = (e) => {
       const al = e.getAttribute("aria-label"); if (al) return al.trim();

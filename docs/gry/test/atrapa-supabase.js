@@ -590,6 +590,8 @@
   // === ux-6 === kod z maila loguje naprawdę: niezalogowany gość („brak”) po verifyOtp staje się kontem bez dostępu („darmowe”),
   // jak nowe konto w Supabase; przeładowanie strony widzi już sesję (okres próbny włącza potem nauka_proba_start).
   const UX6_VERIFY = async () => { if (KONTO === "brak") { try { localStorage.setItem("mock-konto", "darmowe"); localStorage.setItem("sb-zkyxujkdrovfzpasocmv-auth-token", "{}"); } catch {} } return {}; };
+  // Znacznik zmiany wiersza: po update strona (porównuje updated_at przy odświeżeniu) widzi nową wersję, jak w prawdziwej bazie.
+  const UX6_UPD = {};
   // === koniec ux-6 ===
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
@@ -642,8 +644,11 @@
       if (st.op === "select") {
         // .or("rocznik_id.is.null,rocznik_id.eq.X") → rocznik wiersza null albo X
         const dozw = st.or ? st.or.split(",").map((w) => (w === "rocznik_id.is.null" ? null : w.replace(/^rocznik_id\.eq\./, ""))) : null;
-        const rows = Object.entries(store).filter(([k]) => (id == null || k === id) && (!dozw || dozw.includes(rokOf(col, k)))).map(([k, v]) => ({ id: k, data: v, rocznik_id: rokOf(col, k), updated_at: "2026-11-01T00:00:00Z" }));
-        return { data: st.single ? rows[0] || null : rows, error: null, count: rows.length };
+        const rows = Object.entries(store).filter(([k]) => (id == null || k === id) && (!dozw || dozw.includes(rokOf(col, k)))).map(([k, v]) => ({ id: k, data: v, rocznik_id: rokOf(col, k), updated_at: UX6_UPD[col + "|" + k] || "2026-11-01T00:00:00Z" }));
+        // ux-6: znacznik kolekcji (order updated_at desc + limit 1) jak w Postgresie, inaczej strona nie widzi zmian po update
+        if (st.ord === "updated_at") rows.sort((x, y) => (st.asc ? 1 : -1) * (x.updated_at < y.updated_at ? -1 : x.updated_at > y.updated_at ? 1 : 0));
+        const n = rows.length; const out = st.lim ? rows.slice(0, st.lim) : rows;
+        return { data: st.single ? out[0] || null : out, error: null, count: n };
       }
       if (st.op === "upsert") {
         if (BRAK_ROK && [].concat(st.row).some((r) => r && r.rocznik_id === BRAK_ROK)) return BRAK_FK;
@@ -654,11 +659,11 @@
         }
         saveProg(); return { data: null, error: null };
       }
-      if (st.op === "update") { if (store[id]) store[id] = st.row.data; return { data: null, error: null }; }
+      if (st.op === "update") { if (store[id]) { store[id] = st.row.data; UX6_UPD[col + "|" + id] = new Date().toISOString(); zapiszTrwale({ kolekcja: col, id, data: st.row.data }); } return { data: null, error: null }; }
       if (st.op === "delete") { delete store[id]; return { data: null, error: null }; }
     };
     const q = {
-      select() { return q; }, eq(k, v) { st.filters[k] = v; return q; }, or(w) { st.or = w; return q; }, order() { return q; }, range() { return q; }, limit() { return q; }, in() { return q; },
+      select() { return q; }, eq(k, v) { st.filters[k] = v; return q; }, or(w) { st.or = w; return q; }, order(k, o) { st.ord = k; st.asc = o?.ascending !== false; return q; }, range() { return q; }, limit(n) { st.lim = n; return q; }, in() { return q; },
       maybeSingle() { st.single = true; return q; }, single() { st.single = true; return q; },
       upsert(row) { st.op = "upsert"; st.row = row; return q; }, update(data) { st.op = "update"; st.row = { data: data.data }; return q; }, delete() { st.op = "delete"; return q; }, insert(row) { st.op = "upsert"; st.row = row; return q; },
       then(ok, err) { return run().then(ok, err); },
