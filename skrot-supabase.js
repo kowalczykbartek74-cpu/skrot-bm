@@ -1434,7 +1434,9 @@
       const u = new URL(link);
       // Źródło wejścia (etap 11) jako trzecia część: „<konto>__<KOD>__<źródło>”; webhook dopisuje je do zakupu.
       // Rocznik inny niż BM jako czwarta część (v45): zakup daje dostęp do tego rocznika (te same Payment Links).
-      u.searchParams.set("client_reference_id", ADM ? ADM.refStripe(skrot.uid, kod, ADM.zrodloWizyty(), ROK_ID) : kod ? `${skrot.uid}__${kod}` : skrot.uid);
+      // bez admin.js rocznik i tak musi dojść do webhooka, inaczej zakup innego kierunku dałby dostęp do BM
+      const bezAdm = ROK_ID !== (window.SKROT_ROCZNIKI?.DOMYSLNY || "wefiz-bm-1-st-2026") ? `${skrot.uid}__${kod || ""}____${ROK_ID}` : kod ? `${skrot.uid}__${kod}` : skrot.uid;
+      u.searchParams.set("client_reference_id", ADM ? ADM.refStripe(skrot.uid, kod, ADM.zrodloWizyty(), ROK_ID) : bezAdm);
       u.searchParams.set("prefilled_email", skrot.email);
       location.href = u.toString();
     });

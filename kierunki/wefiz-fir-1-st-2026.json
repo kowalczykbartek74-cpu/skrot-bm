@@ -20,11 +20,11 @@
     "podstawy-zarzadzania":            { "bank": ["podstawy-zarzadzania"], "bm": ["podstawy-zarzadzania"], "koszyk": "K1" },
     "podstawy-finansow":               { "bank": ["podstawy-finansow"], "bm": ["podstawy-finansow"], "koszyk": "K1" },
     "podstawy-prawa":                  { "bank": ["podstawy-prawa"], "bm": ["prawo"], "koszyk": "K1" },
-    "matematyka":                      { "bank": ["matematyka"], "bm": ["analiza-matematyczna"], "koszyk": "K1+K2" },
-    "makroekonomia":                   { "bank": ["podstawy-ekonomii"], "bm": ["makroekonomia"], "koszyk": "K2" },
-    "ochrona-wlasnosci-intelektualnej": { "bank": [], "bm": ["ochrona-wlasnosci-intelektualnej"], "koszyk": "K2" },
-    "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci": { "bank": ["technologie-informacyjne"], "bm": ["narzedzia-it-w-zarzadzaniu"], "koszyk": "K2+K3" },
-    "podstawy-rachunkowosci":          { "bank": [], "bm": [], "koszyk": "K3" }
+    "matematyka":                      { "bank": ["matematyka"], "bm": ["analiza-matematyczna"], "koszyk": "K1" },
+    "makroekonomia":                   { "bank": ["makroekonomia"], "bm": ["makroekonomia"], "koszyk": "K1" },
+    "ochrona-wlasnosci-intelektualnej": { "bank": ["ochrona-wlasnosci-intelektualnej"], "bm": ["ochrona-wlasnosci-intelektualnej"], "koszyk": "K1" },
+    "arkusz-kalkulacyjny-w-finansach-i-rachunkowosci": { "bank": ["technologie-informacyjne/04", "technologie-informacyjne/05", "technologie-informacyjne/14"], "bm": ["narzedzia-it-w-zarzadzaniu"], "koszyk": "K1", "kierunkowe": 9 },
+    "podstawy-rachunkowosci":          { "bank": ["podstawy-rachunkowosci"], "bm": ["podstawy-rachunkowosci"], "koszyk": "K1" }
   },
   "role": {
     "prawne": ["podstawy-prawa", "ochrona-wlasnosci-intelektualnej"],

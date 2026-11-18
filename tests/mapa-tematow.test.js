@@ -57,12 +57,13 @@ test("--bez-api: mapa tymczasowa (koszyk przedmiotu, źródło bm:<przedmiot>), 
 const uruchom = (args) => execFileSync("python3", ["-I", path.join(ROOT, "scripts/mapa-tematow.py"), ...args], { cwd: ROOT, env: { PATH: process.env.PATH } }).toString();
 
 test("bank PL: drugi kierunek dostaje kandydatów z wcześniejszego kierunku (czeka na zatwierdzenie), K1 w schemacie", () => {
+  // próbka FiR sprzed kopii z banku (19.11): Rachunkowość bez banku i bez BM, Makro w K2 — żywy plik kierunku już tak nie wygląda
   const pusty = fs.mkdtempSync(path.join(os.tmpdir(), "lekcje-"));
   const brakBanku = fs.mkdtempSync(path.join(os.tmpdir(), "bank-"));
-  const out = uruchom(["kierunki/wefiz-fir-1-st-2026.json", "--na-sucho", "--lekcje", pusty, "--bank", brakBanku]);
+  const out = uruchom(["tests/fixtures/fir/kierunek-fir-przed-bankiem.json", "--na-sucho", "--lekcje", pusty, "--bank", brakBanku]);
   // kandydaci z wcześniejszych kierunków PL (zarz26, potem kolejne, np. kipb26)
   assert.match(out, /Kandydaci z banku PL: \d+ \([^)]*czeka na zatwierdzenie zarz26/);
-  const k = JSON.parse(fs.readFileSync(path.join(ROOT, "kierunki/wefiz-fir-1-st-2026.json"), "utf8"));
+  const k = JSON.parse(fs.readFileSync(path.join(ROOT, "tests/fixtures/fir/kierunek-fir-przed-bankiem.json"), "utf8"));
   const z = fs.readFileSync(path.join(ROOT, "scratch", k.prefiks, "mapa-zapytania.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
   const pz = z.find((x) => x.custom_id === "podstawy-zarzadzania");
   const c = JSON.parse(pz.params.messages[0].content);
@@ -78,12 +79,12 @@ test("bank PL: drugi kierunek dostaje kandydatów z wcześniejszego kierunku (cz
 });
 
 test("--bez-api z bankiem: K1 tylko ze źródłem z banku i statusem „czeka…”, uwaga przy braku karty", () => {
-  const k = JSON.parse(fs.readFileSync(path.join(ROOT, "kierunki/wefiz-fir-1-st-2026.json"), "utf8"));
+  const k = JSON.parse(fs.readFileSync(path.join(ROOT, "tests/fixtures/fir/kierunek-fir-przed-bankiem.json"), "utf8"));
   const plik = path.join(ROOT, "scratch", k.prefiks, "mapa.json");
   const kopia = fs.existsSync(plik) ? fs.readFileSync(plik) : null;
   try {
     if (kopia && !JSON.parse(kopia).every((m) => m.tymczasowa)) return;
-    uruchom(["kierunki/wefiz-fir-1-st-2026.json", "--bez-api", "--bank", fs.mkdtempSync(path.join(os.tmpdir(), "bank-"))]);
+    uruchom(["tests/fixtures/fir/kierunek-fir-przed-bankiem.json", "--bez-api", "--bank", fs.mkdtempSync(path.join(os.tmpdir(), "bank-"))]);
     const m = JSON.parse(fs.readFileSync(plik, "utf8"));
     const k1 = m.flatMap((x) => x.tematy).filter((t) => t.koszyk === "K1");
     assert.ok(k1.length > 0);
