@@ -7165,7 +7165,8 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
     }
     return out;
   }
-  const isPrep = (x) => x.sid && subjectById(x.sid) && ["kolokwium", "egzamin"].includes(x.kind);
+  // ux-6: „Przygotuj się” tylko dla przedmiotu z materiałami (inaczej plan i próbny test nie mają z czego powstać)
+  const isPrep = (x) => x.sid && subjectById(x.sid) && ["kolokwium", "egzamin"].includes(x.kind) && S.materials.some((m) => m.subjectId === x.sid);
   // Część przedmiotu dla „Przygotuj się”: oznaczona w terminie (albo słowo w tytule), inaczej po rodzaju zaliczenia.
   function prepPart(sid, part, kind) {
     if (part && partsOf(sid).includes(part)) return part;
@@ -7329,13 +7330,14 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
       o.details?.length ? h("ul", { class: "zal-list" }, o.details.map((d) => h("li", { text: d }))) : null,
       h("p", { class: "foot-note" }, h("span", { text: "Źródło: " }), h("span", { text: src })),
       h("div", { class: "row ts-acts" },
-        h("button", { type: "button", class: "btn primary", onclick: () => { close(); if (x.done) { setKeys(x.keys, false); render(); } else { setKeys(x.keys, true); render(); undoToast("Odhaczono", () => { setKeys(x.keys, false); render(); }); } } }, x.done ? "Cofnij odhaczenie" : "Odhacz"),
-        isPrep(x) && !x.done ? h("button", { type: "button", class: "btn", onclick: () => { close(); go(prepRoute(x)); } }, "Przygotuj się") : null,
+        // ux-6: przed kolokwium głównym działaniem jest „Przygotuj się”, odhaczenie jest drugorzędne
+        isPrep(x) && !x.done ? h("button", { type: "button", class: "btn primary", onclick: () => { close(); go(prepRoute(x)); } }, "Przygotuj się") : null,
+        h("button", { type: "button", class: "btn" + (isPrep(x) && !x.done ? "" : " primary"), onclick: () => { close(); if (x.done) { setKeys(x.keys, false); render(); } else { setKeys(x.keys, true); render(); undoToast("Odhaczono", () => { setKeys(x.keys, false); render(); }); } } }, x.done ? "Cofnij odhaczenie" : "Odhacz"),
         isProject(x) && !x.done ? h("button", { type: "button", class: "btn", onclick: () => { close(); go({ view: "projekt", id: x.key }); } }, "Plan projektu") : null,
         x.date ? h("button", { type: "button", class: "btn ghost", onclick: () => termIcs(x) }, "Dodaj do kalendarza") : null,
         s ? h("button", { type: "button", class: "btn ghost", onclick: () => { close(); go({ view: "subject", id: s.id, tab: x.src === "zal" ? "zal" : undefined }); } }, "Materiały z przedmiotu") : null),
       // ux-6: starosta widzi edycję zawsze; przy wyłączonym trybie starosty przycisk sam go włącza (wcześniej opcja była tylko w wyszukiwarce)
-      S.isStarosta && x.src === "dl" ? h("div", { class: "row ts-acts" }, (x.objs || [o]).map((d) => h("button", { type: "button", class: "btn small ghost", onclick: () => { close(); if (!S.canEdit) setStarosta(true); openDeadline(d); } }, (x.objs || []).length > 1 ? `Edytuj (${groupsLabel(d) || "cały rok"})` : "Edytuj termin"))) : null,
+      S.isStarosta && x.src === "dl" ? h("div", { class: "row ts-acts" }, (x.objs || [o]).map((d) => h("button", { type: "button", class: "btn", onclick: () => { close(); if (!S.canEdit) setStarosta(true); openDeadline(d); } }, (x.objs || []).length > 1 ? `Edytuj (${groupsLabel(d) || "cały rok"})` : "Edytuj termin"))) : null,
       S.canEdit && x.src === "task" ? h("div", { class: "row ts-acts" }, h("button", { type: "button", class: "btn small ghost danger", onclick: async () => {
         try { await S.db.doc("tasks/" + o.id).delete(); await S.db.doc("deadlines/task-" + o.id).delete().catch(() => {}); toast("Usunięto zadanie dla całego roku."); close(); } catch { toast("Nie udało się usunąć."); }
       } }, "Usuń dla całego roku")) : null,
@@ -8354,8 +8356,8 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
     const head = h("section", { class: "stack" },
       h("div", { class: "row", style: "justify-content:space-between;align-items:flex-end" },
         // ux-4: „?” w wierszu tytułu (okno pomocy), pod tytułem tylko pierwsze zdanie
-        window.ZD_UX4?.pomoc ? h("div", { class: "stack", style: "gap:4px" }, window.ZD_UX4.wiersz(h("h1", { class: "ptitle", text: "Kalendarz" }), window.ZD_UX4.pomoc("Jak działa Kalendarz", ["Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy.", "Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.", "Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach."])), h("p", { class: "muted lead-1", text: "Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy." }))
-          : h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), leadHelp("Widok miesiąca: Twoje zajęcia, terminy roku i własne wpisy.", "Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach. Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.")),
+        window.ZD_UX4?.pomoc ? h("div", { class: "stack", style: "gap:4px" }, window.ZD_UX4.wiersz(h("h1", { class: "ptitle", text: "Kalendarz" }), window.ZD_UX4.pomoc("Jak działa Kalendarz", ["Twoje zajęcia, terminy roku i własne wpisy: najbliższe 2 tygodnie albo cały miesiąc.", "Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.", "Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach."])), h("p", { class: "muted lead-1", text: "Twoje zajęcia, terminy roku i własne wpisy: najbliższe 2 tygodnie albo cały miesiąc." }))
+          : h("div", { class: "stack", style: "gap:4px" }, h("h1", { class: "ptitle", text: "Kalendarz" }), leadHelp("Twoje zajęcia, terminy roku i własne wpisy: najbliższe 2 tygodnie albo cały miesiąc.", "Listę do odhaczania i link do kalendarza w telefonie znajdziesz w Terminach. Dotknij dnia, żeby zobaczyć szczegóły i dodać własny wpis.")),
         h("div", { class: "row", style: "gap:8px" },
           // ux-6: kalendarz w telefonie także tutaj (studenci szukają go w Kalendarzu, nie w menu ⋯ Terminów)
           h("button", { type: "button", class: "btn small", onclick: openPhoneCal }, "Do telefonu"),
@@ -17290,6 +17292,8 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
     }
     return [["Podgląd", kPreview(it)]];
   }
+  // ux-6: zamrożenie serii to nie wygląd – okno zakupu nie może mówić „Tylko wygląd”
+  const kZamroz = (it) => /zamroz/.test(String(it?.id || "") + String(it?.typ || "") + String(it?.grupa || ""));
   function kLook(it) {
     const still = lpReduced();
     modal((close) => {
@@ -17300,7 +17304,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
         kOpis(it) ? h("p", { class: "muted", style: "margin:0", translate: "no", text: kOpis(it) }) : null,
         h("div", { class: "klook-stage" + (sc.length > 1 ? " two" : "") }, sc.map(([l, n]) => kLookFig(l, n))),
         act.length || note ? h("div", { class: "shop-act klook-act" }, act, note ? h("small", { class: "muted", text: note }) : null) : null,
-        h("p", { class: "muted small", style: "margin:0", text: "Tylko wygląd: nie zmienia punktów ani wyników." }),
+        h("p", { class: "muted small", style: "margin:0", text: kZamroz(it) ? "Chroni serię w dzień bez nauki." : "Tylko wygląd: nie zmienia punktów ani wyników." }),
         h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: close }, "Zamknij")))];
     }, "klook-box");
   }
@@ -17355,7 +17359,7 @@ Format JSON: {"title": "...", "sentences": [{"text": "...", "isWrong": false}, {
           h("dt", { text: "Cena" }), h("dd", { text: `${fmtN(price)} 🪙` }),
           h("dt", { text: "Masz teraz" }), h("dd", { text: `${fmtN(s)} 🪙` }),
           h("dt", { text: "Zostanie Ci" }), h("dd", { class: "after", text: `${fmtN(s - price)} 🪙` })),
-        h("p", { class: "muted small", style: "margin:0", text: "Tylko wygląd: nie zmienia punktów ani wyników. Zakupu nie da się cofnąć." }),
+        h("p", { class: "muted small", style: "margin:0", text: kZamroz(it) ? "Chroni serię w dzień bez nauki. Zakupu nie da się cofnąć." : "Tylko wygląd: nie zmienia punktów ani wyników. Zakupu nie da się cofnąć." }),
         err,
         h("div", { class: "row" }, buy, cancel))];
     }, "kbuy-modal");

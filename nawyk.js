@@ -95,7 +95,7 @@
     rvKarta: "Karta 5 minut",
     wiecej: "Więcej na dziś",
     wiecejBoss: "Boss trwa",
-    kalNauka: "Przypominaj o 5 minutach po zajęciach",
+    kalNauka: "Dodawaj „5 minut nauki” po zajęciach", // ux-6: dawny podpis brzmiał jak „5 minut po zajęciach”
     kalNaukaOpis: "W kalendarzu pojawi się wpis „Zdawalni · 5 min po zajęciach” z przypomnieniem, pół godziny po Twoich ostatnich zajęciach.",
     instTytul: "Dodaj Zdawalni do ekranu głównego: jedno dotknięcie do 5 minut.",
     instDodaj: "Dodaj",

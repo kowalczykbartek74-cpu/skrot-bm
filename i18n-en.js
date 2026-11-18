@@ -6067,6 +6067,10 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Na rozgrzewkę: {0} fiszka do powtórki.": "Warm-up: {0} flashcard to review.",
 "Na rozgrzewkę: {0} fiszki do powtórki.": "Warm-up: {0} flashcards to review.",
 "Na rozgrzewkę: {0} fiszek do powtórki.": "Warm-up: {0} flashcards to review.",
+"Chroni serię w dzień bez nauki.": "Protects your streak on a day without studying.",
+"Chroni serię w dzień bez nauki. Zakupu nie da się cofnąć.": "Protects your streak on a day without studying. The purchase can't be undone.",
+"Twoje zajęcia, terminy roku i własne wpisy: najbliższe 2 tygodnie albo cały miesiąc.": "Your classes, year deadlines and your own entries: the next 2 weeks or the whole month.",
+"Dodawaj „5 minut nauki” po zajęciach": "Add “5 minutes of study” after class",
 "__ux6": "__ux6"
 // koniec ux-6
 },
