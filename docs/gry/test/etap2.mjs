@@ -47,7 +47,7 @@ for (const [w, hgt] of [[390, 844], [1280, 800]]) {
     ok(`${w}: remis = ten sam numer`, pos[3] === "4" && pos[4] === "4", pos.slice(0, 6));
     ok(`${w}: ja podświetlony w sąsiadach`, /Ty \(Bartek B\)/.test(await p.locator(".rk-row.me").textContent()));
     const card = await p.locator(".rk-me").innerText();
-    ok(`${w}: karta Ty: miejsce, lepiej niż, +N, brakuje`, /#14/.test(card) && /z 41/.test(card) && /Lepiej niż 68% osób z rankingu/.test(card) && /\+50 pkt od zeszłego tygodnia/.test(card) && /Do #13 brakuje Ci 20 pkt – to 2 dobre odpowiedzi\./.test(card), card);
+    ok(`${w}: karta Ty: miejsce, lepiej niż, +N, brakuje`, /#14/.test(card) && /z 41/.test(card) && /Lepiej niż 68% osób z rankingu/.test(card) && /\+50 (pkt|XP) od zeszłego tygodnia/.test(card) && /Do #13 brakuje Ci 20 (pkt|XP) – to 2 dobre odpowiedzi\./.test(card) /* pętla 5: punkty tygodnia podpisane jako XP */, card);
     ok(`${w}: statystyki: paski i „Ty X%”`, (await p.locator(".rk-stat").count()) === 2 && /Ty 80% · lepiej niż 61%/.test(await p.locator(".rk-stats").innerText()));
     ok(`${w}: najtrudniejsze: tylko materiały obecne lokalnie`, (await p.locator(".rk-hard li").count()) === 1 && /PKB i inflacja/.test(await p.locator(".rk-hard").innerText()));
     await shot(p, `e2-daleko-${w}`);
