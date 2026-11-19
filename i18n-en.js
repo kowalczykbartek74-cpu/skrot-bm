@@ -6081,6 +6081,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "{0}: do zaliczenia zostały": "{0}: exam in",
 "{0}: do zaliczenia zostało": "{0}: exam in",
 "{0} 🪙 · brakuje {1}": "{0} 🪙 · {1} short",
+"Ostatnia lekcja: {0}": "Last lesson: {0}",
 "__ux6": "__ux6"
 // koniec ux-6
 },

@@ -103,6 +103,7 @@
     instIos2: "Wybierz „Do ekranu początkowego”.",
     powrotTytul: "Dobrze, że jesteś. Ostatnio {0} temu.",
     powrotTytulDzis: "Dobrze, że jesteś.",
+    powrotOstatnia: "Ostatnia lekcja: {0}", // ux-6
     powrotZajecia: "Zajęcia od ostatniej nauki: {0}",
     powrotTerminy: "Nowe terminy: {0}",
     powrotFiszki: "Fiszki do odświeżenia: {0}",
@@ -676,6 +677,9 @@
     const box = h("section", { class: "panel sk-panel nw-powrot", "aria-label": PL.powrotTytulDzis },
       h("div", { class: "nw-powrot-top" }, h("span", { class: "nw-powrot-stas", "aria-hidden": "true" }, ap.stasFace ? ap.stasFace("hi") : null),
         h("h2", { class: "nw-powrot-h", text: gap >= 2 ? fmt(PL.powrotTytul, dni(gap)) : PL.powrotTytulDzis })),
+      // ux-6: gdzie skończyłeś – ostatnio zrobiona lekcja (z postępu), dotknięcie ją otwiera
+      (() => { const dn = p.done || {}, id = Object.keys(dn).sort((a, b) => (dn[b] || 0) - (dn[a] || 0))[0], m = id && (ap.S.materials || []).find((x) => x.id === id);
+        return m ? h("p", { class: "nw-powrot-ost", style: "margin:0" }, h("button", { type: "button", class: "link", onclick: () => ap.go?.({ view: "material", id }) }, fmt(PL.powrotOstatnia, m.title || ""))) : null; })(),
       pkt.length ? h("div", { class: "nw-powrot-pkt" }, pkt.map(([x, v]) => h("button", { type: "button", class: "nw-pkt", onclick: () => ap.go?.({ view: v }) }, h("span", { text: x }), h("span", { class: "nw-pkt-chev", "aria-hidden": "true", text: "›" })))) : null,
       nap ? h("p", { class: "nw-powrot-nap naprawa" }, svg(IKONY.retry, 18), h("span", { text: fmt(PL.naprawaWiersz, dniPL(nap.n)) }), h("b", { class: "num nw-nap-post", text: "0/2" }))
         : st.przepadla >= 3 ? h("p", { class: "nw-powrot-nap" }, svg(IKONY["ux2-klepsydra"], 18), h("span", { text: fmt(PL.seriaPrzepadla, dniPL(st.przepadla)) })) : null,
@@ -1070,6 +1074,7 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 .nw-pkt { min-height: 44px; padding: 0 10px; font-size: .85rem; }
 .nw-powrot-h { font-size: 1.1rem; }
 .nw-powrot-h { margin: 0; font-family: var(--dz-head, inherit); font-size: 1.2rem; line-height: 1.25; }
+@media (max-height: 700px) { .nw-powrot-ost { display: none; } } /* ux-6: na niskim telefonie „Wracam” ważniejsze */
 .nw-powrot-pkt { display: flex; flex-wrap: wrap; gap: 6px; }
 .nw-pkt { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--sunk, var(--h-line)); color: var(--ink); font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; }
 .nw-pkt-chev { font-weight: 800; }

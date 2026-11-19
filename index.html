@@ -6347,7 +6347,7 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
     const sk = window.skrot || {};
     $("barRight").replaceChildren(...[
       // Na Dziś „Kup dostęp” jest w karcie pod powitaniem, więc w pasku go nie powtarzamy.
-      ["out", "in"].includes(sk.state) && (!PAID() || sk.trialUntil) && (S.route.view || "home") !== "home" ? h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy() }, "Kup dostęp") : null,
+      ["out", "in"].includes(sk.state) && (!PAID() || sk.trialUntil) && (S.route.view || "home") !== "home" ? h("button", { type: "button", class: "btn small", onclick: () => sk.buy() }, /* ux-6: w pasku drugorzędny – ekran ma własne główne działanie */ "Kup dostęp") : null,
       sk.state === "out" ? h("button", { type: "button", class: "btn small", onclick: () => sk.openLogin() }, "Zaloguj") : null,
       (() => { const any = !!document.documentElement.getAttribute("data-theme"), dark = greenMode.cur() === "dark", t = any ? "Wróć do zielonego motywu" : dark ? "Zielony jasny" : "Zielony ciemny"; return h("button", { type: "button", class: "btn small ghost theme-btn", title: t, "aria-label": t, onclick: (e) => (any ? pinkTheme.set("", e) : greenMode.set(dark ? "light" : "dark", e)) }, window.ZD_UX4?.ikona?.(any ? "ux4-lisc" : dark ? "ux4-slonce" : "ux4-ksiezyc") ?? (any ? "🌿" : dark ? "☀️" : "🌙")); })(), // ux-4: ikona SVG w górnym pasku
       h("button", { type: "button", class: "btn small ghost lang-btn", translate: "no", title: EN ? "Zmień język na polski" : "Switch the whole site to English", "aria-label": EN ? "Zmień język na polski" : "Switch the whole site to English", onclick: () => window.SKROT_I18N.toggle() }, EN ? "PL" : "EN"),
@@ -20586,7 +20586,7 @@ Format JSON: {"items": [{"k": "klucz bloku przepisany bez zmian", "t": "...", "e
           h("span", { class: "txt", text: left ? `Wróć · zostało ok. ${left} min` : "Zaczynamy · 5 min" }), h("span", { class: "zh-arrow", "aria-hidden": "true" }, icon("strzalka"))),
         h("div", { class: "row ld-links" },
           // ux-6: przed kolokwium (≤ 7 dni) próbny test o jedno dotknięcie z karty dnia
-          days != null && days >= 0 && days <= 7 && sid && S.materials.some((x) => x.subjectId === sid) ? h("button", { type: "button", class: "btn small ghost", onclick: () => go({ view: "exam", sid, part: prepPart(sid, null, "kolokwium") }) }, h("span", { text: `Próbny test: ${subjShort(sid)}` }), icon("strzalka")) : null,
+          days != null && days >= 0 && days <= 7 && sid && S.materials.some((x) => x.subjectId === sid) ? h("button", { type: "button", class: "btn small ghost", onclick: () => { const part = prepPart(sid, null, "kolokwium"); go({ view: "exam", sid, part }); setTimeout(() => startExam(sid, part), 0); } }, h("span", { text: `Próbny test: ${subjShort(sid)}` }), icon("strzalka")) : null, /* ux-6: od razu start testu, nie strona Przygotuj się */
           left ? null : h("button", { type: "button", class: "btn small ghost", onclick: () => ldOtherCard() }, h("span", { text: "Inny temat" }), icon("odswiez")),
           left ? null : h("button", { type: "button", class: "btn small ghost", "aria-expanded": String(!!LDB.wybor), onclick: () => { LDB.wybor = !LDB.wybor; render(); } }, h("span", { text: "Wybierz temat" }), icon(LDB.wybor ? "gora" : "dol")),
           h("button", { type: "button", class: "btn small ghost", "aria-expanded": String(!!LDB.czas), onclick: () => { LDB.czas = !LDB.czas; render(); } }, h("span", { text: "Mam więcej czasu" }), icon(LDB.czas ? "gora" : "dol")),
@@ -23364,7 +23364,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
   // === koniec mostu ux-4 ===
 })();
 </script>
-<script src="nawyk.js?v=20261119-ux6r3"></script>
+<script src="nawyk.js?v=20261119-ux6r4"></script>
 <script src="ux-wejscie.js?v=20261119-ux6r2"></script>
 <script src="lekcja-ux.js?v=20261117-ux3g"></script>
 <script src="nagrody.js?v=20261117-ux5"></script>
