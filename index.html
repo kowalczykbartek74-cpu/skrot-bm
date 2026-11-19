@@ -454,7 +454,7 @@ label.field, div.field { display: grid; gap: 4px; font-size: .86rem; font-weight
 .zal-row:first-child { border-top: 0; }
 .zal-row:hover { background: var(--green-50); }
 .zal-row.head { cursor: default; background: var(--sunk); padding-block: 8px; }
-.zal-row.head span { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.zal-row.head span { font-size: .75rem; /* ux-6: min. 12 px */ font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .zal-row .nm { font-weight: 800; display: flex; align-items: center; gap: 8px; min-width: 0; overflow-wrap: anywhere; }
 .zal-row .cell { display: grid; gap: 2px; min-width: 0; font-size: .86rem; }
 .zal-row .cell small { color: var(--muted); }
@@ -7822,7 +7822,7 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
     // ux-1: na Dziś najwyżej jeden „Kup dostęp” (ZD_WEJSCIE.kupNaDzis); tekst bez kropki na początku drugiej linii.
     if (PAID() && sk.trialUntil) return window.ZD_WEJSCIE?.kupNaDzis?.() === false ? null : h("section", { class: "buybar bb2" },
       h("div", { class: "bb-txt" }, h("b", { text: "Okres próbny" }), h("span", { class: "muted", text: `${sk.trialLeftText?.() || "ostatnie godziny"} pełnego dostępu · potem ${rok} do końca 2. semestru albo ${mies}` })),
-      h("div", { class: "bb-act" }, h("button", { type: "button", class: "btn primary small", onclick: () => sk.buy?.() }, "Kup dostęp")));
+      h("div", { class: "bb-act" }, h("button", { type: "button", class: "btn small", onclick: () => sk.buy?.() }, "Kup dostęp"))); // ux-6: w próbie główne jest uczenie się
     if (PAID() || sk.state === "loading") return null;
     // Jeden pełny przycisk (okres próbny albo zakup), „kup od razu” i „mam już dostęp” jako zwykłe linki.
     const trial = canTrial();
@@ -9293,7 +9293,10 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
         h("p", { class: "ux5-sub muted", text: "Opanowanie to średnia z lekcji: zrobiona liczy się w 60%, utrwalona w Powtórkach w 80%, opanowana w 100%." })); })() : null,
       kn.n ? sprLine(s.id, kn) : null,
       next ? h("button", { type: "button", class: "btn primary sk-start sk-long", title: next.label, onclick: () => go({ view: "material", id: next.m.id }) }, h("span", { class: "txt", text: next.label }), h("span", { "aria-hidden": "true", text: "→" }))
-        : L.n ? h("p", { class: "big", style: "margin:0", text: "Wszystkie lekcje przerobione 🎉" }) : null);
+        // ux-6: nieprzerobione lekcje, ale zamknięte (konto bez dostępu) – to nie „wszystko przerobione”
+        : L.n && L.done < L.n ? (canTrial() ? h("button", { type: "button", class: "btn primary sk-start sk-long", onclick: () => window.skrot?.startTrial?.() }, h("span", { class: "txt", text: "Lekcje są w pełnym dostępie: wypróbuj 3 dni za darmo" }), h("span", { "aria-hidden": "true", text: "→" }))
+          : h("button", { type: "button", class: "btn primary sk-start sk-long", onclick: () => window.skrot?.buy?.() }, h("span", { class: "txt", text: "Lekcje są w pełnym dostępie: zobacz plany" }), h("span", { "aria-hidden": "true", text: "→" })))
+        : L.n ? h("p", { class: "big", style: "margin:0", text: "Wszystkie lekcje przerobione ✓" }) : null);
   }
   // „Ucz się” ma dwie zakładki, żeby od razu było wiadomo, skąd jest materiał:
   // „Z sylabusa” = nasz kurs i przegląd ułożone według tematów sylabusa (nie ze slajdów),
@@ -23358,7 +23361,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
 })();
 </script>
 <script src="nawyk.js?v=20261119-ux6r2"></script>
-<script src="ux-wejscie.js?v=20261117-ux1h"></script>
+<script src="ux-wejscie.js?v=20261119-ux6r2"></script>
 <script src="lekcja-ux.js?v=20261117-ux3g"></script>
 <script src="nagrody.js?v=20261117-ux5"></script>
 <script src="ikony-ux.js?v=20261117-ux4f"></script>

@@ -6073,6 +6073,9 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Dodawaj „5 minut nauki” po zajęciach": "Add “5 minutes of study” after class",
 "Wróć do nauki na dziś": "Back to today's study",
 "cel": "goal",
+"Lekcje są w pełnym dostępie: zobacz plany": "Lessons come with full access: see plans",
+"Wszystkie lekcje przerobione ✓": "All lessons done ✓",
+"Lekcje są w pełnym dostępie: wypróbuj 3 dni za darmo": "Lessons come with full access: try 3 days free",
 "__ux6": "__ux6"
 // koniec ux-6
 },

@@ -157,7 +157,7 @@
       return el("section", { class: "uxw-pasek " + (st === "po-probie" ? "uxw-po" : "uxw-pelny"), "aria-label": st === "po-probie" ? "Okres próbny minął" : "Pełny dostęp" },
         ico("lock", 20),
         el("span", { class: "uxw-pasek-t", text: st === "po-probie" ? "Próba minęła · 199 zł do 11 lipca 2027 albo 35 zł / mies." : "Pełny dostęp · 199 zł do 11 lipca 2027 albo 35 zł / mies." }),
-        el("button", { type: "button", class: "btn primary uxw-kup uxw-pasek-kup", onclick: () => sk.buy?.() }, "Kup dostęp"));
+        el("button", { type: "button", class: (naDzis() ? "btn primary" : "btn") + " uxw-kup uxw-pasek-kup", onclick: () => sk.buy?.() }, "Kup dostęp")); // ux-6: poza Dziś ekran ma własne główne działanie
     }
     return null;
   }
@@ -267,9 +267,9 @@
       if (lekki && !kupWolny()) return document.createTextNode(""); // kolejne miejsca: bez trzeciego wezwania
       const kup = kupWolny() ? (kupZajmij(), el("button", { type: "button", class: "link uxw-kup-link", onclick: () => sk.buy?.() }, "Kup dostęp")) : null;
       return el("span", { class: "uxw-zakup", "data-kontekst": kontekst || "" },
-        el("button", { type: "button", class: (lekki ? "link" : "btn primary uxw-lime") + " uxw-wyprobuj", onclick: () => sk.startTrial?.() }, `Wypróbuj ${d} dni`), kup);
+        el("button", { type: "button", class: (lekki ? "link" : naDzis() ? "btn primary uxw-lime" : "btn") + " uxw-wyprobuj", onclick: () => sk.startTrial?.() }, `Wypróbuj ${d} dni`), kup); // ux-6: poza Dziś drugorzędny
     }
-    if (kupWolny()) { kupZajmij(); return el("span", { class: "uxw-zakup", "data-kontekst": kontekst || "" }, el("button", { type: "button", class: "btn primary uxw-kup", onclick: () => sk.buy?.() }, "Kup dostęp")); }
+    if (kupWolny()) { kupZajmij(); return el("span", { class: "uxw-zakup", "data-kontekst": kontekst || "" }, el("button", { type: "button", class: (naDzis() ? "btn primary" : "btn") + " uxw-kup", onclick: () => sk.buy?.() }, "Kup dostęp")); } // ux-6: poza Dziś drugorzędny
     return el("span", { class: "uxw-zakup", "data-kontekst": kontekst || "" }, el("button", { type: "button", class: "link uxw-plany-link", onclick: () => sk.buy?.() }, "Zobacz plany"));
   }
   // buyBanner (index.html) pyta, czy może narysować „Kup dostęp” na Dziś.
