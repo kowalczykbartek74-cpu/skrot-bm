@@ -600,6 +600,8 @@
       grupy: [["C111", 6, 84], ["C112", 4, 112], ["C113", 3, 57]].map(([g, n, sr]) => ({ grupa: g, aktywne: malo ? 2 : n, srednia: malo ? null : sr })) }; };
   // Znacznik zmiany wiersza: po update strona (porównuje updated_at przy odświeżeniu) widzi nową wersję, jak w prawdziwej bazie.
   const UX6_UPD = {};
+  // Wylogowanie jak supabase-js: sesja znika z localStorage (po przeładowaniu ekran logowania).
+  const UX6_SIGNOUT = async () => { try { localStorage.removeItem("sb-zkyxujkdrovfzpasocmv-auth-token"); localStorage.setItem("mock-konto", "brak"); } catch {} return { error: null }; };
   // === koniec ux-6 ===
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
@@ -681,7 +683,7 @@
   }
   const session = KONTO === "brak" ? null : { access_token: "t", user: { id: UID, email: EMAIL, user_metadata: {} } };
   window.supabase = { createClient: () => ({
-    auth: { getSession: async () => ({ data: { session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}),
+    auth: { getSession: async () => ({ data: { session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: UX6_SIGNOUT,
       signInWithOtp: UX1_OTP, signInWithPassword: async () => ({}), verifyOtp: UX6_VERIFY, updateUser: async () => ({}), reauthenticate: async () => ({}) },
     rpc, from: () => table(),
     functions: { invoke: async () => ({ data: null, error: { message: "atrapa" } }) },

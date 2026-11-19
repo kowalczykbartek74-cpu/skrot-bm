@@ -6077,6 +6077,10 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Wszystkie lekcje przerobione ✓": "All lessons done ✓",
 "Lekcje są w pełnym dostępie: wypróbuj 3 dni za darmo": "Lessons come with full access: try 3 days free",
 "Dział": "Unit",
+"{0}: do zaliczenia został": "{0}: exam in",
+"{0}: do zaliczenia zostały": "{0}: exam in",
+"{0}: do zaliczenia zostało": "{0}: exam in",
+"{0} 🪙 · brakuje {1}": "{0} 🪙 · {1} short",
 "__ux6": "__ux6"
 // koniec ux-6
 },
