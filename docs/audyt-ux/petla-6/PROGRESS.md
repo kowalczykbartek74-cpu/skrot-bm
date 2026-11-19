@@ -21,7 +21,8 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 | 0 | 4,9 | czerwone testy (już na main), tekst < AA (5 ekranów), PL w EN | 4/2/0 (Z1 Z2 Z3 = 2; Z4 Z5 Z13 = 1) | – | audyt stanu wyjściowego, wynik zgodny z formułą (zadania 28/42 → 2,7; technika 0) |
 | 1 | 7,1 | brak | 4/2/0 (Z4 Z5 = 1) | 11 pozycji planu + poprawki po regresji | plan-1.md; wynik zgodny z formułą (zadania 37/42 → 3,52; technika 0,75) |
 | 2 | 8,0 | brak | 6/0/0 | 13 pozycji | plan-2.md; pierwszy tester przerwany limitem API – audyt powtórzony od początku z nowym testerem (E5); zadania 38/42 → 3,62 ✓ |
-| 3 | (audyt w toku) | kontrola: brak (technika 1,25) | | 5 pozycji | plan-3.md |
+| 3 | 8,0 (7,96) | brak | 6/0/0 | 5 pozycji | plan-3.md; zadania 39/42 → 3,71 ✓ |
+| 4 | (audyt w toku) | kontrola: brak, technika 1,5 (zero naruszeń) | | 3 pozycje + 1 błąd znaleziony przy okazji | plan-4.md |
 
 ### Runda 1 – co zrobione (commity)
 - test: 96cdf2d, f19c1df, 974ee7d (stare asercje po c1356b9), etap2 (XP zamiast pkt).
@@ -36,7 +37,8 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 - Przeniesione do rundy 2: Dziś zawsze „Lekcja 1”, wiele nazw sesji 5 min, Sklep bez listy cen, kolejność Przedmiotów, pigułki na pierwszym ekranie, P2.
 
 ## Gdzie jestem
-- Runda 3: poprawki z plan-3.md (wylogowanie w atrapie, próbny test z karty Dziś, odmiana odliczania, „kolokwium” w Przygotuj się, cena w Sklepie) wypchnięte; pełna regresja zielona; kontrola 166 ekranów bez twardych błędów; Tester-Sędzia rundy 3 w toku.
+- Runda 4: poprawki (plan-4.md) i błąd znaleziony przy kontroli – przy otwartym oknie przejście pod nowy adres (link #/…) ginęło przez obsługę „wstecz” – naprawione; kontrola 166 ekranów bez żadnego naruszenia; Tester-Sędzia rundy 4 w toku.
+- Sesja raz zatrzymana w trakcie regresji (ux6-zadania 4/20 w tym przebiegu); powtórzone 20/20.
 
 ## Decyzje
 - Zegar stron w sondzie i testach = 6.11.2026 17:00 (jak `h2-lib.mjs`), więc „termin za 3 dni” = 9.11.
