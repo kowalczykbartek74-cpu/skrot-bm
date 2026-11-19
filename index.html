@@ -5418,6 +5418,11 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
 @media (max-height: 700px) and (max-width: 480px) { .cover > .pat { display: none; } html .cover { padding-top: 20px; gap: 6px; } }
 /* ux-6: materiał na telefonie – „Dalej” zawsze w zasięgu kciuka, nad dolnym paskiem */
 @media (max-width: 379px) { .nw-cel { display: none; } } /* ux-6: przy 360 px pigułka serii bez słowa „cel” (cel czyta też pierścień) */
+/* ux-6 po scaleniu z „Wygląd pro”: kontrast AA i cele 44 px */
+@media (max-width: 760px) { html:not([data-theme]) body #main #subj-grid > .nb > .nb-top { background: color-mix(in srgb, var(--c, var(--accent)) 22%, var(--surface)); color: color-mix(in srgb, var(--c, var(--accent)) 40%, var(--ink)); }
+  html:not([data-theme]) body #main #subj-grid > .nb > .nb-top .nb-badge { color: inherit; } }
+html:not([data-theme]) body .btn.shop-short:disabled { color: var(--ink); }
+html .bar .lang-btn { min-width: 44px; min-height: 44px; }
 @media (max-width: 899px) { .steppanel .step-next { position: sticky; bottom: 76px; z-index: 3; margin-inline: -16px; padding: 8px 16px; background: color-mix(in srgb, var(--paper) 94%, transparent); } }
 </style>
 <link rel="stylesheet" href="wyglad-ux.css?v=20261119-szlif">
