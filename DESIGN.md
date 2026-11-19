@@ -30,6 +30,7 @@ Kolory i kontrast: [PALETA.md](PALETA.md) (pilnuje go `tests/tresci.test.js`). P
    Nie wpisujemy `font-size: .86rem` ani `13px`. Rozmiary emoji i ikon (> 40 px) to nie tekst i mogą zostać.
 3. **Trzy zaokrąglenia:** `--r-s` 10 px (chipy kwadratowe, pola, małe przyciski), `--r-m` 16 px (przyciski, kafle), `--r-l` 22 px (karty, okna). Pigułki `999px` tylko dla chipów i pasków postępu, koła `50%` dla awatarów.
 4. **Trzy przyciski:** główny (zielony z krawędzią), drugi (biały, ramka 2 px + krawędź), link (sam tekst). Limonkowy główny tylko na start dnia i nagrody.
+   W kodzie: `.btn.primary`, `.btn`, `.btn.ghost` (+ `.small`, `.danger`). Jedna definicja: blok „Wygląd pro, etap 2” w `index.html` z prefiksem `:where(html:not([data-theme]))`, więc ma szczegółowość samego `.btn`. Nie dopisuj przyciskom własnych kolorów, cieni ani zaokrągleń w kontekście; kontekst ustawia tylko układ (szerokość, odstępy). Krawędź 3D (`0 4px 0` albo gruby dolny brzeg) mają tylko rzeczy do wciśnięcia: przyciski, odpowiedzi, chipy, kafle.
 5. **Płaskie karty:** białe tło, ramka 2 px `--h-line`, bez cienia z rozmyciem, nigdy karta w karcie. Kolorowy pasek z lewej (`border-left` > 1 px) jest zakazany.
 6. **Ikony, nie emoji.** Jedna rodzina ikon liniowych o tej samej grubości (zestaw z `ikony-ux.js`). Emoji tylko w treści napisanej przez ludzi i w nagrodach.
 7. **Bez ozdobników:** bez kratki w tle, falek pod tytułami, naklejek, tekstu z gradientem i etykiet NAD nagłówkami. Nagłówek mówi sam za siebie.

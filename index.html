@@ -4325,9 +4325,6 @@ html:not([data-theme]) #main .greet h1 { background: none; padding-bottom: 0; }
 .feed-lite span { font-size: var(--fs-s); color: var(--muted); }
 .feed-lite-list .odw-wrap { margin: 8px 0; }
 /* ===== Wygląd H (15.11.2026): Duolingo, ale poważnie. Kolory przez zmienne motywu, ruch wyłączany przez reduced-motion i html.calm. ===== */
-html:not([data-theme]) .btn.primary { box-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 62%, #000); transition: transform .08s ease, box-shadow .08s ease, background .15s; }
-html:not([data-theme]) .btn.primary:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
-html:not([data-theme]) .btn.primary:disabled { box-shadow: none; }
 .lp-opts .opt:focus-visible, .zh-card .btn:focus-visible { outline: 3px solid var(--ink, #10231A); outline-offset: 3px; }
 .zh-hero { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 40px; padding: 28px 30px 30px; border: 0; border-radius: 32px; background: var(--green-700); box-shadow: 0 7px 0 var(--green-900); color: #fff; }
 html[data-green=dark]:not([data-theme]) .zh-hero { background: #15703C; box-shadow: 0 7px 0 #0B3A20; }
@@ -4346,7 +4343,7 @@ html[data-green=dark]:not([data-theme]) .zh-bubble, html[data-green=dark]:not([d
 .zh-step { display: inline-flex; align-items: baseline; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--green-900); color: #fff; }
 .zh-anim .zh-step { animation: zh-rise .5s cubic-bezier(.2,.8,.2,1) both; }
 .zh-step b { color: #CDF25E; white-space: nowrap; }
-.zh-hero .zh-go.sk-start { justify-self: start; width: auto; min-height: 60px; display: inline-flex; align-items: center; gap: 14px; padding: 0 10px 0 28px; border: 0; border-radius: 999px; background: #CDF25E; color: #10231A; font-size: var(--fs-l); box-shadow: 0 5px 0 #8FB52A; }
+.zh-hero .zh-go.sk-start { justify-self: start; width: auto; min-height: 60px; display: inline-flex; align-items: center; gap: 14px; padding: 0 10px 0 28px; border: 0; border-radius: var(--r-m); background: #CDF25E; color: #10231A; font-size: var(--fs-l); box-shadow: 0 4px 0 #8FB52A; }
 .zh-hero .zh-go.sk-start:hover:not(:disabled) { background: #D8F57A; }
 .zh-hero .zh-go .zh-arrow { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: #10231A; color: #CDF25E; font-size: var(--fs-l); }
 .zh-anim .zh-go .zh-arrow { animation: zh-nudge 2.4s ease-in-out 1s 4; }
@@ -4392,7 +4389,7 @@ html[data-green=dark]:not([data-theme]) .zh-o .zh-ico, html[data-green=dark]:not
 .zh-segs i.nx { background: var(--surface); box-shadow: inset 0 0 0 2px var(--accent); }
 .zh-line { height: 12px; border-radius: 999px; background: color-mix(in srgb, var(--line) 45%, var(--surface)); overflow: hidden; }
 .zh-line i { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
-.zh-card .btn.zh-go { min-height: 50px; border-radius: 999px; justify-content: center; }
+.zh-card .btn.zh-go { min-height: 50px; justify-content: center; }
 .ld-lessons { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
 /* Quiz i pytania w odtwarzaczu: kafle 3D, wybrana odpowiedź zielona / czerwona, gruby pasek postępu. */
 .quiz .progress { height: 14px; border-radius: 999px; }
@@ -4435,7 +4432,7 @@ html:not([data-theme]) {
   --h-ink: #10231A; --h-muted: #3E5046; --h-acc: #1A7F45; --h-acc-edge: #0F5A2F; --h-acc-ink: #FFFFFF; --h-acc-soft: #DDF3D0;
   --h-lime: #CDF25E; --h-lime-ink: #10231A; --h-lime-edge: #8FB52A;
   --h-orange: #B35400; --h-orange-soft: #FFE8CC; --h-blue: #1C6FB8; --h-blue-soft: #E3F0FD; --h-red: #A3261E; --h-red-soft: #FDE4E1;
-  --h-r: var(--r-l); --h-spring: cubic-bezier(.3, 1.5, .5, 1); --h-out: cubic-bezier(.2, .8, .2, 1);
+  --shadow: none; --h-r: var(--r-l); --h-spring: cubic-bezier(.3, 1.5, .5, 1); --h-out: cubic-bezier(.2, .8, .2, 1);
   --paper: var(--h-paper); --surface: var(--h-card); --ink: var(--h-ink); --muted: var(--h-muted);
 }
 html[data-green="dark"]:not([data-theme]) {
@@ -4490,20 +4487,24 @@ html:not([data-theme]) .h-shake { animation: h-shake .45s ease-in-out both; }
 @media (prefers-reduced-motion: reduce) { html:not([data-theme]) main.h-ent > *, html:not([data-theme]) .h-pop, html:not([data-theme]) .h-hop, html:not([data-theme]) .h-shake { animation: none !important; } }
 html.calm main.h-ent > *, html.calm .h-pop, html.calm .h-hop, html.calm .h-shake { animation: none !important; }
 /* ===== H2 etap 2: elementy bazowe (przyciski 3D, karty, pigułki, przełączniki, pola, komunikaty, okna, puste stany) ===== */
-html:not([data-theme]) .btn { border-width: 2px; border-radius: var(--r-m); box-shadow: 0 3px 0 var(--h-edge); transition: transform .08s ease, box-shadow .08s ease, background .15s, border-color .15s; }
-html:not([data-theme]) .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 transparent; }
-html:not([data-theme]) .btn.primary { border-color: var(--accent); box-shadow: 0 4px 0 var(--h-acc-edge); }
-html:not([data-theme]) .btn.primary:active:not(:disabled) { transform: translateY(4px); }
-html:not([data-theme]) .btn.ghost, html:not([data-theme]) .btn:disabled { box-shadow: none; }
-html:not([data-theme]) .btn.danger { border-color: color-mix(in srgb, var(--h-red) 45%, var(--surface)); box-shadow: 0 3px 0 color-mix(in srgb, var(--h-red) 45%, var(--surface)); color: var(--h-red); }
-html:not([data-theme]) .btn.small { border-radius: var(--r-s); box-shadow: 0 2px 0 var(--h-edge); }
-html:not([data-theme]) .btn.sun { box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 35%, var(--surface)); }
+/* ===== Wygląd pro, etap 2 (19.11.2026): trzy przyciski (DESIGN.md) – główny, drugi, link. Szczegółowość jak samo „.btn”
+   (prefiks w :where), więc układ ustawiony w kontekście (np. .rv-grades, .sk-cta) dalej działa. Krawędź 4 px tylko na tym, co się wciska. ===== */
+:where(html:not([data-theme])) .btn { min-height: 48px; padding: 10px 20px; justify-content: center; border: 2px solid var(--h-edge); border-radius: var(--r-m); background: var(--h-card); color: var(--h-ink); box-shadow: 0 4px 0 var(--h-edge); font-weight: 700; font-size: var(--fs-m); line-height: 1.2; transition: transform .08s ease, box-shadow .08s ease, background .15s, border-color .15s, color .15s; }
+:where(html:not([data-theme])) .btn:hover:not(:disabled) { background: var(--h-paper); border-color: var(--h-edge); }
+:where(html:not([data-theme])) .btn:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
+:where(html:not([data-theme])) .btn.small { min-height: 40px; padding: 6px 12px; border-radius: var(--r-s); font-size: var(--fs-s); white-space: nowrap; }
+:where(html:not([data-theme])) .btn.primary { background: var(--h-acc); border-color: var(--h-acc); color: var(--h-acc-ink); box-shadow: 0 4px 0 var(--h-acc-edge); }
+:where(html:not([data-theme])) .btn.primary:hover:not(:disabled) { background: color-mix(in srgb, var(--h-acc) 88%, #fff); border-color: color-mix(in srgb, var(--h-acc) 88%, #fff); }
+:where(html:not([data-theme])) .btn.ghost { background: transparent; border-color: transparent; box-shadow: none; color: var(--h-acc); padding-inline: 8px; }
+:where(html:not([data-theme])) .btn.ghost:hover:not(:disabled) { background: transparent; border-color: transparent; text-decoration: underline; text-underline-offset: 3px; }
+:where(html:not([data-theme])) .btn.ghost:active:not(:disabled) { transform: none; }
+:where(html:not([data-theme])) .btn.danger { color: var(--h-red); }
+:where(html:not([data-theme])) .btn:disabled { background: var(--h-line); border-color: var(--h-line); color: var(--h-muted); box-shadow: none; cursor: default; }
+:where(html:not([data-theme])) .btn.ghost:disabled { background: transparent; border-color: transparent; }
 /* Cel dotyku ≥ 44 px dla małych przycisków i przełączników: pole kliknięcia powiększone niewidocznym ::after. */
 html:not([data-theme]) :is(.btn.small, .seg button) { position: relative; }
 html:not([data-theme]) :is(.btn.small, .seg button)::after { content: ""; position: absolute; inset: -8px -2px; }
-html:not([data-theme]) .btn.small.primary { box-shadow: 0 3px 0 var(--h-acc-edge); }
-html:not([data-theme]) .btn.small.ghost { box-shadow: none; }
-html:not([data-theme]) :is(.panel, .list, .empty, .modal) { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: var(--h-r); box-shadow: none; }
+html:not([data-theme]) :is(.panel, .list, .empty, .modal) { border: 2px solid var(--h-line); border-radius: var(--h-r); box-shadow: none; }
 /* Karta w karcie: bez drugiego grubego dołu. */
 html:not([data-theme]) :is(.panel, .list, .modal, .empty) :is(.panel, .list) { border-bottom: 2px solid var(--h-line); border-radius: var(--r-m); }
 html:not([data-theme]) .panel, html:not([data-theme]) .list { background: var(--surface); }
@@ -4588,7 +4589,7 @@ html:not([data-theme]) .lp-bar i::after { background: var(--accent); box-shadow:
 html:not([data-theme]) .lp-bar i.cur { background: color-mix(in srgb, var(--h-lime) 55%, var(--surface)); box-shadow: inset 0 0 0 2px var(--accent); }
 html:not([data-theme]) .lp-chip { border-radius: 999px; box-shadow: inset 0 0 0 2px var(--h-line), 0 3px 0 var(--h-edge); }
 html:not([data-theme]) .lp-combo:not([hidden]) { animation: h-pop .45s var(--h-spring) both; }
-html:not([data-theme]) :is(.lp-card, .sk-card) { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: var(--r-l); box-shadow: none; }
+html:not([data-theme]) :is(.lp-card, .sk-card) { border: 2px solid var(--h-line); border-radius: var(--r-l); box-shadow: none; }
 html:not([data-theme]) .lp-fb { border: 2px solid transparent; border-radius: var(--r-m); }
 html:not([data-theme]) .lp-fb.ok { background: var(--h-acc-soft); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 html:not([data-theme]) .lp-fb.no { background: var(--h-orange-soft); border-color: color-mix(in srgb, var(--h-orange) 40%, transparent); }
@@ -4598,7 +4599,7 @@ html:not([data-theme]) .lp-bottom { border-top: 2px solid var(--h-line); backgro
 html:not([data-theme]) .lp-cta { border-radius: var(--r-m); letter-spacing: .01em; }
 html:not([data-theme]) .lp-float { padding: 4px 12px; border-radius: 999px; background: var(--h-lime); color: var(--h-lime-ink); text-shadow: none; box-shadow: 0 3px 0 var(--h-lime-edge); }
 html:not([data-theme]) .lp-float.coin { background: #FFE7A3; color: #6A3B00; box-shadow: 0 3px 0 #E0A20F; }
-html:not([data-theme]) .lp-stat { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: var(--r-m); background: var(--surface); }
+html:not([data-theme]) .lp-stat { border: 2px solid var(--h-line); border-radius: var(--r-m); background: var(--surface); }
 html:not([data-theme]) .lp-stat b { color: var(--accent-text); font-variant-numeric: tabular-nums; }
 html:not([data-theme]) .lp-stas { width: 112px; height: 112px; }
 html:not([data-theme]) .lp-fresh .lp-stas { animation: h-pop .5s var(--h-spring) both; }
@@ -4618,7 +4619,7 @@ html:not([data-theme]) .h2-donetop { display: grid; justify-items: center; gap: 
    „Przerwa” jako przycisk, 4 kafelki 2×2 na telefonie, czysta limonka aktualnego segmentu w ciemnym. */
 html:not([data-theme]) .lp-bigstars .off { opacity: .25 !important; filter: grayscale(1); }
 html:not([data-theme]) .lp:has(.lp-done-screen .lp-actions .btn.primary) .lp-bottom .lp-cta { background: var(--surface); color: var(--ink); border-color: var(--line); box-shadow: 0 4px 0 var(--h-edge); }
-html:not([data-theme]) .lp-done-screen .btn.ghost { border: 2px solid var(--line); background: var(--surface); color: var(--ink); box-shadow: 0 3px 0 var(--h-edge); }
+html:not([data-theme]) .lp-done-screen .btn.ghost { border: 2px solid var(--h-edge); background: var(--surface); color: var(--ink); box-shadow: 0 4px 0 var(--h-edge); }
 @media (max-width: 420px) { html:not([data-theme]) .lp-stats:has(> :nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 html[data-green="dark"]:not([data-theme]) .lp-bar i.cur { background: #CDF25E; box-shadow: inset 0 0 0 2px #0F5A2F; }
 html:not([data-theme]) .lp-stat b .h2-coin { vertical-align: -3px; }
@@ -4627,11 +4628,11 @@ html:not([data-theme]) .lp-stage:has(.lp-done-screen) { padding-bottom: 32px; }
 /* ===== H2 etap 5: Powtórki (pomarańczowy akcent, fiszka 3D, klawisze ocen) ===== */
 html:not([data-theme]) { --h-rv-bg: #FFF6EA; --h-rv-line: #F5DDBF; --h-rv-edge: #E9C08C; --h-rv-num: #B35400; --h-rv-ink: #7A3600; }
 html[data-green="dark"]:not([data-theme]) { --h-rv-bg: #2A1F12; --h-rv-line: #4A3518; --h-rv-edge: #120C05; --h-rv-num: #FF9F43; --h-rv-ink: #FFC27F; }
-html:not([data-theme]) .rv-hero, html:not([data-theme]) .rv-hero.calm { background: var(--h-rv-bg); border: 2px solid var(--h-rv-line); border-bottom: 6px solid var(--h-rv-edge); border-radius: var(--r-l); box-shadow: none; }
+html:not([data-theme]) .rv-hero, html:not([data-theme]) .rv-hero.calm { background: var(--h-rv-bg); border: 2px solid var(--h-rv-line); border-radius: var(--r-l); box-shadow: none; }
 html:not([data-theme]) .rv-hero .eyebrow { color: var(--h-rv-ink); }
 html:not([data-theme]) .rv-hero .sk-bignum b { color: var(--h-rv-num); font-size: 3rem; }
 html:not([data-theme]) .rv-hero .rv-meta { border-top: 2px dashed var(--h-rv-line); }
-html:not([data-theme]) .rv-box { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: var(--r-m); background: var(--surface); }
+html:not([data-theme]) .rv-box { border: 2px solid var(--h-line); border-radius: var(--r-m); background: var(--surface); }
 html:not([data-theme]) .rv-box.top { background: color-mix(in srgb, var(--h-lime) 45%, var(--surface)); border-color: color-mix(in srgb, var(--h-lime) 75%, var(--h-line)); }
 html:not([data-theme]) .rv-box.top b, html:not([data-theme]) .rv-box.top span { color: var(--h-ink); }
 html:not([data-theme]) .rv-box.top.zero { background: var(--surface); border-color: var(--h-line); }
@@ -4681,7 +4682,7 @@ html:not([data-theme]) .nb:not(.zh-card):hover { transform: none; }
 html:not([data-theme]) .nb:not(.zh-card):active { transform: translateY(3px); border-bottom-width: 3px; }
 html:not([data-theme]) .nb-prog .nb-bar { height: 10px; background: color-mix(in srgb, var(--line) 40%, var(--surface)); }
 html:not([data-theme]) .nb-prog .nb-bar i:not(.st) { background: var(--accent); box-shadow: inset 0 3px 0 rgba(255,255,255,.28); }
-html:not([data-theme]) .cover { border: 2px solid var(--h-line); border-bottom: 6px solid color-mix(in srgb, var(--c, var(--accent)) 55%, var(--h-edge)); border-radius: var(--r-l); }
+html:not([data-theme]) .cover { border: 2px solid var(--h-line); border-radius: var(--r-l); }
 /* Ścieżka kursu: bez kresek, przystanki 3D przesunięte falą (lewo–prawo), następny limonkowy ze Stasiem. */
 html:not([data-theme]) .sk-course .sk-path { display: grid; gap: 12px; padding: 0; list-style: none; }
 html:not([data-theme]) .sk-course .sk-node { grid-template-columns: 116px minmax(0, 1fr); padding: 2px 0; }
@@ -4707,11 +4708,11 @@ html:not([data-theme]) .h2-now { display: inline-block; margin-left: 8px; paddin
 html.calm main.h-ent .sk-course .sk-dot { animation: none !important; }
 html.calm .nb:not(.zh-card):active { transform: none; }
 /* ===== H2 etap 7: Terminy i Kalendarz ===== */
-html:not([data-theme]) .th-hero { border: 2px solid var(--h-line); border-bottom: 6px solid var(--h-edge); border-radius: var(--r-l); box-shadow: inset 8px 0 0 var(--tc); padding-left: 22px; }
+html:not([data-theme]) .th-hero { border: 2px solid var(--h-line); border-radius: var(--r-l); box-shadow: inset 8px 0 0 var(--tc); padding-left: 22px; }
 html:not([data-theme]) .th-big { border-radius: 50%; min-width: 92px; min-height: 92px; box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--u-ink, var(--accent)) 30%, transparent), 0 4px 0 color-mix(in srgb, var(--u-ink, var(--accent)) 25%, var(--h-edge)); }
 html:not([data-theme]) main.h-ent .th-big { animation: h-pop .5s var(--h-spring) calc(200ms - var(--h-el, 0ms)) backwards; }
-html:not([data-theme]) .term { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: var(--r-m); box-shadow: inset 6px 0 0 var(--c, var(--line)); padding-left: 18px; }
-html:not([data-theme]) .tl { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: var(--r-m); box-shadow: inset 6px 0 0 var(--tc); padding-left: 16px; }
+html:not([data-theme]) .term { border: 2px solid var(--h-line); border-radius: var(--r-m); box-shadow: inset 6px 0 0 var(--c, var(--line)); padding-left: 18px; }
+html:not([data-theme]) .tl { border: 2px solid var(--h-line); border-radius: var(--r-m); box-shadow: inset 6px 0 0 var(--tc); padding-left: 16px; }
 /* 4. Bez odhaczania (konto bez uprawnień) nie zostaje pusta kolumna; meta-linia bez wiszącej kropki przy zawijaniu. */
 html:not([data-theme]) .tl:has(> .tl-tick-none) { grid-template-columns: minmax(0, 1fr) auto; }
 html:not([data-theme]) .tl:has(> .tl-tick-none) > .tl-tick-none { display: none; }
@@ -4796,7 +4797,7 @@ html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(1) { animation-delay: 
 html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(2) { animation-delay: calc(190ms - var(--h-el, 0ms)); }
 html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(3) { animation-delay: calc(260ms - var(--h-el, 0ms)); }
 html:not([data-theme]) main.h-ent .gry-tiles > :nth-child(n+4) { animation-delay: calc(330ms - var(--h-el, 0ms)); }
-html:not([data-theme]) .gry-badge { border: 2px solid var(--h-line); border-bottom-width: 4px; background: var(--h-acc-soft); }
+html:not([data-theme]) .gry-badge { border: 2px solid var(--h-line); background: var(--h-acc-soft); }
 html:not([data-theme]) .gry-ic { border: 2px solid var(--h-line); border-bottom-width: 4px; transition: transform .08s ease, border-bottom-width .08s ease; }
 html:not([data-theme]) .gry-ic:active { transform: translateY(2px); border-bottom-width: 2px; }
 /* Hasło dnia: kafle i klawisze jak klawisze 3D. Górne obwódki bez zmian (daltonizm: stan 1 przerywana, stan 2 ciągła gruba),
@@ -4819,7 +4820,7 @@ html:not([data-theme]) .hd-subj { box-shadow: inset 0 -2px 0 color-mix(in srgb, 
 html:not([data-theme]) .hd-hint { border-radius: var(--r-m); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--h-orange) 35%, var(--h-line)), inset 0 -4px 0 color-mix(in srgb, var(--h-orange) 35%, var(--h-line)); }
 /* Ranking: wiersze jako karty, podium jako medale 3D, „Ty” limonkowe; miejsce gracza dużą liczbą w kółku. */
 html:not([data-theme]) .rk-list { gap: 6px; }
-html:not([data-theme]) .rk-row { border: 2px solid var(--h-line); border-bottom: 4px solid var(--h-edge); border-radius: var(--r-m); background: var(--surface); }
+html:not([data-theme]) .rk-row { border: 2px solid var(--h-line); border-radius: var(--r-m); background: var(--surface); }
 html:not([data-theme]) .rk-row.me { background: var(--h-acc-soft); border-color: var(--accent); border-bottom-color: var(--h-acc-edge); }
 html:not([data-theme]) .rk-pos { width: 34px; height: 34px; background: var(--sunk); border-bottom: 3px solid var(--h-line); }
 html:not([data-theme]) .rk-pos.m1 { background: #FFD84D; color: #3A2A00; border-bottom-color: #C79A00; }
@@ -4827,7 +4828,7 @@ html:not([data-theme]) .rk-pos.m2 { background: #DCE3E8; color: #22303A; border-
 html:not([data-theme]) .rk-pos.m3 { background: #F2B98A; color: #3A1E08; border-bottom-color: #B9763F; }
 html:not([data-theme]) main.h-ent .rk-row:nth-child(-n+3) .rk-pos { animation: h-pop .5s var(--h-spring) calc(260ms - var(--h-el, 0ms)) backwards; }
 html:not([data-theme]) .rk-place b { display: inline-grid; place-items: center; min-width: 64px; height: 64px; padding: 0 10px; border-radius: 999px; background: var(--h-lime); color: #1B2A10; border-bottom: 5px solid #7FA51A; }
-html:not([data-theme]) .rk-hidden { border: 2px solid var(--h-line); border-bottom-width: 4px; border-radius: var(--r-m); }
+html:not([data-theme]) .rk-hidden { border: 2px solid var(--h-line); border-radius: var(--r-m); }
 html:not([data-theme]) .rk-bar { height: 12px; border-radius: 999px; }
 html:not([data-theme]) .rk-bar i { border-radius: 999px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .12); }
 html:not([data-theme]) .fchip { border: 2px solid var(--h-line); border-bottom-width: 4px; min-height: 40px; padding: 5px 14px; transition: transform .08s ease, border-bottom-width .08s ease; }
@@ -4837,7 +4838,7 @@ html:not([data-theme]) .fchip[aria-pressed="true"] { border-color: var(--accent)
 html:not([data-theme]) .kshop-tab { border: 2px solid var(--h-line); border-bottom-width: 4px; min-height: 44px; transition: transform .08s ease, border-bottom-width .08s ease; }
 html:not([data-theme]) .kshop-tab:active { transform: translateY(2px); border-bottom-width: 2px; }
 html:not([data-theme]) .kshop-tab[aria-selected="true"] { border-color: var(--h-acc-edge); }
-html:not([data-theme]) :is(.kcard, .shop-card, .shop-mission) { border: 2px solid var(--h-line); border-bottom: 5px solid var(--h-edge); border-radius: var(--r-l); box-shadow: none; }
+html:not([data-theme]) :is(.kcard, .shop-card, .shop-mission) { border: 2px solid var(--h-line); border-radius: var(--r-l); box-shadow: none; }
 html:not([data-theme]) :is(.kcard, .shop-card).is-on { border-color: var(--accent); border-bottom-color: var(--h-acc-edge); }
 
 html:not([data-theme]) .kcard-pv { border-bottom: 2px solid var(--h-line); }
@@ -4858,7 +4859,16 @@ html:not([data-theme]) :is(.more-row, .more-tile, .more-prof) { border: 2px soli
 html:not([data-theme]) :is(.more-row, .more-tile, .more-prof):is(:hover) { background: var(--surface); border-color: color-mix(in srgb, var(--accent) 45%, var(--h-line)); border-bottom-color: var(--h-edge); }
 html:not([data-theme]) :is(.more-row, .more-tile, .more-prof):not([disabled]):active { transform: translateY(2px); border-bottom-width: 2px; }
 html:not([data-theme]) .more-prof { border-bottom-width: 5px; border-radius: var(--r-l); }
-html:not([data-theme]) :is(.more-row, .more-tile) > .ico:first-child { border-radius: var(--r-m); background: var(--h-acc-soft); border-bottom: 3px solid color-mix(in srgb, var(--accent) 40%, var(--h-line)); }
+/* Wygląd pro, etap 2: w grupach „Więcej” bez kart w kartach – wiersze z separatorami, kafle jako miękkie pola. */
+html:not([data-theme]) .more-group .more-list { gap: 0; }
+html:not([data-theme]) .more-group .more-row { border: 0; border-radius: 0; background: transparent; }
+html:not([data-theme]) .more-group .more-row + .more-row { border-top: 2px solid var(--h-line); }
+html:not([data-theme]) .more-group .more-row:hover { background: transparent; }
+html:not([data-theme]) .more-group .more-row:hover :is(b, strong) { color: var(--h-acc); }
+html:not([data-theme]) .more-group .more-tile { border: 0; background: var(--h-paper); }
+html:not([data-theme]) .more-group .more-tile:hover { background: var(--h-acc-soft); }
+html:not([data-theme]) .more-group :is(.more-row, .more-tile):not([disabled]):active { transform: none; border-bottom-width: 0; }
+html:not([data-theme]) :is(.more-row, .more-tile) > .ico:first-child { border-radius: var(--r-m); background: var(--h-acc-soft); }
 html:not([data-theme]) :is(.more-list, .more-tiles) > :nth-child(3n+2) > .ico:first-child { background: var(--h-orange-soft); border-bottom-color: color-mix(in srgb, var(--h-orange) 50%, var(--h-line)); }
 html:not([data-theme]) :is(.more-list, .more-tiles) > :nth-child(3n+2) > .ico:first-child svg { color: var(--h-orange); }
 html:not([data-theme]) :is(.more-list, .more-tiles) > :nth-child(3n) > .ico:first-child { background: var(--h-blue-soft); border-bottom-color: color-mix(in srgb, var(--h-blue) 50%, var(--h-line)); }
@@ -4914,8 +4924,8 @@ html:not([data-theme]) .kprof { border-bottom: 2px solid var(--h-line); }
 /* Logowanie: zawsze jasne (ekran ma własne, stałe kolory), przyciski i karty 3D. */
 html:not([data-theme]) #login #loginBox .btn:not(.ghost) { border-width: 2px; border-radius: var(--r-m); box-shadow: 0 4px 0 #BFCBBA; transition: transform .08s ease, box-shadow .08s ease; }
 html:not([data-theme]) #login #loginBox .btn.primary { box-shadow: 0 4px 0 #0E5A30; }
-html:not([data-theme]) #login #loginBox .btn:not(.ghost):not([disabled]):active { transform: translateY(3px); box-shadow: 0 1px 0 #BFCBBA; }
-html:not([data-theme]) #login #loginBox .btn.primary:not([disabled]):active { box-shadow: 0 1px 0 #0E5A30; }
+html:not([data-theme]) #login #loginBox .btn:not(.ghost):not([disabled]):active { transform: translateY(4px); box-shadow: none; }
+html:not([data-theme]) #login #loginBox .btn.primary:not([disabled]):active { box-shadow: none; }
 html:not([data-theme]) #login .input { border: 2px solid #8FA397; border-radius: var(--r-m); }
 html:not([data-theme]) #login .input:focus { border-color: #1A7F45; box-shadow: 0 0 0 2px #fff, 0 0 0 5px #1A7F45; outline: none; }
 html:not([data-theme]) #login #loginBox [role="tablist"] { background: transparent; padding: 0; gap: 6px !important; }
@@ -4925,7 +4935,7 @@ html:not([data-theme]) #login #loginBox [role="tab"]:active { transform: transla
 html:not([data-theme]) #login .lk-chip button { border: 2px solid #CFE8D8; border-bottom: 4px solid #8CCBA6; border-radius: var(--r-s); transition: transform .08s ease, border-bottom-width .08s ease; }
 html:not([data-theme]) #login .lk-chip button:active { transform: translateY(2px); border-bottom-width: 2px; }
 html:not([data-theme]) #login :is(.btn, .lg-demo-btn, .lk-card, .lk-chip button, [role="tab"], .lg-lang):focus-visible { outline: 3px solid #0E5A30; outline-offset: 2px; }
-html:not([data-theme]) #login .lg-trial { border: 2px solid #BFE3CD; border-bottom: 6px solid #8CCBA6; border-radius: var(--r-l); }
+html:not([data-theme]) #login .lg-trial { border: 2px solid #BFE3CD; border-radius: var(--r-l); }
 html:not([data-theme]) #login .lg-trial-note { border-width: 2px; border-radius: var(--r-m); }
 html:not([data-theme]) #login .lg-demo-btn { border: 2px solid #BFE3CD; border-bottom: 4px solid #8CCBA6; border-radius: var(--r-m); transition: transform .08s ease, border-bottom-width .08s ease; }
 html:not([data-theme]) #login .lg-demo-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
@@ -4964,7 +4974,7 @@ html:not([data-theme]) .pm-grid { gap: 6px; }
 html:not([data-theme]) .pm-tip-st .pm-sq { width: 12px; height: 12px; border-width: 1.5px; border-bottom-width: 2.5px; border-radius: 4px; }
 html:not([data-theme]) main.h-ent .pm-grid > .pm-sq { animation: h-pop .35s var(--h-spring) calc(260ms - var(--h-el, 0ms)) backwards; }
 /* Karta „Na dziś” (podpowiedź): limonkowa karta 3D zamiast płaskiego gradientu. */
-html:not([data-theme]) .hint { background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-bottom: 5px solid color-mix(in srgb, var(--accent) 55%, var(--h-edge)); border-radius: var(--h-r); }
+html:not([data-theme]) .hint { background: var(--h-acc-soft); border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--h-line)); border-radius: var(--h-r); }
 html:not([data-theme]) .hint .eyebrow { color: var(--accent-text); }
 /* Przedmioty na telefonie: plakietka terminu w kafelku najwyżej w 2 liniach, zaokrąglona (nie owal). */
 @media (max-width: 520px) { html:not([data-theme]) .nb .foot .chip { border-radius: var(--r-s); font-size: var(--fs-xs); line-height: 1.25; padding: 4px 8px; text-align: left; } }
@@ -5049,14 +5059,14 @@ html[data-theme="pink"] main[data-view="home"] .btn.primary:not(.zh-hero .btn):h
 /* 3. Styl H pod panelem Stasia (jasny i ciemny zielony): Onest w nagłówkach, karty bez obrysów (32 px), pastylki, miękkie cienie. */
 html:not([data-theme]) main[data-view="home"] {
   --dz-card: #FFFFFF; --dz-soft: #EDF1EA; --dz-line: #DDE7D8; --dz-ink: #10231A; --dz-muted: #3E5046;
-  --dz-sh: 0 1px 2px rgba(16,35,26,.06), 0 10px 28px -14px rgba(16,35,26,.22);
-  --dz-sh-up: 0 2px 4px rgba(16,35,26,.08), 0 18px 36px -14px rgba(16,35,26,.3);
+  --dz-sh: 0 0 0 2px var(--dz-line);
+  --dz-sh-up: 0 0 0 2px var(--h-edge);
   --dz-head: "Onest","Onest-fallback", "Trebuchet MS", sans-serif;
 }
 html[data-green="dark"]:not([data-theme]) main[data-view="home"] {
   --dz-card: var(--h-card); --dz-soft: var(--h-raised); --dz-line: var(--h-line); --dz-ink: var(--h-ink); --dz-muted: var(--h-muted);
-  --dz-sh: 0 1px 2px rgba(0,0,0,.35), 0 12px 30px -14px rgba(0,0,0,.7);
-  --dz-sh-up: 0 2px 4px rgba(0,0,0,.4), 0 20px 38px -14px rgba(0,0,0,.8);
+  --dz-sh: 0 0 0 2px var(--dz-line);
+  --dz-sh-up: 0 0 0 2px var(--h-edge);
 }
 html:not([data-theme]) main[data-view="home"] :is(.pz-head h2, .ld-tile h3, .g-strip b, .home-fold > summary, .announce .eyebrow, .bs-card h3, .bs-name) { font-family: var(--dz-head); font-weight: 600; letter-spacing: -.01em; }
 html:not([data-theme]) main[data-view="home"] .pz-head h2 { font-size: var(--fs-xl); }
@@ -5077,8 +5087,6 @@ html:not([data-theme]) main[data-view="home"] .pz-days { background: var(--dz-ca
 html:not([data-theme]) main[data-view="home"] .pts-seg { background: var(--dz-line); }
 html:not([data-theme]) main[data-view="home"] .pts-seg > i:not(.st) { background: #1A7F45; }
 html[data-green="dark"]:not([data-theme]) main[data-view="home"] .pts-seg > i:not(.st) { background: var(--h-acc); }
-/* Przyciski pod panelem jako pastylki. */
-html:not([data-theme]) main[data-view="home"] .ld-block > :not(.zh-hero) .btn, html:not([data-theme]) main[data-view="home"] > :not(.ld-block) .btn { border-radius: 999px; }
 /* Ruch: kafelki terminów i wiersze wchodzą po kolei, karty unoszą się na najechanie. Wyłączane przez html.calm i reduced-motion. */
 @keyframes dz-in { from { opacity: 0; transform: translateY(10px); } }
 html:not([data-theme]) main.h-ent[data-view="home"] :is(.pz-row, .pz-tile, .ld-tile.zh-card) { animation: dz-in .45s var(--h-out) backwards; }
@@ -5098,10 +5106,10 @@ html:not([data-theme]) .sk-hero.zh-hero, html:not([data-theme]) .sk-hero.zh-hero
 html[data-green=dark]:not([data-theme]) .sk-hero.zh-hero, html[data-green=dark]:not([data-theme]) .sk-hero.zh-hero.calm, html[data-green=dark]:not([data-theme]) .sk-hero.zh-hero.warn { background: #133B2A; box-shadow: inset 0 0 0 1px #1D4A36, 0 22px 44px -20px rgba(0,0,0,.85); }
 html:not([data-theme]) .sk-hero.zh-hero.warn, html[data-green=dark]:not([data-theme]) .sk-hero.zh-hero.warn { box-shadow: inset 0 0 0 3px #CDF25E, 0 22px 44px -20px rgba(16,35,26,.6); }
 html:not([data-theme]) .zh-hero :is(.zh-bubble, .zh-step) { background: #1D4A36; }
-html:not([data-theme]) .zh-hero .zh-go.sk-start { box-shadow: 0 12px 24px -12px rgba(16,35,26,.7); }
-html:not([data-theme]) .zh-hero .zh-go.sk-start:active { transform: translateY(1px); }
-.zh-hero .ld-links .btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; border-radius: 999px; }
-html:not([data-theme]) .zh-hero .ld-links .btn.ghost { border: 1.5px solid rgba(232,245,236,.55); box-shadow: none; }
+html:not([data-theme]) .zh-hero .zh-go.sk-start { box-shadow: 0 4px 0 #8FB52A; }
+html:not([data-theme]) .zh-hero .zh-go.sk-start:active { transform: translateY(4px); box-shadow: none; }
+.zh-hero .ld-links .btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
+html:not([data-theme]) .zh-hero .ld-links .btn.ghost { border-color: transparent; box-shadow: none; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(232,245,236,.5); }
 .zh-hero .zh-arrow .ico { width: 22px; height: 22px; }
 main[data-view="home"] .ico { display: inline-grid; flex: none; width: 18px; height: 18px; }
 main[data-view="home"] .ico svg { width: 100%; height: 100%; }
@@ -5113,14 +5121,6 @@ main[data-view="home"] .ld-prof .link:last-child, main[data-view="home"] .g-stri
 /* Nagłówki sekcji pod panelem: nagłówek H w każdym motywie (wcześniej w motywach ze sklepu drobne wersaliki). */
 main[data-view="home"] :is(.ld-head > .eyebrow, .fun-row > .eyebrow) { font-family: "Onest","Onest-fallback", "Trebuchet MS", sans-serif; font-weight: 600; font-size: var(--fs-xl); letter-spacing: -.01em; text-transform: none; color: var(--ink); }
 html:not([data-theme]) main[data-view="home"] :is(.greet h1, .sk-row-big .t > b, .bs-name, .g-strip b) { font-family: var(--dz-head); font-weight: 600; letter-spacing: -.01em; }
-/* Jedno główne CTA (limonkowe „Zaczynamy · 5 min”): pozostałe przyciski pod panelem to miękkie pastylki bez twardego brzegu 3D. */
-html:not([data-theme]) main[data-view="home"] .ld-block > :not(.zh-hero) .btn:not(.primary), html:not([data-theme]) main[data-view="home"] > :not(.ld-block) .btn:not(.primary) {
-  border: 0 !important; background: var(--dz-soft); color: var(--dz-ink); box-shadow: none; font-weight: 700;
-}
-html:not([data-theme]) main[data-view="home"] .ld-block > :not(.zh-hero) .btn:not(.primary):hover, html:not([data-theme]) main[data-view="home"] > :not(.ld-block) .btn:not(.primary):hover { background: var(--dz-line); }
-/* ux-1 (etap 2, K1): główny przycisk pod panelem (np. „Kup dostęp”) w kolorze akcentu, nie szara pigułka. */
-html:not([data-theme]) main[data-view="home"] :is(.ld-block > :not(.zh-hero), main > :not(.ld-block)) .btn.primary:not(.uxw-lime) { border: 0 !important; background: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 0 var(--h-acc-edge); border-radius: 999px; min-height: 48px; font-weight: 800; }
-html:not([data-theme]) main[data-view="home"] :is(.ld-block > :not(.zh-hero), main > :not(.ld-block)) .btn:active { transform: translateY(1px); }
 html:not([data-theme]) main[data-view="home"] .ld-tile .zh-go { min-height: 48px; }
 /* Tory pasków postępu: obwódka w kolorze tekstu pomocniczego (≥ 3:1 do karty). */
 main[data-view="home"] .pz .pts-seg { box-shadow: inset 0 0 0 1px var(--muted); }
@@ -5182,8 +5182,8 @@ main[data-view="home"] .sitefoot > span { display: inline-flex; align-items: cen
    z limonkowym przyciskiem. Ruch tylko transform/opacity; wyłączany przez prefers-reduced-motion i html.calm. */
 html:not([data-theme]) #login {
   --lg-head: "Onest","Onest-fallback", "Trebuchet MS", sans-serif;
-  --lg-sh: 0 1px 2px rgba(16,35,26,.06), 0 10px 28px -14px rgba(16,35,26,.24);
-  --lg-sh-up: 0 2px 4px rgba(16,35,26,.08), 0 18px 36px -14px rgba(16,35,26,.32);
+  --lg-sh: 0 0 0 2px #E1E8DD;
+  --lg-sh-up: 0 0 0 2px #BFCBBA;
   background: #F4F5F0; color: #10231A;
 }
 html:not([data-theme]).needlogin, html:not([data-theme]).needlogin body { background: #F4F5F0; }
@@ -5218,10 +5218,10 @@ html:not([data-theme]) #login .lk-opt[aria-pressed="true"] small { color: #CDF25
 html:not([data-theme]) #login .lk-opt:disabled { background: #EDF1EA; color: #3E5046; box-shadow: none; }
 html:not([data-theme]) #login .lk-opt:disabled small { color: #3E5046; }
 /* Przyciski: pastylki. Główny zielony, miękki cień zamiast twardego brzegu. */
-html:not([data-theme]) #login :is(.lk-go, #loginBox .btn:not(.ghost), .lg-pokaz-cta button) { min-height: 52px; border-radius: 999px !important; box-shadow: 0 12px 24px -14px rgba(16,35,26,.55) !important; transition: transform .15s cubic-bezier(.2,.8,.2,1), background .15s, box-shadow .15s; }
-html:not([data-theme]) #login :is(.lk-go, #loginBox .btn:not(.ghost)):not([disabled]):hover { transform: translateY(-2px); }
-html:not([data-theme]) #login :is(.lk-go, #loginBox .btn:not(.ghost)):not([disabled]):active { transform: translateY(1px) scale(.99); box-shadow: 0 4px 10px -6px rgba(16,35,26,.5) !important; }
-html:not([data-theme]) #login #loginBox .btn:not(.ghost):not(.primary) { border: 0 !important; background: #FFFFFF; color: #10231A; }
+html:not([data-theme]) #login :is(.lk-go, #loginBox .btn:not(.ghost), .lg-pokaz-cta button) { min-height: 52px; border-radius: var(--r-m); transition: transform .08s ease, background .15s, box-shadow .08s ease; }
+html:not([data-theme]) #login :is(.lk-go, .lg-pokaz-cta button) { box-shadow: 0 4px 0 var(--h-acc-edge); }
+html:not([data-theme]) #login :is(.lk-go, #loginBox .btn:not(.ghost)):not([disabled]):active { transform: translateY(4px); box-shadow: none; }
+html:not([data-theme]) #login #loginBox .btn:not(.ghost):not(.primary) { border-color: var(--h-edge); background: #FFFFFF; color: #10231A; }
 html:not([data-theme]) #login #loginBox .btn.ghost, html:not([data-theme]) #login #loginBox form ~ div .btn { min-height: 44px; }
 /* Kod z maila / Hasło: przełącznik w pastylce. */
 html:not([data-theme]) #login #loginBox [role="tablist"] { padding: 4px; border-radius: 999px; background: #EDF1EA; gap: 4px !important; }
@@ -5380,7 +5380,7 @@ html:not([data-theme]) #login .lg-demo-btn { background: transparent !important;
 html:not([data-theme]) #login .lg-demo-btn:hover { transform: none; text-decoration-color: currentColor; }
 </style>
 <link rel="stylesheet" href="wyglad-ux.css?v=20261119-tokeny">
-<link rel="stylesheet" href="ux-wejscie.css?v=20261119-tokeny">
+<link rel="stylesheet" href="ux-wejscie.css?v=20261119-przyciski">
 
 <header class="bar"><div class="wrap">
   <button class="morebtn" id="moreBtn" type="button" aria-label="Więcej"></button>
