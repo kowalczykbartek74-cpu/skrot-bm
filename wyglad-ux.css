@@ -218,7 +218,8 @@ html:not([data-theme]) #main .set-themes > .set-theme:last-child:nth-child(n) .e
    paski z lewej przy nagłówkach i w ramkach z przykładem, wzorem, podpowiedzią. Kolor przedmiotu na kartach terminów zostaje (etap 4). ===== */
 html:not([data-theme]) body { background-image: none; }
 html:not([data-theme]) body::before, html:not([data-theme]) body::after { content: none; }
-html:not([data-theme]) .ptitle { background: none; padding-bottom: 0; }
+html:not([data-theme]) :is(.ptitle, .sitefoot) { background-image: none; }
+html:not([data-theme]) .ptitle { padding-bottom: 0; }
 html:not([data-theme]) .art.sticker { display: none; }
 html:not([data-theme]) .nb-top.pat { background-image: none; background-color: color-mix(in srgb, var(--c, var(--accent)) 14%, var(--surface)); }
 html:not([data-theme]) :is(.today, .tv, .tv-now, .g-hero, .g-result.pass, .now, .now.warn, .rv-hero, .rv-hero.calm, .empty:not(.small), .pk-back, .lv-head) { background-image: none; }
@@ -238,3 +239,50 @@ html:not([data-theme]) .ex-item.bad { background-color: var(--h-red-soft); }
 .pro-ico.sam { margin-right: 0; vertical-align: middle; }
 .pro-ico.sam svg { width: 1em; height: 1em; }
 :is(.btn.primary, .lk-go, .zh-hero, .now, .rv-hero) .pro-ico, .pro-ico:is(.lock *, .chip *) { color: currentColor; }
+
+/* ===== Wygląd pro, etap 4 (19.11.2026): ekrany. ===== */
+/* Wejście: kierunki „Wkrótce” pod jednym rozwijanym wierszem; widoczny tylko pasek kroków. */
+html:not([data-theme]) #login .lk-krok { display: none; }
+#login .lk-inne > summary { list-style: none; cursor: pointer; border-style: dashed; color: inherit; }
+#login .lk-inne > summary::-webkit-details-marker { display: none; }
+#login .lk-inne > summary > svg { transition: transform .15s ease; }
+#login .lk-inne[open] > summary > svg { transform: rotate(90deg); }
+#login .lk-inne[open] > summary { margin-bottom: 10px; }
+#login .lk-inne > summary .lk-ico { background: transparent; border: 2px dashed currentColor; color: var(--h-muted, #3E5046); }
+/* Dziś: bez liczników z zerami. Seria i tydzień pokazują się, gdy jest co pokazać. */
+html:not([data-theme]) main[data-view="home"] .greet :is(.xp-chip.nw-streak.streak-none, .xp-chip.nw-tyg.zero) { display: none; }
+/* Nagłówek na telefonie: tylko „Zaloguj”; zakup jest na karcie „3 dni za darmo” na stronie. */
+@media (max-width: 760px) { html:not([data-theme]) .bar .bar-kup { display: none; } }
+/* Przedmioty na telefonie: jedna lista z separatorami (kolejność wg terminu), kwadrat z inicjałami w kolorze przedmiotu. */
+.nb-top .nb-ini { display: none; }
+@media (max-width: 760px) {
+  html:not([data-theme]) #main #subj-grid { grid-template-columns: 1fr; gap: 0; background: var(--h-card); border: 2px solid var(--h-line); border-radius: var(--r-l); overflow: hidden; }
+  html:not([data-theme]) #main #subj-grid > .nb { display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-template-areas: "ico t" "ico p" "ico when"; column-gap: 14px; row-gap: 6px; align-items: center; min-height: 0; padding: 14px 16px; margin: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent; text-align: left; transform: none; }
+  html:not([data-theme]) #main #subj-grid > .nb + .nb { border-top: 2px solid var(--h-line); }
+  html:not([data-theme]) #main #subj-grid > .nb:hover { background: var(--h-paper); }
+  html:not([data-theme]) #main #subj-grid > .nb > .nb-top { grid-area: ico; display: grid; place-items: center; width: 44px; height: 44px; margin: 0; border: 0; border-radius: var(--r-m); background: var(--c, var(--accent)); color: #fff; }
+  html:not([data-theme]) #main #subj-grid > .nb > .nb-top .nb-ini { display: block; font-weight: 800; font-size: var(--fs-s); letter-spacing: .02em; }
+  html:not([data-theme]) #main #subj-grid > .nb > .nb-top .nb-badge { position: static; transform: none; background: transparent; color: #fff; box-shadow: none; font-size: var(--fs-xl); }
+  html:not([data-theme]) #main #subj-grid > .nb > h3 { grid-area: t; margin: 0; font-size: var(--fs-m); line-height: 1.25; overflow-wrap: normal; word-break: normal; }
+  html:not([data-theme]) #main #subj-grid > .nb > .nb-prog { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  html:not([data-theme]) #main #subj-grid > .nb > .nb-prog .nb-bar { flex: 1 1 120px; }
+  html:not([data-theme]) #main #subj-grid > .nb > .en { display: none; }
+  html:not([data-theme]) #main #subj-grid > .nb > :is(.nb-prog, .meta) { grid-area: p; margin: 0; }
+  html:not([data-theme]) #main #subj-grid > .nb > .foot { grid-area: when; justify-self: start; margin: 0; }
+  html:not([data-theme]) #main #subj-grid > .nb > .foot:empty { display: none; }
+  html:not([data-theme]) #main #subj-grid > .nb > .foot .nb-approx { display: none; }
+}
+/* Terminy i kalendarz: kolor przedmiotu w obrysie karty, bez paska z lewej (zasada 5). */
+html:not([data-theme]) :is(.th-hero, .tl, .tl:focus-within) { box-shadow: none; border-color: color-mix(in srgb, var(--tc, var(--accent)) 38%, var(--h-line)); padding-left: 16px; }
+html:not([data-theme]) .term { box-shadow: none; border-color: color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); padding-left: 16px; }
+html:not([data-theme]) :is(.ag-term, .ag-mine, .ag-row.ag-plan) { border-left: 0; background-color: color-mix(in srgb, var(--t, var(--accent)) 9%, var(--h-card)); border-radius: var(--r-s); }
+html:not([data-theme]) .cls-ab { border-left: 0; background-color: color-mix(in srgb, var(--c, var(--accent)) 9%, var(--h-card)); }
+html:not([data-theme]) :is(.po-card, .po-subj, .stas-card) { border-left: 2px solid color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); border-color: color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); }
+html:not([data-theme]) .exam-card.soon { box-shadow: none; }
+/* Lekcja demo: źródło jako zwykły podpis, nie etykieta wersalikami. */
+#login .lg-pokaz-src { font-size: var(--fs-s); font-weight: 600; }
+/* Wejście, krok 3: przy karcie próby logowanie zwinięte pod „Masz już konto? Zaloguj się” (skrot-supabase.js). */
+#login .lg-konto { display: grid; gap: 16px; }
+html:not([data-theme]) #login .lg-konto > summary.lg-or { list-style: none; cursor: pointer; min-height: 44px; margin: 0 !important; color: var(--h-acc, #1A7F45) !important; }
+#login .lg-konto > summary::-webkit-details-marker { display: none; }
+html:not([data-theme]) #login .lg-konto[open] > summary.lg-or { color: var(--h-muted, #3E5046) !important; }

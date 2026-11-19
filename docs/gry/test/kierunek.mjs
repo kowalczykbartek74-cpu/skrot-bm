@@ -24,6 +24,7 @@ for (const lang of ["pl", "en"]) for (const w of [390, 1280]) {
   await shot(p, `kierunek-3-${lang}-${w}`);
   // „Zmień” wraca do kroku 1, „Inny kierunek” pokazuje listę oczekujących.
   await p.click("#lgWybrany button");
+  await p.click('#lgKierunek .lk-inne > summary'); // wygląd pro, etap 4: kierunki „Wkrótce” zwinięte
   await p.click('#lgKierunek [data-k="inny"]');
   ok(`${lang} ${w}: inny kierunek → lista oczekujących`, await p.locator("#lk-kier").isVisible());
   await shot(p, `kierunek-wkrotce-${lang}-${w}`);

@@ -32,7 +32,7 @@ const nowy = (extra = {}) => page(b, { konto: "brak", w: 375, h: 812, ls: { "bm-
 {
   const p = await nowy(); await trasy(p);
   await p.goto(BASE + "index.html"); await p.waitForTimeout(1500);
-  await p.locator('.lk-card[data-k="inny"]').click(); await p.waitForTimeout(800);
+  await p.locator('.lk-inne > summary').click(); await p.locator('.lk-card[data-k="inny"]').click(); await p.waitForTimeout(800);
   const opcje = await p.locator("#lk-kier option").allTextContents();
   ok("A: lista z bazy, bez działającego BM 1. st., z „Nie ma mojego kierunku”", opcje.includes("Ekonomia · I stopień") && opcje.includes("Business Management · II stopień") && opcje.includes("Marketing · II stopień")
     && !opcje.some((o) => o === "Business Management" || o === "Business Management · I stopień") && opcje.at(-1) === "Nie ma mojego kierunku na liście", opcje);
@@ -59,7 +59,7 @@ const nowy = (extra = {}) => page(b, { konto: "brak", w: 375, h: 812, ls: { "bm-
   odp = { status: 429, body: { ok: false, code: "limit", message: "Za dużo zapisów z tej sieci. Spróbuj za godzinę." } };
   const p = await nowy(); await trasy(p);
   await p.goto(BASE + "index.html"); await p.waitForTimeout(1500);
-  await p.locator('.lk-card[data-k="inny"]').click(); await p.waitForTimeout(800);
+  await p.locator('.lk-inne > summary').click(); await p.locator('.lk-card[data-k="inny"]').click(); await p.waitForTimeout(800);
   await p.selectOption("#lk-kier", "wefiz-mkt-2-st"); await p.fill("#lk-mail", "x@x.pl"); await p.check("#lk-zg");
   await p.locator('[data-a="zapisz"]').click(); await p.waitForTimeout(800);
   ok("A: limit z jednej sieci: komunikat, formularz zostaje", /Za dużo zapisów z tej sieci/.test(await p.locator("#lk-err").innerText()) && (await p.locator('[data-a="zapisz"]').isEnabled()));

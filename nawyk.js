@@ -628,7 +628,7 @@
     const cel = 5 - wolne, txt = cel <= 0 ? PL.przerwaTydz : cel === 5 ? fmt(PL.tydzienK, k) : fmt(PL.tydzienKz, k, cel);
     const lab = { nauka: PL.dzienNauka, zamroz: PL.dzienZamroz, przerwa: PL.dzienPrzerwa, brak: PL.dzienBrak, przyszly: PL.dzienPrzyszly };
     const opis = week.map((c) => fmt(lab[c.s], dzienLabel(c.d))).join(", ");
-    return h("button", { type: "button", class: "xp-chip nw-tyg" + (cel > 0 && k >= cel ? " pelny" : ""), "aria-haspopup": "dialog", title: PL.tydzienTitle, "aria-label": txt + ". " + fmt(PL.tydzienAria, opis), onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
+    return h("button", { type: "button", class: "xp-chip nw-tyg" + (cel > 0 && k >= cel ? " pelny" : "") + (k === 0 ? " zero" : ""), "aria-haspopup": "dialog", title: PL.tydzienTitle, "aria-label": txt + ". " + fmt(PL.tydzienAria, opis), onclick: (e) => { e.stopPropagation(); oknoSerii(); } },
       h("span", { class: "nw-tyg-dots", "aria-hidden": "true" }, week.map((c) => h("i", { class: `s-${c.s}${c.dzis ? " dzis" + (c.s === "nauka" || c.s === "przerwa" ? "" : " todo") : ""}` }))),
       h("span", { class: "nw-tyg-t", "aria-hidden": "true", text: txt }));
   }

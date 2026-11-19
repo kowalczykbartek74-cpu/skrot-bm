@@ -231,7 +231,7 @@
     try { ls.set("skrot-roczniki-status", JSON.stringify(Object.fromEntries(l.map((r) => [r.id, r.status])))); } catch {}
     window.skrotKrok1Odswiez?.();
     if (skrot.realAdmin) return;
-    document.querySelectorAll(".lk-card[data-k]").forEach((b) => { if (!ok.includes(b.dataset.k)) b.remove(); });
+    document.querySelectorAll(".lk-card[data-k]").forEach((b) => { if (b.dataset.k !== "inny" && !ok.includes(b.dataset.k)) b.remove(); }); // „inny” to wiersz listy oczekujących, nie rocznik
     if (cur && !ok.includes(cur.id) && !ED) {
       ls.set("skrot-rocznik", R.DOMYSLNY);
       let juz = null; try { juz = sessionStorage.getItem("skrot-rocznik-baza-reload"); } catch {}
@@ -1027,6 +1027,15 @@
       el("p", { class: "lg-trial-price", text: "Potem, jeśli zechcesz: 199 zł jednorazowo (do 11 lipca 2027) albo 35 zł miesięcznie. Po okresie próbnym nic nie pobieramy samo." }),
       el("button", { type: "button", class: "btn primary", onclick: () => { ls.set("skrot-trial", "1"); emailStep(); } }, `Zacznij ${trialDays()} dni za darmo`)) : null;
     const orLogin = () => (page && !reason && !trialOn()) ? el("p", { class: "lg-or", text: "Masz już konto?" }) : null;
+    // Wygląd pro, etap 4: przy karcie próby jedna akcja na wierzchu, logowanie zwinięte pod „Masz już konto?”.
+    // Zostaje otwarte po przełączeniu zakładki (kontoOtw) i gdy czeka kod wysłany wcześniej.
+    let kontoOtw = false;
+    const konto = (items) => {
+      const d = el("details", { class: "lg-konto" }, el("summary", { class: "lg-or lg-konto-s" }, "Masz już konto? Zaloguj się"), ...items.filter(Boolean));
+      if (kontoOtw || pending.get()) d.open = true;
+      d.addEventListener("toggle", () => { kontoOtw = d.open; });
+      return d;
+    };
     // Konto zakłada się samo przy pierwszym kodzie, więc pod formularzem mówimy, na jakich zasadach (regulamin § 3 ust. 1).
     const legalHref = (f) => f + (window.SKROT_LANG === "en" ? "-en" : "") + ".html";
     const termsNote = () => page ? el("p", { class: "lg-terms" },
@@ -1134,16 +1143,14 @@
         err, btn);
       const card = trialCard();
       if (card) btn.className = "btn";
-      body.replaceChildren(...[
-        card,
-        orLogin(),
+      const czesc = [
         el(card ? "h3" : "h2", { class: card ? "lg-h3" : null, style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
         reason ? el("p", { class: "muted", style: "margin:0", text: reason }) : null,
         modeSwitch("haslo"),
         form,
         el("button", { type: "button", class: "btn ghost", onclick: () => emailStep() }, "Nie pamiętam hasła: wyślij kod na maila"),
-        closeBtn(),
-      ].filter(Boolean));
+      ];
+      body.replaceChildren(...(card ? [card, konto(czesc), closeBtn()] : [orLogin(), ...czesc, closeBtn()]).filter(Boolean));
       if (focus) setTimeout(() => (input.value ? pass : input).focus(), 30);
     };
     // Dwie zakładki nad formularzem.
@@ -1181,18 +1188,17 @@
       const card = trial ? null : trialCard();
       // ux-1 (K2): przy karcie próby jedynym głównym przyciskiem jest „Zacznij 3 dni za darmo”; „Wyślij kod” jest drugorzędny.
       if (card) btn.className = "btn";
-      body.replaceChildren(...[
-        card,
-        trial ? null : orLogin(),
+      const czesc = [
         el(card ? "h3" : "h2", { class: card ? "lg-h3" : null, style: "margin:0;font-family:var(--f-display)", text: trial ? `${trialDays()} dni za darmo` : "Zaloguj się" }),
         el("p", { class: "muted", style: "margin:0", text: trial ? "Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo." : reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
         trial ? null : modeSwitch("kod"),
         form,
         termsNote(),
         p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
+      ];
+      body.replaceChildren(...(card ? [card, konto(czesc), closeBtn()] : [trial ? null : orLogin(), ...czesc,
         trial ? el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("skrot-trial", null); emailStep(); } }, "Mam już konto: zwykłe logowanie") : null,
-        closeBtn(),
-      ].filter(Boolean));
+        closeBtn()]).filter(Boolean));
       if (focus) setTimeout(() => input.focus(), 30);
     };
 
