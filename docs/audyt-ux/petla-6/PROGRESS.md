@@ -19,7 +19,8 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 | runda | wynik | twarde błędy | ★ (2/1/0) | poprawek | stan |
 |---|---|---|---|---|---|
 | 0 | 4,9 | czerwone testy (już na main), tekst < AA (5 ekranów), PL w EN | 4/2/0 (Z1 Z2 Z3 = 2; Z4 Z5 Z13 = 1) | – | audyt stanu wyjściowego, wynik zgodny z formułą (zadania 28/42 → 2,7; technika 0) |
-| 1 | (audyt w toku) | kontrola: brak (technika 0,75) | | 11 pozycji planu + poprawki po regresji | plan-1.md |
+| 1 | 7,1 | brak | 4/2/0 (Z4 Z5 = 1) | 11 pozycji planu + poprawki po regresji | plan-1.md; wynik zgodny z formułą (zadania 37/42 → 3,52; technika 0,75) |
+| 2 | (audyt w toku) | | | 13 pozycji | plan-2.md |
 
 ### Runda 1 – co zrobione (commity)
 - test: 96cdf2d, f19c1df, 974ee7d (stare asercje po c1356b9), etap2 (XP zamiast pkt).
@@ -34,8 +35,7 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 - Przeniesione do rundy 2: Dziś zawsze „Lekcja 1”, wiele nazw sesji 5 min, Sklep bez listy cen, kolejność Przedmiotów, pigułki na pierwszym ekranie, P2.
 
 ## Gdzie jestem
-- Runda 1: kontrola (166 ekranów: zero twardych błędów, technika 0,75) i Tester-Sędzia rundy 1 w toku; równolegle `regresja.sh` na końcowym kodzie (/tmp/ux-6/regresja1b.log).
-- Dalsze poprawki rundy 1 po pierwszej regresji: „wstecz” najpierw zamyka okno nad lekcją (ux3-etap5), `.btn` 44 px przez :where (pasek lekcji 48 px, ux3-etap3), „Kontakt” w stopce → Pomoc (wysokość Więcej, h2-etap9), EN „Teraz zrób to” (dzien.mjs – był czerwony już na main), jeden główny przycisk na Dziś/Gry/Przygotuj się, „Zaczynamy” bez przewijania przy 360×640, stopka ściągawki, gablota, linki w notkach 44 px.
+- Runda 2: poprawki z plan-2.md zrobione i wypchnięte; w tle `regresja.sh` (/tmp/ux-6/regresja2.log), potem `runda.sh 2`; następnie Tester-Sędzia rundy 2.
 
 ## Decyzje
 - Zegar stron w sondzie i testach = 6.11.2026 17:00 (jak `h2-lib.mjs`), więc „termin za 3 dni” = 9.11.
