@@ -40,7 +40,7 @@ const ekranInfo = (p) => p.evaluate(() => {
   const smieci = [...new Set((body.match(/\bundefined\b|\bnull\b|\bNaN\b|\[object Object\]|\(\s*\)|\{\d\}/g) || []))];
   const nm = (e) => (e.getAttribute("aria-label") || e.getAttribute("aria-labelledby") && document.getElementById(e.getAttribute("aria-labelledby"))?.innerText || e.innerText || e.title || e.querySelector("img[alt]")?.alt || "").replace(/\s+/g, " ").trim();
   const bezPodpisu = [...document.querySelectorAll("button, a[href], [role=button], input:not([type=hidden]), select")].filter((e) => vis(e) && !e.closest("#skrot-wm")).filter((e) => { const n = /^(INPUT|SELECT)$/.test(e.tagName) ? (e.getAttribute("aria-label") || e.labels?.[0]?.innerText || e.placeholder || e.title || "") : nm(e); return !/[\p{L}\p{N}]/u.test(n); }).map((e) => e.outerHTML.slice(0, 120));
-  const dlg = [...document.querySelectorAll("#layer [role=dialog], #layer .modal, [role=dialog][aria-modal=true]")].find(vis); // otwarte okno: liczy się to, co w oknie
+  const dlg = [...document.querySelectorAll("#layer [role=dialog], #layer .modal, [role=dialog][aria-modal=true]")].find((e) => e.getBoundingClientRect().height > 0); // bez sprawdzania przezroczystości: okno bywa w trakcie wejścia // otwarte okno: liczy się to, co w oknie
   const prim = [...(dlg || document).querySelectorAll(".btn.primary, .ld-go, .lp-start")].filter((e) => vis(e) && !e.closest("nav, header.bar")).length;
   const nav = [...document.querySelectorAll("nav button, nav a, .tabs button, .tabbar button")].some(vis);
   const wstecz = [...document.querySelectorAll("button, a")].some((e) => vis(e) && /^(←|wróć|zamknij|close|back|×|✕)|wróć|zamknij|← /i.test(nm(e)));
