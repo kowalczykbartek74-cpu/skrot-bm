@@ -41,6 +41,9 @@ Kolory i kontrast: [PALETA.md](PALETA.md) (pilnuje go `tests/tresci.test.js`). P
 - Nowy CSS: tylko `var(--fs-*)`, `var(--r-*)` i kolory z PALETA.md. Szybki test: `grep -o "font-size: *[0-9.]*\(px\|rem\)" index.html` powinien znaleźć tylko rozmiary emoji i ikon.
 - Zrzuty na telefonie (390 × 844) i komputerze (1280 × 800), jasny i ciemny zielony.
 - Kontrast tekstu ≥ 4,5:1 (duży ≥ 3:1).
+- Ruch: wyjście bez odbicia (`--h-out`, `--h-spring` też jest wyhamowaniem), nic nie mruga bez końca (najwyżej 3 razy).
+- Zaznaczenie, fokus (3 px w kolorze akcentu), kursor i pasek przewijania w kolorach marki; godziny i liczniki `tabular-nums`.
+- Na koniec detektor: `~/.claude/skills/impeccable/scripts/impeccable detect index.html wyglad-ux.css ux-wejscie.css`. Uwagi o motywach ze sklepu i regułach bazowych nadpisanych dla zielonych motywów są znane.
 
 ## Etapy porządkowania (raport 19.11.2026)
 

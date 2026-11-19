@@ -277,7 +277,7 @@ html:not([data-theme]) :is(.th-hero, .tl, .tl:focus-within) { box-shadow: none; 
 html:not([data-theme]) .term { box-shadow: none; border-color: color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); padding-left: 16px; }
 html:not([data-theme]) :is(.ag-term, .ag-mine, .ag-row.ag-plan) { border-left: 0; background-color: color-mix(in srgb, var(--t, var(--accent)) 9%, var(--h-card)); border-radius: var(--r-s); }
 html:not([data-theme]) .cls-ab { border-left: 0; background-color: color-mix(in srgb, var(--c, var(--accent)) 9%, var(--h-card)); }
-html:not([data-theme]) :is(.po-card, .po-subj, .stas-card) { border-left: 2px solid color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); border-color: color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); }
+html:not([data-theme]) :is(.po-card, .po-subj, .stas-card) { border: 2px solid color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); }
 html:not([data-theme]) .exam-card.soon { box-shadow: none; }
 /* Lekcja demo: źródło jako zwykły podpis, nie etykieta wersalikami. */
 #login .lg-pokaz-src { font-size: var(--fs-s); font-weight: 600; }
@@ -286,3 +286,13 @@ html:not([data-theme]) .exam-card.soon { box-shadow: none; }
 html:not([data-theme]) #login .lg-konto > summary.lg-or { list-style: none; cursor: pointer; min-height: 44px; margin: 0 !important; color: var(--h-acc, #1A7F45) !important; }
 #login .lg-konto > summary::-webkit-details-marker { display: none; }
 html:not([data-theme]) #login .lg-konto[open] > summary.lg-or { color: var(--h-muted, #3E5046) !important; }
+
+/* ===== Wygląd pro, etap 6 (19.11.2026): szlif. Powierzchnie przeglądarki w kolorach marki, cyfry o stałej szerokości,
+   spokojniejszy ruch (wyjście bez odbicia, kropki mrugają kilka razy, nie bez końca), resztki ozdobników. Tylko zielone motywy. ===== */
+html:not([data-theme]) ::selection { background: color-mix(in srgb, var(--h-acc) 30%, transparent); color: var(--h-ink); }
+html:not([data-theme]) { scrollbar-color: var(--h-edge) transparent; caret-color: var(--h-acc); accent-color: var(--h-acc); }
+html:not([data-theme]) :focus-visible { outline: 3px solid var(--h-acc); outline-offset: 2px; }
+html:not([data-theme]) :is(.num, time, [class*="time"], [class*="clock"], .ag-h, .tl-when, .nb-when .nw, .xp-chip, .lp-xpchip, .shop-prize) { font-variant-numeric: tabular-nums; }
+html:not([data-theme]) .task { border: 2px solid color-mix(in srgb, var(--c, var(--accent)) 38%, var(--h-line)); padding-left: 16px; }
+html:not([data-theme]) .greet h1 { background-image: none; padding-bottom: 0; }
+html:not([data-theme]) :is(.tour-card h2, .sk-gslide ~ h2, .g-hero h1)::after { content: none; }
