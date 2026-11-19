@@ -20,7 +20,8 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 |---|---|---|---|---|---|
 | 0 | 4,9 | czerwone testy (już na main), tekst < AA (5 ekranów), PL w EN | 4/2/0 (Z1 Z2 Z3 = 2; Z4 Z5 Z13 = 1) | – | audyt stanu wyjściowego, wynik zgodny z formułą (zadania 28/42 → 2,7; technika 0) |
 | 1 | 7,1 | brak | 4/2/0 (Z4 Z5 = 1) | 11 pozycji planu + poprawki po regresji | plan-1.md; wynik zgodny z formułą (zadania 37/42 → 3,52; technika 0,75) |
-| 2 | (audyt w toku) | | | 13 pozycji | plan-2.md |
+| 2 | 8,0 | brak | 6/0/0 | 13 pozycji | plan-2.md; pierwszy tester przerwany limitem API – audyt powtórzony od początku z nowym testerem (E5); zadania 38/42 → 3,62 ✓ |
+| 3 | (audyt w toku) | kontrola: brak (technika 1,25) | | 5 pozycji | plan-3.md |
 
 ### Runda 1 – co zrobione (commity)
 - test: 96cdf2d, f19c1df, 974ee7d (stare asercje po c1356b9), etap2 (XP zamiast pkt).
@@ -35,13 +36,13 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 - Przeniesione do rundy 2: Dziś zawsze „Lekcja 1”, wiele nazw sesji 5 min, Sklep bez listy cen, kolejność Przedmiotów, pigułki na pierwszym ekranie, P2.
 
 ## Gdzie jestem
-- Runda 2: kontrola gotowa (166 ekranów, zero twardych błędów, technika 1,25), Tester-Sędzia rundy 2 w toku.
-- Po regresji rundy 2 poprawione: „cel” w pigułce serii ukryty < 380 px (EN 360 wychodziło poza ekran), test ux2-etap1 (osobny commit), kolor definicji w ściągawce, EN „Dział”; ux5-etap3 chwiejny przy pełnym przebiegu, zielony osobno.
+- Runda 3: poprawki z plan-3.md (wylogowanie w atrapie, próbny test z karty Dziś, odmiana odliczania, „kolokwium” w Przygotuj się, cena w Sklepie) wypchnięte; pełna regresja zielona; kontrola 166 ekranów bez twardych błędów; Tester-Sędzia rundy 3 w toku.
 
 ## Decyzje
 - Zegar stron w sondzie i testach = 6.11.2026 17:00 (jak `h2-lib.mjs`), więc „termin za 3 dni” = 9.11.
 - Sonda: element, którego jedyny tekst to symbol (np. „→”), liczy się jako „tylko ikona”. Widoczność przez `checkVisibility()` (sekcje `hidden=until-found` mają rozmiar, ale nie są widoczne).
 - Kontrola: pomijane fałszywe alarmy pomiaru: cienka linia z gradientu (podkreślenie `.tl-t`), litery awatara na tle SVG (`.kav-l`), ozdobnik bez liter z kontrastem < 1,2 (✓ przed odhaczeniem, aria-hidden).
+- Polecenie testera od rundy 3: losowanie niespodzianek przez python (na Macu nie ma `shuf`), najpierw audyt.md, potem audyt.json (w rundzie 2 md doszedł po json).
 - Polecenie testera od rundy 1: zdanie „Linki do zewnętrznych stron (poczta, Google, Apple) sonda blokuje – to nie jest błąd apki” (w rundzie 0 tester liczył zablokowany mailto jako martwy klik).
 - Z16 w poleceniu testera: dopisane „Jesteś starostą roku.” (konto starosty, inaczej zadanie jest bez sensu dla „studenta”).
 - Gry w kontroli: lista gier i ekrany Hasła/Bossa, bez ekranu końca każdej gry (shortcut w kontrola.mjs).
