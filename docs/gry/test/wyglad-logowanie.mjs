@@ -56,8 +56,9 @@ for (const scheme of ["light", "dark"]) for (const w of [375, 1280]) for (const 
   // Krok 3 z 3
   await p.click('#lgKierunek [data-k="wefiz-bm-1-st-2026"]');
   await p.click('#lgKierunek [data-a="dalej"]');
-  const k3 = await p.locator("#lgKrok .lk-krok");
-  ok(`${tag}: po „Dalej” widać „Krok 3 z 3” i pasek`, (await k3.isVisible()) && (await k3.innerText()).toLowerCase() === (lang === "en" ? "step 3 of 3" : "krok 3 z 3") && (await p.locator("#lgKrok .lk-bar i.on").count()) === 3, await k3.innerText().catch(() => ""));
+  // wygląd pro, etap 4: widoczna etykieta „Krok 3 z 3” zniknęła, pasek kroków ma ją jako opis dla czytnika ekranu
+  const k3 = await p.locator("#lgKrok .lk-bar");
+  ok(`${tag}: po „Dalej” widać pasek kroku 3 z opisem`, (await k3.isVisible()) && ((await k3.getAttribute("aria-label")) || "").toLowerCase() === (lang === "en" ? "step 3 of 3" : "krok 3 z 3") && (await p.locator("#lgKrok .lk-bar i.on").count()) === 3, await k3.getAttribute("aria-label"));
   await shot(p, `wyglad-3-${scheme}-${w}-${lang}`);
   await p.click("#lgWybrany button");
   ok(`${tag}: „Zmień” chowa „Krok 3 z 3”`, await p.locator("#lgKrok").isHidden());

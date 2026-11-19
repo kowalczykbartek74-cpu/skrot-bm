@@ -231,7 +231,7 @@
     try { ls.set("skrot-roczniki-status", JSON.stringify(Object.fromEntries(l.map((r) => [r.id, r.status])))); } catch {}
     window.skrotKrok1Odswiez?.();
     if (skrot.realAdmin) return;
-    document.querySelectorAll(".lk-card[data-k]").forEach((b) => { if (!ok.includes(b.dataset.k)) b.remove(); });
+    document.querySelectorAll(".lk-card[data-k]").forEach((b) => { if (b.dataset.k !== "inny" && !ok.includes(b.dataset.k)) b.remove(); }); // „inny” to wiersz listy oczekujących, nie rocznik
     if (cur && !ok.includes(cur.id) && !ED) {
       ls.set("skrot-rocznik", R.DOMYSLNY);
       let juz = null; try { juz = sessionStorage.getItem("skrot-rocznik-baza-reload"); } catch {}
@@ -1028,6 +1028,15 @@
       el("p", { class: "lg-trial-price", text: "Potem, jeśli zechcesz: 199 zł jednorazowo (do 11 lipca 2027) albo 35 zł miesięcznie. Po okresie próbnym nic nie pobieramy samo." }),
       el("button", { type: "button", class: "btn primary", onclick: () => { ls.set("skrot-trial", "1"); emailStep(); } }, `Zacznij ${trialDays()} dni za darmo`)) : null;
     const orLogin = () => (page && !reason && !trialOn()) ? el("p", { class: "lg-or", text: "Masz już konto?" }) : null;
+    // Wygląd pro, etap 4: przy karcie próby jedna akcja na wierzchu, logowanie zwinięte pod „Masz już konto?”.
+    // Zostaje otwarte po przełączeniu zakładki (kontoOtw) i gdy czeka kod wysłany wcześniej.
+    let kontoOtw = false;
+    const konto = (items) => {
+      const d = el("details", { class: "lg-konto" }, el("summary", { class: "lg-or lg-konto-s" }, "Masz już konto? Zaloguj się"), ...items.filter(Boolean));
+      if (kontoOtw || pending.get()) d.open = true;
+      d.addEventListener("toggle", () => { kontoOtw = d.open; });
+      return d;
+    };
     // Konto zakłada się samo przy pierwszym kodzie, więc pod formularzem mówimy, na jakich zasadach (regulamin § 3 ust. 1).
     const legalHref = (f) => f + (window.SKROT_LANG === "en" ? "-en" : "") + ".html";
     const termsNote = () => page ? el("p", { class: "lg-terms" },
@@ -1135,16 +1144,14 @@
         err, btn);
       const card = trialCard();
       if (card) btn.className = "btn";
-      body.replaceChildren(...[
-        card,
-        orLogin(),
+      const czesc = [
         el(card ? "h3" : "h2", { class: card ? "lg-h3" : null, style: "margin:0;font-family:var(--f-display)", text: "Zaloguj się" }),
         reason ? el("p", { class: "muted", style: "margin:0", text: reason }) : null,
         modeSwitch("haslo"),
         form,
         el("button", { type: "button", class: "btn ghost", onclick: () => emailStep() }, "Nie pamiętam hasła: wyślij kod na maila"),
-        closeBtn(),
-      ].filter(Boolean));
+      ];
+      body.replaceChildren(...(card ? [card, konto(czesc), closeBtn()] : [orLogin(), ...czesc, closeBtn()]).filter(Boolean));
       if (focus) setTimeout(() => (input.value ? pass : input).focus(), 30);
     };
     // Dwie zakładki nad formularzem.
@@ -1182,18 +1189,17 @@
       const card = trial ? null : trialCard();
       // ux-1 (K2): przy karcie próby jedynym głównym przyciskiem jest „Zacznij 3 dni za darmo”; „Wyślij kod” jest drugorzędny.
       if (card) btn.className = "btn";
-      body.replaceChildren(...[
-        card,
-        trial ? null : orLogin(),
+      const czesc = [
         el(card ? "h3" : "h2", { class: card ? "lg-h3" : null, style: "margin:0;font-family:var(--f-display)", text: trial ? `${trialDays()} dni za darmo` : "Zaloguj się" }),
         el("p", { class: "muted", style: "margin:0", text: trial ? "Wpisz e-mail (najlepiej uczelniany), a wyślemy Ci 6-cyfrowy kod. Po jego wpisaniu od razu masz pełny dostęp do wszystkiego. Bez karty i bez płatności, konto założy się samo." : reason || (page ? "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Nie masz jeszcze konta? Założy się samo." : "Wpisz e-mail, a wyślemy Ci 6-cyfrowy kod. Jeśli masz już dostęp, użyj adresu, na który go kupiono.") }),
         trial ? null : modeSwitch("kod"),
         form,
         termsNote(),
         p ? el("button", { type: "button", class: "btn ghost", onclick: () => codeStep(p.email, false) }, `Mam już kod (wysłany na ${p.email})`) : null,
+      ];
+      body.replaceChildren(...(card ? [card, konto(czesc), closeBtn()] : [trial ? null : orLogin(), ...czesc,
         trial ? el("button", { type: "button", class: "btn ghost", onclick: () => { ls.set("skrot-trial", null); emailStep(); } }, "Mam już konto: zwykłe logowanie") : null,
-        closeBtn(),
-      ].filter(Boolean));
+        closeBtn()]).filter(Boolean));
       if (focus) setTimeout(() => input.focus(), 30);
     };
 
@@ -1219,7 +1225,7 @@
     const show = (t) => { err.textContent = t; err.hidden = false; };
     const p1 = el("input", { class: "input", id: "skrot-pass-1", type: "password", autocomplete: "new-password", placeholder: "co najmniej 8 znaków" });
     const p2 = el("input", { class: "input", id: "skrot-pass-2", type: "password", autocomplete: "new-password", placeholder: "to samo jeszcze raz" });
-    const reveal = el("label", { style: "display:flex;gap:8px;align-items:center;font-size:.92rem" },
+    const reveal = el("label", { style: "display:flex;gap:8px;align-items:center;font-size:var(--fs-s)" },
       el("input", { type: "checkbox", onchange: (e) => { p1.type = p2.type = e.target.checked ? "text" : "password"; } }), "Pokaż hasło");
     const btn = el("button", { type: "submit", class: "btn primary" }, skrot.hasPassword ? "Zmień hasło" : "Ustaw hasło");
     // Supabase może wymagać potwierdzenia kodem z maila przy zmianie hasła („Secure password change”).
@@ -1244,7 +1250,7 @@
       body.replaceChildren(
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Hasło zapisane" }),
         el("p", { style: "margin:0" }, "Następnym razem zaloguj się adresem ", el("b", { text: skrot.email }), " i hasłem. Kod z maila dalej działa, gdyby hasło wyleciało Ci z głowy."),
-        el("p", { class: "muted", style: "margin:0;font-size:.9rem", text: "Konto jest osobiste: działa na 3 urządzeniach i na jednym naraz, więc podanie hasła komuś i tak nic nie da." }),
+        el("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)", text: "Konto jest osobiste: działa na 3 urządzeniach i na jednym naraz, więc podanie hasła komuś i tak nic nie da." }),
         el("div", {}, el("button", { type: "button", class: "btn primary", onclick: close }, "Gotowe")));
       changed();
     };
@@ -1397,7 +1403,7 @@
     const layer = document.getElementById("layer") || document.body;
     const close = () => { scrim.remove(); document.removeEventListener("keydown", onKey); };
     const onKey = (e) => { if (e.key === "Escape") close(); };
-    const row = (box, ...kids) => el("label", { style: "display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.95rem;line-height:1.45" }, box, el("span", {}, ...kids));
+    const row = (box, ...kids) => el("label", { style: "display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:var(--fs-m);line-height:1.45" }, box, el("span", {}, ...kids));
     const box = () => el("input", { type: "checkbox", style: "flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--accent,#1A7F45)", onchange: () => sync() });
     const terms = box(), now = box();
     // ux-1 (etap 4, K3): przycisk zawsze aktywny; bez obu zgód mówi, czego brakuje, i przenosi fokus na pierwsze puste pole.
@@ -1408,8 +1414,8 @@
     const KOD_ERR = { brak: "Nie ma takiego kodu. Sprawdź pisownię albo zostaw pole puste.", wlasny: "To Twój własny kod. Własnym kodem nie można polecić samego siebie.",
       juz_polecony: "Na tym koncie kod polecający był już użyty. Możesz zapłacić bez kodu.", nieaktywny: "Ten kod już nie działa. Możesz zapłacić bez kodu." };
     const kodIn = plan === "rok" ? el("input", { class: "input", id: "skrot-ref-code", autocomplete: "off", autocapitalize: "characters", spellcheck: "false", maxlength: "24", placeholder: "np. BARTEK", value: skrot.polecZapamietany() || null, oninput: () => { kodMsg.hidden = true; } }) : null;
-    const kodMsg = el("p", { class: "notice err", role: "alert", style: "margin:0;font-size:.9rem", hidden: "" });
-    const kodBox = kodIn ? el("label", { style: "display:grid;gap:6px;font-size:.95rem" },
+    const kodMsg = el("p", { class: "notice err", role: "alert", style: "margin:0;font-size:var(--fs-s)", hidden: "" });
+    const kodBox = kodIn ? el("label", { style: "display:grid;gap:6px;font-size:var(--fs-m)" },
       el("span", { style: "display:flex;gap:6px;align-items:baseline;flex-wrap:wrap" }, el("b", { text: "Kod polecający" }), el("span", { class: "muted", text: "(nieobowiązkowy)" })),
       kodIn, kodMsg,
       el("small", { class: "muted", text: "Masz kod od znajomego z roku? Wpisz go. Cena się nie zmienia." })) : null;
@@ -1478,12 +1484,12 @@
       onclick: () => { close(); goPay(plan); },
     },
       el("span", { style: "display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap" },
-        el("b", { style: "font-size:1.05rem", text: title }),
-        badge ? el("span", { style: "font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink,#fff);background:var(--accent,#1A7F45);border-radius:999px;padding:2px 8px", text: badge }) : null),
-      el("span", { style: "font-size:1.5rem;font-weight:800;color:var(--accent-text,#0E5A30)", text: price }),
+        el("b", { style: "font-size:var(--fs-m)", text: title }),
+        badge ? el("span", { style: "font-size:var(--fs-xs);font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink,#fff);background:var(--accent,#1A7F45);border-radius:999px;padding:2px 8px", text: badge }) : null),
+      el("span", { style: "font-size:var(--fs-2xl);font-weight:800;color:var(--accent-text,#0E5A30)", text: price }),
       // ux-1 (etap 4, K2): 199 zł przeliczone na miesiąc tuż pod ceną.
-      plan === "rok" ? el("span", { class: "uxw-mies", style: "font-size:.95rem;font-weight:700;color:var(--ink)", text: `to ok. ${Math.round(PRICE_ROK / cmp.months)} zł miesięcznie` }) : null,
-      ...lines.map((t) => el("span", { style: "font-size:.9rem;color:var(--muted,#1F2D25)", text: t })));
+      plan === "rok" ? el("span", { class: "uxw-mies", style: "font-size:var(--fs-m);font-weight:700;color:var(--ink)", text: `to ok. ${Math.round(PRICE_ROK / cmp.months)} zł miesięcznie` }) : null,
+      ...lines.map((t) => el("span", { style: "font-size:var(--fs-s);color:var(--muted,#1F2D25)", text: t })));
     const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Wybierz plan" },
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wybierz plan" }),
@@ -1668,8 +1674,8 @@
   function deviceList(info, onRemoved) {
     const list = info?.urzadzenia || [];
     const err = el("p", { class: "notice err", hidden: "" });
-    const lock = info?.zmiana_od ? el("p", { class: "muted", style: "margin:0;font-size:.9rem" }, `Następną zmianę urządzenia zrobisz ${plDate(info.zmiana_od)}. Zgubiony telefon? Napisz na `, el("a", { class: "link", href: "mailto:zdawalni.support@gmail.com" }, "zdawalni.support@gmail.com"), ".") : null;
-    const rows = list.map((d) => el("div", { class: "device-row", style: "display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--line,#BFCEC5);border-radius:12px;background:var(--surface,#fff)" },
+    const lock = info?.zmiana_od ? el("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)" }, `Następną zmianę urządzenia zrobisz ${plDate(info.zmiana_od)}. Zgubiony telefon? Napisz na `, el("a", { class: "link", href: "mailto:zdawalni.support@gmail.com" }, "zdawalni.support@gmail.com"), ".") : null;
+    const rows = list.map((d) => el("div", { class: "device-row", style: "display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--line,#BFCEC5);border-radius:var(--r-s);background:var(--surface,#fff)" },
       el("span", { style: "display:grid;gap:2px;min-width:0" },
         el("b", { style: "overflow-wrap:anywhere", text: d.nazwa || "Urządzenie" }),
         el("small", { class: "muted", text: d.to ? "to urządzenie" : d.aktywne ? "używane teraz" : `ostatnio: ${whenText(d.ostatnio)}` })),
@@ -1705,14 +1711,14 @@
       } }, "Używaj tutaj");
       return gate("Konto jest otwarte na innym urządzeniu",
         el("p", { style: "margin:0;font-weight:600", text: `Właśnie uczysz się na: ${d.inne || "innym urządzeniu"}. W jednej chwili konto działa na jednym urządzeniu.` }),
-        el("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Jeśli to Ty, kliknij „Używaj tutaj”, a tamto urządzenie się wstrzyma. Jeśli nie, ktoś zna Twoje konto: napisz do nas." }),
+        el("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)", text: "Jeśli to Ty, kliknij „Używaj tutaj”, a tamto urządzenie się wstrzyma. Jeśli nie, ktoś zna Twoje konto: napisz do nas." }),
         el("div", { class: "row", style: "display:flex;gap:8px;flex-wrap:wrap" }, btn, logoutBtn()));
     }
     if (d.stan === "limit") {
       return gate("Masz już 3 urządzenia",
         el("p", { style: "margin:0", text: `Z konta korzystasz na maksymalnie ${d.limit || 3} urządzeniach. Żeby dodać to urządzenie (${DEVICE_NAME}), usuń jedno z listy. Usuwać można raz na 30 dni.` }),
         deviceList(d, () => location.reload()),
-        el("p", { class: "muted", style: "margin:0;font-size:.88rem", text: "W trybie prywatnym albo po wyczyszczeniu danych przeglądarki strona widzi nowe urządzenie. Ucz się w zwykłym oknie." }),
+        el("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)", text: "W trybie prywatnym albo po wyczyszczeniu danych przeglądarki strona widzi nowe urządzenie. Ucz się w zwykłym oknie." }),
         el("div", { class: "row", style: "display:flex;gap:8px;flex-wrap:wrap" }, logoutBtn()));
     }
     if (d.stan === "zablokowane") {
@@ -1755,7 +1761,7 @@
     if (!skrot.email || document.getElementById("skrot-wm")) return;
     document.documentElement.setAttribute("data-wm", skrot.email);
     document.body.append(el("div", { id: "skrot-wm", "aria-hidden": "true", translate: "no", text: skrot.email,
-      style: "position:fixed;right:2px;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font:600 10px/1 system-ui,sans-serif;letter-spacing:.06em;color:var(--ink,#16231B);opacity:.22;pointer-events:none;user-select:none;z-index:50;white-space:nowrap" }));
+      style: "position:fixed;right:2px;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font:600 var(--fs-xs)/1 system-ui,sans-serif;letter-spacing:.06em;color:var(--ink,#16231B);opacity:.22;pointer-events:none;user-select:none;z-index:50;white-space:nowrap" }));
   }
 
   // Więcej → Twoje urządzenia
@@ -1805,8 +1811,8 @@
       location.href = `mailto:${k.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
       act(k, "ostrzezenie");
     };
-    const chip = (t, bad) => el("span", { style: `font-size:.75rem;font-weight:800;border-radius:999px;padding:2px 8px;${bad ? "background:#B42318;color:#fff" : "background:var(--accent-soft,#EAF5EE);color:var(--accent-text,#0E5A30)"}`, text: t });
-    const card = (k) => el("div", { style: `display:grid;gap:6px;padding:12px 14px;border-radius:12px;border:${k.podejrzane || k.zablokowane ? "2px solid #B42318" : "1px solid var(--line,#BFCEC5)"};background:var(--surface,#fff)` },
+    const chip = (t, bad) => el("span", { style: `font-size:var(--fs-xs);font-weight:800;border-radius:999px;padding:2px 8px;${bad ? "background:#B42318;color:#fff" : "background:var(--accent-soft,#EAF5EE);color:var(--accent-text,#0E5A30)"}`, text: t });
+    const card = (k) => el("div", { style: `display:grid;gap:6px;padding:12px 14px;border-radius:var(--r-s);border:${k.podejrzane || k.zablokowane ? "2px solid #B42318" : "1px solid var(--line,#BFCEC5)"};background:var(--surface,#fff)` },
       el("div", { style: "display:flex;gap:8px;align-items:center;flex-wrap:wrap" }, el("b", { style: "overflow-wrap:anywhere", text: k.email || k.user_id }),
         k.zablokowane ? chip("Zablokowane", true) : k.podejrzane ? chip("Podejrzane", true) : null,
         k.ostrzezenie_at ? chip(`ostrzeżony ${plDate(k.ostrzezenie_at)}`) : null),
@@ -1824,7 +1830,7 @@
       const shown = onlySus && sus.length ? sus : all;
       body.replaceChildren(
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Konta i urządzenia" }),
-        el("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "Podejrzane: co najmniej 6 przejęć sesji w 7 dni albo co najmniej 5 nowych urządzeń w 30 dni. Najpierw ostrzeż mailem, blokuj przy powtórce. Sama zmiana telefonu albo nauka w trybie prywatnym też dodaje urządzenia, więc sprawdź, zanim zablokujesz." }),
+        el("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)", text: "Podejrzane: co najmniej 6 przejęć sesji w 7 dni albo co najmniej 5 nowych urządzeń w 30 dni. Najpierw ostrzeż mailem, blokuj przy powtórce. Sama zmiana telefonu albo nauka w trybie prywatnym też dodaje urządzenia, więc sprawdź, zanim zablokujesz." }),
         sus.length ? el("label", { style: "display:flex;gap:8px;align-items:center" }, el("input", { type: "checkbox", checked: onlySus ? "" : null, onchange: (e) => { onlySus = e.target.checked; draw(); } }), `Tylko podejrzane i zablokowane (${sus.length} z ${all.length})`)
           : el("p", { style: "margin:0", text: all.length ? `Nic podejrzanego. Kont z urządzeniami: ${all.length}.` : "Nikt jeszcze nie dodał urządzenia." }),
         ...shown.map(card),
@@ -1874,8 +1880,8 @@
       if (error) return alert("Nie udało się: " + error.message);
       load();
     };
-    const tile = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--accent-soft,#EAF5EE)" }, el("b", { style: "font-size:1.25rem", text: n }), el("small", { class: "muted", text: t }));
-    const person = (o) => el("div", { style: `display:grid;gap:6px;padding:12px 14px;border-radius:12px;background:var(--surface,#fff);border:${o.do_wyplaty_gr > 0 ? "2px solid var(--accent,#1A7F45)" : "1px solid var(--line,#BFCEC5)"}` },
+    const tile = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 12px;border-radius:var(--r-s);background:var(--accent-soft,#EAF5EE)" }, el("b", { style: "font-size:var(--fs-xl)", text: n }), el("small", { class: "muted", text: t }));
+    const person = (o) => el("div", { style: `display:grid;gap:6px;padding:12px 14px;border-radius:var(--r-s);background:var(--surface,#fff);border:${o.do_wyplaty_gr > 0 ? "2px solid var(--accent,#1A7F45)" : "1px solid var(--line,#BFCEC5)"}` },
       el("div", { style: "display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" }, el("b", { text: o.imie || "(bez imienia)" }), el("span", { translate: "no", style: "font-weight:700", text: o.kod }), el("span", { class: "muted", style: "overflow-wrap:anywhere", text: o.email })),
       el("small", { text: `Polecone: ${o.polecone} · czeka: ${zl(o.czeka_gr)} · do wypłaty: ${zl(o.do_wyplaty_gr)} · wypłacone: ${zl(o.wyplacone_gr)}` }),
       el("small", {}, "Dane do wypłaty: ", o.wyplata ? el("b", { style: "overflow-wrap:anywhere", text: o.wyplata }) : el("span", { class: "muted", text: "nie podano (poproś o numer do BLIK albo konto)" })),
@@ -1892,7 +1898,7 @@
       const shown = showAll ? os : os.filter((o) => o.polecone > 0);
       body.replaceChildren(
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Kody polecające" }),
-        el("p", { class: "muted", style: "margin:0;font-size:.92rem", text: "30 zł za każdy zakup planu 199 zł z kodem. Nagroda czeka 14 dni (na wypadek zwrotu), potem jest do wypłaty. Wyślij pieniądze BLIK-iem albo przelewem i kliknij „Wypłacone”." }),
+        el("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)", text: "30 zł za każdy zakup planu 199 zł z kodem. Nagroda czeka 14 dni (na wypadek zwrotu), potem jest do wypłaty. Wyślij pieniądze BLIK-iem albo przelewem i kliknij „Wypłacone”." }),
         el("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px" },
           tile(String(os.length), "kodów"), tile(String(ps.filter((p) => p.stan !== "anulowane").length), "poleconych zakupów"),
           tile(zl(sum("do_wyplaty_gr")), "do wypłaty teraz"), tile(zl(sum("czeka_gr")), "czeka 14 dni"), tile(zl(sum("wyplacone_gr")), "wypłacone")),
@@ -1967,10 +1973,10 @@
       return m < 1 ? "< 1 min" : m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${m % 60} min`;
     };
     const METODA = { kod: "kod z maila", haslo: "hasło", link: "link z maila" };
-    const chip = (t, strong) => el("span", { style: `font-size:.74rem;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;${strong ? "background:var(--accent,#1F8A4C);color:#fff" : "background:var(--accent-soft,#EAF5EE);color:var(--accent-text,#0E5A30)"}`, text: t });
+    const chip = (t, strong) => el("span", { style: `font-size:var(--fs-xs);font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;${strong ? "background:var(--accent,#1F8A4C);color:#fff" : "background:var(--accent-soft,#EAF5EE);color:var(--accent-text,#0E5A30)"}`, text: t });
     const dot = () => el("span", { "aria-hidden": "true", style: "display:inline-block;width:9px;height:9px;border-radius:50%;background:#1F8A4C;box-shadow:0 0 0 3px rgba(31,138,76,.18)" });
     const match = (r) => !q || (r.email || "").includes(q);
-    const rowBox = (...kids) => el("div", { style: "display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line,#BFCEC5);border-radius:12px;background:var(--surface,#fff)" }, ...kids);
+    const rowBox = (...kids) => el("div", { style: "display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line,#BFCEC5);border-radius:var(--r-s);background:var(--surface,#fff)" }, ...kids);
     const who = (email, sub) => el("span", { style: "display:grid;gap:2px;min-width:0;flex:1 1 220px" },
       el("b", { style: "overflow-wrap:anywhere", text: email || "(bez adresu)" }), sub ? el("small", { class: "muted", text: sub }) : null);
     const empty = (t) => el("p", { class: "muted", style: "margin:0", text: t });
@@ -2021,8 +2027,8 @@
       const tabs = [["teraz", `Teraz (${nOn})`], ["logowania", "Logowania"], ["wizyty", "Wizyty"], ["konta", `Konta${d.konta ? ` (${d.konta.length})` : ""}`], ["monety", "Monety"]];
       const search = el("input", { class: "input", type: "search", placeholder: "Szukaj po e-mailu", value: q, "aria-label": "Szukaj po e-mailu", style: "flex:1 1 200px" });
       search.addEventListener("input", () => { q = search.value.trim().toLowerCase(); const keep = search.selectionStart; draw(); const s2 = body.querySelector("input[type=search]"); s2?.focus(); try { s2?.setSelectionRange(keep, keep); } catch {} });
-      const stat = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 14px;border-radius:12px;background:var(--accent-soft,#EAF5EE);min-width:120px;flex:1" },
-        el("b", { style: "font-size:1.5rem;line-height:1;color:var(--accent-text,#0E5A30)", text: String(n ?? 0) }), el("small", { style: "font-weight:700", text: t }));
+      const stat = (n, t) => el("div", { style: "display:grid;gap:2px;padding:10px 14px;border-radius:var(--r-s);background:var(--accent-soft,#EAF5EE);min-width:120px;flex:1" },
+        el("b", { style: "font-size:var(--fs-2xl);line-height:1;color:var(--accent-text,#0E5A30)", text: String(n ?? 0) }), el("small", { style: "font-weight:700", text: t }));
       body.replaceChildren(
         el("div", { style: "display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap" },
           el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Aktywność" }),
@@ -2032,7 +2038,7 @@
           el("div", { class: "seg", role: "group", "aria-label": "Widok" }, ...tabs.map(([k, t]) => el("button", { type: "button", "aria-pressed": String(tab === k), onclick: () => { tab = k; draw(); } }, t))),
           search),
         ...list(),
-        el("p", { class: "muted", style: "margin:0;font-size:.85rem", text: "Widać tylko zalogowanych. „Na stronie teraz” = karta otwarta na wierzchu w ostatnich 2 minutach. Nowa wizyta zaczyna się po 30 minutach przerwy. Historia jest trzymana 12 miesięcy." }),
+        el("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)", text: "Widać tylko zalogowanych. „Na stronie teraz” = karta otwarta na wierzchu w ostatnich 2 minutach. Nowa wizyta zaczyna się po 30 minutach przerwy. Historia jest trzymana 12 miesięcy." }),
         el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij")));
     }
 

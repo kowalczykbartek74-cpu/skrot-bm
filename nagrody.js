@@ -76,14 +76,14 @@
 .ux5-coin { display: inline-flex; align-items: center; gap: 3px; font-weight: 800; white-space: nowrap; }
 .ux5-coin .ux5-coin-i svg { width: 1.05em; height: 1.05em; }
 .sk-dot .ux5-ico svg { width: 22px; height: 22px; }
-.sk-node .t .sk-state { font-family: var(--f-body, inherit); font-size: .86rem; font-weight: 700; color: var(--h-acc, var(--accent)); }
+.sk-node .t .sk-state { font-family: var(--f-body, inherit); font-size: var(--fs-s); font-weight: 700; color: var(--h-acc, var(--accent)); }
 #main .ux5-help > summary, #main .src-switch .once-q > summary, #main .book .once-q > summary { min-width: 44px; min-height: 44px; display: inline-grid; place-items: center; }
 #main .cover .po-cover-btn, #main .cover-more > summary, #main .src-switch .seg button, #main .pmap-fold > .fold-sum { min-height: 44px; }
 #main .cover-more > summary { display: flex; align-items: center; }
-.sk-node .t .sk-doing { display: inline-flex; align-items: center; gap: 8px; font-size: .84rem; font-weight: 700; color: var(--muted); }
-.unit h3 .u-n { margin-left: auto; flex: none; font-size: .8rem; font-weight: 700; color: var(--muted); }
+.sk-node .t .sk-doing { display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-s); font-weight: 700; color: var(--muted); }
+.unit h3 .u-n { margin-left: auto; flex: none; font-size: var(--fs-xs); font-weight: 700; color: var(--muted); }
 .unit h3 .u-n.ok { color: var(--h-acc, var(--accent)); }
-.ux5-mastery .ux5-sub { margin: 4px 0 0; font-size: .88rem; }
+.ux5-mastery .ux5-sub { margin: 4px 0 0; font-size: var(--fs-s); }
 .sk-node.ux5-chest { align-items: center; }
 .sk-node.ux5-chest .sk-dot { cursor: default; background: var(--h-orange-soft, var(--sunk)) !important; border: 3px dashed var(--h-orange, var(--edge)) !important; border-bottom-width: 7px !important; color: var(--h-orange, var(--muted)) !important; }
 .sk-node.ux5-chest.ux5-ready .sk-dot { border-style: solid !important; }
@@ -94,8 +94,8 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { .sk-node.ux5-chest .sk-dot { animation: none !important; } }
 .sk-node.ux5-chest .t { cursor: default; gap: 4px; justify-items: start; }
 .sk-node.ux5-chest .t b { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.sk-node.ux5-chest .ux5-chest-pod { font-size: .86rem; color: var(--muted); }
-#main .sk-node.ux5-chest .ux5-odbierz, #main .sk-node.ux5-chest .ux5-odbierz span { color: var(--accent-ink, #fff); font-size: .95rem; }
+.sk-node.ux5-chest .ux5-chest-pod { font-size: var(--fs-s); color: var(--muted); }
+#main .sk-node.ux5-chest .ux5-odbierz, #main .sk-node.ux5-chest .ux5-odbierz span { color: var(--accent-ink, #fff); font-size: var(--fs-m); }
 .sk-node.ux5-chest .ux5-odbierz, .sk-node.ux5-chest .ux5-kup, .sk-node.ux5-chest .t > .btn { min-height: 44px; margin-top: 4px; display: inline-flex; align-items: center; gap: 6px; }
 /* Awatar Stasia przy kropce „Teraz” po prawej stronie kropki (z lewej wychodził poza ekran w lewej kolumnie zygzaku). */
 #main .sk-course .sk-node.now .sk-dot::after { left: auto !important; right: -24px; top: -20px; }
@@ -119,13 +119,13 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
 #main .shop-hero .shop-how > summary, #main .shop-hist > summary { display: flex; align-items: center; }
 #layer .lv-prize.ux5-prize { color: var(--h-acc, var(--accent-text)); display: block; max-width: 100%; overflow-wrap: anywhere; }
 .ux5-odznaki { display: grid; gap: 8px; }
-.ux5-odznaki h2 { margin: 0; } .ux5-odznaki h3 { margin: 8px 0 0; font-size: 1rem; }
+.ux5-odznaki h2 { margin: 0; } .ux5-odznaki h3 { margin: 8px 0 0; font-size: var(--fs-m); }
 .ux5-odz-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .ux5-odz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-.ux5-odz { display: grid; justify-items: center; gap: 4px; min-height: 44px; min-width: 44px; padding: 10px 6px; border-radius: 18px; border: 2px solid var(--h-line, var(--line)); background: var(--h-card, var(--surface)); color: var(--h-ink, var(--ink)); font: inherit; cursor: pointer; text-align: center; }
+.ux5-odz { display: grid; justify-items: center; gap: 4px; min-height: 44px; min-width: 44px; padding: 10px 6px; border-radius: var(--r-m); border: 2px solid var(--h-line, var(--line)); background: var(--h-card, var(--surface)); color: var(--h-ink, var(--ink)); font: inherit; cursor: pointer; text-align: center; }
 .ux5-odz.off { border-style: dashed; border-color: var(--h-edge, var(--line)); background: transparent; }
-.ux5-odz .ux5-odz-n { font-weight: 700; font-size: .86rem; line-height: 1.2; }
-.ux5-odz small { font-size: .78rem; color: var(--h-muted, var(--muted)); }
+.ux5-odz .ux5-odz-n { font-weight: 700; font-size: var(--fs-s); line-height: 1.2; }
+.ux5-odz small { font-size: var(--fs-xs); color: var(--h-muted, var(--muted)); }
 .ux5-odz-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 3px solid var(--h-edge, var(--line)); background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-acc, var(--accent)); }
 .ux5-odz-ic svg { width: 26px; height: 26px; }
 .ux5-odz-ic.t0 { background: transparent; border-style: dashed; color: var(--h-muted, var(--muted)); }
@@ -148,7 +148,7 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
 #layer .lv-row .lv-badge { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; }
 .rk-who { min-height: 44px; }
 .rk-nick .rk-lv { margin-left: 6px; vertical-align: middle; }
-.rk-badge.rk-lv { display: inline-flex; align-items: center; gap: 2px; padding: 0 6px; min-height: 22px; border-radius: 999px; font-size: .78rem; font-weight: 800; background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-acc-edge, var(--accent-text)); }
+.rk-badge.rk-lv { display: inline-flex; align-items: center; gap: 2px; padding: 0 6px; min-height: 22px; border-radius: 999px; font-size: var(--fs-xs); font-weight: 800; background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-acc-edge, var(--accent-text)); }
 .rk-badge.rk-lv .ux5-lv-ic svg { width: 14px; height: 14px; }
 .ux5-prezent { display: grid; gap: 10px; }
 .ux5-prezent h2 { margin: 0; } .ux5-prezent p { margin: 2px 0 0; }
@@ -156,22 +156,22 @@ html.calm .sk-node.ux5-chest .sk-dot { animation: none !important; }
 .ux5-prezent-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--h-lime, var(--accent-soft)); color: var(--h-ink, var(--ink)); flex: none; }
 .ux5-prezent-opcje { display: flex; flex-wrap: wrap; gap: 8px; }
 .ux5-prezent-opcje .btn { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
-.lv-badge .n, .rk-badge .n { font-size: 12px !important; color: #10231A !important; background: #CDF25E !important; }
+.lv-badge .n, .rk-badge .n { font-size: var(--fs-xs) !important; color: #10231A !important; background: #CDF25E !important; }
 #main .kgab-slot, #main .kprof-btn, #layer .lv-foot .link, #layer .lv-modal .btn, #layer .lv-head ~ .btn { min-height: 44px; }
 #main .kgab-slot { min-width: 44px; }
 #layer .lv-foot .link { display: inline-flex; align-items: center; }
 #main .sk-profile .lv-howlink { min-height: 44px; display: inline-flex; align-items: center; }
 .ux5-lv-kosm { display: grid; gap: 8px; width: 100%; }
-.ux5-lv-kosm-k { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 18px; background: var(--h-acc-soft, var(--accent-soft)); }
+.ux5-lv-kosm-k { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left; padding: 10px 12px; border-radius: var(--r-m); background: var(--h-acc-soft, var(--accent-soft)); }
 .ux5-lv-kosm-pv { display: grid; place-items: center; width: 56px; height: 56px; }
 .ux5-lv-kosm-pv svg { width: 56px; height: 56px; }
 .ux5-lv-kosm-t { display: grid; gap: 2px; min-width: 0; }
 #main .rk-row .rk-badge.rk-lv { position: static; width: auto; height: 22px; min-width: 0; padding: 0 7px 0 5px; border-radius: 999px; border: 0; box-shadow: none; display: inline-flex; gap: 3px; vertical-align: middle; background: var(--h-acc-soft, var(--accent-soft)); color: var(--h-ink, var(--ink)); }
-#main .rk-row .rk-badge.rk-lv .n { position: static; min-width: 0; height: auto; padding: 0; background: none !important; color: inherit !important; font-size: 12px !important; }
+#main .rk-row .rk-badge.rk-lv .n { position: static; min-width: 0; height: auto; padding: 0; background: none !important; color: inherit !important; font-size: var(--fs-xs) !important; }
 #main .rk-row .rk-badge.rk-lv .ux5-lv-ic svg { width: 14px; height: 14px; }
-#main .rk-row .ktl { font-size: 12px; }
+#main .rk-row .ktl { font-size: var(--fs-xs); }
 .ux5-start { display: grid; justify-items: center; gap: 8px; text-align: center; }
-.ux5-start h2 { margin: 0; font-size: 2rem; } .ux5-start p { margin: 0; }
+.ux5-start h2 { margin: 0; font-size: var(--fs-4xl); } .ux5-start p { margin: 0; }
 .ux5-start-ic { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--h-lime, var(--accent-soft)); color: var(--h-ink, var(--ink)); }
 .ux5-start-ic svg { width: 34px; height: 34px; }
 .ux5-start .btn { min-height: 44px; }

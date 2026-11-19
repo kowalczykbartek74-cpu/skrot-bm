@@ -70,15 +70,14 @@ Wszystkie pary tekst/tło spełniają WCAG AA (kontrast ≥ 4,5:1).
 
 ## Czcionki (z repo, bez Google Fonts)
 
-Pliki w `fonts/` (zmienne woff2, łaciński + łaciński rozszerzony), `@font-face` w `wyglad-ux.css`, preload tylko `pjs-latin.woff2`.
+Pliki w `fonts/` (zmienne woff2, łaciński + łaciński rozszerzony), `@font-face` w `wyglad-ux.css`, preload tylko `onest-latin.woff2`.
 
-- **Bricolage Grotesque 700** – wszystkie `h1`, `h2`, `h3` i nagłówki sekcji (`--f-head`).
-- **Plus Jakarta Sans 400–800** – reszta tekstu (`--f-display`).
-- Czcionki zastępcze o dopasowanych wymiarach (`PJS-fallback`, `BG-fallback`), żeby tekst nie przeskakiwał przy wczytaniu.
+- **Onest 400–800** – cały tekst i nagłówki (`--f-display`, `--f-head` to ta sama czcionka). Zasady pisma: [DESIGN.md](DESIGN.md).
+- Czcionki zastępcze o dopasowanych wymiarach (`Onest-fallback`), żeby tekst nie przeskakiwał przy wczytaniu.
 - Motywy: Cormorant Garamond i Playfair Display, pobierane dopiero przy aktywnym motywie.
 
-Skala: **12 / 14 / 16 / 18 / 22 / 28 / 36 px** (`--fs-xs` … `--fs-3xl`), nic poniżej 12 px (poza znakiem wodnym).
-Tytuł ekranu 28, nagłówek sekcji 18, tytuł karty 16; na Dziś powitanie 22, tytuł lekcji 28.
+Skala: **12 / 14 / 16 / 18 / 20 / 24 / 28 / 32 / 40 px** (`--fs-xs` … `--fs-5xl`, w rem), nic poniżej 12 px. Zaokrąglenia `--r-s` 10, `--r-m` 16, `--r-l` 22 px.
+Tytuł ekranu 28, nagłówek sekcji 18, tytuł karty 16; na Dziś powitanie 20, tytuł lekcji 28.
 
 ## Kształty
 
