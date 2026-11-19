@@ -6063,7 +6063,7 @@ html #main .calc-res > span { font-size: max(12px, .75rem); }
   if ($("layer")) new MutationObserver(() => { const open = !!$("layer").firstElementChild;
     try { if (open && !history.state?.ux6Layer) history.pushState({ ...(history.state || {}), ux6Layer: 1 }, "", location.href);
       else if (!open && history.state?.ux6Layer) { LAYER_POP.skip = true; history.back(); } } catch {} }).observe($("layer"), { childList: true });
-  addEventListener("popstate", (e) => { if (LAYER_POP.skip) { LAYER_POP.skip = false; return; } /* ux-6: najpierw okno nad lekcją czy grą, potem one */ if (document.documentElement.classList.contains("gry-lek")) return; /* gra w lekcji obsługuje „wstecz” sama (gry.js) */ if (layerClose()) return; if (LP.open) { lpClose(true); return; } if (LP.skipPop) { LP.skipPop = false; render(); return; } S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash());
+  addEventListener("popstate", (e) => { if (LAYER_POP.skip) { LAYER_POP.skip = false; return; } /* ux-6: najpierw okno nad lekcją czy grą, potem one */ if (document.documentElement.classList.contains("gry-lek")) return; /* gra w lekcji obsługuje „wstecz” sama (gry.js) */ if (e.state ? layerClose() : (layerClose(), false)) return; /* ux-6: „wstecz” (wpis z historii) tylko zamyka okno; nowy adres (link #/…) zamyka okno i idzie dalej */ if (LP.open) { lpClose(true); return; } if (LP.skipPop) { LP.skipPop = false; render(); return; } S.route = normRoute(e.state?.view ? { ...e.state } : routeFromHash());
     if (S.route.gra != null) { delete S.route.gra; try { history.replaceState({ view: "review" }, "", "#/review"); } catch {} } // stary wpis gry w historii: same Powtórki
     render(); });
 
@@ -23365,7 +23365,7 @@ Reply with only one JSON object: {"items": [{"n": 0, "rubric": [{"t": "element",
 })();
 </script>
 <script src="nawyk.js?v=20261119-ux6r4"></script>
-<script src="ux-wejscie.js?v=20261119-ux6r2"></script>
+<script src="ux-wejscie.js?v=20261119-ux6r4"></script>
 <script src="lekcja-ux.js?v=20261117-ux3g"></script>
 <script src="nagrody.js?v=20261117-ux5"></script>
 <script src="ikony-ux.js?v=20261117-ux4f"></script>

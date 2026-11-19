@@ -157,7 +157,7 @@
       return el("section", { class: "uxw-pasek " + (st === "po-probie" ? "uxw-po" : "uxw-pelny"), "aria-label": st === "po-probie" ? "Okres próbny minął" : "Pełny dostęp" },
         ico("lock", 20),
         el("span", { class: "uxw-pasek-t", text: st === "po-probie" ? "Próba minęła · 199 zł do 11 lipca 2027 albo 35 zł / mies." : "Pełny dostęp · 199 zł do 11 lipca 2027 albo 35 zł / mies." }),
-        el("button", { type: "button", class: (naDzis() ? "btn primary" : "btn") + " uxw-kup uxw-pasek-kup", onclick: () => sk.buy?.() }, "Kup dostęp")); // ux-6: poza Dziś ekran ma własne główne działanie
+        el("button", { type: "button", class: (naDzis() ? "btn primary" : "btn") + " uxw-kup uxw-pasek-kup", onclick: () => sk.buy?.() }, "Kup dostęp")); // ux-6: poza Dziś drugorzędny; na Dziś akcent zostaje (decyzja pętli 1, do-decyzji.md pkt 3)
     }
     return null;
   }
