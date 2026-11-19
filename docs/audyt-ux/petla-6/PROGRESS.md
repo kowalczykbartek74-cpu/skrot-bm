@@ -35,7 +35,8 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 - Przeniesione do rundy 2: Dziś zawsze „Lekcja 1”, wiele nazw sesji 5 min, Sklep bez listy cen, kolejność Przedmiotów, pigułki na pierwszym ekranie, P2.
 
 ## Gdzie jestem
-- Runda 2: poprawki z plan-2.md zrobione i wypchnięte; w tle `regresja.sh` (/tmp/ux-6/regresja2.log), potem `runda.sh 2`; następnie Tester-Sędzia rundy 2.
+- Runda 2: kontrola gotowa (166 ekranów, zero twardych błędów, technika 1,25), Tester-Sędzia rundy 2 w toku.
+- Po regresji rundy 2 poprawione: „cel” w pigułce serii ukryty < 380 px (EN 360 wychodziło poza ekran), test ux2-etap1 (osobny commit), kolor definicji w ściągawce, EN „Dział”; ux5-etap3 chwiejny przy pełnym przebiegu, zielony osobno.
 
 ## Decyzje
 - Zegar stron w sondzie i testach = 6.11.2026 17:00 (jak `h2-lib.mjs`), więc „termin za 3 dni” = 9.11.
