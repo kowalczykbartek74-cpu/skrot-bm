@@ -33,6 +33,7 @@ Kolory i kontrast: [PALETA.md](PALETA.md) (pilnuje go `tests/tresci.test.js`). P
    W kodzie: `.btn.primary`, `.btn`, `.btn.ghost` (+ `.small`, `.danger`). Jedna definicja: blok „Wygląd pro, etap 2” w `index.html` z prefiksem `:where(html:not([data-theme]))`, więc ma szczegółowość samego `.btn`. Nie dopisuj przyciskom własnych kolorów, cieni ani zaokrągleń w kontekście; kontekst ustawia tylko układ (szerokość, odstępy). Krawędź 3D (`0 4px 0` albo gruby dolny brzeg) mają tylko rzeczy do wciśnięcia: przyciski, odpowiedzi, chipy, kafle.
 5. **Płaskie karty:** białe tło, ramka 2 px `--h-line`, bez cienia z rozmyciem, nigdy karta w karcie. Kolorowy pasek z lewej (`border-left` > 1 px) jest zakazany.
 6. **Ikony, nie emoji.** Jedna rodzina ikon liniowych o tej samej grubości (zestaw z `ikony-ux.js`). Emoji tylko w treści napisanej przez ludzi i w nagrodach.
+   W kodzie: `ikony-ux.js` (blok „Wygląd pro, etap 3”) zamienia emoji na początku etykiet, przycisków, chipów i ikonek list na ikony (mapa `MAP`), a ozdobne emoji na końcu przycisku lub nagłówka usuwa. Nagrody (🪙 ⭐ 🎉 🏆 🏅 🔥) i treść zostają. Nowe ekrany: od razu `ZD_UX4.ikona(...)`, nie emoji; brakującą ikonę dopisz do `MAP`.
 7. **Bez ozdobników:** bez kratki w tle, falek pod tytułami, naklejek, tekstu z gradientem i etykiet NAD nagłówkami. Nagłówek mówi sam za siebie.
 
 ## Jak sprawdzać

@@ -109,5 +109,98 @@
   window.txt = window.txt || txt;
   window.ZD_UX4 = Object.assign(window.ZD_UX4 || {}, { pomoc, wiersz, oknoPomocy, pusty, txt, ikona, ikonaMotywu, odznakaPoziomu, liczniki, wpisz });
 })();
+// Wygląd pro, etap 3 (19.11.2026): emoji w interfejsie → ikony liniowe z tego samego zestawu (DESIGN.md, zasada 6).
+// Tylko zielone motywy i tylko „rama” interfejsu (etykiety, nagłówki, przyciski, chipy, ikonki list): emoji na początku
+// tekstu zamienia się na ikonę, ozdobne emoji na końcu przycisku albo nagłówka znika. Nagrody (moneta, gwiazdka, puchar,
+// konfetti, płomień serii) i treść lekcji zostają; lekcje obsługuje lekcja-ux.js.
+(() => {
+  "use strict";
+  const P = {
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+    book: '<path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 21.5V4.5"/>',
+    bulb: '<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
+    check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.5"/>',
+    warn: '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>',
+    help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/>',
+    retry: '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    swords: '<path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M14.5 6.5L18 3h3v3l-3.5 3.5M5 14l4 4M7 17l-3 3M3 19l2 2"/>',
+    calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
+    pin: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    puzzle: '<path d="M10 4a2 2 0 1 1 4 0v2h4v4h-2a2 2 0 1 0 0 4h2v4h-4v-2a2 2 0 1 0-4 0v2H6v-4h2a2 2 0 1 0 0-4H6V6h4z"/>',
+    eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    list: '<path d="M10 6h10M10 12h10M10 18h10M4 6h.01M4 12h.01M4 18h.01"/>',
+    abc: '<path d="M4 18l4-12 4 12M5.5 14h5"/><path d="M15 6v12h3a3 3 0 0 0 0-6h-3M15 6h2.5a3 3 0 0 1 0 6"/>',
+    msg: '<path d="M21 12a8 8 0 0 1-11.8 7L4 20l1.1-4.6A8 8 0 1 1 21 12z"/>',
+    rocket: '<path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2"/><path d="M9 15l-3-3c1.5-4 4.5-8 12-9-1 7.5-5 10.5-9 12z"/><circle cx="15" cy="9" r="1.5"/>',
+    dumbbell: '<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',
+    ticket: '<path d="M3 8a2 2 0 0 0 0 4v4h18v-4a2 2 0 0 0 0-4V4H3z"/><path d="M13 4v16" stroke-dasharray="2 2"/>',
+    flag: '<path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>',
+    pen: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+    compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+    tram: '<rect x="5" y="4" width="14" height="13" rx="3"/><path d="M5 11h14M9 21l1.5-4M15 21l-1.5-4M12 4V2"/>',
+    moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>',
+    camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    megaphone: '<path d="M3 10v4h3l8 5V5L6 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',
+    glasses: '<circle cx="7" cy="14" r="3.5"/><circle cx="17" cy="14" r="3.5"/><path d="M10.5 14h3M3.5 13L5 7M20.5 13L19 7"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+    shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+    folder: '<path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    ruler: '<path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>',
+    grad: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+    leaf: '<path d="M5 19c0-8 5.5-14 15-14 0 9.5-6 15-14 15"/><path d="M5 19l8-8"/>',
+    bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>',
+    snow: '<path d="M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5"/><path d="M9.5 3.5L12 6l2.5-2.5M9.5 20.5L12 18l2.5 2.5"/>'
+  };
+  const MAP = { "🔒": "lock", "⚡": "bolt", "📘": "book", "📖": "book", "💡": "bulb", "🧠": "bulb", "✅": "check", "⚠": "warn", "❓": "help",
+    "🔁": "retry", "🎯": "target", "📅": "cal", "⚔": "swords", "🧮": "calc", "📍": "pin", "📌": "pin", "🔗": "link", "🧩": "puzzle", "👀": "eye",
+    "🔢": "list", "🔤": "abc", "🗣": "msg", "🚀": "rocket", "💪": "dumbbell", "🎟": "ticket", "🏁": "flag", "📝": "pen", "✍": "pen", "🧭": "compass",
+    "🚋": "tram", "🌙": "moon", "☀": "sun", "📷": "camera", "📣": "megaphone", "🤓": "glasses", "🔍": "search", "🛡": "shield", "🗂": "folder",
+    "📏": "ruler", "🎓": "grad", "🍃": "leaf", "🔔": "bell", "🧊": "snow" };
+  const NAGRODY = /[🪙⭐🎉🏆🏅🔥🌟💎👑]/u;
+  const LEAD = /^(\s*)(\p{Extended_Pictographic})️?\s*/u;
+  const TAIL = /\s*(\p{Extended_Pictographic}️?)\s*$/u;
+  const RAMA = ".eyebrow, .ic, .emo, .lock, .pts-ico, .po-ic, .lbl, .slide-ref, .fn-sec, .kcard-lock, .kcard-zoom, .spr-top, .g-day, .ez-chip, button, .btn, .chip, a.link, summary, h1, h2, h3, h4, .panel-head > span, span[aria-hidden=true], i[aria-hidden=true]";
+  const KONIEC = "button, .btn, h1, h2, h3, h4, .eyebrow";
+  const TRESC = ".lp, .rk-badge, .lv-badge, .rk, [translate=no], textarea, input, [contenteditable], .kcard, .kshop, .shop, .set-theme, .set-themes, .pink-swatch, .lp-star, .uni-spark, .uni-mascot, .coin-fly, .gain-pop, .sitefoot";
+  const zielony = () => !document.documentElement.hasAttribute("data-theme");
+  const svg = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[k]}</svg>`;
+  function ikona(k, sam) { const s = document.createElement("span"); s.className = "pro-ico" + (sam ? " sam" : ""); s.setAttribute("aria-hidden", "true"); s.innerHTML = svg(k); return s; }
+  function przerob(n) {
+    const e = n.parentElement; if (!e) return;
+    const r = e.closest(RAMA); if (!r || (r !== e && r !== e.parentElement) || e.closest(TRESC)) return;
+    let t = n.nodeValue; const m = t.match(LEAD);
+    if (m) {
+      const k = MAP[m[2]];
+      if (k) { t = t.slice(m[0].length); const sam = !t.trim() && !n.nextSibling && !n.previousSibling; n.parentNode.insertBefore(ikona(k, sam), n); n.nodeValue = t; }
+      else if (!NAGRODY.test(m[2]) && /^[\u{1F600}-\u{1F64F}\u{1F90C}-\u{1F9FF}]$/u.test(m[2])) n.nodeValue = t = t.slice(m[0].length);
+    }
+    const z = t.match(TAIL);
+    if (z && !NAGRODY.test(z[1]) && e.closest(KONIEC) && !n.nextSibling) n.nodeValue = t.slice(0, z.index);
+  }
+  const EMO = /\p{Extended_Pictographic}/u;
+  function skanuj(root) {
+    if (!zielony() || !root || root.nodeType !== 1 || root.closest?.(TRESC)) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), lista = [];
+    for (let n = w.nextNode(); n; n = w.nextNode()) if (EMO.test(n.nodeValue)) lista.push(n);
+    lista.forEach(przerob);
+  }
+  // Od razu w wywołaniu obserwatora (mikrozadanie przed malowaniem): bez mignięcia emoji i bez requestAnimationFrame,
+  // który nie działa w karcie w tle. Na czas zmian obserwator jest odłączony, żeby nie łapał własnych zmian.
+  const obs = new MutationObserver((ms) => {
+    if (!zielony()) return;
+    const q = new Set();
+    for (const m of ms) { if (m.type === "characterData") { if (m.target.parentElement) q.add(m.target.parentElement); continue; } m.addedNodes.forEach((x) => { if (x.nodeType === 1) q.add(x); else if (x.nodeType === 3 && x.parentElement) q.add(x.parentElement); }); }
+    obs.disconnect(); q.forEach((x) => { if (x.isConnected) skanuj(x); }); start();
+  });
+  const start = () => obs.observe(document.body, { childList: true, subtree: true, characterData: true });
+  const go = () => { skanuj(document.body); start(); };
+  if (document.body) go(); else document.addEventListener("DOMContentLoaded", go);
+  window.ZD_UX4 = Object.assign(window.ZD_UX4 || {}, { emojiNaIkony: skanuj });
+})();
 // Plik ładuje się po skrypcie aplikacji: jeśli ekran już się narysował (bez „?” z tego pliku), rysujemy go raz jeszcze.
 (() => { const A = window.ZD_APP; if (A?.render && document.querySelector("#main > *")) try { A.render(); } catch {} })();
