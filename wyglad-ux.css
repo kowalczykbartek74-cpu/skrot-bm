@@ -212,3 +212,29 @@ html[data-green="dark"]:not([data-theme]) .ux4-stat > .ux4-ico { color: var(--h-
 html:not([data-theme]) #main .set-themes > .set-theme:last-child:nth-child(n) { grid-column: auto; grid-template-columns: none; grid-template-rows: none; justify-content: normal; text-align: center; }
 html:not([data-theme]) #main .set-themes > .set-theme:last-child:nth-child(n) .e { grid-row: auto; }
 #main .g-faq summary { min-height: 44px; display: flex; align-items: center; gap: 6px; }
+
+/* ===== Wygląd pro, etap 3 (19.11.2026): bez ozdobników (DESIGN.md, zasada 7). Tylko zielone motywy; motywy ze sklepu zostają.
+   Zdjęte: kratka w tle, „słoje” (koncentryczne kręgi w rogach), falka pod tytułem, naklejki przy tytułach, wzory okładek,
+   paski z lewej przy nagłówkach i w ramkach z przykładem, wzorem, podpowiedzią. Kolor przedmiotu na kartach terminów zostaje (etap 4). ===== */
+html:not([data-theme]) body { background-image: none; }
+html:not([data-theme]) body::before, html:not([data-theme]) body::after { content: none; }
+html:not([data-theme]) .ptitle { background: none; padding-bottom: 0; }
+html:not([data-theme]) .art.sticker { display: none; }
+html:not([data-theme]) .nb-top.pat { background-image: none; background-color: color-mix(in srgb, var(--c, var(--accent)) 14%, var(--surface)); }
+html:not([data-theme]) :is(.today, .tv, .tv-now, .g-hero, .g-result.pass, .now, .now.warn, .rv-hero, .rv-hero.calm, .empty:not(.small), .pk-back, .lv-head) { background-image: none; }
+html:not([data-theme]) :is(.g-stage, .lvup-burst)::after, html:not([data-theme]) .lvup-burst::before,
+html:not([data-theme]) #login :is(.lg-trial, .lg-side, .lg-intro)::after { content: none; }
+html:not([data-theme]) :is(.panel > .panel-head:first-child h2, .more-group > h2) { padding-left: 0; }
+html:not([data-theme]) :is(.panel > .panel-head:first-child h2, .more-group > h2, .term-group h2)::before { content: none; }
+/* Ramki z przykładem, wzorem, podpowiedzią: zamiast paska z lewej – miękkie tło i zwykła ramka karty. */
+html:not([data-theme]) :is(.announce, .why .ex, .spart .rem, .tv-entry, .g-tip, .g-why, .g-term, .g-ev, .lintu, .sk-formula, .lp-formula, .imp-frag, .cheat-page .ch-formulas > div, .stas-fix) {
+  border-left: 0; border-radius: var(--r-m); background-color: var(--h-acc-soft); padding: 12px 14px; }
+html:not([data-theme]) .ex-item:is(.ok, .bad) { border-left: 0; border-radius: var(--r-m); }
+html:not([data-theme]) .ex-item.ok { background-color: var(--h-acc-soft); }
+html:not([data-theme]) .ex-item.bad { background-color: var(--h-red-soft); }
+/* Ikony w miejsce emoji (ikony-ux.js, etap 3): w linii tekstu wielkości litery, samodzielne (w kafelku na emoji) wielkości pola. */
+.pro-ico { display: inline-flex; flex: none; vertical-align: -.16em; margin-right: .38em; color: var(--h-acc, currentColor); }
+.pro-ico svg { width: 1.1em; height: 1.1em; display: block; }
+.pro-ico.sam { margin-right: 0; vertical-align: middle; }
+.pro-ico.sam svg { width: 1em; height: 1em; }
+:is(.btn.primary, .lk-go, .zh-hero, .now, .rv-hero) .pro-ico, .pro-ico:is(.lock *, .chip *) { color: currentColor; }
