@@ -6106,12 +6106,13 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "Zostało kilka godzin do północy. Wystarczy 5 minut i seria rośnie.": "A few hours left until midnight. 5 minutes is enough and your streak grows.",
 "Dziś bez nauki? Zamrożenie ochroni ten dzień. 5 minut nauki i zamrożenie zostaje na później.": "No studying today? A freeze will protect this day. 5 minutes of study and you keep the freeze for later.",
 "Jeszcze nic do powtórki. Zrób dziś swoje 5 minut, a fiszki wrócą tu jutro.": "Nothing to review yet. Do your 5 minutes today and the flashcards will come back here tomorrow.",
-"Opanowanie to średnia z lekcji: zrobiona liczy się w 50% (60% ze zdanym biletem), każde utrwalenie w Powtórkach dodaje 20%.": "Mastery is the average of your lessons: a done lesson counts as 50% (60% with a passed ticket), each lock-in with Reviews adds 20%.",
+"Opanowanie to średnia z lekcji: zaczęta liczy się częściowo, zrobiona w 50% (60% ze zdanym biletem), każde utrwalenie w Powtórkach dodaje 20%.": "Mastery is the average of your lessons: a started lesson counts partly, a done one 50% (60% with a passed ticket), each lock-in with Reviews adds 20%.",
 "Opanowanie {0}%": "Mastery {0}%",
 "Jeszcze bez lekcji": "No lessons yet",
 "{0}, opanowanie {1}%, zrobione lekcje: {2} z {3}{4}": "{0}, mastery {1}%, lessons done: {2} of {3}{4}",
 "{0}, opanowanie {1}%, zrobione lekcje: {2} z {3}": "{0}, mastery {1}%, lessons done: {2} of {3}",
 ", jeszcze bez lekcji": ", no lessons yet",
+"Wszystkie lekcje, fiszki i quizy z wyjaśnieniami, do 11 lipca 2027.": "All lessons, flashcards and quizzes with explanations, until 11 July 2027.",
 "__ux6": "__ux6"
 // koniec ux-6
 },

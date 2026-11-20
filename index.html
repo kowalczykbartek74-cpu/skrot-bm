@@ -7784,7 +7784,7 @@ html .bar .lang-btn { min-width: 44px; min-height: 44px; }
     return h("section", { class: "paywall" + (m ? " uxw-paywall" : "") },
       h("span", { class: "eyebrow", text: title ? "Ten materiał jest w pełnej wersji" : "Zdawalni · pełny dostęp" }),
       h("h2", { text: title || "Cały rok nauki w jednym miejscu" }),
-      h("p", { class: "muted", text: "Cały materiał, fiszki i quiz z wyjaśnieniami do każdego przedmiotu, do 11 lipca 2027." }),
+      h("p", { class: "muted", text: "Wszystkie lekcje, fiszki i quizy z wyjaśnieniami, do 11 lipca 2027." }),
       m ? h("p", { class: "uxw-lekcja-info" }, [m.quizCount ? `${m.quizCount} ${plural(m.quizCount, "pytanie", "pytania", "pytań")}` : null, m.conceptCount ? `${m.conceptCount} ${plural(m.conceptCount, "pojęcie", "pojęcia", "pojęć")}` : null, m.minutes ? `ok. ${m.minutes} min` : null].filter(Boolean).join(" · ")) : null,
       h("div", { class: "row uxw-paywall-act" },
         trialBtn("btn primary uxw-lime"),
@@ -9294,7 +9294,7 @@ html .bar .lang-btn { min-width: 44px; min-height: 44px; }
       L.n ? (() => { const sp = subjectPts(s.id), pc = pctOf(sp.pct); return h("div", { class: "know-line ux5-mastery" },
         h("div", { class: "pts-head" }, h("b", { text: "Opanowanie" }), h("b", { class: "num", text: pc + "%" })), pctBar(pc, `Opanowanie: ${s.pl}`, "md"),
         h("p", { class: "ux5-sub muted", text: `Zrobione lekcje: ${L.done} z ${L.n}` }),
-        h("p", { class: "ux5-sub muted", text: "Opanowanie to średnia z lekcji: zrobiona liczy się w 50% (60% ze zdanym biletem), każde utrwalenie w Powtórkach dodaje 20%." })); })() : null,
+        h("p", { class: "ux5-sub muted", text: "Opanowanie to średnia z lekcji: zaczęta liczy się częściowo, zrobiona w 50% (60% ze zdanym biletem), każde utrwalenie w Powtórkach dodaje 20%." })); })() : null,
       kn.n ? sprLine(s.id, kn) : null,
       next ? h("button", { type: "button", class: "btn primary sk-start sk-long", title: next.label, onclick: () => go({ view: "material", id: next.m.id }) }, h("span", { class: "txt", text: next.label }), h("span", { "aria-hidden": "true", text: "→" }))
         // ux-6: nieprzerobione lekcje, ale zamknięte (konto bez dostępu) – to nie „wszystko przerobione”
