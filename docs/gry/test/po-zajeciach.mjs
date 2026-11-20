@@ -89,7 +89,7 @@ const e = await page(b, { konto: "platne", lang: "en", ls: { "mock-docs": JSON.s
 await e.clock.setFixedTime(CZAS);
 await e.goto(BASE + "index.html#/po/analiza-matematyczna"); await e.waitForTimeout(2500);
 const enTxt = await e.locator("main").innerText();
-ok("EN: przetłumaczone", /After class in 5 minutes/i.test(enTxt) && !/examples of tablicy/.test(enTxt) && /Your recent classes/.test(enTxt) && !/Twoje ostatnie zajęcia|Wszystkie tematy z sylabusa/.test(enTxt), enTxt.slice(0, 800));
+ok("EN: przetłumaczone", /5 minutes · after class/i.test(enTxt) && !/examples of tablicy/.test(enTxt) && /Your recent classes/.test(enTxt) && !/Twoje ostatnie zajęcia|Wszystkie tematy z sylabusa/.test(enTxt), enTxt.slice(0, 800));
 await shot(e, "po-en");
 // bez dostępu
 const d = await page(b, { konto: "darmowe" });
