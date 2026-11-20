@@ -193,6 +193,18 @@ Spec lekcji v4 (`lekcja-v4-spec.md`, wklejony w czacie 2.11.2026) jest **wdrożo
 - Testy: `node --test tests/*.test.js` (`num-parser`, `poziomy`, `srs-q`), `supabase/test/v29.sql` (W1–W5), Playwright `docs/gry/test/lekcje-v4.mjs` (30/30).
 - **Kontrola paczki przed wgraniem** (etap 12): `node scripts/tresci-kontrola.mjs <paczka> --przed-wgraniem` (walidator v4 + zakazane frazy + rachunki + przegląd liczb ze źródłem, patrz „Kontrola jakości treści”). Pytanie liczbowe może mieć pole `calc` (np. `"calc": "200*(1-0.19)"`): strona go nie pokazuje, kontrola liczy poprawną opcję.
 
+## Mapa teorii (`teoria.js`, bez SQL)
+
+Cała teoria jednego tematu jako tekstowa mapa myśli dla tych, którzy wolą najpierw przeczytać, a potem ćwiczyć. Celowo bez ruchu (zero przejść i animacji w widoku, także bez `html.calm`). Specyfikacja i pętla treści: `docs/teoria/petla.md` (w projekcie claude.ai: `claude/teoria-mapa-spec.md`), wzór wyglądu `docs/teoria/prototyp.html`, przykład danych `docs/teoria/przyklad-inflation.json`.
+
+- **Dane:** `materialSimple/<id>~teoria` (format `zdawalni-teoria` v1, tak jak `~ez`), czytane dopiero po wejściu na ekran. Że temat ma mapę, mówi pole `materials/<id>.teoria` (czas wgrania). Walidator `ZD_TEORIA.waliduj` = reguły z sekcji 3.2 specyfikacji (test `tests/teoria.test.js`).
+- **Ekran:** `#/teoria/<id tematu>` (mapa) i `#/teoria/<id przedmiotu>` (lista map przedmiotu). Środek z kolejnością czytania, gałęzie jako drzewo, „Jak to się łączy”, „Na egzaminie”, „Słowa EN–PL”, na końcu „Zacznij lekcję”. Skoki do gałęzi to przyciski, nie linki z `#` (hash należy do routera). Druk: cała mapa ze znakiem wodnym.
+- **Wejścia:** przycisk „Najpierw teoria” / „Mapa teorii” na ekranie tematu (krok Czytaj), wiersz „Mapy teorii” w zakładce Ucz się przedmiotu, przełącznik Ustawienia → Wygląd → Nauka → „Najpierw teoria” (`localStorage skrot-teoria-1st`): temat z nieprzeczytaną mapą otwiera najpierw mapę (`replaceState`, więc „wstecz” nie wpada w pętlę).
+- **Bez nagród:** przeczytanie (koniec mapy na ekranie albo „Zacznij lekcję”) zapisuje tylko `localStorage skrot-teoria-czytane` (`{ id: dzień }`). Zero XP, monet i punktów.
+- **Dostęp:** jak lekcje; bez dostępu widać środek i gałąź 1, potem karta zakupu.
+- **Wgrywanie:** Panel AI → „Paczka teorii” (`{ format: "zdawalni-paczka-teorii", v: 1, rocznik, teoria: { <id>: dokument } }`), zapis do wczytanego rocznika, mapy z błędem formatu albo bez tematu są pomijane i wypisane. Usunięcie tematu kasuje też `~teoria`.
+- **Test UI:** `docs/gry/test/teoria.mjs`.
+
 ## Rewanże (`rewanze.js`, bez SQL)
 Etap 2 specu „Systemy z Zdawalni w Skrócie”: zeszyt błędów z Zdawalni (`matura-app/lib/domain/mistakes.ts` + `rematch.ts`, wersja z FSRS) przeniesiony 1:1.
 - **Skąd**: zła albo zgadnięta („Zgaduję”) odpowiedź w quizie przedmiotu, grach, `check`/bilecie lekcji, zadaniu liczbowym lekcji i pytaniu zamkniętym próbnego testu. Pytania otwarte z oceną AI tu nie trafiają (zostają w „Co poprawić”), pytania z „Po zajęciach” też nie (nie ma ich w materiałach).
