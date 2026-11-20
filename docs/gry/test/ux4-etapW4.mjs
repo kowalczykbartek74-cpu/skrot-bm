@@ -72,7 +72,7 @@ ok(`K3 własne ikony z prefiksem ux4- (${wlasne.length})`, wlasne.length >= 10 &
   await p.close();
 }
 // emoji w dodanym kodzie (poza komentarzami i zachowaniem zastępczym bez ikony-ux.js) – część automatyczna (kontrola.mjs) też to liczy
-const dodane = fs.readFileSync(ROOT + "ikony-ux.js", "utf8").split("\n").filter((l) => /\p{Emoji_Presentation}/u.test(l) && !/^\s*\/\//.test(l) && !/h2Ico\("(coin|flame)", "(🪙|🔥)"\)/.test(l));
+const dodane = fs.readFileSync(ROOT + "ikony-ux.js", "utf8").split("\n").filter((l) => /\p{Emoji_Presentation}/u.test(l) && !/^\s*\/\//.test(l) && !/h2Ico\("(coin|flame)", "(🪙|🔥)"\)/.test(l) && !/^\s*(const MAP = \{)?\s*("[^"]+": "[\w-]+",?\s*)+(\};?)?\s*$/.test(l) && !/^\s*const \w+ = \/\[[^\]]*\]\/u;/.test(l)); // wiersze MAP i wyrażenia do rozpoznawania emoji = słownik zamiany emoji na ikony SVG, nie użycie emoji
 ok("ikony-ux.js: bez emoji (poza zastępczymi dla h2Ico w motywach ze sklepu)", dodane.length === 0, dodane);
 await b.close();
 end();

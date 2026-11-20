@@ -1,0 +1,447 @@
+{
+ "runda": 4,
+ "wynik": 8.3,
+ "punkty": {
+  "zadania": 3.71,
+  "zrozumialosc": 1.2,
+  "pierwsze_minuty": 1.1,
+  "bledy_i_wyjscia": 0.8,
+  "technika": 1.5
+ },
+ "twarde_bledy": [],
+ "zadania": [
+  {
+   "id": "Z1",
+   "wynik": 2,
+   "kroki": 7,
+   "limit": 8,
+   "gdzie_utknalem": "Nigdzie; kod z maila zatwierdził się sam, ostatnie kliknięcie trafiło w pustkę",
+   "zrzuty": [
+    "zrzuty/Z1-01.png",
+    "zrzuty/Z1-03.png",
+    "zrzuty/Z1-06.png",
+    "zrzuty/Z1-08.png"
+   ]
+  },
+  {
+   "id": "Z2",
+   "wynik": 2,
+   "kroki": 1,
+   "limit": 4,
+   "gdzie_utknalem": "Nigdzie; po sesji 'Zadania dnia 0/3' i ucięty znacznik ×3",
+   "zrzuty": [
+    "zrzuty/Z2-01.png",
+    "zrzuty/Z2-14.png",
+    "zrzuty/Z2-15.png"
+   ]
+  },
+  {
+   "id": "Z3",
+   "wynik": 2,
+   "kroki": 3,
+   "limit": 5,
+   "gdzie_utknalem": "Nigdzie (pierwsze podejście powtórzone z powodu błędu testera, nie apki)",
+   "zrzuty": [
+    "zrzuty/Z3-03.png",
+    "zrzuty/Z3-04.png"
+   ]
+  },
+  {
+   "id": "Z4",
+   "wynik": 2,
+   "kroki": 2,
+   "limit": 4,
+   "gdzie_utknalem": "Nigdzie; brak godziny, główny przycisk 'Odhacz'",
+   "zrzuty": [
+    "zrzuty/Z4-02.png",
+    "zrzuty/Z4-03.png"
+   ]
+  },
+  {
+   "id": "Z5",
+   "wynik": 2,
+   "kroki": 2,
+   "limit": 5,
+   "gdzie_utknalem": "'Próbny test: Prawo' pod zgięciem przy 360×640; test rusza od razu z zegarem",
+   "zrzuty": [
+    "zrzuty/Z5-01.png",
+    "zrzuty/Z5-02.png",
+    "zrzuty/Z5-03.png"
+   ]
+  },
+  {
+   "id": "Z6",
+   "wynik": 2,
+   "kroki": 2,
+   "limit": 3,
+   "gdzie_utknalem": "Nigdzie; podpowiedź 'naciśnij spację' na telefonie",
+   "zrzuty": [
+    "zrzuty/Z6-02.png",
+    "zrzuty/Z6-03.png",
+    "zrzuty/Z6-04.png"
+   ]
+  },
+  {
+   "id": "Z7",
+   "wynik": 2,
+   "kroki": 2,
+   "limit": 4,
+   "gdzie_utknalem": "Nigdzie",
+   "zrzuty": [
+    "zrzuty/Z7-03.png"
+   ]
+  },
+  {
+   "id": "Z8",
+   "wynik": 2,
+   "kroki": 3,
+   "limit": 4,
+   "gdzie_utknalem": "Analiza na dole listy; trzy różne miary postępu (umiesz 0 z 2 / Opanowanie 25% / lekcje 1 z 2)",
+   "zrzuty": [
+    "zrzuty/Z8-03.png",
+    "zrzuty/Z8-04.png"
+   ]
+  },
+  {
+   "id": "Z9",
+   "wynik": 1,
+   "kroki": 7,
+   "limit": 5,
+   "gdzie_utknalem": "Nie da się sprawdzić, co najtańsze (zakładki, przeplecione z Zadaniami dnia); klik w polecaną rzecz tylko przewinął; po zakupie brak komunikatu",
+   "zrzuty": [
+    "zrzuty/Z9-02.png",
+    "zrzuty/Z9-04.png",
+    "zrzuty/Z9-06.png",
+    "zrzuty/Z9-07.png",
+    "zrzuty/Z9-08.png"
+   ]
+  },
+  {
+   "id": "Z10",
+   "wynik": 2,
+   "kroki": 2,
+   "limit": 4,
+   "gdzie_utknalem": "Nigdzie; ranking tylko w menu",
+   "zrzuty": [
+    "zrzuty/Z10-02.png",
+    "zrzuty/Z10-03.png"
+   ]
+  },
+  {
+   "id": "Z11",
+   "wynik": 2,
+   "kroki": 5,
+   "limit": 6,
+   "gdzie_utknalem": "Przełącznik języka na dole menu (2 przewinięcia)",
+   "zrzuty": [
+    "zrzuty/Z11-03.png",
+    "zrzuty/Z11-04.png",
+    "zrzuty/Z11-05.png",
+    "zrzuty/Z11-06.png"
+   ]
+  },
+  {
+   "id": "Z12",
+   "wynik": 2,
+   "kroki": 4,
+   "limit": 6,
+   "gdzie_utknalem": "Nigdzie",
+   "zrzuty": [
+    "zrzuty/Z12-01.png",
+    "zrzuty/Z12-03.png",
+    "zrzuty/Z12-05.png"
+   ]
+  },
+  {
+   "id": "Z13",
+   "wynik": 2,
+   "kroki": 4,
+   "limit": 4,
+   "gdzie_utknalem": "Nigdzie; pola zgód 20×20 px",
+   "zrzuty": [
+    "zrzuty/Z13-01.png",
+    "zrzuty/Z13-02.png",
+    "zrzuty/Z13-05.png"
+   ]
+  },
+  {
+   "id": "Z14",
+   "wynik": 2,
+   "kroki": 3,
+   "limit": 5,
+   "gdzie_utknalem": "Nigdzie; surowy link supabase.co",
+   "zrzuty": [
+    "zrzuty/Z14-03.png"
+   ]
+  },
+  {
+   "id": "Z15",
+   "wynik": 2,
+   "kroki": 4,
+   "limit": 4,
+   "gdzie_utknalem": "Nigdzie; kontakt na gmail.com",
+   "zrzuty": [
+    "zrzuty/Z15-03.png",
+    "zrzuty/Z15-04.png",
+    "zrzuty/Z15-05.png"
+   ]
+  },
+  {
+   "id": "Z16",
+   "wynik": 2,
+   "kroki": 6,
+   "limit": 6,
+   "gdzie_utknalem": "Nigdzie; plakietka '11' bez wyjaśnienia, data w formacie mm/dd na zrzucie",
+   "zrzuty": [
+    "zrzuty/Z16-03.png",
+    "zrzuty/Z16-04.png",
+    "zrzuty/Z16-06.png",
+    "zrzuty/Z16-08.png"
+   ]
+  },
+  {
+   "id": "Z17",
+   "wynik": 1,
+   "kroki": 1,
+   "limit": 3,
+   "gdzie_utknalem": "Dwa wyjścia ('Ostatnia lekcja' i 'Wracam: 3 minuty') – wybór na wyczucie; lekcja otwiera się od kroku 1 z 3",
+   "zrzuty": [
+    "zrzuty/Z17-01.png",
+    "zrzuty/Z17-02.png"
+   ]
+  },
+  {
+   "id": "Z18",
+   "wynik": 2,
+   "kroki": 2,
+   "limit": 4,
+   "gdzie_utknalem": "Na Dziś brak 'Kup dostęp' dla konta darmowego – znalazłem w nagłówku menu",
+   "zrzuty": [
+    "zrzuty/Z18-01.png",
+    "zrzuty/Z18-03.png"
+   ]
+  },
+  {
+   "id": "N2",
+   "wynik": 2,
+   "kroki": 3,
+   "limit": 6,
+   "gdzie_utknalem": "Nigdzie",
+   "zrzuty": [
+    "zrzuty/N2-03.png",
+    "zrzuty/N2-04.png"
+   ]
+  },
+  {
+   "id": "N1",
+   "wynik": 2,
+   "kroki": 3,
+   "limit": 6,
+   "gdzie_utknalem": "Nigdzie; 'Upuść plik tutaj' na telefonie, cofanie prowadzi do '← Przedmioty'",
+   "zrzuty": [
+    "zrzuty/N1-03.png",
+    "zrzuty/N1-04.png"
+   ]
+  },
+  {
+   "id": "N8",
+   "wynik": 1,
+   "kroki": 4,
+   "limit": 6,
+   "gdzie_utknalem": "Przełącznik 'Prościej · PL' jest, ale treść 'jeszcze w przygotowaniu'",
+   "zrzuty": [
+    "zrzuty/N8-03.png",
+    "zrzuty/N8-05.png"
+   ]
+  }
+ ],
+ "niespodzianki": [
+  "N2",
+  "N1",
+  "N8"
+ ],
+ "pierwsze_minuty": {
+  "co_to_za_apka": "Apka do nauki na studia (BM, US): codziennie 5 minut (fiszki, najważniejsze z tematu, 2 pytania) plus terminy kolokwiów i plan zajęć mojego roku.",
+  "co_kliknalbym": "'Zaczynamy · 5 min' – największy przycisk i mówi, ile to potrwa.",
+  "niejasne": [
+   "Świeżak (poziom?)",
+   "cel 0/30 XP – co to XP",
+   "Ten tydzień: 0/4 dni przy 7 kółkach",
+   "Staś – kto to",
+   "Próba: 'dzień 1 z 3' na Dziś vs 'zostały 2 dni' w Przedmiotach",
+   "Inny temat vs Wybierz temat",
+   "karta 'Pochodne funkcji' vs 'Najważniejsze teraz: Całki oznaczone'",
+   "pole 'Jestem w drodze'",
+   "Stażysta Staś (pusty ekran)",
+   "Paczka i duet",
+   "Fruń / Przejdź / Drabina",
+   "Skrzynka do opiekunki roku",
+   "Profil nauki 6 minut",
+   "skróty OWI, W, LAB"
+  ]
+ },
+ "problemy": [
+  {
+   "waga": "P1",
+   "ekran": "Terminy / Przedmioty / Dziś / Sklep",
+   "co": "Jedno zaliczenie ma kilka nazw: OWI to 'kolokwium' w Terminach, a 'zaliczenie wykładu' w Sprint OWI; Prawo 'Przed kolokwium' na Dziś, a 'zaliczenie wykładu' w Przedmiotach; kafelki 'wykład za 77 dni'.",
+   "dlaczego_to_przeszkadza": "Student nie wie, czy to ten sam sprawdzian i kiedy naprawdę jest; 'wykład za 77 dni' brzmi jak termin wykładu.",
+   "dowod": "Z4, Z5, Z9-03.png, C3-05.png",
+   "propozycja": "Nazwa z jednego źródła: '{rodzaj}: {przedmiot} · za N dni'. Kafelek: 'zaliczenie wykładu za 77 dni' / EN 'lecture exam in 77 days'. Na karcie Dziś ten sam rodzaj co w Terminach."
+  },
+  {
+   "waga": "P1",
+   "ekran": "Dziś / Powtórki / Więcej / Przedmiot",
+   "co": "Siedem nazw na krótką naukę: 'Dziś · 5 min', 'Karta 5 minut', 'Powtórka w 5 minut', 'Lekcja na przejazd', '10 minut przed snem', 'Po zajęciach w 5 minut', 'Wracam: 3 minuty' + pole 'Jestem w drodze'.",
+   "dlaczego_to_przeszkadza": "Nie wiadomo, czym się różnią i którą wybrać; łamie zasadę 'jedna nazwa na jedną rzecz'.",
+   "dowod": "C3-03.png, C3-07.png, Z8-04.png, Z17-01.png",
+   "propozycja": "Wszędzie 'Dziś · 5 min' / 'Today · 5 min'; w Powtórkach 'Zacznij Dziś · 5 min'. Warianty czasu tylko w 'Mam więcej czasu ▾' na karcie Dziś, usunąć je z menu."
+  },
+  {
+   "waga": "P1",
+   "ekran": "Przedmioty → przedmiot",
+   "co": "Postęp w przedmiocie podany trzema miarami: 'umiesz 0 z 2 tematów', 'Opanowanie 25%', 'Zrobione lekcje 1 z 2' (+ 'gwiazdki' w czytniku).",
+   "dlaczego_to_przeszkadza": "Lista mówi 0, a środek 25%; student nie wie, ile mu zostało.",
+   "dowod": "Z8-03.png, Z8-04.png",
+   "propozycja": "Jedna miara w obu miejscach: 'Opanowanie 25% · lekcje 1/2' / 'Mastery 25% · lessons 1/2'."
+  },
+  {
+   "waga": "P1",
+   "ekran": "Dziś",
+   "co": "Karta: 'Lekcja 1: Pochodne funkcji', niżej 'Najważniejsze teraz: Lekcja 2: Całki oznaczone'; obok głównego przycisku 'Inny temat' i 'Wybierz temat'; 5 liczników bez objaśnienia.",
+   "dlaczego_to_przeszkadza": "Sprzeczna podpowiedź, co jest najważniejsze; dwa prawie identyczne przyciski; liczby XP/dni/tydzień 0/4 niezrozumiałe dla nowego.",
+   "dowod": "C3-01.png, C3-02.png",
+   "propozycja": "Połączyć w 'Zmień temat ▾' / 'Change topic ▾'. Sekcja niżej: 'Po dzisiejszej lekcji' / 'After today's lesson'. Przy pierwszym wejściu jedno zdanie: 'XP zbierasz za naukę; 30 XP = cel dnia.' / 'You earn XP for studying; 30 XP = daily goal.'"
+  },
+  {
+   "waga": "P1",
+   "ekran": "Próbny test",
+   "co": "Po kliknięciu 'Próbny test: Prawo' test i zegar 45:00 startują od razu.",
+   "dlaczego_to_przeszkadza": "Brak kontroli i zapobiegania błędom: przypadkowe kliknięcie w tramwaju uruchamia czas.",
+   "dowod": "Z5-03.png",
+   "propozycja": "Okno startowe: 'Próbny test: Prawo · 14 pytań · 45 min. Odpowiedzi zapisują się same. [Zaczynam test] [Jeszcze nie]' / 'Mock test: Law · 14 questions · 45 min. Answers save automatically. [Start test] [Not yet]'."
+  },
+  {
+   "waga": "P1",
+   "ekran": "Dziś po przerwie",
+   "co": "Dwa wyjścia: 'Ostatnia lekcja: …' i 'Wracam: 3 minuty'; lekcja otwiera się od kroku 1 z 3.",
+   "dlaczego_to_przeszkadza": "Trzeba zgadywać, co znaczy 'tam, gdzie skończyłem', a lekcja nie pamięta miejsca.",
+   "dowod": "Z17-01.png, Z17-02.png",
+   "propozycja": "Główny: 'Wróć do: Pochodne funkcji · krok 2 z 3' / 'Back to: Derivatives · step 2 of 3'; link: 'Najpierw 3 min powtórki' / 'Warm up first (3 min)'. Lekcja otwiera się na ostatnim kroku."
+  },
+  {
+   "waga": "P1",
+   "ekran": "Sklep",
+   "co": "Nie widać, co najtańsze (zakładki, przeplecione z Zadaniami dnia); klik w polecaną rzecz tylko przewija; po zakupie brak komunikatu i salda.",
+   "dlaczego_to_przeszkadza": "Zadanie zajęło 7 kroków przy limicie 5 i skończyło się zgadywaniem.",
+   "dowod": "Z9-02.png, Z9-04.png, Z9-06.png, Z9-08.png",
+   "propozycja": "W polecanych przycisk 'Kup za 40' otwierający potwierdzenie; Zadania dnia nad katalogiem albo osobno; po zakupie: 'Kupione: Zamrożenie serii. Zostało 110 monet.' / 'Bought: Streak freeze. 110 coins left.'"
+  },
+  {
+   "waga": "P1",
+   "ekran": "Okno planów / Dziś (konto darmowe)",
+   "co": "Obietnica 'Lekcje, fiszki i quizy do każdego przedmiotu', a 5 z 10 przedmiotów 'Jeszcze bez materiałów' (w tym OWI z kolokwium za 14 dni); na Dziś konta darmowego brak 'Kup dostęp'.",
+   "dlaczego_to_przeszkadza": "Rozczarowanie po zakupie i utrata zaufania; zakup trudniej znaleźć.",
+   "dowod": "Z18-01.png, Z18-03.png, C3-05.png",
+   "propozycja": "'Lekcje do 5 z 10 przedmiotów, kolejne dochodzą co tydzień' / 'Lessons for 5 of 10 subjects, more every week'. Na Dziś: 'Masz jeszcze 3 dni za darmo [Włącz] · [Zobacz ceny]' / 'You still have 3 free days [Start] · [See prices]'."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Więcej (telefon)",
+   "co": "Przełącznik języka na samym dole menu; na komputerze jest 'EN' w nagłówku, na telefonie nie.",
+   "dlaczego_to_przeszkadza": "Koledze z Erasmusa trudno to znaleźć.",
+   "dowod": "Z11-03.png, Z11-04.png, Z12-01.png",
+   "propozycja": "Przycisk 'EN' / 'PL' w nagłówku telefonu obok logo."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Stażysta Staś / Prościej · PL",
+   "co": "Funkcje w menu i w lekcji są puste: 'Staś jeszcze nic nie przygotował', 'Prostsza wersja … w przygotowaniu'.",
+   "dlaczego_to_przeszkadza": "Obiecane w menu, a pusto – rozczarowanie.",
+   "dowod": "C3-04.png, N8-05.png",
+   "propozycja": "Ukryć do czasu treści albo: 'Staś przygotuje błędy po Twojej pierwszej lekcji. [Zrób lekcję]' / 'Staś will prepare mistakes after your first lesson. [Do a lesson]'."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Lekcja",
+   "co": "Na kroku 'Przeczytaj' przycisk 'Dalej: Quiz →', choć krok 2 to Fiszki (gdzie indziej 'Dalej: Fiszki →').",
+   "dlaczego_to_przeszkadza": "Nie wiadomo, czy fiszki się pomija.",
+   "dowod": "Z3-04.png, Z17-02.png, kontrola.md (słownik)",
+   "propozycja": "Zawsze następny krok: 'Dalej: Fiszki →' / 'Next: Flashcards →'."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Okno kolokwium",
+   "co": "Główny przycisk 'Odhacz' dla testu za 14 dni; przy OWI brak 'Przygotuj się'; nazwa przedmiotu powtórzona pod tytułem.",
+   "dlaczego_to_przeszkadza": "Główna akcja nie pasuje do celu (przygotować się).",
+   "dowod": "Z4-03.png, Z16-03.png",
+   "propozycja": "Główny: 'Przygotuj się' / 'Get ready'; drugi: 'Oznacz jako zaliczone' / 'Mark as passed'; pod tytułem data i godzina."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Fiszki / Wgraj materiał",
+   "co": "'Dotknij karty albo naciśnij spację' i 'Upuść plik tutaj' na telefonie.",
+   "dlaczego_to_przeszkadza": "Teksty z komputera na telefonie.",
+   "dowod": "Z6-03.png, N1-04.png",
+   "propozycja": "'Dotknij karty, żeby zobaczyć odpowiedź.' / 'Tap the card to see the answer.'; 'Wybierz plik z telefonu' / 'Choose a file from your phone'."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Kalendarz do telefonu / Pomoc",
+   "co": "Link kalendarza na surowym adresie '…supabase.co/functions…', kontakt zdawalni.support@gmail.com.",
+   "dlaczego_to_przeszkadza": "Wygląda niepoważnie przy płatnym produkcie.",
+   "dowod": "Z14-03.png, Z15-04.png",
+   "propozycja": "Własna domena: 'kalendarz.zdawalni.pl/…', 'pomoc@zdawalni.pl'."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Ranking kierunku",
+   "co": "Filtr 'Cały rok' obok 'Tydzień / Semestr' miesza czas z ludźmi.",
+   "dlaczego_to_przeszkadza": "Nie wiadomo, czy to okres, czy wszystkie grupy.",
+   "dowod": "Z10-03.png",
+   "propozycja": "'Wszystkie grupy' / 'All groups'."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Koniec sesji / Dziś",
+   "co": "Ucięty znacznik '×3' w rogu; po skończonej sesji nadal 'Zadania dnia: 0/3'.",
+   "dlaczego_to_przeszkadza": "Wygląda, jakby nauka się nie liczyła.",
+   "dowod": "Z2-14.png, Z2-15.png",
+   "propozycja": "Nie ucinać znacznika; pod paskiem 'Sesja 5 min nie liczy się do Zadań dnia' / 'The 5-min session doesn't count toward Daily tasks' albo zaliczać ją do jednego z zadań."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Tryb starosty",
+   "co": "Plakietka '11' na ikonie menu bez wyjaśnienia; data na zrzucie w formacie 12/04/2026; komunikat zasłania formularz.",
+   "dlaczego_to_przeszkadza": "Starosta może źle przeczytać datę (12 kwietnia).",
+   "dowod": "Z16-04.png",
+   "propozycja": "Plakietka z podpisem ('11 zgłoszeń'), data w formacie dd.mm.rrrr (sprawdzić na telefonie z PL), komunikat nad formularzem."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Zgody / formularz terminu / Pomoc / lekcja",
+   "co": "W sondzie małe pola: zgody 20×20, 'Data orientacyjna' 13×13, 'Ściągawka do druku' i 'Klasyczny widok' 21 px, pytania w Pomocy 24 px, wybór w formularzu 36 px – kontrola raportuje 0.",
+   "dlaczego_to_przeszkadza": "Trudno trafić kciukiem; pomiar kontroli może je pomijać.",
+   "dowod": "Z13-02.png, Z16-04.png, Z3-04.png, Z15-05.png",
+   "propozycja": "Całe wiersze z podpisem klikalne, min. 44 px; sprawdzić regułę cele_ponizej_44 w kontroli."
+  },
+  {
+   "waga": "P2",
+   "ekran": "Pierwszy ekran (brak konta)",
+   "co": "'Zaloguj się' dopiero w kroku 3 z 3, po wybraniu kierunku.",
+   "dlaczego_to_przeszkadza": "Osoba z kontem musi przejść przez wybór kierunku.",
+   "dowod": "Z1-01.png, Z1-03.png",
+   "propozycja": "Na pierwszym ekranie link 'Mam już konto' / 'I already have an account'."
+  }
+ ],
+ "mocne_strony": [
+  "Start próby wzorowy: 3 kroki, bez karty, ceny i 'nic nie pobieramy samo' od razu, kod z maila działa sam.",
+  "Wyszukiwarka w Przedmiotach od razu daje pojęcia EN–PL z definicją i lekcje.",
+  "Terminy pokazują zakres i źródło ('Wpisał(a) starosta'), starosta zmienia datę w kilku ruchach.",
+  "Sesja 5 min: pasek postępu, natychmiastowa informacja zwrotna, 'Zgaduję / Pewny', ekran serii.",
+  "Uczciwe zakupy: potwierdzenie z ceną i saldem po zakupie, okno po próbie przypomina najbliższe kolokwium.",
+  "Karta powrotu po przerwie pokazuje, co się zmieniło.",
+  "Cofanie działa wszędzie; puste Powtórki mówią, co zrobić.",
+  "EN przełącza się natychmiast i w całości; 'Mniej animacji' z jasnym opisem; kontrola techniczna czysta na 166 ekranach."
+ ]
+}

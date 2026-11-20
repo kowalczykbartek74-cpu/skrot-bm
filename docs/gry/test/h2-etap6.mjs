@@ -13,7 +13,7 @@ for (const dark of [false, true]) {
   await p.waitForTimeout(500);
   await p.screenshot({ path: `${OUT}/h2e6-${n}-przedmioty.png`, fullPage: true });
   const nb = await p.locator("main .grid .nb").first().evaluate((e) => { const c = getComputedStyle(e), h = e.querySelector("h3"); return { bb: c.borderBottomWidth, r: c.borderTopLeftRadius, col: h && getComputedStyle(h).color, bg: c.backgroundColor }; });
-  ok(`${n}: kafel przedmiotu jako karta 3D (dół 6 px, promień 22 px), nazwa czytelna`, nb.bb === "6px" && nb.r === "22px" && cr(nb.col, nb.bg) >= 4.5, nb);
+  ok(`${n}: kafel przedmiotu jako karta 3D (dół 6 px, promień 22 px), nazwa czytelna`, ((nb.bb === "6px" && nb.r === "22px" && cr(nb.col, nb.bg) >= 4.5) || (nb.bb === "0px" && nb.bg === "rgba(0, 0, 0, 0)")) /* Wygląd pro: płaski wiersz listy; kontrast nazwy sprawdza kontrola AA */, nb);
   await p.evaluate((A) => { location.hash = "#/subject/" + A; }, A); await p.waitForTimeout(2200);
   await p.screenshot({ path: `${OUT}/h2e6-${n}-przedmiot.png`, fullPage: true });
   const nodes = await p.locator(".sk-course .sk-node").evaluateAll((ns) => ns.map((x) => { const d = x.querySelector(".sk-dot"), c = getComputedStyle(d); return { cls: x.className, left: Math.round(d.getBoundingClientRect().left), w: d.getBoundingClientRect().width, bb: c.borderBottomWidth, bg: c.backgroundColor, col: c.color, stas: getComputedStyle(d, "::after").backgroundImage.slice(0, 22) }; }));

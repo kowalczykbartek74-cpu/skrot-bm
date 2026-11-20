@@ -1,3 +1,4 @@
+// Wygląd pro (c7e3e89): jeden krój Onest zamiast Plus Jakarta Sans + Bricolage Grotesque.
 // Pętla UX-4, etap W1 – czcionki i typografia. BASE=http://127.0.0.1:8814/ node docs/gry/test/ux4-etapW1.mjs
 // K1 czcionki z repo, bez Google Fonts; K2 jeden krój nagłówków i hierarchia na Dziś; K3 nic < 12 px; K4 CLS < 0,1, kroje motywów z repo.
 import fs from "fs";
@@ -13,11 +14,11 @@ const google = lines.map((l, i) => [i + 1, l]).filter(([n, l]) => n !== 1 && /fo
 ok("K1 brak linków do fonts.googleapis/gstatic poza CSP w linii 1", google.length === 0, google.map(([n]) => n));
 const css = fs.readFileSync(ROOT + "wyglad-ux.css", "utf8");
 ok("K1 wyglad-ux.css bez adresów Google", !/googleapis|gstatic/.test(css));
-for (const f of ["pjs-latin", "pjs-latin-ext", "bricolage-latin", "bricolage-latin-ext", "cormorant-latin", "cormorant-latin-ext", "playfair-latin", "playfair-latin-ext", "playfair-italic-latin", "playfair-italic-latin-ext"]) {
+for (const f of ["onest-latin", "onest-latin-ext", "cormorant-latin", "cormorant-latin-ext", "playfair-latin", "playfair-latin-ext", "playfair-italic-latin", "playfair-italic-latin-ext"]) {
   const p = ROOT + "fonts/" + f + ".woff2"; ok(`K1 plik fonts/${f}.woff2`, fs.existsSync(p) && fs.readFileSync(p).slice(0, 4).toString() === "wOF2");
 }
 const pre = html.match(/<link rel="preload" as="font"[^>]*>/g) || [];
-ok("K1 preload tylko jednej czcionki (pjs-latin)", pre.length === 1 && /pjs-latin\.woff2/.test(pre[0]), pre);
+ok("K1 preload tylko jednej czcionki (onest-latin)", pre.length === 1 && /onest-latin\.woff2/.test(pre[0]), pre);
 ok("K1 wyglad-ux.css podpięty w osobnej linii za głównym <style>", lines.some((l, i) => /^<link rel="stylesheet" href="wyglad-ux\.css\?v=/.test(l) && lines[i - 1] === "</style>"));
 
 const b = await chromium.launch();
@@ -25,12 +26,12 @@ const b = await chromium.launch();
 {
   const p = await open(b, { konto: "starosta", w: 390, h: 844 });
   const reqs = []; p.on("request", (r) => reqs.push(r.url()));
-  const r = await p.evaluate(async () => { await document.fonts.ready; await Promise.all([document.fonts.load("700 16px 'Plus Jakarta Sans'", "ąęłńóśźżĄĘŁŃÓŚŹŻ"), document.fonts.load("700 16px 'Bricolage Grotesque'", "ąęłńóśźżĄĘŁŃÓŚŹŻ")]);
-    return { pjs: document.fonts.check("700 16px 'Plus Jakarta Sans'", "Zażółć gęślą jaźń"), bg: document.fonts.check("700 16px 'Bricolage Grotesque'", "Zażółć gęślą jaźń"), pjs4: document.fonts.check("400 16px 'Plus Jakarta Sans'", "ąę"),
+  const r = await p.evaluate(async () => { await document.fonts.ready; await Promise.all([document.fonts.load("700 16px 'Onest'", "ąęłńóśźżĄĘŁŃÓŚŹŻ"), document.fonts.load("700 16px 'Onest'", "ąęłńóśźżĄĘŁŃÓŚŹŻ")]);
+    return { pjs: document.fonts.check("700 16px 'Onest'", "Zażółć gęślą jaźń"), bg: document.fonts.check("700 16px 'Onest'", "Zażółć gęślą jaźń"), pjs4: document.fonts.check("400 16px 'Onest'", "ąę"),
       loaded: [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family + " " + f.weight) }; });
-  ok("K1 document.fonts.check 700 Plus Jakarta Sans (polskie znaki) = true", r.pjs, r);
-  ok("K1 document.fonts.check 700 Bricolage Grotesque (polskie znaki) = true", r.bg, r);
-  ok("K1 Plus Jakarta 400 też z repo", r.pjs4);
+  ok("K1 document.fonts.check 700 Onest (polskie znaki) = true", r.pjs, r);
+  ok("K1 document.fonts.check 700 Onest (polskie znaki) = true", r.bg, r);
+  ok("K1 Onest 400 też z repo", r.pjs4);
   await goto(p, "materials");
   ok("K1 żadnego żądania do fonts.googleapis/gstatic", !reqs.some((u) => /fonts\.(googleapis|gstatic)/.test(u)), reqs.filter((u) => /font/.test(u)));
   ok("K1 bez błędów konsoli", p.errors.length === 0, p.errors);
@@ -45,22 +46,22 @@ for (const [w, dark, lang, konto] of [[390, false, "pl", "starosta"], [390, true
     await p.evaluate(() => document.querySelectorAll("#main details").forEach((d) => (d.open = true)));
     const t = await typo(p);
     const fams = [...new Set(t.heads.map((x) => x.fam))];
-    if (fams.length > 1 || (fams[0] && fams[0] !== "Bricolage Grotesque")) zle2.push(`${n}@${w}${dark ? "d" : ""}: ${fams.join("|")}`);
+    if (fams.length > 1 || (fams[0] && fams[0] !== "Onest")) zle2.push(`${n}@${w}${dark ? "d" : ""}: ${fams.join("|")}`);
     if (t.small.length) zle3.push(`${n}@${w}${dark ? "d" : ""}${lang}: ` + t.small.map((s) => `${s.cel} ${s.px} „${s.t}”`).join("; "));
     if (w <= 390 && (await poziomo(p))) pozio.push(`${n}@${w}`);
     if (n === "dzis" && !dark && lang === "pl" && w === 390) {
       const g = (sel) => t.heads.find((x) => sel(x));
       const h1 = g((x) => x.tag === "H1"), zh = g((x) => /zh-h/.test(x.cls));
       const sek = await p.evaluate(() => [...document.querySelectorAll("#main :is(.pz-head h2, .ld-head > .eyebrow, .fun-row > .eyebrow, .home-fold h2)")].filter((e) => e.getBoundingClientRect().width).map((e) => ({ t: e.textContent.trim().slice(0, 20), px: parseFloat(getComputedStyle(e).fontSize), fam: getComputedStyle(e).fontFamily.split(",")[0].replace(/"/g, "") })));
-      ok("K2 Dziś: H1 powitania 22 px", h1 && h1.px === 22, h1);
+      ok("K2 Dziś: H1 powitania 20 px (Wygląd pro)", h1 && h1.px === 20, h1);
       ok("K2 Dziś: tytuł lekcji 28 px", zh && zh.px === 28, zh);
-      ok("K2 Dziś: nagłówki sekcji 18 px, Bricolage", sek.length >= 3 && sek.every((x) => x.px === 18 && x.fam === "Bricolage Grotesque"), sek);
+      ok("K2 Dziś: nagłówki sekcji 18 px, Onest", sek.length >= 2 /* c1356b9: bez „Więcej na dziś” zostały 2 sekcje */ && sek.every((x) => x.px === 18 && x.fam === "Onest"), sek);
     }
   }
   ok(`K2/K3 bez błędów konsoli (${w}${dark ? " ciemny" : ""} ${lang})`, p.errors.length === 0, p.errors);
   await p.close();
 }
-ok("K2 na każdym ekranie wszystkie h1/h2/h3 tym samym krojem (Bricolage)", zle2.length === 0, zle2);
+ok("K2 na każdym ekranie wszystkie h1/h2/h3 tym samym krojem (Onest)", zle2.length === 0, zle2);
 ok("K3 żaden widoczny tekst < 12 px (poza #skrot-wm)", zle3.length === 0, zle3);
 ok("zero poziomego przewijania 360/390", pozio.length === 0, pozio);
 // ---------- Kafle Przedmiotów: żadne słowo tytułu nie łamie się w środku (360/390, PL i EN) ----------

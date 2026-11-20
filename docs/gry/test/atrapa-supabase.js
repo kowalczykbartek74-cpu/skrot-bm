@@ -19,6 +19,8 @@
 //   v22 (Profil nauki): mock-v22 = "1" (domyślnie) | "0" (brak funkcji → not_enabled) · stan profilu w localStorage mock-profil
 //   v44 (rocznik przy treściach): mock-v44 = "1" (domyślnie: kolumna rocznik_id, filtr .or()) | "0" (brak kolumny → błąd 42703)
 //     · mock-docs-rok = JSON { kolekcja: { id: rocznik } } (domyślnie treści rocznika = BM, osobiste i meta/en = null) · zapisy w window.__zapisy
+//   ux-6: mock-v63 = "1" (domyślnie, nauka_ranking_grupy) | "0" (brak funkcji) · mock-grupy = "malo" (każda grupa < 3 aktywnych osób)
+//     · verifyOtp loguje gościa („brak” → „darmowe”) · update podbija updated_at, select honoruje order(updated_at) i limit
 // Wywołania RPC lądują w window.__rpc (nazwa + argumenty + odpowiedź).
 (() => {
   const ls = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
@@ -114,7 +116,9 @@
     nauka_ranking: (a) => {
       if (!paid) return { ok: false, code: "no_access" };
       const sc = ls("mock-rank", "top"), vis = RP.profil.w_rankingu, nick = RP.profil.nick || "?";
-      const od = "2026-10-26", base = { ok: true, zakres: a.p_zakres || "tydzien", od: a.p_zakres === "semestr" ? "2026-10-01" : od, do: a.p_zakres === "semestr" ? dzis() : "2026-11-01", grupa: a.p_grupa, sid: a.p_sid };
+      // ux-6: tydzień liczony od dzisiejszej daty strony (było na sztywno 26.10–01.11, czyli „zeszły tydzień” przy zegarze testów)
+      const pn = new Date(); pn.setDate(pn.getDate() - ((pn.getDay() + 6) % 7)); const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+      const od = iso(pn), base = { ok: true, zakres: a.p_zakres || "tydzien", od: a.p_zakres === "semestr" ? "2026-10-01" : od, do: a.p_zakres === "semestr" ? dzis() : iso(new Date(pn.getTime() + 6 * 864e5)), grupa: a.p_grupa, sid: a.p_sid };
       if (a.p_grupa && a.p_grupa !== "C111") return { ...base, n: 2, top: [{ miejsce: 1, nick: "Kuba_Z", pkt: 300, ja: false }, { miejsce: 2, nick: "Ola.B", pkt: 120, ja: false }], sasiedzi: [], ja: { pkt: 90, widoczny: vis, w_grupie: false, miejsce: null, z: null } };
       if (sc === "pusto") return { ...base, n: 0, top: [], sasiedzi: [], ja: { pkt: 0, widoczny: vis, w_grupie: true, miejsce: null, z: 0 } };
       if (sc === "daleko") {
@@ -587,6 +591,18 @@
   const UX1_OTP = async () => { const e = ls("mock-otp-blad", ""); window.__otp = (window.__otp || 0) + 1;
     return e ? { error: { message: e === "rate" ? "email rate limit exceeded" : e === "sekundy" ? "For security purposes, you can only request this after 58 seconds." : e } } : {}; };
   // === koniec ux-1 ===
+  // === ux-6 === kod z maila loguje naprawdę: niezalogowany gość („brak”) po verifyOtp staje się kontem bez dostępu („darmowe”),
+  // jak nowe konto w Supabase; przeładowanie strony widzi już sesję (okres próbny włącza potem nauka_proba_start).
+  const UX6_VERIFY = async () => { if (KONTO === "brak") { try { localStorage.setItem("mock-konto", "darmowe"); localStorage.setItem("sb-zkyxujkdrovfzpasocmv-auth-token", "{}"); } catch {} } return {}; };
+  // Porównanie grup (v63): moja grupa z bm-group strony; mock-grupy = "malo" → wszystkie grupy poniżej 3 osób.
+  const UX6_GRUPY = (a) => { const moja = ls("bm-group", "C111") || null, malo = ls("mock-grupy", "") === "malo";
+    return { ok: true, zakres: a.p_zakres || "tydzien", od: "2026-11-02", do: "2026-11-08", moja, min: 3,
+      grupy: [["C111", 6, 84], ["C112", 4, 112], ["C113", 3, 57]].map(([g, n, sr]) => ({ grupa: g, aktywne: malo ? 2 : n, srednia: malo ? null : sr })) }; };
+  // Znacznik zmiany wiersza: po update strona (porównuje updated_at przy odświeżeniu) widzi nową wersję, jak w prawdziwej bazie.
+  const UX6_UPD = {};
+  // Wylogowanie jak supabase-js: sesja znika z localStorage (po przeładowaniu ekran logowania).
+  const UX6_SIGNOUT = async () => { try { localStorage.removeItem("sb-zkyxujkdrovfzpasocmv-auth-token"); localStorage.setItem("mock-konto", "brak"); } catch {} return { error: null }; };
+  // === koniec ux-6 ===
   window.__rpc = [];
   const rpc = async (fn, args = {}) => {
     await new Promise((r) => setTimeout(r, 30));
@@ -594,7 +610,8 @@
     if (navigator.onLine === false) { window.__rpcOffline = (window.__rpcOffline || 0) + 1; return { data: null, error: { message: "TypeError: Failed to fetch", code: "" } }; }
     let out;
     const brak = { data: null, error: { code: "PGRST202", message: `Could not find the function public.${fn} in the schema cache` } };
-    if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;
+    if (fn === "nauka_ranking_grupy") out = V13 && ls("mock-v63", "1") === "1" ? { data: (KONTO === "darmowe" || KONTO === "brak" || KONTO === "proba-koniec") ? { ok: false, code: "no_access" } : UX6_GRUPY(args), error: null } : brak; // ux-6
+    else if (V13FN[fn]) out = V13 ? { data: V13FN[fn](args), error: null } : brak;
     else if (V15FN[fn]) out = V15 ? { data: V15FN[fn](args), error: null } : brak;
     else if (V24FN[fn] && V24) out = { data: V24FN[fn](args), error: null };
     else if (V14FN[fn]) out = V14 ? { data: V14FN[fn](args), error: null } : brak;
@@ -638,8 +655,11 @@
       if (st.op === "select") {
         // .or("rocznik_id.is.null,rocznik_id.eq.X") → rocznik wiersza null albo X
         const dozw = st.or ? st.or.split(",").map((w) => (w === "rocznik_id.is.null" ? null : w.replace(/^rocznik_id\.eq\./, ""))) : null;
-        const rows = Object.entries(store).filter(([k]) => (id == null || k === id) && (!dozw || dozw.includes(rokOf(col, k)))).map(([k, v]) => ({ id: k, data: v, rocznik_id: rokOf(col, k), updated_at: "2026-11-01T00:00:00Z" }));
-        return { data: st.single ? rows[0] || null : rows, error: null, count: rows.length };
+        const rows = Object.entries(store).filter(([k]) => (id == null || k === id) && (!dozw || dozw.includes(rokOf(col, k)))).map(([k, v]) => ({ id: k, data: v, rocznik_id: rokOf(col, k), updated_at: UX6_UPD[col + "|" + k] || "2026-11-01T00:00:00Z" }));
+        // ux-6: znacznik kolekcji (order updated_at desc + limit 1) jak w Postgresie, inaczej strona nie widzi zmian po update
+        if (st.ord === "updated_at") rows.sort((x, y) => (st.asc ? 1 : -1) * (x.updated_at < y.updated_at ? -1 : x.updated_at > y.updated_at ? 1 : 0));
+        const n = rows.length; const out = st.lim ? rows.slice(0, st.lim) : rows;
+        return { data: st.single ? out[0] || null : out, error: null, count: n };
       }
       if (st.op === "upsert") {
         if (BRAK_ROK && [].concat(st.row).some((r) => r && r.rocznik_id === BRAK_ROK)) return BRAK_FK;
@@ -650,11 +670,11 @@
         }
         saveProg(); return { data: null, error: null };
       }
-      if (st.op === "update") { if (store[id]) store[id] = st.row.data; return { data: null, error: null }; }
+      if (st.op === "update") { if (store[id]) { store[id] = st.row.data; UX6_UPD[col + "|" + id] = new Date().toISOString(); zapiszTrwale({ kolekcja: col, id, data: st.row.data }); } return { data: null, error: null }; }
       if (st.op === "delete") { delete store[id]; return { data: null, error: null }; }
     };
     const q = {
-      select() { return q; }, eq(k, v) { st.filters[k] = v; return q; }, or(w) { st.or = w; return q; }, order() { return q; }, range() { return q; }, limit() { return q; }, in() { return q; },
+      select() { return q; }, eq(k, v) { st.filters[k] = v; return q; }, or(w) { st.or = w; return q; }, order(k, o) { st.ord = k; st.asc = o?.ascending !== false; return q; }, range() { return q; }, limit(n) { st.lim = n; return q; }, in() { return q; },
       maybeSingle() { st.single = true; return q; }, single() { st.single = true; return q; },
       upsert(row) { st.op = "upsert"; st.row = row; return q; }, update(data) { st.op = "update"; st.row = { data: data.data }; return q; }, delete() { st.op = "delete"; return q; }, insert(row) { st.op = "upsert"; st.row = row; return q; },
       then(ok, err) { return run().then(ok, err); },
@@ -663,8 +683,8 @@
   }
   const session = KONTO === "brak" ? null : { access_token: "t", user: { id: UID, email: EMAIL, user_metadata: {} } };
   window.supabase = { createClient: () => ({
-    auth: { getSession: async () => ({ data: { session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}),
-      signInWithOtp: UX1_OTP, signInWithPassword: async () => ({}), verifyOtp: async () => ({}), updateUser: async () => ({}), reauthenticate: async () => ({}) },
+    auth: { getSession: async () => ({ data: { session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: UX6_SIGNOUT,
+      signInWithOtp: UX1_OTP, signInWithPassword: async () => ({}), verifyOtp: UX6_VERIFY, updateUser: async () => ({}), reauthenticate: async () => ({}) },
     rpc, from: () => table(),
     functions: { invoke: async () => ({ data: null, error: { message: "atrapa" } }) },
   }) };

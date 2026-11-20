@@ -64,8 +64,9 @@ ok("komputer: bez błędów", d.errors.length === 0, d.errors);
 // ---- starosta
 const s = await page(b, { konto: "starosta", ls: { "bm-starosta": "1" } });
 await open(s, "#/more");
-ok("starosta: jeden wiersz narzędzi", (await s.locator(".staro .more-row").count()) === 1);
-await s.locator(".staro .more-row").click(); await s.waitForTimeout(500);
+// od Panelu kierunków w .staro są 2 wiersze: narzędzia starosty + panel kierunków
+ok("starosta: wiersz narzędzi", (await s.locator(".staro .more-row", { hasText: "Narzędzia starosty" }).count()) === 1);
+await s.locator(".staro .more-row", { hasText: "Narzędzia starosty" }).click(); await s.waitForTimeout(500);
 const narz = await s.locator(".more-row").allInnerTexts();
 ok("#/starosta z narzędziami", /#\/starosta$/.test(s.url()) && narz.some((x) => /Panel AI/.test(x)) && narz.some((x) => /Zgłoszenia błędów/.test(x)), narz);
 await shot(s, "ust-starosta");

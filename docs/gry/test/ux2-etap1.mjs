@@ -27,7 +27,7 @@ for (const [w, hh] of [[360, 640], [390, 844], [1280, 900]]) for (const dark of 
     ok(`K3 ${w}px: pigułka to button ≥ 44×44`, a?.tag === "BUTTON" && a.w >= 44 && a.h >= 44, a);
     ok(`K4 ${w}px 17:00: wiersz 1 ranga (z nazwą) + monety, wiersz 2 pasek serii na całą szerokość z celem „0/30”`, await p.evaluate(() => { const rk = document.querySelector("#main .greet .rk"), c = document.querySelector("#main .greet .hud-coin"), s = document.querySelector("#main .greet .nw-streak"), line = document.querySelector("#main .greet .rk-line");
       const a = rk.getBoundingClientRect(), b = c.getBoundingClientRect(), d = s.getBoundingClientRect(), l = line.getBoundingClientRect();
-      return Math.round(a.top) === Math.round(b.top) && d.top >= a.bottom && Math.abs(d.width - l.width) < 2 && /Systematy/.test(rk.innerText) && rk.querySelector(".rk-name").getBoundingClientRect().width > 40 && s.querySelector(".nw-goal-t")?.textContent === "0/30 XP"; }));
+      return Math.round(a.top) === Math.round(b.top) && d.top >= a.bottom && Math.abs(d.width - l.width) < 2 && /Systematy/.test(rk.innerText) && rk.querySelector(".rk-name").getBoundingClientRect().width > 40 && s.querySelector(".nw-goal-t")?.textContent.replace(/^cel /, "") === "0/30 XP"; } /* ux-6: przedrostek „cel” */));
     ok(`K4 ${w}px 17:00 ranga „Systematyczny poz. 4”: nic poza ekranem`, (await pozaEkranem(p, "#main .greet, #main .greet *")).length === 0 && !(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)), await pozaEkranem(p, "#main .greet *"));
   }
   await shot(p, `dzis-17-${tag}`);

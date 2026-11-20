@@ -76,7 +76,7 @@ ok("Dziś: karta oznaczona ✓ przeczytane", /✓ przeczytane/.test(await p.loca
 await p.goto(BASE + "index.html#/subject/analiza-matematyczna"); await p.waitForTimeout(1200);
 ok("przedmiot: przycisk ⚡", (await p.locator(".po-cover-btn").count()) === 1, "");
 await p.goto(BASE + "index.html#/more"); await p.waitForTimeout(1200);
-ok("Więcej: wpis Po zajęciach", (await p.getByText("Po zajęciach w 5 minut").count()) >= 1, "");
+ok("Więcej: wpis Po zajęciach", (await p.getByText("5 minut · po zajęciach").count()) >= 1, "");
 // 14:00: Analiza (do 13:30) już po, ZZL jeszcze trwa, więc lista „Dziś masz…” pokazuje dzisiejsze zajęcia z linkiem ⚡
 const q = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify({ meta }) } });
 await q.clock.setFixedTime(new Date("2026-11-06T14:00:00+01:00"));
@@ -89,7 +89,7 @@ const e = await page(b, { konto: "platne", lang: "en", ls: { "mock-docs": JSON.s
 await e.clock.setFixedTime(CZAS);
 await e.goto(BASE + "index.html#/po/analiza-matematyczna"); await e.waitForTimeout(2500);
 const enTxt = await e.locator("main").innerText();
-ok("EN: przetłumaczone", /After class in 5 minutes/i.test(enTxt) && !/examples of tablicy/.test(enTxt) && /Your recent classes/.test(enTxt) && !/Twoje ostatnie zajęcia|Wszystkie tematy z sylabusa/.test(enTxt), enTxt.slice(0, 800));
+ok("EN: przetłumaczone", /5 minutes · after class/i.test(enTxt) && !/examples of tablicy/.test(enTxt) && /Your recent classes/.test(enTxt) && !/Twoje ostatnie zajęcia|Wszystkie tematy z sylabusa/.test(enTxt), enTxt.slice(0, 800));
 await shot(e, "po-en");
 // bez dostępu
 const d = await page(b, { konto: "darmowe" });

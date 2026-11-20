@@ -2,7 +2,7 @@
 // BASE=http://127.0.0.1:8812/ [RUNDA=1] node docs/gry/test/ux2-etap4.mjs
 import { execSync } from "child_process";
 import fs from "fs";
-import { chromium, open, pomiar, tester, zapiszRaport, katalog, pozaEkranem, dayN } from "./ux2-lib.mjs";
+import { chromium, BASE, open, pomiar, tester, zapiszRaport, katalog, pozaEkranem, dayN } from "./ux2-lib.mjs";
 
 const ROOT = new URL("../../../", import.meta.url).pathname;
 const DIR = katalog(4), R = { etap: 4, runda: +(process.env.RUNDA || 0), pomiary: [], zrzuty: [], ruch: [], dodatkowe: [] };
@@ -130,7 +130,7 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, false, "pl"], [390, tru
   await p.waitForTimeout(900);
   let k = await p.evaluate(() => { const l = document.querySelector("#layer .nw-kal"); return l ? { txt: l.innerText.replace(/\s+/g, " "), on: l.querySelector("input").checked } : null; });
   if (!k) { await p.evaluate(() => window.ZD_APP.ls && document.querySelector("#layer") && 0); }
-  if (lang === "pl") ok(`K4 ${tag}: w oknie „Kalendarz w telefonie” przełącznik „Przypominaj o 5 minutach po zajęciach”, domyślnie wyłączony`, k && /Przypominaj o 5 minutach po zajęciach/.test(k.txt) && k.on === false, k);
+  if (lang === "pl") ok(`K4 ${tag}: w oknie „Kalendarz w telefonie” przełącznik „Dodawaj „5 minut nauki” po zajęciach”, domyślnie wyłączony`, k && /Dodawaj „5 minut nauki” po zajęciach/.test(k.txt) && k.on === false, k);
   else ok("K4 EN: „Remind me about 5 minutes after class”", k && /Remind me about 5 minutes after class/.test(k.txt), k);
   if (k) ok(`K4 ${tag}: przełącznik nad przyciskami Google/Apple/Outlook`, await p.evaluate(() => { const l = document.querySelector("#layer .nw-kal"), o = document.querySelector("#layer .calopts"); return !o || !!(l.compareDocumentPosition(o) & Node.DOCUMENT_POSITION_FOLLOWING); }));
   if (k) { await shot(p, `k4-kalendarz-okno-${tag}`); R.pomiary.push(await pomiar(p, `K4 okno kalendarza ${tag}`, "#layer", "#layer .nw-kal")); }
@@ -154,7 +154,7 @@ for (const [w, dark, lang] of [[390, false, "pl"], [360, false, "pl"], [390, tru
   const pam = await p.evaluate(async () => { const out = []; for (const k of await caches.keys()) for (const r of await (await caches.open(k)).keys()) out.push(r.url); return out; });
   const nawyk = pam.filter((u) => /nawyk\.js/.test(u));
   ok("K5 service worker zarejestrowany i steruje stroną (127.0.0.1 z ?sw=on)", ctrl, ctrl);
-  ok("K5 w pamięci tylko adresy z tej samej domeny (bez Supabase, Stripe, plan.zdawalni.pl, CDN)", pam.length > 3 && pam.every((u) => u.startsWith("http://127.0.0.1:8812/")), pam.filter((u) => !u.startsWith("http://127.0.0.1:8812/")));
+  ok("K5 w pamięci tylko adresy z tej samej domeny (bez Supabase, Stripe, plan.zdawalni.pl, CDN)", pam.length > 3 && pam.every((u) => u.startsWith(BASE)), pam.filter((u) => !u.startsWith(BASE)));
   ok("K5 nowe ?v= wymienia plik w pamięci (jeden nawyk.js, najnowszy)", nawyk.length === 1 && /v=test-b/.test(nawyk[0]), nawyk);
   R.dodatkowe.push(`Pamięć service workera po wejściu: ${pam.length} adresów, np. ${pam.slice(0, 6).join(", ")}`);
   await p.context().setOffline(true);

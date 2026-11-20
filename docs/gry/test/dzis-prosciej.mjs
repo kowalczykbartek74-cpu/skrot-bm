@@ -16,7 +16,7 @@ for (const [lang, w] of [["pl", 390], ["en", 360], ["pl", 1280]]) {
   await shot(p, `dzis-prosciej-${lang}-${w}`);
   if (lang === "pl" && w === 390) {
     await p.goto(BASE + "index.html#/more"); await p.waitForTimeout(1200);
-    ok("Więcej: kafelek „Lekcja na przejazd” zostaje", /Lekcja na przejazd/.test(await p.locator("#main").innerText()), "");
+    ok("Więcej: kafelek „5 minut · w drodze” zostaje", /5 minut · w drodze/.test(await p.locator("#main").innerText()), "");
     await p.goto(BASE + "index.html#/jazda"); await p.waitForTimeout(1000);
     ok("#/jazda dalej działa", /Ile jedziesz/.test(await p.locator("#main").innerText()), "");
   }

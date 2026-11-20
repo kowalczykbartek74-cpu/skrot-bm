@@ -80,7 +80,7 @@ for (const [w, lang, dark] of [[390, "pl", false], [360, "en", true], [1280, "pl
   }
   // błąd zapisu: role=alert z „Ponów”
   await show(true); await p.waitForTimeout(400);
-  const a = await p.evaluate(() => { const t = document.querySelector(".toast"); const btn = t.querySelector("button"); const r = btn.getBoundingClientRect(); return { role: t.getAttribute("role"), btn: btn.textContent, w: r.width, h: r.height }; });
+  const a = await p.evaluate(() => { const t = document.querySelector(".toast"); const btn = t.querySelector("button"); /* rozmiar z układu, nie z klatki animacji wejścia (h-toast) */ return { role: t.getAttribute("role"), btn: btn.textContent, w: btn.offsetWidth, h: btn.offsetHeight }; });
   ok(`K3 ${tag}: błąd zapisu jako role=alert z przyciskiem „${lang === "en" ? "Retry" : "Ponów"}” ≥ 44 px`, a.role === "alert" && a.btn === (lang === "en" ? "Retry" : "Ponów") && a.w >= 44 && a.h >= 44, a);
   const k2 = await kontrast(p); ok(`K3 ${tag}: kontrast AA toastu błędu`, !k2.out.some((x) => /zapisać|save|Ponów|Retry/i.test(x.tekst)), k2.out);
   await p.screenshot({ path: `${OUT}/w2-toast-blad-${w}-${lang}.png` });

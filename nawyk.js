@@ -14,8 +14,8 @@
     doPolnocy: "· do północy",
     celDnia: "Cel dnia: {0}/{1} XP",
     oknoTytul: "Twoja seria",
-    oknoStanTodo: "Dziś jeszcze bez nauki. Jedna karta 5 minut i seria rośnie.",
-    oknoStanRisk: "Zostało kilka godzin do północy. Jedna karta 5 minut i seria rośnie.",
+    oknoStanTodo: "Dziś jeszcze bez nauki. Wystarczy 5 minut i seria rośnie.",
+    oknoStanRisk: "Zostało kilka godzin do północy. Wystarczy 5 minut i seria rośnie.",
     oknoStanDone: "Dziś zrobione. Wróć jutro, a seria urośnie.",
     oknoStanZero: "Pierwszy dzień nauki zaczyna serię.",
     ostatnie4: "Ostatnie 4 tygodnie",
@@ -91,11 +91,11 @@
     starosta: "{0} zaliczeń bez daty. Uzupełnij, a rok dostanie plan i bossa.",
     terminy: "Terminy",
     planPelna: "Plan nauki do każdego terminu jest w pełnej wersji.",
-    rvPusto: "Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.",
-    rvKarta: "Karta 5 minut",
+    rvPusto: "Jeszcze nic do powtórki. Zrób dziś swoje 5 minut, a fiszki wrócą tu jutro.",
+    rvKarta: "Zaczynamy · 5 min",
     wiecej: "Więcej na dziś",
     wiecejBoss: "Boss trwa",
-    kalNauka: "Przypominaj o 5 minutach po zajęciach",
+    kalNauka: "Dodawaj „5 minut nauki” po zajęciach", // ux-6: dawny podpis brzmiał jak „5 minut po zajęciach”
     kalNaukaOpis: "W kalendarzu pojawi się wpis „Zdawalni · 5 min po zajęciach” z przypomnieniem, pół godziny po Twoich ostatnich zajęciach.",
     instTytul: "Dodaj Zdawalni do ekranu głównego: jedno dotknięcie do 5 minut.",
     instDodaj: "Dodaj",
@@ -103,6 +103,7 @@
     instIos2: "Wybierz „Do ekranu początkowego”.",
     powrotTytul: "Dobrze, że jesteś. Ostatnio {0} temu.",
     powrotTytulDzis: "Dobrze, że jesteś.",
+    powrotOstatnia: "Ostatnia lekcja: {0}", // ux-6
     powrotZajecia: "Zajęcia od ostatniej nauki: {0}",
     powrotTerminy: "Nowe terminy: {0}",
     powrotFiszki: "Fiszki do odświeżenia: {0}",
@@ -132,7 +133,7 @@
     zamTeraz: "Zamrożenia: {0}/{1}",
     prezent: "Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.",
     pauzaTxt: "· przerwa, seria czeka",
-    oknoStanChroni: "Dziś bez nauki? Zamrożenie ochroni ten dzień. Jedna karta 5 minut i zamrożenie zostaje na później.",
+    oknoStanChroni: "Dziś bez nauki? Zamrożenie ochroni ten dzień. 5 minut nauki i zamrożenie zostaje na później.",
     oknoStanPauza: "Przerwa w zajęciach: seria czeka. Możesz się uczyć, ale nie musisz.",
     seriaPrzedluzona: "Seria przedłużona!",
     uratowalo1: "Zamrożenie uratowało serię: {0}",
@@ -156,7 +157,7 @@
     doKamienia: "Do {0} dni: jeszcze {1}",
     wszystkieKamienie: "Wszystkie kamienie milowe zdobyte.",
     zamknij: "Zamknij",
-    uczSie: "Karta 5 minut",
+    uczSie: "Zaczynamy · 5 min",
     seriaPlus: "Seria +1",
     kamienMilowy: "Kamień milowy: {0} dni",
     tydzienTen: "Ten tydzień",
@@ -443,7 +444,7 @@
       h("span", { class: "nw-s-l" }, ap.kFlame(), h("b", { class: "num", text: String(sk) }), h("span", { class: "nw-word", text: " " + word }),
         stan === "risk" ? svg(IKONY["ux2-klepsydra"], 16, "nw-klep") : stan === "chroni" || (stan === "todo" && czeka) ? svg(IKONY.snow, 16, "nw-klep") : null,
         dop ? h("span", { class: "nw-risk", text: " " + dop }) : null),
-      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true" }, g.xp >= g.cel ? PL.celOk : [`${g.xp}/${g.cel}`, h("span", { class: "nw-xp", text: " XP" })]) : null));
+      h("span", { class: "nw-s-r" }, rg, compact ? h("span", { class: "nw-goal-t num", "aria-hidden": "true" }, g.xp >= g.cel ? PL.celOk : [dop ? null : h("span", { class: "nw-xp nw-cel", text: "cel " }), `${g.xp}/${g.cel}`, h("span", { class: "nw-xp", text: " XP" })] /* ux-6: „cel”, żeby nie mylić z XP poziomu */) : null));
   }
 
   // Po XP (xpFlush): dopisanie dnia nauki i najlepszej serii; pigułki na ekranie odświeżamy w miejscu (xpFlush nie rysuje ekranu).
@@ -676,6 +677,9 @@
     const box = h("section", { class: "panel sk-panel nw-powrot", "aria-label": PL.powrotTytulDzis },
       h("div", { class: "nw-powrot-top" }, h("span", { class: "nw-powrot-stas", "aria-hidden": "true" }, ap.stasFace ? ap.stasFace("hi") : null),
         h("h2", { class: "nw-powrot-h", text: gap >= 2 ? fmt(PL.powrotTytul, dni(gap)) : PL.powrotTytulDzis })),
+      // ux-6: gdzie skończyłeś – ostatnio zrobiona lekcja (z postępu), dotknięcie ją otwiera
+      (() => { const dn = p.done || {}, id = Object.keys(dn).sort((a, b) => (dn[b] || 0) - (dn[a] || 0))[0], m = id && (ap.S.materials || []).find((x) => x.id === id);
+        return m ? h("p", { class: "nw-powrot-ost", style: "margin:0" }, h("button", { type: "button", class: "link", onclick: () => ap.go?.({ view: "material", id }) }, fmt(PL.powrotOstatnia, m.title || ""))) : null; })(),
       pkt.length ? h("div", { class: "nw-powrot-pkt" }, pkt.map(([x, v]) => h("button", { type: "button", class: "nw-pkt", onclick: () => ap.go?.({ view: v }) }, h("span", { text: x }), h("span", { class: "nw-pkt-chev", "aria-hidden": "true", text: "›" })))) : null,
       nap ? h("p", { class: "nw-powrot-nap naprawa" }, svg(IKONY.retry, 18), h("span", { text: fmt(PL.naprawaWiersz, dniPL(nap.n)) }), h("b", { class: "num nw-nap-post", text: "0/2" }))
         : st.przepadla >= 3 ? h("p", { class: "nw-powrot-nap" }, svg(IKONY["ux2-klepsydra"], 18), h("span", { text: fmt(PL.seriaPrzepadla, dniPL(st.przepadla)) })) : null,
@@ -749,7 +753,7 @@
         h("button", { type: "button", class: "link przyp-nie nw-link44", onclick: () => { ap.ls.set("skrot-przyp-nie", ap.todayKey()); ap.render(); } }, PL.nieTeraz)),
       sn >= 2 ? h("p", { class: "nw-przyp-powod", text: fmt(PL.przypPowod, dniPL(sn)) }) : null,
       h("p", { class: "muted", style: "margin:0;font-size:var(--fs-s)", text: fmt(PL.przypDzisOpis, godzTxt(godz)) }),
-      h("div", { class: "row" }, h("button", { type: "button", class: "btn primary przyp-on", style: "min-height:48px", onclick: () => ap.przypSave(PRZ.d.nowe ? { wlaczone: true, godz } : { wlaczone: true }, PL.przypWlaczone) }, PL.wlacz)));
+      h("div", { class: "row" }, h("button", { type: "button", class: "btn przyp-on", style: "min-height:48px", onclick: () => ap.przypSave(PRZ.d.nowe ? { wlaczone: true, godz } : { wlaczone: true }, PL.przypWlaczone) }, PL.wlacz)));
   }
   // Przełącznik w oknie „Kalendarz w telefonie”: progress.calStudy (funkcja kalendarz czyta go przez SQL v57).
   function przelacznikKalendarza() {
@@ -963,7 +967,7 @@
         boss ? h("span", { class: "chip plain nw-wiecej-c", text: PL.wiecejBoss }) : null),
       h("div", { class: "nw-wiecej-b" }, el));
   }
-  // Pusty stan Powtórek: obietnica jutra i karta 5 minut.
+  // Pusty stan Powtórek: obietnica jutra i 5 minut na dziś.
   function powtorkiPusto() {
     const ap = A(), { h } = ap; if (!h) return null;
     return [h("p", { class: "big", style: "margin:0", text: PL.rvPusto }),
@@ -1070,6 +1074,7 @@ html #main .xp-chip.nw-streak.streak-risk, .xp-chip.nw-streak.streak-risk { back
 .nw-pkt { min-height: 44px; padding: 0 10px; font-size: var(--fs-s); }
 .nw-powrot-h { font-size: var(--fs-l); }
 .nw-powrot-h { margin: 0; font-family: var(--dz-head, inherit); font-size: var(--fs-xl); line-height: 1.25; }
+@media (max-height: 700px) { .nw-powrot-ost { display: none; } } /* ux-6: na niskim telefonie „Wracam” ważniejsze */
 .nw-powrot-pkt { display: flex; flex-wrap: wrap; gap: 6px; }
 .nw-pkt { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--sunk, var(--h-line)); color: var(--ink); font: inherit; font-size: var(--fs-s); font-weight: 600; cursor: pointer; }
 .nw-pkt-chev { font-weight: 800; }

@@ -20,11 +20,11 @@ t = await q(p, "kalkulatro"); ok("literówka „kalkulatro”", t.includes("Kalk
 t = await q(p, "ciemny"); ok("„ciemny” → Tryb ciemny i jasny", t[0] === "Tryb ciemny i jasny", t);
 t = await q(p, "hasło"); ok("„hasło” → Hasło do logowania i Hasło dnia", t.includes("Hasło do logowania") && t.includes("Hasło dnia"), t);
 t = await q(p, "monety"); ok("„monety” (odmiana) → Sklep i monety", t.includes("Sklep i monety"), t);
-t = await q(p, "nie byłem na wykładzie"); ok("zdanie potoczne → Powtórka w 5 minut", t[0] === "Powtórka w 5 minut", t);
+t = await q(p, "nie byłem na wykładzie"); ok("zdanie potoczne → 5 minut · z zajęć", t[0] === "5 minut · z zajęć", t);
 t = await q(p, "jak zmienić hasło"); ok("pytanie „jak zmienić hasło” → Hasło do logowania", t[0] === "Hasło do logowania", t);
 t = await q(p, "gdzie są motywy"); ok("„gdzie są motywy” → Motywy", t[0] === "Motywy", t);
 t = await q(p, "kalendarz telefon xyz"); ok("2 z 3 słów pasują → wynik zamiast pustki", t[0] === "Kalendarz w telefonie", t);
-t = await q(p, "tramwaj"); ok("„tramwaj” → Lekcja na przejazd", t[0] === "Lekcja na przejazd", t);
+t = await q(p, "tramwaj"); ok("„tramwaj” → 5 minut · w drodze", t[0] === "5 minut · w drodze", t);
 t = await q(p, "google"); ok("„google” → Kalendarz w telefonie", t[0] === "Kalendarz w telefonie", t);
 t = await q(p, "dark mode"); ok("po angielsku „dark mode”", t[0] === "Tryb ciemny i jasny", t);
 t = await q(p, "przewodnik"); ok("przewodnik: najpierw funkcja, potem rozdziały", t[0] === "Przewodnik po stronie" && t.some((x) => /^Przewodnik: /.test(x)), t);
@@ -67,8 +67,9 @@ ok("student: bez błędów w konsoli", p.errors.length === 0, p.errors);
 const g = await page(b, { konto: "darmowe" });
 await open(g, "#/more");
 t = await q(g, "ranking");
-const sec = await g.locator(".fn-hit", { hasText: "Ranking kierunku" }).locator(".fn-sec").innerText().catch(() => "");
-ok("bez dostępu: 🔒 przy Rankingu", /🔒/.test(sec), [t, sec]);
+// ikony-ux.js zamienia 🔒 na ikonę SVG, więc sprawdzamy klasę „lock” i ikonę
+const sec = await g.locator(".fn-hit", { hasText: "Ranking kierunku" }).locator(".fn-sec").evaluate((e) => e.className + (e.querySelector("svg") || /🔒/.test(e.textContent) ? " ikona" : "")).catch(() => "");
+ok("bez dostępu: kłódka przy Rankingu", /\block\b/.test(sec) && /ikona/.test(sec), [t, sec]);
 await shot(g, "fn-darmowe");
 ok("darmowe: bez błędów w konsoli", g.errors.length === 0, g.errors);
 

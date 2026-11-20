@@ -36,6 +36,8 @@ for (const [w, h] of [[360, 640], [390, 844], [1280, 900]]) for (const g of ["C1
 // ---------- K2: jeden przycisk w stylu głównym; „Wyślij kod” drugorzędny ----------
 for (const dark of [false, true]) {
   const p = await login({ dark });
+  // Wygląd pro: logowanie zwinięte pod „Masz już konto? Zaloguj się” – rozwijamy, żeby zobaczyć „Wyślij kod”
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); 
   const btns = await vis(p, "#login button");
   const prim = btns.filter((x) => /\bprimary\b/.test(x.cls));
   ok(`K2 ${dark ? "ciemny" : "jasny"}: dokładnie jeden przycisk .primary („Zacznij 3 dni za darmo”)`, prim.length === 1 && /Zacznij 3 dni/.test(prim[0].t), prim);
@@ -50,7 +52,7 @@ for (const dark of [false, true]) {
 {
   // Znacznik ustawia krok kodu, gdy logowanie przyszło z pełnego ekranu.
   const p = await login();
-  await p.fill("#skrot-login-email", "nowy@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]");
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.fill("#skrot-login-email", "nowy@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]");
   await p.waitForSelector("#skrot-login-code"); await p.fill("#skrot-login-code", "123456");
   await p.waitForTimeout(400);
   ok("K3: kod z pełnego ekranu logowania zostawia znacznik skrot-z-logowania", (await p.evaluate(() => localStorage.getItem("skrot-z-logowania"))) === "1");
@@ -118,7 +120,7 @@ for (const [w, h] of [[390, 844], [1280, 900]]) for (const dark of [false, true]
 // ---------- K5: limit maili / weryfikacji i „Wyślij ponownie” ----------
 {
   const p = await login({ ls: { "mock-otp-blad": "rate" } });
-  await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForTimeout(300);
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForTimeout(300);
   const err = await p.locator("#loginBox .notice.err").innerText().catch(() => "");
   ok("K5: błąd limitu z signInWithOtp → „Teraz loguje się dużo osób naraz. Spróbuj za 2–3 minuty.”", err === "Teraz loguje się dużo osób naraz. Spróbuj za 2–3 minuty.", err);
   await p.close();
@@ -126,7 +128,7 @@ for (const [w, h] of [[390, 844], [1280, 900]]) for (const dark of [false, true]
 {
   const p = await login({ clock: true, wait: 0 });
   await p.clock.runFor(3000);
-  await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]");
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]");
   await p.clock.runFor(500);
   const before = await p.evaluate(() => { const r = document.querySelector(".lg-resend"); return { dis: r?.disabled, t: r?.textContent, note: document.querySelector(".lg-resend-note")?.classList.contains("on") }; });
   ok("K5: przed 60 s „Wyślij ponownie” nieaktywne z odliczaniem, bez notki", before.dis === true && /Wyślij ponownie za \d+ s/.test(before.t) && !before.note, before);
@@ -145,14 +147,14 @@ for (const [w, h] of [[390, 844], [1280, 900]]) for (const dark of [false, true]
 // ---------- K6: po kodzie w trybie próby „Zacznij 3 dni za darmo”; EN ----------
 {
   const p = await login({ ls: { "skrot-trial": "1" } });
-  await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForSelector("#skrot-login-code");
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForSelector("#skrot-login-code");
   const t = await p.locator("#loginBox form button[type=submit]").innerText();
   ok("K6: przycisk po kodzie w trybie próby: „Zacznij 3 dni za darmo”", t === "Zacznij 3 dni za darmo", t);
   await p.close();
 }
 {
   const p = await login();
-  await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForSelector("#skrot-login-code");
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForSelector("#skrot-login-code");
   ok("K6: bez trybu próby przycisk po kodzie: „Zaloguj się”", (await p.locator("#loginBox form button[type=submit]").innerText()) === "Zaloguj się");
   await p.close();
 }
@@ -161,12 +163,13 @@ for (const [w, h] of [[390, 844], [1280, 900]]) for (const dark of [false, true]
   const intro = await p0.evaluate(() => document.querySelector("#login .lg-intro").innerText);
   await p0.close();
   const p = await login({ lang: "en" });
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); 
   const txt = intro + "\n" + await p.evaluate(() => document.getElementById("login").innerText);
   ok("K6 EN: „Practice tests before every midterm”", /Practice tests before every midterm/.test(txt), txt.slice(0, 600));
   ok("K6 EN: „Your group's test and exam dates”", /Your group's test and exam dates/.test(txt));
   ok("K6 EN: zakładka „Email code”", /Email code/.test(txt));
   ok("K6 EN: bez starych tekstów (Mock tests before each test, Code from the email)", !/Mock tests before each test|Code from the email/.test(txt));
-  await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForSelector("#skrot-login-code");
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForSelector("#skrot-login-code");
   ok("K6 EN: krok kodu po angielsku („Change email”, „Resend in … s”)", /Change email/.test(await p.locator("#loginBox").innerText()) && /Resend in \d+ s/.test(await p.locator(".lg-resend").innerText()));
   await p.close();
 }
@@ -182,7 +185,7 @@ for (const [w, h] of [[390, 844], [1280, 900]]) for (const dark of [false, true]
 }
 {
   const p = await login({ lang: "en", ls: { "mock-otp-blad": "rate" } });
-  await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForTimeout(300);
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.fill("#skrot-login-email", "a@stud.usz.edu.pl"); await p.click("#loginBox form button[type=submit]"); await p.waitForTimeout(300);
   ok("K5 EN: komunikat limitu po angielsku", (await p.locator("#loginBox .notice.err").innerText().catch(() => "")) === "Lots of people are logging in right now. Try again in 2–3 minutes.");
   await p.close();
 }

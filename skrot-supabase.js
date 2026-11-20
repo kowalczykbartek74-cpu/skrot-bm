@@ -795,6 +795,7 @@
     stas:     ({ id, zdania })         => rpCall("nauka_rp_stas", { p_id: id, p_zdania: zdania }),
     koniec:   ({ run, wynik, czasMs, bledy = 0 }) => rpCall("nauka_gra_koniec", { p_run: run, p_wynik: wynik, p_czas_ms: czasMs, p_bledy: bledy }),
     ranking:  ({ zakres = "tydzien", grupa = null, sid = null } = {}) => rpCall("nauka_ranking", { p_zakres: zakres, p_grupa: grupa, p_sid: sid }),
+    grupy:    (zakres = "tydzien") => rpCall("nauka_ranking_grupy", { p_zakres: zakres }), // ux-6: v63, porównanie grup roku
     rekordy:  (gra)                    => rpCall("nauka_rekordy", { p_gra: gra }),
     stat:     ()                       => rpCall("nauka_kierunek_stat"),
     admin:    ()                       => rpCall("nauka_admin_gry"),
@@ -1492,8 +1493,12 @@
     const scrim = el("div", { class: "scrim", onclick: (e) => { if (e.target === scrim) close(); } },
       el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Wybierz plan" },
         el("h2", { style: "margin:0;font-family:var(--f-display)", text: "Wybierz plan" }),
+        // ux-6: po próbie wprost, że się skończyła; obie opcje dają to samo, więc „co dostajesz” raz nad planami
+        skrot.trialEnded ? el("p", { class: "notice", style: "margin:0", text: "Twój okres próbny się skończył. Postępy z tych dni zostały na koncie." }) : null,
+        el("div", { class: "plan-co", style: "display:grid;gap:4px" }, el("b", { text: "W pełnym dostępie masz:" }),
+          el("ul", { style: "margin:0;padding-left:20px;display:grid;gap:2px;color:var(--ink)" }, ...["Lekcje, fiszki i quizy do każdego przedmiotu", "Próbne testy i plan nauki przed każdym kolokwium", "Powtórki, gry i ranking roku", "Terminy w kalendarzu w telefonie"].map((t) => el("li", { text: t })))),
         el("p", { class: "muted", style: "margin:0", text: `Dostęp przypiszemy do ${skrot.email}.` }),
-        card("rok", "Do końca 2. semestru", CONFIG.plans.rok.price, [`Jednorazowo, od dziś do 11 lipca 2027 (koniec sesji letniej). Zostało ok. ${cmp.months} ${cmp.months === 1 ? "miesiąc" : cmp.months < 5 ? "miesiące" : "miesięcy"}, a co miesiąc wyszłoby ok. ${cmp.monthlyTotal} zł.`, "BLIK, karta, Apple Pay albo Google Pay. Nic się samo nie odnawia."], cmp.yearCheaper ? "Najtaniej" : null),
+        card("rok", "Do końca 2. semestru", CONFIG.plans.rok.price, [`Jednorazowo, od dziś do 11 lipca 2027 (koniec sesji letniej). Zostało ok. ${cmp.months} ${cmp.months === 1 ? "miesiąc" : cmp.months < 5 ? "miesiące" : "miesięcy"}. Ten sam czas na planie miesięcznym to ok. ${cmp.monthlyTotal} zł.`, "BLIK, karta, Apple Pay albo Google Pay. Nic się samo nie odnawia."], cmp.yearCheaper ? "Najtaniej" : null),
         card("miesiac", "Co miesiąc", CONFIG.plans.miesiac.price, ["Odnawia się co miesiąc. Anulujesz w każdej chwili, dostęp działa do końca opłaconego miesiąca.", "Płatność kartą (także Apple Pay i Google Pay)."], cmp.yearCheaper ? null : "Najtaniej"),
         el("p", { class: "foot-note", style: "margin:0" }, "Płatność przez Stripe. ", el("a", { class: "link", href: "regulamin.html" }, "Regulamin"), " · ", el("a", { class: "link", href: "prywatnosc.html" }, "Prywatność")),
         el("div", {}, el("button", { type: "button", class: "btn ghost", onclick: close }, "Zamknij"))));

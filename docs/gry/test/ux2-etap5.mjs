@@ -28,26 +28,24 @@ for (const [tag, w, dark, lang] of tagi) {
   const u = await p.evaluate(() => {
     const main = document.querySelector("#main"), kids = [...main.children].map((e) => e.className.toString());
     const ld = [...(document.querySelector(".ld-block")?.children || [])].map((e) => e.className.toString());
-    const last = document.querySelector("#main .nw-wiecej") || [...main.children].filter((e) => !e.matches(".sitefoot")).pop();
+    // c1356b9: bez „Więcej na dziś” – wysokość mierzymy do dołu „Twój postęp” (Boss, gdy trwa, stoi pod nim osobno)
+    const last = document.querySelector("#main .pts-dzis") || [...main.children].filter((e) => !e.matches(".sitefoot")).pop();
     return { kids, ld, h: Math.round(last.getBoundingClientRect().bottom - main.getBoundingClientRect().top),
       wiecej: [...(document.querySelector(".nw-wiecej-b")?.children || [])].map((e) => e.className.toString()),
       prof: !!document.querySelector(".ld-prof"), guide: !!document.querySelector(".g-strip"), poza: [...document.querySelectorAll("#main *")].filter((e) => e.getBoundingClientRect().right > document.documentElement.clientWidth + 1).length };
   });
   const i = (re, arr = u.kids) => arr.findIndex((c) => re.test(c));
-  ok(`K1 ${tag}: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → „Więcej na dziś”`,
+  ok(`K1 ${tag}: powitanie → karta dnia (hero → linia zadań → Lekcje dla Ciebie) → Twój postęp → Boss (trwa)`,
     i(/greet/) === 0 && i(/ld-block/) === 1 && i(/ld-hero/, u.ld) === 0 && i(/nw-linia/, u.ld) === 1 && i(/ld-head/, u.ld) === 2 && i(/ld-lessons/, u.ld) === 3
-    && i(/pts-dzis/) > i(/ld-block/) && i(/nw-wiecej/) > i(/pts-dzis/), u);
-  ok(`K1 ${tag}: w „Więcej na dziś” Boss (trwa) → Na luzie → nowości; bez Przewodnika i Profilu nauki (konto starsze niż 3 dni)`,
-    i(/bs-card/, u.wiecej) === 0 && i(/fun-row/, u.wiecej) > 0 && i(/home-fold/, u.wiecej) > i(/fun-row/, u.wiecej) && !u.guide && !u.prof, u.wiecej);
+    && i(/pts-dzis/) > i(/ld-block/) && i(/bs-card/) > i(/pts-dzis/) && i(/nw-wiecej/) === -1, u);
+  ok(`K1 ${tag}: bez Przewodnika i Profilu nauki na Dziś (konto starsze niż 3 dni)`, !u.guide && !u.prof, u);
   ok(`K1 ${tag}: wysokość Dziś (treść bez stopki) ≤ 1820 px`, u.h <= 1820 /* po scaleniu pętli 1, 4, 5: +3 px przy 360 */, u.h);
   ok(`K1 ${tag}: bez poziomego przewijania`, u.poza === 0, u.poza);
-  R.dodatkowe.push(`Wysokość Dziś ${tag} (od góry #main do dołu „Więcej na dziś”, bez stopki): ${u.h} px`);
+  R.dodatkowe.push(`Wysokość Dziś ${tag} (od góry #main do dołu „Twój postęp”, bez stopki): ${u.h} px`);
   await shot(p, `k1-dzis-${tag}`, true);
   R.pomiary.push(await pomiar(p, `K1 Dziś ${tag}`, "#main", "#main .nw-linia"));
   if (tag === "390-jasny") {
-    await p.click("#main .nw-wiecej > summary"); await p.waitForTimeout(300);
-    ok("K1 „Więcej na dziś” rozwija Bossa i Na luzie", await p.evaluate(() => document.querySelector(".nw-wiecej").open && !!document.querySelector(".nw-wiecej .bs-card")?.getBoundingClientRect().height));
-    await shot(p, "k1-wiecej-otwarte-390-jasny");
+    ok("K1 Boss (trwa) widać na Dziś bez rozwijania", await p.evaluate(() => !!document.querySelector("#main > .bs-card")?.getBoundingClientRect().height));
   }
   await p.close();
 }
@@ -60,8 +58,8 @@ for (const [tag, w, dark, lang] of tagi) {
   await p.close();
   // nowe konto (pierwszy dzień): Przewodnik i Profil nauki są
   const n = await open(b, { prog: {}, ls: { ...LS, "skrot-pierwszy-dzien": String(T) } });
-  const nowe = await n.evaluate(() => ({ prof: !!document.querySelector(".ld-prof"), guide: !!document.querySelector(".nw-wiecej .g-strip") }));
-  ok("K1 nowe konto (1. dzień): Profil nauki na karcie dnia i Przewodnik w „Więcej na dziś”", nowe.prof && nowe.guide, nowe);
+  const nowe = await n.evaluate(() => ({ prof: !!document.querySelector(".ld-prof") }));
+  ok("K1 nowe konto (1. dzień): Profil nauki na karcie dnia (Przewodnik od c1356b9 w Więcej)", nowe.prof, nowe);
   await n.close();
   const idx = fs.readFileSync(ROOT + "index.html", "utf8");
   const zak = idx.split("\n").filter((l) => /window\.ZD_WEJSCIE\?\.przyciskZakupu\?\.\("(ld|pts)"\) \?\? h\("button"/.test(l) && /\/\/ ux-1$/.test(l));
@@ -207,14 +205,14 @@ for (const [tag, w, dark, lang] of tagi) {
   const p = await open(b, { w, dark, lang, prog: {}, ls: LS, hash: "/review" });
   await p.waitForTimeout(600);
   const r = await txt(p, "#main .rv-hero");
-  if (lang === "pl") ok(`K6 ${tag}: „Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.” + „Karta 5 minut” + „Wybierz przedmiot”`, /Jeszcze nic do powtórki\. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro\./.test(r || "") && /Karta 5 minut/.test(r) && /Wybierz przedmiot/.test(r) && !/zakładka Ćwicz/.test(r), r);
-  else ok(`K6 ${tag}: EN „Nothing to review yet… 5-minute card”`, /Nothing to review yet/.test(r || "") && /5-minute card/.test(r), r);
+  if (lang === "pl") ok(`K6 ${tag}: „Jeszcze nic do powtórki. Zrób dziś swoje 5 minut, a fiszki wrócą tu jutro.” + „Zaczynamy · 5 min” + „Wybierz przedmiot”`, /Jeszcze nic do powtórki\. Zrób dziś swoje 5 minut, a fiszki wrócą tu jutro\./.test(r || "") && /Zaczynamy · 5 min/.test(r) && /Wybierz przedmiot/.test(r) && !/zakładka Ćwicz/.test(r), r);
+  else ok(`K6 ${tag}: EN „Nothing to review yet… Let's go · 5 min”`, /Nothing to review yet/.test(r || "") && /Let's go · 5 min/.test(r), r);
   await shot(p, `k6-powtorki-pusto-${tag}`);
   R.pomiary.push(await pomiar(p, `K6 pusty stan Powtórek ${tag}`, "#main .rv-hero", "#main .rv-hero"));
   if (tag === "390-jasny") {
     await p.click("#main .rv-hero .btn.primary"); await p.waitForTimeout(1500);
     const k = await p.evaluate(() => ({ hash: location.hash, gracz: !!document.querySelector(".lp, .lp-wrap, [class*='lp-'], #player") }));
-    ok("K6 „Karta 5 minut” prowadzi na Dziś i otwiera kartę dnia", /^#\/?$/.test(k.hash.replace(/\?.*/, "")) || k.gracz, k);
+    ok("K6 „Zaczynamy · 5 min” prowadzi na Dziś i otwiera kartę dnia", /^#\/?$/.test(k.hash.replace(/\?.*/, "")) || k.gracz, k);
   }
   await p.close();
 }

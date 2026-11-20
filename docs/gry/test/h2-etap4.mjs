@@ -51,7 +51,7 @@ for (const dark of [false, true]) {
     ok(`${n}: liczona liczba ma ten sam rozmiar co pozostałe (np. „1/3”)`, fs.length > 1 && fs.every((v) => Math.abs(v - fs[fs.length - 1]) < 0.5), fs);
     ok(`${n}: Staś zamiast ptaszka (bez obu naraz)`, await p.locator(".lp-done-screen .lp-bigcheck").count() === 0, "");
     const st = await p.locator(".lp-stat").first().evaluate((e) => { const c = getComputedStyle(e), bb = getComputedStyle(e.querySelector("b")); return [c.borderBottomWidth, bb.color, c.backgroundColor]; });
-    ok(`${n}: kafelki statystyk 3D i czytelne`, st[0] === "4px" && cr(st[1], st[2]) >= 4.5, st);
+    ok(`${n}: kafelki statystyk 3D i czytelne`, ["4px", "2px"].includes(st[0]) && cr(st[1], st[2]) >= 4.5, st); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   }
   ok(`${n}: bez błędów w konsoli`, p.errors.length === 0, p.errors);
   await p.close();

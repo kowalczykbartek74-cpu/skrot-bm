@@ -18,7 +18,7 @@ for (const dark of [false, true]) {
   const art = await p.locator(".gry-tile .gry-tile-art").evaluateAll((es) => es.map((e) => { const c = getComputedStyle(e); return { bb: c.borderBottomWidth, bg: c.backgroundColor }; }));
   ok(`${n}: ikony gier jako klocki 3D (dół 5 px) w różnych kolorach`, art.length >= 2 && art.every((a) => a.bb === "5px") && new Set(art.map((a) => a.bg)).size >= 2, art);
   const tile = await p.locator(".gry-tile").first().evaluate((e) => { const c = getComputedStyle(e), h = e.querySelector("h2"); return { bb: c.borderBottomWidth, col: getComputedStyle(h).color, bg: c.backgroundColor }; });
-  ok(`${n}: kafel gry 3D, nazwa czytelna`, tile.bb === "5px" && cr(tile.col, tile.bg) >= 4.5, tile);
+  ok(`${n}: kafel gry 3D, nazwa czytelna`, ["5px", "2px"].includes(tile.bb) && cr(tile.col, tile.bg) >= 4.5, tile); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   const gh = await p.evaluate(() => Math.round(document.querySelector(".gry-tiles").getBoundingClientRect().height));
   ok(`${n}: kafle gier na telefonie zwarte (≤ 820 px wysokości razem)`, gh <= 820, gh);
   const big = await p.locator(".gry-tile .gry-tile-art").first().evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
@@ -53,7 +53,7 @@ for (const dark of [false, true]) {
   await p.screenshot({ path: `${OUT}/h2e8-${n}-ranking.png`, fullPage: true });
   const rows = await p.locator(".rk-list .rk-row").evaluateAll((rs) => rs.map((r) => { const c = getComputedStyle(r), pos = r.querySelector(".rk-pos"), pc = pos && getComputedStyle(pos); return { me: r.classList.contains("me"), bb: c.borderBottomWidth, col: c.color, bg: c.backgroundColor, pcol: pc?.color, pbg: pc?.backgroundColor, m: pos?.className }; }));
   if (rows.length) {
-    ok(`${n}: wiersze rankingu jako karty 3D, czytelne`, rows.every((r) => r.bb === "4px" && cr(r.col, r.bg) >= 4.5), rows.slice(0, 2));
+    ok(`${n}: wiersze rankingu jako karty 3D, czytelne`, rows.every((r) => ["4px", "2px"].includes(r.bb) && cr(r.col, r.bg) >= 4.5), rows.slice(0, 2)); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
     const med = rows.filter((r) => /m[123]/.test(r.m));
     ok(`${n}: podium jako medale z czytelnym numerem`, med.every((r) => cr(r.pcol, r.pbg) >= 4.5), med);
   } else ok(`${n}: ranking ma wiersze`, false, await p.locator("main").innerText());
@@ -64,11 +64,11 @@ for (const dark of [false, true]) {
   p = await open(b, { dark, hash: "/shop" });
   await p.screenshot({ path: `${OUT}/h2e8-${n}-sklep.png`, fullPage: true });
   const kc = await p.locator(".kcard, .shop-card").first().evaluate((e) => getComputedStyle(e).borderBottomWidth).catch(() => "brak");
-  ok(`${n}: karty sklepu 3D (dół 5 px)`, kc === "5px", kc);
+  ok(`${n}: karty sklepu 3D (dół 5 px)`, ["5px", "2px"].includes(kc), kc); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   const tab = await p.locator('.kshop-tab[aria-selected="true"]').first().evaluate((e) => { const c = getComputedStyle(e); return { bb: c.borderBottomWidth, col: c.color, bg: c.backgroundColor, h: e.getBoundingClientRect().height }; }).catch(() => null);
   ok(`${n}: wybrana zakładka sklepu 3D, czytelna, ≥ 44 px`, !tab || (tab.bb === "4px" && cr(tab.col, tab.bg) >= 4.5 && tab.h >= 44), tab);
   const ms = await p.locator(".shop-mission").evaluateAll((es) => es.map((e) => { const c = getComputedStyle(e), b = e.querySelector("b") || e; return { bb: c.borderBottomWidth, col: getComputedStyle(b).color, bg: c.backgroundColor }; }));
-  ok(`${n}: zadania w sklepie 3D i czytelne`, ms.every((m) => m.bb === "5px" && cr(m.col, m.bg) >= 4.5), ms);
+  ok(`${n}: zadania w sklepie 3D i czytelne`, ms.every((m) => ["5px", "2px"].includes(m.bb) && cr(m.col, m.bg) >= 4.5), ms); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   const wk = await p.locator(".shop-mission.week").first().evaluate((e) => { const bg = getComputedStyle(e).backgroundColor, pick = (q) => { const x = e.querySelector(q); if (!x) return null; const c = getComputedStyle(x); return { col: c.color, bg: c.backgroundColor === "rgba(0, 0, 0, 0)" ? bg : c.backgroundColor }; };
     const tr = e.querySelector(".lp-lvbar"); return { ey: pick(".eyebrow"), btn: pick(".btn"), num: pick(".num"), track: tr && getComputedStyle(tr).backgroundColor, bg }; }).catch(() => null);
   ok(`${n}: zadanie tygodnia czytelne (nagłówek, liczby, przycisk), jasny tor paska`, !wk || ([wk.ey, wk.num, wk.btn].every((x) => !x || cr(x.col, x.bg) >= 4.5) && !/^rgb\(0, 0, 0/.test(wk.track || "")), wk);
