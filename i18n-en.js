@@ -3046,7 +3046,7 @@ window.SKROT_I18N && window.SKROT_I18N.load({
 "s. SIL 324": "room SIL 324",
 "Dzień rektorski": "Rector's day off",
 "Narodowe Święto Niepodległości": "National Independence Day",
-"Dzień zamienny: zajęcia jak w środę (tydzień parzysty)": "Swap day: Wednesday timetable (even week)",
+"Dzień zamienny: zajęcia jak w środę (tydzień nieparzysty)": "Swap day: Wednesday timetable (odd week)",
 "Przed semestrem": "Before the semester",
 "Przerwa świąteczna": "Christmas break",
 "Sesja egzaminacyjna": "Exam session",
