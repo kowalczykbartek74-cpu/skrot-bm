@@ -38,7 +38,7 @@ for (const konto of ["darmowe", "proba-koniec"]) for (const w of [360, 390]) {
   T.ok("K3 lekcja 1: „✓ Zrobiona · utrwal w Powtórkach”", st[0]?.stan === "✓ Zrobiona · utrwal w Powtórkach", st[0]);
   T.ok("K3 pasek tylko przy lekcji w trakcie (2), bez starych mierników %", !st[0].pasek && st[1].pasek && !st[2].pasek && st.every((x) => !x.meter), st);
   const hero = await tekst(p, ".sk-hero");
-  T.ok("K3 karta przedmiotu: „Opanowanie N%” i „Zrobione lekcje: 1 z 3” i reguła 60/80/100", /Opanowanie\s*\d+%/.test(hero) && /Zrobione lekcje: 1 z 3/.test(hero) && /zrobiona liczy się w 60%/.test(hero), hero);
+  T.ok("K3 karta przedmiotu: „Opanowanie N%” i „Zrobione lekcje: 1 z 3” i reguła 50/60 + 20", /Opanowanie\s*\d+%/.test(hero) && /Zrobione lekcje: 1 z 3/.test(hero) && /zrobiona liczy się w 50% \(60% ze zdanym biletem\)/.test(hero), hero);
   T.ok("K3 jeden wynik procentowy (Opanowanie) w karcie przedmiotu i na ścieżce", (t.replace(/Opanowanie to średnia[^\n]*/, "").match(/%/g) || []).length === 1, t.match(/.{0,20}%/g));
   T.ok("K3 bez „pkt”, „Lekcje: k z n” i „Umiesz z zakresu” na ekranie przedmiotu", !/\bpkt\b|Lekcje: \d+ z \d|Umiesz z zakresu/.test(t), t.match(/.{0,30}(pkt|Lekcje: \d+ z \d|Umiesz).{0,10}/)?.[0]);
   const p2 = await open(b, { hash: "/subject/" + A, progress: P2 });

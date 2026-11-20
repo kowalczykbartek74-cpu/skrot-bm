@@ -19,7 +19,7 @@ const dz = await p.locator(".pts-row", { hasText: "Logistyka" }).innerText().cat
 ok("Dziś: Logistyka 1/4", /\b1\/4\b/.test(dz), dz);
 await p.goto(BASE + "index.html#/materials"); await p.waitForTimeout(800);
 const card = await p.locator(".nb", { hasText: "Logistyka" }).getAttribute("aria-label");
-ok("Przedmioty: 1 z 4", /umiesz: 1 z 4/.test(card), card);
+ok("Przedmioty: jedna miara Opanowanie %", /opanowanie \d+%/i.test(card) && !/umiesz/.test(card), card);
 await p.goto(BASE + "index.html#/subject/logistyka"); await p.waitForTimeout(800);
 const subj = await p.locator("main").innerText();
 ok("strona przedmiotu: 1 z 4 tematów, bez „= lekcje + materiały”", /1 z 4 tematów/.test(subj) && !/tematy? = \d+ lekcj/.test(subj), subj.slice(0, 900));

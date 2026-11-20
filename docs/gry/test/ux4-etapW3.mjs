@@ -35,7 +35,7 @@ for (const [w, lang, dark] of [[390, "pl", false], [360, "en", true], [1280, "pl
     return { stas: !!x.querySelector(".stas-face svg"), btn: [...x.querySelectorAll("button")].map((b) => ({ c: b.className, t: b.textContent, h: b.getBoundingClientRect().height })), h2: x.querySelector("h2")?.textContent, art: [...x.querySelectorAll(".art")].filter((a) => a.getBoundingClientRect().width).length, pod: getComputedStyle(x, "::before").content, w: r.width }; });
   const tag = `${w} ${lang}${dark ? " ciemny" : ""}`;
   ok(`K2 ${tag}: wygasłe „Po zajęciach” = .empty ze Stasiem i jednym głównym przyciskiem`, e && e.stas && e.btn.length === 1 && /primary/.test(e.btn[0].c) && e.btn[0].h >= 44 && e.art === 0 && e.pod === "none", e);
-  ok(`K2 ${tag}: tytuł i przycisk przetłumaczone`, e && (lang === "en" ? e.h2 === "This summary has expired" && e.btn[0].t === "5-minute review" : e.h2 === "To podsumowanie wygasło" && e.btn[0].t === "Powtórka w 5 minut"), e);
+  ok(`K2 ${tag}: tytuł i przycisk przetłumaczone`, e && (lang === "en" ? e.h2 === "This summary has expired" && e.btn[0].t === "5 minutes · from class" : e.h2 === "To podsumowanie wygasło" && e.btn[0].t === "5 minut · z zajęć"), e);
   const k = await kontrast(p); ok(`K2 ${tag}: kontrast AA w stanie pustym`, k.out.length === 0, k.out);
   if (w === 390) await p.screenshot({ path: `${OUT}/w3-pusty-po5.png` });
   await p.locator("#main .ux4-empty button").click(); await p.waitForTimeout(800);

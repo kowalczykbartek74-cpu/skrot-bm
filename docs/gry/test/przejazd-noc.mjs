@@ -75,7 +75,7 @@ await shot(p, "noc-koniec");
 await p.getByRole("button", { name: "Dobranoc", exact: true }).click(); await p.waitForTimeout(400);
 ok("wyjście: bez body.night", await p.evaluate(() => !document.body.classList.contains("night")), "");
 await p.goto(BASE + "index.html#/more"); await p.waitForTimeout(1000);
-ok("Więcej: oba wpisy", (await p.getByText("Lekcja na przejazd").count()) >= 1 && (await p.getByText("10 minut przed snem").count()) >= 1, "");
+ok("Więcej: oba wpisy", (await p.getByText("5 minut · w drodze").count()) >= 1 && (await p.getByText("5 minut · przed snem").count()) >= 1, "");
 // EN
 const e = await page(b, { konto: "platne", lang: "en", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: { srs } }) } });
 await e.clock.setFixedTime(new Date("2026-11-06T10:30:00+01:00"));

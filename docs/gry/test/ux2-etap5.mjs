@@ -205,14 +205,14 @@ for (const [tag, w, dark, lang] of tagi) {
   const p = await open(b, { w, dark, lang, prog: {}, ls: LS, hash: "/review" });
   await p.waitForTimeout(600);
   const r = await txt(p, "#main .rv-hero");
-  if (lang === "pl") ok(`K6 ${tag}: „Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.” + „Karta 5 minut” + „Wybierz przedmiot”`, /Jeszcze nic do powtórki\. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro\./.test(r || "") && /Karta 5 minut/.test(r) && /Wybierz przedmiot/.test(r) && !/zakładka Ćwicz/.test(r), r);
-  else ok(`K6 ${tag}: EN „Nothing to review yet… 5-minute card”`, /Nothing to review yet/.test(r || "") && /5-minute card/.test(r), r);
+  if (lang === "pl") ok(`K6 ${tag}: „Jeszcze nic do powtórki. Zrób dziś swoje 5 minut, a fiszki wrócą tu jutro.” + „Zaczynamy · 5 min” + „Wybierz przedmiot”`, /Jeszcze nic do powtórki\. Zrób dziś swoje 5 minut, a fiszki wrócą tu jutro\./.test(r || "") && /Zaczynamy · 5 min/.test(r) && /Wybierz przedmiot/.test(r) && !/zakładka Ćwicz/.test(r), r);
+  else ok(`K6 ${tag}: EN „Nothing to review yet… Let's go · 5 min”`, /Nothing to review yet/.test(r || "") && /Let's go · 5 min/.test(r), r);
   await shot(p, `k6-powtorki-pusto-${tag}`);
   R.pomiary.push(await pomiar(p, `K6 pusty stan Powtórek ${tag}`, "#main .rv-hero", "#main .rv-hero"));
   if (tag === "390-jasny") {
     await p.click("#main .rv-hero .btn.primary"); await p.waitForTimeout(1500);
     const k = await p.evaluate(() => ({ hash: location.hash, gracz: !!document.querySelector(".lp, .lp-wrap, [class*='lp-'], #player") }));
-    ok("K6 „Karta 5 minut” prowadzi na Dziś i otwiera kartę dnia", /^#\/?$/.test(k.hash.replace(/\?.*/, "")) || k.gracz, k);
+    ok("K6 „Zaczynamy · 5 min” prowadzi na Dziś i otwiera kartę dnia", /^#\/?$/.test(k.hash.replace(/\?.*/, "")) || k.gracz, k);
   }
   await p.close();
 }
