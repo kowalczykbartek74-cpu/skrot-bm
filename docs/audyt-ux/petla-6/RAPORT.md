@@ -64,6 +64,8 @@ Kroki zadań (tester rundy 0 → rundy 4; limit w nawiasie):
 3. **Konto bez dostępu na Dziś: dwa wyraźne przyciski** (akcent „Kup dostęp” z pętli 1 + „Zaczynamy”). **Domyślnie: zostaje jak w pętli 1.**
 4. (z audytów, wymaga decyzji projektowej, nie ruszałem) **Jedna nazwa krótkiej nauki** zamiast siedmiu i **jedna miara postępu przedmiotu** zamiast trzech. **Propozycja domyślna:** „5 minut” wszędzie (Dziś, Powtórki, przejazd, przed snem jako warianty tej samej karty) i „Opanowanie %” jako jedyna liczba na liście i w przedmiocie.
 
+**Odpowiedź (20.11.2026): „Biorę domyślne”.** 1–3 zostają bez zmian. Punkt 4 jest wprowadzony: „5 minut · z zajęć / w drodze / przed snem”, przyciski karty dnia wszędzie „Zaczynamy · 5 min”, na liście przedmiotów tylko „Opanowanie N%”, opis Opanowania zgodny z wyliczeniem (50%, 60% z biletem, +20% za utrwalenie).
+
 ## 6. SQL do wdrożenia (klik po kliku)
 
 1. Otwórz na github.com plik `supabase/skrot-v63-ranking-grupy.sql` (gałąź `ux/6-latwosc` albo main po scaleniu) → „Copy raw file”.

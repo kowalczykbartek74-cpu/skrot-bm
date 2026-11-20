@@ -59,3 +59,12 @@ Wznowienie: „Kontynuuj pętlę UX-6 według ~/zdawalni/ux/petla-6.md i docs/au
 - „Przygotuj się” z prawa przy kolokwium za 3 dni pokazuje zaliczenie wykładu za 81 dni (zła część), a plan dnia ma emoji 🧭 🔁 📝 ⚡.
 - Okno zakupu: „Zostało ok. 9 miesięcy, a co miesiąc wyszłoby ok. 315 zł” – 315 zł to suma, nie kwota miesięczna (tekst ceny → do-decyzji, jeśli audyt to wskaże).
 - Starosta: edycja terminu dopiero po włączeniu „Trybu starosty” głęboko w Więcej.
+
+## Po pętli: decyzje Bartka (20.11.2026, „Biorę domyślne”)
+
+1–3: zostaje jak jest (średnia grup z ukrytymi, 35 zł, dwa przyciski na Dziś bez dostępu).
+4: wprowadzone.
+- Krótka nauka ma jedną nazwę „5 minut”. Przyciski, które otwierają kartę dnia (Powtórki, okno serii), mają ten sam napis co na Dziś: „Zaczynamy · 5 min”. Warianty: „5 minut · z zajęć” (było „Powtórka w 5 minut”), „5 minut · po zajęciach” / „· przed zajęciami” / „· powtórka”, „5 minut · w drodze” (było „Lekcja na przejazd”), „5 minut · przed snem” (było „10 minut przed snem”; karta ma do 15 błędów).
+- Lista przedmiotów: jedna liczba „Opanowanie N%” (ta sama co w przedmiocie) zamiast „umiesz X z Y”; bez pigułki „quizy N%”. Przedmiot bez lekcji: „Jeszcze bez lekcji”.
+- Opis Opanowania zgodny z wyliczeniem: „zrobiona liczy się w 50% (60% ze zdanym biletem), każde utrwalenie w Powtórkach dodaje 20%” (stary opis „60%” dawał niezgodność 25% przy 1 z 2 lekcji).
+- Nie ruszone: tekst przypomnienia w przypomnienia.js (kopia w funkcji Edge musi być identyczna, a funkcji nie wdrażam), „umiesz z zakresu” w Przygotuj się i na Dziś (gotowość do zaliczenia, nie postęp przedmiotu).

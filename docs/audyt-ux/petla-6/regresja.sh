@@ -8,5 +8,5 @@ for f in docs/gry/test/h2-etap*.mjs docs/gry/test/ux[1-5]-etap*.mjs docs/gry/tes
   o=$(BASE=$B OUT=/tmp/ux-6/h2 node $f 2>&1); n=$(echo "$o" | grep -c '^✗')
   echo "$(basename $f): $(echo "$o" | tail -1) ${n}✗"; [ "$n" != 0 ] && echo "$o" | grep '^✗' | cut -c1-200 | sed 's/^/    /'
 done
-git status --short | grep -v '^??' | awk '{print $2}' | grep -E '^docs/(audyt-ux/petla-[1-5]|dzis-review|gry/)' | grep -v '\.mjs$\|\.js$' | xargs git checkout -- 2>/dev/null
+git status --short | grep -v '^??' | awk '{print $2}' | grep -E '^docs/(audyt-ux/petla-[1-5]|dzis-review|gry/)' | grep -Ev '\.(mjs|js)$' | xargs git checkout -- 2>/dev/null
 echo koniec
