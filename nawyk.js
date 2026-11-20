@@ -14,8 +14,8 @@
     doPolnocy: "· do północy",
     celDnia: "Cel dnia: {0}/{1} XP",
     oknoTytul: "Twoja seria",
-    oknoStanTodo: "Dziś jeszcze bez nauki. Jedna karta 5 minut i seria rośnie.",
-    oknoStanRisk: "Zostało kilka godzin do północy. Jedna karta 5 minut i seria rośnie.",
+    oknoStanTodo: "Dziś jeszcze bez nauki. Wystarczy 5 minut i seria rośnie.",
+    oknoStanRisk: "Zostało kilka godzin do północy. Wystarczy 5 minut i seria rośnie.",
     oknoStanDone: "Dziś zrobione. Wróć jutro, a seria urośnie.",
     oknoStanZero: "Pierwszy dzień nauki zaczyna serię.",
     ostatnie4: "Ostatnie 4 tygodnie",
@@ -91,8 +91,8 @@
     starosta: "{0} zaliczeń bez daty. Uzupełnij, a rok dostanie plan i bossa.",
     terminy: "Terminy",
     planPelna: "Plan nauki do każdego terminu jest w pełnej wersji.",
-    rvPusto: "Jeszcze nic do powtórki. Zrób dziś kartę 5 minut, a fiszki z niej wrócą tu jutro.",
-    rvKarta: "Karta 5 minut",
+    rvPusto: "Jeszcze nic do powtórki. Zrób dziś swoje 5 minut, a fiszki wrócą tu jutro.",
+    rvKarta: "Zaczynamy · 5 min",
     wiecej: "Więcej na dziś",
     wiecejBoss: "Boss trwa",
     kalNauka: "Dodawaj „5 minut nauki” po zajęciach", // ux-6: dawny podpis brzmiał jak „5 minut po zajęciach”
@@ -133,7 +133,7 @@
     zamTeraz: "Zamrożenia: {0}/{1}",
     prezent: "Masz zamrożenie serii w prezencie. Jeden opuszczony dzień nie zerwie serii.",
     pauzaTxt: "· przerwa, seria czeka",
-    oknoStanChroni: "Dziś bez nauki? Zamrożenie ochroni ten dzień. Jedna karta 5 minut i zamrożenie zostaje na później.",
+    oknoStanChroni: "Dziś bez nauki? Zamrożenie ochroni ten dzień. 5 minut nauki i zamrożenie zostaje na później.",
     oknoStanPauza: "Przerwa w zajęciach: seria czeka. Możesz się uczyć, ale nie musisz.",
     seriaPrzedluzona: "Seria przedłużona!",
     uratowalo1: "Zamrożenie uratowało serię: {0}",
@@ -157,7 +157,7 @@
     doKamienia: "Do {0} dni: jeszcze {1}",
     wszystkieKamienie: "Wszystkie kamienie milowe zdobyte.",
     zamknij: "Zamknij",
-    uczSie: "Karta 5 minut",
+    uczSie: "Zaczynamy · 5 min",
     seriaPlus: "Seria +1",
     kamienMilowy: "Kamień milowy: {0} dni",
     tydzienTen: "Ten tydzień",
@@ -967,7 +967,7 @@
         boss ? h("span", { class: "chip plain nw-wiecej-c", text: PL.wiecejBoss }) : null),
       h("div", { class: "nw-wiecej-b" }, el));
   }
-  // Pusty stan Powtórek: obietnica jutra i karta 5 minut.
+  // Pusty stan Powtórek: obietnica jutra i 5 minut na dziś.
   function powtorkiPusto() {
     const ap = A(), { h } = ap; if (!h) return null;
     return [h("p", { class: "big", style: "margin:0", text: PL.rvPusto }),
