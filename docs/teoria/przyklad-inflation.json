@@ -1,0 +1,122 @@
+{
+  "format": "zdawalni-teoria", "v": 1, "lang": "en",
+  "mid": "PRZYKLAD", "sylRef": "W2, CW2",
+  "core": {
+    "one": "Inflation is a sustained rise in the general price level, so each złoty buys less than before.",
+    "why": "This topic answers five questions: what inflation is, how it is measured, why it happens, who it hurts and how it is fought."
+  },
+  "prereq": [
+    { "text": "**Nominal vs real**: a nominal value is in today's prices, a real value removes the effect of price changes.", "ref": null },
+    { "text": "Percentage change: (new − old) / old × 100.", "ref": null }
+  ],
+  "branches": [
+    { "id": "b1", "q": "What exactly is inflation?", "title": "What inflation is (and what it is not)",
+      "lead": "One price going up is not inflation. Inflation is about prices on average, over time.",
+      "nodes": [
+        { "id": "b1-1", "t": "def", "h": "General price level",
+          "md": "**Inflation** is a sustained increase in the **general price level** (the average price of all goods and services in the economy). \"Sustained\" means it lasts, not a one-off jump.",
+          "kids": [ { "id": "b1-1a", "t": "vs", "h": "Inflation vs a relative price change",
+            "md": "If butter gets 30% dearer while phones get cheaper, that is a change in **relative prices** (one price against another). It is inflation only if the average of all prices rises." } ] },
+        { "id": "b1-2", "t": "def", "h": "Purchasing power",
+          "md": "**Purchasing power** is how much you can buy with a given amount of money. Inflation lowers it: with 4% inflation, 100 zł buys what about 96 zł bought a year earlier." },
+        { "id": "b1-3", "t": "vs", "h": "Disinflation, deflation, hyperinflation",
+          "table": { "head": ["Term", "What happens to prices", "Example"], "rows": [
+            ["**Disinflation**", "still rise, but more slowly", "6% → 3%"],
+            ["**Deflation**", "fall on average", "−1%"],
+            ["**Hyperinflation**", "rise extremely fast (a common rule of thumb: over 50% a month)", "Zimbabwe 2008"] ] },
+          "kids": [ { "id": "b1-3a", "t": "err", "h": "\"Inflation fell, so prices fell\"",
+            "md": "A fall from 6% to 3% is disinflation: prices are still 3% higher than a year ago. Prices fall only when inflation is below zero." } ] }
+      ] },
+    { "id": "b2", "q": "How is it measured?", "title": "How we measure it",
+      "lead": "We cannot track every price, so we follow a price index: one number that summarises many prices.",
+      "nodes": [
+        { "id": "b2-1", "t": "def", "h": "Consumer Price Index (CPI)",
+          "md": "The **CPI** measures the cost of a fixed **basket** of goods and services that a typical household buys (food, rent, fuel, transport, services), compared with a **base year**. In Poland it is published by Statistics Poland (GUS).",
+          "kids": [
+            { "id": "b2-1a", "t": "formula", "h": "Index and inflation rate",
+              "f": "CPI = cost of basket this year / cost of basket in base year × 100; inflation rate = (CPI this year − CPI last year) / CPI last year × 100%",
+              "legend": "In the base year CPI = 100." },
+            { "id": "b2-1b", "t": "ex", "h": "A basket in Szczecin",
+              "steps": ["The basket cost 500 zł in the base year and 520 zł this year.", "CPI = 520 / 500 × 100 = 104.", "Inflation = (104 − 100) / 100 × 100% = 4%."] },
+            { "id": "b2-1c", "t": "err", "h": "Subtracting index points",
+              "md": "If CPI goes from 120 to 126, inflation is not 6%. It is (126 − 120) / 120 × 100% = 5%. Divide by the old value." }
+          ] },
+        { "id": "b2-2", "t": "def", "h": "GDP deflator",
+          "md": "The **GDP deflator** measures the price level of everything produced in the country, not only what households buy.",
+          "f": "GDP deflator = nominal GDP / real GDP × 100",
+          "kids": [
+            { "id": "b2-2a", "t": "ex", "md": "Nominal GDP = 1,100 bn zł, real GDP = 1,000 bn zł. Deflator = 1,100 / 1,000 × 100 = 110: prices are 10% higher than in the base year." },
+            { "id": "b2-2b", "t": "vs", "h": "CPI vs GDP deflator",
+              "table": { "head": ["", "CPI", "GDP deflator"], "rows": [
+                ["Covers", "goods households buy, including imports", "everything produced at home, no imports"],
+                ["Basket", "fixed", "changes with what is produced"],
+                ["Use", "cost of living, wages, pensions", "turning nominal GDP into real GDP"] ] },
+              "md": "Example: dearer imported oil raises the CPI quickly, the deflator much less." }
+          ] },
+        { "id": "b2-3", "t": "def", "h": "Core inflation",
+          "md": "**Core inflation** leaves out the most volatile prices, usually food and energy. It shows the underlying trend that the central bank can influence. The National Bank of Poland (NBP) publishes several core measures." },
+        { "id": "b2-4", "t": "idea", "h": "Why the CPI tends to overstate the cost of living",
+          "md": "- **Substitution bias**: when beef gets dearer, people buy more chicken, but the fixed basket still counts beef.\n- **Quality change**: a new laptop costs more but is also better; part of the price rise is \"more laptop\".\n- **New goods**: new products enter the basket late, after their prices have already fallen." }
+      ] },
+    { "id": "b3", "q": "Why do prices rise?", "title": "Why prices rise",
+      "lead": "Four causes. On an exam, first decide whether the push comes from buyers (demand), from costs, or from money.",
+      "nodes": [
+        { "id": "b3-1", "t": "def", "h": "Demand-pull inflation",
+          "md": "Total spending (**aggregate demand**) grows faster than the economy can produce. Firms cannot make more quickly, so they raise prices. Typical triggers: tax cuts, large government spending, cheap credit, a boom in exports." },
+        { "id": "b3-2", "t": "def", "h": "Cost-push inflation",
+          "md": "Production costs rise (energy, raw materials, wages not matched by productivity), and firms pass them on in prices. Output often falls at the same time, which is called **stagflation** (stagnation + inflation).",
+          "kids": [ { "id": "b3-2a", "t": "vs", "h": "Which one is it?", "md": "Prices up and output up → demand-pull. Prices up and output down → cost-push." } ] },
+        { "id": "b3-3", "t": "idea", "h": "Too much money: the quantity theory",
+          "md": "In the long run, inflation is driven by money growing faster than real output.",
+          "f": "M × V = P × Y; in growth rates: %ΔM + %ΔV ≈ %ΔP + %ΔY",
+          "legend": "M money supply · V velocity (how often a złoty is spent per year) · P price level · Y real output",
+          "kids": [ { "id": "b3-3a", "t": "ex", "md": "Money grows by 8%, velocity is stable (0%), real output grows by 3%. Inflation ≈ 8% + 0% − 3% = 5%." } ] },
+        { "id": "b3-4", "t": "idea", "h": "Expectations and the wage-price spiral",
+          "md": "If workers expect 6% inflation, they ask for 6% raises. Firms pay them and raise prices to cover the cost, so the expectation comes true. This loop is the **wage-price spiral**. It is why central banks care about what people expect, not only about today's number." }
+      ] },
+    { "id": "b4", "q": "Who wins and who loses?", "title": "Who wins, who loses",
+      "lead": "Inflation does not hurt everyone equally. What matters is whether it was expected.",
+      "nodes": [
+        { "id": "b4-1", "t": "formula", "h": "Nominal vs real interest rate (Fisher)",
+          "f": "real rate ≈ nominal rate − inflation", "legend": "exact: (1 + nominal) / (1 + inflation) − 1",
+          "kids": [ { "id": "b4-1a", "t": "ex", "h": "A savings account",
+            "md": "The bank pays 6% a year, inflation is 4%. Real return ≈ 6% − 4% = 2% (exactly 1.06 / 1.04 − 1 ≈ 1.92%). If inflation were 7%, the real return would be negative: your savings would buy less, even though the balance grows." } ] },
+        { "id": "b4-2", "t": "idea", "h": "Unexpected inflation moves wealth",
+          "md": "- **Debtors gain**: they repay a fixed loan with money that is worth less.\n- **Creditors and savers lose** if the interest rate did not include the inflation that came.\n- **People on fixed incomes lose** (a fixed salary or rent that is not indexed).\n\nWhen inflation is expected, lenders build it into the interest rate, so the transfer is much smaller." },
+        { "id": "b4-3", "t": "idea", "h": "Costs of inflation, even when expected",
+          "md": "- **Shoe-leather costs**: time and effort spent holding less cash and moving money around.\n- **Menu costs**: the cost of changing prices (new price lists, systems, menus).\n- **Uncertainty**: firms delay investment when they cannot predict prices.\n- **Distorted signals**: it is harder to tell whether a product is really getting dearer or all prices are rising." },
+        { "id": "b4-4", "t": "err", "h": "\"Deflation is good, things get cheaper\"",
+          "md": "When prices are expected to fall, people postpone purchases, firms sell less and cut jobs, and the real value of debts grows. That is why central banks aim for low positive inflation, not zero or negative." }
+      ] },
+    { "id": "b5", "q": "How is it fought?", "title": "How it is fought",
+      "lead": "The main tool is the central bank's interest rate. Fiscal policy (taxes, spending) also matters.",
+      "nodes": [
+        { "id": "b5-1", "t": "def", "h": "Inflation target",
+          "md": "The NBP's Monetary Policy Council (RPP) aims for CPI inflation of 2.5% with a tolerance band of ±1 percentage point. A known target anchors expectations (branch 3). Check current figures: the reference rate and the inflation rate change every month (nbp.pl, stat.gov.pl)." },
+        { "id": "b5-2", "t": "idea", "h": "The interest-rate chain",
+          "steps": ["The central bank raises its reference rate.", "Loans get dearer, saving pays more.", "Households and firms borrow and spend less: aggregate demand falls.", "With weaker demand, firms raise prices more slowly: inflation falls, usually after 1–2 years."],
+          "kids": [ { "id": "b5-2a", "t": "vs", "h": "Works best on demand-pull",
+            "md": "Higher rates cool demand. Against a cost-push shock (energy prices) they also reduce output, so the bank faces a harder choice." } ] }
+      ] }
+  ],
+  "links": [
+    { "from": "b2", "to": "b4", "why": "you need the inflation rate from the CPI to compute the real interest rate." },
+    { "from": "b3", "to": "b5", "why": "rate rises work by reducing aggregate demand, so they fit demand-pull inflation best." },
+    { "from": "b3", "to": "b5", "why": "a credible target stops the wage-price spiral before it starts." }
+  ],
+  "exam": [
+    "Compute CPI and the inflation rate from basket costs or index values (branch 2).",
+    "Compute a real interest rate and say who gains (branch 4).",
+    "Classify a scenario as demand-pull or cost-push and pick a policy (branches 3 and 5).",
+    "Explain the difference between disinflation and deflation (branch 1)."
+  ],
+  "terms": [
+    { "en": "inflation", "pl": "inflacja" }, { "en": "general price level", "pl": "ogólny poziom cen" },
+    { "en": "purchasing power", "pl": "siła nabywcza" }, { "en": "Consumer Price Index (CPI)", "pl": "wskaźnik cen towarów i usług konsumpcyjnych (CPI)" },
+    { "en": "GDP deflator", "pl": "deflator PKB" }, { "en": "core inflation", "pl": "inflacja bazowa" },
+    { "en": "demand-pull / cost-push inflation", "pl": "inflacja popytowa / kosztowa" }, { "en": "wage-price spiral", "pl": "spirala płacowo-cenowa" },
+    { "en": "real interest rate", "pl": "realna stopa procentowa" }, { "en": "reference rate", "pl": "stopa referencyjna" }
+  ],
+  "zrodla": ["NBP, Założenia polityki pieniężnej (cel inflacyjny 2,5% ±1 pkt proc.)", "GUS, metodologia wskaźnika cen towarów i usług konsumpcyjnych"],
+  "spr": { "autor": "prototyp", "recenzja": "przykład formatu, bez recenzji", "hash": "" }
+}

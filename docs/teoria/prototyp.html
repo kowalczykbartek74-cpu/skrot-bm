@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa teorii · Inflation · Zdawalni (prototyp)</title>
+<!--
+  PROTOTYP „Mapa teorii” (docs/teoria/prototyp.html). Wzór wyglądu dla Claude Code, nie część apki.
+  Treść: BM, Macroeconomics, temat „Inflation” (W2 / CW2 sylabusa). Teksty interfejsu po polsku, treść po angielsku (jak lekcje BM).
+  Zasady: sam tekst, zero animacji i przejść, drzewo gałęzi zamiast obrazka, telefon pierwszy, druk = cała mapa.
+-->
+<style>
+  @font-face { font-family: "Onest"; src: url("../../fonts/onest-latin.woff2") format("woff2"); font-weight: 400 800; font-display: swap; }
+  :root {
+    --f: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --fs-xs: .75rem; --fs-s: .875rem; --fs-m: 1rem; --fs-l: 1.125rem; --fs-xl: 1.25rem; --fs-2xl: 1.5rem; --fs-3xl: 1.75rem;
+    --r-s: 10px; --r-m: 16px; --r-l: 22px;
+    --h-paper: #F7F8F4; --h-card: #FFFFFF; --h-line: #E1E8DD; --h-edge: #BFCBBA; --h-ink: #10231A; --h-muted: #3E5046;
+    --h-acc: #1A7F45; --h-acc-edge: #0F5A2F; --h-acc-ink: #FFFFFF; --h-acc-soft: #DDF3D0;
+    --h-orange: #B35400; --h-orange-soft: #FFE8CC; --h-blue: #1C6FB8; --h-blue-soft: #E3F0FD; --h-red: #A3261E; --h-red-soft: #FDE4E1;
+  }
+  html[data-green="dark"] {
+    --h-paper: #0F1A14; --h-card: #17271E; --h-line: #2A3D31; --h-edge: #36503F; --h-ink: #E8F2EC; --h-muted: #A9BDB1;
+    --h-acc: #4ADE8B; --h-acc-edge: #1F8F52; --h-acc-ink: #0B2A18; --h-acc-soft: #183324;
+    --h-orange: #FF9F43; --h-orange-soft: #33240F; --h-blue: #8CC2F5; --h-blue-soft: #14283A; --h-red: #FF7A70; --h-red-soft: #3A1518;
+  }
+  /* Mapa teorii nie ma ruchu: żadnych przejść, animacji ani płynnego przewijania (także bez html.calm). */
+  .th, .th * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  html { scroll-behavior: auto; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--h-paper); color: var(--h-ink); font: 400 var(--fs-m)/1.6 var(--f); -webkit-text-size-adjust: 100%; }
+  a { color: var(--h-acc); }
+  :focus-visible { outline: 3px solid var(--h-acc); outline-offset: 2px; }
+
+  /* pasek u góry */
+  .th-bar { position: sticky; top: 0; z-index: 2; background: var(--h-card); border-bottom: 2px solid var(--h-line);
+    display: flex; align-items: center; gap: 8px; padding: 6px 12px; min-height: 56px; }
+  .th-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 0 10px;
+    border-radius: var(--r-s); color: var(--h-ink); text-decoration: none; font-weight: 700; font-size: var(--fs-s); }
+  .th-back svg { width: 20px; height: 20px; }
+  .th-bar-t { flex: 1; min-width: 0; font-weight: 800; font-size: var(--fs-m); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .th-bar .btn { flex: none; }
+
+  .th { max-width: 1120px; margin: 0 auto; padding: 16px 16px 48px; }
+  .th-grid { display: block; }
+  @media (min-width: 1000px) {
+    .th-grid { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 28px; align-items: start; }
+    .th-side { position: sticky; top: 72px; max-height: calc(100vh - 88px); overflow: auto; }
+    .th-toc-m { display: none; }
+  }
+  @media (max-width: 999px) { .th-side { display: none; } }
+  .th-main { max-width: 72ch; }
+
+  /* karty: płaskie, ramka 2 px, bez cienia, nigdy karta w karcie */
+  .card { background: var(--h-card); border: 2px solid var(--h-line); border-radius: var(--r-l); padding: 18px; }
+  .card + .card, .card + section, section + section, section + .card { margin-top: 16px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px;
+    border-radius: var(--r-m); font: 700 var(--fs-m)/1 var(--f); text-decoration: none; cursor: pointer;
+    background: var(--h-card); color: var(--h-ink); border: 2px solid var(--h-line); box-shadow: 0 4px 0 var(--h-edge); }
+  .btn.primary { background: var(--h-acc); color: var(--h-acc-ink); border-color: var(--h-acc); box-shadow: 0 4px 0 var(--h-acc-edge); }
+  .btn.small { min-height: 44px; padding: 0 12px; font-size: var(--fs-s); }
+  .btn.ghost { background: none; border-color: transparent; box-shadow: none; color: var(--h-acc); }
+
+  .muted { color: var(--h-muted); }
+  .meta { font-size: var(--fs-s); color: var(--h-muted); margin: 0; }
+
+  /* rdzeń mapy */
+  .core h1 { font-size: var(--fs-3xl); line-height: 1.2; margin: 4px 0 8px; }
+  .core .one { font-size: var(--fs-l); font-weight: 600; margin: 0 0 10px; }
+  .core p { margin: 0 0 10px; }
+  .route { margin: 14px 0 0; padding: 0; list-style: none; counter-reset: r; display: grid; gap: 8px; }
+  .route a { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 12px; border: 2px solid var(--h-line);
+    border-radius: var(--r-m); text-decoration: none; color: var(--h-ink); font-weight: 600; background: var(--h-card); }
+  .route .n { flex: none; width: 28px; height: 28px; border-radius: 50%; display: inline-grid; place-items: center;
+    background: var(--h-acc-soft); color: var(--h-ink); font-weight: 800; font-size: var(--fs-s); font-variant-numeric: tabular-nums; }
+  .route .w { margin-left: auto; font-size: var(--fs-xs); color: var(--h-muted); font-weight: 600; white-space: nowrap; }
+  .h2 { font-size: var(--fs-l); margin: 0 0 8px; line-height: 1.3; }
+
+  .pre ul { margin: 0; padding-left: 1.2em; }
+  .pre li + li { margin-top: 6px; }
+
+  /* gałąź: nagłówek z numerem + drzewo węzłów połączonych linią */
+  .branch { scroll-margin-top: 72px; }
+  .b-head { display: flex; gap: 12px; align-items: flex-start; }
+  .b-num { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--h-acc); color: var(--h-acc-ink);
+    font-weight: 800; font-size: var(--fs-m); font-variant-numeric: tabular-nums; }
+  .b-head h2 { font-size: var(--fs-2xl); line-height: 1.25; margin: 2px 0 4px; }
+  .b-lead { margin: 6px 0 0; }
+
+  .tree { list-style: none; margin: 14px 0 0; padding: 0 0 0 18px; position: relative; }
+  .tree::before { content: ""; position: absolute; left: 6px; top: 4px; bottom: 18px; border-left: 2px solid var(--h-edge); }
+  .tree > li { position: relative; padding: 0 0 16px 14px; }
+  .tree > li::before { content: ""; position: absolute; left: -12px; top: 13px; width: 20px; border-top: 2px solid var(--h-edge); }
+  .tree > li:last-child { padding-bottom: 0; }
+  .tree .tree { margin-top: 10px; }
+  .node h3 { font-size: var(--fs-m); line-height: 1.35; margin: 0 0 4px; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+  .node p { margin: 0 0 8px; }
+  .node p:last-child { margin-bottom: 0; }
+  .node ul, .node ol { margin: 4px 0 8px; padding-left: 1.2em; }
+  .node li + li { margin-top: 4px; }
+
+  .tag { display: inline-block; font-size: var(--fs-xs); font-weight: 700; line-height: 1; padding: 5px 8px; border-radius: 999px;
+    background: var(--h-line); color: var(--h-ink); letter-spacing: .01em; }
+  .tag.def { background: var(--h-blue-soft); }
+  .tag.formula { background: var(--h-acc-soft); }
+  .tag.ex { background: var(--h-acc-soft); }
+  .tag.vs { background: var(--h-blue-soft); }
+  .tag.err { background: var(--h-orange-soft); }
+  .tag.exam { background: var(--h-red-soft); }
+  .tag.link { background: var(--h-line); }
+
+  .f { margin: 6px 0 8px; padding: 10px 12px; border-radius: var(--r-s); background: var(--h-paper); border: 2px solid var(--h-line);
+    font-weight: 700; overflow-x: auto; font-variant-numeric: tabular-nums; }
+  .f small { display: block; font-weight: 400; color: var(--h-muted); font-size: var(--fs-s); margin-top: 4px; }
+  .steps { font-variant-numeric: tabular-nums; }
+  table { border-collapse: collapse; width: 100%; font-size: var(--fs-s); margin: 6px 0 8px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 2px solid var(--h-line); vertical-align: top; }
+  th { font-weight: 700; }
+  .tw { overflow-x: auto; }
+  .xref { font-size: var(--fs-s); font-weight: 600; }
+  .xref a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  .conn ol { margin: 0; padding-left: 1.3em; }
+  .conn li + li { margin-top: 8px; }
+  .conn b { font-variant-numeric: tabular-nums; }
+
+  .end { text-align: left; }
+  .end .row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+
+  /* boczna mini-mapa (komputer) i zwijany spis (telefon) */
+  .toc { list-style: none; margin: 0; padding: 0; }
+  .toc a { display: flex; gap: 8px; min-height: 44px; align-items: center; padding: 4px 8px; border-radius: var(--r-s); color: var(--h-ink);
+    text-decoration: none; font-size: var(--fs-s); font-weight: 600; }
+  .toc a:hover { background: var(--h-acc-soft); }
+  .toc .n { flex: none; width: 22px; text-align: right; font-variant-numeric: tabular-nums; color: var(--h-muted); }
+  .toc ul { list-style: none; margin: 0 0 4px 30px; padding: 0; }
+  .toc ul a { min-height: 44px; font-weight: 400; color: var(--h-muted); }
+  .th-toc-m summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+  details > summary { list-style-position: inside; }
+
+  @media (max-width: 400px) { .tree .tree { padding-left: 12px; } .tree .tree > li { padding-left: 10px; } .card { padding: 14px; } .b-head h2 { font-size: var(--fs-xl); } .core h1 { font-size: var(--fs-2xl); } }
+
+  @media print {
+    .th-bar, .th-side, .th-toc-m, .end .row, .xref { display: none !important; }
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .th { padding: 0; max-width: none; }
+    .card { border: 1px solid #999; break-inside: auto; }
+    .branch { break-before: auto; }
+    .node { break-inside: avoid; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<header class="th-bar">
+  <a class="th-back" href="#" aria-label="Wróć do przedmiotu Macroeconomics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Macroeconomics</a>
+  <span class="th-bar-t">Mapa teorii</span>
+  <a class="btn small" href="#" onclick="window.print();return false">Drukuj</a>
+</header>
+
+<main class="th">
+ <div class="th-grid">
+  <aside class="th-side card" aria-label="Mapa tematu">
+    <p class="meta" style="margin-bottom:6px">Mapa tematu</p>
+    <ul class="toc">
+      <li><a href="#rdzen"><span class="n">·</span>Inflation in one sentence</a></li>
+      <li><a href="#b1"><span class="n">1</span>What inflation is</a>
+        <ul><li><a href="#b1-1">General price level</a></li><li><a href="#b1-2">Purchasing power</a></li><li><a href="#b1-3">Disinflation, deflation, hyperinflation</a></li></ul></li>
+      <li><a href="#b2"><span class="n">2</span>How we measure it</a>
+        <ul><li><a href="#b2-1">CPI and the basket</a></li><li><a href="#b2-2">GDP deflator</a></li><li><a href="#b2-3">Core inflation</a></li><li><a href="#b2-4">Why CPI overstates</a></li></ul></li>
+      <li><a href="#b3"><span class="n">3</span>Why prices rise</a>
+        <ul><li><a href="#b3-1">Demand-pull</a></li><li><a href="#b3-2">Cost-push</a></li><li><a href="#b3-3">Money growth</a></li><li><a href="#b3-4">Expectations</a></li></ul></li>
+      <li><a href="#b4"><span class="n">4</span>Who wins, who loses</a>
+        <ul><li><a href="#b4-1">Nominal vs real</a></li><li><a href="#b4-2">Unexpected inflation</a></li><li><a href="#b4-3">Costs of inflation</a></li><li><a href="#b4-4">Why deflation is no gift</a></li></ul></li>
+      <li><a href="#b5"><span class="n">5</span>How it is fought</a>
+        <ul><li><a href="#b5-1">Inflation target</a></li><li><a href="#b5-2">The interest-rate chain</a></li></ul></li>
+      <li><a href="#polaczenia"><span class="n">·</span>Jak to się łączy</a></li>
+      <li><a href="#egzamin"><span class="n">·</span>Na egzaminie</a></li>
+      <li><a href="#slowa"><span class="n">·</span>Słowa EN–PL</a></li>
+    </ul>
+  </aside>
+
+  <div class="th-main">
+    <!-- RDZEŃ: środek mapy -->
+    <section class="card core" id="rdzen" aria-labelledby="t-core">
+      <p class="meta">Lekcja 4 · Main macroeconomic problems (W2, CW2) · ok. 12 min czytania</p>
+      <h1 id="t-core">Inflation</h1>
+      <p class="one">Inflation is a sustained rise in the general price level, so each złoty buys less than before.</p>
+      <p>This topic answers five questions. Read them in order: each branch uses the one before it.</p>
+      <ol class="route" aria-label="Kolejność czytania">
+        <li><a href="#b1"><span class="n">1</span>What exactly is inflation?<span class="w">2 min</span></a></li>
+        <li><a href="#b2"><span class="n">2</span>How is it measured?<span class="w">3 min</span></a></li>
+        <li><a href="#b3"><span class="n">3</span>Why do prices rise?<span class="w">3 min</span></a></li>
+        <li><a href="#b4"><span class="n">4</span>Who wins and who loses?<span class="w">3 min</span></a></li>
+        <li><a href="#b5"><span class="n">5</span>How is it fought?<span class="w">2 min</span></a></li>
+      </ol>
+    </section>
+
+    <details class="card th-toc-m">
+      <summary>Cała mapa tematu (spis)</summary>
+      <ul class="toc">
+        <li><a href="#b1"><span class="n">1</span>What inflation is</a></li>
+        <li><a href="#b2"><span class="n">2</span>How we measure it</a></li>
+        <li><a href="#b3"><span class="n">3</span>Why prices rise</a></li>
+        <li><a href="#b4"><span class="n">4</span>Who wins, who loses</a></li>
+        <li><a href="#b5"><span class="n">5</span>How it is fought</a></li>
+        <li><a href="#polaczenia"><span class="n">·</span>Jak to się łączy</a></li>
+        <li><a href="#egzamin"><span class="n">·</span>Na egzaminie</a></li>
+        <li><a href="#slowa"><span class="n">·</span>Słowa EN–PL</a></li>
+      </ul>
+    </details>
+
+    <section class="card pre" aria-labelledby="t-pre">
+      <h2 class="h2" id="t-pre">Zanim zaczniesz</h2>
+      <ul>
+        <li><b>Nominal vs real</b> from Lesson 3 (GDP): a nominal value is in today's prices, a real value removes the effect of price changes.<br><span class="xref"><a href="#">Lekcja 3: GDP</a></span></li>
+        <li>Percentage change: (new − old) / old × 100.</li>
+      </ul>
+    </section>
+
+    <!-- GAŁĄŹ 1 -->
+    <section class="card branch" id="b1" aria-labelledby="t-b1">
+      <div class="b-head"><span class="b-num" aria-hidden="true">1</span>
+        <div><h2 id="t-b1">What inflation is (and what it is not)</h2>
+          <p class="b-lead muted">One price going up is not inflation. Inflation is about prices on average, over time.</p></div></div>
+      <ul class="tree">
+        <li class="node" id="b1-1"><h3><span class="tag def">Definicja</span>General price level</h3>
+          <p><b>Inflation</b> is a sustained increase in the <b>general price level</b> (the average price of all goods and services in the economy). "Sustained" means it lasts, not a one-off jump.</p>
+          <ul class="tree">
+            <li class="node"><h3><span class="tag vs">Nie myl</span>Inflation vs a relative price change</h3>
+              <p>If butter gets 30% dearer while phones get cheaper, that is a change in <b>relative prices</b> (one price against another). It is inflation only if the average of all prices rises.</p></li>
+          </ul></li>
+        <li class="node" id="b1-2"><h3><span class="tag def">Definicja</span>Purchasing power</h3>
+          <p><b>Purchasing power</b> is how much you can buy with a given amount of money. Inflation lowers it: with 4% inflation, 100 zł buys what about 96 zł bought a year earlier.</p></li>
+        <li class="node" id="b1-3"><h3><span class="tag vs">Nie myl</span>Disinflation, deflation, hyperinflation</h3>
+          <div class="tw"><table>
+            <thead><tr><th scope="col">Term</th><th scope="col">What happens to prices</th><th scope="col">Example</th></tr></thead>
+            <tbody>
+              <tr><td><b>Disinflation</b></td><td>still rise, but more slowly</td><td>6% → 3%</td></tr>
+              <tr><td><b>Deflation</b></td><td>fall on average</td><td>−1%</td></tr>
+              <tr><td><b>Hyperinflation</b></td><td>rise extremely fast (a common rule of thumb: over 50% a month)</td><td>Zimbabwe 2008</td></tr>
+            </tbody></table></div>
+          <ul class="tree">
+            <li class="node"><h3><span class="tag err">Typowy błąd</span>"Inflation fell, so prices fell"</h3>
+              <p>A fall from 6% to 3% is disinflation: prices are still 3% higher than a year ago. Prices fall only when inflation is below zero.</p></li>
+          </ul></li>
+      </ul>
+    </section>
+
+    <!-- GAŁĄŹ 2 -->
+    <section class="card branch" id="b2" aria-labelledby="t-b2">
+      <div class="b-head"><span class="b-num" aria-hidden="true">2</span>
+        <div><h2 id="t-b2">How we measure it</h2>
+          <p class="b-lead muted">We cannot track every price, so we follow a price index: one number that summarises many prices.</p></div></div>
+      <ul class="tree">
+        <li class="node" id="b2-1"><h3><span class="tag def">Definicja</span>Consumer Price Index (CPI)</h3>
+          <p>The <b>CPI</b> measures the cost of a fixed <b>basket</b> of goods and services that a typical household buys (food, rent, fuel, transport, services), compared with a <b>base year</b>. In Poland it is published by Statistics Poland (GUS).</p>
+          <ul class="tree">
+            <li class="node"><h3><span class="tag formula">Wzór</span>Index and inflation rate</h3>
+              <div class="f">CPI = cost of basket this year / cost of basket in base year × 100
+                <small>base year: CPI = 100</small></div>
+              <div class="f">inflation rate = (CPI<sub>this year</sub> − CPI<sub>last year</sub>) / CPI<sub>last year</sub> × 100%</div></li>
+            <li class="node"><h3><span class="tag ex">Przykład</span>A basket in Szczecin</h3>
+              <ol class="steps">
+                <li>The basket cost 500 zł in the base year and 520 zł this year.</li>
+                <li>CPI = 520 / 500 × 100 = 104.</li>
+                <li>Inflation = (104 − 100) / 100 × 100% = 4%.</li>
+              </ol></li>
+            <li class="node"><h3><span class="tag err">Typowy błąd</span>Subtracting index points</h3>
+              <p>If CPI goes from 120 to 126, inflation is not 6%. It is (126 − 120) / 120 × 100% = 5%. Divide by the old value.</p></li>
+          </ul></li>
+        <li class="node" id="b2-2"><h3><span class="tag def">Definicja</span>GDP deflator</h3>
+          <p>The <b>GDP deflator</b> measures the price level of everything produced in the country, not only what households buy.</p>
+          <div class="f">GDP deflator = nominal GDP / real GDP × 100</div>
+          <ul class="tree">
+            <li class="node"><h3><span class="tag ex">Przykład</span></h3>
+              <p>Nominal GDP = 1,100 bn zł, real GDP = 1,000 bn zł. Deflator = 1,100 / 1,000 × 100 = 110: prices are 10% higher than in the base year.</p></li>
+            <li class="node"><h3><span class="tag vs">Nie myl</span>CPI vs GDP deflator</h3>
+              <div class="tw"><table>
+                <thead><tr><th scope="col"></th><th scope="col">CPI</th><th scope="col">GDP deflator</th></tr></thead>
+                <tbody>
+                  <tr><td>Covers</td><td>goods households buy, including imports</td><td>everything produced at home, no imports</td></tr>
+                  <tr><td>Basket</td><td>fixed</td><td>changes with what is produced</td></tr>
+                  <tr><td>Use</td><td>cost of living, wages, pensions</td><td>turning nominal GDP into real GDP</td></tr>
+                </tbody></table></div>
+              <p>Example: dearer imported oil raises the CPI quickly, the deflator much less.</p></li>
+          </ul></li>
+        <li class="node" id="b2-3"><h3><span class="tag def">Definicja</span>Core inflation</h3>
+          <p><b>Core inflation</b> leaves out the most volatile prices, usually food and energy. It shows the underlying trend that the central bank can influence. The National Bank of Poland (NBP) publishes several core measures.</p></li>
+        <li class="node" id="b2-4"><h3><span class="tag">Idea</span>Why the CPI tends to overstate the cost of living</h3>
+          <ul>
+            <li><b>Substitution bias</b>: when beef gets dearer, people buy more chicken, but the fixed basket still counts beef.</li>
+            <li><b>Quality change</b>: a new laptop costs more but is also better; part of the price rise is "more laptop".</li>
+            <li><b>New goods</b>: new products enter the basket late, after their prices have already fallen.</li>
+          </ul></li>
+      </ul>
+    </section>
+
+    <!-- GAŁĄŹ 3 -->
+    <section class="card branch" id="b3" aria-labelledby="t-b3">
+      <div class="b-head"><span class="b-num" aria-hidden="true">3</span>
+        <div><h2 id="t-b3">Why prices rise</h2>
+          <p class="b-lead muted">Four causes. On an exam, first decide whether the push comes from buyers (demand), from costs, or from money.</p></div></div>
+      <ul class="tree">
+        <li class="node" id="b3-1"><h3><span class="tag def">Definicja</span>Demand-pull inflation</h3>
+          <p>Total spending (<b>aggregate demand</b>) grows faster than the economy can produce. Firms cannot make more quickly, so they raise prices. Typical triggers: tax cuts, large government spending, cheap credit, a boom in exports.</p>
+          <ul class="tree"><li class="node"><h3><span class="tag link">Połączenie</span></h3><p class="xref">Aggregate demand and the multiplier: <a href="#">Lekcja 8</a></p></li></ul></li>
+        <li class="node" id="b3-2"><h3><span class="tag def">Definicja</span>Cost-push inflation</h3>
+          <p>Production costs rise (energy, raw materials, wages not matched by productivity), and firms pass them on in prices. Output often falls at the same time, which is called <b>stagflation</b> (stagnation + inflation).</p>
+          <ul class="tree"><li class="node"><h3><span class="tag vs">Nie myl</span>Which one is it?</h3>
+            <p>Prices up and output up → demand-pull. Prices up and output down → cost-push.</p></li></ul></li>
+        <li class="node" id="b3-3"><h3><span class="tag">Idea</span>Too much money: the quantity theory</h3>
+          <p>In the long run, inflation is driven by money growing faster than real output.</p>
+          <div class="f">M × V = P × Y
+            <small>M money supply · V velocity (how often a złoty is spent per year) · P price level · Y real output</small></div>
+          <div class="f">in growth rates: %ΔM + %ΔV ≈ %ΔP + %ΔY</div>
+          <ul class="tree">
+            <li class="node"><h3><span class="tag ex">Przykład</span></h3>
+              <p>Money grows by 8%, velocity is stable (0%), real output grows by 3%. Inflation ≈ 8% + 0% − 3% = 5%.</p></li>
+          </ul></li>
+        <li class="node" id="b3-4"><h3><span class="tag">Idea</span>Expectations and the wage-price spiral</h3>
+          <p>If workers expect 6% inflation, they ask for 6% raises. Firms pay them and raise prices to cover the cost, so the expectation comes true. This loop is the <b>wage-price spiral</b>. It is why central banks care about what people expect, not only about today's number.</p></li>
+      </ul>
+    </section>
+
+    <!-- GAŁĄŹ 4 -->
+    <section class="card branch" id="b4" aria-labelledby="t-b4">
+      <div class="b-head"><span class="b-num" aria-hidden="true">4</span>
+        <div><h2 id="t-b4">Who wins, who loses</h2>
+          <p class="b-lead muted">Inflation does not hurt everyone equally. What matters is whether it was expected.</p></div></div>
+      <ul class="tree">
+        <li class="node" id="b4-1"><h3><span class="tag formula">Wzór</span>Nominal vs real interest rate (Fisher)</h3>
+          <div class="f">real rate ≈ nominal rate − inflation
+            <small>exact: (1 + nominal) / (1 + inflation) − 1</small></div>
+          <ul class="tree">
+            <li class="node"><h3><span class="tag ex">Przykład</span>A savings account</h3>
+              <p>The bank pays 6% a year, inflation is 4%. Real return ≈ 6% − 4% = 2% (exactly 1.06 / 1.04 − 1 ≈ 1.92%). If inflation were 7%, the real return would be negative: your savings would buy less, even though the balance grows.</p></li>
+          </ul></li>
+        <li class="node" id="b4-2"><h3><span class="tag">Idea</span>Unexpected inflation moves wealth</h3>
+          <ul>
+            <li><b>Debtors gain</b>: they repay a fixed loan with money that is worth less.</li>
+            <li><b>Creditors and savers lose</b> if the interest rate did not include the inflation that came.</li>
+            <li><b>People on fixed incomes lose</b> (a fixed salary or rent that is not indexed).</li>
+          </ul>
+          <p>When inflation is expected, lenders build it into the interest rate, so the transfer is much smaller.</p></li>
+        <li class="node" id="b4-3"><h3><span class="tag">Idea</span>Costs of inflation, even when expected</h3>
+          <ul>
+            <li><b>Shoe-leather costs</b>: time and effort spent holding less cash and moving money around.</li>
+            <li><b>Menu costs</b>: the cost of changing prices (new price lists, systems, menus).</li>
+            <li><b>Uncertainty</b>: firms delay investment when they cannot predict prices.</li>
+            <li><b>Distorted signals</b>: it is harder to tell whether a product is really getting dearer or all prices are rising.</li>
+          </ul></li>
+        <li class="node" id="b4-4"><h3><span class="tag err">Typowy błąd</span>"Deflation is good, things get cheaper"</h3>
+          <p>When prices are expected to fall, people postpone purchases, firms sell less and cut jobs, and the real value of debts grows. That is why central banks aim for low positive inflation, not zero or negative.</p></li>
+      </ul>
+    </section>
+
+    <!-- GAŁĄŹ 5 -->
+    <section class="card branch" id="b5" aria-labelledby="t-b5">
+      <div class="b-head"><span class="b-num" aria-hidden="true">5</span>
+        <div><h2 id="t-b5">How it is fought</h2>
+          <p class="b-lead muted">The main tool is the central bank's interest rate. Fiscal policy (taxes, spending) also matters.</p></div></div>
+      <ul class="tree">
+        <li class="node" id="b5-1"><h3><span class="tag def">Definicja</span>Inflation target</h3>
+          <p>The NBP's Monetary Policy Council (RPP) aims for CPI inflation of 2.5% with a tolerance band of ±1 percentage point. A known target anchors expectations (see 3, expectations). Sprawdź aktualne: the current rate and inflation figures change every month (nbp.pl, stat.gov.pl).</p></li>
+        <li class="node" id="b5-2"><h3><span class="tag">Idea</span>The interest-rate chain</h3>
+          <ol class="steps">
+            <li>The central bank raises its reference rate.</li>
+            <li>Loans get dearer, saving pays more.</li>
+            <li>Households and firms borrow and spend less: aggregate demand falls.</li>
+            <li>With weaker demand, firms raise prices more slowly: inflation falls, usually after 1–2 years.</li>
+          </ol>
+          <ul class="tree">
+            <li class="node"><h3><span class="tag vs">Nie myl</span>Works best on demand-pull</h3>
+              <p>Higher rates cool demand. Against a cost-push shock (energy prices) they also reduce output, so the bank faces a harder choice.</p></li>
+            <li class="node"><h3><span class="tag link">Połączenie</span></h3><p class="xref">Money, banks and monetary policy: <a href="#">Lekcja 6</a></p></li>
+          </ul></li>
+      </ul>
+    </section>
+
+    <!-- POŁĄCZENIA -->
+    <section class="card conn" id="polaczenia" aria-labelledby="t-conn">
+      <h2 class="h2" id="t-conn">Jak to się łączy</h2>
+      <ol>
+        <li><b>2 → 4</b>: you need the inflation rate from the CPI to compute the real interest rate.</li>
+        <li><b>3 → 5</b>: rate rises work by reducing aggregate demand, so they fit demand-pull inflation best.</li>
+        <li><b>3 (expectations) → 5 (target)</b>: a credible target stops the wage-price spiral before it starts.</li>
+        <li><b>1 → Lekcja 3</b>: real GDP is nominal GDP corrected with the deflator from branch 2.</li>
+      </ol>
+    </section>
+
+    <!-- EGZAMIN -->
+    <section class="card" id="egzamin" aria-labelledby="t-exam">
+      <h2 class="h2" id="t-exam">Na egzaminie</h2>
+      <ul style="margin:0;padding-left:1.2em">
+        <li>Compute CPI and the inflation rate from basket costs or index values (branch 2).</li>
+        <li>Compute a real interest rate and say who gains (branch 4).</li>
+        <li>Classify a scenario as demand-pull or cost-push and pick a policy (branches 3 and 5).</li>
+        <li>Explain the difference between disinflation and deflation (branch 1).</li>
+      </ul>
+    </section>
+
+    <!-- SŁOWA -->
+    <section class="card" id="slowa" aria-labelledby="t-words">
+      <h2 class="h2" id="t-words">Słowa EN–PL</h2>
+      <div class="tw"><table>
+        <thead><tr><th scope="col">English</th><th scope="col">Polski</th></tr></thead>
+        <tbody>
+          <tr><td>inflation</td><td>inflacja</td></tr>
+          <tr><td>general price level</td><td>ogólny poziom cen</td></tr>
+          <tr><td>purchasing power</td><td>siła nabywcza</td></tr>
+          <tr><td>Consumer Price Index (CPI)</td><td>wskaźnik cen towarów i usług konsumpcyjnych (CPI)</td></tr>
+          <tr><td>GDP deflator</td><td>deflator PKB</td></tr>
+          <tr><td>core inflation</td><td>inflacja bazowa</td></tr>
+          <tr><td>demand-pull / cost-push inflation</td><td>inflacja popytowa / kosztowa</td></tr>
+          <tr><td>wage-price spiral</td><td>spirala płacowo-cenowa</td></tr>
+          <tr><td>real interest rate</td><td>realna stopa procentowa</td></tr>
+          <tr><td>reference rate</td><td>stopa referencyjna</td></tr>
+        </tbody></table></div>
+    </section>
+
+    <section class="card end" aria-labelledby="t-end">
+      <h2 class="h2" id="t-end">Teoria przeczytana</h2>
+      <p class="muted" style="margin:0">Teraz lekcja: te same 5 gałęzi, ale z pytaniami i zadaniami.</p>
+      <div class="row">
+        <a class="btn primary" href="#">Zacznij lekcję</a>
+        <a class="btn" href="#rdzen">Do góry mapy</a>
+      </div>
+    </section>
+  </div>
+ </div>
+</main>
+</body>
+</html>
