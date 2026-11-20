@@ -16,11 +16,9 @@ const srs = Object.fromEntries(fl.map((f) => ["L1:" + hashStr(f.q), [0, 0]]));
 const p = await page(b, { konto: "platne", ls: { "mock-docs": JSON.stringify(docs), "mock-progress": JSON.stringify({ [UID]: { srs } }) } });
 await p.clock.setFixedTime(new Date("2026-11-06T10:30:00+01:00"));
 await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
-const card = p.locator(".jz-card");
-ok("Dziś: karta przejazdu przed zajęciami", (await card.count()) === 1 && /Analiza matematyczna/.test(await card.innerText()) && /za 90 min/.test(await card.innerText()), await p.locator("main").innerText());
+// Karta „Jedziesz na zajęcia?” zniknęła z Dziś celowo (c1356b9); przejazd otwiera się z Więcej (#/jazda).
 ok("Dziś o 10:30: brak karty przed snem", (await p.locator(".noc-card").count()) === 0, "");
-await shot(p, "jz-home");
-await card.getByRole("button", { name: /Ułóż mi przejazd/ }).click(); await p.waitForTimeout(600);
+await p.goto(BASE + "index.html#/jazda"); await p.waitForTimeout(800);
 ok("ekran wyboru: 18 min domyślnie, przedmiot najbliższych zajęć", /#\/jazda$/.test(p.url()) && (await p.locator(".jz-min.on").innerText()).includes("18") && /Analiza matematyczna \(najbliższe zajęcia dziś\)/.test(await p.locator("select").evaluate((s) => s.selectedOptions[0].textContent)), await p.locator("main").innerText());
 ok("liczba fiszek do powtórki", /czeka 12 fiszek/.test(await p.locator(".jz-setup").innerText()), await p.locator(".jz-setup").innerText());
 await shot(p, "jz-setup");

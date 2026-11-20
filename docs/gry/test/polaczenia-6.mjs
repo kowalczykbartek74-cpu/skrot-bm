@@ -16,13 +16,15 @@ const p = await page(b, { konto: "platne", ls: LS });
 await p.clock.setFixedTime(new Date("2026-11-04T12:00:00+01:00"));
 await p.goto(BASE + "index.html#/"); await p.waitForTimeout(2500);
 const dz = await p.locator(".pts-row", { hasText: "Logistyka" }).innerText().catch(() => "");
-ok("Dziś: Logistyka 1/4", /\b1\/4\b/.test(dz), dz);
+// ux-6: „Twój postęp” na Dziś pokazuje przedmioty z datą zaliczenia; Logistyka bez daty ma podpowiedź jej wpisania.
+const dzT = await p.locator("main").innerText();
+ok("Dziś: Logistyka bez daty → „znasz datę kolokwium? Wpisz”", /Logistyka: znasz datę kolokwium\?/.test(dzT), dzT.slice(0, 600));
 await p.goto(BASE + "index.html#/materials"); await p.waitForTimeout(800);
 const card = await p.locator(".nb", { hasText: "Logistyka" }).getAttribute("aria-label");
 ok("Przedmioty: jedna miara Opanowanie %", /opanowanie \d+%/i.test(card) && !/umiesz/.test(card), card);
 await p.goto(BASE + "index.html#/subject/logistyka"); await p.waitForTimeout(800);
 const subj = await p.locator("main").innerText();
-ok("strona przedmiotu: 1 z 4 tematów, bez „= lekcje + materiały”", /1 z 4 tematów/.test(subj) && !/tematy? = \d+ lekcj/.test(subj), subj.slice(0, 900));
+ok("strona przedmiotu: jedna miara Opanowanie %, bez „= lekcje + materiały”", /Opanowanie\s*\d+%/.test(subj) && !/tematy? = \d+ lekcj/.test(subj), subj.slice(0, 900));
 await p.goto(BASE + "index.html#/review"); await p.waitForTimeout(900);
 const row = p.locator(".pm-row", { hasText: "Logistyka" });
 const rowTxt = await row.innerText();

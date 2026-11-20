@@ -12,7 +12,7 @@ for (const [w, lang, dark] of [[360, "pl", false], [390, "pl", true], [1280, "pl
     const tiles = [...document.querySelectorAll("#main .nb")].filter((e) => e.getBoundingClientRect().width);
     const bars = tiles.map((t) => t.querySelector(".nb-bar")).filter(Boolean);
     const widths = [...new Set(bars.map((x) => Math.round(x.getBoundingClientRect().width)))];
-    const nad = bars.every((bar) => { const txt = bar.parentElement.querySelector(":scope > :not(.nb-bar)"); return !txt || bar.getBoundingClientRect().bottom <= txt.getBoundingClientRect().top + 1; });
+    const nad = bars.every((bar) => { const txt = bar.parentElement.querySelector(":scope > :not(.nb-bar)"); const B = bar.getBoundingClientRect(), T = txt?.getBoundingClientRect(); return !txt || B.bottom <= T.top + 1 || (B.right <= T.left + 1 && B.top >= T.top - 1 && B.bottom <= T.bottom + 1); }); // Wygląd pro: pasek może stać w jednym wierszu przed tekstem
     const tileW = [...new Set(tiles.filter((t) => !t.classList.contains("nb-mine")).map((t) => Math.round(t.getBoundingClientRect().width)))];
     const pills = [...document.querySelectorAll("#main .nb .chip")].map((c) => c.innerText.replace(/\s+/g, " ").trim());
     const nw = [...document.querySelectorAll("#main .nb .nw")].map((e) => ({ t: e.textContent, lines: new Set([...e.getClientRects()].map((x) => Math.round(x.top))).size }));
@@ -20,7 +20,7 @@ for (const [w, lang, dark] of [[360, "pl", false], [390, "pl", true], [1280, "pl
   });
   const tag = `${w} ${lang}${dark ? " ciemny" : ""}`;
   ok(`K1 ${tag}: wszystkie paski tej samej szerokości (${r.n} pasków)`, r.n >= 3 && Math.max(...r.widths) - Math.min(...r.widths) <= 1, r.widths); // ±1 px z zaokrąglenia
-  ok(`K1 ${tag}: pasek zawsze nad tekstem`, r.nad);
+  ok(`K1 ${tag}: pasek nad tekstem albo w tym samym wierszu przed nim`, r.nad);
   ok(`K1 ${tag}: „77 dni” / „77 days” w jednej linii`, r.nw.length >= 3 && r.nw.every((x) => x.lines === 1), r.nw.filter((x) => x.lines !== 1));
   ok(`K1 ${tag}: krótkie pigułki terminów (bez „zaliczenie wykładu”)`, r.pills.length >= 3 && r.pills.every((t) => !/zaliczenie wykładu|lecture exam/.test(t)) && r.pills.some((t) => lang === "en" ? /^lecture in \d+ days$/.test(t) : /^wykład za \d+ dni$/.test(t)), r.pills);
   ok(`K1 ${tag}: bez poziomego przewijania, bez błędów`, !(await poziomo(p)) && p.errors.length === 0, p.errors);
@@ -91,7 +91,7 @@ const svg = fs.readFileSync(ROOT + "icons/odznaka-zdawalni.svg", "utf8");
 ok(`K4 odznaka „Mistrz Zdawalni” jako SVG < 4 KB (${svg.length} B)`, svg.length < 4096 && /<svg/.test(svg) && /ZDAWALNI/.test(svg));
 ok("K4 odznaka używana w przewodniku", html.filter((l) => /icons\/odznaka-zdawalni\.svg/.test(l)).length === 2);
 const pal = fs.readFileSync(ROOT + "PALETA.md", "utf8");
-ok("K4 PALETA.md: tytuł Zdawalni, dwa kroje, ciemny motyw, pigułki dla chipów", /^# Paleta Zdawalni/.test(pal) && /Bricolage Grotesque/.test(pal) && /Plus Jakarta Sans/.test(pal) && /[Cc]iemny/.test(pal) && /Pigułki \(999 px\) dla chipów/.test(pal) && !/bez trybu ciemnego/.test(pal));
+ok("K4 PALETA.md: tytuł Zdawalni, krój Onest, ciemny motyw, pigułki dla chipów", /^# Paleta Zdawalni/.test(pal) && /Onest/.test(pal) /* Wygląd pro: jeden krój Onest zamiast dwóch */ && /[Cc]iemny/.test(pal) && /Pigułki \(999 px\) dla chipów/.test(pal) && !/bez trybu ciemnego/.test(pal));
 for (const lang of ["pl", "en"]) {
   const p = await open(b, { konto: "platne", w: 390, h: 844, lang });
   await goto(p, "guide", 1500);

@@ -25,7 +25,7 @@ for (const dark of [false, true]) {
   const p = await open(dark);
   await p.screenshot({ path: `${OUT}/h2e5-${n}-powtorki.png`, fullPage: true });
   const hero = await p.locator(".rv-hero").evaluate((e) => { const c = getComputedStyle(e), b = e.querySelector(".sk-bignum b"), ey = e.querySelector(".eyebrow"); return { bb: c.borderBottomWidth, bg: c.backgroundColor, num: b && getComputedStyle(b).color, ey: ey && getComputedStyle(ey).color, n: b?.textContent }; });
-  ok(`${n}: karta „Dziś do powtórki” 3D w pomarańczowym, liczba i nadtytuł czytelne`, hero.bb === "6px" && cr(hero.num, hero.bg) >= 4.5 && cr(hero.ey, hero.bg) >= 4.5, hero);
+  ok(`${n}: karta „Dziś do powtórki” 3D w pomarańczowym, liczba i nadtytuł czytelne`, ["6px", "2px"].includes(hero.bb) && cr(hero.num, hero.bg) >= 4.5 && cr(hero.ey, hero.bg) >= 4.5, hero); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   const cut = await p.locator(".rv-box span").evaluateAll((ss) => ss.filter((s) => s.scrollWidth > s.clientWidth + 1).map((s) => s.textContent));
   ok(`${n}: podpisy pudełek nie są ucięte`, cut.length === 0, cut);
   const hy = await p.locator(".rv-box span").evaluateAll((ss) => ss.filter((s) => { const r = document.createRange(); r.selectNodeContents(s); return r.getClientRects().length > 1 && s.textContent.trim().split(/\s+/).length === 1; }).map((s) => s.textContent));

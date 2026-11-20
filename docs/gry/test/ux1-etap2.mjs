@@ -32,7 +32,8 @@ for (const konto of ["proba-koniec", "darmowe-bez"]) for (const ld of [true, fal
   // Inne zielone przyciski na Dziś (np. panel Stasia) bez zmian: reguła szarego .btn dotyczy dalej przycisków drugorzędnych.
   const p = await open({ konto: "platne" });
   const g = await p.evaluate(() => { const e = [...document.querySelectorAll("#main > :not(.ld-block) .btn:not(.primary)")].find((x) => x.offsetParent); return e ? getComputedStyle(e).backgroundColor : null; });
-  ok("K1: drugorzędne przyciski na Dziś dalej szare pigułki (#EDF1EA)", g === null || g === "rgb(237, 241, 234)", g);
+  // Wygląd pro: drugorzędne przyciski to białe pigułki z obrysem (było szare #EDF1EA)
+  ok("K1: drugorzędne przyciski na Dziś jako jasne pigułki (białe albo #EDF1EA)", g === null || g === "rgb(255, 255, 255)" || g === "rgb(237, 241, 234)", g);
   await p.close();
 }
 
@@ -152,7 +153,7 @@ for (const lang of ["pl", "en"]) {
   const kol = await p.evaluate(() => [...document.querySelectorAll(".lk-card[data-k]")].map((c) => c.classList.contains("gotowe") ? "g" : "w").join(""));
   ok(`K6 ${lang}: kierunki gotowe na górze listy, przed „Wkrótce”`, /^g+w+$/.test(kol), kol);
   if (lang === "pl") {
-    await p.click('.lk-card[data-k="wefiz-zarz-1-st-2026"]'); await p.waitForTimeout(600);
+    await p.evaluate(() => document.querySelectorAll("details.lg-konto, details.lk-inne").forEach((d) => { d.open = true; })); await p.click('.lk-card[data-k="wefiz-zarz-1-st-2026"]'); await p.waitForTimeout(600);
     const w = await p.evaluate(() => ({ h2: document.querySelector("#lgKierunek h2")?.textContent, txt: document.querySelector("#lgKierunek")?.innerText }));
     ok("K6: klik w kierunek oczekujący → lista oczekujących z tym kierunkiem", /jeszcze nie ruszył|jeszcze nie ma/.test(w.h2 || "") && /Zarządzanie/.test(w.txt || ""), w);
     const sel = await p.evaluate(() => { const s = document.querySelector("#lk-kier"); return s && { v: s.value, t: s.options[s.selectedIndex]?.textContent }; });

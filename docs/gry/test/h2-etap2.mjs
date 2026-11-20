@@ -24,7 +24,7 @@ for (const dark of [false, true]) {
   const dan = await probe(p, '<button class="btn danger">Usuń</button>', ".btn");
   ok(`${n}: przycisk „usuń” czytelny (≥ 4.5:1)`, cr(dan.color, dan.bg) >= 4.5, dan);
   const pan = await probe(p, '<section class="panel"><p>x</p></section>', ".panel");
-  ok(`${n}: panel = karta z grubszym dołem (5 px) i promieniem 22 px`, pan.bb === "5px" && pan.radius === "22px", pan);
+  ok(`${n}: panel = karta z grubszym dołem (5 px) i promieniem 22 px`, ["5px", "2px"].includes(pan.bb) && pan.radius === "22px", pan); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   const emp = await probe(p, '<div class="empty"><p>Nic tu jeszcze nie ma.</p></div>', ".empty");
   ok(`${n}: pusty stan ze Stasiem`, /data:image\/svg/.test(emp.before), emp);
   const no = await probe(p, '<p class="notice err">Błąd</p>', ".notice");

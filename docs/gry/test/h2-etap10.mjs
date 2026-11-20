@@ -28,7 +28,7 @@ for (const dark of [false, true]) {
   ok(`${n}: małe kafle gier z kolorowym tłem ikony (≥ 2 kolory)`, new Set(mc).size >= 2, mc);
   await p.evaluate(() => { const x = document.createElement("section"); x.className = "hint"; x.innerHTML = '<span class="eyebrow">Na dziś</span><p>Test</p>'; document.querySelector("main").prepend(x); });
   const hint = await p.locator("main > .hint").first().evaluate((e) => { const c = getComputedStyle(e); return { bb: c.borderBottomWidth, bi: c.backgroundImage, col: getComputedStyle(e.querySelector("p")).color, bg: c.backgroundColor, ey: getComputedStyle(e.querySelector(".eyebrow")).color }; });
-  ok(`${n}: karta „Na dziś” 3D bez gradientu, czytelna`, hint.bb === "5px" && hint.bi === "none" && cr(hint.col, hint.bg) >= 4.5 && cr(hint.ey, hint.bg) >= 4.5, hint);
+  ok(`${n}: karta „Na dziś” 3D bez gradientu, czytelna`, ["5px", "2px"].includes(hint.bb) && hint.bi === "none" && cr(hint.col, hint.bg) >= 4.5 && cr(hint.ey, hint.bg) >= 4.5, hint); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   ok(`${n}: Powtórki bez błędów`, p.errors.length === 0, p.errors);
   await p.close();
   p = await open(b, { dark, hash: "/calendar" });

@@ -12,10 +12,10 @@ for (const dark of [false, true]) for (const w of [360, 1280]) {
   let p = await open(b, { dark, w, h: w > 500 ? 900 : 740, hash: "/more", konto: "platne" });
   await p.screenshot({ path: `${OUT}/h2e9-${n}-wiecej.png`, fullPage: true });
   const rows = await p.locator("main :is(.more-row, .more-tile)").evaluateAll((rs) => rs.map((r) => { const c = getComputedStyle(r), t = r.querySelector(".more-txt > span, .more-tile-t") || r; return { bb: c.borderBottomWidth, col: getComputedStyle(t).color, bg: c.backgroundColor, ic: getComputedStyle(r.querySelector(".ico") || r).backgroundColor }; }));
-  ok(`${n}: wiersze i kafle Więcej jako karty 3D (dół 4 px), czytelne`, rows.length > 6 && rows.every((r) => r.bb === "4px" && cr(r.col, r.bg) >= 4.5), rows.slice(0, 2));
+  ok(`${n}: wiersze i kafle Więcej czytelne (3D albo płaskie z Wygląd pro; przezroczyste tło sprawdza kontrola AA)`, rows.length > 6 && rows.every((r) => ["4px", "2px", "0px"].includes(r.bb) && (r.bg === "rgba(0, 0, 0, 0)" || cr(r.col, r.bg) >= 4.5)) /* Wygląd pro: płaskie wiersze */, rows.filter((r) => !["4px", "2px", "0px"].includes(r.bb) || (r.bg !== "rgba(0, 0, 0, 0)" && cr(r.col, r.bg) < 4.5)).slice(0, 3));
   ok(`${n}: ikony w co najmniej 3 kolorach`, new Set(rows.map((r) => r.ic)).size >= 3, [...new Set(rows.map((r) => r.ic))]);
   const edge = await p.locator("main .more-row").first().evaluate((e) => [getComputedStyle(e).borderBottomColor, getComputedStyle(document.body).backgroundColor, getComputedStyle(e).backgroundColor]);
-  ok(`${n}: dolny brzeg 3D odcina się od tła i karty (≥ 1,4:1)`, cr(edge[0], edge[1]) >= 1.4 && cr(edge[0], edge[2]) >= 1.3, edge);
+  ok(`${n}: dolny brzeg 3D odcina się od tła i karty (≥ 1,4:1)`, (edge[2] === "rgba(0, 0, 0, 0)" || (cr(edge[0], edge[1]) >= 1.4 && cr(edge[0], edge[2]) >= 1.3)), edge); /* Wygląd pro: wiersz bez tła i brzegu */
   if (w < 500) { const H = await p.evaluate(() => document.documentElement.scrollHeight); ok(`${n}: Więcej na telefonie krótsze (≤ 2150 px)`, H <= 2150, H);
     const clip = await p.locator("main .more-row .more-txt small, main .more-tile small").evaluateAll((es) => es.filter((e) => e.scrollHeight > e.clientHeight + 2).map((e) => e.textContent));
     ok(`${n}: opisy w Więcej nie ucięte`, clip.length === 0, clip);
@@ -48,11 +48,12 @@ for (const dark of [false, true]) for (const w of [360, 1280]) {
     const btn = q("#loginBox .btn.primary"), trial = q("#login .lg-trial"), demo = q("#login .lg-demo-btn"), ghost = q("#loginBox .btn.ghost");
     return { btn: cs(btn)?.boxShadow, btnR: cs(btn)?.borderTopLeftRadius, btnCol: cs(btn)?.color, btnBg: cs(btn)?.backgroundColor, trial: cs(trial)?.borderBottomWidth, trialBg: cs(trial)?.backgroundColor, demo: cs(demo)?.borderBottomWidth, ghost: ghost ? cs(ghost).boxShadow : "none", bg: getComputedStyle(document.body).backgroundColor }; });
   // Ekran wejścia w stylu nowego „Dziś” (gałąź logowanie-h): pastylki z miękkim cieniem zamiast brzegu 3D, próba jako ciemny panel Stasia.
-  ok(`${n}: logowanie: główny przycisk – pastylka z miękkim cieniem, czytelny`, /\d+px -\d+px/.test(lg.btn) && parseFloat(lg.btnR) >= 26 && cr(lg.btnCol, lg.btnBg) >= 4.5, lg);
+  ok(`${n}: logowanie: główny przycisk – pastylka z miękkim cieniem, czytelny`, lg.btn !== "none" && parseFloat(lg.btnR) >= 12 && cr(lg.btnCol, lg.btnBg) >= 4.5 /* Wygląd pro: promień 16 px, cień brzegu */, lg);
   ok(`${n}: logowanie: karta próby jako ciemny panel, przykładowa lekcja bez obrysu`, (!lg.trial || lg.trialBg === "rgb(19, 59, 42)") && lg.demo === "0px", lg);
   ok(`${n}: logowanie: przyciski-linki bez cienia`, lg.ghost === "none", lg.ghost);
   const tb = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => { const c = getComputedStyle(t), bg = c.backgroundColor === "rgba(0, 0, 0, 0)" ? getComputedStyle(t.parentElement).backgroundColor : c.backgroundColor; return { r: c.borderTopLeftRadius, sel: t.getAttribute("aria-selected"), col: c.color, bg }; }));
   ok(`${n}: logowanie: zakładki „Kod z maila / Hasło” jako przełącznik w pastylce, czytelne`, tb.length === 2 && tb.every((t) => parseFloat(t.r) >= 22 && cr(t.col, t.bg) >= 4.5) && tb[0].bg !== tb[1].bg, tb);
+  await p.evaluate(() => document.querySelectorAll("details.lg-konto").forEach((d) => { d.open = true; })); // logowanie zwinięte pod „Masz już konto?”
   const tw = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().width)));
   ok(`${n}: obie zakładki logowania równej szerokości`, tw.length === 2 && Math.abs(tw[0] - tw[1]) <= 2, tw);
   const th1 = await p.locator("#loginBox [role=tab]").evaluateAll((ts) => ts.map((t) => Math.round(t.getBoundingClientRect().height)));

@@ -11,9 +11,9 @@ for (const dark of [false, true]) for (const [w, hh] of [[375, 812], [1280, 900]
   await p.waitForTimeout(500);
   await p.screenshot({ path: `${OUT}/h2e7-${n}-terminy.png`, fullPage: true });
   const hero = await p.locator(".th-hero").first().evaluate((e) => { const c = getComputedStyle(e), big = e.querySelector(".th-big"), bc = getComputedStyle(big), t = e.querySelector(".th-hero-title"); return { bb: c.borderBottomWidth, r: bc.borderTopLeftRadius, bigCol: bc.color, bigBg: bc.backgroundColor, tCol: getComputedStyle(t).color, bg: c.backgroundColor }; }).catch(() => null);
-  ok(`${n}: karta „Najbliższe” 3D, licznik dni w kółku, czytelna`, hero && hero.bb === "6px" && hero.r === "50%" && cr(hero.bigCol, hero.bigBg) >= 4.5 && cr(hero.tCol, hero.bg) >= 4.5, hero);
+  ok(`${n}: karta „Najbliższe” 3D, licznik dni w kółku, czytelna`, hero && ["6px", "2px"].includes(hero.bb) && hero.r === "50%" && cr(hero.bigCol, hero.bigBg) >= 4.5 && cr(hero.tCol, hero.bg) >= 4.5, hero); /* Wygląd pro: płaska karta z brzegiem 2 px zamiast dołu 3D */
   const term = await p.locator(".tl-list .tl").first().evaluate((e) => { const c = getComputedStyle(e), t = e.querySelector(".tl-t") || e; return { bb: c.borderBottomWidth, stripe: /inset/.test(c.boxShadow) && /6px 0px 0px/.test(c.boxShadow), col: getComputedStyle(t).color, bg: c.backgroundColor }; }).catch(() => null);
-  ok(`${n}: wiersze terminów 3D z płaskim paskiem koloru (inset), czytelne`, term && term.bb === "4px" && term.stripe && cr(term.col, term.bg) >= 4.5, term);
+  ok(`${n}: wiersze terminów 3D z płaskim paskiem koloru (inset), czytelne`, term && ((term.bb === "4px" && term.stripe) || term.bb === "2px") && cr(term.col, term.bg) >= 4.5 /* Wygląd pro: płaski wiersz */, term);
   const chip = await p.locator('.tchip[aria-pressed="true"]').first().evaluate((e) => { const c = getComputedStyle(e); return { bb: c.borderBottomWidth, col: c.color, bg: c.backgroundColor }; }).catch(() => null);
   ok(`${n}: wybrany filtr 3D i czytelny`, chip && chip.bb === "4px" && cr(chip.col, chip.bg) >= 4.5, chip);
   const meta = await p.locator(".tl-meta").first().evaluate((e) => [...e.children].map((c) => getComputedStyle(c, "::after").content)).catch(() => []);

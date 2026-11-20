@@ -67,8 +67,9 @@ ok("student: bez błędów w konsoli", p.errors.length === 0, p.errors);
 const g = await page(b, { konto: "darmowe" });
 await open(g, "#/more");
 t = await q(g, "ranking");
-const sec = await g.locator(".fn-hit", { hasText: "Ranking kierunku" }).locator(".fn-sec").innerText().catch(() => "");
-ok("bez dostępu: 🔒 przy Rankingu", /🔒/.test(sec), [t, sec]);
+// ikony-ux.js zamienia 🔒 na ikonę SVG, więc sprawdzamy klasę „lock” i ikonę
+const sec = await g.locator(".fn-hit", { hasText: "Ranking kierunku" }).locator(".fn-sec").evaluate((e) => e.className + (e.querySelector("svg") || /🔒/.test(e.textContent) ? " ikona" : "")).catch(() => "");
+ok("bez dostępu: kłódka przy Rankingu", /\block\b/.test(sec) && /ikona/.test(sec), [t, sec]);
 await shot(g, "fn-darmowe");
 ok("darmowe: bez błędów w konsoli", g.errors.length === 0, g.errors);
 
