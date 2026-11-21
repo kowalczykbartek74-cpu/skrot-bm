@@ -1,0 +1,28 @@
+// Podgląd telefonu (Więcej → Tryb starosty): ramka 390 px z tą samą stroną, zamykanie, student go nie widzi.
+import { chromium, page, BASE, shot } from "./lib.mjs";
+let bad = 0; const ok = (n, c, x) => { console.log((c ? "ok  " : "BŁĄD") + " " + n + (c ? "" : " " + JSON.stringify(x ?? ""))); if (!c) bad++; };
+const b = await chromium.launch();
+const s = await page(b, { konto: "starosta", w: 1400, h: 950, ls: { "bm-starosta": "1" } });
+await s.goto(BASE + "index.html#/more"); await s.waitForSelector(".staro");
+const row = s.locator(".staro .more-row", { hasText: "Podgląd telefonu" });
+ok("wiersz w Trybie starosty", (await row.count()) === 1);
+await row.click();
+const fr = s.locator(".tel-pv iframe");
+ok("ramka 390 px", (await fr.evaluate((e) => e.clientWidth)) === 390);
+const f = s.frameLocator(".tel-pv iframe");
+await f.locator("h1.ptitle").first().waitFor({ timeout: 15000 });
+ok("w ramce strona się pokazuje (nie wybita)", await f.locator("h1.ptitle", { hasText: "Więcej" }).count() === 1);
+ok("w ramce szerokość okna = 390", (await s.frames()[1].evaluate(() => innerWidth)) === 390);
+ok("w ramce bez wiersza podglądu", (await f.locator(".more-row", { hasText: "Podgląd telefonu" }).count()) === 0);
+await shot(s, "podglad-telefonu");
+await s.frames()[1].evaluate(() => { location.hash = "#/review"; });
+await s.waitForTimeout(400);
+await s.locator(".tel-pv .btn", { hasText: "Wyłącz podgląd" }).click();
+ok("zamknięcie usuwa nakładkę", (await s.locator(".tel-pv").count()) === 0);
+ok("po zamknięciu komputer jest na tym samym ekranie", /#\/review$/.test(s.url()), s.url());
+ok("starosta: bez błędów", s.errors.length === 0, s.errors);
+const st = await page(b, { konto: "platne", w: 1400, h: 950 });
+await st.goto(BASE + "index.html#/more"); await st.waitForTimeout(1500);
+ok("student nie widzi podglądu", (await st.locator(".more-row", { hasText: "Podgląd telefonu" }).count()) === 0);
+await b.close();
+console.log(bad ? `${bad} błędów` : "wszystko ok"); process.exit(bad ? 1 : 0);

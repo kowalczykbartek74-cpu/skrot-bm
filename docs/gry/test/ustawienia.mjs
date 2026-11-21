@@ -74,7 +74,7 @@ await s.locator(".more-row", { hasText: "Zgłoszenia błędów" }).click(); awai
 ok("zgłoszenia wracają do narzędzi", /Narzędzia starosty/.test(await s.locator(".back").first().innerText()));
 await open(s, "#/more");
 await s.locator(".staro [role=switch]").click(); await s.waitForTimeout(400);
-ok("tryb starosty wyłączony: brak wiersza narzędzi", (await s.locator(".staro .more-row").count()) === 0);
+ok("tryb starosty wyłączony: brak wiersza narzędzi", (await s.locator(".staro .more-row", { hasText: "Narzędzia starosty" }).count()) === 0);
 ok("starosta: bez błędów", s.errors.length === 0, s.errors);
 
 // ---- niezalogowany
